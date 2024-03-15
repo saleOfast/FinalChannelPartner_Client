@@ -118,7 +118,9 @@ const SideBar = ({ }) => {
   }
 
   function openSideOpt(value) {
-    dispatch(fullView());
+    if (window.innerWidth >= 500){
+      dispatch(fullView());
+    }
     setcurrActiveLink(currActiveLink === value ? '' : value);
   }
 
@@ -127,6 +129,7 @@ const SideBar = ({ }) => {
       dispatch(closedView());
     }
   }, []);
+  
 
   useEffect(() => {
     const sideUserCookie = hasCookie('sideUser');
@@ -208,8 +211,8 @@ const SideBar = ({ }) => {
                 <div className="sidebar-sublist">
                   <ul className="sublists">
                     {children?.map((item) => (
-                      <Link href={`/${item.link}`} key={item.menu_id}>
-                        <li className="sub-list-item"> {item.allais_menu} </li>
+                      <Link  href={`/${item.link}`} key={item.menu_id}>
+                        <li  onClick={sideViewFunc} className="sub-list-item"> {item.allais_menu} </li>
                       </Link>
                     ))}
                   </ul>

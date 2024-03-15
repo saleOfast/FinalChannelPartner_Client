@@ -178,7 +178,7 @@ const Topnav = () => {
                             <Dropdown>
                                 <Dropdown.Toggle variant="none" id="profileBtn">
                                     <div className="btn_wrapper">
-                                        <div className="img_sec">
+                                        <div className=" img_sec">
                                             {dbMode == 'admin' ?
                                                 <img src={userInfo.profile_img ? `${filesUrl}/adminProfile/images${userInfo.profile_img}` : `/images/profile_picture.png`} alt="" />
                                                 :

@@ -10,12 +10,13 @@ import { UserLogIN } from '../../store/ClientLoginSlice';
 import { Baseurl } from '../../Utils/Constants';
 import axios from 'axios';
 import { validEmail } from '../../Utils/regex';
+import { assignPermissions, crm, dms } from '../../store/permissionSlice';
 
 export default function SignInScreen({ setLoggedIn }) {
     const router = useRouter()
     const dispatch = useDispatch()
     const dbMode = useSelector((state) => state.dbMode.value)
-
+    const topnavPermission=["crm","dms"]
     const [userForm, setUserForm] = useState({
         email: "",
         password: ""
@@ -48,6 +49,8 @@ export default function SignInScreen({ setLoggedIn }) {
                     setCookie('token', res.data.token);
                     setCookie('userInfo', res.data.userData);
                     setCookie('db_name', res.data.userData.db_name);
+                    dispatch(crm())
+                    dispatch(assignPermissions(topnavPermission))
                     toast.success('Logged in SuccessFully')
                     router.push('/')
                 }

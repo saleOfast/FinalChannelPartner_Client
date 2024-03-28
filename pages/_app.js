@@ -6,34 +6,11 @@ import { Provider } from 'react-redux'
 import { SSRProvider } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Topnav from '../Components/Basics/Topnav';
-import SideBar from '../Components/Basics/SideBar';
-import { getCookie, hasCookie } from 'cookies-next';
-import { useState, useEffect } from 'react';
+import Layout from '../Components/layout/layout';
 
 
 
 function App({ Component, pageProps }) {
-
-  const user = store.getState().userLogin;
-  const [showBasic, setShowBasic] = useState(false)
-
- 
-  const checkUSer = () => {
-    if(hasCookie("user")){
-      setShowBasic(true)
-    }else if(hasCookie("Admin")){
-      setShowBasic(false)
-    }else{
-      setShowBasic(false)
-    }
-  }
-
-  useEffect(() => {
-    checkUSer()
-  }, [user]);
-
-
   return (
     <>
       <Provider store={store}>
@@ -49,22 +26,7 @@ function App({ Component, pageProps }) {
                   draggable
                   pauseOnHover
                   theme="light" />
-        {showBasic ?
-          <main className="main_wrapper">
-           
-              <Topnav />
-           
-            <div className="content_wrapper">
-               
-                <SideBar   />
-             
-                <Component {...pageProps} />
-              
-                  </div>
-          </main>
-        : 
-        <Component {...pageProps} />
-      }
+      <Layout Component={Component} pageProps={pageProps}  />
         </SSRProvider>
       </Provider>
   </>

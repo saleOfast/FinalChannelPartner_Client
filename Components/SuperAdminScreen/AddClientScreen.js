@@ -36,7 +36,11 @@ const AddClientScreen = () => {
         pincode: '',
         pan: '',
         gst: '',
-        address: ""
+        address: "" ,
+        isCRM:true ,
+        isDMS:"" ,
+        isSALES:"" ,
+        isCHANNEL:"" ,
     })
 
     const minDate = new Date().toISOString().slice(0, 16);
@@ -84,56 +88,57 @@ const AddClientScreen = () => {
     }
 
     async function addClientHandler() {
-        if (hasCookie('saLsTkn')) {
-            setisLoading(true);
-            if (userInfo.password) {
-                if (!userInfo.conPassword) {
-                    toast.error('Please fill the Mandatory fields')
-                    return setErrorData({ ...errorData, conPassword: 'Confirm your Password' })
-                } else if (userInfo.password !== userInfo.conPassword) {
-                    toast.error('Please fill the Mandatory fields')
-                    return setErrorData({ ...errorData, conPassword: 'Password Does not match' })
-                }
-            }
-            let token = (getCookie('saLsTkn'));
-            let db_name = (getCookie('db_name'));
+        console.log(userInfo)
+        // if (hasCookie('saLsTkn')) {
+        //     setisLoading(true);
+        //     if (userInfo.password) {
+        //         if (!userInfo.conPassword) {
+        //             toast.error('Please fill the Mandatory fields')
+        //             return setErrorData({ ...errorData, conPassword: 'Confirm your Password' })
+        //         } else if (userInfo.password !== userInfo.conPassword) {
+        //             toast.error('Please fill the Mandatory fields')
+        //             return setErrorData({ ...errorData, conPassword: 'Password Does not match' })
+        //         }
+        //     }
+        //     let token = (getCookie('saLsTkn'));
+        //     let db_name = (getCookie('db_name'));
 
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
+        //     let header = {
+        //         headers: {
+        //             Accept: "application/json",
+        //             Authorization: "Bearer ".concat(token),
+        //             db: db_name,
 
-                }
-            }
-            try {
-                const res = await axios.post(Baseurl + `/db`, userInfo, header);
-                if (res.status === 200 || res.status === 204) {
-                    toast.success('Client Added Successfully')
-                    router.push('/Admin');
-                    setisLoading(false);
-                }
-            } catch (error) {
-                setisLoading(false);
-                if (error?.response?.data?.status === 422) {
-                    const taskObject = {}
-                    const array = error?.response?.data?.data;
+        //         }
+        //     }
+        //     try {
+        //         const res = await axios.post(Baseurl + `/db`, userInfo, header);
+        //         if (res.status === 200 || res.status === 204) {
+        //             toast.success('Client Added Successfully')
+        //             router.push('/Admin');
+        //             setisLoading(false);
+        //         }
+        //     } catch (error) {
+        //         setisLoading(false);
+        //         if (error?.response?.data?.status === 422) {
+        //             const taskObject = {}
+        //             const array = error?.response?.data?.data;
 
-                    for (let i = 0; i < array.length; i++) {
-                        const key = Object.keys(array[i])[0];
-                        const value = Object.values(array[i])[0];
-                        taskObject[key] = value;
-                    }
+        //             for (let i = 0; i < array.length; i++) {
+        //                 const key = Object.keys(array[i])[0];
+        //                 const value = Object.values(array[i])[0];
+        //                 taskObject[key] = value;
+        //             }
 
-                    setErrorData(taskObject);
-                }
-                if (error?.response?.data?.message) {
-                    toast.error(error.response.data.message);
-                } else {
-                    toast.error("Something went wrong!");
-                }
-            }
-        }
+        //             setErrorData(taskObject);
+        //         }
+        //         if (error?.response?.data?.message) {
+        //             toast.error(error.response.data.message);
+        //         } else {
+        //             toast.error("Something went wrong!");
+        //         }
+        //     }
+        // }
     };
 
     async function updateHandler() {
@@ -283,72 +288,129 @@ const AddClientScreen = () => {
     }, [router.isReady, id])
 
     return (
-        <div className={`main_Box  ${sideView}`}>
-            <div className="bread_head">
-                <h3 className="content_head">{editMode ? 'EDIT' : 'ADD'} Client</h3>
-                <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                        <li className="breadcrumb-item"> <Link href='/Admin'>All Clients   </Link></li>
-                        <li className="breadcrumb-item active" aria-current="page">{editMode ? 'Edit' : 'Add'} Client</li>
-                    </ol>
-                </nav>
+      <div className={`main_Box  ${sideView}`}>
+        <div className="bread_head">
+          <h3 className="content_head">{editMode ? "EDIT" : "ADD"} Client</h3>
+          <nav aria-label="breadcrumb">
+            <ol className="breadcrumb">
+              <li className="breadcrumb-item">
+                {" "}
+                <Link href="/Admin">All Clients </Link>
+              </li>
+              <li className="breadcrumb-item active" aria-current="page">
+                {editMode ? "Edit" : "Add"} Client
+              </li>
+            </ol>
+          </nav>
+        </div>
+        <div className="main_content">
+          <div className="Add_user_screen">
+            <div className="add_screen_head">
+              <span className="text_bold">Fill Details</span> ( * Fields are
+              mandatory){" "}
             </div>
-            <div className="main_content">
-                <div className="Add_user_screen">
-                    <div className="add_screen_head">
-                        <span className="text_bold">Fill Details</span>  ( * Fields are mandatory) </div>
-                    <div className="add_user_form">
-                        <div className="row">
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                <div className={errorData?.user ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="Name">Client Name *</label>
-                                    <input
-                                        type="text"
-                                        placeholder='Enter Client Name'
-                                        name="Name" id="Name"
-                                        className={errorData?.user ? 'form-control is-invalid' : 'form-control'}
-                                        onChange={(e) => {
-                                            setUserInfo({ ...userInfo, user: e.target.value })
-                                            setErrorData({ ...errorData, user: '' })
-                                        }}
-                                        value={userInfo.user ? userInfo.user : ''} />
-                                    <span className="errorText"> {errorData?.user ? errorData.user : ''}</span>
-                                </div>
-
-                            </div>
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                <div className={errorData?.email ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="email">Email *</label>
-                                    <input
-                                        type="email"
-                                        placeholder='Enter email'
-                                        name="email" id="email"
-                                        className={errorData?.email ? 'form-control is-invalid' : 'form-control'}
-                                        onChange={(e) => {
-                                            setUserInfo({ ...userInfo, email: e.target.value.toLowerCase().replace(' ', '') })
-                                            setErrorData({ ...errorData, email: '' })
-                                        }}
-                                        value={userInfo.email ? userInfo.email : ''} />
-                                    <span className="errorText"> {errorData?.email ? errorData.email : ''}</span>
-                                </div>
-                            </div>
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                <div className={errorData?.contact_number ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="contact">Contact Number *</label>
-                                    <input
-                                        type="number"
-                                        placeholder='Enter Contact Number'
-                                        name="contact" id="contact"
-                                        className={errorData?.contact_number ? 'form-control is-invalid' : 'form-control'}
-                                        onChange={(e) => {
-                                            setUserInfo({ ...userInfo, contact_number: e.target.value })
-                                            setErrorData({ ...errorData, contact_number: '' })
-                                        }}
-                                        value={userInfo.contact_number ? userInfo.contact_number : ''} />
-                                    <span className="errorText"> {errorData?.contact_number ? errorData.contact_number : ''}</span>
-                                </div>
-                            </div>
-                            {/* {editMode ? null :
+            <div className="add_user_form">
+              <div className="row">
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.user ? "input_box errorBox" : "input_box"
+                    }
+                  >
+                    <label htmlFor="Name">Client Name *</label>
+                    <input
+                      type="text"
+                      placeholder="Enter Client Name"
+                      name="Name"
+                      id="Name"
+                      className={
+                        errorData?.user
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, user: e.target.value });
+                        setErrorData({ ...errorData, user: "" });
+                      }}
+                      value={userInfo.user ? userInfo.user : ""}
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.user ? errorData.user : ""}
+                    </span>
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.email ? "input_box errorBox" : "input_box"
+                    }
+                  >
+                    <label htmlFor="email">Email *</label>
+                    <input
+                      type="email"
+                      placeholder="Enter email"
+                      name="email"
+                      id="email"
+                      className={
+                        errorData?.email
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({
+                          ...userInfo,
+                          email: e.target.value.toLowerCase().replace(" ", ""),
+                        });
+                        setErrorData({ ...errorData, email: "" });
+                      }}
+                      value={userInfo.email ? userInfo.email : ""}
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.email ? errorData.email : ""}
+                    </span>
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.contact_number
+                        ? "input_box errorBox"
+                        : "input_box"
+                    }
+                  >
+                    <label htmlFor="contact">Contact Number *</label>
+                    <input
+                      type="number"
+                      placeholder="Enter Contact Number"
+                      name="contact"
+                      id="contact"
+                      className={
+                        errorData?.contact_number
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({
+                          ...userInfo,
+                          contact_number: e.target.value,
+                        });
+                        setErrorData({ ...errorData, contact_number: "" });
+                      }}
+                      value={
+                        userInfo.contact_number ? userInfo.contact_number : ""
+                      }
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.contact_number
+                        ? errorData.contact_number
+                        : ""}
+                    </span>
+                  </div>
+                </div>
+                {/* {editMode ? null :
                                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                     <div className={errorData?.db_name ? 'input_box errorBox' : 'input_box'}>
                                         <label htmlFor="DBName">DB Name *</label>
@@ -366,7 +428,7 @@ const AddClientScreen = () => {
                                     </div>
                                 </div>} */}
 
-                            {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className={errorData?.password ? 'input_box errorBox' : 'input_box'}>
                                     <label htmlFor="password">Password *</label>
                                     <input
@@ -382,7 +444,7 @@ const AddClientScreen = () => {
                                     <span className="errorText"> {errorData?.password ? errorData.password : ''}</span>
                                 </div>
                             </div> */}
-                            {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className={errorData?.conPassword ? 'input_box errorBox' : 'input_box'}>
                                     <label htmlFor="conPassword">Confirm Password *</label>
                                     <input
@@ -399,80 +461,145 @@ const AddClientScreen = () => {
                                 </div>
                             </div> */}
 
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                <div className={errorData?.subscription_start_date ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="subscription_start_date">Subscription Start Date *</label>
-                                    <input
-                                        type="date"
-                                        name="subscription_start_date"
-                                        id="subscription_start_date"
-                                        min={moment().subtract(7, 'days').format('YYYY-MM-DD[T]HH:mm:ss')}
-                                        className={errorData?.subscription_start_date ? 'form-control is-invalid' : 'form-control'}
-                                        onChange={(e) => {
-                                            setUserInfo({ ...userInfo, subscription_start_date: e.target.value })
-                                            setErrorData({ ...errorData, subscription_start_date: '' })
-                                        }}
-                                        value={userInfo.subscription_start_date ? userInfo.subscription_start_date : ''}
-                                    />
-                                    <span className="errorText"> {errorData?.subscription_start_date ? errorData.subscription_start_date : ''}</span>
-                                </div>
-                            </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.subscription_start_date
+                        ? "input_box errorBox"
+                        : "input_box"
+                    }
+                  >
+                    <label htmlFor="subscription_start_date">
+                      Subscription Start Date *
+                    </label>
+                    <input
+                      type="date"
+                      name="subscription_start_date"
+                      id="subscription_start_date"
+                      min={moment()
+                        .subtract(7, "days")
+                        .format("YYYY-MM-DD[T]HH:mm:ss")}
+                      className={
+                        errorData?.subscription_start_date
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({
+                          ...userInfo,
+                          subscription_start_date: e.target.value,
+                        });
+                        setErrorData({
+                          ...errorData,
+                          subscription_start_date: "",
+                        });
+                      }}
+                      value={
+                        userInfo.subscription_start_date
+                          ? userInfo.subscription_start_date
+                          : ""
+                      }
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.subscription_start_date
+                        ? errorData.subscription_start_date
+                        : ""}
+                    </span>
+                  </div>
+                </div>
 
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.no_of_months
+                        ? "input_box errorBox"
+                        : "input_box"
+                    }
+                  >
+                    <label htmlFor="no_of_months">No of Month *</label>
+                    <input
+                      type="number"
+                      placeholder="Enter Month"
+                      name="no_of_months"
+                      id="no_of_months"
+                      className={
+                        errorData?.no_of_months
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      value={userInfo.no_of_months ? userInfo.no_of_months : ""}
+                      onChange={(e) => monthSet(e)}
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.no_of_months ? errorData.no_of_months : ""}
+                    </span>
+                  </div>
+                </div>
 
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                <div className={errorData?.no_of_months ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="no_of_months">No of Month *</label>
-                                    <input
-                                        type="number"
-                                        placeholder='Enter Month'
-                                        name="no_of_months"
-                                        id="no_of_months"
-                                        className={errorData?.no_of_months ? 'form-control is-invalid' : 'form-control'}
-                                        value={userInfo.no_of_months ? userInfo.no_of_months : ''}
-                                        onChange={(e) => monthSet(e)}
-                                    />
-                                    <span className="errorText"> {errorData?.no_of_months ? errorData.no_of_months : ''}</span>
-                                </div>
-                            </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="subscription_start_date">
+                      Subscription End Date *
+                    </label>
+                    <input
+                      type="date"
+                      name="subscription_start_date"
+                      id="subscription_start_date"
+                      disabled
+                      className={
+                        errorData?.subscription_end_date
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      value={
+                        userInfo.subscription_end_date
+                          ? userInfo.subscription_end_date
+                          : ""
+                      }
+                    />
+                  </div>
+                </div>
 
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.no_of_license
+                        ? "input_box errorBox"
+                        : "input_box"
+                    }
+                  >
+                    <label htmlFor="Licence">No of Licence *</label>
+                    <input
+                      type="number"
+                      placeholder="Enter Licence"
+                      name="no_of_license"
+                      id="no_of_license"
+                      className={
+                        errorData?.no_of_license
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({
+                          ...userInfo,
+                          no_of_license: e.target.value,
+                        });
+                        setErrorData({ ...errorData, no_of_license: "" });
+                      }}
+                      value={
+                        userInfo.no_of_license ? userInfo.no_of_license : ""
+                      }
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.no_of_license ? errorData.no_of_license : ""}
+                    </span>
+                  </div>
+                </div>
 
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                <div className='input_box'>
-                                    <label htmlFor="subscription_start_date">Subscription End Date *</label>
-                                    <input
-                                        type="date"
-                                        name="subscription_start_date"
-                                        id="subscription_start_date"
-                                        disabled
-                                        className={errorData?.subscription_end_date ? 'form-control is-invalid' : 'form-control'}
-                                        value={userInfo.subscription_end_date ? userInfo.subscription_end_date : ''}
-                                    />
-
-                                </div>
-                            </div>
-
-
-
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                <div className={errorData?.no_of_license ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="Licence">No of Licence *</label>
-                                    <input
-                                        type="number"
-                                        placeholder='Enter Licence'
-                                        name="no_of_license"
-                                        id="no_of_license"
-                                        className={errorData?.no_of_license ? 'form-control is-invalid' : 'form-control'}
-                                        onChange={(e) => {
-                                            setUserInfo({ ...userInfo, no_of_license: e.target.value })
-                                            setErrorData({ ...errorData, no_of_license: '' })
-                                        }}
-                                        value={userInfo.no_of_license ? userInfo.no_of_license : ''}
-                                    />
-                                    <span className="errorText"> {errorData?.no_of_license ? errorData.no_of_license : ''}</span>
-                                </div>
-                            </div>
-
-                            {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className="input_box">
                                     <label htmlFor="subscription_end_date">Subscription End Date *</label>
                                     <input
@@ -487,231 +614,418 @@ const AddClientScreen = () => {
                                     />
                                 </div>
                             </div> */}
-                            {editMode ? null : <>
+                {editMode ? null : (
+                  <>
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                      <div
+                        className={
+                          errorData?.bill_cont
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="task_name">Country *</label>
+                        <Select
+                          id={userInfo.country_id}
+                          defaultValue={""}
+                          options={countrylist?.map((data, index) => {
+                            return {
+                              value: data?.country_id,
+                              label: data?.country_name,
+                            };
+                          })}
+                          value={countrylist?.map((data, index) => {
+                            if (userInfo.country_id === data.country_id) {
+                              return {
+                                value: data?.country_id,
+                                label: data?.country_name,
+                              };
+                            }
+                          })}
+                          onChange={(e) => {
+                            setUserInfo({ ...userInfo, country_id: e.value });
+                            setErrorData({ ...errorData, country_id: "" });
+                          }}
+                        />
+                        <span className="errorText">
+                          {" "}
+                          {errorData?.country_id ? errorData.country_id : ""}
+                        </span>
+                      </div>
+                    </div>
 
-                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                    <div className={errorData?.bill_cont ? 'input_box errorBox' : 'input_box'}>
-                                        <label htmlFor="task_name">Country  *</label>
-                                        <Select
-                                            id={userInfo.country_id}
-                                            defaultValue={""}
-                                            options={countrylist?.map((data, index) => {
-                                                return {
-                                                    value: data?.country_id,
-                                                    label: data?.country_name,
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                      <div
+                        className={
+                          errorData?.state_id
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="task_name">State *</label>
+                        <Select
+                          id={userInfo.state_id}
+                          defaultValue={""}
+                          options={statelist?.map((data, index) => {
+                            return {
+                              value: data?.state_id,
+                              label: data?.state_name,
+                            };
+                          })}
+                          value={statelist?.map((data, index) => {
+                            if (userInfo.state_id === data.state_id) {
+                              return {
+                                value: data?.state_id,
+                                label: data?.state_name,
+                              };
+                            }
+                          })}
+                          onChange={(e) => {
+                            setUserInfo({ ...userInfo, state_id: e.value });
+                            setErrorData({ ...errorData, state_id: "" });
+                          }}
+                        />
+                        <span className="errorText">
+                          {" "}
+                          {errorData?.state_id ? errorData.state_id : ""}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                      <div
+                        className={
+                          errorData?.city_id
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="task_name">City *</label>
+                        <Select
+                          id={userInfo.state_id}
+                          defaultValue={""}
+                          options={citylist?.map((data, index) => {
+                            return {
+                              value: data?.city_id,
+                              label: data?.city_name,
+                            };
+                          })}
+                          value={citylist?.map((data, index) => {
+                            if (userInfo.city_id === data.city_id) {
+                              return {
+                                value: data?.city_id,
+                                label: data?.city_name,
+                              };
+                            }
+                          })}
+                          onChange={(e) => {
+                            setUserInfo({ ...userInfo, city_id: e.value });
+                            setErrorData({ ...errorData, city_id: "" });
+                          }}
+                        />
+                        <span className="errorText">
+                          {" "}
+                          {errorData?.city_id ? errorData.city_id : ""}
+                        </span>
+                      </div>
+                    </div>
 
-                                                }
-                                            })}
-                                            value={countrylist?.map((data, index) => {
-                                                if (userInfo.country_id === data.country_id) {
-                                                    return {
-                                                        value: data?.country_id,
-                                                        label: data?.country_name,
-
-                                                    }
-                                                }
-                                            })}
-                                            onChange={(e) => {
-                                                setUserInfo({ ...userInfo, country_id: e.value })
-                                                setErrorData({ ...errorData, country_id: '' })
-                                            }}
-                                        />
-                                        <span className="errorText"> {errorData?.country_id ? errorData.country_id : ''}</span>
-                                    </div>
-                                </div>
-
-                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                    <div className={errorData?.state_id ? 'input_box errorBox' : 'input_box'}>
-                                        <label htmlFor="task_name">State *</label>
-                                        <Select
-                                            id={userInfo.state_id}
-                                            defaultValue={""}
-                                            options={statelist?.map((data, index) => {
-                                                return {
-                                                    value: data?.state_id,
-                                                    label: data?.state_name,
-
-                                                }
-                                            })}
-                                            value={statelist?.map((data, index) => {
-                                                if (userInfo.state_id === data.state_id) {
-                                                    return {
-                                                        value: data?.state_id,
-                                                        label: data?.state_name,
-
-                                                    }
-                                                }
-                                            })}
-                                            onChange={(e) => {
-                                                setUserInfo({ ...userInfo, state_id: e.value })
-                                                setErrorData({ ...errorData, state_id: '' })
-                                            }}
-                                        />
-                                        <span className="errorText"> {errorData?.state_id ? errorData.state_id : ''}</span>
-                                    </div>
-                                </div>
-                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                    <div className={errorData?.city_id ? 'input_box errorBox' : 'input_box'}>
-                                        <label htmlFor="task_name">City *</label>
-                                        <Select
-                                            id={userInfo.state_id}
-                                            defaultValue={""}
-                                            options={citylist?.map((data, index) => {
-                                                return {
-                                                    value: data?.city_id,
-                                                    label: data?.city_name,
-
-                                                }
-                                            })}
-                                            value={citylist?.map((data, index) => {
-                                                if (userInfo.city_id === data.city_id) {
-                                                    return {
-                                                        value: data?.city_id,
-                                                        label: data?.city_name,
-
-                                                    }
-                                                }
-                                            })}
-                                            onChange={(e) => {
-                                                setUserInfo({ ...userInfo, city_id: e.value })
-                                                setErrorData({ ...errorData, city_id: '' })
-                                            }}
-                                        />
-                                        <span className="errorText"> {errorData?.city_id ? errorData.city_id : ''}</span>
-                                    </div>
-                                </div>
-
-                                <div className="other_details_info">
-                                    <div className="other_details">
-                                        <input type="checkbox" name="opt_dtls" id="opt_dtls" onChange={(e) => setAdditionalFields(e.target.checked)} />
-                                        <label className='text-blue head' htmlFor="opt_dtls">Optional Detail</label>
-                                    </div>
-                                </div>
-
-
-                                {additionalFields ? <div className="row">
-                                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                        <div className={errorData?.pan ? 'input_box errorBox' : 'input_box'}>
-                                            <label htmlFor="pan">Pancard No </label>
-                                            <input
-                                                type="text"
-                                                placeholder='Enter Pancard No'
-                                                name="pan"
-                                                id="pan"
-                                                className={errorData?.pan ? 'form-control is-invalid' : 'form-control'}
-                                                onChange={(e) => {
-                                                    setUserInfo({ ...userInfo, pan: e.target.value })
-                                                    setErrorData({ ...errorData, pan: '' })
-                                                }}
-                                                value={userInfo.pan ? userInfo.pan : ''}
-                                            />
-                                            <span className="errorText"> {errorData?.pan ? errorData.pan : ''}</span>
-                                        </div>
-                                    </div>
-                                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                        <div className={errorData?.gst ? 'input_box errorBox' : 'input_box'}>
-                                            <label htmlFor="gst">GST No </label>
-                                            <input
-                                                type="text"
-                                                placeholder='Enter Gst No'
-                                                name="gst"
-                                                id="gst"
-                                                className={errorData?.gst ? 'form-control is-invalid' : 'form-control'}
-                                                onChange={(e) => {
-                                                    setUserInfo({ ...userInfo, gst: e.target.value })
-                                                    setErrorData({ ...errorData, gst: '' })
-                                                }}
-                                                value={userInfo.gst ? userInfo.gst : ''}
-                                            />
-                                            <span className="errorText"> {errorData?.gst ? errorData.gst : ''}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                        <div className={errorData?.domain ? 'input_box errorBox' : 'input_box'}>
-                                            <label htmlFor="domain">Domain </label>
-                                            <input
-                                                type="text"
-                                                placeholder='Enter Domain'
-                                                name="domain"
-                                                id="domain"
-                                                className={errorData?.domain ? 'form-control is-invalid' : 'form-control'}
-                                                onChange={(e) => {
-                                                    setUserInfo({ ...userInfo, domain: userInfo.domain && !userInfo.domain.includes("@") ? `@` + e.target.value : e.target.value })
-                                                    setErrorData({ ...errorData, domain: '' })
-                                                }}
-                                                value={userInfo.domain}
-                                            />
-
-                                            <span className="errorText"> {errorData?.domain ? errorData.domain : ''}</span>
-                                        </div>
-                                    </div>
-                                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                        <div className={errorData?.address ? 'input_box errorBox' : 'input_box'}>
-                                            <label htmlFor="zip_add">Address </label>
-                                            <input
-                                                type="text"
-                                                placeholder="Enter Address"
-                                                name="Address"
-                                                id="Address"
-                                                className={errorData?.address ? 'form-control is-invalid' : 'form-control'}
-                                                onChange={(e) => {
-                                                    setUserInfo({ ...userInfo, address: e.target.value })
-                                                    setErrorData({ ...errorData, address: '' })
-
-                                                }}
-                                                value={userInfo.address ? userInfo.address : ""}
-                                            />
-                                            <span className="errorText"> {errorData?.address ? errorData.address : ''}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                        <div className={errorData?.pincode ? 'input_box errorBox' : 'input_box'}>
-                                            <label htmlFor="zip_add">Zip / Postal Code </label>
-                                            <input
-                                                type="number"
-                                                placeholder="Zip / Postal Code"
-                                                name="zip_add"
-                                                id="zip_add"
-                                                className={errorData?.pincode ? 'form-control is-invalid' : 'form-control'}
-                                                onChange={(e) => {
-                                                    setUserInfo({ ...userInfo, pincode: e.target.value })
-                                                    setErrorData({ ...errorData, pincode: '' })
-                                                }}
-                                                value={userInfo.pincode ? userInfo.pincode : ""}
-                                            />
-                                            <span className="errorText"> {errorData?.pincode ? errorData.pincode : ''}</span>
-                                        </div>
-                                    </div>
-                                </div> : null}
-                            </>}
-                        </div>
-
-
-                        <div className="text-end">
-                            <div className="submit_btn">
-                                {editMode ?
-                                    <button
-                                        disabled={isLoading}
-                                        className="btn btn-primary"
-                                        onClick={updateHandler} >
-                                        {isLoading ? 'Loading ...' : 'Update client'}
-                                    </button> :
-                                    <button
-                                        className="btn btn-primary"
-                                        disabled={isLoading}
-                                        onClick={addClientHandler}>
-                                        {isLoading ? 'Loading ...' : 'Save & Submit'}
-                                    </button>}
+                    <div className="col-xl-6 col-md-6 col-sm-12 col-12 ">
+                        <div className='input_box'>
+                        <label htmlFor='task_name'> Apps Permission *</label><br/>
+                        <div className=" d-flex flex-wrap justify-content-start gap-5 py-2 ">
+                            <div className="form-check">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value="option1"
+                                id="option1"
+                                checked={true}
+                                onChange={(e) => {
+                                    setUserInfo({ ...userInfo, isCRM: e.target.checked });
+                                    // setErrorData({ ...errorData, city_id: "" });
+                                  }}
+                            />
+                            <label className="form-check-label" htmlFor="option1">
+                                CRM
+                            </label>
+                            </div>
+                            <div className="form-check">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value="option2"
+                                id="option2"
+                                onChange={(e) => {
+                                    setUserInfo({ ...userInfo, isDMS: e.target.checked });
+                                    // setErrorData({ ...errorData, city_id: "" });
+                                  }}
+                            />
+                            <label className="form-check-label" htmlFor="option2">
+                                DMS
+                            </label>
+                            </div>
+                            <div className="form-check">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value="option3"
+                                id="option3"
+                                onChange={(e) => {
+                                    setUserInfo({ ...userInfo, isSALES: e.target.checked });
+                                    // setErrorData({ ...errorData, city_id: "" });
+                                  }}
+                            />
+                            <label className="form-check-label" htmlFor="option3">
+                                SALES
+                            </label>
+                            </div>
+                            <div className="form-check">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value="option4"
+                                id="option4"
+                                onChange={(e) => {
+                                    setUserInfo({ ...userInfo, isCHANNEL: e.target.checked });
+                                    // setErrorData({ ...errorData, city_id: "" });
+                                  }}
+                            />
+                            <label className="form-check-label" htmlFor="option4">
+                                CHANNEL
+                            </label>
                             </div>
                         </div>
+                        </div>
+                   
                     </div>
-                </div>
-            </div>
-        </div>
 
-    )
+                    <div className="other_details_info">
+                      <div className="other_details">
+                        <input
+                          type="checkbox"
+                          name="opt_dtls"
+                          id="opt_dtls"
+                          onChange={(e) =>
+                            setAdditionalFields(e.target.checked)
+                          }
+                        />
+                        <label className="text-blue head" htmlFor="opt_dtls">
+                          Optional Detail
+                        </label>
+                      </div>
+                    </div>
+
+                    {additionalFields ? (
+                      <div className="row">
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                          <div
+                            className={
+                              errorData?.pan
+                                ? "input_box errorBox"
+                                : "input_box"
+                            }
+                          >
+                            <label htmlFor="pan">Pancard No </label>
+                            <input
+                              type="text"
+                              placeholder="Enter Pancard No"
+                              name="pan"
+                              id="pan"
+                              className={
+                                errorData?.pan
+                                  ? "form-control is-invalid"
+                                  : "form-control"
+                              }
+                              onChange={(e) => {
+                                setUserInfo({
+                                  ...userInfo,
+                                  pan: e.target.value,
+                                });
+                                setErrorData({ ...errorData, pan: "" });
+                              }}
+                              value={userInfo.pan ? userInfo.pan : ""}
+                            />
+                            <span className="errorText">
+                              {" "}
+                              {errorData?.pan ? errorData.pan : ""}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                          <div
+                            className={
+                              errorData?.gst
+                                ? "input_box errorBox"
+                                : "input_box"
+                            }
+                          >
+                            <label htmlFor="gst">GST No </label>
+                            <input
+                              type="text"
+                              placeholder="Enter Gst No"
+                              name="gst"
+                              id="gst"
+                              className={
+                                errorData?.gst
+                                  ? "form-control is-invalid"
+                                  : "form-control"
+                              }
+                              onChange={(e) => {
+                                setUserInfo({
+                                  ...userInfo,
+                                  gst: e.target.value,
+                                });
+                                setErrorData({ ...errorData, gst: "" });
+                              }}
+                              value={userInfo.gst ? userInfo.gst : ""}
+                            />
+                            <span className="errorText">
+                              {" "}
+                              {errorData?.gst ? errorData.gst : ""}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                          <div
+                            className={
+                              errorData?.domain
+                                ? "input_box errorBox"
+                                : "input_box"
+                            }
+                          >
+                            <label htmlFor="domain">Domain </label>
+                            <input
+                              type="text"
+                              placeholder="Enter Domain"
+                              name="domain"
+                              id="domain"
+                              className={
+                                errorData?.domain
+                                  ? "form-control is-invalid"
+                                  : "form-control"
+                              }
+                              onChange={(e) => {
+                                setUserInfo({
+                                  ...userInfo,
+                                  domain:
+                                    userInfo.domain &&
+                                    !userInfo.domain.includes("@")
+                                      ? `@` + e.target.value
+                                      : e.target.value,
+                                });
+                                setErrorData({ ...errorData, domain: "" });
+                              }}
+                              value={userInfo.domain}
+                            />
+
+                            <span className="errorText">
+                              {" "}
+                              {errorData?.domain ? errorData.domain : ""}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                          <div
+                            className={
+                              errorData?.address
+                                ? "input_box errorBox"
+                                : "input_box"
+                            }
+                          >
+                            <label htmlFor="zip_add">Address </label>
+                            <input
+                              type="text"
+                              placeholder="Enter Address"
+                              name="Address"
+                              id="Address"
+                              className={
+                                errorData?.address
+                                  ? "form-control is-invalid"
+                                  : "form-control"
+                              }
+                              onChange={(e) => {
+                                setUserInfo({
+                                  ...userInfo,
+                                  address: e.target.value,
+                                });
+                                setErrorData({ ...errorData, address: "" });
+                              }}
+                              value={userInfo.address ? userInfo.address : ""}
+                            />
+                            <span className="errorText">
+                              {" "}
+                              {errorData?.address ? errorData.address : ""}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                          <div
+                            className={
+                              errorData?.pincode
+                                ? "input_box errorBox"
+                                : "input_box"
+                            }
+                          >
+                            <label htmlFor="zip_add">Zip / Postal Code </label>
+                            <input
+                              type="number"
+                              placeholder="Zip / Postal Code"
+                              name="zip_add"
+                              id="zip_add"
+                              className={
+                                errorData?.pincode
+                                  ? "form-control is-invalid"
+                                  : "form-control"
+                              }
+                              onChange={(e) => {
+                                setUserInfo({
+                                  ...userInfo,
+                                  pincode: e.target.value,
+                                });
+                                setErrorData({ ...errorData, pincode: "" });
+                              }}
+                              value={userInfo.pincode ? userInfo.pincode : ""}
+                            />
+                            <span className="errorText">
+                              {" "}
+                              {errorData?.pincode ? errorData.pincode : ""}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null}
+                  </>
+                )}
+              </div>
+
+              <div className="text-end">
+                <div className="submit_btn">
+                  {editMode ? (
+                    <button
+                      disabled={isLoading}
+                      className="btn btn-primary"
+                      onClick={updateHandler}
+                    >
+                      {isLoading ? "Loading ..." : "Update client"}
+                    </button>
+                  ) : (
+                    <button
+                      className="btn btn-primary"
+                      disabled={isLoading}
+                      onClick={addClientHandler}
+                    >
+                      {isLoading ? "Loading ..." : "Save & Submit"}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
 }
 
 export default AddClientScreen

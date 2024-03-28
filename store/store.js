@@ -5,6 +5,8 @@ import adMinLoginReducer from '../store/adMinLoginSlice'
 import userloginreducer from '../store/ClientLoginSlice'
 import isActiveSliceReducer from '../store/isActiveSidebarSlice'
 import sideViewSlice from './sideViewSlice'
+import  dbPermissionModeSlice  from './permissionSlice'
+
 
 export const store = configureStore({
     reducer: {
@@ -13,7 +15,8 @@ export const store = configureStore({
         adminLogin: adMinLoginReducer,
         userLogin: userloginreducer,
         sideView: sideViewSlice,
-        isActiveSlice: isActiveSliceReducer
+        isActiveSlice: isActiveSliceReducer,
+        permissionMode:dbPermissionModeSlice
     },
     
 })

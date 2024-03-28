@@ -20,7 +20,7 @@ import { hasCookie, getCookie, setCookie, deleteCookie } from "cookies-next";
 import { Baseurl, filesUrl } from "../../Utils/Constants";
 import { store } from "../../store/store";
 
-const SideBar = ({}) => {
+const SideBarDMS = ({}) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [currActiveLink, setcurrActiveLink] = useState('');
@@ -168,6 +168,7 @@ const SideBar = ({}) => {
   }, [dbMode, sidebarLoaded])
 
   useEffect(()=>{
+    console.log("isactiveValue", isactiveValue)
     setIsActive(hasCookie("isActive")? getCookie("isActive"): isactiveValue)
   },[isactiveValue])
   return (
@@ -191,7 +192,7 @@ const SideBar = ({}) => {
                   <DashbardIcon />
                 </div>
                 <div className="link_name">
-                  <div className="header"> Dashboard </div>
+                  <div className="header"> DashboardDMS </div>
                 </div>
               </div>
             </li>
@@ -263,4 +264,4 @@ const SideBar = ({}) => {
   );
 };
 
-export default SideBar;
+export default SideBarDMS;

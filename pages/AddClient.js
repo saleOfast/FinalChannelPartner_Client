@@ -30,7 +30,7 @@ import withAdmin from '../HOC/Withhoc';
                 <div className="content_wrapper">
                     <SideBar mode='admin' />
                     <AddClientScreen />
-                </div>
+                </div>  
             </main>
         </>
     )

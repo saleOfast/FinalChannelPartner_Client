@@ -313,6 +313,7 @@ select.form-control::after {
   padding: 7px 10px;
   font-size: 14px;
   line-height: 13px;
+  cursor:pointer
 }
 .main_wrapper .topNav_Wrapper .top_nav .profile_sec .quick_add_sec .dropdown-menu .quickpermissionlist .list-item:hover {
   background-color: rgba(96, 147, 224, 0.831372549);

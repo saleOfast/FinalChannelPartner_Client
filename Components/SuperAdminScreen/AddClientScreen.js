@@ -37,10 +37,10 @@ const AddClientScreen = () => {
         pan: '',
         gst: '',
         address: "" ,
-        isCRM:true ,
-        isDMS:"" ,
-        isSALES:"" ,
-        isCHANNEL:"" ,
+        isCRM:false ,
+        isDMS:false ,
+        isSALES:false ,
+        isCHANNEL:false ,
     })
 
     const minDate = new Date().toISOString().slice(0, 16);
@@ -67,78 +67,116 @@ const AddClientScreen = () => {
                 const response = await axios.get(Baseurl + `/db/admin?id=${id}`, header);
                 const tempDate = response.data.data
                 setUserInfo({
-                    user: tempDate.user, email: tempDate.email,
-                    contact_number: tempDate.contact_number,
-                    user_id: tempDate.user_id, user_code: tempDate.user_code,
-                    subscription_start_date: moment(tempDate.subscription_start_date).format("YYYY-MM-DD"),
-                    subscription_end_date: moment(tempDate.subscription_end_date).format("YYYY-MM-DD"),
-                    no_of_license: tempDate.no_of_license, gst: tempDate.gst, no_of_months: tempDate.no_of_months, domain: tempDate.domain,
-                    pan: tempDate.pan
-                })
+                  user: tempDate.user,
+                  email: tempDate.email,
+                  contact_number: tempDate.contact_number,
+                  user_id: tempDate.user_id,
+                  user_code: tempDate.user_code,
+                  subscription_start_date: moment(
+                    tempDate.subscription_start_date
+                  ).format("YYYY-MM-DD"),
+                  subscription_end_date: moment(
+                    tempDate.subscription_end_date
+                  ).format("YYYY-MM-DD"),
+                  no_of_license: tempDate.no_of_license,
+                  gst: tempDate.gst,
+                  no_of_months: tempDate.no_of_months,
+                  domain: tempDate.domain,
+                  pan: tempDate.pan,
+                  gst: tempDate.gst,
+                  address: tempDate.address,
+                  isCRM: true,  // Default values for flags
+                isDMS: false,
+                isSALES: false,
+                isCHANNEL: false,
+                });
+
+                tempDate.db_client_platforms?.forEach(element => {
+                  switch (element.db_platform.platform_id) {
+                    case 1:
+                      setUserInfo((prev)=>({...prev, isCRM: element.actions}))
+                      break;
+                      case 2:
+                        setUserInfo((prev)=>({...prev, isDMS: element.actions}))
+                      break;
+                      case 3:
+                        setUserInfo((prev)=>({...prev, isSALES: element.actions}))
+                      break;
+                      case 4:
+                        setUserInfo((prev)=>({...prev, isCHANNEL: element.actions}))
+                      break;
+                  
+                    default:
+                      break;
+                  }
+                });
+                console.log(userInfo)
+              
 
             } catch (error) {
+              console.log(error, "error")
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 }
                 else {
-                    toast.error('Something went wrong!')
+                    toast.error('Something went wrongssssss!')
                 }
             }
         }
     }
 
     async function addClientHandler() {
-        console.log(userInfo)
-        // if (hasCookie('saLsTkn')) {
-        //     setisLoading(true);
-        //     if (userInfo.password) {
-        //         if (!userInfo.conPassword) {
-        //             toast.error('Please fill the Mandatory fields')
-        //             return setErrorData({ ...errorData, conPassword: 'Confirm your Password' })
-        //         } else if (userInfo.password !== userInfo.conPassword) {
-        //             toast.error('Please fill the Mandatory fields')
-        //             return setErrorData({ ...errorData, conPassword: 'Password Does not match' })
-        //         }
-        //     }
-        //     let token = (getCookie('saLsTkn'));
-        //     let db_name = (getCookie('db_name'));
+        // console.log(userInfo)
+        if (hasCookie('saLsTkn')) {
+            setisLoading(true);
+            if (userInfo.password) {
+                if (!userInfo.conPassword) {
+                    toast.error('Please fill the Mandatory fields')
+                    return setErrorData({ ...errorData, conPassword: 'Confirm your Password' })
+                } else if (userInfo.password !== userInfo.conPassword) {
+                    toast.error('Please fill the Mandatory fields')
+                    return setErrorData({ ...errorData, conPassword: 'Password Does not match' })
+                }
+            }
+            let token = (getCookie('saLsTkn'));
+            let db_name = (getCookie('db_name'));
 
-        //     let header = {
-        //         headers: {
-        //             Accept: "application/json",
-        //             Authorization: "Bearer ".concat(token),
-        //             db: db_name,
+            let header = {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: "Bearer ".concat(token),
+                    db: db_name,
 
-        //         }
-        //     }
-        //     try {
-        //         const res = await axios.post(Baseurl + `/db`, userInfo, header);
-        //         if (res.status === 200 || res.status === 204) {
-        //             toast.success('Client Added Successfully')
-        //             router.push('/Admin');
-        //             setisLoading(false);
-        //         }
-        //     } catch (error) {
-        //         setisLoading(false);
-        //         if (error?.response?.data?.status === 422) {
-        //             const taskObject = {}
-        //             const array = error?.response?.data?.data;
+                }
+            }
+            try {
+                const res = await axios.post(Baseurl + `/db`, userInfo, header);
+                if (res.status === 200 || res.status === 204) {
+                    toast.success('Client Added Successfully')
+                    router.push('/Admin');
+                    setisLoading(false);
+                }
+            } catch (error) {
+                setisLoading(false);
+                if (error?.response?.data?.status === 422) {
+                    const taskObject = {}
+                    const array = error?.response?.data?.data;
 
-        //             for (let i = 0; i < array.length; i++) {
-        //                 const key = Object.keys(array[i])[0];
-        //                 const value = Object.values(array[i])[0];
-        //                 taskObject[key] = value;
-        //             }
+                    for (let i = 0; i < array.length; i++) {
+                        const key = Object.keys(array[i])[0];
+                        const value = Object.values(array[i])[0];
+                        taskObject[key] = value;
+                    }
 
-        //             setErrorData(taskObject);
-        //         }
-        //         if (error?.response?.data?.message) {
-        //             toast.error(error.response.data.message);
-        //         } else {
-        //             toast.error("Something went wrong!");
-        //         }
-        //     }
-        // }
+                    setErrorData(taskObject);
+                }
+                if (error?.response?.data?.message) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Something went wrong!");
+                }
+            }
+        }
     };
 
     async function updateHandler() {
@@ -157,6 +195,7 @@ const AddClientScreen = () => {
                 }
             }
             try {
+              console.log("update"+userInfo)
                 const res = await axios.put(Baseurl + `/db/admin`, userInfo, header);
                 if (res.status === 200 || res.status === 204) {
                     toast.success('Client Updated Successfully')
@@ -177,6 +216,7 @@ const AddClientScreen = () => {
                     setErrorData(taskObject);
                 }
                 if (error?.response?.data?.message) {
+                  console.log(error)
                     toast.error(error.response.data.message);
                 } else {
                     toast.error("Something went wrong!");
@@ -598,6 +638,91 @@ const AddClientScreen = () => {
                     </span>
                   </div>
                 </div>
+              {/* for changing apps permission when we click on edit */}
+                {
+                  editMode ?(
+                    <div className="col-xl-6 col-md-6 col-sm-12 col-12 ">
+                        <div className='input_box'>
+                        <label htmlFor='task_name'> Apps Permission *</label><br/>
+                        <div className=" d-flex flex-wrap justify-content-start gap-5 py-2 ">
+                            <div className="form-check">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value="option1"
+                                id="option1"
+                                checked={userInfo.isCRM}
+                                onChange={(e) => {
+                                    setUserInfo({ ...userInfo, isCRM: e.target.checked });
+                                    // setErrorData({ ...errorData, city_id: "" });
+                                  }}
+                            />
+                            <label className="form-check-label" htmlFor="option1">
+                                CRM
+                            </label>
+                            </div>
+                            <div className="form-check">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value="option2"
+                                id="option2"
+                                checked={
+                                  userInfo.isDMS ? userInfo.isDMS : false
+                                }
+                                onChange={(e) => {
+                                    setUserInfo({ ...userInfo, isDMS: e.target.checked });
+                                    // setErrorData({ ...errorData, city_id: "" });
+                                  }}
+                            />
+                            <label className="form-check-label" htmlFor="option2">
+                                DMS
+                            </label>
+                            </div>
+                            <div className="form-check">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value="option3"
+                                id="option3"
+                                checked={
+                                  userInfo.isSALES ? userInfo.isSALES : false
+                                }
+                                onChange={(e) => {
+                                    setUserInfo({ ...userInfo, isSALES: e.target.checked });
+                                    // setErrorData({ ...errorData, city_id: "" });
+                                  }}
+                            />
+                            <label className="form-check-label" htmlFor="option3">
+                                SALES
+                            </label>
+                            </div>
+                            <div className="form-check">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value="option4"
+                                id="option4"
+                                checked={
+                                  userInfo.isCHANNEL ? userInfo.isCHANNEL : false
+                                }
+                                onChange={(e) => {
+                                    setUserInfo({ ...userInfo, isCHANNEL: e.target.checked });
+                                    // setErrorData({ ...errorData, city_id: "" });
+                                  }}
+                            />
+                            <label className="form-check-label" htmlFor="option4">
+                                CHANNEL
+                            </label>
+                            </div>
+                        </div>
+                        </div>
+                   
+                    </div>
+                  ) :null
+                }
+
+
 
                 {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className="input_box">

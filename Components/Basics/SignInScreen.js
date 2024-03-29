@@ -10,7 +10,7 @@ import { UserLogIN } from '../../store/ClientLoginSlice';
 import { Baseurl } from '../../Utils/Constants';
 import axios from 'axios';
 import { validEmail } from '../../Utils/regex';
-import { assignPermissions, crm, dms } from '../../store/permissionSlice';
+import { assignPermissions, crm, dms,sales,channel } from '../../store/permissionSlice';
 
 export default function SignInScreen({ setLoggedIn }) {
     const router = useRouter()
@@ -21,6 +21,38 @@ export default function SignInScreen({ setLoggedIn }) {
         email: "",
         password: ""
     })
+    const initialPermission=(permission)=>{
+        switch (permission) {
+            case "CRM":
+                dispatch(crm())
+                break;
+            
+            case "DMS":
+                dispatch(dms())
+                break;
+            
+            case "CHANNEL":
+                dispatch(channel())
+                break;
+            
+            case "SALES":
+                dispatch(sales())
+        
+            default:
+                break;
+        }
+    }
+  
+
+    const assignPermission = (permissionsArray) => {
+        const arr = permissionsArray.reduce((ac, permission) => {
+            const platformName = permission.platform_name.toLowerCase();
+            return [...ac, platformName];
+        }, []);
+        dispatch(assignPermissions(arr));
+    }
+    
+    
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -49,8 +81,10 @@ export default function SignInScreen({ setLoggedIn }) {
                     setCookie('token', res.data.token);
                     setCookie('userInfo', res.data.userData);
                     setCookie('db_name', res.data.userData.db_name);
-                    dispatch(crm())
-                    dispatch(assignPermissions(topnavPermission))
+                    // dispatch(res.data.platformData[0].platformName)
+                    initialPermission(res.data.platformData[0].platform_name)
+                    // dispatch(assignPermissions(topnavPermission))
+                    assignPermission(res.data.platformData)
                     toast.success('Logged in SuccessFully')
                     router.push('/')
                 }

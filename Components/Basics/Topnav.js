@@ -152,7 +152,7 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
           <div className="profile_sec">
             {dbMode !== "admin" ? (
               <div className="quick_add_sec d-flex gap-2 ">
-                {allowedPermissions.length > 1 && (
+                {allowedPermissions?.length > 1 && (
                   <Dropdown>
                     <Dropdown.Toggle variant="primary" id="quickAdd">
                       <div className="plusicon">

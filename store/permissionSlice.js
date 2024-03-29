@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { deleteCookie, hasCookie, setCookie } from 'cookies-next';
 
-const initialState = { value: 'crm',allowedPermissions:[] }
+const initialState = { value: '',allowedPermissions:[] }
 
 export const assignPermissions=(permissions)=>(dispatch)=>{
     dispatch(allowpermissions(permissions))

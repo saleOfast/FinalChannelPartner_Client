@@ -7,6 +7,8 @@ import axios from 'axios';
 const ShopbyBrand = () => {
 
   const [products,setProducts]=useState([]);
+  const [brands, setBrands] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const getProducts=async()=>{
     if(hasCookie("token")){
@@ -37,6 +39,53 @@ const ShopbyBrand = () => {
   useEffect(()=>{
     getProducts();
   }, [])
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (hasCookie("token")) {
+        let token = getCookie("token");
+        let db_name = getCookie("db_name");
+        let header = {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer ".concat(token),
+            db: db_name,
+            pass: "pass",
+          },
+        };
+
+        try {
+          const response = await axios.get(Baseurl + `/db/brand`, header);
+          setBrands(response.data.data);
+        } catch (error) {
+          if (error?.response?.data?.message) {
+            toast.success(error.response.data.message);
+          } else {
+            toast.error("Something went wrong!");
+          }
+        }
+
+        try {
+          const response = await axios.get(
+            Baseurl + `/db/productCat/getAllList`,
+            header
+          );
+          setCategories(response.data.data);
+        } catch (error) {
+          if (error?.response?.data?.message) {
+            toast.success(error.response.data.message);
+          } else {
+            toast.error("Something went wrong!");
+          }
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
         <section className="By_brand">
@@ -50,11 +99,9 @@ const ShopbyBrand = () => {
         <div className="slider-container">
           <div className="slider-title-wrapper">
             <div className="slider-wrapper">
-              <div className="slider-item"><img src="./DMS_IMAGES/shop_by_brand1.png" alt /></div>
-              <div className="slider-item"><img src="./DMS_IMAGES/shop_by_brand2.png" alt /></div>
-              <div className="slider-item"><img src="./DMS_IMAGES/shop_by_brand1.png" alt /></div>
-              <div className="slider-item"><img src="./DMS_IMAGES/shop_by_brand2.png" alt /></div>
-              <div className="slider-item"><img src="./DMS_IMAGES/shop_by_brand2.png" alt /></div>
+              {brands?.map((item, i)=> 
+                <div key={i} className="slider-item"><img src={`${filesUrl}/brand/images${item.brand_image}`} alt="sd"  /></div>
+              )} 
             </div>
           </div>
         </div>
@@ -64,7 +111,7 @@ const ShopbyBrand = () => {
     <section className="Discounted_Items">
     <div className="container">
       <div className="discounted">
-        <div className="text-wrapper-12">Discounted Items</div>
+        <div className="text-wrapper-12">Shop By Product</div>
         <div className="text-wrapper-13">See All</div>
       </div>
       <div className="d-flex justify-content-between gap-2">
@@ -73,7 +120,7 @@ const ShopbyBrand = () => {
             <div className>
               <div className="vector">
                 <img src="./DMS_IMAGES/ICONS/card_vector.png" alt />
-                <span>32%</span>
+                <span>{(i+1)*5}</span>
               </div>
               {/* <div className="items_img text-center"> <img src="./DMS_IMAGES/discounted_items1.png" alt /></div> */}
               <div className="items_img text-center" > 
@@ -87,7 +134,7 @@ const ShopbyBrand = () => {
                 <div className="biscuit_name">
                   <span>Biscuits... </span>
                   {/* <span>{product.p_desc} </span> */}
-                  <span> 100 gms</span>
+                  <span> {product.p_desc}</span>
                 </div>
                 <div className="underline" />
               </div>
@@ -203,61 +250,22 @@ const ShopbyBrand = () => {
   <section className="shop_by_category">
     <div className="container">
       <div className="shop_by">
-        <div className="text-wrapper-12">Shop By Brand</div>
+        <div className="text-wrapper-12">Shop By Category</div>
         <div className="text-wrapper-13">See All</div>
       </div>
       <div className="row pt-3">
-        <div className="col-3">
-          <div className="product d-flex flex-column gap-2">
-            <img src="./DMS_IMAGES/shop_category1.png" alt />
-            <span className="item">Winter Essentials</span>
-          </div>
-        </div>
-        <div className="col-3">
-          <div className="product d-flex flex-column gap-2">
-            <img src="./DMS_IMAGES/shop_category2.png" alt />
-            <span className="item">Protein Powders &amp; Drinks</span>
-          </div>
-        </div>
-        <div className="col-3">
-          <div className="product d-flex flex-column gap-2">
-            <img src="./DMS_IMAGES/shop_category3.png" alt />
-            <span className="item">Ayurveda</span>
-          </div>
-        </div>
-        <div className="col-3">
-          <div className="product d-flex flex-column gap-2">
-            <img src="./DMS_IMAGES/shop_category4.png" alt />
-            <span className="item">Glucometers &amp; Test strips</span>
-          </div>
-        </div>
+        {categories?.map((_v, _x)=>
+           <div className="col-3 mt-2">
+           <div className="product d-flex flex-column gap-2">
+             <img src={`${filesUrl}/category/images${_v.image}`} alt={``} />
+             <span className="item">{_v.p_cat_name}</span>
+           </div>
+         </div>
+        )}
+       
+      
       </div>
-      <div className="row pt-3">
-        <div className="col-3">
-          <div className="product d-flex flex-column gap-2">
-            <img src="./DMS_IMAGES/shop_category5.png" alt />
-            <span className="item">Personal Care</span>
-          </div>
-        </div>
-        <div className="col-3">
-          <div className="product d-flex flex-column gap-2">
-            <img src="./DMS_IMAGES/shop_category6.png" alt />
-            <span className="item">Health Devices</span>
-          </div>
-        </div>
-        <div className="col-3">
-          <div className="product d-flex flex-column gap-2">
-            <img src="./DMS_IMAGES/shop_category7.png" alt />
-            <span className="item">Women Care</span>
-          </div>
-        </div>
-        <div className="col-3">
-          <div className="product d-flex flex-column gap-2">
-            <img src="./DMS_IMAGES/shop_category8.png" alt />
-            <span className="item">Baby Care</span>
-          </div>
-        </div>
-      </div>
+      
     </div>
   </section>
     </>

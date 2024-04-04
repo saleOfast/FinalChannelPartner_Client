@@ -85,7 +85,7 @@ const HotDealsCarousel = () => {
       {bannerList?.map((item, i) => 
         <div key={i}>
           <img src={`${filesUrl}/banner/images${item.banner_image}`} style={{
-            maxHeight: '400px'
+            maxHeight: '300px'
           }}  className="d-block w-100 " alt="..." />
         </div>
       )}

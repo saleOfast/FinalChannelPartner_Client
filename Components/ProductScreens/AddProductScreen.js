@@ -21,7 +21,8 @@ const AddProductScreen = () => {
     const [brandList,setBrandList]=useState([])
     const [selected, setSelected] = useState({
         p_cat_id: '',
-        p_cat_name: ''
+        p_cat_name: '',
+        brand_name: ''
     })
 
 
@@ -74,6 +75,12 @@ const AddProductScreen = () => {
         }
     }
 
+    function setBrand(e,brandList){
+        setErrorData({...errorData, brand_id : ""})
+        let arrData=brandList.find(brand=>brand.brand_id==e.target.value)
+        setUserInfo({...userInfo, brand_name:arrData.brand_name , brand_id:arrData.brand_id})
+    }
+
     const getDataList = async () => {
         if (hasCookie("token")) {
             let token = getCookie("token");
@@ -122,10 +129,24 @@ const AddProductScreen = () => {
                     },
                 };
 
+                const formData = new FormData();
+                formData.append("p_id", id);
+                formData.append("p_name", userInfo.p_name);
+                formData.append("p_code", userInfo.p_code);
+                formData.append("p_price", userInfo.p_price);
+                formData.append("p_cat_id", userInfo.p_cat_id);
+                formData.append("unit_in_case", userInfo.unit_in_case);
+                formData.append("p_desc", userInfo.p_desc);
+                formData.append("image", userInfo.image);
+                formData.append("created_on", userInfo.created_on);
+                formData.append("updated_on", userInfo.updated_on);
+                formData.append("brand_name", userInfo.brand_name);
+                formData.append("brand_id", userInfo.brand_id);
+
                 try {
                     const response = await axios.put(
                         Baseurl + `/db/product`,
-                        userInfo,
+                        formData,
                         header
                     );
                     if (response.status === 200 || response.status === 204) {
@@ -174,7 +195,7 @@ const AddProductScreen = () => {
             try {
                 const response = await axios.get(Baseurl + `/db/product?p_id=${id}`, header);
                 setUserInfo(response.data.data);
-                setSelected({ ...selected, p_cat_name: response?.data?.data?.db_p_cat?.p_cat_name })
+                setSelected({ ...selected, p_cat_name: response?.data?.data?.db_p_cat?.p_cat_name,brand_name:response?.data?.data?.db_dms_brand?.brand_name })
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -218,7 +239,7 @@ const AddProductScreen = () => {
                 formData.append("created_on", userInfo.created_on);
                 formData.append("updated_on", userInfo.updated_on);
                 formData.append("brand_name", userInfo.brand_name);
-                // formData.append("brand_id", userInfo.brand_id);
+                formData.append("brand_id", userInfo.brand_id);
 
                 try {
                     const response = await axios.post(Baseurl + `/db/product`, formData, header);
@@ -265,8 +286,6 @@ const AddProductScreen = () => {
             try {
                 const {data} = await axios.get(Baseurl + `/db/brand`, header);
                 setBrandList(data.data);
-                console.log(data)
-                // setSelected({ ...selected, p_cat_name: response?.data?.data?.db_p_cat?.p_cat_name })
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -393,7 +412,7 @@ const AddProductScreen = () => {
                                             name="p_cat_id" id="p_cat_id"
                                             onChange={(e) => getItem(e, dataList)}
                                             className={errorData?.p_cat_id ? 'form-control is-invalid' : 'form-control'}>
-                                            <option value=''>Select Category </option>
+                                                <option value="">Select Category</option>
                                             {dataList?.map(({ children, p_cat_id, p_cat_name }, i) => {
                                                 return (<>
                                                     <option  name={p_cat_name} key={p_cat_id} value={p_cat_id}> {p_cat_name} </option>
@@ -418,7 +437,6 @@ const AddProductScreen = () => {
                     type="file"
                     id="image"
                     onChange={(e)=>{
-                        console.log(e.target.files[0])
                         setUserInfo({
                             ...userInfo,
                             image:e.target.files[0]
@@ -449,14 +467,14 @@ const AddProductScreen = () => {
                                 <div className={errorData?.brand_id ? 'input_box errorBox option_tree' : 'input_box option_tree'}>
                                     <p className="label_subs"> Brand *</p>
                                     <div className="select_wrapper">
-                                        <label className="option_select" htmlFor="p_cat_id">
+                                        <label className="option_select" htmlFor="brand_id">
                                             {selected.brand_name ? selected.brand_name : 'Select Product Brand'}
                                         </label>
                                         <select
                                             name="brand_id" id="brand_id"
-                                            onChange={(e) => getItem(e, dataList)}
+                                           onChange={(e)=>setBrand(e,brandList)}
                                             className={errorData?.brand_id ? 'form-control is-invalid' : 'form-control'}>
-                                            <option value=''>Select Brand </option>
+                                                <option value="">Select Brand</option>
                                            {
                                             brandList?.map((brand)=>{
                                                 return(

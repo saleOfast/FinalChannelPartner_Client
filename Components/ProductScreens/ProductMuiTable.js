@@ -51,10 +51,15 @@ const ProductMuiTable = ({
       },
     },
     {
-      name: "p_price",
+      name: "db_dms_brand",
       label: "Brand Name",
       options: {
         filter: true,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <>{value?.brand_name}</>
+          );
+        },
       },
     },
     {

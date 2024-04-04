@@ -7,6 +7,7 @@ import EditIcon from '../Svg/EditIcon';
 import moment from "moment";
 import Link from "next/link";
 import DeleteIcon from "../Svg/DeleteIcon";
+import { filesUrl } from '../../Utils/Constants';
 
 
 const ProductMuiTable = ({
@@ -50,6 +51,42 @@ const ProductMuiTable = ({
       },
     },
     {
+      name: "p_price",
+      label: "Brand Name",
+      options: {
+        filter: true,
+      },
+    },
+    {
+      name:"image",
+      label:"Image",
+      options:{
+        customBodyRender:(value)=>{
+          console.log(value)
+          return(
+            <div>
+            <img
+              src={`${filesUrl}`+`/product/images${value}`}
+              alt="Preview"
+              style={{
+                width: "80px",
+                height: "60px",
+                
+              }}
+            />
+          </div>
+          )
+        }
+      }
+    },
+    {
+      name:"unit_in_case",
+      label:"Case Unit",
+      options: {
+        filter: true,
+      },
+    },
+    {
       name: "createdAt",
       label: "Creation Date",
       options: {
@@ -78,6 +115,7 @@ const ProductMuiTable = ({
         },
       },
     },
+    
     {
       name: "p_id",
       label: "Action",

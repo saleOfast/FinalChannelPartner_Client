@@ -130,7 +130,7 @@ const AdminPermissionScreen = () => {
                 }
             }
             try {
-                const response = await axios.get(Baseurl + `/db/admin/permission?id=${id}`, header);
+                const response = await axios.get(Baseurl + `/db/admin/permission?id=${id} `, header);
                 setpermissionView(response.data.data);
             } catch (error) {
                 if (error?.response?.data?.message) {
@@ -139,7 +139,7 @@ const AdminPermissionScreen = () => {
                 else {
                     toast.error('Something went wrong!')
                 }
-            }
+            } 
         }
     }
 

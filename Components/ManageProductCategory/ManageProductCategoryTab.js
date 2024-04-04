@@ -6,6 +6,7 @@ import DisableIcon from "../Svg/DisableIcon";
 import EditIcon from "../Svg/EditIcon";
 import DeleteIcon from "../Svg/DeleteIcon";
 import CheckIcon from "../Svg/CheckIcon";
+import { filesUrl } from "../../Utils/Constants";
 
 const ManageProductCategoryTab = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
 
@@ -24,6 +25,26 @@ const ManageProductCategoryTab = ({ deleteConfirm, disableConfirm, dataList, ope
                 filter: true,
             }
         },
+        {
+            name:"image",
+            label:"Image",
+            options:{
+              customBodyRender:(value)=>{
+                return(
+                  <div>
+                  <img
+                    src={`${filesUrl}`+`/category/images${value}`}
+                    alt="Preview"
+                    style={{
+                      width: "80px",
+                      height: "60px",
+                    }}
+                  />
+                </div>
+                )
+              }
+            }
+          },
         {
             name: 'status',
             label: "Status",
@@ -45,6 +66,8 @@ const ManageProductCategoryTab = ({ deleteConfirm, disableConfirm, dataList, ope
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
+                    console.log(value)
+                    console.log(tableMeta)
                     return (
                         <div className="table_btns">
 
@@ -55,7 +78,7 @@ const ManageProductCategoryTab = ({ deleteConfirm, disableConfirm, dataList, ope
                                     <EditIcon />
                                 </button>
                             </Link>
-                            {tableMeta.rowData[2] ? <button
+                            {tableMeta.rowData[3] ? <button
                                 onClick={() => disableConfirm(value, 0)}
                                 className="action_btn"
                                 title='Disable'>

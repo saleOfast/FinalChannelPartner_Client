@@ -1,0 +1,14 @@
+:root {
+    --primary-color: rgba(0, 73, 139, 1);
+    --light-primary: rgba(245, 250, 255, 1);
+    --light-gray: rgba(244, 244, 244, 1);
+    --dark-gray: rgba(179, 179, 179, 1);
+    --white: rgba(255, 255, 255, 1);
+    --text-color: rgba(48, 48, 48, 1);
+    --primary-blue: rgba(0, 73, 139, 1);
+    --disabled-button-text: rgba(147, 147, 147, 1);
+    --dark-grey: rgba(28, 28, 28, 1);
+    --disabled-button-background: rgba(217, 217, 217, 1);
+  }
+  
+  

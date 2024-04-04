@@ -18,6 +18,7 @@ const AddProductScreen = () => {
     const { id } = router.query;
     const [userInfo, setUserInfo] = useState({});
     const [errorData, setErrorData] = useState({})
+    const [brandList,setBrandList]=useState([])
     const [selected, setSelected] = useState({
         p_cat_id: '',
         p_cat_name: ''
@@ -206,8 +207,21 @@ const AddProductScreen = () => {
                     },
                 };
 
+                const formData = new FormData();
+                formData.append("p_name", userInfo.p_name);
+                formData.append("p_code", userInfo.p_code);
+                formData.append("p_price", userInfo.p_price);
+                formData.append("p_cat_id", userInfo.p_cat_id);
+                formData.append("unit_in_case", userInfo.unit_in_case);
+                formData.append("p_desc", userInfo.p_desc);
+                formData.append("image", userInfo.image);
+                formData.append("created_on", userInfo.created_on);
+                formData.append("updated_on", userInfo.updated_on);
+                formData.append("brand_name", userInfo.brand_name);
+                // formData.append("brand_id", userInfo.brand_id);
+
                 try {
-                    const response = await axios.post(Baseurl + `/db/product`, userInfo, header);
+                    const response = await axios.post(Baseurl + `/db/product`, formData, header);
                     if (response.status === 204 || response.status === 200) {
                         toast.success(response.data.message);
                         router.push("/Products");
@@ -235,9 +249,37 @@ const AddProductScreen = () => {
             toast.error('Please fill the Mandatory fields')
         }
     };
+    const getBrandList =async()=>{
+        if (hasCookie("token")) {
+            let token = getCookie("token");
+            let db_name = getCookie("db_name");
+
+            let header = {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: "Bearer ".concat(token),
+                    pass:"pass"
+                },
+            };
+
+            try {
+                const {data} = await axios.get(Baseurl + `/db/brand`, header);
+                setBrandList(data.data);
+                console.log(data)
+                // setSelected({ ...selected, p_cat_name: response?.data?.data?.db_p_cat?.p_cat_name })
+            } catch (error) {
+                if (error?.response?.data?.message) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Something went wrong!");
+                }
+            }
+        }
+    }
 
     useEffect(() => {
         getDataList();
+        getBrandList();
         setUserInfo({
             ...userInfo,
             created_on: DateNow,
@@ -354,13 +396,76 @@ const AddProductScreen = () => {
                                             <option value=''>Select Category </option>
                                             {dataList?.map(({ children, p_cat_id, p_cat_name }, i) => {
                                                 return (<>
-                                                    <option name={p_cat_name} key={p_cat_id} value={p_cat_id}> {p_cat_name} </option>
+                                                    <option  name={p_cat_name} key={p_cat_id} value={p_cat_id}> {p_cat_name} </option>
                                                     {checkChildrens(children, p_cat_id, i)}
                                                 </>
                                                 )
                                             })}
                                         </select>
                                         <span className="errorText"> {errorData?.p_cat_id ? errorData.p_cat_id : ''}</span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div className="col-xl-6 col-md-6 col-sm-12 col-10">
+                <div className="input_box">
+                  <label htmlFor="image">Upload Image</label>
+                  <input
+                    class="form-control"
+                    name="image"
+                    accept="image/*"
+                    type="file"
+                    id="image"
+                    onChange={(e)=>{
+                        console.log(e.target.files[0])
+                        setUserInfo({
+                            ...userInfo,
+                            image:e.target.files[0]
+                        })
+                    }}
+                  />
+                </div>
+                            </div>
+                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className={errorData?.unit_in_case ? 'input_box errorBox' : 'input_box'}>
+                                    <label htmlFor="p_price">Case Unit *</label>
+                                    <input
+                                        type="number"
+                                        name="unit_in_case"
+                                        id="unit_in_case"
+                                        placeholder="Enter Case Unit"
+                                        className={errorData?.unit_in_case ? 'form-control is-invalid' : 'form-control'}
+                                        onChange={(e) => {
+                                            setUserInfo({ ...userInfo, unit_in_case: e.target.value })
+                                            setErrorData({ ...errorData, unit_in_case: '' })
+                                        }}
+                                        value={userInfo.unit_in_case ? userInfo.unit_in_case : ""} />
+                                    <span className="errorText"> {errorData?.unit_in_case ? errorData.unit_in_case : ''}</span>
+                                </div>
+                            </div>
+
+                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className={errorData?.brand_id ? 'input_box errorBox option_tree' : 'input_box option_tree'}>
+                                    <p className="label_subs"> Brand *</p>
+                                    <div className="select_wrapper">
+                                        <label className="option_select" htmlFor="p_cat_id">
+                                            {selected.brand_name ? selected.brand_name : 'Select Product Brand'}
+                                        </label>
+                                        <select
+                                            name="brand_id" id="brand_id"
+                                            onChange={(e) => getItem(e, dataList)}
+                                            className={errorData?.brand_id ? 'form-control is-invalid' : 'form-control'}>
+                                            <option value=''>Select Brand </option>
+                                           {
+                                            brandList?.map((brand)=>{
+                                                return(
+                                                    <option  name={brand.brand_name} key={brand.brand_id} value={brand.brand_id}> {brand.brand_name} </option>
+                                                )
+                                            })
+                                           }
+                                        </select>
+                                        <span className="errorText"> {errorData?.brand_id ? errorData.brand_id : ''}</span>
                                     </div>
 
                                 </div>
@@ -385,6 +490,7 @@ const AddProductScreen = () => {
                                     />
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                     <div className="add_screen_head">

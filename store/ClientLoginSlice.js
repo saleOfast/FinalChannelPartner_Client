@@ -39,6 +39,18 @@ export const ClientLoginSlice = createSlice({
             if (hasCookie("sideUser")) {
                 deleteCookie('sideUser')
             }
+            if (hasCookie("crm")) {
+                deleteCookie('crm')
+            }
+            if (hasCookie("dms")) {
+                deleteCookie('dms')
+            }
+            if (hasCookie("sales")) {
+                deleteCookie('sales')
+            }
+            if (hasCookie("channel")) {
+                deleteCookie('channel')
+            }
         }
     },
 })

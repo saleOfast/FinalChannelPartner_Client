@@ -17,11 +17,12 @@ export default function AddProductCategory() {
   const [editMode, setEditMode] = useState(false)
   const [selected, setSelected] = useState({
     p_cat_id: '',
-    p_cat_name: ''
+    parent_name: ''
   })
   const [userInfo, setUserInfo] = useState({
     p_cat_name: '',
-    parent_id: '0'
+    parent_id: '0',
+    image:""
   })
 
   const getDataList = async () => {
@@ -39,7 +40,7 @@ export default function AddProductCategory() {
         }
       }
       try {
-        const response = await axios.get(Baseurl + `/db/productCat`, header);
+        const response = await axios.get(Baseurl + `/db/productCat/all`, header);
         setDataList(response.data.data);
       } catch (error) {
         if (error?.response?.data?.message) {
@@ -83,48 +84,66 @@ export default function AddProductCategory() {
 
   const addUserhandler = async () => {
     if (userInfo.p_cat_name == '') {
-      toast.error('Please enter the Product Category Name')
-    } else if (userInfo.parent_id == '') {
-      toast.error('Please Select the Product Patient')
+      return toast.error('Please enter the Product Category Name')
     }
-    else {
-      if (hasCookie('token')) {
-        let token = (getCookie('token'));
-        let db_name = (getCookie('db_name'));
-
-        let header = {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer ".concat(token),
-            db: db_name,
-            m_id: 167
-          }
+    if (userInfo.image == '') {
+      return toast.error('Please Upload Image')
+    }
+  
+    const formData = new FormData();
+  
+    formData.append('p_cat_name', userInfo.p_cat_name);
+    formData.append('parent_id', userInfo.parent_id);
+    formData.append('parent_name', selected.parent_name);
+    formData.append('image', userInfo.image);
+  
+    if (hasCookie('token')) {
+      let token = (getCookie('token'));
+      let db_name = (getCookie('db_name'));
+  
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id: 167
         }
-
-        try {
-          const response = await axios.post(Baseurl + `/db/productCat`, userInfo, header);
-          if (response.status === 204 || response.status === 200) {
-            toast.success(response.data.message)
-            router.push('/ManageProductCategory');
-          }
-        } catch (error) {
-          if (error?.response?.data?.message) {
-            toast.error(error.response.data.message);
-          }
-          else {
-            toast.error('Something went wrong!')
-          }
+      }
+  
+      try {
+        const response = await axios.post(Baseurl + `/db/productCat`, formData, header);
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response.data.message)
+          router.push('/ManageProductCategory');
+        }
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        }
+        else {
+          toast.error('Something went wrong!')
         }
       }
     }
-
   }
 
   const updateUserhandler = async () => {
     if (userInfo.p_cat_name == '') {
-      toast.error('Please enter the Product Category')
-    } else {
-      if (hasCookie('token')) {
+      return toast.error('Please enter the Product Category Name')
+    }
+    if (userInfo.image == '') {
+      return toast.error('Please Upload Image')
+    }
+
+    const formData = new FormData();
+  
+    formData.append('p_cat_name', userInfo.p_cat_name);
+    formData.append('p_cat_id', id);
+    formData.append('parent_id', userInfo.parent_id);
+    formData.append('parent_name', selected.parent_name);
+    formData.append('image', userInfo.image);
+
+    if (hasCookie('token')) {
         let token = (getCookie('token'));
         let db_name = (getCookie('db_name'));
 
@@ -138,7 +157,7 @@ export default function AddProductCategory() {
         }
 
         try {
-          const response = await axios.put(Baseurl + `/db/productCat`, userInfo, header);
+          const response = await axios.put(Baseurl + `/db/productCat`, formData, header);
           if (response.status === 204 || response.status === 200) {
             toast.success(response.data.message)
             router.push('/ManageProductCategory')
@@ -152,7 +171,7 @@ export default function AddProductCategory() {
           }
         }
       }
-    }
+    
 
   }
 
@@ -179,12 +198,12 @@ export default function AddProductCategory() {
     const object = arrData.find(net => net.p_cat_id == e.target.value);
     if (object) {
       setSelected({ ...selected, p_cat_id: object.p_cat_id, parent_name: object.p_cat_name })
-      setUserInfo({ ...userInfo, parent_id: e.target.value, parent_name: object.p_cat_name })
+      setUserInfo({ ...userInfo, parent_id: e.target.value })
     } else {
-      setSelected({ ...selected, p_cat_name: '' })
+      setSelected({ ...selected, parent_name: null })
       setUserInfo({ ...userInfo, parent_id: '0' })
     }
-  }
+  } 
 
   function parentHandlerId(e, dataList, obj = []) {
     dataList.map((item) => {
@@ -192,7 +211,7 @@ export default function AddProductCategory() {
         p_cat_id: item.p_cat_id,
         p_cat_name: item.p_cat_name
       })
-      if (item.children.length > 0) {
+      if (item.children && item.children.length > 0) {
         return parentHandlerId(e, item.children, arr)
       }
     })
@@ -262,7 +281,7 @@ export default function AddProductCategory() {
                       <option value="">Select parent</option>
                       {dataList?.map(({ children, p_cat_id, p_cat_name }, i) => {
                         return (<>
-                          <option name={p_cat_name} value={p_cat_id}> {p_cat_name} </option>
+                          <option key={i} name={p_cat_name} value={p_cat_id}> {p_cat_name} </option>
                           {checkChildrens(children, p_cat_id, i)}
                         </>
                         )
@@ -273,13 +292,35 @@ export default function AddProductCategory() {
                 </div>
               </div>
 
-              <div className="text-end">
+              
+            </div>
+            <div className="row">
+            <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+              <div className="input_box">
+                  <label htmlFor="image">Upload Image</label>
+                  <input
+                    class="form-control"
+                    name="image"
+                    accept="image/*"
+                    type="file"
+                    id="image"
+                    onChange={(e)=>{
+                        setUserInfo({
+                            ...userInfo,
+                            image:e.target.files[0]
+                        })
+                    }}
+                  />
+                </div>
+            </div>
+            </div>
+
+            <div className="text-end">
                 <div className="submit_btn">
                   {editMode ? <button className="btn btn-primary" onClick={updateUserhandler}>Update</button> :
                     <button className="btn btn-primary" onClick={addUserhandler}>Save & Submit</button>}
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </div>

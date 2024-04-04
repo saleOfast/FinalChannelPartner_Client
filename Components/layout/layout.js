@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import Topnav from '../Basics/Topnav';
 import SideBar from '../Basics/SideBar';
-import SideBarDMS from '../Basics/SideBarDMS';
+import SidebarDMS from '../DMS/Sidebar/SidebarDMS';
 import SideBarChannel from '../Basics/SideBarChannel';
 import SideBarSales from '../Basics/SideBarSales';
 import { getCookie, hasCookie } from 'cookies-next';
+import Tabs from '../DMS/Tabs/Tabs';
 
 const Layout = ({Component, pageProps}) => {
     const userLogin = useSelector((state) => state.userLogin.value);
@@ -74,7 +75,7 @@ const Layout = ({Component, pageProps}) => {
           <div className="content_wrapper">
              
               {sidebarMode==="crm" && <SideBar />}
-              {sidebarMode==="dms" && <SideBarDMS/> }
+              {sidebarMode==="dms" && <SidebarDMS/> }
               {sidebarMode==="channel" && <SideBarChannel    />}
               {sidebarMode==="sales" && <SideBarSales    />}
               <Component {...pageProps} />

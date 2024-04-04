@@ -74,21 +74,23 @@ const HotDealsCarousel = () => {
     <span className="visually-hidden">Next</span>
   </button>
 </div> */}
-<Slider
-  autoplay={true}
-  autoplaySpeed={2000}
-  arrows={true}
-  prevArrow={<button type="button" className="slick-prev">Previous</button>}
-  nextArrow={<button type="button" className="slick-next">Next</button>}
->
-  {bannerList?.map((item, i) => 
-    <div key={i}>
-      <img src={`${filesUrl}/banner/images${item.banner_image}`} style={{
-        maxHeight: '400px'
-      }}  className="d-block w-100 " alt="..." />
-    </div>
-  )}
-</Slider>
+    {bannerList.length > 0  &&
+    <Slider
+      autoplay={true}
+      autoplaySpeed={2000}
+      arrows={true}
+      prevArrow={<button type="button" className="slick-prev">Previous</button>}
+      nextArrow={<button type="button" className="slick-next">Next</button>}
+    >
+      {bannerList?.map((item, i) => 
+        <div key={i}>
+          <img src={`${filesUrl}/banner/images${item.banner_image}`} style={{
+            maxHeight: '400px'
+          }}  className="d-block w-100 " alt="..." />
+        </div>
+      )}
+    </Slider>
+    }
 
 
 

@@ -78,7 +78,7 @@ const AddProductScreen = () => {
     function setBrand(e,brandList){
         setErrorData({...errorData, brand_id : ""})
         let arrData=brandList.find(brand=>brand.brand_id==e.target.value)
-        setUserInfo({...userInfo, brand_name:arrData.brand_name , brand_id:arrData.brand_id})
+        setSelected({...selected, brand_name:arrData.brand_name,brand_id:arrData.brand_id })
     }
 
     const getDataList = async () => {
@@ -238,8 +238,8 @@ const AddProductScreen = () => {
                 formData.append("image", userInfo.image);
                 formData.append("created_on", userInfo.created_on);
                 formData.append("updated_on", userInfo.updated_on);
-                formData.append("brand_name", userInfo.brand_name);
-                formData.append("brand_id", userInfo.brand_id);
+                formData.append("brand_name", selected.brand_name);
+                formData.append("brand_id", selected.brand_id);
 
                 try {
                     const response = await axios.post(Baseurl + `/db/product`, formData, header);

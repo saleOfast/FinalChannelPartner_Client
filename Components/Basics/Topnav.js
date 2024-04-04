@@ -177,7 +177,7 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
                               switchPermission(permission);
                             }}
                           >
-                            <div className="text">
+                            <div className="text" onClick={()=>{router.push("/")}}>
                               {permission.toUpperCase()}
                             </div>
                           </div>

@@ -44,7 +44,7 @@ export default function ManageProductCategoryScreen() {
     setdeleteshowConfirm(true)
   }
 
-  const getDataList = async () => {
+  const   getDataList = async () => {
 
     if (hasCookie('token')) {
       let token = (getCookie('token'));
@@ -59,7 +59,7 @@ export default function ManageProductCategoryScreen() {
         }
       }
       try {
-        const response = await axios.get(Baseurl + `/db/productCat/all`, header);
+        const response = await axios.get(Baseurl + `/db/productCat`, header);
         setDataList(response.data.data);
       } catch (error) {
         if (error?.response?.data?.message) {

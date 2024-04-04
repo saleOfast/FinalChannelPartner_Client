@@ -1,0 +1,221 @@
+import React from 'react'
+
+const ShopbyBrand = () => {
+  return (
+    <>
+        <section className="By_brand">
+    <div className="container">
+      <div className="brands">
+        <div className="text-wrapper-22">Shop By Brand</div>
+        <div className="text-wrapper-23">See All</div>
+      </div>
+      {/* slider */}
+      <div className="content-wrapper">
+        <div className="slider-container">
+          <div className="slider-title-wrapper">
+            <div className="slider-wrapper">
+              <div className="slider-item"><img src="./DMS_IMAGES/shop_by_brand1.png" alt /></div>
+              <div className="slider-item"><img src="./DMS_IMAGES/shop_by_brand2.png" alt /></div>
+              <div className="slider-item"><img src="./DMS_IMAGES/shop_by_brand1.png" alt /></div>
+              <div className="slider-item"><img src="./DMS_IMAGES/shop_by_brand2.png" alt /></div>
+              <div className="slider-item"><img src="./DMS_IMAGES/shop_by_brand2.png" alt /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>
+    <section className="Discounted_Items">
+    <div className="container">
+      <div className="discounted">
+        <div className="text-wrapper-12">Shop By Brand</div>
+        <div className="text-wrapper-13">See All</div>
+      </div>
+      <div className="d-flex justify-content-between gap-2">
+        <div className="card" style={{width: '18rem'}}>
+          <div className>
+            <div className="vector">
+              <img src="./DMS_IMAGES/ICONS/card_vector.png" alt />
+              <span>32%</span>
+            </div>
+            <div className="items_img text-center"> <img src="./DMS_IMAGES/discounted_items1.png" alt /></div>
+            <div className="biscuits">
+              <div className="com_name">
+                <p>McVities Digestive</p>
+              </div>
+              <div className="biscuit_name">
+                <span>Biscuits... </span>
+                <span> 100 gms</span>
+              </div>
+              <div className="underline" />
+            </div>
+          </div>
+          <div className="body">
+            <div className>
+              <div className="prices">
+                <div className="price">
+                  <span className="mrp">MRP</span>
+                  <span className="rupees">₹40.00</span>
+                </div>
+                <div className="quantity">
+                  <span className="ten">10</span>
+                </div>
+              </div>
+              <div className="prices details">
+                <div className="price">
+                  <span className="mrp">RLP</span>
+                  <span className="rupees">₹35.00</span>
+                </div>
+                <div className="quantity">
+                  <span className="case">Case Qty</span>
+                </div>
+              </div>
+            </div>
+            <div className="amount_increase">
+              <div className="case_increase">
+                <span>Case</span>
+                <form>
+                  <div className="value-button" id="decrease"  value="Decrease Value">-</div>
+                  <input type="number" id="number" defaultValue={0} />
+                  <div className="value-button" id="increase"  value="Increase Value">+</div>
+                </form>
+              </div>
+              <div className="Piece_increase">
+                <span>Piece</span>
+                <form>
+                  <div className="value-button" id="decrease"  value="Decrease Value">-</div>
+                  <input type="number" id="number" defaultValue={0} />
+                  <div className="value-button" id="increase"  value="Increase Value">+</div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="card" style={{width: '18rem'}}>
+          <div className>
+            <div className="vector">
+              <img src="./DMS_IMAGES/ICONS/card_vector.png" alt />
+              <span>32%</span>
+            </div>
+            <div className="items_img text-center pt-2"> <img src="./DMS_IMAGES/discounted_items2.png" alt /></div>
+            <div className="biscuits ">
+              <div className="com_name">
+                <p>Britannia Good Day</p>
+              </div>
+              <div className="biscuit_name">
+                <span>Cashew... </span>
+                <span> 100 gms</span>
+              </div>
+              <div className="underline" />
+            </div>
+          </div>
+          <div className="body">
+            <div className>
+              <div className="prices">
+                <div className="price">
+                  <span className="mrp">MRP</span>
+                  <span className="rupees">₹40.00</span>
+                </div>
+                <div className="quantity">
+                  <span className="ten">10</span>
+                </div>
+              </div>
+              <div className="prices details">
+                <div className="price">
+                  <span className="mrp">RLP</span>
+                  <span className="rupees">₹35.00</span>
+                </div>
+                <div className="quantity">
+                  <span className="case">Case Qty</span>
+                </div>
+              </div>
+            </div>
+            <div className="amount_increase">
+              <div className="case_increase">
+                <span>Case</span>
+                <form>
+                  <div className="value-button" id="decrease"  value="Decrease Value">-</div>
+                  <input type="number" id="number" defaultValue={0} />
+                  <div className="value-button" id="increase"  value="Increase Value">+</div>
+                </form>
+              </div>
+              <div className="Piece_increase">
+                <span>Piece</span>
+                <form>
+                  <div className="value-button" id="decrease"  value="Decrease Value">-</div>
+                  <input type="number" id="number" defaultValue={0} />
+                  <div className="value-button" id="increase"  value="Increase Value">+</div>
+                </form>
+              </div>
+            </div>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section className="shop_by_category">
+    <div className="container">
+      <div className="shop_by">
+        <div className="text-wrapper-12">Shop By Brand</div>
+        <div className="text-wrapper-13">See All</div>
+      </div>
+      <div className="row pt-3">
+        <div className="col-3">
+          <div className="product d-flex flex-column gap-2">
+            <img src="./DMS_IMAGES/shop_category1.png" alt />
+            <span className="item">Winter Essentials</span>
+          </div>
+        </div>
+        <div className="col-3">
+          <div className="product d-flex flex-column gap-2">
+            <img src="./DMS_IMAGES/shop_category2.png" alt />
+            <span className="item">Protein Powders &amp; Drinks</span>
+          </div>
+        </div>
+        <div className="col-3">
+          <div className="product d-flex flex-column gap-2">
+            <img src="./DMS_IMAGES/shop_category3.png" alt />
+            <span className="item">Ayurveda</span>
+          </div>
+        </div>
+        <div className="col-3">
+          <div className="product d-flex flex-column gap-2">
+            <img src="./DMS_IMAGES/shop_category4.png" alt />
+            <span className="item">Glucometers &amp; Test strips</span>
+          </div>
+        </div>
+      </div>
+      <div className="row pt-3">
+        <div className="col-3">
+          <div className="product d-flex flex-column gap-2">
+            <img src="./DMS_IMAGES/shop_category5.png" alt />
+            <span className="item">Personal Care</span>
+          </div>
+        </div>
+        <div className="col-3">
+          <div className="product d-flex flex-column gap-2">
+            <img src="./DMS_IMAGES/shop_category6.png" alt />
+            <span className="item">Health Devices</span>
+          </div>
+        </div>
+        <div className="col-3">
+          <div className="product d-flex flex-column gap-2">
+            <img src="./DMS_IMAGES/shop_category7.png" alt />
+            <span className="item">Women Care</span>
+          </div>
+        </div>
+        <div className="col-3">
+          <div className="product d-flex flex-column gap-2">
+            <img src="./DMS_IMAGES/shop_category8.png" alt />
+            <span className="item">Baby Care</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+    </>
+  )
+}
+
+export default ShopbyBrand

@@ -37,7 +37,7 @@ const AddClientScreen = () => {
         pan: '',
         gst: '',
         address: "" ,
-        isCRM:false ,
+        isCRM:true ,
         isDMS:false ,
         isSALES:false ,
         isCHANNEL:false ,

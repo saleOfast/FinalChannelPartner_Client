@@ -46,17 +46,16 @@ const HotDealsCarousel = () => {
 
   return (
     <>
-    <section className="hot_deals">
-    <div className="container">
-      <div className="d-flex justify-content-between">
-        <h2>Hot Deals and Offers</h2>
-        <a href="#">See All</a>
-      </div>
-    </div>
-  </section>
-<section className="Battling_Tiredness">
-   
-{/* 
+      <section className="hot_deals">
+        <div className="container">
+          <div className="d-flex justify-content-between">
+            <h2>Hot Deals and Offers</h2>
+            <a href="#">See All</a>
+          </div>
+        </div>
+      </section>
+      <section className="Battling_Tiredness">
+        {/* 
 <div id="carouselExampleSlidesOnly" className="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
   <div className="carousel-inner">
     {bannerList?.map((item, i) => 
@@ -74,36 +73,47 @@ const HotDealsCarousel = () => {
     <span className="visually-hidden">Next</span>
   </button>
 </div> */}
-    {bannerList.length > 0  &&
-    <Slider
-      autoplay={true}
-      autoplaySpeed={2000}
-      arrows={true}
-      prevArrow={<button type="button" className="slick-prev">Previous</button>}
-      nextArrow={<button type="button" className="slick-next">Next</button>}
-    >
-      {bannerList?.map((item, i) => 
-        <div key={i}>
-          <img src={`${filesUrl}/banner/images${item.banner_image}`} style={{
-            maxHeight: '300px'
-          }}  className="d-block w-100 " alt="..." />
-        </div>
-      )}
-    </Slider>
-    }
-
-
-
-    
-  </section>
+        {bannerList.length > 0 && (
+          <div style={{ width: "100%", maxWidth: "100vw", overflow: "hidden" }}>
+            <Slider
+              autoplay={true}
+              autoplaySpeed={2000}
+              arrows={true}
+              prevArrow={
+                <button type="button" className="slick-prev">
+                  Previous
+                </button>
+              }
+              nextArrow={
+                <button type="button" className="slick-next">
+                  Next
+                </button>
+              }
+            >
+              {bannerList?.map((item, i) => (
+                <div key={i}>
+                  <img
+                    src={`${filesUrl}/banner/images${item.banner_image}`}
+                    style={{
+                      maxHeight: "300px",
+                    }}
+                    className="d-block w-100 "
+                    alt="..."
+                  />
+                </div>
+              ))}
+            </Slider>
+          </div>
+        )}
+      </section>
     </>
-    
-  )
-}
+  );
+};
 
-export default HotDealsCarousel
+export default HotDealsCarousel;
 
- {/* <div className>
+{
+  /* <div className>
       <div id="carouselExampleCaptions" className="carousel slide">
         <div className="carousel-indicators">
           <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={0} className="active" aria-current="true" aria-label="Slide 1" />
@@ -202,4 +212,5 @@ export default HotDealsCarousel
           </div>
         </div>
       </div>
-    </div> */}
+    </div> */
+}

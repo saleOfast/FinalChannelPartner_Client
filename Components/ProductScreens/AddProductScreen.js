@@ -22,7 +22,8 @@ const AddProductScreen = () => {
     const [selected, setSelected] = useState({
         p_cat_id: '',
         p_cat_name: '',
-        brand_name: ''
+        brand_name: '',
+        brand_id:"",
     })
 
 
@@ -140,8 +141,8 @@ const AddProductScreen = () => {
                 formData.append("image", userInfo.image);
                 formData.append("created_on", userInfo.created_on);
                 formData.append("updated_on", userInfo.updated_on);
-                formData.append("brand_name", userInfo.brand_name);
-                formData.append("brand_id", userInfo.brand_id);
+                formData.append("brand_name", selected.brand_name);
+                formData.append("brand_id", selected.brand_id);
 
                 try {
                     const response = await axios.put(
@@ -195,7 +196,7 @@ const AddProductScreen = () => {
             try {
                 const response = await axios.get(Baseurl + `/db/product?p_id=${id}`, header);
                 setUserInfo(response.data.data);
-                setSelected({ ...selected, p_cat_name: response?.data?.data?.db_p_cat?.p_cat_name,brand_name:response?.data?.data?.db_dms_brand?.brand_name })
+                setSelected({ ...selected, p_cat_name: response?.data?.data?.db_p_cat?.p_cat_name,brand_name:response?.data?.data?.db_dms_brand?.brand_name,brand_id:response?.data?.data?.db_dms_brand?.brand_id })
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -578,3 +579,4 @@ const AddProductScreen = () => {
 };
 
 export default AddProductScreen;
+

@@ -120,7 +120,7 @@ const ShopbyBrand = () => {
             <div className>
               <div className="vector">
                 <img src="./DMS_IMAGES/ICONS/card_vector.png" alt />
-                <span>{(i+1)*5}</span>
+                <span>{(i+1)*5}%</span>
               </div>
               {/* <div className="items_img text-center"> <img src="./DMS_IMAGES/discounted_items1.png" alt /></div> */}
               <div className="items_img text-center" > 
@@ -132,9 +132,9 @@ const ShopbyBrand = () => {
                   <p>{product.p_name}</p>
                 </div>
                 <div className="biscuit_name">
-                  <span>Biscuits... </span>
-                  {/* <span>{product.p_desc} </span> */}
-                  <span> {product.p_desc}</span>
+                  {/* <span>Biscuits... </span> */}
+                  <span>{product.p_desc} </span>
+                  {/* <span> {product.p_desc}</span> */}
                 </div>
                 <div className="underline" />
               </div>

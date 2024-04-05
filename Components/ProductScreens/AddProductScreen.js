@@ -428,7 +428,7 @@ const AddProductScreen = () => {
                                 </div>
                             </div>
 
-                            <div className="col-xl-6 col-md-6 col-sm-12 col-10">
+                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                 <div className="input_box">
                   <label htmlFor="image">Upload Image</label>
                   <input
@@ -446,6 +446,25 @@ const AddProductScreen = () => {
                   />
                 </div>
                             </div>
+                            
+                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className={errorData?.p_price ? 'input_box errorBox' : 'input_box'}>
+                                    <label htmlFor="p_price">Discount *</label>
+                                    <input
+                                        type="number"
+                                        name="p_price"
+                                        id="p_price"
+                                        placeholder="Enter List Price"
+                                        className={errorData?.p_price ? 'form-control is-invalid' : 'form-control'}
+                                        onChange={(e) => {
+                                            setUserInfo({ ...userInfo, p_price: e.target.value })
+                                            setErrorData({ ...errorData, p_price: '' })
+                                        }}
+                                        value={userInfo.p_price ? userInfo.p_price : ""} />
+                                    <span className="errorText"> {errorData?.p_price ? errorData.p_price : ''}</span>
+                                </div>
+                            </div>
+
                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className={errorData?.unit_in_case ? 'input_box errorBox' : 'input_box'}>
                                     <label htmlFor="p_price">Case Unit *</label>

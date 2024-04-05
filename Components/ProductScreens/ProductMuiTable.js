@@ -39,6 +39,13 @@ const ProductMuiTable = ({
       },
     },
     {
+      name: "p_price",
+      label: "Discount",
+      options: {
+        filter: true,
+      },
+    },
+    {
       name: "db_p_cat",
       label: "Product Category",
       options: {

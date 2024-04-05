@@ -10,7 +10,7 @@ import Button from "react-bootstrap/Button";
 import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from "next/dynamic";
-const DynamicTable = dynamic(() => import("./Managebannerscreentab"), {
+const DynamicTable = dynamic(() => import("./ManagebannerScreenTab"), {
   ssr: false,
 });
 const Managebannercreen = () => {

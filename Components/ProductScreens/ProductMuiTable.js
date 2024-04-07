@@ -39,7 +39,7 @@ const ProductMuiTable = ({
       },
     },
     {
-      name: "p_price",
+      name: "discount",
       label: "Discount",
       options: {
         filter: true,

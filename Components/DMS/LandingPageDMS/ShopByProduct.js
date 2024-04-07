@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import { Baseurl, filesUrl } from '../../../Utils/Constants';
 import axios from 'axios';
+import ProductCard from '../ProductCard/ProductCard';
 
 const ShopByProduct = () => {
 
@@ -22,7 +23,6 @@ const ShopByProduct = () => {
     
           try {
             const {data} = await axios.get(Baseurl + `/db/product`, header);
-            console.log(data.data);
             setProducts(data.data);
           } catch (error) {
             if (error?.response?.data?.message) {
@@ -46,74 +46,19 @@ const ShopByProduct = () => {
         <div className="text-wrapper-12">Shop By Product</div>
         <div className="text-wrapper-13">See All</div>
       </div>
-      <div className="d-flex justify-content-between gap-2">
+      <div className="d-flex  justify-content-between gap-2">
         {products?.map((product, i)=>
-            <div className="card" style={{width: '18rem'}}>
-            <div className>
-              <div className="vector">
-                <img src="./DMS_IMAGES/ICONS/card_vector.png" alt />
-                <span>{(i+1)*5}%</span>
-              </div>
-              {/* <div className="items_img text-center"> <img src="./DMS_IMAGES/discounted_items1.png" alt /></div> */}
-              <div className="items_img text-center" > 
-              <img src={`${filesUrl}/product/images${product.image}`} style={{width:"115px",height:"70px"}} alt />
-              </div> 
-              <div className="biscuits">
-                <div className="com_name">
-                  {/* <p>McVities Digestive</p> */}
-                  <p>{product.p_name}</p>
-                </div>
-                <div className="biscuit_name">
-                  {/* <span>Biscuits... </span> */}
-                  <span>{product.p_desc} </span>
-                  {/* <span> {product.p_desc}</span> */}
-                </div>
-                <div className="underline" />
-              </div>
-            </div>
-            <div className="body">
-              <div className>
-                <div className="prices">
-                  <div className="price">
-                    <span className="mrp">MRP</span>
-                    {/* <span className="rupees">₹40.00</span> */}
-                    <span className="rupees">{product.p_price} </span>
-                  </div>
-                  <div className="quantity">
-                    {/* <span className="ten">10</span> */}
-                    <span className="ten">{product.unit_in_case}</span>
-                  </div>
-                </div>
-                <div className="prices details">
-                  <div className="price">
-                    <span className="mrp">RLP</span>
-                    <span className="rupees">₹35.00</span>
-                  </div>
-                  <div className="quantity">
-                    <span className="case">Case Qty</span>
-                  </div>
-                </div>
-              </div>
-              <div className="amount_increase">
-                <div className="case_increase">
-                  <span>Case</span>
-                  <form>
-                    <div className="value-button" id="decrease"  value="Decrease Value">-</div>
-                    <input type="number" id="number" defaultValue={0} />
-                    <div className="value-button" id="increase"  value="Increase Value">+</div>
-                  </form>
-                </div>
-                <div className="Piece_increase">
-                  <span>Piece</span>
-                  <form>
-                    <div className="value-button" id="decrease"  value="Decrease Value">-</div>
-                    <input type="number" id="number" defaultValue={0} />
-                    <div className="value-button" id="increase"  value="Increase Value">+</div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
+        
+          <ProductCard 
+          key={i}
+          discount={product.discount} 
+          image={product.image}
+          p_name={product.p_name}
+          p_price={product.p_price}
+          unit_in_case={product.unit_in_case}
+          p_desc={product.p_desc}
+          />
+      
         )}
       </div>
     </div>

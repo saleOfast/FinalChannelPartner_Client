@@ -1,12 +1,11 @@
 import React from 'react'
 import Kloudmart from './Kloudmart'
 import HotDealsCarousel from './HotDealsCarousel'
-import ShopbyBrand from './ShopbyBrand'
 import PendingPayments from './PendingPayments'
 import RecentOrders from './RecentOrders'
-import Tabs from '../Tabs/Tabs'
 import ShopByProduct from './ShopByProduct'
-import ShopByCategory from './ShopByCategory'
+import ByBrand from './ByBrand'
+import ByCategory from './ByCategory'
 
 
 const LandingPageDMS = () => {
@@ -19,7 +18,7 @@ const LandingPageDMS = () => {
   {/* Hot Deals and Offers-end */}
 
   {/* shop_by_brand_start */}
-  <ShopbyBrand/>
+  <ByBrand/>
   {/* shop_by_brand_end */}
 
    {/* shop_by_product_start */}
@@ -27,7 +26,7 @@ const LandingPageDMS = () => {
   {/* shop_by_product_end */}
 
     {/* shop_by_category_start */}
-   <ShopByCategory/>
+   <ByCategory/>
   {/* shop_by_category_end */}
 
   

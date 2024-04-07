@@ -5,7 +5,7 @@ import { Baseurl, filesUrl } from '../../../Utils/Constants';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
-const ShopbyBrand = () => {
+const ByBrand = () => {
   const [brands, setBrands] = useState([]);
   const router=useRouter();
 
@@ -57,7 +57,7 @@ const ShopbyBrand = () => {
                 key={i} 
                 className="slider-item"
                 onClick={()=>{
-                  router.push("/DMS/ShopBy")
+                  router.push(`/DMS/ShopByBrand?brand_id=${item.brand_id}`)
                 }}
                 >
                   <img src={`${filesUrl}/brand/images${item.brand_image}`} alt="sd"  />
@@ -73,4 +73,4 @@ const ShopbyBrand = () => {
   )
 }
 
-export default ShopbyBrand
+export default ByBrand

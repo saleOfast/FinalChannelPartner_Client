@@ -6,7 +6,7 @@ import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { Baseurl } from "../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../Utils/Constants";
 import ConfirmBox from "../Basics/ConfirmBox";
 import Button from "react-bootstrap/Button";
 import moment from "moment";
@@ -42,6 +42,7 @@ const ProductViewScreen = () => {
           header
         );
         setDataList(response.data.data);
+        console.log(response.data.data)
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -101,12 +102,33 @@ const ProductViewScreen = () => {
                     />
 
                     <ProductDetailComponent
+                      head="List Price"
+                      value={dataList?.p_price}
+                    />
+
+                    <ProductDetailComponent
+                      head="Discount"
+                      value={dataList?.discount}
+                    />
+
+                    <ProductDetailComponent
                       head="Product Category"
                       value={dataList?.db_p_cat?.p_cat_name}
                     />
                     <ProductDetailComponent
-                      head="List Price"
-                      value={dataList?.p_price}
+                      head="Brand Name"
+                      value={dataList?.db_dms_brand?.brand_name}
+                    />
+
+                    <ProductDetailComponent
+                      head="Case Unit"
+                      value={dataList?.unit_in_case}
+                    />
+
+                    <ProductDetailComponent
+                      head="Image"
+                      // value={dataList?.unit_in_case}
+                      imgSrc={dataList?.image ? `${filesUrl}`+`/product/images${dataList.image}` : "noImg"}
                     />
 
                     <ProductDetailComponent

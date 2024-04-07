@@ -15,7 +15,7 @@ const AddProductScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
 
     const router = useRouter();
-    const { id } = router.query;
+    const { id } = router.query;    
     const [userInfo, setUserInfo] = useState({});
     const [errorData, setErrorData] = useState({})
     const [brandList,setBrandList]=useState([])
@@ -25,8 +25,6 @@ const AddProductScreen = () => {
         brand_name: '',
         brand_id:"",
     })
-
-
     const [dataList, setDataList] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const arr = []
@@ -139,6 +137,7 @@ const AddProductScreen = () => {
                 formData.append("unit_in_case", userInfo.unit_in_case);
                 formData.append("p_desc", userInfo.p_desc);
                 formData.append("image", userInfo.image);
+                formData.append("discount", userInfo.discount);
                 formData.append("created_on", userInfo.created_on);
                 formData.append("updated_on", userInfo.updated_on);
                 formData.append("brand_name", selected.brand_name);
@@ -239,6 +238,7 @@ const AddProductScreen = () => {
                 formData.append("image", userInfo.image);
                 formData.append("created_on", userInfo.created_on);
                 formData.append("updated_on", userInfo.updated_on);
+                formData.append("discount", userInfo.discount);
                 formData.append("brand_name", selected.brand_name);
                 formData.append("brand_id", selected.brand_id);
 
@@ -448,20 +448,20 @@ const AddProductScreen = () => {
                             </div>
                             
                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                <div className={errorData?.p_price ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="p_price">Discount *</label>
+                                <div className={errorData?.discount ? 'input_box errorBox' : 'input_box'}>
+                                    <label htmlFor="discount">Discount *</label>
                                     <input
                                         type="number"
-                                        name="p_price"
-                                        id="p_price"
+                                        name="discount"
+                                        id="discount"
                                         placeholder="Enter List Price"
-                                        className={errorData?.p_price ? 'form-control is-invalid' : 'form-control'}
+                                        className={errorData?.discount ? 'form-control is-invalid' : 'form-control'}
                                         onChange={(e) => {
-                                            setUserInfo({ ...userInfo, p_price: e.target.value })
-                                            setErrorData({ ...errorData, p_price: '' })
+                                            setUserInfo({ ...userInfo, discount: e.target.value })
+                                            setErrorData({ ...errorData, discount: '' })
                                         }}
-                                        value={userInfo.p_price ? userInfo.p_price : ""} />
-                                    <span className="errorText"> {errorData?.p_price ? errorData.p_price : ''}</span>
+                                        value={userInfo.discount ? userInfo.discount : ""} />
+                                    <span className="errorText"> {errorData?.discount ? errorData.discount : ''}</span>
                                 </div>
                             </div>
 

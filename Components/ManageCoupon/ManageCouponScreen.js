@@ -22,7 +22,8 @@ const ManageCouponScreen = () => {
     use_type: "private",
     type: "percent",
     value: "",
-    coupon_id:""
+    coupon_id:"",
+    
   });
   const [editMode, setEditMode] = useState(false);
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
@@ -228,7 +229,6 @@ const ManageCouponScreen = () => {
       }
     }
   };
-
 
 
   useEffect(() => {

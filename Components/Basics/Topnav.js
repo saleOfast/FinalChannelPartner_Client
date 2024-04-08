@@ -8,14 +8,14 @@ import AvatarIcon from "../Svg/AvatarIcon";
 import ConfirmBox from "./ConfirmBox";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { hasCookie, getCookie } from "cookies-next";
+import { hasCookie, getCookie, setCookie, deleteCookie } from "cookies-next";
 import { useSelector, useDispatch } from "react-redux";
 import { LoggedOut } from "../../store/adMinLoginSlice";
 import { userLogOut } from "../../store/ClientLoginSlice";
 import Link from "next/link";
 import { Baseurl, filesUrl } from "../../Utils/Constants";
 import axios from "axios";
-import { clearMode } from "../../store/dbModeSlice";
+import { clearMode, masterMode, userMode } from "../../store/dbModeSlice";
 import { channel, crm, dms, sales } from "../../store/permissionSlice";
 
 const Topnav = ({ allowedPermissions, topnavPermission }) => {
@@ -177,7 +177,17 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
                               switchPermission(permission);
                             }}
                           >
-                            <div className="text" onClick={()=>{router.push("/")}}>
+                            <div className="text"
+                             onClick={()=>{
+                              if(hasCookie("sideAdmin")){
+                                deleteCookie(`sideAdmin`);
+                                setCookie('sideUser',"true")
+                                dispatch(userMode())
+                              }
+                              
+                              router.push("/")}
+                            }
+                             >
                               {permission.toUpperCase()}
                             </div>
                           </div>

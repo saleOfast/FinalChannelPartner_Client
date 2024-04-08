@@ -3,7 +3,7 @@ import Link from "next/link";
 import PlusIcon from "../Svg/PlusIcon";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
-import { Baseurl } from "../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../Utils/Constants";
 import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import Button from "react-bootstrap/Button";
@@ -43,8 +43,9 @@ const ManagebrandScreen = () => {
     setBrandInfo({
       ...brandInfo,
       brand_name: value[0],
-      brand_image: value[1],
+      file: value[1],
       brand_id: value[2],
+      imagePreview: `${filesUrl}`+`/brand/images${value[1]}`
     });
     setBrandSingleData(value[1]);
     handleShow();

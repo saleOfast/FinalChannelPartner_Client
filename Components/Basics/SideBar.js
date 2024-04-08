@@ -32,7 +32,6 @@ const SideBar = ({}) => {
   const [userData, setUserData] = useState({});
   const [dynamicFields, setDynamicFields] = useState([]);
   const [sidebarLoaded, setSidebarLoaded] = useState(false);
-  // const [sidebarMode,setSidebarMode]=useState(hasCookie("crm") ?"crm" :hasCookie("sales") ? sales : hasCookie("dms") ? "dms" : "channel")
   
 
 

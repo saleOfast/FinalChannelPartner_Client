@@ -287,7 +287,7 @@ const Managebannercreen = () => {
 
       <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
-          <h3 className="content_head">BRAND MASTER </h3>
+          <h3 className="content_head">BANNER MASTER </h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">

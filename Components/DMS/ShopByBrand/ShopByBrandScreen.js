@@ -53,10 +53,11 @@ const ShopByBrandScreen = () => {
       url += `&brand_id=${brandId}`;
     }
     
-    url += `&brand_id=${brandId}`;
     if (categoryId) {
       url += `&category_id=${categoryId}`;
     }
+
+    url += `&search=${search}`;
   
     fetchData(url, setProducts);
   };

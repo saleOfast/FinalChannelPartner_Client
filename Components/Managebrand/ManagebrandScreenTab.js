@@ -48,7 +48,6 @@ const ManagebrandScreenTab = ({
       options: {
         filter: true,
         customBodyRender: (value, tableMeta, updateValue) => {
-          console.log(tableMeta)
           return (
             <div className="table_btns">
               <button

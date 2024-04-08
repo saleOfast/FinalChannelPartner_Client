@@ -4,6 +4,9 @@ import { toast } from 'react-toastify';
 import { Baseurl, filesUrl } from '../../../Utils/Constants';
 import axios from 'axios';
 import ProductCard from '../ProductCard/ProductCard';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const ShopByProduct = () => {
 
@@ -61,6 +64,26 @@ const ShopByProduct = () => {
       
         )}
       </div>
+      {/* <Slider
+  className="d-flex  justify-content-between gap-2"
+  dots={true}
+  infinite={true}
+  speed={500}
+  slidesToShow={2}
+  slidesToScroll={2}
+>
+  {products?.map((product, i) =>
+    <ProductCard
+      key={i}
+      discount={product.discount}
+      image={product.image}
+      p_name={product.p_name}
+      p_price={product.p_price}
+      unit_in_case={product.unit_in_case}
+      p_desc={product.p_desc}
+    />
+  )}
+</Slider> */}
     </div>
   </section>
     </>

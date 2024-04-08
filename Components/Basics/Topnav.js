@@ -147,7 +147,16 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
       <div className="topNav_Wrapper">
         <div className="top_nav">
           <div className="brand_icon">
-            <LeadShyneIcon />
+            {
+              hasCookie("crm")  && (
+                <LeadShyneIcon />
+              )
+            }
+            {
+              hasCookie("dms") &&(
+                <img src="/DMS_IMAGES/kloudmart.png"  className />
+              )
+            }
           </div>
           <div className="profile_sec">
             {dbMode !== "admin" ? (
@@ -196,8 +205,9 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
                     </Dropdown.Menu>
                   </Dropdown>
                 )}
-
-                <Dropdown>
+                {
+                  hasCookie("crm") && (
+                    <Dropdown>
                   <Dropdown.Toggle variant="primary" id="quickAdd">
                     <div className="plusicon">
                       <PlusIcon />{" "}
@@ -267,6 +277,9 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
                     </ul>
                   </Dropdown.Menu>
                 </Dropdown>
+                  )
+                }
+                
               </div>
             ) : null}
 
@@ -312,8 +325,7 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
                     >
                       <li className="list-item">
                         <div className="icon">
-                          {" "}
-                          <AvatarIcon />{" "}
+                          <AvatarIcon />
                         </div>
                         <div className="text"> Profile </div>
                       </li>

@@ -77,7 +77,6 @@ const ManagebrandScreen = () => {
 
       try {
         const response = await axios.get(Baseurl + `/db/brand`, header);
-        console.log(response.data.data);
         setBrandList(response.data.data);
       } catch (error) {
         if (error?.response?.data?.message) {

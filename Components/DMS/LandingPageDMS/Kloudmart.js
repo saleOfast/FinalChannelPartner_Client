@@ -6,7 +6,7 @@ const Kloudmart = () => {
     <div className="container">
       <div className="d-flex align-items-center gap-2">
         <button className="toggle_btn"><i className="fa-solid fa-bars" /></button>
-        <a href="#"><img src="./DMS_IMAGES/kloudmart.png"  className /></a>
+        <img src="/DMS_IMAGES/kloudmart.png"  className />
       </div>
       <div className="d-flex gap-3">
         <img src="./DMS_IMAGES/notification.png"  />

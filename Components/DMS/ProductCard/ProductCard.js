@@ -3,7 +3,7 @@ import { filesUrl } from '../../../Utils/Constants'
 
 const ProductCard = ({discount,image,p_name,p_desc,p_price,unit_in_case}) => {
   return (
-    <div className='col-6'>
+   
          <div className="card" style={{width: '18rem'}}>
             <div className>
               <div className="vector">
@@ -70,7 +70,7 @@ const ProductCard = ({discount,image,p_name,p_desc,p_price,unit_in_case}) => {
               </div>
             </div>
           </div>
-    </div>
+   
   )
 }
 

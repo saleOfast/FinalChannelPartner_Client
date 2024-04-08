@@ -12,6 +12,34 @@ const ShopByProduct = () => {
 
     const [products,setProducts]=useState([]);
 
+    const settings = {
+      centerMode: true,
+      centerPadding: '10px',
+      slidesToShow: 5,
+      speed: 500,
+      slidesToScroll: 2,
+      arrows: true,
+      dots: false,
+
+      responsive: [
+        {
+          breakpoint: 768,
+          settings: {
+            arrows: false,
+            slidesToShow: 2,
+            
+          },
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            arrows: false,
+            slidesToShow: 2,
+          },
+        },
+      ],
+    };
+
     const getProducts=async()=>{
         if(hasCookie("token")){
           let token=getCookie("token")
@@ -49,7 +77,7 @@ const ShopByProduct = () => {
         <div className="text-wrapper-12">Shop By Product</div>
         <div className="text-wrapper-13">See All</div>
       </div>
-      <div className="d-flex  justify-content-between gap-2">
+      {/* <div className="d-flex  justify-content-between gap-2">
         {products?.map((product, i)=>
         
           <ProductCard 
@@ -63,17 +91,11 @@ const ShopByProduct = () => {
           />
       
         )}
-      </div>
-      {/* <Slider
-  className="d-flex  justify-content-between gap-2"
-  dots={true}
-  infinite={true}
-  speed={500}
-  slidesToShow={2}
-  slidesToScroll={2}
->
+      </div> */}
+      <Slider className='mx-2' {...settings} >
   {products?.map((product, i) =>
-    <ProductCard
+  <div className='px-1'>
+      <ProductCard
       key={i}
       discount={product.discount}
       image={product.image}
@@ -82,8 +104,10 @@ const ShopByProduct = () => {
       unit_in_case={product.unit_in_case}
       p_desc={product.p_desc}
     />
+  </div>
+  
   )}
-</Slider> */}
+</Slider>
     </div>
   </section>
     </>

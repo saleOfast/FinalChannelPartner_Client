@@ -247,15 +247,17 @@ const ShopByBrandScreen = () => {
         <div className="container">
           <div className="row">
             {products?.map((product, i) => (
-              <ProductCard
-                key={i}
-                discount={product.discount}
-                image={product.image}
-                p_name={product.p_name}
-                p_price={product.p_price}
-                unit_in_case={product.unit_in_case}
-                p_desc={product.p_desc}
-              />
+               <div className='col-6'>
+                <ProductCard
+                  key={i}
+                  discount={product.discount}
+                  image={product.image}
+                  p_name={product.p_name}
+                  p_price={product.p_price}
+                  unit_in_case={product.unit_in_case}
+                  p_desc={product.p_desc}
+                />
+              </div>
             ))}
           </div>
         </div>

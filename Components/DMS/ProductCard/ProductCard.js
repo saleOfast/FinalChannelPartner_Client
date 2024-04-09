@@ -66,7 +66,7 @@ const ProductCard = ({discount,image,p_name,p_desc,p_price,unit_in_case,product_
             )
           : await axios.put(
               Baseurl + `/db/cart`,
-              { user_id: item.user_id, product_id, piece: 1 },
+              { user_id: userInfo.user_id, product_id, piece: 1 },
               header
             );
             await getProducts()

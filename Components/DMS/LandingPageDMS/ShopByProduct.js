@@ -12,12 +12,13 @@ const ShopByProduct = () => {
 
     const [products,setProducts]=useState([]);
 
+
     const settings = {
       centerMode: true,
       centerPadding: '10px',
       slidesToShow: 5,
       speed: 500,
-      slidesToScroll: 2,
+      slidesToScroll: 1,
       arrows: true,
       dots: false,
 
@@ -55,6 +56,7 @@ const ShopByProduct = () => {
           try {
             const {data} = await axios.get(Baseurl + `/db/product`, header);
             setProducts(data.data);
+            console.log(data.data)
           } catch (error) {
             if (error?.response?.data?.message) {
               toast.error(error.response.data.message);
@@ -77,36 +79,23 @@ const ShopByProduct = () => {
         <div className="text-wrapper-12">Shop By Product</div>
         <div className="text-wrapper-13">See All</div>
       </div>
-      {/* <div className="d-flex  justify-content-between gap-2">
-        {products?.map((product, i)=>
-        
-          <ProductCard 
-          key={i}
-          discount={product.discount} 
-          image={product.image}
-          p_name={product.p_name}
-          p_price={product.p_price}
-          unit_in_case={product.unit_in_case}
-          p_desc={product.p_desc}
-          />
-      
-        )}
-      </div> */}
       <Slider className='mx-2' {...settings} >
-  {products?.map((product, i) =>
-  <div className='px-1'>
-      <ProductCard
-      key={i}
+      {products?.map((product, i) => (
+  <div className="px-1" key={i}>
+    <ProductCard
       discount={product.discount}
       image={product.image}
       p_name={product.p_name}
       p_price={product.p_price}
       unit_in_case={product.unit_in_case}
       p_desc={product.p_desc}
+      product_id={product.p_id}
+      cases={ product.productCartList[0]?.cases}
+      piece={product.productCartList[0]?.piece}
+      getProducts={getProducts}
     />
   </div>
-  
-  )}
+))}
 </Slider>
     </div>
   </section>

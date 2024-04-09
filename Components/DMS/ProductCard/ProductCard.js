@@ -1,7 +1,85 @@
-import React from 'react'
-import { filesUrl } from '../../../Utils/Constants'
+import React, { useState } from 'react'
+import { Baseurl, filesUrl } from '../../../Utils/Constants'
+import { getCookie, hasCookie } from 'cookies-next'
+import { toast } from 'react-toastify'
+import axios from 'axios'
 
-const ProductCard = ({discount,image,p_name,p_desc,p_price,unit_in_case}) => {
+
+const ProductCard = ({discount,image,p_name,p_desc,p_price,unit_in_case,product_id,cases,piece,getProducts}) => {
+
+  const userInfo=JSON.parse(getCookie('userInfo'))
+
+  const increaseCases_Piece = async (product_id, type) => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+      try {
+        type === "cases"
+          ? await axios.post(
+              Baseurl + `/db/cart`,
+              { user_id: userInfo.user_id,product_id, cases: 1 },
+              header
+            )
+          : await axios.post(
+              Baseurl + `/db/cart`,
+              { user_id: userInfo.user_id,product_id, piece: 1 },
+              header
+            );
+           await getProducts()
+      } catch (error) {
+        console.log(error)
+        if (error?.response?.data?.message) {
+          toast.success(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+  const decreaseCases_Piece = async (product_id, type) => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+      try {
+        type === "cases"
+          ? await axios.put(
+              Baseurl + `/db/cart`,
+              { user_id: userInfo.user_id,product_id, cases: 1 },
+              header
+            )
+          : await axios.put(
+              Baseurl + `/db/cart`,
+              { user_id: item.user_id, product_id, piece: 1 },
+              header
+            );
+            await getProducts()
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.success(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
   return (
    
          <div className="card" style={{width: '18rem'}}>
@@ -54,17 +132,25 @@ const ProductCard = ({discount,image,p_name,p_desc,p_price,unit_in_case}) => {
                 <div className="case_increase">
                   <span>Case</span>
                   <form>
-                    <div className="value-button" id="decrease"  value="Decrease Value">-</div>
-                    <input type="number" id="number" defaultValue={0} />
-                    <div className="value-button" id="increase"  value="Increase Value">+</div>
+                    <div className="value-button" id="decrease"  value="Decrease Value" onClick={() => {
+                              decreaseCases_Piece(product_id,"cases");
+                            }}>-</div>
+                    <input type="number" id="number" value={cases} />
+                    <div className="value-button" id="increase"  value="Increase Value"  onClick={() => {
+                              increaseCases_Piece(product_id,"cases");
+                            }} >+</div>
                   </form>
                 </div>
                 <div className="Piece_increase">
                   <span>Piece</span>
                   <form>
-                    <div className="value-button" id="decrease"  value="Decrease Value">-</div>
-                    <input type="number" id="number" defaultValue={0} />
-                    <div className="value-button" id="increase"  value="Increase Value">+</div>
+                    <div className="value-button" id="decrease"  value="Decrease Value" onClick={() => {
+                              decreaseCases_Piece(product_id,"piece");
+                            }}>-</div>
+                    <input type="number" id="number" value={piece} />
+                    <div className="value-button" id="increase"  value="Increase Value"  onClick={() => {
+                              increaseCases_Piece(product_id,"piece");
+                            }}>+</div>
                   </form>
                 </div>
               </div>

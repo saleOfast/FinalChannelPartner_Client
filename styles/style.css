@@ -1337,6 +1337,102 @@ line-height: normal;
 }
 /* cart end */
 
+/* PAYMENT METHOD SCREEN START */
+.Payment-Method .total-payment .total {
+  color: #000;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.Payment-Method .total-payment .price {
+  font-family: Arial;
+  color: #000;
+  text-align: right;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.Payment-Method .choose-payment{
+  color: #646464;
+font-size: 14px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+}
+.Payment-Method .Checbox {
+  border-radius: 10px;
+border: 1px solid #C1D8ED;
+padding: 7px 14px 7px 16px;
+}
+.Payment-Method .Checbox span{
+  color: #000;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+font-size: 14px;
+}
+.radio {
+  position: relative;
+}
+
+input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: -11px;
+  right: -44px;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  border: 2px solid #000;
+  border-radius: 50%;
+}
+
+.radio:hover input~.checkmark {
+  background-color: #ccc;
+}
+
+.radio input:checked~.checkmark {
+  border: 2px solid #000;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.radio input:checked~.checkmark:after {
+  display: block;
+}
+
+.radio .checkmark:after {
+  top: 1px;
+  left: 1.5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #00498B;
+}
+
+.Payment-Method .chech-btn{
+  border-radius: 8px;
+background: var(--Primary-Blue, #00498B);
+padding: 12px 0px;
+width: 100%;
+color: #FFF;
+font-size: 16px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+}
+/* PAYMENT METHOD SCREEN END */
+
 }
 
 @media only screen and (max-width: 320px) {

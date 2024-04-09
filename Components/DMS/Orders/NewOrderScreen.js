@@ -6,14 +6,14 @@ import { useRouter } from 'next/router';
 const NewOrderScreen = () => {
   const router=useRouter()
   return (
-    <div className="d-block bg-white w-100">
+    <div className="d-block bg-white w-100 ">
          {/* <-- new_order_page --> */}
-    <section className="NEW-ORDER pt-1">
+         <section className="NEW-ORDER pt-1">
   <div className="container">
     <div className="row">
       <div className="col-12 d-flex justify-content-between align-items-center">
         <div className="my_profile d-flex align-items-center gap-3">
-          <KeyboardBackspaceOutlinedIcon />
+          <i className="fa-solid fa-arrow-left" />
           <span>New Order</span>
         </div>
         <div className="logo">
@@ -28,48 +28,45 @@ const NewOrderScreen = () => {
       <div className="col-md-4 offset-md-4  border-success">
         <div className="input-group position-relative d-flex justify-content-between">
           <div className="form">
-            <input type="text" className="form-control" placeholder="Search ......" aria-label="Recipient's username" />
+            <input type="text" className="form-control" placeholder="Search Item" aria-label="Recipient's username" />
             <div className="input-group-append position-absolute">
-              <span className="input-group-text border-0 "><SearchOutlinedIcon style={{fontSize:"18px"}} /></span>
+              <span className="input-group-text border-0"><i className="fa fa-search" /></span>
             </div>
           </div>
-          <div className="cart position-relative" onClick={()=>{router.push("/DMS/Cart")}}>
-            <img src="/DMS_IMAGES/ICONS/shopping-cart.svg"   />
+          <div className="cart position-relative" onClick={()=>router.push("/DMS/Cart")}>
+            <img src="/DMS_IMAGES/ICONS/shopping-cart.svg" alt />
             <div className="circle d-flex justify-content-center align-items-center position-absolute">
-              <span>1</span>
+              <span>0</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div className="d-flex justify-content-between pt-2">
-      <div className="btn dropdown p-0 mb-4">
-        <a className="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-          Brand
-        </a>
-        <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <li><a className="dropdown-item" href="#">1</a></li>
-          <li><a className="dropdown-item" href="#">2</a></li>
-          <li><a className="dropdown-item" href="#">3</a></li>
-        </ul>
+    <div className="row mt-2">
+      <div className="col-6">
+        <select name className="form-select dropdown">
+          <option value selected disabled>Brand</option>
+          <option className="dropdown-item" href="#">A</option>
+          <option className="dropdown-item" href="#">B</option>
+          <option className="dropdown-item" href="#">C</option>
+        </select>
       </div>
-      <div className="btn dropdown p-0 mb-4">
-        <a className="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-          Category
-        </a>
-        <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <li><a className="dropdown-item" href="#">A</a></li>
-          <li><a className="dropdown-item" href="#">B</a></li>
-          <li><a className="dropdown-item" href="#">C</a></li>
-        </ul>
+      <div className="col-6">
+        <select name className="form-select dropdown">
+          <option value selected disabled> Category</option>
+          <option className="dropdown-item" href="#">A</option>
+          <option className="dropdown-item" href="#">B</option>
+          <option className="dropdown-item" href="#">C</option>
+        </select>
       </div>
     </div>
-    <div className="shop_by d-flex justify-content-between">
+    <div className="shop_by d-flex justify-content-between mt-4">
       <div className="text-wrapper-12">Hot Deals and Offers</div>
       <div className="text-wrapper-13">See All</div>
     </div>
   </div>
 </section>
+
 
     {/* <!-- slider --> */}
     <section className="Battling_Tiredness Offer-slider mt-3">
@@ -146,8 +143,9 @@ const NewOrderScreen = () => {
   </div>
 </section>
 
+
       {/* <!-- Discounted Items --> */}
-  <section className="Discounted_Items Order-Discounted_Items">
+      <section className="Discounted_Items Order-Discounted_Items">
   <div className="container">
     <div className="d-flex justify-content-between gap-2">
       <div className="card" style={{width: '18rem'}}>
@@ -271,6 +269,7 @@ const NewOrderScreen = () => {
     </div>
   </div>
 </section>
+
 
     </div>
   )

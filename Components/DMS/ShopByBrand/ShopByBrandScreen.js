@@ -142,6 +142,7 @@ const ShopByBrandScreen = () => {
                 className="form-select dropdown"
                 value={brandId}
                 onChange={handleBrandChange}
+                
               >
                 <optgroup label="Brands">
                   <option value="">All</option>

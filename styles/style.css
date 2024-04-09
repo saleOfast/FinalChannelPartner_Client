@@ -1102,7 +1102,7 @@
     width: 100%;
   }
 
-  /* NEW-ORDER */
+  /* NEW-ORDER START*/
   .NEW-ORDER .input-group-text {
     background: transparent;
   }
@@ -1110,7 +1110,7 @@
     color: #262525;
   }
   .NEW-ORDER .input-group-append{
-    top: 0px;
+    top: 3px;
   }
   .NEW-ORDER input{
     padding-left: 33px;
@@ -1119,6 +1119,7 @@ font-size: 12px;
 font-style: normal;
 font-weight: 500;
 line-height: normal;
+opacity: .6;
   }
   .NEW-ORDER .input-group>.form-control:focus{
     z-index: 0;
@@ -1153,19 +1154,22 @@ font-style: normal;
 font-weight: 600;
 line-height: normal;
 }
-.NEW-ORDER .dropdown .btn{
+.NEW-ORDER .dropdown{
     display: inline-flex;
+    justify-content: space-between;
 align-items: flex-start;
 gap: 64px;
 border-radius: 8px;
 border: 1px solid #F6F6F6;
-background: #FFF;
 color: #B3B3B3;
 font-size: 12px;
 font-style: normal;
 font-weight: 500;
 line-height: normal;
+padding: 9px 23px 9px 16px;
+width: 100%;
   }
+
   .NEW-ORDER .dropdown .dropdown-menu{
 
     position: absolute !important;
@@ -1215,8 +1219,10 @@ line-height: normal;
     top: 55px;
 }
 .Order-Discounted_Items{
-    margin-top: 30px;
+    margin-top: 10%;
 }
+/* NEW-ORDER END */
+
 
 /* cart start */
 .CART .items{

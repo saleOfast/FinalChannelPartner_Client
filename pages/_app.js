@@ -12,7 +12,7 @@ import Layout from '../Components/layout/layout';
 import Tabs from '../Components/DMS/Tabs/Tabs';
 import { hasCookie } from 'cookies-next';
 import { Fragment } from 'react';
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 
 
 
@@ -42,6 +42,6 @@ function App({ Component, pageProps }) {
 }
 
 
-export default dynamic(()=>Promise.resolve(App),{ssr:false})
+// export default dynamic(()=>Promise.resolve(App),{ssr:false})
 
-// export default App;
+export default App;

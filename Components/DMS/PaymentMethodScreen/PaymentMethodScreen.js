@@ -1,9 +1,53 @@
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchCart } from '../../../store/dmsCartSlice'
+import { getCookie, hasCookie } from 'cookies-next'
+import { Baseurl } from '../../../Utils/Constants'
+import { toast } from 'react-toastify'
+import axios from 'axios'
 
 const PaymentMethodScreen = () => {
     const router=useRouter()
     const {payment}=router.query
+    const dispatch=useDispatch()
+    const {cart}=useSelector(state=>state.dmsCart)
+
+    
+
+    const createOrder=async()=>{
+           if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+
+      try {
+         const {data}=await axios.post(Baseurl + `/db/order`,{
+            cartData:cart?cart:[]
+         } ,header);
+         toast.success(data.message);
+         router.push("/DMS/Orders")
+      } catch (error) {
+        console.log(error)
+        if (error?.response?.data?.message) {
+          toast.success(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+    }
+
+    useEffect(()=>{
+        dispatch(fetchCart())
+    },[])
     
   return (
     <section className="Payment-Method w-100 bg-white">
@@ -50,7 +94,7 @@ const PaymentMethodScreen = () => {
           </div>
         </div>
         <button className="chech-btn mt-4 d-flex align-items-center justify-content-center" onClick={()=>{
-            router.push("/DMS/Orders")
+            createOrder()
         }}>Checkout</button>
       </div>
     </div>

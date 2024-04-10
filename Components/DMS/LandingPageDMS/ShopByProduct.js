@@ -90,8 +90,8 @@ const ShopByProduct = () => {
       unit_in_case={product.unit_in_case}
       p_desc={product.p_desc}
       product_id={product.p_id}
-      cases={ product.productCartList[0]?.cases}
-      piece={product.productCartList[0]?.piece}
+      cases={ product.productCartList[0] ? product.productCartList[0].cases :0}
+      piece={product.productCartList[0] ? product.productCartList[0].piece:0}
       getProducts={getProducts}
     />
   </div>

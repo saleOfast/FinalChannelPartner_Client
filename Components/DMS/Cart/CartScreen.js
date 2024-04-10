@@ -5,38 +5,42 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { getCookie, hasCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCart } from "../../../store/dmsCartSlice";
 
 const CartScreen = () => {
+  const dispatch=useDispatch();
+  const {cart}=useSelector(state=>state.dmsCart)
   const [cartItems, setCartItems] = useState([]);
   const [cartTotal, setCartTotal] = useState();
   const [total, setTotal] = useState();
   const router=useRouter()
 
-  const fetchCart = async () => {
-    if (hasCookie("token")) {
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          pass: "pass",
-        },
-      };
+  // const fetchCart = async () => { 
+  //   if (hasCookie("token")) {
+  //     let token = getCookie("token");
+  //     let db_name = getCookie("db_name");
+  //     let header = {
+  //       headers: {
+  //         Accept: "application/json",
+  //         Authorization: "Bearer ".concat(token),
+  //         db: db_name,
+  //         pass: "pass",
+  //       },
+  //     };
 
-      try {
-        const { data } = await axios.get(Baseurl + `/db/cart`, header);
-        setCartItems(data.data);
-      } catch (error) {
-        if (error?.response?.data?.message) {
-          toast.success(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-      }
-    }
-  };
+  //     try {
+  //       const { data } = await axios.get(Baseurl + `/db/cart`, header);
+  //       setCartItems(data.data);
+  //     } catch (error) {
+  //       if (error?.response?.data?.message) {
+  //         toast.success(error.response.data.message);
+  //       } else {
+  //         toast.error("Something went wrong!");
+  //       }
+  //     }
+  //   }
+  // };
 
   const increaseCases_Piece = async (item, type) => {
     if (hasCookie("token")) {
@@ -62,7 +66,7 @@ const CartScreen = () => {
               { user_id: item.user_id, product_id: item.product_id, piece: 1 },
               header
             );
-        await fetchCart();
+        dispatch(fetchCart())
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.success(error.response.data.message);
@@ -97,7 +101,7 @@ const CartScreen = () => {
               { user_id: item.user_id, product_id: item.product_id, piece: 1 },
               header
             );
-        await fetchCart();
+       dispatch(fetchCart())
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.success(error.response.data.message);
@@ -118,11 +122,11 @@ const CartScreen = () => {
   };
   
   useEffect(() => {
-    fetchCart();
+    dispatch(fetchCart())
   }, []);
 
   useEffect(() => {
-    let totalCartPrice = cartItems.reduce((total, item) => {
+    let totalCartPrice = cart.reduce((total, item) => {
       return total + calculateItemPrice(item.productData.p_price, item.cases, item.productData.unit_in_case, item.piece, item.productData.discount);
     }, 0);
     setCartTotal(totalCartPrice);
@@ -155,8 +159,8 @@ const CartScreen = () => {
       {/* Items */}
       
       <section className="Difestive-Biscuits p-2 mt-3">
-        {cartItems?.map((item) => (
-          <div className="container mt-3">
+        {cart?.map((item, i) => (
+          <div key={i} className="container mt-3">
             <div className="row">
               <div className="col-3 d-flex align-items-center">
                 <div className="items_img text-center">
@@ -369,7 +373,10 @@ const CartScreen = () => {
                   <span className="two-forty-five">₹ {total}</span>
                 </div>
                 <button className="btn-checkout d-inline-flex align-items-center"
-                  onClick={()=>{router.push(`/DMS/PaymentMethod?payment=${total}`)}}
+                  onClick={()=>{router.push({
+                    pathname: `/DMS/PaymentMethod`,
+                    query: { payment: total} 
+                  })}}
                 > 
                   Checkout
                 </button>

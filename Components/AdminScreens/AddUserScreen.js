@@ -30,8 +30,7 @@ const AddUserScreen = () => {
     const [citylist, setCitylist] = useState([]);
     const [errorToast, setErrorToast] = useState(false)
     const [usersList, setUsersList] = useState([]);
-    const [userI
-        mage, setuserImage] = useState('');
+    const [userImage, setuserImage] = useState('');
     const [imgMode, setImgMode] = useState('3');
     const [imgFile, setImgFile] = useState('');
     const [oldFiles, setoldFiles] = useState({

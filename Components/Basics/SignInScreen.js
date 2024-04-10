@@ -81,9 +81,7 @@ export default function SignInScreen({ setLoggedIn }) {
                     setCookie('token', res.data.token);
                     setCookie('userInfo', res.data.userData);
                     setCookie('db_name', res.data.userData.db_name);
-                    // dispatch(res.data.platformData[0].platformName)
                     initialPermission(res.data.platformData[0].platform_name)
-                    // dispatch(assignPermissions(topnavPermission))
                     assignPermission(res.data.platformData)
                     toast.success('Logged in SuccessFully')
                     router.push('/')

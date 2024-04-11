@@ -1,5 +1,6 @@
 import React from 'react'
 import ShopByBrandScreen from '../../Components/DMS/ShopByBrand/ShopByBrandScreen'
+import withUser from '../../HOC/WithUserhoc'
 
 
 const ShopByBrand = () => {
@@ -10,4 +11,4 @@ const ShopByBrand = () => {
   )
 }
 
-export default ShopByBrand
+export default withUser(ShopByBrand) 

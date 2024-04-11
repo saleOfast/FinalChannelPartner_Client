@@ -3,6 +3,7 @@ import '../styles/globals.css'
 import '../styles/styles.css'
 import '../styles/style.css'
 import '../styles/styleguide.css'
+import '../styles/channelstyles.css'
 import { store } from '../store/store'
 import { Provider } from 'react-redux'
 import { SSRProvider } from 'react-bootstrap';

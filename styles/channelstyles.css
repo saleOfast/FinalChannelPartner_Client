@@ -1,0 +1,26 @@
+/* Channel register start */
+.channel_partner_register{
+    padding: 0 10px;
+}
+.form-label , .Attachment{
+    display: inline-block;
+    color: #000;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+        
+}
+.input-field {
+    width: 100%;
+    color: #646464;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 11px 16px;
+    border-radius: 6px;
+    box-shadow: 0px 0px 4px -3px;
+    background: #fff;
+}
+/* Channel register end */

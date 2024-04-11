@@ -17,9 +17,8 @@ const ChannelPartnerHOC = (WrappedComponent) => {
       }else if(!hasCookie("user")){
         setRendercomponent(true)
       }else{
-        setRendercomponent(true)
+        router.push("/")
       }
-      
     }, [userLogin]);
 
     return rendercomponent ? <WrappedComponent {...rest} /> : null ;

@@ -167,57 +167,57 @@ const AddUserScreen = () => {
   }
 
   const addUserHandler = async () => {
-    console.log(userInfo);
-    // if (!hasCookie("token")) return;
-    // setisLoading(true);
-    // const token = getCookie("token");
-    // const db_name = getCookie("db_name");
-    // const reqOptions = { ...userInfo, db_name };
+    
+    if (!hasCookie("token")) return;
+    setisLoading(true);
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+    const reqOptions = { ...userInfo, db_name };
 
-    // const header = {
-    //   headers: {
-    //     Accept: "application/json",
-    //     Authorization: `Bearer ${token}`,
-    //     db: db_name,
-    //     m_id: 77,
-    //   },
-    // };
+    const header = {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        db: db_name,
+        m_id: 77,
+      },
+    };
 
-    // try {
-    //   const response = await axios.post(
-    //     `${Baseurl}/db/users`,
-    //     reqOptions,
-    //     header
-    //   );
-    //   const userId = response.data.data.userProfileData.user_id;
-    //   if (response.status === 200 || response.status === 201) {
-    //     toast.success(response.data.message);
-    //     if (uploadDocs.aadhar_card)
-    //       AddUploadPicture(userId, "adh", uploadDocs.aadhar_card[0], 0);
-    //     if (uploadDocs.pan_card)
-    //       AddUploadPicture(userId, "pan", uploadDocs.aadhar_card[0], 0);
-    //     if (uploadDocs.driving_license)
-    //       AddUploadPicture(userId, "dl", uploadDocs.aadhar_card[0], 0);
-    //     if (userImage) AddUploadPicture(userId, "lsUser", userImage[0], 0);
-    //     setisLoading(false);
-    //     router.push("/ManageUsers");
-    //   }
-    // } catch (error) {
-    //   if (error?.response?.data?.status === 422) {
-    //     const taskObject = error.response.data.data.reduce((obj, item) => {
-    //       const [key, value] = Object.entries(item)[0];
-    //       obj[key] = value;
-    //       return obj;
-    //     }, {});
-    //     setErrorData(taskObject);
-    //   }
-    //   if (error?.response?.data?.message) {
-    //     toast.error(error.response.data.message);
-    //   } else {
-    //     toast.error("Something went wrong!");
-    //   }
-    //   setisLoading(false);
-    // }
+    try {
+      const response = await axios.post(
+        `${Baseurl}/db/users`,
+        reqOptions,
+        header
+      );
+      const userId = response.data.data.userProfileData.user_id;
+      if (response.status === 200 || response.status === 201) {
+        toast.success(response.data.message);
+        if (uploadDocs.aadhar_card)
+          AddUploadPicture(userId, "adh", uploadDocs.aadhar_card[0], 0);
+        if (uploadDocs.pan_card)
+          AddUploadPicture(userId, "pan", uploadDocs.aadhar_card[0], 0);
+        if (uploadDocs.driving_license)
+          AddUploadPicture(userId, "dl", uploadDocs.aadhar_card[0], 0);
+        if (userImage) AddUploadPicture(userId, "lsUser", userImage[0], 0);
+        setisLoading(false);
+        router.push("/ManageUsers");
+      }
+    } catch (error) {
+      if (error?.response?.data?.status === 422) {
+        const taskObject = error.response.data.data.reduce((obj, item) => {
+          const [key, value] = Object.entries(item)[0];
+          obj[key] = value;
+          return obj;
+        }, {});
+        setErrorData(taskObject);
+      }
+      if (error?.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong!");
+      }
+      setisLoading(false);
+    }
   };
 
   const updateUserhandler = async () => {

@@ -1,0 +1,21 @@
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { setCookie } from 'cookies-next';
+import withUser from '../HOC/WithUserhoc';
+import { setIsActive } from '../store/isActiveSidebarSlice';
+import ChannelAddUserScreen from '../Components/ChannelPartner/ManageUserChannel/ChannelAddUserScreen';
+
+ function AddUsers() {
+    const dispatch = useDispatch()
+    useEffect(() => {
+        setCookie('isActive', 'tasks')
+        dispatch(setIsActive('tasks'))
+    }, []);
+    return (
+        <>
+        <ChannelAddUserScreen />
+        </>
+    )
+}
+
+export default withUser(AddUsers)

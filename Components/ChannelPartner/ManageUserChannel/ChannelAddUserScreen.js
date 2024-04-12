@@ -541,7 +541,7 @@ const ChannelAddUserScreen = () => {
 
                         <div className="mt-3  md-text-center">
                           <div className="d-flex">
-                            {formFields.doc_verification!== 3 && (
+                            {(formFields.doc_verification=== 0 ||formFields.doc_verification=== 1)  && (
                               <>
                                 <button
                                   className="btn btn-primary Add_btn me-3"

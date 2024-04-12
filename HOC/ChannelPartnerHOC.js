@@ -1,0 +1,28 @@
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
+import { hasCookie } from 'cookies-next';
+
+const ChannelPartnerHOC = (WrappedComponent) => {
+  return ({ ...rest }) => {
+    const router = useRouter();
+    const userLogin = useSelector((state) => state.userLogin.value)
+    const [rendercomponent, setRendercomponent] = useState(false)
+    
+
+    useEffect(() => {
+      
+      if (hasCookie("SaLsUsr")) {
+        router.push('/Admin');
+      }else if(!hasCookie("user")){
+        setRendercomponent(true)
+      }else{
+        router.push("/")
+      }
+    }, [userLogin]);
+
+    return rendercomponent ? <WrappedComponent {...rest} /> : null ;
+  };
+};
+
+export default ChannelPartnerHOC;

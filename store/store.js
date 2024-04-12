@@ -6,6 +6,8 @@ import userloginreducer from '../store/ClientLoginSlice'
 import isActiveSliceReducer from '../store/isActiveSidebarSlice'
 import sideViewSlice from './sideViewSlice'
 import  dbPermissionModeSlice  from './permissionSlice'
+import dmsCartSlice from './dmsCartSlice'
+
 
 
 export const store = configureStore({
@@ -16,7 +18,8 @@ export const store = configureStore({
         userLogin: userloginreducer,
         sideView: sideViewSlice,
         isActiveSlice: isActiveSliceReducer,
-        permissionMode:dbPermissionModeSlice
+        permissionMode:dbPermissionModeSlice,
+        dmsCart:dmsCartSlice
     },
     
 })

@@ -3,6 +3,7 @@ import '../styles/globals.css'
 import '../styles/styles.css'
 import '../styles/style.css'
 import '../styles/styleguide.css'
+import '../styles/channelstyles.css'
 import { store } from '../store/store'
 import { Provider } from 'react-redux'
 import { SSRProvider } from 'react-bootstrap';
@@ -12,7 +13,7 @@ import Layout from '../Components/layout/layout';
 import Tabs from '../Components/DMS/Tabs/Tabs';
 import { hasCookie } from 'cookies-next';
 import { Fragment } from 'react';
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 
 
 
@@ -42,6 +43,6 @@ function App({ Component, pageProps }) {
 }
 
 
-export default dynamic(()=>Promise.resolve(App),{ssr:false})
+// export default dynamic(()=>Promise.resolve(App),{ssr:false})
 
-// export default App;
+export default App;

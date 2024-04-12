@@ -10,7 +10,7 @@ import ProductCard from "../ProductCard/ProductCard";
 
 const ShopByBrandScreen = () => {
   const router = useRouter();
-  const { brand_id,category_id } = router.query;
+  const { brand_id, category_id } = router.query;
   const [brandList, setBrandList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [brandId, setBrandId] = useState(brand_id || "");
@@ -48,20 +48,19 @@ const ShopByBrandScreen = () => {
 
   const getProducts = async () => {
     let url = `/db/product/getShopItems?page=1`;
-    
+
     if (brandId) {
       url += `&brand_id=${brandId}`;
     }
-    
+
     if (categoryId) {
       url += `&category_id=${categoryId}`;
     }
 
     url += `&search=${search}`;
-  
+
     fetchData(url, setProducts);
   };
-  
 
   useEffect(() => {
     fetchData("/db/brand", setBrandList);
@@ -70,18 +69,18 @@ const ShopByBrandScreen = () => {
 
   useEffect(() => {
     getProducts();
-  }, [search, brand_id, brandId,categoryId]);
+  }, [search, brand_id, brandId, categoryId]);
 
   const handleBrandChange = (event) => {
     const selectedBrandId = event.target.value;
-    setCategoryId("")
+    setCategoryId("");
     setBrandId(selectedBrandId === "all" ? "" : selectedBrandId);
   };
 
   const handleCategoryChange = (event) => {
-    console.log(event.target.value)
+    console.log(event.target.value);
     const selectedCategoryId = event.target.value;
-    setBrandId("")
+    setBrandId("");
     setCategoryId(selectedCategoryId === "all" ? "" : selectedCategoryId);
   };
 
@@ -92,8 +91,8 @@ const ShopByBrandScreen = () => {
           <div className="row">
             <div className="col-12 d-flex justify-content-between align-items-center">
               <div className="my_profile d-flex align-items-center gap-3">
-                <div onClick={()=>router.back()}>
-                <KeyboardBackspaceOutlinedIcon />
+                <div onClick={() => router.back()}>
+                  <KeyboardBackspaceOutlinedIcon />
                 </div>
                 <span>Shop By Brand</span>
               </div>
@@ -154,7 +153,7 @@ const ShopByBrandScreen = () => {
               </select>
             </div>
             <div className="col-6">
-            <select
+              <select
                 name="categorySelect"
                 className="form-select dropdown"
                 value={categoryId}
@@ -165,7 +164,7 @@ const ShopByBrandScreen = () => {
                   {categoryList.map((category, i) => (
                     <option key={i} value={category.p_cat_id}>
                       {category.p_cat_name}
-                    </option> 
+                    </option>
                   ))}
                 </optgroup>
               </select>
@@ -195,7 +194,10 @@ const ShopByBrandScreen = () => {
             </div>
             <div className="carousel-inner">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className={"carousel-item" + (i === 0 ? " active" : "")}>
+                <div
+                  key={i}
+                  className={"carousel-item" + (i === 0 ? " active" : "")}
+                >
                   <div className>
                     <div className=" d-flex align-items-center">
                       <div className="d-flex gap-3">
@@ -247,15 +249,26 @@ const ShopByBrandScreen = () => {
         <div className="container">
           <div className="row">
             {products?.map((product, i) => (
-               <div className='col-6'>
+              <div key={i} className="col-6">
                 <ProductCard
-                  key={i}
                   discount={product.discount}
                   image={product.image}
                   p_name={product.p_name}
                   p_price={product.p_price}
                   unit_in_case={product.unit_in_case}
                   p_desc={product.p_desc}
+                  product_id={product.p_id}
+                  cases={
+                    product.productCartList[0]
+                      ? product.productCartList[0].cases
+                      : 0
+                  }
+                  piece={
+                    product.productCartList[0]
+                      ? product.productCartList[0].piece
+                      : 0
+                  }
+                  getProducts={getProducts}
                 />
               </div>
             ))}
@@ -267,4 +280,3 @@ const ShopByBrandScreen = () => {
 };
 
 export default ShopByBrandScreen;
-

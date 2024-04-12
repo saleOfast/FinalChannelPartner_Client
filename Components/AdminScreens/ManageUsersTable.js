@@ -26,7 +26,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         },
         {
             name: 'contact_number',
-            label: "Mobile No.",
+            label: "Mobile No",
             options: {
                 filter: true,
             }

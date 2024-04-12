@@ -7,7 +7,24 @@ import DeleteIcon from '../../Svg/DeleteIcon';
 import CheckIcon from '../../Svg/CheckIcon';
 import Link from 'next/link';
 
+
 const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
+    const channelUserStatus=(key)=>{
+        switch (key) {
+            case 0:
+                return <span>Pending</span>
+                break;
+                case 1:
+                    return <span>Under Process</span>
+                break;
+                case 3:
+                    return <span>Rejected</span>
+                break;
+            default:
+                return <span>Completed</span>
+                break;
+        }
+    }
 
     const columns = [
         {
@@ -39,22 +56,16 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'address',
-            label: "Address",
-            options: {
-                filter: true,
-            }
-        },
-        {
-            name: 'user_status',
+            name: 'doc_verification',
             label: "Status",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
-                            {value ? <span className='active status_btn'>active</span> :
-                                <span className='inactive status_btn'>inactive</span>}
+                           {
+                            channelUserStatus(value)
+                           }
                         </div>
                     )
                 }
@@ -66,9 +77,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
+
                     return (
                         <div className="table_btns">
-                            <Link href={`/AddUsers?id=${value}&mode=view`}>
+                            <Link href={`/ChannelAddUsers?id=${value}&mode=view`}>
                                 <button
                                     className="action_btn"
                                     title='View'>
@@ -76,14 +88,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                 </button>
                             </Link>
 
-                            <Link href={`/AddUsers?id=${value}&mode=edit`}>
+                            {/* <Link href={`/ChannelAddUsers?id=${value}&mode=edit`}>
                                 <button
                                     className="action_btn"
                                     title='Edit'>
                                     <EditIcon />
                                 </button>
-                            </Link>
-                            {tableMeta.rowData[5] ?
+                            </Link> */}
+                            {/* {tableMeta.rowData[5] ?
                                 <button
                                     onClick={() => disableConfirm(value, 0)}
                                     className="action_btn"
@@ -102,7 +114,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                 className="action_btn"
                                 title='Delete'>
                                 <DeleteIcon />
-                            </button>
+                            </button> */}
                         </div>
                     )
                 }

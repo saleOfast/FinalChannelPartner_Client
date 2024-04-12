@@ -239,11 +239,11 @@ const ManageUserChannelScreens = () => {
                     <div className="table_screen">
                         <div className="top_btn_sec ">
                             <div className="d-flex">
-                            <Link href='/AddUsers'>
-                                <button className="btn ms-auto btn-primary Add_btn me-3">
+                            <Link href='/ChannelAddUsers'>
+                                {/* <button className="btn ms-auto btn-primary Add_btn me-3">
                                     <PlusIcon />
                                     ADD USER
-                                </button>
+                                </button> */}
                             </Link>
                             {/* <button className="btn btn-primary Add_btn" onClick={handleShow}>
                                 <PlusIcon />

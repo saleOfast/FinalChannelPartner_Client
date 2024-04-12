@@ -1,120 +1,192 @@
-import React, { useState } from 'react';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import SaveIcon from '@mui/icons-material/Save';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
-import { Baseurl } from '../../../Utils/Constants';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import SaveIcon from "@mui/icons-material/Save";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import { Baseurl, filesUrl } from "../../../Utils/Constants";
+import axios from "axios";
 
 const ChannelPartnerRegisterScreen = () => {
-  const [aadharCardPreview, setAadharCardPreview] = useState(null);
-  const [panCardPreviews, setPanCardPreviews] = useState([]);
-  const [reraLicensePreviews, setReraLicensePreviews] = useState([]);
-  const [bankChequePreviews, setBankChequePreviews] = useState([]);
-  const [name,setName]=useState("")
-  const [email,setEmail]=useState("")
-  const [mobile,setMobile]=useState("")
-  const[isTokenVerified,setIsTokenVerified]=useState(false)
-  const router=useRouter();
-  const {token}=router.query
+  const [formFields, setFormFields] = useState({
+    id: null,
+    token: null,
+    aadhar: null,
+    // aadharPreview:null,
+    pan: null,
+    // panPreview:null,
+    rera: null,
+    // reraPreview:null,
+    cheque: null,
+    // chequePreview:null,
+    name: "",
+    email: "",
+    mobile: "",
+    isTokenVerified: false,
+    isUploadVerified: false,
+    isSubmitted: false,
+  });
 
-  const handleAadharCardChange = (event) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const { token } = router.query;
+    if (token) {
+      verifyToken(token);
+    }
+  }, [router.query.token]);
+
+  const verifyToken = async (token) => {
+    try {
+      const { data } = await axios.post(
+        Baseurl + `/db/users/cp/registrationToken/verification`,
+        { token }
+      );
+      if (data.status === 200) {
+        if (data.data.doc_verification === 0) {
+          toast.success(data.message);
+          setFormFields({
+            ...formFields,
+            name: data.data.user || "",
+            mobile: data.data.contact_number || "",
+            email: data.data.email || "",
+            id: data.data.user_id,
+            token: token,
+            isTokenVerified: true,
+          });
+        }else if (data.data.doc_verification === 1) {
+          toast.success("Pending for verification");
+          setFormFields({
+            ...formFields,
+            name: data.data.user || "",
+            mobile: data.data.contact_number || "",
+            email: data.data.email || "",
+            pan: data.data.db_user_profile.pan_file || null,
+            aadhar: data.data.db_user_profile.aadhar_file || null,
+            rera: data.data.db_user_profile.rera_file || null,
+            cheque: data.data.db_user_profile.c_cheque_file || null,
+            isTokenVerified: true,
+            isUploadVerified: true,
+          });
+        }else if (data.data.doc_verification === 2) {
+          toast.success("Documents Verified");
+          setFormFields({
+            ...formFields,
+            name: data.data.user || "",
+            mobile: data.data.contact_number || "",
+            email: data.data.email || "",
+            pan: data.data.db_user_profile.pan_file || null,
+            aadhar: data.data.db_user_profile.aadhar_file || null,
+            rera: data.data.db_user_profile.rera_file || null,
+            cheque: data.data.db_user_profile.c_cheque_file || null,
+            isTokenVerified: true,
+            isUploadVerified: true,
+          });
+          setInterval(()=>{
+            router.push("/")
+          },[1000])
+        } else{
+          toast.success("Documents Rejected");
+          setFormFields({
+            ...formFields,
+            name: data.data.user || "",
+            mobile: data.data.contact_number || "",
+            email: data.data.email || "",
+            pan: data.data.db_user_profile.pan_file || null,
+            aadhar: data.data.db_user_profile.aadhar_file || null,
+            rera: data.data.db_user_profile.rera_file || null,
+            cheque: data.data.db_user_profile.c_cheque_file || null,
+            isTokenVerified: true,
+            isUploadVerified: true,
+          });
+          setInterval(()=>{
+            router.push("/")
+          },[1000])
+        }
+        
+      }
+    } catch (error) {
+      
+      const errorMessage =
+        error?.response?.data?.message || "Something went wrong!";
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleFileChange = (event, field) => {
     const file = event.target.files[0];
+    console.log("Selected file:", file); // Check the selected file in the console
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAadharCardPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setFormFields({ ...formFields, [field]: file });
     }
   };
 
-  const handlePanCardChange = (event) => {
-    const files = event.target.files;
-    if (files) {
-      const previews = [];
-      for (let i = 0; i < files.length; i++) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          previews.push(reader.result);
-          if (previews.length === files.length) {
-            setPanCardPreviews(previews);
-          }
-        };
-        reader.readAsDataURL(files[i]);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      if (!formFields.aadhar || !formFields.pan || !formFields.rera) {
+        toast.error("Aadhar, PAN, and RERA are required.");
+        return;
       }
-    }
-  };
+      const formData = new FormData();
+      formData.append("id", formFields.id);
+      formData.append("token", formFields.token);
+      formData.append("aadhar", formFields.aadhar);
+      formData.append("pan", formFields.pan);
+      formData.append("rera", formFields.rera);
 
-  const handleReraLicenseChange = (event) => {
-    const files = event.target.files;
-    if (files) {
-      const previews = [];
-      for (let i = 0; i < files.length; i++) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          previews.push(reader.result);
-          if (previews.length === files.length) {
-            setReraLicensePreviews(previews);
-          }
-        };
-        reader.readAsDataURL(files[i]);
+      if (formFields.cheque) {
+        formData.append("cheque", formFields.cheque);
       }
-    }
-  };
 
-  const handleBankChequeChange = (event) => {
-    const files = event.target.files;
-    if (files) {
-      const previews = [];
-      for (let i = 0; i < files.length; i++) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          previews.push(reader.result);
-          if (previews.length === files.length) {
-            setBankChequePreviews(previews);
-          }
-        };
-        reader.readAsDataURL(files[i]);
+      formData.append("name", formFields.name);
+      formData.append("email", formFields.email);
+      formData.append("mobile", formFields.mobile);
+
+      const { data } = await axios.put(
+        Baseurl + `/db/users/cp/completeRegistration`,
+        formData
+      );
+      if (data.status === 200) {
+        toast.success(data.message);
+        setFormFields({ ...formFields, isSubmitted: true });
+        router.push("/ChannelPartnerRegister_Next");
       }
+    } catch (error) {
+      console.log(error.response.data);
+      const errorMessage =
+        error?.response?.data?.message || "Something went wrong!";
+      toast.error(errorMessage);
     }
   };
 
-  const verifyToken=async()=>{
-          try {
-            const { data } = await axios.post(Baseurl + `/db/users/cp/registrationToken/verification`,{token});
-            if(data.status===200){
-              toast.success(data.message);
-              setName(data.data.user)
-              setMobile(data.data.contact_number)
-              setEmail(data.data.email)
-              setIsTokenVerified(true)
-            }
-           
-          } catch (error) {
-            
-            if (error?.response?.data?.message) {
-              toast.success(error.response.data.message);
-            } else {
-              toast.error("Something went wrong!");
-            }
-          }
+  const inputFields = [
+    { label: "Aadhar Card *", field: "aadhar" },
+    { label: "PAN Card *", field: "pan" },
+    { label: "RERA License *", field: "rera" },
+    { label: "Bank Cancelled Cheque", field: "cheque" },
+  ];
+
+  if (formFields.isSubmitted) {
+    return (
+      <div className="container mt-5">
+        <div className="alert alert-success" role="alert">
+          Document uploaded successfully. Document verification in progress...
+        </div>
+      </div>
+    );
   }
 
-  useEffect(()=>{
-    verifyToken()
-  })
-
   return (
-    <div className='d-block w-100'>
+    <div className="d-block w-100">
       <section className="channel_partner_register">
         <div className="container-fluid">
           <div className="row">
             <div className="col-12 d-flex justify-content-between align-items-center">
               <div className="my_profile d-flex align-items-center gap-3">
                 <KeyboardBackspaceIcon />
-                <span style={{ fontSize: '16PX', fontWeight: 600 }}>SignUp</span>
+                <span style={{ fontSize: "16PX", fontWeight: 600 }}>
+                  SignUp
+                </span>
               </div>
               <div className="logo">
                 <a href="#">
@@ -129,59 +201,112 @@ const ChannelPartnerRegisterScreen = () => {
         <div className="container-fluid">
           <div className="row">
             <div className="col col-xl-12 col-md-12 col-sm-12 ">
-              <form className="px-2 body" method='post' style={{ position: 'relative' }}>
+              <form
+                className="px-2 body"
+                onSubmit={handleSubmit}
+                style={{ position: "relative" }}
+              >
                 <div className="row">
                   <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                    <label className="form-label">Name <span className="error-message">*</span></label>
-                    <input className="form-control input-field" type="text" placeholder="Enter Name" id="Name" formcontrolname="Email" name="Name" value={name} disabled={isTokenVerified} />
+                    <label className="form-label">
+                      Name <span className="error-message">*</span>
+                    </label>
+                    <input
+                      className="form-control input-field"
+                      type="text"
+                      placeholder="Enter Name"
+                      id="Name"
+                      formcontrolname="Email"
+                      name="Name"
+                      value={formFields.name}
+                      disabled={formFields.isTokenVerified}
+                    />
                   </div>
                   <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                    <label className="form-label">Email <span className="error-message">*</span></label>
-                    <input className="form-control input-field" type="text" placeholder="Enter Email" id="Email" formcontrolname="Email" name="Email" value={email} disabled={isTokenVerified} />
+                    <label className="form-label">
+                      Email <span className="error-message">*</span>
+                    </label>
+                    <input
+                      className="form-control input-field"
+                      type="text"
+                      placeholder="Enter Email"
+                      id="Email"
+                      formcontrolname="Email"
+                      name="Email"
+                      value={formFields.email}
+                      disabled={formFields.isTokenVerified}
+                    />
                   </div>
                   <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                    <label className="form-label">Mobile No. <span className="error-message">*</span></label>
-                    <input className="form-control input-field" formcontrolname="Name" type="text" placeholder="Enter Mobile No." name="Mobile" value={mobile} disabled={isTokenVerified} />
+                    <label className="form-label">
+                      Mobile No. <span className="error-message">*</span>
+                    </label>
+                    <input
+                      className="form-control input-field"
+                      formcontrolname="Name"
+                      type="text"
+                      placeholder="Enter Mobile No."
+                      name="Mobile"
+                      value={formFields.mobile}
+                      disabled={formFields.isTokenVerified}
+                    />
                   </div>
-                  <div className="col-12 mb-2">
-                  </div>
-                  <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                    <div className="d-flex flex-column gap-1">
-                      <label className="form-label">Aadhar Card <span className="error-message">*</span></label>
-                      <input type="file" onChange={handleAadharCardChange} className="form-control input-field" />
-                      {aadharCardPreview && <img src={aadharCardPreview} alt="Aadhar Card Preview" style={{ maxWidth: '100px', maxHeight: '100px' }} />}
+                  <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3"></div>
+                  {inputFields.map((input, index) => (
+                    <div
+                      key={index}
+                      className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3"
+                    >
+                      <div className="d-flex flex-column gap-1">
+                        <label className="form-label">{input.label}</label>
+                        <input
+                          type="file"
+                          onChange={(e) => handleFileChange(e, input.field)}
+                          className="form-control input-field"
+                          disabled={formFields.isUploadVerified}
+                        />
+                        {formFields.isUploadVerified === false &&
+                          formFields[input.field] && (
+                            <img
+                              src={URL.createObjectURL(formFields[input.field])}
+                              alt={`${input.label} Preview`}
+                              style={{ maxWidth: "100px", maxHeight: "100px" }}
+                            />
+                          )}
+                        {formFields.isUploadVerified &&
+                        input.field === "aadhar" &&
+                        formFields[input.field] ? (
+                          <img
+                            src={`${filesUrl}/adh/images${
+                              formFields[input.field]
+                            }`}
+                            alt={`${input.label} Preview`}
+                            style={{ maxWidth: "100px", maxHeight: "100px" }}
+                          />
+                        ) : (
+                          formFields.isUploadVerified &&
+                          input.field !== "aadhar" &&
+                          formFields[input.field] && (
+                            <img
+                              src={`${filesUrl}`+`/${input.field}/images${formFields[input.field]}`}
+                              alt={`${input.label} Preview`}
+                              style={{ maxWidth: "100px", maxHeight: "100px" }}
+                            />
+                          )
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                  <div className="d-flex flex-column gap-1">
-                  <label className="form-label">PAN Card <span className="error-message">*</span></label>
-                    <input type="file" onChange={handlePanCardChange}  className="form-control input-field" />
-                    {panCardPreviews.map((preview, index) => (
-                      <img key={index} src={preview} alt={`PAN Card Preview ${index}`} style={{ maxWidth: '100px', maxHeight: '100px', marginRight: '5px' }} />
-                    ))}
-                   </div>
-                  </div>
-                  <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                  <div className="d-flex flex-column gap-1">
-                  <label className="form-label">RERA License <span className="error-message">*</span></label>
-                    <input type="file" onChange={handleReraLicenseChange}  className="form-control input-field" />
-                    {reraLicensePreviews.map((preview, index) => (
-                      <img key={index} src={preview} alt={`RERA License Preview ${index}`} style={{ maxWidth: '100px', maxHeight: '100px', marginRight: '5px' }} />
-                    ))}
-                   </div>
-                  </div>
-                  <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                  <div className="d-flex flex-column gap-1">
-                  <label className="form-label">Bank Cancelled Cheque <span className="error-message" /></label>
-                    <input type="file" onChange={handleBankChequeChange}  className="form-control input-field" />
-                    {bankChequePreviews.map((preview, index) => (
-                      <img key={index} src={preview} alt={`Bank Cancelled Cheque Preview ${index}`} style={{ maxWidth: '100px', maxHeight: '100px', marginRight: '5px' }} />
-                    ))}
-                   </div>  
-                  </div>
+                  ))}
+
                   <div className="mt-3  md-text-center">
-                    <button type="submit" className="btn btn-outline-dark btn-sm shadow rounded fw-normal px-4">
-                      <SaveIcon style={{ fontSize: "20px", paddingBottom: "4px" }} />
+                    <button
+                      type="submit"
+                      className="btn btn-outline-dark btn-sm shadow rounded fw-normal px-4"
+                      disabled={formFields.isUploadVerified}
+                    >
+                      <SaveIcon
+                        style={{ fontSize: "20px", paddingBottom: "4px" }}
+                      />
                       Submit
                     </button>
                   </div>
@@ -196,4 +321,3 @@ const ChannelPartnerRegisterScreen = () => {
 };
 
 export default ChannelPartnerRegisterScreen;
-

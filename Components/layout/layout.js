@@ -30,7 +30,7 @@ const Layout = ({Component, pageProps}) => {
     }
   
   
-    const checkSidebar=()=>{
+    const checkSidebar=()=> {
       if(hasCookie("crm")){
         setSidebarMode("crm")
         setTopnavPermission("crm")

@@ -63,6 +63,7 @@ const ChannelAddUserScreen = () => {
     isSubmitted: false,
     user_code: "",
     doc_verification: "",
+    reject_reason:""
   });
 
   const inputFields = [
@@ -180,6 +181,7 @@ const ChannelAddUserScreen = () => {
         cheque: data2?.c_cheque_file,
         user_code: data1?.user_code,
         doc_verification: data1?.doc_verification,
+        reject_reason:data1?.reject_reason
       });
     } catch (error) {
       toast.error(error.response.data.message);
@@ -240,7 +242,7 @@ const ChannelAddUserScreen = () => {
   };
 
   const updateUserhandler = async (doc_verify) => {
-    console.log(formFields);
+    
     if (!hasCookie("token")) return;
     if (doc_verify === 3 && updateInfo.reject_reason === "") {
       return toast.error("Please enter a reason");
@@ -538,6 +540,24 @@ const ChannelAddUserScreen = () => {
                             </div>
                           </div>
                         ))}
+                        {
+                          formFields.reject_reason && (
+                            <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                          <label className="form-label">
+                            Reject Reason
+                          </label>                              
+                          <input
+                            className="form-control input-field"
+                            formcontrolname="Name"
+                            type="text"
+                            name="Reject_reason"
+                            value={formFields.reject_reason}
+                            disabled={true}
+                          />
+                        </div>
+                          )
+                        }
+                        
 
                         <div className="mt-3  md-text-center">
                           <div className="d-flex">
@@ -582,7 +602,7 @@ const ChannelAddUserScreen = () => {
                                     </label>
                                     <input
                                       type="text"
-                                      placeholder="Enter Industry Name"
+                                      placeholder="Enter Reason"
                                       className="form-control"
                                       onChange={(e) => {
                                         setUpdateInfo({

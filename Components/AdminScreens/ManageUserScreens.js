@@ -92,6 +92,7 @@ const ManageUserScreens = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/users?mode=ul`, header);
+                    console.log(response.data.data)
                 setDataList(response.data.data);
             } catch (error) {
                 if (error?.response?.data?.message) {

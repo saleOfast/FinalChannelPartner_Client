@@ -1,6 +1,8 @@
+import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
 const ChannelPartnerRegister_NextScreen = () => {
+  const router=useRouter();
   return (
     <div className="cpRegister_NextScreen " style={{padding:"30px 250px"}}>
      
@@ -37,8 +39,9 @@ const ChannelPartnerRegister_NextScreen = () => {
                   <div className="col-6 text-center">
                       <button
                         type="button"
-                        className="btn btn-outline-success btn-block font-weight-bold text-dark"
+                        className="btn btn-outline-success btn-block font-weight-bold text-dark mt-3"
                         data-dismiss="modal"
+                        onClick={()=>{router.push("/")}}
                       >
                         Got it
                       </button>

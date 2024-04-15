@@ -23,7 +23,7 @@ const ChannelPartnerRegister_NextScreen = () => {
                 </div>
                 <div className="card-body">
                   <p className="text-muted text-left">
-                    We'll notify you as soon as your documents have been
+                    We will notify you as soon as your documents have been
                     reviewed and approved by our team
                   </p>
                   <img

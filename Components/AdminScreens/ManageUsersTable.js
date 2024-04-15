@@ -39,10 +39,31 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'address',
-            label: "Address",
+            name: 'db_role',
+            label: "Role",
             options: {
                 filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <div className='status_box'>
+                            {value && <span >{value.role_name}</span>}
+                        </div>
+                    )
+                }
+            }
+        },
+        {
+            name: 'reportToUser',
+            label: "Report/Assign To",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <div className='status_box'>
+                            {value && <span  >{value.user}</span>}
+                        </div>
+                    )
+                }
             }
         },
         {

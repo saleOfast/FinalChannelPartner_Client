@@ -154,6 +154,10 @@ const AddUserScreen = () => {
         account_no: data2?.account_no,
         bank_ifsc_code: data2?.bank_ifsc_code,
         branch: data2?.branch,
+        aadhar:data2?.aadhar_file,
+        pan:data2?.pan_file,
+        rera: data2?.rera_file,
+        cheque: data2?.c_cheque_file,
       });
 
       setoldFiles({
@@ -534,32 +538,6 @@ const AddUserScreen = () => {
                                 SALES
                               </label>
                             </div>
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option4"
-                                id="option4"
-                                checked={
-                                  userInfo.isCHANNEL
-                                    ? userInfo.isCHANNEL
-                                    : false
-                                }
-                                onChange={(e) => {
-                                  setUserinfo({
-                                    ...userInfo,
-                                    isCHANNEL: e.target.checked,
-                                  });
-                                  setErrorData({ ...errorData, isCHANNEL: "" });
-                                }}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="option4"
-                              >
-                                CHANNEL
-                              </label>
-                            </div>
                           </>
                         ) : (
                           <div className="form-check">
@@ -569,7 +547,7 @@ const AddUserScreen = () => {
                               value="option4"
                               id="option4"
                               checked={
-                                userInfo.isCHANNEL ? userInfo.isCHANNEL : false
+                                userInfo.role_id===1 ? true : false
                               }
                               onChange={(e) => {
                                 setUserinfo({
@@ -578,12 +556,14 @@ const AddUserScreen = () => {
                                 });
                                 setErrorData({ ...errorData, isCHANNEL: "" });
                               }}
+                              disabled={viewMode}
+                              
                             />
                             <label
                               className="form-check-label"
                               htmlFor="option4"
                             >
-                              CHANNEL
+                              CHANNEL PARTNER
                             </label>
                           </div>
                         )}
@@ -837,7 +817,7 @@ const AddUserScreen = () => {
                     errorData?.report_to ? "input_box errorBox" : "input_box"
                   }
                 >
-                  <label htmlFor="task_name">Report To *</label>
+                  <label htmlFor="task_name">Report/Assign To *</label>
                   <Select
                     id={userInfo.des_id}
                     defaultValue={""}
@@ -867,6 +847,127 @@ const AddUserScreen = () => {
                   </span>
                 </div>
               </div>
+
+              <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+              <div className="d-flex flex-column gap-1">
+              <label className="form-label">
+              Aadhar Card *
+                              </label>
+                              <input
+                                type="file"
+                                // onChange={(e) => use setUserInfo
+                                //   handleFileChange(e, input.field)
+                                // }
+                                className="form-control input-field"
+                                disabled={viewMode}
+                              />
+                              {
+                                userInfo?.aadhar && (
+                                  <img
+                                  src={`${filesUrl}/adh/images${
+                                    userInfo.aadhar
+                                  }`}
+                                  alt={`Aadhar Preview`}
+                                  style={{
+                                    maxWidth: "100px",
+                                    maxHeight: "100px",
+                                  }}
+                                />
+                                )
+                              }
+              </div>
+              </div>
+              
+              <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+              <div className="d-flex flex-column gap-1">
+              <label className="form-label">
+              PAN Card *
+                              </label>
+                              <input
+                                type="file"
+                                // onChange={(e) => use setUserInfo
+                                //   handleFileChange(e, input.field)
+                                // }
+                                className="form-control input-field"
+                                disabled={viewMode}
+                              />
+                              {
+                                userInfo?.pan && (
+                                  <img
+                                  src={`${filesUrl}/pan/images${
+                                    userInfo.pan
+                                  }`}
+                                  alt={`PAN CARD Preview`}
+                                  style={{
+                                    maxWidth: "100px",
+                                    maxHeight: "100px",
+                                  }}
+                                />
+                                )
+                              }
+              </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+              <div className="d-flex flex-column gap-1">
+              <label className="form-label">
+              RERA License *
+                              </label>
+                              <input
+                                type="file"
+                                // onChange={(e) => use setUserInfo
+                                //   handleFileChange(e, input.field)
+                                // }
+                                className="form-control input-field"
+                                disabled={viewMode}
+                              />
+                              {
+                                userInfo?.rera && (
+                                  <img
+                                  src={`${filesUrl}/rera/images${
+                                    userInfo.rera
+                                  }`}
+                                  alt={`RERA License Preview`}
+                                  style={{
+                                    maxWidth: "100px",
+                                    maxHeight: "100px",
+                                  }}
+                                />
+                                )
+                              }
+              </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+              <div className="d-flex flex-column gap-1">
+              <label className="form-label">
+                                Bank Cancelled Cheque
+                              </label>
+                              <input
+                                type="file"
+                                // onChange={(e) => use setUserInfo
+                                //   handleFileChange(e, input.field)
+                                // }
+                                className="form-control input-field"
+                                disabled={viewMode}
+                              />
+                              {
+                                userInfo?.cheque && (
+                                  <img
+                                  src={`${filesUrl}/cheque/images${
+                                    userInfo.cheque
+                                  }`}
+                                  alt={`Bank Cancelled Cheque Preview`}
+                                  style={{
+                                    maxWidth: "100px",
+                                    maxHeight: "100px",
+                                  }}
+                                />
+                                )
+                              }
+              </div>
+              </div>
+
             </div>
             <div className="other_details_info">
               <div className="other_details">

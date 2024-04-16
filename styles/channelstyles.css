@@ -26,6 +26,359 @@
 /* Channel register end */
 
 
+/* Signin Start */
+.Sign-In .Sign-In-logo img {
+    height: 136px;
+  }
+  .Sign-In .Perfect-Home {
+    font-size: 48px;
+    font-weight: 700;
+    color: #293790;
+  }
+  
+  .card {
+    width: auto;
+    height: auto;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 20px;
+  }
+  
+  .card h2 {
+    margin-bottom: 10px;
+  }
+  
+  .card a.fp {
+    width: 100%;
+    display: flex;
+    color: #5881d0;
+  }
+  
+  .login_register {
+    display: flex;
+    width: 100%;
+    border: 1px solid rgba(221, 221, 221, 1);
+    border-radius: 15px;
+    margin: 20px 0;
+  }
+  
+  .login_register a {
+    font-size: 1em;
+    padding: 10px 55px;
+    border: none;
+    width: 50%;
+  }
+  
+  .login_register a.login {
+    border-radius: 15px;
+    background-color: transparent;
+    color: black;
+  }
+  
+  .login_register a.register {
+    border-radius: 15px;
+    background: linear-gradient(90deg, #003a74, #006ad5);
+    color: white;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+  }
+  
+  .form input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    color: #a0a6a3;
+    font-family: "Roboto Mono", sans-serif;
+    box-shadow: 1px 5px 9px rgba(211, 211, 211, 0.7);
+  }
+  
+  .form input.email {
+    margin-bottom: 15px;
+  }
+  
+  .form input.pass {
+    margin-bottom: 15px;
+  }
+  
+  .form input.comfirm_pass {
+    margin-bottom: 5px;
+  }
+  
+  .login_btn {
+    font-size: 20px;
+    color: white;
+    border-radius: 15px;
+    border: none;
+    background-color: #003a74;
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background: linear-gradient(-90deg, #003a74, #006ad5);
+    box-shadow: 1px 5px 9px rgba(211, 211, 211, 0.9);
+  }
+  .Sign-In .Sign-In_Sign-Up {
+    width: 358px;
+    height: 358px;
+  }
+  .Sign-In_Sign-Up .underline{
+      background-color: #EC2027;
+      width: 126px;
+      height: 3px;
+      margin-left: 48%;
+  }
+  .Sign-In_Sign-Up .Sign-In-btn {
+    background-color: #293790;
+    color: #fff;
+    width: 175px;
+    /* height: 35px; */
+    padding: 8px 20px 8px 20px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+  }
+  .Sign-In_Sign-Up .Sign-Up-btn {
+    background-color: #ecf0ff;
+    color: #9c9aa5;
+    width: 175px;
+    /* height:35px; */
+    padding: 8px 20px 8px 20px;
+    gap: 10px;
+    border-radius: 8px;
+    opacity: 0px;
+  }
+  .Sign-In_Sign-Up .nav-tabs .nav-link.active {
+    background-color: #293790 !important;
+    color: #fff;
+  }
+  .Sign-In_Sign-Up form label {
+    color: #26203b;
+    font-size: 16px;
+    font-weight: 400;
+  }
+  .Sign-In_Sign-Up form input {
+    width: 100%;
+    height: 48px;
+    padding: 8px 16px 8px 16px;
+    gap: 10px;
+    border-radius: 8px;
+    border: 1px solid #a1a7cf;
+    opacity: 0px;
+  }
+  .Sign-In_Sign-Up .form ::placeholder {
+      color: #9C9AA5;
+      font-weight: 400;
+      font-size: 14px;
+    }
+    
+  .Sign-In .login_btn{
+      background: #EC2027;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+  
+  }
+  .perfect-home-form .fp{
+      font-size: 12px;
+      font-weight: 400;
+      color: #293790;
+  }
+/* Signin End */
+
+/* Signup Start */
+.Sign-Up .Sign-Up-logo img {
+  height: 136px;
+}
+.Sign-Up .Perfect-Home {
+  font-size: 48px;
+  font-weight: 700;
+  color: #293790;
+}
+
+.card {
+  width: auto;
+  height: auto;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.card h2 {
+  margin-bottom: 10px;
+}
+
+.card a.fp {
+  width: 100%;
+  display: flex;
+  color: #5881d0;
+}
+
+.login_register {
+  display: flex;
+  width: 100%;
+  border: 1px solid rgba(221, 221, 221, 1);
+  border-radius: 15px;
+  margin: 20px 0;
+}
+
+.login_register a {
+  font-size: 1em;
+  padding: 10px 55px;
+  border: none;
+  width: 50%;
+}
+
+.login_register a.login {
+  border-radius: 15px;
+  background-color: transparent;
+  color: black;
+}
+
+.login_register a.register {
+  border-radius: 15px;
+  background: linear-gradient(90deg, #003a74, #006ad5);
+  color: white;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+}
+
+.form input {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #dddddd;
+  color: #a0a6a3;
+  font-family: "Roboto Mono", sans-serif;
+  box-shadow: 1px 5px 9px rgba(211, 211, 211, 0.7);
+}
+
+.form input.email {
+  margin-bottom: 15px;
+}
+
+.form input.pass {
+  margin-bottom: 15px;
+}
+
+.form input.comfirm_pass {
+  margin-bottom: 5px;
+}
+
+.login_btn {
+  font-size: 20px;
+  color: white;
+  border-radius: 15px;
+  border: none;
+  background-color: #003a74;
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  background: linear-gradient(-90deg, #003a74, #006ad5);
+  box-shadow: 1px 5px 9px rgba(211, 211, 211, 0.9);
+}
+.Sign-Up .Sign-Up_Sign-In {
+  width: 358px;
+  height: 358px;
+}
+.Sign-Up_Sign-In .underline{
+    background-color: #EC2027;
+    width: 126px;
+    height: 3px;
+    margin-left: 48%;
+}
+.Sign-Up_Sign-In .Sign-In-btn {
+  background-color: #293790;
+  color: #fff;
+  width: 175px;
+  /* height: 35px; */
+  padding: 8px 20px 8px 20px;
+  gap: 10px;
+  border-radius: 8px;
+  opacity: 0px;
+}
+.Sign-Up_Sign-In .Sign-Up-btn {
+  background-color: #ecf0ff;
+  color: #9c9aa5;
+  width: 175px;
+  /* height:35px; */
+  padding: 8px 20px 8px 20px;
+  gap: 10px;
+  border-radius: 8px;
+  opacity: 0px;
+}
+.Sign-Up_Sign-In .nav-tabs .nav-link.active {
+  background-color: #293790 !important;
+  color: #fff;
+}
+.Sign-Up_Sign-In form label {
+  color: #26203b;
+  font-size: 16px;
+  font-weight: 400;
+}
+.Sign-Up_Sign-In form input {
+  width: 100%;
+  height: 48px;
+  padding: 8px 16px 8px 16px;
+  gap: 10px;
+  border-radius: 8px;
+  border: 1px solid #a1a7cf;
+  opacity: 0px;
+}
+.Sign-Up_Sign-In .form ::placeholder {
+    color: #9C9AA5;
+    font-weight: 400;
+    font-size: 14px;
+  }
+  .Sign-Up_Sign-In .form select option{
+      color: #9C9AA5;
+      font-weight: 400;
+      font-size: 14px;
+  }
+  
+.Sign-Up .login_btn{
+    background: #EC2027;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+
+}
+.perfect-home-form .fp{
+    font-size: 12px;
+    font-weight: 400;
+    color: #293790;
+}
+ .Sign-Up_Sign-In .upload-files .form-control{
+  background-color: #293790;
+color: #fff;
+border-radius: 8px;
+font-size: 14px;
+font-weight: 700;
+ }
+ .Sign-Up_Sign-In #craete-account{
+  background-color: #EC2027;
+  color: #fff;
+border-radius: 8px;
+padding: 10px 20px;
+ }
+/* Signup SEnd */
 
 
   

@@ -37,10 +37,10 @@ const AddClientScreen = () => {
         pan: '',
         gst: '',
         address: "" ,
-        isCRM:true ,
-        isDMS:false ,
-        isSALES:false ,
-        isCHANNEL:false ,
+        isCRM:1 ,
+        isDMS:null ,
+        isSALES:null ,
+        isCHANNEL:null ,
         logo:null,
         logoPreview:null,
         _imageName: null
@@ -688,9 +688,9 @@ const AddClientScreen = () => {
                             onChange={(e) => {
                               setUserInfo({
                                 ...userInfo,
-                                isCRM: e.target.checked,
+                                isCRM: e.target.checked ? 1 : 0,
                               });
-                              // setErrorData({ ...errorData, city_id: "" });
+                              setErrorData({ ...errorData, isCRM: "" });
                             }}
                           />
                           <label className="form-check-label" htmlFor="option1">
@@ -707,9 +707,9 @@ const AddClientScreen = () => {
                             onChange={(e) => {
                               setUserInfo({
                                 ...userInfo,
-                                isDMS: e.target.checked,
+                                isDMS: e.target.checked ? 1 : 0,
                               });
-                              // setErrorData({ ...errorData, city_id: "" });
+                              setErrorData({ ...errorData, isDMS: "" });
                             }}
                           />
                           <label className="form-check-label" htmlFor="option2">
@@ -728,9 +728,9 @@ const AddClientScreen = () => {
                             onChange={(e) => {
                               setUserInfo({
                                 ...userInfo,
-                                isSALES: e.target.checked,
+                                isSALES: e.target.checked ? 1 : 0,
                               });
-                              // setErrorData({ ...errorData, city_id: "" });
+                              setErrorData({ ...errorData, isSALES: "" });
                             }}
                           />
                           <label className="form-check-label" htmlFor="option3">
@@ -749,9 +749,9 @@ const AddClientScreen = () => {
                             onChange={(e) => {
                               setUserInfo({
                                 ...userInfo,
-                                isCHANNEL: e.target.checked,
+                                isCHANNEL: e.target.checked ? 1 : 0,
                               });
-                              // setErrorData({ ...errorData, city_id: "" });
+                              setErrorData({ ...errorData, isCHANNEL: "" });
                             }}
                           />
                           <label className="form-check-label" htmlFor="option4">
@@ -927,17 +927,13 @@ const AddClientScreen = () => {
                               value="option1"
                               id="option1"
                               checked={true}
-                              onChange={(e) => {
-                                setUserInfo({
-                                  ...userInfo,
-                                  isCRM: e.target.checked,
-                                });
-                                setUserInfo({
-                                  ...userInfo,
-                                  isCRM: e.target.checked,
-                                });
-                                setErrorData({ ...errorData, city_id: "" });
-                              }}
+                              // onChange={(e) => {
+                              //   setUserInfo({
+                              //     ...userInfo,
+                              //     isCRM: e.target.checked
+                              //   });
+                              //   setErrorData({ ...errorData, city_id: "" });
+                              // }}
                             />
                             <label
                               className="form-check-label"
@@ -955,7 +951,7 @@ const AddClientScreen = () => {
                               onChange={(e) => {
                                 setUserInfo({
                                   ...userInfo,
-                                  isDMS: e.target.checked,
+                                  isDMS: e.target.checked ? 1 : 0,
                                 });
                                 setErrorData({ ...errorData, isDMS: "" });
                               }}
@@ -976,7 +972,7 @@ const AddClientScreen = () => {
                               onChange={(e) => {
                                 setUserInfo({
                                   ...userInfo,
-                                  isSALES: e.target.checked,
+                                  isSALES: e.target.checked ? 1 : 0,
                                 });
                                 setErrorData({ ...errorData, isSALES: "" });
                               }}
@@ -997,7 +993,7 @@ const AddClientScreen = () => {
                               onChange={(e) => {
                                 setUserInfo({
                                   ...userInfo,
-                                  isCHANNEL: e.target.checked,
+                                  isCHANNEL: e.target.checked ? 1 : 0,
                                 });
                                 setErrorData({ ...errorData, isCHANNEL: "" });
                               }}

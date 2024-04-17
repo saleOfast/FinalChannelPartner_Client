@@ -134,6 +134,7 @@ const AddUserScreen = () => {
       setUpdtUId(data1?.user_id);
       setUserinfo({
         user: data1?.user,
+        user_l_name: data1?.user_l_name,
         email: data1?.email,
         contact_number: data1?.contact_number,
         db_name: data1?.db_name,
@@ -146,6 +147,8 @@ const AddUserScreen = () => {
         city_id: data1?.city_id,
         address: data1?.address,
         pincode: data1?.pincode,
+        gst: data1?.gst,
+        organisation: data1?.organisation,
         user_profle_id: data1?.user_profle_id,
         div_id: data2?.div_id,
         dep_id: data2?.dep_id,
@@ -626,6 +629,36 @@ const AddUserScreen = () => {
                       <span className="errorText">
                         {" "}
                         {errorData?.user ? errorData.user : ""}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.user ? "input_box errorBox" : "input_box"
+                      }
+                    >
+                      <label htmlFor="firstName">Last Name *</label>
+                      <input
+                        type="text"
+                        placeholder="Enter User Name"
+                        name="name"
+                        id="firstName"
+                        className={
+                          errorData?.user
+                            ? "form-control is-invalid"
+                            : "form-control"  
+                        }
+                        onChange={(e) => {
+                          setUserinfo({ ...userInfo, user_l_name: e.target.value });
+                          setErrorData({ ...errorData, user_l_name: "" });
+                        }}
+                        disabled={viewMode}
+                        value={userInfo.user_l_name ? userInfo.user_l_name : ""}
+                      />
+                      <span className="errorText">
+                        {" "}
+                        {errorData?.user_l_name ? errorData.user_l_name : ""}
                       </span>
                     </div>
                   </div>
@@ -1223,6 +1256,46 @@ const AddUserScreen = () => {
                         })
                       }
                       value={userInfo.pan_no ? userInfo.pan_no : ""}
+                    />
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="pan_card">GST Number </label>
+                    <input
+                      type="text"
+                      placeholder="Enter GST No."
+                      name="gst"
+                      id="gst"
+                      disabled={viewMode}
+                      className="form-control"
+                      onChange={(e) =>
+                        setUserinfo({
+                          ...userInfo,
+                          gst: e.target.value,
+                        })
+                      }
+                      value={userInfo.gst ? userInfo.gst : ""}
+                    />
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="pan_card">Organisation </label>
+                    <input
+                      type="text"
+                      placeholder="Enter Organisation Name."
+                      name="organisation"
+                      id="organisation"
+                      disabled={viewMode}
+                      className="form-control"
+                      onChange={(e) =>
+                        setUserinfo({
+                          ...userInfo,
+                          organisation: e.target.value,
+                        })
+                      }
+                      value={userInfo.organisation ? userInfo.organisation : ""}
                     />
                   </div>
                 </div>

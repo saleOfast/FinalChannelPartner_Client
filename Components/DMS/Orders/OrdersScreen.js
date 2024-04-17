@@ -73,7 +73,7 @@ const OrdersScreen = () => {
       </div>
     </div>
     <div className="card">
-      <nav  >
+      <nav className='w-100' >
         <div className="nav nav-tabs  d-flex justify-content-between" id="nav-tab"  role="tablist">
           <button className="nav-link active d-flex flex-column gap-2 align-items-center pb-3" id="active" data-bs-toggle="tab" data-bs-target="#active-tab" type="button" role="tab" aria-controls="active-tab" aria-selected="true">
             Active</button>

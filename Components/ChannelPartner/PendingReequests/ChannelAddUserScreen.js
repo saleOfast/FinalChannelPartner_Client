@@ -63,7 +63,14 @@ const ChannelAddUserScreen = () => {
     isSubmitted: false,
     user_code: "",
     doc_verification: "",
-    reject_reason:""
+    reject_reason:"",
+    address:"",
+    organisation:"",
+    state_name:"",
+    city_name:"",
+    gst:"",
+    user_l_name:"",
+
   });
 
   const inputFields = [
@@ -181,7 +188,13 @@ const ChannelAddUserScreen = () => {
         cheque: data2?.c_cheque_file,
         user_code: data1?.user_code,
         doc_verification: data1?.doc_verification,
-        reject_reason:data1?.reject_reason
+        reject_reason:data1?.reject_reason,
+        address:data1?.address,
+        state_name:data1?.db_state.state_name,
+        city_name:data1?.db_city.city_name,
+        organisation:data1?.organisation,
+        user_l_name:data1?.user_l_name,
+        gst:data1?.gst
       });
     } catch (error) {
       toast.error(error.response.data.message);
@@ -384,10 +397,10 @@ const ChannelAddUserScreen = () => {
   }, [router.isReady, id]);
 
   return (
-    <div className={`main_Box `}>
+    <div className={`main_Box w-100 pe-5 `} style={{marginTop:"-50px"}}>
      
 
-      <div className="main_content">
+      <div className="main_content w-100">
         <div className="Add_user_screen">
           <div className="d-block w-100">
             <section className="channel_partner_register">
@@ -435,6 +448,67 @@ const ChannelAddUserScreen = () => {
                         </div>
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                           <label className="form-label">
+                            Last Name <span className="error-message">*</span>
+                          </label>
+                          <input
+                            className="form-control input-field"
+                            type="text"
+                            placeholder="Enter Last Name"
+                            id="Last_Name"
+                            formcontrolname="Last_Name"
+                            name="Last_Name"
+                            value={formFields.user_l_name}
+                            disabled={true}
+                          />
+                        </div>
+                        <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                          <label className="form-label">
+                            Address <span className="error-message">*</span>
+                          </label>
+                          <input
+                            className="form-control input-field"
+                            type="text"
+                            placeholder="Enter Address"
+                            id="address"
+                            formcontrolname="address"
+                            name="address"
+                            value={formFields.address}
+                            disabled={true}
+                          />
+                        </div>
+                        <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                          <label className="form-label">
+                            Organisation <span className="error-message">*</span>
+                          </label>
+                          <input
+                            className="form-control input-field"
+                            type="text"
+                            placeholder="Enter Organisation"
+                            id="organisation"
+                            formcontrolname="organisation"
+                            name="organisation"
+                            value={formFields.organisation}
+                            disabled={true}
+                          />
+                        </div>
+                        <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                          <label className="form-label">
+                            GST <span className="error-message">*</span>
+                          </label>
+                          <input
+                            className="form-control input-field"
+                            type="text"
+                            placeholder="Enter GST"
+                            id="gst"
+                            formcontrolname="gst"
+                            name="gst"
+                            value={formFields.gst}
+                            disabled={true}
+                          />
+                        </div>
+                        
+                        <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                          <label className="form-label">
                             Email <span className="error-message">*</span>
                           </label>
                           <input
@@ -462,6 +536,38 @@ const ChannelAddUserScreen = () => {
                             disabled={true}
                           />
                         </div>
+                        <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                          <label className="form-label">
+                            State <span className="error-message">*</span>
+                          </label>
+                          <input
+                            className="form-control input-field"
+                            formcontrolname="state"
+                            type="text"
+                            name="state"
+                            value={formFields.state_name}
+                            disabled={true}
+                          />
+                        </div>
+                        <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                          <label className="form-label">
+                            City <span className="error-message">*</span>
+                          </label>
+                          <input
+                            className="form-control input-field"
+                            formcontrolname="City"
+                            type="text"
+                            name="city"
+                            value={formFields.city_name}
+                            disabled={true}
+                          />
+                        </div>
+                        <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                          
+                        </div>
+                        <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                          
+                        </div>
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3"></div>
                         {inputFields.map((input, index) => (
                           <div
@@ -480,14 +586,7 @@ const ChannelAddUserScreen = () => {
                                 className="form-control input-field"
                                 disabled={true}
                               />
-                              {/* {formFields.isUploadVerified === false &&
-                          formFields[input.field] && (
-                            <img
-                              src={URL.createObjectURL(formFields[input.field])}
-                              alt={`${input.label} Preview`}
-                              style={{ maxWidth: "100px", maxHeight: "100px" }}
-                            />
-                          )} */}
+                              
                               {input.field === "aadhar" &&
                               formFields[input.field] ? (
                                 <img

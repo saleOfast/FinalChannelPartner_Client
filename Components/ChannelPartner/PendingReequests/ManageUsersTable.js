@@ -28,6 +28,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
     const columns = [
         {
+            name: 'user_code',
+            label: "Account Name",
+            options: {
+                filter: true,
+            }
+        },
+        {
             name: 'user',
             label: "Name",
             options: {
@@ -49,12 +56,20 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'user_code',
-            label: "User Code",
+            name: 'organisation',
+            label: "Organisation",
             options: {
                 filter: true,
             }
         },
+        {
+            name: 'gst',
+            label: "GST",
+            options: {
+                filter: true,
+            }
+        },
+       
         {
             name: 'doc_verification',
             label: "Status",
@@ -80,7 +95,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
                     return (
                         <div className="table_btns">
-                            <Link href={`/CHANNEL/ChannelAddUsers?id=${value}&mode=view`}>
+                            <Link href={`/CHANNEL/ChannelAddUsersReject?id=${value}&mode=view`}>
                                 <button
                                     className="action_btn"
                                     title='View'>

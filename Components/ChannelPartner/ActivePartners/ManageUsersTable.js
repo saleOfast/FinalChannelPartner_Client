@@ -11,50 +11,95 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
     const columns = [
         {
-            name: 'user',
-            label: "Name",
-            options: {
-                filter: true,
-            }
-        },
-        {
-            name: 'email',
-            label: "E-mail",
-            options: {
-                filter: true,
-            }
-        },
-        {
-            name: 'contact_number',
-            label: "Mobile No",
-            options: {
-                filter: true,
-            }
-        },
-        {
             name: 'user_code',
-            label: "User Code",
+            label: "Account ID",
             options: {
                 filter: true,
             }
         },
         {
-            name: 'db_role',
-            label: "Role",
+            name: 'user',
+            label: "Account Name",
+            options: {
+                filter: true,
+            }
+        },
+        {
+            name: 'createdAt',
+            label: "Leads Count",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
+                    const date = new Date(value);
+                    const formattedDate = date.toISOString().split('T')[0];
                     return (
                         <div className='status_box'>
-                            {value && <span >{value.role_name}</span>}
+                            {formattedDate}
                         </div>
                     )
                 }
             }
         },
         {
+            name: 'user',
+            label: "Leads Count",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <div className='status_box'>
+                            108
+                        </div>
+                    )
+                }
+            }
+        },
+        {
+            name: 'user',
+            label: "Bookings Count",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <div className='status_box'>
+                            24
+                        </div>
+                    )
+                }
+            }
+        },
+        // {
+        //     name: 'email',
+        //     label: "E-mail",
+        //     options: {
+        //         filter: true,
+        //     }
+        // },
+        // {
+        //     name: 'contact_number',
+        //     label: "Mobile No",
+        //     options: {
+        //         filter: true,
+        //     }
+        // },
+        
+        // {
+        //     name: 'db_role',
+        //     label: "Role",
+        //     options: {
+        //         filter: true,
+        //         customBodyRender: (value, tableMeta, updateValue) => {
+        //             return (
+        //                 <div className='status_box'>
+        //                     {value && <span >{value.role_name}</span>}
+        //                 </div>
+        //             )
+        //         }
+        //     }
+        // },
+        {
             name: 'reportToUser',
-            label: "Report/Assign To",
+            label: "Assigned to",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -75,66 +120,79 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     return (
                         <div className='status_box'>
                             {value ? <span className='active status_btn'>active</span> :
-                                <span className='inactive status_btn'>inactive</span>}
+                                 <span className='inactive status_btn'>inactive</span>}
                         </div>
                     )
                 }
             }
         },
-        // {
-        //     name: 'user_code',
-        //     label: "Action",
-        //     options: {
-        //         filter: true,
-        //         customBodyRender: (value, tableMeta, updateValue) => {
-        //             return (
-        //                 <div className="table_btns">
-        //                     <Link href={`/AddUsers?id=${value}&mode=view`}>
-        //                         <button
-        //                             className="action_btn"
-        //                             title='View'>
-        //                             <ViewIcon />
-        //                         </button>
-        //                     </Link>
+        {
+            name: 'user_code',
+            label: "Action",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <div className="table_btns">
+                            <Link href={`/CHANNEL/ViewActiveUsers?id=${value}&mode=view`}>
+                                <button
+                                    className="action_btn"
+                                    title='View'>
+                                    <ViewIcon />
+                                </button>
+                            </Link>
 
-        //                     <Link href={`/AddUsers?id=${value}&mode=edit`}>
-        //                         <button
-        //                             className="action_btn"
-        //                             title='Edit'>
-        //                             <EditIcon />
-        //                         </button>
-        //                     </Link>
-        //                     {tableMeta.rowData[5] ?
-        //                         <button
-        //                             onClick={() => disableConfirm(value, 0)}
-        //                             className="action_btn"
-        //                             title='Disable'>
-        //                             <DisableIcon />
-        //                         </button>
-        //                         : <button
-        //                             onClick={() => disableConfirm(value, 1)}
-        //                             className="action_btn x2"
-        //                             title='Enable'>
-        //                             <CheckIcon />
-        //                         </button>}
+                            <Link href={`/CHANNEL/ViewActiveUsers?id=${value}&mode=edit`}>
+                                <button
+                                    className="action_btn"
+                                    title='Edit'>
+                                    <EditIcon />
+                                </button>
+                            </Link>
+                            {/* {tableMeta.rowData[5] ?
+                                <button
+                                    onClick={() => disableConfirm(value, 0)}
+                                    className="action_btn"
+                                    title='Disable'>
+                                    <DisableIcon />
+                                </button>
+                                : <button
+                                    onClick={() => disableConfirm(value, 1)}
+                                    className="action_btn x2"
+                                    title='Enable'>
+                                    <CheckIcon />
+                                </button>}
 
-        //                     <button
-        //                         onClick={() => deleteConfirm(value, 0)}
-        //                         className="action_btn"
-        //                         title='Delete'>
-        //                         <DeleteIcon />
-        //                     </button>
-        //                 </div>
-        //             )
-        //         }
-        //     }
-        // },
+                            <button
+                                onClick={() => deleteConfirm(value, 0)}
+                                className="action_btn"
+                                title='Delete'>
+                                <DeleteIcon />
+                            </button> */}
+                        </div>
+                    )
+                }
+            }
+        },
     ];
 
     const options = {
-        selectableRows: 'none',
-        responsive: "standard"
+        selectableRows: 'multiple',
+        responsive: "standard",
+        customHeadRender: (columnMeta, handleToggleColumn) => {
+            return (
+                <thead>
+                    <tr style={{ backgroundColor: 'blue', color: 'white' }}> {/ Set background color to blue and text color to white /}
+                        {columnMeta.map((column, columnIndex) => (
+                            <th key={columnIndex}>{column.label}</th>
+                        ))}
+                    </tr>
+                </thead>
+            );
+        },
     };
+    
+    
 
     return (
         <>

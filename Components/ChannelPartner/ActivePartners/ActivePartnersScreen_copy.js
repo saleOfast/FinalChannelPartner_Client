@@ -227,7 +227,7 @@ const ActivePartnersScreen_copy = () => {
                 actionType={deleteHandler}
                 title={"Are You Sure you want to Delete ?"} />
 
-            <div className="w-100 ps-4 pe-4">
+            <div className="w-100 ps-4 pe-4" style={{marginTop:"-50px"}}>
                 {/* <div className="bread_head">
                     <h3 className="content_head">USER MASTER </h3>
                     <nav aria-label="breadcrumb">

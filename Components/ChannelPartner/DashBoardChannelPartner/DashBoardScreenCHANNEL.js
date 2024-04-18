@@ -2,8 +2,8 @@ import React from 'react'
 
 const DashBoardScreenCHANNEL = () => {
   return (
-    <>
-        <section className="Reports-Dashboard w-100" style={{overflowY:"scroll", marginTop:"-50px"}} >
+    <div className='ps-4 pe-4 w-100' style={{overflowY:"scroll", marginTop:"-30px"}}>
+        <section className="Reports-Dashboard w-100 "  >
   <div className="container ">
     <div className="row">
       <div className="col-12">
@@ -16,7 +16,7 @@ const DashBoardScreenCHANNEL = () => {
   </div>
 </section>
 
-    </>
+    </div>
   )
 }
 

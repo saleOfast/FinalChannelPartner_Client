@@ -12,9 +12,10 @@ const Layout = ({Component, pageProps}) => {
     const userLogin = useSelector((state) => state.userLogin.value);
     const permission = useSelector((state) => state.permissionMode.value);
     const allowedpermission = useSelector((state) => state.permissionMode.allowedPermissions );
+    const isLoading=useSelector((state)=>state.loader.isLoading)
     
     const [showBasic, setShowBasic] = useState(false)
-    const [sidebarMode,setSidebarMode]=useState('')
+    const [sidebarMode,setSidebarMode]=useState('') 
     const [allowedPermissions,setAllowedPermissions]=useState([])
     const [topnavPermission,setTopnavPermission]=useState("")
    
@@ -68,20 +69,23 @@ const Layout = ({Component, pageProps}) => {
     <>
     
             {showBasic ?
-                <main className="main_wrapper">
-                  
+            <>
+            {
+              isLoading ?<Loader/> :
+              <main className="main_wrapper">
             <Topnav allowedPermissions={allowedPermissions} topnavPermission={topnavPermission} />
          
           <div className="content_wrapper">
-             
               {sidebarMode==="crm" && <SideBar />}
               {sidebarMode==="dms" && <SidebarDMS/> }
               {/* {sidebarMode==="channel" && <SideBarChannel    />} */}
               {sidebarMode==="sales" && <SideBarSales    />}
               <Component {...pageProps} />
-            
-                </div>
+          </div>
         </main>
+            }
+            </>
+        
       : 
       <Component {...pageProps} />
     }
@@ -91,3 +95,5 @@ const Layout = ({Component, pageProps}) => {
 }
 
 export default Layout
+
+

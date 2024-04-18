@@ -13,7 +13,8 @@ import Layout from '../Components/layout/layout';
 import Tabs from '../Components/DMS/Tabs/Tabs';
 import { hasCookie } from 'cookies-next';
 import { Fragment } from 'react';
-// import dynamic from "next/dynamic";
+import CP_NavBar from '../Components/ChannelPartner/CP_NavBar/CP_NavBar';
+import dynamic from "next/dynamic";
 
 
 
@@ -33,6 +34,7 @@ function App({ Component, pageProps }) {
                   draggable
                   pauseOnHover
                   theme="light" />
+      {hasCookie("channel") ? <CP_NavBar/>  : <Fragment></Fragment> }  
       <Layout Component={Component} pageProps={pageProps}  />
       {hasCookie("dms") ? <Tabs/>  : <Fragment></Fragment> }  
         </SSRProvider>
@@ -43,6 +45,6 @@ function App({ Component, pageProps }) {
 }
 
 
-// export default dynamic(()=>Promise.resolve(App),{ssr:false})
+export default dynamic(()=>Promise.resolve(App),{ssr:false})
 
-export default App;
+// export default App;

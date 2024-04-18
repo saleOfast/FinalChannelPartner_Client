@@ -31,8 +31,12 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
 
     setshowConfirm(!showConfirm);
     dispatch(clearMode());
+    if (hasCookie("channel")) {
+      router.push(isAdminMode ? "/Admin" : "/CHANNEL/Signin");
+    } else {
+      router.push(isAdminMode ? "/Admin" : "/");
+    }
     dispatch(isAdminMode ? LoggedOut() : userLogOut());
-    router.push(isAdminMode ? "/Admin" : "/");
     toast.success("Logged Out Successfully");
   };
 

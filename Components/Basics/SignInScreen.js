@@ -11,6 +11,8 @@ import { Baseurl } from '../../Utils/Constants';
 import axios from 'axios';
 import { validEmail } from '../../Utils/regex';
 import { assignPermissions, crm, dms,sales,channel } from '../../store/permissionSlice';
+import { startLoading, stopLoading } from '../../store/loaderSlice';
+
 
 export default function SignInScreen({ setLoggedIn }) {
     const router = useRouter()
@@ -54,6 +56,7 @@ export default function SignInScreen({ setLoggedIn }) {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+        dispatch(startLoading())
         if (userForm.email === "" || userForm.email.length < 1) {
             toast.error('Email is Empty');
         }
@@ -72,12 +75,14 @@ export default function SignInScreen({ setLoggedIn }) {
                 })
 
                 if (res.status === 200) {
+                    dispatch(stopLoading())
                     dispatch(userMode())
                     dispatch(UserLogIN())
                     setCookie('user', 'true');
                     setCookie('sideUser', 'true');
                     setCookie('token', res.data.token);
                     setCookie('userInfo', res.data.userData);
+                    setCookie('clientLogo', res.data.Logo[0].logo);
                     setCookie('db_name', res.data.userData.db_name);
                     initialPermission(res.data.platformData[0].platform_name)
                     assignPermission(res.data.platformData)
@@ -86,6 +91,7 @@ export default function SignInScreen({ setLoggedIn }) {
                 }
 
             } catch (error) {
+                dispatch(stopLoading())
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 }

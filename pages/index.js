@@ -18,7 +18,7 @@ export default  function Home() {
   const dbMode = useSelector((state) => state.dbMode.value)
   const loggedIn = useSelector((state) => state.userLogin.value)
   const permission = useSelector((state) => state.permissionMode.value);
-  const [dashbarMode,setDashboardMode]=useState();
+  const [dashbarMode,setDashboardMode]= useState();
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default  function Home() {
 
   useEffect(() => {
     checkDashboard()
-  }, [ permission]);
+  }, [permission]);
 
   const assignDashboard=(dashbarMode)=>{
     
@@ -66,7 +66,7 @@ export default  function Home() {
 
         case "channel":
           return(
-            dbMode==="user" ? <DashBoardScreenCHANNEL /> : <Admindashboard />
+            dbMode==="user" ? <DashBoardScreenCHANNEL /> : <DashBoardScreenCHANNEL />
           )
           break;
 
@@ -86,7 +86,6 @@ export default  function Home() {
     return (
       <>
         {loggedIn ? (
-          // <>{dbMode === "user" ? <DashBoardScreen /> : <Admindashboard />}</>\
           assignDashboard(dashbarMode)
         ) : (
           <SignInScreen />

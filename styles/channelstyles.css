@@ -553,6 +553,27 @@
   color: #293790;
 }
 
+/* Dashboard Start */
+.Reports-Dashboard{
+  background: white;
+}
+
+.Reports-Dashboard .navbar-toggler:focus{
+  outline: none;
+}
+.Reports-Dashboard .navbar-nav .nav-link.active{
+  color: #EC2027;
+  padding:0px 0px 7px 0px;
+  border-bottom: 2px solid #EC2027;
+}
+.Reports-Dashboard .nav-link{
+  color: #293790;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 0;
+}
+/* Dashboard End */
+
 @media screen and (max-width: 992px) {
   .Sign-In .Perfect-Home {
     font-size: 38px;
@@ -576,6 +597,12 @@
     margin-left: 0;
     width: 66px;
   }
+
+  /* DashBoard Start */
+  .Reports-Dashboard #navbarSupportedContent{
+    margin-top: 10px;
+   }
+  /* DashBoard End */
 }
 
 .resend-label {

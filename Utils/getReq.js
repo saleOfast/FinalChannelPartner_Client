@@ -3,8 +3,8 @@ import { getCookie, hasCookie } from 'cookies-next';
 import { Baseurl } from './Constants';
 import { toast } from 'react-toastify';
 
-export async function fetchData(url, setData, errorToast, setErrorToast) {
-    if (hasCookie('token')) {
+export async function fetchData(url, setData, errorToast, setErrorToast, bypass=false) {
+    if (hasCookie('token') || bypass ) {
         const token = getCookie('token');
         const db_name = getCookie('db_name');
 

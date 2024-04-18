@@ -76,7 +76,7 @@ const Layout = ({Component, pageProps}) => {
              
               {sidebarMode==="crm" && <SideBar />}
               {sidebarMode==="dms" && <SidebarDMS/> }
-              {sidebarMode==="channel" && <SideBarChannel    />}
+              {/* {sidebarMode==="channel" && <SideBarChannel    />} */}
               {sidebarMode==="sales" && <SideBarSales    />}
               <Component {...pageProps} />
             

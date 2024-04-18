@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
-import { Baseurl } from '../../Utils/Constants';
+import { Baseurl, filesUrl } from '../../Utils/Constants';
 import axios from 'axios';
 import { useRouter } from 'next/router'
 import { getCookie, hasCookie } from 'cookies-next';
@@ -37,10 +37,13 @@ const AddClientScreen = () => {
         pan: '',
         gst: '',
         address: "" ,
-        isCRM:true ,
-        isDMS:false ,
-        isSALES:false ,
-        isCHANNEL:false ,
+        isCRM:1 ,
+        isDMS:null ,
+        isSALES:null ,
+        isCHANNEL:null ,
+        logo:null,
+        logoPreview:null,
+        _imageName: null
     })
 
     const minDate = new Date().toISOString().slice(0, 16);
@@ -89,6 +92,8 @@ const AddClientScreen = () => {
                 isDMS: false,
                 isSALES: false,
                 isCHANNEL: false,
+                _imageName:tempDate.logo,
+                logoPreview: `${filesUrl}`+`/logo/images${tempDate?.logo}`
                 });
 
                 tempDate.db_client_platforms?.forEach(element => {
@@ -149,8 +154,13 @@ const AddClientScreen = () => {
 
                 }
             }
+            const formData=new FormData();
+            for (const [key, value] of Object.entries(userInfo)) {
+              formData.append(key, value);
+            }
             try {
-                const res = await axios.post(Baseurl + `/db`, userInfo, header);
+
+                const res = await axios.post(Baseurl + `/db`, formData, header);
                 if (res.status === 200 || res.status === 204) {
                     toast.success('Client Added Successfully')
                     router.push('/Admin');
@@ -194,9 +204,13 @@ const AddClientScreen = () => {
 
                 }
             }
+            const formData=new FormData();
+            for (const [key, value] of Object.entries(userInfo)) {
+              formData.append(key, value);
+            }
             try {
               console.log("update"+userInfo)
-                const res = await axios.put(Baseurl + `/db/admin`, userInfo, header);
+                const res = await axios.put(Baseurl + `/db/admin`, formData, header);
                 if (res.status === 200 || res.status === 204) {
                     toast.success('Client Updated Successfully')
                     router.push('/Admin');
@@ -296,6 +310,22 @@ const AddClientScreen = () => {
         }
     };
 
+    const handleImageChange = (e) => {
+      if (e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          
+          setUserInfo({
+            ...userInfo,
+            logo:e.target.files[0],
+            logoPreview:reader.result
+          });
+        };
+        
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    };
+
     useEffect(() => {
         getCountryList()
         getState()
@@ -326,6 +356,8 @@ const AddClientScreen = () => {
             getSingleData(id)
         }
     }, [router.isReady, id])
+
+    
 
     return (
       <div className={`main_Box  ${sideView}`}>
@@ -638,91 +670,120 @@ const AddClientScreen = () => {
                     </span>
                   </div>
                 </div>
-              {/* for changing apps permission when we click on edit */}
-                {
-                  editMode ?(
-                    <div className="col-xl-6 col-md-6 col-sm-12 col-12 ">
-                        <div className='input_box'>
-                        <label htmlFor='task_name'> Apps Permission *</label><br/>
-                        <div className=" d-flex flex-wrap justify-content-start gap-5 py-2 ">
-                            <div className="form-check">
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option1"
-                                id="option1"
-                                checked={userInfo.isCRM}
-                                onChange={(e) => {
-                                    setUserInfo({ ...userInfo, isCRM: e.target.checked });
-                                    // setErrorData({ ...errorData, city_id: "" });
-                                  }}
-                            />
-                            <label className="form-check-label" htmlFor="option1">
-                                CRM
-                            </label>
-                            </div>
-                            <div className="form-check">
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option2"
-                                id="option2"
-                                checked={
-                                  userInfo.isDMS ? userInfo.isDMS : false
-                                }
-                                onChange={(e) => {
-                                    setUserInfo({ ...userInfo, isDMS: e.target.checked });
-                                    // setErrorData({ ...errorData, city_id: "" });
-                                  }}
-                            />
-                            <label className="form-check-label" htmlFor="option2">
-                                DMS
-                            </label>
-                            </div>
-                            <div className="form-check">
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option3"
-                                id="option3"
-                                checked={
-                                  userInfo.isSALES ? userInfo.isSALES : false
-                                }
-                                onChange={(e) => {
-                                    setUserInfo({ ...userInfo, isSALES: e.target.checked });
-                                    // setErrorData({ ...errorData, city_id: "" });
-                                  }}
-                            />
-                            <label className="form-check-label" htmlFor="option3">
-                                SALES
-                            </label>
-                            </div>
-                            <div className="form-check">
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option4"
-                                id="option4"
-                                checked={
-                                  userInfo.isCHANNEL ? userInfo.isCHANNEL : false
-                                }
-                                onChange={(e) => {
-                                    setUserInfo({ ...userInfo, isCHANNEL: e.target.checked });
-                                    // setErrorData({ ...errorData, city_id: "" });
-                                  }}
-                            />
-                            <label className="form-check-label" htmlFor="option4">
-                                CHANNEL
-                            </label>
-                            </div>
+                {/* for changing apps permission when we click on edit */}
+                {editMode ? (
+                  <>
+                         <div className="col-xl-6 col-md-6 col-sm-12 col-12 ">
+                    <div className="input_box">
+                      <label htmlFor="task_name"> Apps Permission *</label>
+                      <br />
+                      <div className=" d-flex flex-wrap justify-content-start gap-5 py-2 ">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value="option1"
+                            id="option1"
+                            checked={userInfo.isCRM}
+                            onChange={(e) => {
+                              setUserInfo({
+                                ...userInfo,
+                                isCRM: e.target.checked ? 1 : 0,
+                              });
+                              setErrorData({ ...errorData, isCRM: "" });
+                            }}
+                          />
+                          <label className="form-check-label" htmlFor="option1">
+                            CRM
+                          </label>
                         </div>
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value="option2"
+                            id="option2"
+                            checked={userInfo.isDMS ? userInfo.isDMS : false}
+                            onChange={(e) => {
+                              setUserInfo({
+                                ...userInfo,
+                                isDMS: e.target.checked ? 1 : 0,
+                              });
+                              setErrorData({ ...errorData, isDMS: "" });
+                            }}
+                          />
+                          <label className="form-check-label" htmlFor="option2">
+                            DMS
+                          </label>
                         </div>
-                   
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value="option3"
+                            id="option3"
+                            checked={
+                              userInfo.isSALES ? userInfo.isSALES : false
+                            }
+                            onChange={(e) => {
+                              setUserInfo({
+                                ...userInfo,
+                                isSALES: e.target.checked ? 1 : 0,
+                              });
+                              setErrorData({ ...errorData, isSALES: "" });
+                            }}
+                          />
+                          <label className="form-check-label" htmlFor="option3">
+                            SALES
+                          </label>
+                        </div>
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value="option4"
+                            id="option4"
+                            checked={
+                              userInfo.isCHANNEL ? userInfo.isCHANNEL : false
+                            }
+                            onChange={(e) => {
+                              setUserInfo({
+                                ...userInfo,
+                                isCHANNEL: e.target.checked ? 1 : 0,
+                              });
+                              setErrorData({ ...errorData, isCHANNEL: "" });
+                            }}
+                          />
+                          <label className="form-check-label" htmlFor="option4">
+                            CHANNEL
+                          </label>
+                        </div>
+                      </div>
                     </div>
-                  ) :null
-                }
-
-
+                  </div>
+                   <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                   <div className="d-flex flex-column gap-1">
+                     <label className="form-label">Logo</label>
+                     <input
+                       type="file"
+                       onChange={(e) => handleImageChange(e)}
+                       className="form-control input-field"
+                     />
+                     {userInfo?.logoPreview && (
+                       <img
+                         src={userInfo?.logoPreview}
+                         alt={` Preview`}
+                         style={{
+                           maxWidth: "100px",
+                           maxHeight: "100px",
+                         }}
+                       />
+                     )}
+                   </div>
+                 </div>
+                  </>
+                 
+                ) : null}
 
                 {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className="input_box">
@@ -855,73 +916,118 @@ const AddClientScreen = () => {
                     </div>
 
                     <div className="col-xl-6 col-md-6 col-sm-12 col-12 ">
-                        <div className='input_box'>
-                        <label htmlFor='task_name'> Apps Permission *</label><br/>
+                      <div className="input_box">
+                        <label htmlFor="task_name"> Apps Permission *</label>
+                        <br />
                         <div className=" d-flex flex-wrap justify-content-start gap-5 py-2 ">
-                            <div className="form-check">
+                          <div className="form-check">
                             <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option1"
-                                id="option1"
-                                checked={true}
-                                onChange={(e) => {
-                                    setUserInfo({ ...userInfo, isCRM: e.target.checked });
-                                    // setErrorData({ ...errorData, city_id: "" });
-                                  }}
+                              className="form-check-input"
+                              type="checkbox"
+                              value="option1"
+                              id="option1"
+                              checked={true}
+                              // onChange={(e) => {
+                              //   setUserInfo({
+                              //     ...userInfo,
+                              //     isCRM: e.target.checked
+                              //   });
+                              //   setErrorData({ ...errorData, city_id: "" });
+                              // }}
                             />
-                            <label className="form-check-label" htmlFor="option1">
-                                CRM
+                            <label
+                              className="form-check-label"
+                              htmlFor="option1"
+                            >
+                              CRM
                             </label>
-                            </div>
-                            <div className="form-check">
+                          </div>
+                          <div className="form-check">
                             <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option2"
-                                id="option2"
-                                onChange={(e) => {
-                                    setUserInfo({ ...userInfo, isDMS: e.target.checked });
-                                    // setErrorData({ ...errorData, city_id: "" });
-                                  }}
+                              className="form-check-input"
+                              type="checkbox"
+                              value="option2"
+                              id="option2"
+                              onChange={(e) => {
+                                setUserInfo({
+                                  ...userInfo,
+                                  isDMS: e.target.checked ? 1 : 0,
+                                });
+                                setErrorData({ ...errorData, isDMS: "" });
+                              }}
                             />
-                            <label className="form-check-label" htmlFor="option2">
-                                DMS
+                            <label
+                              className="form-check-label"
+                              htmlFor="option2"
+                            >
+                              DMS
                             </label>
-                            </div>
-                            <div className="form-check">
+                          </div>
+                          <div className="form-check">
                             <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option3"
-                                id="option3"
-                                onChange={(e) => {
-                                    setUserInfo({ ...userInfo, isSALES: e.target.checked });
-                                    // setErrorData({ ...errorData, city_id: "" });
-                                  }}
+                              className="form-check-input"
+                              type="checkbox"
+                              value="option3"
+                              id="option3"
+                              onChange={(e) => {
+                                setUserInfo({
+                                  ...userInfo,
+                                  isSALES: e.target.checked ? 1 : 0,
+                                });
+                                setErrorData({ ...errorData, isSALES: "" });
+                              }}
                             />
-                            <label className="form-check-label" htmlFor="option3">
-                                SALES
+                            <label
+                              className="form-check-label"
+                              htmlFor="option3"
+                            >
+                              SALES
                             </label>
-                            </div>
-                            <div className="form-check">
+                          </div>
+                          <div className="form-check">
                             <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option4"
-                                id="option4"
-                                onChange={(e) => {
-                                    setUserInfo({ ...userInfo, isCHANNEL: e.target.checked });
-                                    // setErrorData({ ...errorData, city_id: "" });
-                                  }}
+                              className="form-check-input"
+                              type="checkbox"
+                              value="option4"
+                              id="option4"
+                              onChange={(e) => {
+                                setUserInfo({
+                                  ...userInfo,
+                                  isCHANNEL: e.target.checked ? 1 : 0,
+                                });
+                                setErrorData({ ...errorData, isCHANNEL: "" });
+                              }}
                             />
-                            <label className="form-check-label" htmlFor="option4">
-                                CHANNEL
+                            <label
+                              className="form-check-label"
+                              htmlFor="option4"
+                            >
+                              CHANNEL
                             </label>
-                            </div>
+                          </div>
                         </div>
-                        </div>
-                   
+                      </div>
+                    </div>
+
+                    <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                      <div className="d-flex flex-column gap-1">
+                        <label className="form-label">Logo</label>
+                        <input
+                          type="file"
+                          onChange={(e) => handleImageChange(e)}
+                          className="form-control input-field"
+                        />
+                        {userInfo?.logoPreview && (
+                          <img
+                            src={userInfo?.logoPreview}
+                            alt={` Preview`}
+                            style={{
+                              maxWidth: "100px",
+                              maxHeight: "100px",
+                            }}
+                          />
+                        )}
+                      </div>
                     </div>
 
                     <div className="other_details_info">

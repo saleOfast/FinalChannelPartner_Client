@@ -144,7 +144,6 @@ const ChannelPartnerRegisterScreen = () => {
       );
       if (data.status === 200) {
         toast.success(data.message);
-        setFormFields({ ...formFields, isSubmitted: true });
         router.push("/ChannelPartnerRegister_Next");
       }
     } catch (error) {
@@ -162,15 +161,7 @@ const ChannelPartnerRegisterScreen = () => {
     { label: "Bank Cancelled Cheque", field: "cheque" },
   ];
 
-  if (formFields.isSubmitted) {
-    return (
-      <div className="container mt-5">
-        <div className="alert alert-success" role="alert">
-          Document uploaded successfully. Document verification in progress...
-        </div>
-      </div>
-    );
-  }
+  
 
   return (
     <div className="d-block w-100">

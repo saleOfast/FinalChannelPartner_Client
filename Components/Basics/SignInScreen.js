@@ -15,8 +15,6 @@ import { assignPermissions, crm, dms,sales,channel } from '../../store/permissio
 export default function SignInScreen({ setLoggedIn }) {
     const router = useRouter()
     const dispatch = useDispatch()
-    const dbMode = useSelector((state) => state.dbMode.value)
-    const topnavPermission=["crm","dms"]
     const [userForm, setUserForm] = useState({
         email: "",
         password: ""

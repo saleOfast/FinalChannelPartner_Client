@@ -14,7 +14,7 @@ const Tabs = ({children}) => {
     <div >
       <div className="card">
         <nav>
-          <div className="nav nav-tabs d-flex justify-content-between"  id="nav-tab" role="tablist">
+          <div className="nav nav-tabs d-flex justify-content-between" style={{right:'0px'}}  id="nav-tab" role="tablist">
             <button className="nav-link active d-flex flex-column gap-2 align-items-center" onClick={()=>{
               router.push("/")
             }} id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">

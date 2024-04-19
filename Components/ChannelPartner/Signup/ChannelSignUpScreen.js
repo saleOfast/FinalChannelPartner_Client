@@ -234,13 +234,13 @@ const ChannelSignUpScreen = () => {
 
   return (
     <>
-      <section className="Sign-Up">
+      <section className="Sign-Up pt-4" style={{padding:'0 16px'}}>
         <div className="container">
           <div className="row">
             <div className="col-12 col-md-7">
               <div className="row gx-3">
-                <div className="Sign-In-logo">
-                  <img src="/ChannelPartner/logo.png" alt />
+                <div className="Sign-In-logo pb-4">
+                  <img style={{height: '90px'}} src="/ChannelPartner/logo.png" alt />
                 </div>
                 <div className="col-6">
                   <div
@@ -320,18 +320,10 @@ const ChannelSignUpScreen = () => {
             </div>
             <div className="col-12 col-md-5 d-flex justify-content-center">
               <div className="Sign-Up_Sign-In">
-                <h3 className="Perfect-Home">Find Your Perfect Home. </h3>
+                <h3 className="Perfect-Home ps-2">Find Your Perfect Home. </h3>
                 <div className="underline" />
-                <div className="d-flex pt-5">
-                  <div
-                    //  href="/CHANNEL/Signin"
-                    className="nav-link d-flex flex-column gap-2 align-items-center pb-3 Sign-In-btn"
-                    id="Sign-In"
-                    style={{ backgroundColor: "#ecf0ff", color: "#9c9aa5" }}
-                  >
-                    Sign In
-                  </div>
-                  <div
+                <div className="d-flex pt-5 ps-2">
+                                   <div
                     className="nav-link d-flex flex-column gap-2 align-items-center pb-3 Sign-Up-btn text-white"
                     id="Sign-Up"
                     data-bs-toggle="tab"
@@ -348,7 +340,7 @@ const ChannelSignUpScreen = () => {
                         id="survey-form"
                         method="GET"
                         action
-                        className="d-flex flex-column gap-3"
+                        className="d-flex flex-column gap-3 mb-4"
                         onSubmit={handleSubmit}
                       >
                         <div className="d-flex gap-2">

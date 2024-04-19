@@ -127,7 +127,7 @@
 }
 .Sign-In .Sign-In_Sign-Up {
   width: 358px;
-  height: 358px;
+
 }
 .Sign-In_Sign-Up .underline {
   background-color: #ec2027;
@@ -143,7 +143,7 @@
   padding: 8px 20px 8px 20px;
   gap: 10px;
   border-radius: 8px;
-  opacity: 0px;
+  
 }
 .Sign-In_Sign-Up .Sign-Up-btn {
   background-color: #ecf0ff;
@@ -153,7 +153,7 @@
   padding: 8px 20px 8px 20px;
   gap: 10px;
   border-radius: 8px;
-  opacity: 0px;
+  
 }
 .Sign-In_Sign-Up .nav-tabs .nav-link.active {
   background-color: #293790 !important;
@@ -171,7 +171,7 @@
   gap: 10px;
   border-radius: 8px;
   border: 1px solid #a1a7cf;
-  opacity: 0px;
+  
 }
 .Sign-In_Sign-Up .form ::placeholder {
   color: #9c9aa5;
@@ -310,7 +310,7 @@
   padding: 8px 20px 8px 20px;
   gap: 10px;
   border-radius: 8px;
-  opacity: 0px;
+  
 }
 .Sign-Up_Sign-In .Sign-Up-btn {
   background-color: #ecf0ff;
@@ -320,7 +320,7 @@
   padding: 8px 20px 8px 20px;
   gap: 10px;
   border-radius: 8px;
-  opacity: 0px;
+  
 }
 .Sign-Up_Sign-In .nav-tabs .nav-link.active {
   background-color: #293790 !important;
@@ -338,7 +338,7 @@
   gap: 10px;
   border-radius: 8px;
   border: 1px solid #a1a7cf;
-  opacity: 0px;
+  
 }
 .Sign-Up_Sign-In .form ::placeholder {
   color: #9c9aa5;
@@ -378,7 +378,7 @@
 /* Signup SEnd */
 
 .Sign-In .Sign-In-logo img {
-  height: 136px;
+  height: 90px;
 }
 .Sign-In .Perfect-Home {
   font-size: 48px;
@@ -493,7 +493,7 @@
   padding: 8px 20px 8px 20px;
   gap: 10px;
   border-radius: 8px;
-  opacity: 0px;
+  
 }
 .Sign-In_Sign-Up .Sign-Up-btn {
   background-color: #ecf0ff;
@@ -503,7 +503,7 @@
   padding: 8px 20px 8px 20px;
   gap: 10px;
   border-radius: 8px;
-  opacity: 0px;
+  
 }
 .Sign-In_Sign-Up .nav-tabs .nav-link.active {
   background-color: #293790 !important;
@@ -521,7 +521,7 @@
   gap: 10px;
   border-radius: 8px;
   border: 1px solid #a1a7cf;
-  opacity: 0px;
+  
   box-shadow: 0px 0px 4px 0px #a1a7cf;
 }
 .Sign-In_Sign-Up .form ::placeholder {

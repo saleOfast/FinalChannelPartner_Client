@@ -90,7 +90,7 @@ const ForgotPassword = () => {
         <div className="container-fluid">
           <div className="row">
             <div className="col-12">
-              <div className="row d-flex align-items-end">
+              <div className="row">
                 <div className="col-7 Sign-In-logo">
                   <img src="/ChannelPartner/logo.png" alt="login" />
                 </div>

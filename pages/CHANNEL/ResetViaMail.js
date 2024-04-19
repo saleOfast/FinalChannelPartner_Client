@@ -7,10 +7,11 @@ import { Baseurl } from "../../Utils/Constants";
 
 const ForgotPassword = () => {
   const router = useRouter();
-  
+  const {tkn } = router.query;
   const [email] = useState(getCookie("resetPasswordEmail"));
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [token, setToken] = useState('')
 
   const handleSubmit = async () => {
     if (!newPassword.trim()) {
@@ -31,30 +32,37 @@ const ForgotPassword = () => {
       return;
     }
 
-    try {
-      // Make the API request using Axios
-      const response = await axios.put(`${Baseurl}/db/users/cp/verify`, {
-        email: email.trim(),
-        password: newPassword,
-      });
-      if (response.data.status == 200) {
-        toast.success(response.data.message);
-        router.push("/CHANNEL/Signin");
-      } else {
-        toast.error(response.data.message);
+    let header = {
+      headers: {
+          Accept: "application/json",
       }
-    } catch (error) {
-      console.log("error", error);
-      toast.error("Something went wrong.");
     }
+
+    try {
+      const response = await axios.put(Baseurl + `/db/users/forget`, {
+          token,
+          password: newPassword
+      });
+      if (response.status === 204 || response.status === 200) {
+          toast.success(response.data.message)
+          router.push('/CHANNEL/Signin')
+      }
+  } catch (error) {
+      console.log(error);
+      if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+      }
+      else {
+          toast.error('Something went wrong!')
+      }
+  }
   };
 
   useEffect(() => {
-    if (!hasCookie("resetPasswordEmail")) {
-      toast.error("Email not found.");
-      router.push("/CHANNEL/ForgotPassword");
-    }
-  }, [router]);
+    if (!router.isReady) return
+    const myArray = tkn?.slice(4, tkn.length)
+    setToken(myArray)
+}, [router.isReady, tkn])
 
   return (
     <>
@@ -92,18 +100,6 @@ const ForgotPassword = () => {
                     <div className="perfect-home-form pt-1">
                       {/* FORMULAIRE */}
                       <form className="form">
-                        <div className="d-flex flex-column gap-1">
-                          <label id="user-email" htmlFor="name">
-                            Email
-                          </label>
-                          <input
-                            type="email"
-                            placeholder="Enter email"
-                            className="email mb-0"
-                            id="email"
-                            value={email}
-                          />
-                        </div>
                         <div className="d-flex flex-column gap-1">
                           <label id="pass" htmlFor="password">
                             New Password

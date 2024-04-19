@@ -15,12 +15,14 @@ import { hasCookie } from 'cookies-next';
 import { Fragment } from 'react';
 import CP_NavBar from '../Components/ChannelPartner/CP_NavBar/CP_NavBar';
 import dynamic from "next/dynamic";
+import Head from 'next/head';
 
 
 
 function App({ Component, pageProps }) {
   return (
     <>
+   
       <Provider store={store}>
         <SSRProvider>
         <ToastContainer

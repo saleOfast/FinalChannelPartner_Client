@@ -987,7 +987,7 @@ const AddUserScreen = () => {
 
             <div className="text-end">
               <div className="submit_btn">
-                <Link href="/ManageUsers">
+                <Link href="/CHANNEL/ActivePartners">
                   <button className="btn btn-cancel me-2 ">Cancel</button>
                 </Link>
                 {editMode ? (

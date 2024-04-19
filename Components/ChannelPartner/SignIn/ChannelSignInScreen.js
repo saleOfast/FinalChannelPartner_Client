@@ -100,18 +100,18 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
   };
 
   return (
-    <section className="Sign-In">
+    <section className="Sign-In pt-4" style={{padding:'0 16px'}}>
       <div className="container">
         <div className="row">
           <div className="col-12 col-md-7">
             <div className="row gx-3">
-              <div className="Sign-In-logo">
+              <div className="Sign-In-logo pb-4">
                 <img src="/ChannelPartner/logo.png" alt />
               </div>
               <div className="col-6">
                 <div
                   style={{
-                    height: 370,
+                    height: 290,
                     width: "100%",
                     backgroundImage: "url(/ChannelPartner/signup-img1.png)",
                     backgroundRepeat: "no-repeat",
@@ -147,7 +147,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                 ></div>
                 <div
                   style={{
-                    height: 370,
+                    height: 290,
                     width: "100%",
                     backgroundImage: "url(/ChannelPartner/signup-img4.png)",
                     backgroundRepeat: "no-repeat",
@@ -159,11 +159,11 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
               </div>
             </div>
           </div>
-          <div className="col-12 col-md-5 d-flex justify-content-center">
+          <div className="col-12 col-md-5 d-flex justify-content-center pt-5">
             <div className="Sign-In_Sign-Up">
-              <h3 className="Perfect-Home">Find Your Perfect Home. </h3>
+              <h3 className="Perfect-Home ps-2">Find Your Perfect Home. </h3>
               <div className="underline" />
-              <div className="d-flex justify-content-between pt-5">
+              <div className="d-flex justify-content-between pt-5 ps-2">
                 {" "}
                 <div
                   className="nav-link d-flex flex-column gap-2 align-items-center pb-3 Sign-In-btn"
@@ -171,13 +171,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                 >
                   Sign In
                 </div>
-                <Link
-                  href={"/CHANNEL/Signup"}
-                  className="nav-link d-flex flex-column gap-2 align-items-center pb-3 Sign-Up-btn"
-                  id="Sign-Up"
-                >
-                  Sign Up
-                </Link>
+              
               </div>
               <div className="tab-content pt-4" id="Sign-In-tabContent">
                 <div
@@ -231,7 +225,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                       </button>
                     </form>
                     {/* MOT DE PASSE OUBLIE ? */}
-                    <a href="#" className="fp text-decoration-none">
+                    <a href="/CHANNEL/ForgotPassword" className="fp text-decoration-none">
                       Forgot password?
                     </a>
                     {/* BOUTTON LOGIN */}

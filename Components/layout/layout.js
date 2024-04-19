@@ -4,6 +4,7 @@ import Topnav from '../Basics/Topnav';
 import SideBar from '../Basics/SideBar';
 import SidebarDMS from '../DMS/Sidebar/SidebarDMS';
 import SideBarChannel from '../Basics/SideBarChannel';
+import Loader from '../Loader/Loader';
 import SideBarSales from '../Basics/SideBarSales';
 import { getCookie, hasCookie } from 'cookies-next';
 import Tabs from '../DMS/Tabs/Tabs';
@@ -71,7 +72,7 @@ const Layout = ({Component, pageProps}) => {
             {showBasic ?
             <>
             {
-              isLoading ?<Loader/> :
+              isLoading ?<Loader /> :
               <main className="main_wrapper">
             <Topnav allowedPermissions={allowedPermissions} topnavPermission={topnavPermission} />
          

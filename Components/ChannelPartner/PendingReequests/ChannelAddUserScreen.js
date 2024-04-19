@@ -403,13 +403,14 @@ const ChannelAddUserScreen = () => {
       <div className="main_content w-100">
         <div className="Add_user_screen">
           <div className="d-block w-100">
-            <section className="channel_partner_register">
+            
+            <section className="channel_partner_register p-5">
               <div className="container-fluid">
                 <div className="row">
-                  <div className="col-12 d-flex justify-content-between align-items-center">
-                    <div className="my_profile d-flex align-items-center gap-3">
+                <div className="col-12 d-flex justify-content-between align-items-center mb-3">
+                    <div className="my_profile d-flex align-items-center gap-3 ps-2">
                       {/* <KeyboardBackspaceIcon /> */}
-                      <span style={{ fontSize: "16PX", fontWeight: 600 }}>
+                      <span style={{ fontSize: "24PX", fontWeight: 600 }}>
                         Verification
                       </span>
                     </div>
@@ -419,12 +420,6 @@ const ChannelAddUserScreen = () => {
                       </a>
                     </div>
                   </div>
-                </div>
-              </div>
-            </section>
-            <section className="channel_partner_register p-5">
-              <div className="container-fluid">
-                <div className="row">
                   <div className="col col-xl-12 col-md-12 col-sm-12 ">
                     <form
                       className="px-2 body"

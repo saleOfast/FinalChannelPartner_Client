@@ -17,6 +17,7 @@ import { Baseurl, filesUrl } from "../../Utils/Constants";
 import axios from "axios";
 import { clearMode, masterMode, userMode } from "../../store/dbModeSlice";
 import { channel, crm, dms, sales } from "../../store/permissionSlice";
+import { startLoading, stopLoading } from "../../store/loaderSlice";
 
 const Topnav = ({ allowedPermissions, topnavPermission }) => {
   const router = useRouter();
@@ -30,13 +31,15 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
     const isMasterOrUserMode = dbMode === "master" || dbMode === "user";
 
     setshowConfirm(!showConfirm);
+    dispatch(startLoading())
     dispatch(clearMode());
     if (hasCookie("channel")) {
-      router.push(isAdminMode ? "/Admin" : "/CHANNEL/Signin");
+      router.push(isAdminMode ? "/Admin" : "/CHANNEL/Signin")
     } else {
-      router.push(isAdminMode ? "/Admin" : "/");
+      router.push(isAdminMode ? "/Admin" : "/")
     }
     dispatch(isAdminMode ? LoggedOut() : userLogOut());
+    dispatch(stopLoading())
     toast.success("Logged Out Successfully");
   };
 

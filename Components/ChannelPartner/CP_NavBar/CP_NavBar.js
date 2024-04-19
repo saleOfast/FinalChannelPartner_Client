@@ -16,10 +16,10 @@ const CP_NavBar = () => {
   return (
     <>
       <section className="Reports-Dashboard bg-white" style={{ marginTop: "65px", top:"200px" }}>
-        <nav className="navbar navbar-expand-lg navbar-light pt-4" style={{ borderTop: '1px solid #F5F5F5', borderBottom: '1px solid #F5F5F5' }}>
-          <div className="container">
+        <nav className="navbar navbar-expand-lg navbar-light " style={{ borderTop: '1px solid #F5F5F5', borderBottom: '1px solid #F5F5F5' }}>
+          <div className="container-fluid mx-3">
             <div className="navbar-brand" >
-              <img src={`${filesUrl}`+`/logo/images${clientLogo.logo}`} alt="" style={{ height: 48 }} />
+              <img src={`${filesUrl}`+`/logo/images${clientLogo.logo}`} alt="" style={{ height: 66 }} />
               {/* <img src="/ChannelPartner/logo.png" alt="" style={{ height: 48 }} /> */}
               </div>
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

@@ -12,10 +12,8 @@ import { Baseurl, filesUrl } from "../../../Utils/Constants";
 
 const AddUserScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
-
   const router = useRouter();
   const { id } = router.query;
-
   const [editMode, setEditMode] = useState(false);
   const [viewMode, setViewMode] = useState(false);
   const [additionalFields, setAdditionalFields] = useState(false);
@@ -183,16 +181,15 @@ const AddUserScreen = () => {
 
   const addUserHandler = async () => {
     if (!hasCookie("token")) return;
+    const db_name = getCookie("db_name");
     setisLoading(true);
     const token = getCookie("token");
-    const db_name = getCookie("db_name");
     const reqOptions = { ...userInfo, db_name };
 
     const header = {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
-        db: db_name,
         m_id: 77,
       },
     };
@@ -207,14 +204,16 @@ const AddUserScreen = () => {
       if (response.status === 200 || response.status === 201) {
         toast.success(response.data.message);
         if (uploadDocs.aadhar_card)
-          AddUploadPicture(userId, "adh", uploadDocs.aadhar_card[0], 0);
+          AddUploadPicture(userId, "adh", uploadDocs.aadhar[0], 0);
         if (uploadDocs.pan_card)
-          AddUploadPicture(userId, "pan", uploadDocs.aadhar_card[0], 0);
-        if (uploadDocs.driving_license)
-          AddUploadPicture(userId, "dl", uploadDocs.aadhar_card[0], 0);
+          AddUploadPicture(userId, "pan", uploadDocs.pan[0], 0);
+        if (uploadDocs.rera)
+          AddUploadPicture(userId, "rera", uploadDocs.rera[0], 0);
+        if (uploadDocs.cheque)
+        AddUploadPicture(userId, "cheque", uploadDocs.cheque[0], 0);
         if (userImage) AddUploadPicture(userId, "lsUser", userImage[0], 0);
         setisLoading(false);
-        router.push("/ManageUsers");
+        router.push("/CHANNEL/ActivePartners");
       }
     } catch (error) {
       if (error?.response?.data?.status === 422) {
@@ -284,7 +283,7 @@ const AddUserScreen = () => {
             userInfo.user_image_file
           );
         setisLoading(false);
-        router.push("/ManageUsers");
+        router.push("/CHANNEL/ActivePartners");
       }
     } catch (error) {
       if (error?.response?.data?.status === 422) {
@@ -747,7 +746,7 @@ const AddUserScreen = () => {
 
               <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                 <div className="d-flex flex-column gap-1">
-                  <label className="form-label">Aadhar Card *</label>
+                  <label className="form-label">Aadhar Card </label>
                   <input
                     type="file"
                     onChange={(e) => {
@@ -781,7 +780,7 @@ const AddUserScreen = () => {
 
               <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                 <div className="d-flex flex-column gap-1">
-                  <label className="form-label">PAN Card *</label>
+                  <label className="form-label">PAN Card </label>
                   <input
                     type="file"
                     onChange={(e) => {
@@ -815,7 +814,7 @@ const AddUserScreen = () => {
 
               <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                 <div className="d-flex flex-column gap-1">
-                  <label className="form-label">RERA License *</label>
+                  <label className="form-label">RERA License </label>
                   <input
                     type="file"
                     onChange={(e) => {

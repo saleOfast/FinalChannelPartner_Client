@@ -11,6 +11,7 @@ import DashBoardScreenSALES from '../Components/Dashboard/SALES/DashBoardScreenS
 import DashBoardScreenCHANNEL from '../Components/ChannelPartner/DashBoardChannelPartner/DashBoardScreenCHANNEL';
 import DashBoardScreen from '../Components/Dashboard/CRM/DashBoardScreen';
 import Tabs from '../Components/DMS/Tabs/Tabs';
+import Loader from '../Components/Loader/Loader';
 
 export default  function Home() {
 
@@ -18,6 +19,7 @@ export default  function Home() {
   const dbMode = useSelector((state) => state.dbMode.value)
   const loggedIn = useSelector((state) => state.userLogin.value)
   const permission = useSelector((state) => state.permissionMode.value);
+  const isLoading=useSelector((state)=>state.loader.isLoading)
   const [dashbarMode,setDashboardMode]= useState();
   const dispatch = useDispatch()
 
@@ -85,11 +87,15 @@ export default  function Home() {
 
     return (
       <>
-        {loggedIn ? (
+      {isLoading ? <Loader/> :
+      <>
+        {loggedIn ?  (
           assignDashboard(dashbarMode)
         ) : (
           <SignInScreen />
         )}
+      </>
+      } 
       </>
     );
 }

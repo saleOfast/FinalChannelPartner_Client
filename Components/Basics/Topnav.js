@@ -25,13 +25,13 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
   const dispatch = useDispatch();
   const [userInfo, setuserInfo] = useState({});
   const [showConfirm, setshowConfirm] = useState(false);
+  const isCHannel = hasCookie("channel") || false
 
   const logouthandler = () => {
+    dispatch(startLoading())
     const isAdminMode = dbMode === "admin";
     const isMasterOrUserMode = dbMode === "master" || dbMode === "user";
-
     setshowConfirm(!showConfirm);
-    dispatch(startLoading())
     dispatch(clearMode());
     if (hasCookie("channel")) {
       router.push(isAdminMode ? "/Admin" : "/CHANNEL/Signin")
@@ -166,7 +166,7 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
             }
           </div>
           <div className="profile_sec">
-            {dbMode !== "admin" ? (
+            {dbMode !== "admin" && !isCHannel ? (
               <div className="quick_add_sec d-flex gap-2 ">
                 {allowedPermissions?.length > 1 && (
                   <Dropdown>

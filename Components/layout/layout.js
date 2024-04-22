@@ -11,6 +11,7 @@ import Tabs from '../DMS/Tabs/Tabs';
 
 const Layout = ({Component, pageProps}) => {
     const userLogin = useSelector((state) => state.userLogin.value);
+   
     const permission = useSelector((state) => state.permissionMode.value);
     const allowedpermission = useSelector((state) => state.permissionMode.allowedPermissions );
     const isLoading=useSelector((state)=>state.loader.isLoading)
@@ -68,27 +69,32 @@ const Layout = ({Component, pageProps}) => {
 
   return (
     <>
-    
-            {showBasic ?
-            <>
-            {
-              isLoading ?<Loader /> :
-              <main className="main_wrapper">
-            <Topnav allowedPermissions={allowedPermissions} topnavPermission={topnavPermission} />
+       {
+              isLoading ? <Loader /> :
+            
+              <>
+              {showBasic ?
          
-          <div className="content_wrapper">
-              {sidebarMode==="crm" && <SideBar />}
-              {sidebarMode==="dms" && <SidebarDMS/> }
-              {/* {sidebarMode==="channel" && <SideBarChannel    />} */}
-              {sidebarMode==="sales" && <SideBarSales    />}
-              <Component {...pageProps} />
-          </div>
-        </main>
-            }
+              <main className="main_wrapper">
+                <Topnav allowedPermissions={allowedPermissions} topnavPermission={topnavPermission} />
+            
+                  <div className="content_wrapper">
+                      {sidebarMode==="crm" && <SideBar />}
+                      {sidebarMode==="dms" && <SidebarDMS/> }
+                      {/* {sidebarMode==="channel" && <SideBarChannel    />} */}
+                      {sidebarMode==="sales" && <SideBarSales    />}
+                      <Component {...pageProps} />
+                  </div>
+                  </main>
+
+            : 
+            <>
+           
+                <Component {...pageProps} />
+             
             </>
-        
-      : 
-      <Component {...pageProps} />
+            }
+      </>
     }
     </>
   

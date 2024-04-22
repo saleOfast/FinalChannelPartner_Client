@@ -12,6 +12,7 @@ import dynamic from 'next/dynamic'
 import Papa from "papaparse";
 import { Baseurl } from '../../../Utils/Constants';
 import ConfirmBox from '../../Basics/ConfirmBox';
+import { useRouter } from 'next/router';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -19,7 +20,7 @@ const DynamicTable = dynamic(
 
 const ActivePartnersScreen_copy = () => {
     const sideView = useSelector((state) => state.sideView.value);
-
+    const router = useRouter()
     const [dataList, setDataList] = useState([])
     const [disableShowConfirm, setdisableShowConfirm] = useState(false)
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
@@ -57,6 +58,10 @@ const ActivePartnersScreen_copy = () => {
             action: 'delete'
         })
         setdeleteshowConfirm(true)
+    }
+
+    const goto = (url) => {
+        router.push(url)
     }
 
 
@@ -239,19 +244,18 @@ const ActivePartnersScreen_copy = () => {
                 </div> */}
                 <div className="main_content">
                     <div className="table_screen">
-                        <div className="top_btn_sec ">
-                            {/* <div className="d-flex">
-                            <Link href='/AddUsers'>
-                                <button className="btn ms-auto btn-primary Add_btn me-3">
+                        <div className="top_btn_sec mb-2">
+                            <div className="d-flex">
+                                <button className="btn ms-auto btn-primary Add_btn me-3" onClick={()=>goto('/CHANNEL/ViewActiveUsers')}>
                                     <PlusIcon />
                                     ADD USER
                                 </button>
-                            </Link>
-                            <button className="btn btn-primary Add_btn" onClick={handleShow}>
+                            
+                            {/* <button className="btn btn-primary Add_btn" onClick={handleShow}>
                                 <PlusIcon />
                                 Import CSV
-                            </button>
-                            </div> */}
+                            </button> */}
+                            </div>
                         </div>
                         <DynamicTable
                             title='Channel Partners'

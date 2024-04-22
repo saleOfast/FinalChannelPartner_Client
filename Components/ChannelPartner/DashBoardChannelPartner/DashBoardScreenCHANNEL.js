@@ -2,9 +2,9 @@ import React from 'react'
 
 const DashBoardScreenCHANNEL = () => {
   return (
-    <div className='ps-4 pe-4 w-100' style={{overflowY:"scroll", marginTop:"-30px"}}>
+    <div className='ps-4 pe-4 w-100' >
         <section className="Reports-Dashboard w-100 "  >
-  <div className="container ">
+  <div className="container">
     <div className="row">
       <div className="col-12">
         <div className="vh-100 d-flex flex-column justify-content-between">

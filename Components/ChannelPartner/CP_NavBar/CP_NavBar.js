@@ -7,7 +7,7 @@ import { getCookie } from 'cookies-next';
 const CP_NavBar = () => {
   const router = useRouter();
 
-  const clientLogo=getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
+  const clientLogo=getCookie('clientLogo')? getCookie('clientLogo') : null;
 
   const isActive = (pathname) => {
     return router.pathname === pathname ? 'active' : '';

@@ -3,6 +3,8 @@ import { toast } from 'react-toastify'
 
 const initialState = {
     value: 'dark',
+    side: '#405189',
+    buttons: '#405189'
 }
 
 export const themeSlice = createSlice({
@@ -22,9 +24,17 @@ export const themeSlice = createSlice({
             state.value = 'gradient'
             toast.success('Gradient Mode Enabled')
         },
+
+        setSidebarColor : (state, action) => {
+            state.side =  action.payload
+        },
+
+        setbuttonColor : (state, action) => {
+            state.buttons =  action.payload
+        },
     },
 })
 
-export const { nightMode, lightMode, gradient} = themeSlice.actions
+export const { nightMode, lightMode, gradient, setSidebarColor, setbuttonColor} = themeSlice.actions
 
 export default themeSlice.reducer

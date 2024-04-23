@@ -637,3 +637,12 @@ a {
   line-height: 12px;
   font-weight: 400;
 }
+
+
+/* react color on admin panel */
+
+/* Small */
+.colorcomp .react-colorful {
+  width: 100%;
+  height: 150px;
+}

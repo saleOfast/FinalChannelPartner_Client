@@ -668,7 +668,7 @@ const AddUserScreen = () => {
                     errorData?.report_to ? "input_box errorBox" : "input_box"
                   }
                 >
-                  <label htmlFor="task_name">Report/Assign To *</label>
+                  <label htmlFor="task_name">Report/Assign To </label>
                   <Select
                     id={userInfo.des_id}
                     defaultValue={""}

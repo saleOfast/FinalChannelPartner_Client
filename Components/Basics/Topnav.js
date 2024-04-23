@@ -26,6 +26,7 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
   const [userInfo, setuserInfo] = useState({});
   const [showConfirm, setshowConfirm] = useState(false);
   const isCHannel = hasCookie("channel") || false
+  const [path, setPath] = useState('');
 
   const logouthandler = () => {
     dispatch(startLoading())
@@ -134,6 +135,14 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
     }
   };
 
+  useEffect(()=>{
+    if(!router.isReady) return
+    const pathname = router.pathname
+    console.log("pathname",pathname)
+    setPath(pathname)
+
+  },[router.isReady])
+
   useEffect(() => {
     if (hasCookie("userInfo")) {
       const userInfo = JSON.parse(getCookie("userInfo"));
@@ -151,7 +160,9 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
         actionType={logouthandler}
         title={"Are You Sure you want to Logout ?"}
       />
-      <div className="topNav_Wrapper">
+      <div className="topNav_Wrapper" style={{
+        height: path !== '/CHANNEL/ActivePartners' ? "8vh": "1vh"
+      }}>
         <div className="top_nav">
           <div className="brand_icon">
             {

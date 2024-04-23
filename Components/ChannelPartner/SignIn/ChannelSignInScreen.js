@@ -166,9 +166,9 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
             </div>
             <div className="col-12 col-md-5 d-flex justify-content-center pt-5">
               <div className="Sign-In_Sign-Up">
-                <h3 className="Perfect-Home ps-2">Find Your Perfect Home. </h3>
+                <h3 className="Perfect-Home">Find Your Perfect Home. </h3>
                 <div className="underline" />
-                <div className="d-flex justify-content-between pt-5 ps-2">
+                <div className="d-flex justify-content-between pt-5">
                   {" "}
                   <div
                     className="nav-link d-flex flex-column gap-2 align-items-center pb-3 Sign-In-btn"
@@ -225,7 +225,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                             }}
                           />
                         </div>
-                        <button type="submit" className="login_btn mt-5">
+                        <button type="submit" className="login_btn">
                           Login
                         </button>
                       </form>

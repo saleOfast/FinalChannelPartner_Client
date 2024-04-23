@@ -340,7 +340,7 @@ const ChannelSignUpScreen = () => {
                         id="survey-form"
                         method="GET"
                         action
-                        className="d-flex flex-column gap-3 mb-4"
+                        className="d-flex flex-column gap-3"
                         onSubmit={handleSubmit}
                       >
                         <div className="d-flex gap-2">
@@ -425,7 +425,7 @@ const ChannelSignUpScreen = () => {
                               required
                               placeholder="Enter Mobile Number"
                               value={formFields.mobile}
-                              disabled={formFields.isTokenVerified}
+                              
                             />
                           </div>
                         </div>
@@ -649,7 +649,7 @@ const ChannelSignUpScreen = () => {
                         <button
                           id="craete-account"
                           type="submit"
-                          className="border-0"
+                          className="border-0 mb-4"
                           disabled={formFields.isUploadVerified}
                         >
                           Create Account

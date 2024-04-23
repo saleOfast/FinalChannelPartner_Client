@@ -202,6 +202,7 @@
   color: #293790;
 }
 
+
 .card {
   width: auto;
   height: auto;
@@ -294,7 +295,7 @@
 }
 .Sign-Up .Sign-Up_Sign-In {
   width: 358px;
-  height: 358px;
+  
 }
 .Sign-Up_Sign-In .underline {
   background-color: #ec2027;
@@ -583,6 +584,15 @@
   }
 }
 @media screen and (max-width: 769px) {
+  .Sign-Up .upload-files{
+    justify-content:flex-start !important;
+  }
+  .Sign-Up .upload-files .rowTab{
+    width: 100% !important;
+  }
+  .Sign-Up .Sign-Up_Sign-In .upload-files .form-control{
+    width: 100% !important;
+  }
   .Sign-In .Sign-In-logo img {
     height: 72px;
   }

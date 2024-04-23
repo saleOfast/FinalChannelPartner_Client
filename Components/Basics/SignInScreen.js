@@ -12,6 +12,7 @@ import axios from 'axios';
 import { validEmail } from '../../Utils/regex';
 import { assignPermissions, crm, dms,sales,channel } from '../../store/permissionSlice';
 import { startLoading, stopLoading } from '../../store/loaderSlice';
+import { setSidebarColor, setbuttonColor } from '../../store/themeSlice';
 
 
 export default function SignInScreen({ setLoggedIn }) {
@@ -83,8 +84,10 @@ export default function SignInScreen({ setLoggedIn }) {
                     setCookie('sideUser', 'true');
                     setCookie('token', res.data.token);
                     setCookie('userInfo', res.data.userData);
-                    setCookie('clientLogo', res.data.Logo[0].logo);
+                    setCookie('clientLogo', res.data.Logo);
                     setCookie('db_name', res.data.userData.db_name);
+                    dispatch(setSidebarColor(res.data.userData.sidebar_color))
+                    dispatch(setbuttonColor(res.data.userData.button_color))
                     initialPermission(res.data.platformData[0].platform_name)
                     assignPermission(res.data.platformData)
                     toast.success('Logged in SuccessFully')

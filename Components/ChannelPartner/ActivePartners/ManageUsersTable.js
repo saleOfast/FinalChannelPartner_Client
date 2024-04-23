@@ -6,8 +6,11 @@ import EditIcon from '../../Svg/EditIcon';
 import DeleteIcon from '../../Svg/DeleteIcon';
 import CheckIcon from '../../Svg/CheckIcon';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import PlusIcon from '../../Svg/PlusIcon';
 
 const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
+    const router = useRouter()
 
     const columns = [
         {
@@ -192,6 +195,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         },
     };
     
+
+    const goto = (url) => {
+        router.push(url)
+    }
     
 
     return (

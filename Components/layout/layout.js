@@ -11,8 +11,8 @@ import Tabs from '../DMS/Tabs/Tabs';
 
 const Layout = ({Component, pageProps}) => {
     const userLogin = useSelector((state) => state.userLogin.value);
-   
     const permission = useSelector((state) => state.permissionMode.value);
+    const theme = useSelector((state) => state.themeMode);
     const allowedpermission = useSelector((state) => state.permissionMode.allowedPermissions );
     const isLoading=useSelector((state)=>state.loader.isLoading)
     
@@ -96,6 +96,26 @@ const Layout = ({Component, pageProps}) => {
             }
       </>
     }
+            <style jsx global>{`
+                .btn-primary {
+                    background-color: ${theme.buttons} !important;
+                }
+
+                .sideWrapper  .bar_icon  {
+                  background-color: ${theme.side} !important;
+                }
+
+                .sideWrapper  {
+                  background-color: ${theme.side} !important;
+                }
+
+                .sideWrapper .icon {
+                  background-color: ${theme.side} !important;
+                }
+
+
+            `}</style>
+    
     </>
   
   )

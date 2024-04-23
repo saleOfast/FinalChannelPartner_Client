@@ -232,7 +232,7 @@ const ActivePartnersScreen_copy = () => {
                 actionType={deleteHandler}
                 title={"Are You Sure you want to Delete ?"} />
 
-            <div className="w-100 ps-4 pe-4" style={{marginTop:"-50px"}}>
+            <div className="w-100 ps-4 pe-4" >
                 {/* <div className="bread_head">
                     <h3 className="content_head">USER MASTER </h3>
                     <nav aria-label="breadcrumb">
@@ -250,8 +250,8 @@ const ActivePartnersScreen_copy = () => {
                                     <PlusIcon />
                                     ADD USER
                                 </button>
-                            
-                            {/* <button className="btn btn-primary Add_btn" onClick={handleShow}>
+{/*                             
+                            <button className="btn btn-primary Add_btn" onClick={handleShow}>
                                 <PlusIcon />
                                 Import CSV
                             </button> */}

@@ -170,7 +170,7 @@ const SideBar = ({}) => {
     setIsActive(hasCookie("isActive")? getCookie("isActive"): isactiveValue)
   },[isactiveValue])
   return (
-    <div className={`sideWrapper ${sideView}`}>
+    <div className={`sideWrapper ${sideView}`} style={{backgroundColor: '#000000'}}>
       <div className="hamburgerIcon">
         <div className="bar_icon" onClick={sideViewFunc}>
           <div className="webView">

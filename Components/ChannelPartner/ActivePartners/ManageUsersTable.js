@@ -28,9 +28,12 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <Link href={`/CHANNEL/ViewActiveUsers?id=${value}&mode=view`} className='status_box fw-bold' style={{color:"#0000ee"}} >
-                            {value}
-                        </Link>
+                        <span
+                        className="fw-bold"
+                        style={{color: '#0000ee'}}
+                        >
+                          {value}
+                      </span>
                     )
                 }
                   
@@ -48,9 +51,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box fw-bold' style={{color:"#0000ee"}}>
-                            {value}
-                        </div>
+                        <Link
+                        className="fw-bold text-decoration-underline"
+                        style={{color: '#0000ee'}}
+                        target="_blank"
+                        href={`/CHANNEL/ViewActiveUsers?id=${tableMeta.rowData[0]}&mode=view`}
+                        >
+                          {value}
+                      </Link>
                     )
                 }
             },
@@ -206,8 +214,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   
     const CustomToolbar = () => {
         return (
-            <div className=' d-flex justify-content-start gap-3 align-items-center '>
-                <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
+            <div className='customToolHead d-flex justify-content-start gap-3 align-items-center '>
+                <p className='fw-bold ' style={{fontSize:"18px", margin: '0px !important'}} >{title}</p>
                 <button className='btn btn-secondary' onClick={()=>setShowDateFilter(true)}> Custom </button>
             </div>
         );

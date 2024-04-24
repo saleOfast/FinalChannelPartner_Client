@@ -246,7 +246,7 @@ const PendingRequestsScreen = () => {
                             </div>
                         </div>
                         <DynamicTable
-                            title='Pending Requests'
+                            title='Pending Sign Up Requests'
                             dataList={dataList}
                             disableConfirm={disableConfirm}
                             deleteConfirm={deleteConfirm}

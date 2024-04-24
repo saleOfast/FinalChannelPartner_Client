@@ -206,6 +206,8 @@ const PendingRequestsScreen = () => {
 
     }
 
+    
+
 
     useEffect(() => {
         getDataList();
@@ -248,6 +250,7 @@ const PendingRequestsScreen = () => {
                             dataList={dataList}
                             disableConfirm={disableConfirm}
                             deleteConfirm={deleteConfirm}
+                            getDataList={getDataList}
                         />
                     </div>
                 </div>

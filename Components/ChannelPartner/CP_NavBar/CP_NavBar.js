@@ -8,7 +8,7 @@ const CP_NavBar = () => {
   const router = useRouter();
 
   const clientLogo= getCookie('clientLogo')? getCookie('clientLogo') : null;
-  console.log("clientLogo",clientLogo)
+
 
   const isActive = (pathname) => {
     return router.pathname === pathname ? 'active' : '';

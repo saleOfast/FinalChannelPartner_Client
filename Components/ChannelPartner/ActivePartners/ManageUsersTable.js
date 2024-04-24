@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import MUIDataTable from "mui-datatables";
 import ViewIcon from '../../Svg/ViewIcon';
 import DisableIcon from '../../Svg/DisableIcon';
@@ -14,7 +14,7 @@ import ListVicn from '../../Svg/ListVicn';
 
 const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, setoldAssignTo, setShowDateFilter }) => {
     const router = useRouter()
-
+    const [data, setData] = useState([])
     const columns = [
         {
             name: 'user_code',
@@ -245,9 +245,16 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         );
     }
 
+    const handleRowClick = (rowData, rowMeta) => {
+        console.log(rowData, rowMeta);
+    };
+
     const options = {
         selectableRows: 'multiple',
         responsive: "standard",
+        onRowsSelect : handleRowClick,
+
+        
       
       
         
@@ -268,6 +275,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         router.push(url)
     }
 
+   
  
 
     return (
@@ -278,6 +286,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     data={dataList}
                     columns={columns}
                     options={options}
+                    onRowsSelect
                 />
             </div>
         </>

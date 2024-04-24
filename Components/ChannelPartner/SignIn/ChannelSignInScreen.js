@@ -74,7 +74,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
         });
 
         if (res.status === 200) {
-        
+          console.log(res.data)
           dispatch(userMode());
           dispatch(UserLogIN());
           setCookie("user", "true");

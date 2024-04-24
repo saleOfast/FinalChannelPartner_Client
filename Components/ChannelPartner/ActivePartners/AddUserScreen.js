@@ -416,7 +416,7 @@ const AddUserScreen = () => {
   }, [router.isReady, id]);
 
   return (
-    <div className={`main_Box w-100 pe-5 `} style={{marginTop:"-50px"}}>
+    <div className={`main_Box w-100 pe-5 mt-3 `} style={{marginTop:"-50px"}}>
 
       <div className="main_content w-100">
         <div className="Add_user_screen">

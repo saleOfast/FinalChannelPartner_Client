@@ -1,11 +1,11 @@
 import React from "react"
-import ChannelView from "../../Components/ChannelProfile/ChannelView";
+import ChannelProfileScreen from "../../Components/ChannelPartner/ChannelProfile/ChannelProfileScreen";
 
 
 const ChannelProfile = () => {
   return (
     <>
-      <ChannelView />
+      <ChannelProfileScreen />
     </>
   );
 };

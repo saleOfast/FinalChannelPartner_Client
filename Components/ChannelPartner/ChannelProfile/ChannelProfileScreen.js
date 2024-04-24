@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import ConfirmBox from '../Basics/ConfirmBox';
+import ConfirmBox from '../../Basics/ConfirmBox';
 import { useDispatch, useSelector } from "react-redux";
-import { startLoading, stopLoading } from "../../store/loaderSlice";
-import { clearMode } from "../../store/dbModeSlice";
+import { startLoading, stopLoading } from "../../../store/loaderSlice";
+import { clearMode } from "../../../store/dbModeSlice";
 import { hasCookie, getCookie, setCookie, deleteCookie } from "cookies-next";
 import { useRouter } from 'next/router';
-import { userLogOut } from "../../store/ClientLoginSlice";
+import { userLogOut } from "../../../store/ClientLoginSlice";
 import { toast } from "react-toastify";
+import { Baseurl, filesUrl } from '../../../Utils/Constants';
+import axios from 'axios';
 
 
-const ChannelView = () => {
+const ChannelProfileScreen = () => {
     const router = useRouter();
     const dispatch = useDispatch();
     const [userInfo, setuserInfo] = useState({});
@@ -34,73 +36,54 @@ const ChannelView = () => {
     };
 
 
+    const getUserInfo = async (id) => {
+        if (hasCookie("token")) {
+          let token = getCookie("token");
+          let db_name = getCookie("db_name");
+    
+          let header = {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer ".concat(token),
+              db: db_name,
+              pass: "pass",
+            },
+          };
+          try {
+            const response = await axios.get(
+              Baseurl + `/db/users?id=${id}`,
+              header
+            );
+            setuserInfo(response.data.data);
+          } catch (error) {
+            console.log(error)
+            if (
+              error?.response?.data?.message === "please login again token expired"
+            ) {
+              toast.error(error.response.data.message);
+              dispatch(userLogOut());
+              router.push("/");
+            } else {
+              toast.error("Something went wrong!");
+            }
+          }
+        }
+      };
 
     useEffect(() => {
         if (hasCookie("userInfo")) {
-            let userInfo = JSON.parse(getCookie("userInfo"));
-            setuserInfo(userInfo);
-        }
-        if (hasCookie("SaLsUsr")) {
-            let userInfo = JSON.parse(getCookie("SaLsUsr"));
-            setuserInfo(userInfo);
-        }
-    }, []);
 
-    const getUserInfo = async (id) => {
-        if (hasCookie("token")) {
-            let token = getCookie("token");
-            let db_name = getCookie("db_name");
+          const userInfo = JSON.parse(getCookie("userInfo"));
+          console.log(userInfo.user_code)
+          getUserInfo(userInfo.user_code);
+        } 
+      }, []);
 
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    pass: "pass",
-                },
-            };
-            try {
-                const response = await axios.get(
-                    Baseurl + `/db/users?id=${id}`,
-                    header
-                );
-                setuserInfo(response.data.data);
-            } catch (error) {
-                if (
-                    error?.response?.data?.message === "please login again token expired"
-                ) {
-                    toast.error(error.response.data.message);
-                    dispatch(userLogOut());
-                    router.push("/");
-                } else {
-                    toast.error("Something went wrong!");
-                }
-            }
-        }
-    };
-
-    const getAdminInfo = async () => {
-        if (hasCookie("saLsTkn")) {
-            const token = getCookie("saLsTkn");
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                },
-            };
-            try {
-                const response = await axios.get(Baseurl + `/db/admin/profile`, header);
-                setuserInfo(response.data.data);
-            } catch (error) {
-                if (error?.response?.data?.mesage === "token not valid") {
-                    toast.error(error.response.data.mesage);
-                    dispatch(LoggedOut());
-                    router.push("/Admin");
-                } else {
-                    toast.error("Something went wrong!");
-                }
-            }
-        }
+ 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return `${date.getDate()}/${months[date.getMonth()]}/${date.getFullYear()}`;
     };
 
     return (
@@ -119,13 +102,22 @@ const ChannelView = () => {
                                 <div className="profile-text mb-4">Profile</div>
                                 <div className="col-12 col-lg-4">
                                     <div className="position-relative profile-details image d-flex flex-column justify-content-center">
-                                        <div className="text-center"> <img src="/ChannelPartner/channel-profile.png" /></div>
+                                        <div className="text-center"> 
+                                        <img style={{height:"120px", width:"120px"}}
+                          src={
+                            userInfo?.db_user_profile?.user_image_file
+                              ? `${filesUrl}/lsUser/images${userInfo?.db_user_profile?.user_image_file}`
+                              : `/images/profile_picture.png`
+                          }
+                          alt=""
+                        />
+                                        </div>
                                         <div className="profile-edit">
                                             <img src="/ChannelPartner/profile-edit.svg" alt="" className="position-absolute" />
                                         </div>
                                         <div className="d-flex flex-column gap-4">
                                             <div className="d-flex flex-column justify-content-center align-items-center gap-1">
-                                                <span className="person-name mt-4">Sanjeev Singh</span> <span className="idd">Admin</span>
+                                                <span className="person-name mt-4">{userInfo.user}</span> <span className="idd">Admin</span>
                                             </div>
                                             <div className="d-flex flex-column gap-3 person-data">
                                                 <div className="d-flex flex-column person-email">
@@ -134,10 +126,10 @@ const ChannelView = () => {
                                                             Email
                                                         </span>
                                                         <img src="/ChannelPartner/profile-edit.svg" alt="" style={{ height: "17px" }} />
-                                                        {/* <img src="./images/icons/profile-edit.svg" alt="" style={{ height: "17px" }} /> */}
+                                                       
                                                     </div>
                                                     <div>
-                                                        <span className="edit-email text-black">sanjeev.singh@nkrealtors.com</span>
+                                                        <span className="edit-email text-black">{userInfo.email} </span>
                                                     </div>
                                                 </div>
                                                 <div className="d-flex flex-column person-no">
@@ -148,7 +140,7 @@ const ChannelView = () => {
                                                         <img src="/ChannelPartner/profile-edit.svg" alt="" style={{ height: "17px" }} />
                                                     </div>
                                                     <div>
-                                                        <span className="edit-phone text-black">+91-9576482689</span>
+                                                        <span className="edit-phone text-black">+91-{userInfo.contact_number}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -180,7 +172,7 @@ const ChannelView = () => {
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Joining Date</span>
-                                            <span className="list-right">12/Jan/2022</span>
+                                            <span className="list-right">{formatDate(userInfo.createdAt)}</span>
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Reporting Manager</span>
@@ -188,11 +180,11 @@ const ChannelView = () => {
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Location</span>
-                                            <span className="list-right">Noida</span>
+                                            <span className="list-right">{userInfo?.db_city?.city_name} </span>
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Username</span>
-                                            <span className="list-right">sanjeev.singh@nkrealtors.com</span>
+                                            <span className="list-right">{userInfo.email} </span>
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between align-items-baseline pt-1">
                                             <span className="list-left">Password</span>
@@ -210,4 +202,4 @@ const ChannelView = () => {
 
 }
 
-export default ChannelView
+export default ChannelProfileScreen

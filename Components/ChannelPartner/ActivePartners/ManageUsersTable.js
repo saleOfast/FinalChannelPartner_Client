@@ -22,10 +22,18 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#405189", color: 'white'}}   >
+                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
-                  )
+                  ),
+                  customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <Link href={`/CHANNEL/ViewActiveUsers?id=${value}&mode=view`} className='status_box fw-bold' style={{color:"#0000ee"}} >
+                            {value}
+                        </Link>
+                    )
+                }
+                  
             }
         },
         {
@@ -34,10 +42,17 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#405189", color: 'white'}}   >
+                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
-                  )
+                  ),
+                  customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <div className='status_box fw-bold' style={{color:"#0000ee"}}>
+                            {value}
+                        </div>
+                    )
+                }
             },
 
         },
@@ -47,19 +62,22 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#405189", color: 'white'}}   >
+                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
-                customBodyRender: (value, tableMeta, updateValue) => {
+                  customBodyRender: (value, tableMeta, updateValue) => {
                     const date = new Date(value);
-                    const formattedDate = date.toISOString().split('T')[0];
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                    const year = date.getFullYear();
                     return (
-                        <div className='status_box'>
-                            {formattedDate}
+                        <div className='status_box' style={{color:"#667799"}}>
+                            {`${day}${month}${year}`}
                         </div>
                     )
                 }
+                
             }
         },
         {
@@ -68,13 +86,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#405189", color: 'white'}}   >
+                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box'>
+                        <div className='status_box' style={{color:"#667799"}}>
                             108
                         </div>
                     )
@@ -87,61 +105,32 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#405189", color: 'white'}}   >
+                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box'>
+                        <div className='status_box' style={{color:"#667799"}}>
                             24
                         </div>
                     )
                 }
             }
         },
-        // {
-        //     name: 'email',
-        //     label: "E-mail",
-        //     options: {
-        //         filter: true,
-        //     }
-        // },
-        // {
-        //     name: 'contact_number',
-        //     label: "Mobile No",
-        //     options: {
-        //         filter: true,
-        //     }
-        // },
-        
-        // {
-        //     name: 'db_role',
-        //     label: "Role",
-        //     options: {
-        //         filter: true,
-        //         customBodyRender: (value, tableMeta, updateValue) => {
-        //             return (
-        //                 <div className='status_box'>
-        //                     {value && <span >{value.role_name}</span>}
-        //                 </div>
-        //             )
-        //         }
-        //     }
-        // },
         {
             name: 'reportToUser',
             label: "Assigned to",
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#405189", color: 'white'}}   >
+                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box'>
+                        <div className='status_box fw-bold' style={{color:"#0000ee"}}>
                             {value && <span  >{value.user}</span>}
                         </div>
                     )
@@ -154,7 +143,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#405189", color: 'white'}}   >
+                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -174,14 +163,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#405189", color: 'white'}}   >
+                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
-                            <Link href={`/CHANNEL/ViewActiveUsers?id=${value}&mode=view`}>
+                            {/* <Link href={`/CHANNEL/ViewActiveUsers?id=${value}&mode=view`}>
                                 <button
                                     className="action_btn"
                                     title='View'>
@@ -195,38 +184,17 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                     title='Edit'>
                                     <EditIcon />
                                 </button>
-                            </Link>
+                            </Link> */}
 
                           
                             <button
                                 onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta.rowData[5].user_id) }}
-                                className="action_btn x2"
+                                style={{background:"#0000ee", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
+                                className='pe-3 ps-3'
                                 title='Assign - To'>
-                                <ListVicn  />
+                                    Assign to
                             </button>
                           
-                           
-                            
-                            {/* {tableMeta.rowData[5] ?
-                                <button
-                                    onClick={() => disableConfirm(value, 0)}
-                                    className="action_btn"
-                                    title='Disable'>
-                                    <DisableIcon />
-                                </button>
-                                : <button
-                                    onClick={() => disableConfirm(value, 1)}
-                                    className="action_btn x2"
-                                    title='Enable'>
-                                    <CheckIcon />
-                                </button>}
-
-                            <button
-                                onClick={() => deleteConfirm(value, 0)}
-                                className="action_btn"
-                                title='Delete'>
-                                <DeleteIcon />
-                            </button> */}
                         </div>
                     )
                 }
@@ -238,8 +206,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   
     const CustomToolbar = () => {
         return (
-            <div className=' d-flex justify-content-start gap-4'>
-                <p>{title}</p>
+            <div className=' d-flex justify-content-start gap-3 align-items-center '>
+                <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
                 <button className='btn btn-secondary' onClick={()=>setShowDateFilter(true)}> Custom </button>
             </div>
         );

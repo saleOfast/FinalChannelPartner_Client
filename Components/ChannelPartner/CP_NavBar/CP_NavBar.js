@@ -38,7 +38,7 @@ const CP_NavBar = () => {
                   <Link className={`nav-link ${isActive('/CHANNEL/PendingRequests')}`} href="/CHANNEL/PendingRequests">Pending Requests</Link>
                 </li>
                 <li className="nav-item">
-                  <a className={`nav-link ${isActive('/Profile')}`} href="#">Profile</a>
+                  <a className={`nav-link ${isActive('/CHANNEL/ChannelProfile')}`} href="/CHANNEL/ChannelProfile">Profile</a>
                 </li>
               </ul>
             </div>

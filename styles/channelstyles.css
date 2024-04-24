@@ -624,3 +624,159 @@
   line-height: 12px;
   font-weight: 400;
 }
+
+/* Channel Profile Start*/
+.Channel-profile {
+  background: #f5f5f5;
+}
+.Channel-profile .profile-text{
+  color: #26203B;
+  font-size: 20px;
+  font-weight: 600;
+}
+.Channel-profile .profile-details {
+  /* width: 320px; */
+  height: 398px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.5s;
+  padding: 44px 20px;
+  border-radius: 8px;
+  border: 1px solid #f5f5f5;
+  box-shadow: 0px 0px 1px -1px;
+}
+.Channel-profile .profile-details .person-name {
+  color: #293790;
+  font-size: 24px;
+  font-weight: 600;
+}
+.Channel-profile .profile-edit img{
+  top: 29%;
+  right: 39%;
+}
+.Channel-profile .profile-details .idd {
+  color: #9c9aa5;
+  font-size: 16px;
+  font-weight: 600;
+}
+.Channel-profile .profile-details .person-email .edit-email,
+.edit-phone {
+  color: #9c9aa5;
+  font-size: 16px;
+  font-weight: 600;
+}
+.Channel-profile .profile-logout {
+  /* width: 320px; */
+  border: 1px solid #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0px 0px 1px -1px;
+  padding: 14px 24px;
+  background: #fff;
+}
+
+.Channel-profile .btn {
+  height: 140px;
+  width: 140px;
+  border-radius: 50%;
+}
+
+.Channel-profile .name {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.Channel-profile .idd {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.Channel-profile .idd1 {
+  font-size: 12px;
+}
+.Channel-profile .list-group {
+  border-radius: 8px;
+  overflow: hidden;
+  height: 477px;
+}
+
+.Channel-profile .General-list li:hover > span {
+  background-color: transparent;
+}
+.Channel-profile .list-group-item.active {
+  background-color: #2f2c6d;
+  border: none;
+  font-size: 20px !important;
+  font-weight: 600;
+}
+
+.Channel-profile .list-group .General-list:hover {
+  background-color: #000;
+}
+.Channel-profile .list-group .active-list {
+  padding: 20px 24px;
+}
+.Channel-profile .list-group .list-group-item-action {
+  color: #9c9aa5;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 16px 24px 15px 24px;
+}
+.Channel-profile .list-group .list-right {
+  color: #13263c;
+}
+
+@media screen and (max-width: 992px) {
+  .Sign-In .Perfect-Home {
+    font-size: 38px;
+  }
+  .Channel-profile .profile-details,
+  .profile-logout {
+    width: 100% !important;
+  }
+  .Channel-profile .list-group {
+    margin-top: 40px;
+  }
+  .Channel-profile .profile-edit img {
+    top: 29%;
+    right: 43%;
+}
+}
+
+@media screen and (max-width: 769px) {
+  .Sign-In .Sign-In-logo img {
+    height: 72px !important;
+  }
+  .Sign-In .Perfect-Home {
+    font-size: 19px;
+  }
+  .Register {
+    width: 100% !important;
+  }
+  .Register .underline {
+    margin-left: 2px !important;
+  }
+  .Sign-In .set-new-password {
+    width: 100% !important;
+    padding-top: 30px;
+  }
+  /* .Channel-profile .list-group {
+    margin-top: 40px;
+  } */
+  /* .Channel-profile .profile-details,
+  .profile-logout {
+    width: 100% !important;
+  } */
+  /* .Channel-profile .profile-edit img {
+    top: 30%;
+    right: 43%;
+} */
+}
+
+@media screen and (max-width: 576px) {
+  .Channel-profile .profile-edit img {
+    top: 30%;
+    right: 36%;
+}
+}
+
+/* Channel Profile END */

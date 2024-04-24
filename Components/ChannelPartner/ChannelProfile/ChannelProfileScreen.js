@@ -113,7 +113,7 @@ const ChannelProfileScreen = () => {
                         />
                                         </div>
                                         <div className="profile-edit">
-                                            <img src="/ChannelPartner/profile-edit.svg" alt="" className="position-absolute" />
+                                            <img src="/ChannelPartner/profile-edit.svg" alt="" className="position-absolute" style={{ cursor: "pointer"  }}/>
                                         </div>
                                         <div className="d-flex flex-column gap-4">
                                             <div className="d-flex flex-column justify-content-center align-items-center gap-1">
@@ -125,7 +125,7 @@ const ChannelProfileScreen = () => {
                                                         <span className="edit-email">
                                                             Email
                                                         </span>
-                                                        <img src="/ChannelPartner/profile-edit.svg" alt="" style={{ height: "17px" }} />
+                                                        <img src="/ChannelPartner/profile-edit.svg" alt="" style={{ height: "17px", cursor: "pointer"  }} />
                                                        
                                                     </div>
                                                     <div>
@@ -137,7 +137,7 @@ const ChannelProfileScreen = () => {
                                                         <span className="edit-phone">
                                                             Phone
                                                         </span>
-                                                        <img src="/ChannelPartner/profile-edit.svg" alt="" style={{ height: "17px" }} />
+                                                        <img src="/ChannelPartner/profile-edit.svg" alt="" style={{ height: "17px", cursor: "pointer" }} />
                                                     </div>
                                                     <div>
                                                         <span className="edit-phone text-black">+91-{userInfo.contact_number}</span>
@@ -160,15 +160,15 @@ const ChannelProfileScreen = () => {
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Worker Type</span>
-                                            <span className="list-right">Full Time</span>
+                                            <span className="list-right">-</span>
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Department</span>
-                                            <span className="list-right">Administration</span>
+                                            <span className="list-right">-</span>
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Job Title</span>
-                                            <span className="list-right">Admin</span>
+                                            <span className="list-right">-</span>
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Joining Date</span>
@@ -176,7 +176,7 @@ const ChannelProfileScreen = () => {
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Reporting Manager</span>
-                                            <span className="list-right">Harshit Pandey</span>
+                                            <span className="list-right">-</span>
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Location</span>

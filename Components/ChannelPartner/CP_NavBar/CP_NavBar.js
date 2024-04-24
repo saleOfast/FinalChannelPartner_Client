@@ -20,8 +20,10 @@ const CP_NavBar = () => {
   const dispatch = useDispatch();
   const [showConfirm, setshowConfirm] = useState(false);
   const [userInfo, setUserInfo] = useState({});
-  const clientLogo = getCookie('clientLogo') || null;
   const dbMode = useSelector((state) => state.dbMode.value);
+
+  const clientLogo= getCookie('clientLogo')? getCookie('clientLogo') : null;
+
 
   const isActive = (pathname) => {
     return router.pathname === pathname ? 'active' : '';

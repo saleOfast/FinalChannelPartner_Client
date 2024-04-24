@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import MUIDataTable from "mui-datatables";
 import ViewIcon from "../../Svg/ViewIcon";
 import DisableIcon from "../../Svg/DisableIcon";
@@ -6,6 +6,11 @@ import EditIcon from "../../Svg/EditIcon";
 import DeleteIcon from "../../Svg/DeleteIcon";
 import CheckIcon from "../../Svg/CheckIcon";
 import Link from "next/link";
+import { Baseurl, filesUrl } from "../../../Utils/Constants";
+import { Button, Modal } from "react-bootstrap";
+import { getCookie, hasCookie } from "cookies-next";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const ManageUsersTable = ({
   deleteConfirm,
@@ -13,7 +18,16 @@ const ManageUsersTable = ({
   dataList,
   openEdtMdl,
   title,
+  getDataList
 }) => {
+
+  const [userData, setUserData] =  useState([])
+  const [actionMode, setActionMode] =  useState('')
+  const [showModal, setShowModal] =  useState(false)
+  const [userInfo, setUserInfo ] =  useState({
+    user_code: '',
+    reject_reason: ''
+  })
   const channelUserStatus = (key) => {
     switch (key) {
       case 0:
@@ -31,6 +45,23 @@ const ManageUsersTable = ({
     }
   };
 
+  const channelUserStatusColor = (key) => {
+    switch (key) {
+      case 0:
+        return 'text-primary';
+        break;
+      case 1:
+        return 'text-warning';
+        break;
+      case 3:
+        return 'text-danger';
+        break;
+      default:
+        return 'text-success';
+        break;
+    }
+  };
+
   const columns = [
     {
       name: "user_code",
@@ -38,10 +69,21 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#405189", color: "white" }} key={2}>
+          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
+
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+          <span
+          className="fw-bold"
+          style={{color: '#0000ee'}}
+          >
+            {value}
+        </span>
+          )
+        },
       },
     },
     {
@@ -50,58 +92,145 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#405189", color: "white" }} key={2}>
+          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+          <Link
+          className="fw-bold"
+          style={{color: '#0000ee'}}
+          target="_blank"
+          href={`/CHANNEL/ChannelAddUsersReject?id=${tableMeta.rowData[0]}&mode=view`}
+          >
+            {value}
+        </Link>
+          )
+        }
       },
     },
     {
-      name: "email",
-      label: "E-mail",
+      name: "createdAt",
+      label: "Request Date",
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#405189", color: "white" }} key={2}>
+          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px'  }} >
             {columnMeta.label}
           </th>
         ),
+
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+          <span
+          className=""
+          style={{color: '#667799'}}
+          >
+            {value?.split('T')[0]?.split('-')?.reverse()?.join('/')}
+        </span>
+          )
+        },
       },
     },
     {
-      name: "contact_number",
-      label: "Mobile No",
+      name: "db_user_profile",
+      label: "Aadhar",
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#405189", color: "white" }} key={2}>
+          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+          <Link
+          className=""
+          style={{color: '#0000ee'}}
+          target="_blank"
+          href={`${filesUrl}/adh/images${value?.aadhar_file}`}
+          >
+            {value?.aadhar_file ? 'Aadhar': ''}
+            
+        </Link>
+          )
+        },
       },
     },
     {
-      name: "organisation",
-      label: "Organisation",
+      name: "db_user_profile",
+      label: "PAN",
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#405189", color: "white" }} key={2}>
+          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+          <Link
+          className=""
+          style={{color: '#0000ee'}}
+          target="_blank"
+          href={`${filesUrl}/pan/images${value?.pan_file}`}
+          >
+            {value?.pan_file ? 'PAN': ''}
+            
+        </Link>
+          )
+        },
       },
     },
     {
-      name: "gst",
-      label: "GST",
+      name: "db_user_profile",
+      label: "Rera License",
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#405189", color: "white" }} key={2}>
+          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+          <Link
+          className=""
+          style={{color: '#0000ee'}}
+          target="_blank"
+          href={`${filesUrl}/rera/images${value?.rera_file}`}
+          >
+            {value?.rera_file ? 'Rera': ''}
+            
+        </Link>
+          )
+        },
+      },
+    },
+    {
+      name: "db_user_profile",
+      label: "Cancelled Cheque",
+      options: {
+        filter: true,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
+            {columnMeta.label}
+          </th>
+        ),
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+          <Link
+          className=""
+          style={{color: '#0000ee'}}
+          target="_blank"
+          href={`${filesUrl}/cheque/images${value?.c_cheque_file}`}
+          >
+            {value?.c_cheque_file ? 'Cancelled Cheque': ''}
+            
+        </Link>
+          )
+        },
       },
     },
 
@@ -111,12 +240,12 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#405189", color: "white" }} key={2}>
+          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
-          return <div className="status_box">{channelUserStatus(value)}</div>;
+          return <div className={`status_box ${channelUserStatusColor(value)} `}>{channelUserStatus(value)}</div>;
         },
       },
     },
@@ -127,50 +256,28 @@ const ManageUsersTable = ({
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
           <th
-            style={{ background: "#405189", color: "white", padding: "9px" }}
-            key={2}
+            style={{ background: "#0000ee", color: "white",  paddingLeft: '65px' }}
+            
           >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-            <div className="table_btns">
-              <Link
-                href={`/CHANNEL/ChannelAddUsersReject?id=${value}&mode=view`}
-              >
-                <button className="action_btn" title="View">
-                  <ViewIcon />
+            <div className="table_btns d-flex align-items-center justify-content-start gap-3">
+             
+                <button  onClick={()=>{setActionMode('Accept'); setShowModal(true); setUserInfo({
+                  ...userInfo, user_code: value
+                })}} style={{backgroundColor: '#61e25e'}} className="btn  rounded-5" >
+                  Accept
                 </button>
-              </Link>
 
-              {/* <Link href={`/ChannelAddUsers?id=${value}&mode=edit`}>
-                                <button
-                                    className="action_btn"
-                                    title='Edit'>
-                                    <EditIcon />
-                                </button>
-                            </Link> */}
-              {/* {tableMeta.rowData[5] ?
-                                <button
-                                    onClick={() => disableConfirm(value, 0)}
-                                    className="action_btn"
-                                    title='Disable'>
-                                    <DisableIcon />
-                                </button>
-                                : <button
-                                    onClick={() => disableConfirm(value, 1)}
-                                    className="action_btn x2"
-                                    title='Enable'>
-                                    <CheckIcon />
-                                </button>}
-
-                            <button
-                                onClick={() => deleteConfirm(value, 0)}
-                                className="action_btn"
-                                title='Delete'>
-                                <DeleteIcon />
-                            </button> */}
+                <button onClick={()=>{setActionMode('Reject'); setShowModal(true); setUserInfo({
+                  ...userInfo, user_code: value
+                })}} className=" btn btn-danger rounded-5">
+                  Reject
+                </button>
+              
             </div>
           );
         },
@@ -178,21 +285,149 @@ const ManageUsersTable = ({
     },
   ];
 
+  const handleRowClick = (rowData, rowMeta) => {
+    const data = rowMeta?.reduce((accu, value) => {
+        accu.push(dataList[value.dataIndex].user_code);
+        return accu; // Return the accumulator
+    }, []);
+    setUserData([...data]);
+};
+
+
   const options = {
-    selectableRows: "none",
+    selectableRows: 'multiple',
     responsive: "standard",
+    onRowSelectionChange : handleRowClick,
+  };
+
+  const updateUserhandler = async () => {
+
+    if (!hasCookie("token")) return;
+    if (actionMode !== 'Accept' && userInfo.reject_reason === "") {
+      return toast.error("Please enter a reason");
+    }
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+    const header = {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        pass: "pass",
+      },
+    };
+
+    try {
+      const response = await axios.put(
+        `${Baseurl}/db/users`,
+        {
+          doc_verification: actionMode === 'Accept' ? 2 : 3,
+          reject_reason: userInfo.reject_reason,
+          user_code: userInfo.user_code,
+        },
+        header
+      );
+      if (response.status === 200 || response.status === 201) {
+        toast.success(response.data.message);
+        getDataList()
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong!");
+      }
+    }
   };
 
   return (
     <>
-      <div className="miuiTable">
+      <div className="miuiTable channelTable">
         <MUIDataTable
           title={title}
           data={dataList}
           columns={columns}
           options={options}
         />
+        <div>
+          {userData.length ?
+          <div className="table_btns d-flex align-items-center justify-content-center gap-3 mt-4">
+              
+              <button onClick={()=>{setActionMode('Accept'); setShowModal(true)}} style={{backgroundColor: '#61e25e'}} className="btn  rounded-5" >
+                Accept
+              </button>
+
+              <button onClick={()=>{setActionMode('Reject'); setShowModal(true)}} className=" btn btn-danger rounded-5">
+                Reject
+              </button>
+            
+          </div>
+          : <></>
+        }
+        </div>
       </div>
+
+      <Modal
+        className="commonModal"
+        show={showModal}
+        // onHide={handleClose}
+      >
+       
+        <Modal.Body>
+          <div className="add_user_form">
+            <div className="row">
+              <div className="col-xl-12 col-md-12 col-sm-12 col-12">
+                <div className="input_box text-center">
+                  <label htmlFor="email">
+                    Are you sure you want to {actionMode} this request?
+                  </label>
+                  {actionMode !== 'Accept' ?
+                  <input
+                    type="text"
+                    placeholder="Enter Reason"
+                    className="form-control"
+                    onChange={(e) => {
+                      setUserInfo({
+                        ...userInfo, reject_reason: e.target.value
+                      })
+                    }}
+                    value={userInfo.reject_reason}
+                  />
+                  : <> </>
+                }
+                </div>
+                <div className="d-flex align-items-center justify-content-center gap-2">
+              
+          <Button
+            variant="primary"
+            type="button"
+            className="rounded-5"
+            onClick={() => {
+              updateUserhandler();
+              setActionMode("");
+              setShowModal(false)
+            }}
+          >
+            Yes
+          </Button>
+
+          <Button
+            variant="secondary"
+            type="button"
+            className="rounded-5 "
+            onClick={() => {
+              setActionMode("");
+              setShowModal(false)
+            }}
+          >
+            No
+          </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
+      
+      </Modal>
     </>
   );
 };

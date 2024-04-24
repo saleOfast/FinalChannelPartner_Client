@@ -21,6 +21,7 @@
     "bootstrap": "^5.2.3",
     "cookies-next": "^2.1.1",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.10",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.2",
     "moment": "^2.29.4",

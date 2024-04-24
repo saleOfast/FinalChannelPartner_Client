@@ -13,6 +13,8 @@ import Papa from "papaparse";
 import { Baseurl } from '../../../Utils/Constants';
 import ConfirmBox from '../../Basics/ConfirmBox';
 import { useRouter } from 'next/router';
+import Select from 'react-select';
+import { fetchData } from '../../../Utils/getReq';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -26,7 +28,10 @@ const ActivePartnersScreen_copy = () => {
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
     const [confirmText, setconfirmText] = useState('')
     const [show, setShow] = useState(false);
+    const [showAssignTo, setShowAssignTo] = useState("");
     const [excelData, setexcelData] = useState([]);
+    const [errorToast, setErrorToast] = useState(false);
+    const [usersList, setUsersList] = useState([]);
     const [currObj, setcurrObj] = useState({
         id: '',
         action: ''
@@ -64,6 +69,10 @@ const ActivePartnersScreen_copy = () => {
         router.push(url)
     }
 
+
+    async function getUsersList() {
+        await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
+      }
 
 
     const importHandler = (event, type) => {
@@ -216,6 +225,7 @@ const ActivePartnersScreen_copy = () => {
 
     useEffect(() => {
         getDataList();
+        getUsersList();
     }, [])
 
     return (
@@ -294,6 +304,51 @@ const ActivePartnersScreen_copy = () => {
                 <Modal.Footer>
                     <button className="btn btn-cancel me-2" onClick={handleClose}>Cancel</button>
                     <Button variant="primary" onClick={csvSubmitHandler}>
+                        SUBMIT
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal className="commonModal" show={!showAssignTo? false: true } onHide={()=>setShowAssignTo("")} style={{}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>  Assign to </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="add_user_form">
+                        <div className="row">
+                            <div className="col-xl-12 col-md-12 col-sm-12 col-12">
+                                <div className="input_box">
+                                   
+                                        <Select
+                                            id="select"
+                                            defaultValue={""}
+                                            options={usersList?.map((data, index) => {
+                                            return {
+                                                value: data?.user_id,
+                                                label: data?.user,
+                                            };
+                                            })}
+                                            // value={usersList?.map((data, index) => {
+                                            // if (userInfo.report_to === data.user_id) {
+                                            //     return {
+                                            //     value: data?.user_id,
+                                            //     label: data?.user,
+                                            //     };
+                                            // }
+                                            // })}
+                                            onChange={(e) => {
+                                            // setUserinfo({ ...userInfo, report_to: e.value });
+                                            setErrorData({ ...errorData, report_to: "" });
+                                            }}
+                                        />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button className="btn btn-cancel me-2" onClick={()=>setShowAssignTo("")}>Cancel</button>
+                    <Button variant="primary"   >
                         SUBMIT
                     </Button>
                 </Modal.Footer>

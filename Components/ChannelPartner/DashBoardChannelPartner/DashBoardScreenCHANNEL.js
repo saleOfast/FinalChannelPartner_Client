@@ -1,4 +1,5 @@
 import React from 'react'
+import BasicRangeShortcuts from '../../DateRangeCustom/Daterange'
 
 const DashBoardScreenCHANNEL = () => {
   return (
@@ -14,6 +15,7 @@ const DashBoardScreenCHANNEL = () => {
       </div>
     </div>
   </div>
+  <BasicRangeShortcuts />
 </section>
 
     </div>

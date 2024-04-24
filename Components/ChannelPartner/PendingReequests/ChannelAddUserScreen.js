@@ -190,14 +190,15 @@ const ChannelAddUserScreen = () => {
         doc_verification: data1?.doc_verification,
         reject_reason: data1?.reject_reason,
         address: data1?.address,
-        state_name: data1?.db_state.state_name,
-        city_name: data1?.db_city.city_name,
+        state_name: data1?.db_state?.state_name,
+        city_name: data1?.db_city?.city_name,
         organisation: data1?.organisation,
         user_l_name: data1?.user_l_name,
         gst: data1?.gst
       });
     } catch (error) {
-      toast.error(error.response.data.message);
+      console.log(error)
+      toast.error(error?.response?.data?.message);
     }
   }
 
@@ -397,7 +398,7 @@ const ChannelAddUserScreen = () => {
   }, [router.isReady, id]);
 
   return (
-    <div className={`main_Box w-100 pe-5 `} style={{ marginTop: "-50px" }}>
+    <div className={`main_Box w-100 pe-5 `} >
 
 
       <div className="main_content w-100">

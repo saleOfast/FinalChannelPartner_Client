@@ -10,7 +10,9 @@ import { useRouter } from 'next/router';
 import PlusIcon from '../../Svg/PlusIcon';
 import ListVicn from '../../Svg/ListVicn';
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, setoldAssignTo }) => {
+
+
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, setoldAssignTo, setShowDateFilter }) => {
     const router = useRouter()
 
     const columns = [
@@ -232,9 +234,23 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         },
     ];
 
+    
+  
+    const CustomToolbar = () => {
+        return (
+            <div className=' d-flex justify-content-start gap-4'>
+                <p>{title}</p>
+                <button className='btn btn-secondary' onClick={()=>setShowDateFilter(true)}> Custom </button>
+            </div>
+        );
+    }
+
     const options = {
         selectableRows: 'multiple',
         responsive: "standard",
+      
+      
+        
         customBodyRender: (value, tableMeta, updateValue) => {
             
             return (
@@ -251,13 +267,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     const goto = (url) => {
         router.push(url)
     }
-    
+
+ 
 
     return (
         <>
             <div className="miuiTable channelTable">
                 <MUIDataTable
-                    title={title}
+                    title={<CustomToolbar/>}
                     data={dataList}
                     columns={columns}
                     options={options}

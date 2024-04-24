@@ -15,6 +15,7 @@ import ConfirmBox from '../../Basics/ConfirmBox';
 import { useRouter } from 'next/router';
 import Select from 'react-select';
 import { fetchData } from '../../../Utils/getReq';
+import Daterange from '../../DateRangeCustom/Daterange';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -30,9 +31,15 @@ const ActivePartnersScreen_copy = () => {
     const [show, setShow] = useState(false);
     const [showAssignTo, setShowAssignTo] = useState("");
     const [oldAssignTo, setoldAssignTo] = useState("");
+    const [showDateFilter, setShowDateFilter] = useState(false);
     const [excelData, setexcelData] = useState([]);
     const [errorToast, setErrorToast] = useState(false);
     const [usersList, setUsersList] = useState([]);
+    const [DateEvent, seDateEvent] = useState({
+        type: 'Custom',
+        fDate: '',
+        eDate: ''
+    });
     const [currObj, setcurrObj] = useState({
         id: '',
         action: ''
@@ -314,12 +321,13 @@ const ActivePartnersScreen_copy = () => {
                             deleteConfirm={deleteConfirm}
                             setShowAssignTo={setShowAssignTo}
                             setoldAssignTo={setoldAssignTo}
+                            setShowDateFilter={setShowDateFilter}
                         />
                     </div>
                 </div>
             </div>
 
-            <Modal className="commonModal" show={show} onHide={handleClose}>
+            <Modal className="commonModal" show={show} onHide={handleClose} >
                 <Modal.Header closeButton>
                     <Modal.Title>  Import CSV </Modal.Title>
                 </Modal.Header>
@@ -351,7 +359,7 @@ const ActivePartnersScreen_copy = () => {
                 </Modal.Footer>
             </Modal>
 
-            <Modal className="commonModal" show={!showAssignTo? false: true } onHide={()=>setShowAssignTo("")} style={{}}>
+            <Modal className="commonModal"  show={!showAssignTo? false: true }   onHide={()=>setShowAssignTo("")} style={{}}>
                 <Modal.Header closeButton>
                     <Modal.Title>  Assign to </Modal.Title>
                 </Modal.Header>
@@ -383,6 +391,8 @@ const ActivePartnersScreen_copy = () => {
                                             
                                             }}
                                         />
+                                        
+                                      
                                 </div>
                             </div>
                         </div>
@@ -395,6 +405,25 @@ const ActivePartnersScreen_copy = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+
+            <Modal className="w-100" size="xl" show={showDateFilter} onHide={()=>setShowDateFilter(false)} >
+                <Modal.Header closeButton>
+                    <Modal.Title>  Assign to </Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='mx-auto'>
+                    <Daterange />
+                </Modal.Body>
+                <Modal.Footer>
+                    <button className="btn btn-cancel me-2" onClick={()=>setShowDateFilter(false)}>Cancel</button>
+                    <Button variant="primary" >
+                        SUBMIT
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+           
+            
         </>
     )
 }

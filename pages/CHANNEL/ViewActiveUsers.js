@@ -1,5 +1,6 @@
 import React from 'react'
 import AddUserScreen from '../../Components/ChannelPartner/ActivePartners/AddUserScreen'
+import WithUserhoc_CP from '../../HOC/WithUserhoc_CP'
 
 const ViewActiveUsers = () => {
   return (
@@ -9,4 +10,4 @@ const ViewActiveUsers = () => {
   )
 }
 
-export default ViewActiveUsers
+export default WithUserhoc_CP(ViewActiveUsers)

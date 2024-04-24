@@ -8,8 +8,9 @@ import CheckIcon from '../../Svg/CheckIcon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PlusIcon from '../../Svg/PlusIcon';
+import ListVicn from '../../Svg/ListVicn';
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, setoldAssignTo }) => {
     const router = useRouter()
 
     const columns = [
@@ -18,6 +19,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             label: "Account ID",
             options: {
                 filter: true,
+                customHeadRender: (columnMeta, updateDirection) => (
+                    <th style={{background:"#405189", color: 'white'}}   >
+                      {columnMeta.label}
+                    </th>
+                  )
             }
         },
         {
@@ -25,13 +31,24 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             label: "Account Name",
             options: {
                 filter: true,
-            }
+                customHeadRender: (columnMeta, updateDirection) => (
+                    <th style={{background:"#405189", color: 'white'}}   >
+                      {columnMeta.label}
+                    </th>
+                  )
+            },
+
         },
         {
             name: 'createdAt',
-            label: "Leads Count",
+            label: "Created Date",
             options: {
                 filter: true,
+                customHeadRender: (columnMeta, updateDirection) => (
+                    <th style={{background:"#405189", color: 'white'}}   >
+                      {columnMeta.label}
+                    </th>
+                  ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     const date = new Date(value);
                     const formattedDate = date.toISOString().split('T')[0];
@@ -48,6 +65,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             label: "Leads Count",
             options: {
                 filter: true,
+                customHeadRender: (columnMeta, updateDirection) => (
+                    <th style={{background:"#405189", color: 'white'}}   >
+                      {columnMeta.label}
+                    </th>
+                  ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -62,6 +84,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             label: "Bookings Count",
             options: {
                 filter: true,
+                customHeadRender: (columnMeta, updateDirection) => (
+                    <th style={{background:"#405189", color: 'white'}}   >
+                      {columnMeta.label}
+                    </th>
+                  ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -105,6 +132,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             label: "Assigned to",
             options: {
                 filter: true,
+                customHeadRender: (columnMeta, updateDirection) => (
+                    <th style={{background:"#405189", color: 'white'}}   >
+                      {columnMeta.label}
+                    </th>
+                  ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -119,6 +151,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             label: "Status",
             options: {
                 filter: true,
+                customHeadRender: (columnMeta, updateDirection) => (
+                    <th style={{background:"#405189", color: 'white'}}   >
+                      {columnMeta.label}
+                    </th>
+                  ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -134,6 +171,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             label: "Action",
             options: {
                 filter: true,
+                customHeadRender: (columnMeta, updateDirection) => (
+                    <th style={{background:"#405189", color: 'white'}}   >
+                      {columnMeta.label}
+                    </th>
+                  ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -152,6 +194,17 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                     <EditIcon />
                                 </button>
                             </Link>
+
+                          
+                            <button
+                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta.rowData[5].user_id) }}
+                                className="action_btn x2"
+                                title='Assign - To'>
+                                <ListVicn  />
+                            </button>
+                          
+                           
+                            
                             {/* {tableMeta.rowData[5] ?
                                 <button
                                     onClick={() => disableConfirm(value, 0)}
@@ -182,19 +235,18 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     const options = {
         selectableRows: 'multiple',
         responsive: "standard",
-        customHeadRender: (columnMeta, handleToggleColumn) => {
+        customBodyRender: (value, tableMeta, updateValue) => {
+            
             return (
-                <thead>
-                    <tr style={{ backgroundColor: 'blue', color: 'white' }}> {/ Set background color to blue and text color to white /}
-                        {columnMeta.map((column, columnIndex) => (
-                            <th key={columnIndex}>{column.label}</th>
-                        ))}
-                    </tr>
-                </thead>
+                <tr >
+                    <th style={{ backgroundColor: '#1E90FF' }}>
+
+                    </th>
+                    {/* Your table cells here */}
+                </tr>
             );
-        },
+        }
     };
-    
 
     const goto = (url) => {
         router.push(url)
@@ -203,7 +255,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
     return (
         <>
-            <div className="miuiTable">
+            <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={title}
                     data={dataList}

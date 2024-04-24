@@ -225,7 +225,7 @@ const PendingRequestsScreen = () => {
                 actionType={deleteHandler}
                 title={"Are You Sure you want to Delete ?"} />
 
-            <div className="w-100 ps-4 pe-4" style={{marginTop:"-50px"}}>
+            <div className="w-100 ps-4 pe-4" >
                 
                 <div className="main_content">
                     <div className="table_screen">

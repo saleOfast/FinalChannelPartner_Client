@@ -36,7 +36,7 @@ function App({ Component, pageProps }) {
                   draggable
                   pauseOnHover
                   theme="light" />
-      {hasCookie("channel") ? <CP_NavBar/>  : <Fragment></Fragment> }  
+      {/* {hasCookie("channel") ? <CP_NavBar/>  : <Fragment></Fragment> }   */}
       <Layout Component={Component} pageProps={pageProps}  />
       {hasCookie("dms") ? <Tabs/>  : <Fragment></Fragment> }  
         </SSRProvider>

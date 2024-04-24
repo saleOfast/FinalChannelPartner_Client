@@ -16,7 +16,7 @@ const CP_NavBar = () => {
 
   return (
     <>
-      <section className="Reports-Dashboard bg-white" style={{ marginTop: "65px", top:"200px" }}>
+      <section className="Reports-Dashboard bg-white" >
         <nav className="navbar navbar-expand-lg navbar-light " style={{ borderTop: '1px solid #F5F5F5', borderBottom: '1px solid #F5F5F5' }}>
           <div className="container-fluid mx-3">
             <div className="navbar-brand" >
@@ -38,7 +38,7 @@ const CP_NavBar = () => {
                   <Link className={`nav-link ${isActive('/CHANNEL/PendingRequests')}`} href="/CHANNEL/PendingRequests">Pending Requests</Link>
                 </li>
                 <li className="nav-item">
-                  <a className={`nav-link ${isActive('/Profile')}`} href="#">Profile</a>
+                  <Link className={`nav-link ${isActive('/CHANNEL/ChannelProfile')}`} href="/CHANNEL/ChannelProfile">Profile</Link>
                 </li>
               </ul>
             </div>

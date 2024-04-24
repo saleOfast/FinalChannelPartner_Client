@@ -29,6 +29,7 @@ const ActivePartnersScreen_copy = () => {
     const [confirmText, setconfirmText] = useState('')
     const [show, setShow] = useState(false);
     const [showAssignTo, setShowAssignTo] = useState("");
+    const [oldAssignTo, setoldAssignTo] = useState("");
     const [excelData, setexcelData] = useState([]);
     const [errorToast, setErrorToast] = useState(false);
     const [usersList, setUsersList] = useState([]);
@@ -221,6 +222,45 @@ const ActivePartnersScreen_copy = () => {
         }
 
     }
+    const updateUserhandler = async () => {
+        if (!hasCookie("token")) return;
+        const token = getCookie("token");
+        const db_name = getCookie("db_name");
+        const header = {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            db: db_name,
+            m_id: 79,
+          },
+        };
+    
+       
+        try {
+          const response = await axios.put(`${Baseurl}/db/users`, {
+            db_name: db_name,
+            user_code: showAssignTo,
+            report_to: oldAssignTo,
+          }, header);
+          if (response.status === 200 || response.status === 201) {
+            toast.success(response.data.message);
+            setoldAssignTo('')
+            setShowAssignTo('')
+            toast.success(response.message)
+            getDataList();
+          }
+        } catch (error) {
+          if (error?.response?.data?.status === 422) {
+                toast.error(error?.response?.data?.message)
+                
+          }
+          if (error?.response?.data?.message) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("Something went wrong!");
+          }
+        }
+      };
 
 
     useEffect(() => {
@@ -272,6 +312,8 @@ const ActivePartnersScreen_copy = () => {
                             dataList={dataList}
                             disableConfirm={disableConfirm}
                             deleteConfirm={deleteConfirm}
+                            setShowAssignTo={setShowAssignTo}
+                            setoldAssignTo={setoldAssignTo}
                         />
                     </div>
                 </div>
@@ -328,17 +370,17 @@ const ActivePartnersScreen_copy = () => {
                                                 label: data?.user,
                                             };
                                             })}
-                                            // value={usersList?.map((data, index) => {
-                                            // if (userInfo.report_to === data.user_id) {
-                                            //     return {
-                                            //     value: data?.user_id,
-                                            //     label: data?.user,
-                                            //     };
-                                            // }
-                                            // })}
+                                            value={usersList?.map((data, index) => {
+                                            if (oldAssignTo === data.user_id) {
+                                                return {
+                                                value: data?.user_id,
+                                                label: data?.user,
+                                                };
+                                            }
+                                            })}
                                             onChange={(e) => {
-                                            // setUserinfo({ ...userInfo, report_to: e.value });
-                                            setErrorData({ ...errorData, report_to: "" });
+                                            setoldAssignTo(e.value)
+                                            
                                             }}
                                         />
                                 </div>
@@ -348,7 +390,7 @@ const ActivePartnersScreen_copy = () => {
                 </Modal.Body>
                 <Modal.Footer>
                     <button className="btn btn-cancel me-2" onClick={()=>setShowAssignTo("")}>Cancel</button>
-                    <Button variant="primary"   >
+                    <Button variant="primary"  onClick={updateUserhandler} >
                         SUBMIT
                     </Button>
                 </Modal.Footer>

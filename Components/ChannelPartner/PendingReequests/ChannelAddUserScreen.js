@@ -63,13 +63,13 @@ const ChannelAddUserScreen = () => {
     isSubmitted: false,
     user_code: "",
     doc_verification: "",
-    reject_reason:"",
-    address:"",
-    organisation:"",
-    state_name:"",
-    city_name:"",
-    gst:"",
-    user_l_name:"",
+    reject_reason: "",
+    address: "",
+    organisation: "",
+    state_name: "",
+    city_name: "",
+    gst: "",
+    user_l_name: "",
 
   });
 
@@ -188,13 +188,13 @@ const ChannelAddUserScreen = () => {
         cheque: data2?.c_cheque_file,
         user_code: data1?.user_code,
         doc_verification: data1?.doc_verification,
-        reject_reason:data1?.reject_reason,
-        address:data1?.address,
-        state_name:data1?.db_state.state_name,
-        city_name:data1?.db_city.city_name,
-        organisation:data1?.organisation,
-        user_l_name:data1?.user_l_name,
-        gst:data1?.gst
+        reject_reason: data1?.reject_reason,
+        address: data1?.address,
+        state_name: data1?.db_state.state_name,
+        city_name: data1?.db_city.city_name,
+        organisation: data1?.organisation,
+        user_l_name: data1?.user_l_name,
+        gst: data1?.gst
       });
     } catch (error) {
       toast.error(error.response.data.message);
@@ -255,7 +255,7 @@ const ChannelAddUserScreen = () => {
   };
 
   const updateUserhandler = async (doc_verify) => {
-    
+
     if (!hasCookie("token")) return;
     if (doc_verify === 3 && updateInfo.reject_reason === "") {
       return toast.error("Please enter a reason");
@@ -397,17 +397,17 @@ const ChannelAddUserScreen = () => {
   }, [router.isReady, id]);
 
   return (
-    <div className={`main_Box w-100 pe-5 `} style={{marginTop:"-50px"}}>
-     
+    <div className={`main_Box w-100 pe-5 `} style={{ marginTop: "-50px" }}>
+
 
       <div className="main_content w-100">
         <div className="Add_user_screen">
           <div className="d-block w-100">
-            
+
             <section className="channel_partner_register p-5">
               <div className="container-fluid">
                 <div className="row">
-                <div className="col-12 d-flex justify-content-between align-items-center mb-3">
+                  <div className="col-12 d-flex justify-content-between align-items-center mb-3">
                     <div className="my_profile d-flex align-items-center gap-3 ps-2">
                       {/* <KeyboardBackspaceIcon /> */}
                       <span style={{ fontSize: "24PX", fontWeight: 600 }}>
@@ -501,7 +501,7 @@ const ChannelAddUserScreen = () => {
                             disabled={true}
                           />
                         </div>
-                        
+
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                           <label className="form-label">
                             Email <span className="error-message">*</span>
@@ -558,10 +558,10 @@ const ChannelAddUserScreen = () => {
                           />
                         </div>
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                          
+
                         </div>
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                          
+
                         </div>
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3"></div>
                         {inputFields.map((input, index) => (
@@ -581,13 +581,12 @@ const ChannelAddUserScreen = () => {
                                 className="form-control input-field"
                                 disabled={true}
                               />
-                              
+
                               {input.field === "aadhar" &&
-                              formFields[input.field] ? (
+                                formFields[input.field] ? (
                                 <img
-                                  src={`${filesUrl}/adh/images${
-                                    formFields[input.field]
-                                  }`}
+                                  src={`${filesUrl}/adh/images${formFields[input.field]
+                                    }`}
                                   alt={`${input.label} Preview`}
                                   style={{
                                     maxWidth: "100px",
@@ -600,8 +599,7 @@ const ChannelAddUserScreen = () => {
                                   <img
                                     src={
                                       `${filesUrl}` +
-                                      `/${input.field}/images${
-                                        formFields[input.field]
+                                      `/${input.field}/images${formFields[input.field]
                                       }`
                                     }
                                     alt={`${input.label} Preview`}
@@ -618,37 +616,40 @@ const ChannelAddUserScreen = () => {
                         {
                           formFields.reject_reason && (
                             <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                          <label className="form-label">
-                            Reject Reason
-                          </label>                              
-                          <input
-                            className="form-control input-field"
-                            formcontrolname="Name"
-                            type="text"
-                            name="Reject_reason"
-                            value={formFields.reject_reason}
-                            disabled={true}
-                          />
-                        </div>
+                              <label className="form-label">
+                                Reject Reason
+                              </label>
+                              <input
+                                className="form-control input-field"
+                                formcontrolname="Name"
+                                type="text"
+                                name="Reject_reason"
+                                value={formFields.reject_reason}
+                                disabled={true}
+                              />
+                            </div>
                           )
                         }
-                        
+
 
                         <div className="mt-3  md-text-center">
                           <div className="d-flex">
-                            {(formFields.doc_verification=== 0 ||formFields.doc_verification=== 1)  && (
+                            {(formFields.doc_verification === 0 || formFields.doc_verification === 1) && (
                               <>
                                 <button
-                                  className="btn btn-primary Add_btn me-3"
+                                  className="btn btn-success Add_btn me-3"
                                   type="button"
                                   onClick={() => {
                                     updateUserhandler(2);
+                                  }}
+                                  style={{
+                                    backgroundColor: "#61e25e"
                                   }}
                                 >
                                   Accept
                                 </button>
                                 <button
-                                  className="btn btn-primary Add_btn"
+                                  className="btn btn-danger Add_btn"
                                   type="button"
                                   onClick={OpenAddModal}
                                 >
@@ -711,9 +712,9 @@ const ChannelAddUserScreen = () => {
               </div>
             </section>
           </div>
-        </div>
-      </div>
-    </div>
+        </div >
+      </div >
+    </div >
   );
 };
 

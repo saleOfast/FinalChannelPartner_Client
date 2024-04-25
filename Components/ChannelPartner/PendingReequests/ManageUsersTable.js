@@ -99,7 +99,7 @@ const ManageUsersTable = ({
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
           <Link
-          className="fw-bold"
+          className="fw-bold text-decoration-underline"
           style={{color: '#0000ee'}}
           target="_blank"
           href={`/CHANNEL/ChannelAddUsersReject?id=${tableMeta.rowData[0]}&mode=view`}
@@ -146,7 +146,7 @@ const ManageUsersTable = ({
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
           <Link
-          className=""
+          className="text-decoration-underline"
           style={{color: '#0000ee'}}
           target="_blank"
           href={`${filesUrl}/adh/images${value?.aadhar_file}`}
@@ -171,7 +171,7 @@ const ManageUsersTable = ({
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
           <Link
-          className=""
+          className="text-decoration-underline"
           style={{color: '#0000ee'}}
           target="_blank"
           href={`${filesUrl}/pan/images${value?.pan_file}`}
@@ -196,7 +196,7 @@ const ManageUsersTable = ({
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
           <Link
-          className=""
+          className="text-decoration-underline"
           style={{color: '#0000ee'}}
           target="_blank"
           href={`${filesUrl}/rera/images${value?.rera_file}`}
@@ -221,7 +221,7 @@ const ManageUsersTable = ({
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
           <Link
-          className=""
+          className="text-decoration-underline"
           style={{color: '#0000ee'}}
           target="_blank"
           href={`${filesUrl}/cheque/images${value?.c_cheque_file}`}

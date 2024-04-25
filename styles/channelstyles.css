@@ -795,3 +795,7 @@
   color: white !important;
   text-wrap: nowrap !important;
 }
+
+.customToolHead p{
+  margin: 0 !important;
+}

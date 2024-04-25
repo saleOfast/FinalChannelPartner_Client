@@ -352,18 +352,18 @@ const ManageUsersTable = ({
     for(const element of userData){
 
       if (!hasCookie("token")) return;
-    if (actionMode !== 'Accept' && userInfo.reject_reason === "") {
-      return toast.error("Please enter a reason");
-    }
-    const token = getCookie("token");
-    const db_name = getCookie("db_name");
-    const header = {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-        pass: "pass",
-      },
-    };
+      if (actionMode !== 'Accept' && userInfo.reject_reason === "") {
+        return toast.error("Please enter a reason");
+      }
+      const token = getCookie("token");
+      const db_name = getCookie("db_name");
+      const header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          pass: "pass",
+        },
+      };
 
     try {
       const response = await axios.put(
@@ -396,6 +396,7 @@ const ManageUsersTable = ({
       }
     }
     }
+    setUserData([])
   };
 
   return (

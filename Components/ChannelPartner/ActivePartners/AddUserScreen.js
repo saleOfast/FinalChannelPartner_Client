@@ -756,14 +756,17 @@ const AddUserScreen = () => {
                     disabled={viewMode}
                   />
                   {oldFiles?.aadhar && (
+                    <Link href={`${filesUrl}/adh/images${oldFiles.aadhar}`} target="_blank">
                     <img
                       src={`${filesUrl}/adh/images${oldFiles.aadhar}`}
                       alt={`Aadhar Card Preview`}
                       style={{
                         maxWidth: "100px",
                         maxHeight: "100px",
+                        
                       }}
                     />
+                    </Link>
                   )}
                   {uploadDocs?.aadharPreview && (
                     <img
@@ -790,6 +793,7 @@ const AddUserScreen = () => {
                     disabled={viewMode}
                   />
                   {oldFiles?.pan && (
+                    <Link target="_blank" href={`${filesUrl}/pan/images${oldFiles.pan}`}>
                     <img
                       src={`${filesUrl}/pan/images${oldFiles.pan}`}
                       alt={`PAN CARD Preview`}
@@ -798,6 +802,7 @@ const AddUserScreen = () => {
                         maxHeight: "100px",
                       }}
                     />
+                    </Link>
                   )}
                   {uploadDocs?.panPreview && (
                     <img
@@ -824,14 +829,16 @@ const AddUserScreen = () => {
                     disabled={viewMode}
                   />
                   {oldFiles?.rera && (
-                    <img
-                      src={`${filesUrl}/rera/images${oldFiles.rera}`}
-                      alt={`RERA License Preview`}
-                      style={{
-                        maxWidth: "100px",
-                        maxHeight: "100px",
-                      }}
-                    />
+                    <Link target="_blank" href={`${filesUrl}/rera/images${oldFiles.rera}`}>
+                      <img
+                        src={`${filesUrl}/rera/images${oldFiles.rera}`}
+                        alt={`RERA License Preview`}
+                        style={{
+                          maxWidth: "100px",
+                          maxHeight: "100px",
+                        }}
+                      />
+                    </Link>
                   )}
                    {uploadDocs?.reraPreview && (
                     <img
@@ -858,14 +865,16 @@ const AddUserScreen = () => {
                     disabled={viewMode}
                   />
                   {oldFiles?.cheque && (
-                    <img
-                      src={`${filesUrl}/cheque/images${oldFiles.cheque}`}
-                      alt={`Bank Cancelled Cheque Preview`}
-                      style={{
-                        maxWidth: "100px",
-                        maxHeight: "100px",
-                      }}
-                    />
+                    <Link target="_blank" href={`${filesUrl}/cheque/images${oldFiles.cheque}`}>
+                      <img
+                        src={`${filesUrl}/cheque/images${oldFiles.cheque}`}
+                        alt={`Bank Cancelled Cheque Preview`}
+                        style={{
+                          maxWidth: "100px",
+                          maxHeight: "100px",
+                        }}
+                      />
+                    </Link>
                   )}
                   {uploadDocs?.chequePreview && (
                     <img
@@ -989,6 +998,11 @@ const AddUserScreen = () => {
                 <Link href="/CHANNEL/ActivePartners">
                   <button className="btn btn-cancel me-2 ">Cancel</button>
                 </Link>
+                {
+                  editMode ?  null:(<Link href={`/CHANNEL/EditActiveUsers?id=${userInfo.user_code}&mode=edit`}>
+                  <button className="btn btn-cancel me-2 ">Edit</button>
+                </Link>)
+                }
                 {editMode ? (
                   <button
                     disabled={isLoading}

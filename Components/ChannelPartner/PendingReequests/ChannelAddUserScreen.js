@@ -585,19 +585,25 @@ const ChannelAddUserScreen = () => {
 
                               {input.field === "aadhar" &&
                                 formFields[input.field] ? (
-                                <img
-                                  src={`${filesUrl}/adh/images${formFields[input.field]
-                                    }`}
-                                  alt={`${input.label} Preview`}
-                                  style={{
-                                    maxWidth: "100px",
-                                    maxHeight: "100px",
-                                  }}
-                                />
+                                  <Link target="_blank" href={`${filesUrl}/adh/images${formFields[input.field]
+                                  }`}>
+                                  <img
+                                    src={`${filesUrl}/adh/images${formFields[input.field]
+                                      }`}
+                                    alt={`${input.label} Preview`}
+                                    style={{
+                                      maxWidth: "100px",
+                                      maxHeight: "100px",
+                                    }}
+                                  />
+                                  </Link>
                               ) : (
                                 input.field !== "aadhar" &&
                                 formFields[input.field] && (
-                                  <img
+                                  <Link target="_blank" href={`${filesUrl}` +
+                                  `/${input.field}/images${formFields[input.field]
+                                  }`}>
+                                      <img
                                     src={
                                       `${filesUrl}` +
                                       `/${input.field}/images${formFields[input.field]
@@ -609,6 +615,8 @@ const ChannelAddUserScreen = () => {
                                       maxHeight: "100px",
                                     }}
                                   />
+                                  </Link>
+                                  
                                 )
                               )}
                             </div>

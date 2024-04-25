@@ -796,6 +796,10 @@
   text-wrap: nowrap !important;
 }
 
+.channelTable .MuiTypography-root{
+  color: black;
+}
+
 .customToolHead p{
   margin: 0 !important;
 }

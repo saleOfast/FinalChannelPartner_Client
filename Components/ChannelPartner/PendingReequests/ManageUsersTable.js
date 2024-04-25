@@ -343,7 +343,7 @@ const ManageUsersTable = ({
     <>
       <div className="miuiTable channelTable">
         <MUIDataTable
-          title={title}
+          title={<span style={{ color: "black", fontWeight:"bold", fontSize:"17px" }}>{title}</span>}
           data={dataList}
           columns={columns}
           options={options}

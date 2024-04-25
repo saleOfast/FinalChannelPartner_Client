@@ -18,6 +18,18 @@ export const ClientLoginSlice = createSlice({
             if (hasCookie("Admin")) {
                 deleteCookie('Admin')
             }
+            if (hasCookie("allowedPermissions")) {
+                deleteCookie('allowedPermissions')
+            }
+            if (hasCookie("btncolor")) {
+                deleteCookie('btncolor')
+            }
+            if (hasCookie("sidecolor")) {
+                deleteCookie('sidecolor')
+            }
+            if (hasCookie("topnavcolor")) {
+                deleteCookie('topnavcolor')
+            }
         },
         userLogOut: (state) => {
             state.value = false;
@@ -51,6 +63,10 @@ export const ClientLoginSlice = createSlice({
             if (hasCookie("channel")) {
                 deleteCookie('channel')
             }
+            if (hasCookie("allowedPermissions")) {
+                deleteCookie('allowedPermissions')
+            }
+          
         }
     },
 })

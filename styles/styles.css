@@ -1188,6 +1188,7 @@ select.form-control::after {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-top: 1px dashed #dfdfff;
 }
 .main_wrapper .content_wrapper .main_Box .main_content .Add_user_screen .add_user_form .other_details_info .other_details input {
   margin-right: 10px;

@@ -12,10 +12,8 @@ export default withUser( function Parent() {
       dispatch(setIsActive('Parent'))
   }, []);
   return (
-    <>
-      
-          <ParentScreen/>
-    
+    <> 
+      <ParentScreen/>
     </>
   );
 })

@@ -1,12 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { getCookie, hasCookie } from 'cookies-next'
 import { toast } from 'react-toastify'
+
 
 const initialState = {
     value: 'dark',
-    side: '#405189',
-    buttons: '#405189',
-    topnav: '#405189'
+    side: hasCookie('sidecolor')? getCookie('sidecolor') : '#405189',
+    buttons: hasCookie('btncolor')? getCookie('btncolor') : '#405189',
+    topnav: hasCookie('topnavcolor')? getCookie('topnavcolor') : '#405189'
 }
+
+console.log("initialState", initialState, getCookie('sidecolor'))
+
+
 
 export const themeSlice = createSlice({
     name: 'counter',
@@ -37,9 +43,24 @@ export const themeSlice = createSlice({
         setTopNavColor : (state, action) => {
             state.topnav =  action.payload
         },
+
+        clearTheme : (state, action) => {
+            state.side =  '#405189'
+            state.buttons =  '#405189'
+            state.topnav =  '#405189'
+            if (hasCookie("btncolor")) {
+                deleteCookie('btncolor')
+            }
+            if (hasCookie("sidecolor")) {
+                deleteCookie('sidecolor')
+            }
+            if (hasCookie("topnavcolor")) {
+                deleteCookie('topnavcolor')
+            }
+        },
     },
 })
 
-export const { nightMode, lightMode, gradient, setSidebarColor, setbuttonColor, setTopNavColor} = themeSlice.actions
+export const { nightMode, lightMode, gradient, setSidebarColor, setbuttonColor, setTopNavColor, clearTheme} = themeSlice.actions
 
 export default themeSlice.reducer

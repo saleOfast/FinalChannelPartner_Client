@@ -44,6 +44,7 @@ const AddClientScreen = () => {
         no_of_sales_license: 0,
         button_color: theme.buttons,
         sidebar_color: theme.side,
+        top_nav_color: theme.topnav,
         domain: '',
         no_of_months: '',
         pincode: '',
@@ -51,7 +52,6 @@ const AddClientScreen = () => {
         gst: '',
         address: "" ,
         isCRM:1 ,
-       
         isDMS:null ,
         isSALES:null ,
         isCHANNEL:null ,
@@ -395,7 +395,7 @@ const AddClientScreen = () => {
 
       if(theme.topnav !== navColor){
         dispatch(setTopNavColor(navColor))
-        setUserInfo({...userInfo, top_nav_color : buttonColor})
+        setUserInfo({...userInfo, top_nav_color : navColor})
       }
 
     },[sideColor, buttonColor, navColor])
@@ -630,48 +630,130 @@ const AddClientScreen = () => {
                   </div>
                 </div>
 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div
-                    className={
-                      errorData?.no_of_license
-                        ? "input_box errorBox"
-                        : "input_box"
-                    }
-                  >
-                    <label htmlFor="Licence">No of Licence *</label>
-                    <input
-                      type="number"
-                      placeholder="Enter Licence"
-                      name="no_of_license"
-                      id="no_of_license"
-                      className={
-                        errorData?.no_of_license
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      onChange={(e) => {
-                        setUserInfo({
-                          ...userInfo,
-                          no_of_license: e.target.value,
-                        });
-                        setErrorData({ ...errorData, no_of_license: "" });
-                      }}
-                      value={
-                        userInfo.no_of_license ? userInfo.no_of_license : ""
-                      }
-                    />
-                    <span className="errorText">
-                      {" "}
-                      {errorData?.no_of_license ? errorData.no_of_license : ""}
-                    </span>
-                  </div>
-                </div>
+                {editMode ? null : (
+                  <>
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                      <div
+                        className={
+                          errorData?.bill_cont
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="task_name">Country *</label>
+                        <Select
+                          id={userInfo.country_id}
+                          defaultValue={""}
+                          options={countrylist?.map((data, index) => {
+                            return {
+                              value: data?.country_id,
+                              label: data?.country_name,
+                            };
+                          })}
+                          value={countrylist?.map((data, index) => {
+                            if (userInfo.country_id === data.country_id) {
+                              return {
+                                value: data?.country_id,
+                                label: data?.country_name,
+                              };
+                            }
+                          })}
+                          onChange={(e) => {
+                            setUserInfo({ ...userInfo, country_id: e.value });
+                            setErrorData({ ...errorData, country_id: "" });
+                          }}
+                        />
+                        <span className="errorText">
+                          {" "}
+                          {errorData?.country_id ? errorData.country_id : ""}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                      <div
+                        className={
+                          errorData?.state_id
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="task_name">State *</label>
+                        <Select
+                          id={userInfo.state_id}
+                          defaultValue={""}
+                          options={statelist?.map((data, index) => {
+                            return {
+                              value: data?.state_id,
+                              label: data?.state_name,
+                            };
+                          })}
+                          value={statelist?.map((data, index) => {
+                            if (userInfo.state_id === data.state_id) {
+                              return {
+                                value: data?.state_id,
+                                label: data?.state_name,
+                              };
+                            }
+                          })}
+                          onChange={(e) => {
+                            setUserInfo({ ...userInfo, state_id: e.value });
+                            setErrorData({ ...errorData, state_id: "" });
+                          }}
+                        />
+                        <span className="errorText">
+                          {" "}
+                          {errorData?.state_id ? errorData.state_id : ""}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                      <div
+                        className={
+                          errorData?.city_id
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="task_name">City *</label>
+                        <Select
+                          id={userInfo.state_id}
+                          defaultValue={""}
+                          options={citylist?.map((data, index) => {
+                            return {
+                              value: data?.city_id,
+                              label: data?.city_name,
+                            };
+                          })}
+                          value={citylist?.map((data, index) => {
+                            if (userInfo.city_id === data.city_id) {
+                              return {
+                                value: data?.city_id,
+                                label: data?.city_name,
+                              };
+                            }
+                          })}
+                          onChange={(e) => {
+                            setUserInfo({ ...userInfo, city_id: e.value });
+                            setErrorData({ ...errorData, city_id: "" });
+                          }}
+                        />
+                        <span className="errorText">
+                          {" "}
+                          {errorData?.city_id ? errorData.city_id : ""}
+                        </span>
+                      </div>
+                    </div>
+
+                  </> 
+                )}
+
                 {/* for changing apps permission when we click on edit and logo */}
                
-                   <div className="other_details_info">
+                   <div className="other_details_info" style={{ borderTop: '1px dashed #dfdfff'}}>
                       <div className="other_details">
-                        <label className="text-blue head" htmlFor="opt_dtls">
-                          Permission mode
+                        <label className=" text_bold " htmlFor="opt_dtls">
+                          Permission mode 
                         </label>
                       </div>
                   </div>
@@ -911,9 +993,9 @@ const AddClientScreen = () => {
 
 
                    <div className="mb-3">
-                    <div className="other_details_info">
+                    <div className="other_details_info" style={{padding: '20px 0px', borderTop: '1px dashed #dfdfff'}}>
                         <div className="other_details">
-                          <label className="text-blue head" htmlFor="opt_dtls">
+                          <label className="text_bold head" htmlFor="opt_dtls">
                             Theme
                           </label>
                         </div>
@@ -980,7 +1062,7 @@ const AddClientScreen = () => {
                         
                           className="form-control input-field"
                         />
-                        <HexColorPicker  value={theme.topnav} onChange={setNavColor} height={100}    />
+                        <HexColorPicker  value={theme.topnav} onChange={setNavColor} height={100}   />
 
                       </div>
                     </div>
@@ -992,509 +1074,8 @@ const AddClientScreen = () => {
                
                 {editMode ? null : (
                   <>
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.bill_cont
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="task_name">Country *</label>
-                        <Select
-                          id={userInfo.country_id}
-                          defaultValue={""}
-                          options={countrylist?.map((data, index) => {
-                            return {
-                              value: data?.country_id,
-                              label: data?.country_name,
-                            };
-                          })}
-                          value={countrylist?.map((data, index) => {
-                            if (userInfo.country_id === data.country_id) {
-                              return {
-                                value: data?.country_id,
-                                label: data?.country_name,
-                              };
-                            }
-                          })}
-                          onChange={(e) => {
-                            setUserInfo({ ...userInfo, country_id: e.value });
-                            setErrorData({ ...errorData, country_id: "" });
-                          }}
-                        />
-                        <span className="errorText">
-                          {" "}
-                          {errorData?.country_id ? errorData.country_id : ""}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.state_id
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="task_name">State *</label>
-                        <Select
-                          id={userInfo.state_id}
-                          defaultValue={""}
-                          options={statelist?.map((data, index) => {
-                            return {
-                              value: data?.state_id,
-                              label: data?.state_name,
-                            };
-                          })}
-                          value={statelist?.map((data, index) => {
-                            if (userInfo.state_id === data.state_id) {
-                              return {
-                                value: data?.state_id,
-                                label: data?.state_name,
-                              };
-                            }
-                          })}
-                          onChange={(e) => {
-                            setUserInfo({ ...userInfo, state_id: e.value });
-                            setErrorData({ ...errorData, state_id: "" });
-                          }}
-                        />
-                        <span className="errorText">
-                          {" "}
-                          {errorData?.state_id ? errorData.state_id : ""}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.city_id
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="task_name">City *</label>
-                        <Select
-                          id={userInfo.state_id}
-                          defaultValue={""}
-                          options={citylist?.map((data, index) => {
-                            return {
-                              value: data?.city_id,
-                              label: data?.city_name,
-                            };
-                          })}
-                          value={citylist?.map((data, index) => {
-                            if (userInfo.city_id === data.city_id) {
-                              return {
-                                value: data?.city_id,
-                                label: data?.city_name,
-                              };
-                            }
-                          })}
-                          onChange={(e) => {
-                            setUserInfo({ ...userInfo, city_id: e.value });
-                            setErrorData({ ...errorData, city_id: "" });
-                          }}
-                        />
-                        <span className="errorText">
-                          {" "}
-                          {errorData?.city_id ? errorData.city_id : ""}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* <div className="col-xl-6 col-md-6 col-sm-12 col-12 ">
-                      <div className="input_box">
-                        <label htmlFor="task_name"> Apps Permission *</label>
-                        <br />
-                        <div className=" d-flex flex-wrap justify-content-start gap-5 py-2 ">
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              value="option1"
-                              id="option1"
-                              checked={true}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="option1"
-                            >
-                              CRM
-                            </label>
-                          </div>
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              value="option2"
-                              id="option2"
-                              onChange={(e) => {
-                                setUserInfo({
-                                  ...userInfo,
-                                  isDMS: e.target.checked ? 1 : 0,
-                                });
-                                setErrorData({ ...errorData, isDMS: "" });
-                              }}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="option2"
-                            >
-                              DMS
-                            </label>
-                          </div>
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              value="option3"
-                              id="option3"
-                                onChange={(e) => {
-                                  setUserInfo({
-                                    ...userInfo,
-                                    isSALES: e.target.checked ? 1 : 0,
-                                  });
-                                  setErrorData({ ...errorData, isSALES: "" });
-                                }}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="option3"
-                            >
-                              SALES
-                            </label>
-                          </div>
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              value="option4"
-                              id="option4"
-                              onChange={(e) => {
-                                setUserInfo({
-                                  ...userInfo,
-                                  isCHANNEL: e.target.checked ? 1 : 0,
-                                });
-                                setErrorData({ ...errorData, isCHANNEL: "" });
-                              }}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="option4"
-                            >
-                              CHANNEL
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
-
-
-                    {/* permisiion mode  on add*/}
-
-                    <div className="other_details_info">
-                      <div className="other_details">
-                        <label className="text-blue head" htmlFor="opt_dtls">
-                          Permission mode
-                        </label>
-                      </div>
-                    </div>
-
-                    <div className="row">
-                    <div className="col-xl-3 col-md-6 col-sm-12 mb-3">
-                      <div className='d-flex gap-2 align-items-center justify-content-start'>
-                        <div className="form-check">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  value="option1"
-                                  id="option1"
-                                  checked={true}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor="option1"
-                                >
-                                  CRM
-                                </label>
-                        </div>
-
-                        <div className="input_box m-0">
-                          <input
-                          type="number"
-                          placeholder="Enter Licence"
-                          name="no_of_license"
-                          id="no_of_license"
-                          className={
-                            errorData?.no_of_license
-                              ? "form-control is-invalid"
-                              : "form-control"
-                          }
-                          onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              no_of_license: e.target.value,
-                            });
-                            setErrorData({ ...errorData, no_of_license: "" });
-                          }}
-                          value={
-                            userInfo.no_of_license ? userInfo.no_of_license : ""
-                          }
-                        />
-                        <span className="errorText">
-                          {" "}
-                          {errorData?.no_of_license ? errorData.no_of_license : ""}
-                        </span>
-                        </div>
-                      </div>
-                      
-                    </div>
-
-                    <div className="col-xl-3 col-md-6 col-sm-12 mb-3">
-                      <div className='d-flex gap-2 align-items-center justify-content-start'>
-                        <div className="form-check">
-                                <input
-                                  className="form-check-input text-nowrap"
-                                  type="checkbox"
-                                  value="option1"
-                                  id="option1"
-                                  onChange={(e) => {
-                                    setUserInfo({
-                                      ...userInfo,
-                                      isCHANNEL: e.target.checked ? 1 : 0,
-                                    });
-                                    setErrorData({ ...errorData, isCHANNEL: "" });
-                                  }}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor="option1"
-                                >
-                                  Channel Partner
-                                </label>
-                        </div>
-                      {userInfo.isCHANNEL ?
-                        <div className="input_box m-0">
-                          <input
-                          type="number"
-                          placeholder="Enter Licence"
-                          name="no_of_license"
-                          id="no_of_license"
-                          className={
-                            errorData?.no_of_channel_license
-                              ? "form-control is-invalid"
-                              : "form-control"
-                          }
-                          onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              no_of_channel_license: e.target.value,
-                            });
-                            setErrorData({ ...errorData, no_of_channel_license: "" });
-                          }}
-                          value={
-                            userInfo.no_of_channel_license ? userInfo.no_of_channel_license : ""
-                          }
-                        />
-                        <span className="errorText">
-                          {" "}
-                          {errorData?.no_of_channel_license ? errorData.no_of_channel_license : ""}
-                        </span>
-                        </div>
-                        : <></>
-                      }
-                      </div>
-                      
-                    </div>
-
-                    <div className="col-xl-3 col-md-6 col-sm-12 mb-3">
-                      <div className='d-flex gap-2 align-items-center justify-content-start'>
-                        <div className="form-check">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  value="option1"
-                                  id="option1"
-                                  onChange={(e) => {
-                                    setUserInfo({
-                                      ...userInfo,
-                                      isDMS: e.target.checked ? 1 : 0,
-                                    });
-                                    setErrorData({ ...errorData, isDMS: "" });
-                                  }}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor="option1"
-                                >
-                                  DMS
-                                </label>
-                        </div>
-                        {userInfo.isDMS ? 
-                          <div className="input_box m-0">
-                            <input
-                            type="number"
-                            placeholder="Enter Licence"
-                            name="no_of_license"
-                            id="no_of_license"
-                            className={
-                              errorData?.no_of_dms_license
-                                ? "form-control is-invalid"
-                                : "form-control"
-                            }
-                            onChange={(e) => {
-                              setUserInfo({
-                                ...userInfo,
-                                no_of_dms_license: e.target.value,
-                              });
-                              setErrorData({ ...errorData, no_of_dms_license: "" });
-                            }}
-                            value={
-                              userInfo.no_of_dms_license ? userInfo.no_of_dms_license : ""
-                            }
-                          />
-                          <span className="errorText">
-                            {" "}
-                            {errorData?.no_of_dms_license ? errorData.no_of_dms_license : ""}
-                          </span>
-                          </div>
-                          : <></>
-                        }
-                      </div>
-                      
-                    </div>
-                    <div className="col-xl-3 col-md-6 col-sm-12 mb-3">
-                      <div className='d-flex gap-2 align-items-center justify-content-start'>
-                        <div className="form-check">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  value="option1"
-                                  id="option1"
-                                  onChange={(e) => {
-                                    setUserInfo({
-                                      ...userInfo,
-                                      isSALES: e.target.checked ? 1 : 0,
-                                    });
-                                    setErrorData({ ...errorData, isSALES: "" });
-                                  }}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor="option1"
-                                >
-                                  Sales
-                                </label>
-                        </div>
-                        {userInfo.isSALES ?
-                          <div className="input_box m-0">
-                            <input
-                            type="number"
-                            placeholder="Enter Licence"
-                            name="no_of_license"
-                            id="no_of_license"
-                            className={
-                              errorData?.no_of_sales_license
-                                ? "form-control is-invalid"
-                                : "form-control"
-                            }
-                            onChange={(e) => {
-                              setUserInfo({
-                                ...userInfo,
-                                no_of_sales_license: e.target.value,
-                              });
-                              setErrorData({ ...errorData, no_of_sales_license: "" });
-                            }}
-                            value={
-                              userInfo.no_of_sales_license ? userInfo.no_of_sales_license : ""
-                            }
-                          />
-                          <span className="errorText">
-                            {" "}
-                            {errorData?.no_of_sales_license ? errorData.no_of_sales_license : ""}
-                          </span>
-                          </div>
-                          : <></>
-                        }
-                      </div>
-                      
-                    </div>
-
-
-                  
                     
-                    </div>
-
-                    {/* Theme Mode stated  */}
-
-                      
-                    {/* <div className="other_details_info">
-                        <div className="other_details">
-                          <label className="text-blue head" htmlFor="opt_dtls">
-                            Theme
-                          </label>
-                        </div>
-                    </div>
-
-                    <div className="row">
-                    <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                    <div className="d-flex flex-column gap-1">
-                      <label className="form-label">Logo</label>
-                      <input
-                        type="file"
-                        onChange={(e) => handleImageChange(e)}
-                        className="form-control input-field"
-                      />
-                      {userInfo?.logoPreview && (
-                        <img
-                          src={userInfo?.logoPreview}
-                          alt={` Preview`}
-                          style={{
-                            maxWidth: "100px",
-                            maxHeight: "100px",
-                          }}
-                        />
-                      )}
-                    </div>
-                    </div>
-
-                  
-                    <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mx-5 mb-3">
-                      <div className="d-flex flex-column gap-1 colorcomp">
-                        <label className="form-label">SideBar </label>
-                        <input
-                          type="text"
-                          value={theme.side}
-                          onChange={(e) => setSideColor(e.target.value)}
-                        
-                          className="form-control input-field"
-                        />
-                        <HexColorPicker  value={theme.side} onChange={setSideColor} height={100}    />
-
-                      </div>
-                    </div>
-
-                    <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                      <div className="d-flex flex-column gap-1 colorcomp">
-                        <label className="form-label">Button </label>
-                        <input
-                          type="text"
-                          value={theme.buttons}
-                          onChange={(e) => setButtonColor(e.target.value)}
-                          className="form-control input-field"
-                        />
-                        <HexColorPicker  value={theme.buttons} onChange={setButtonColor} height={100} width={300}   />
-
-                      </div>
-                    </div>
-                    </div> */}
-
-                   {/* Optional mode */}
-
-                    <div className="other_details_info">
+                    <div className="other_details_info" style={{ borderTop: '1px dashed #dfdfff'}}>
                       <div className="other_details">
                         <input
                           type="checkbox"
@@ -1504,7 +1085,7 @@ const AddClientScreen = () => {
                             setAdditionalFields(e.target.checked)
                           }
                         />
-                        <label className="text-blue head" htmlFor="opt_dtls">
+                        <label className="text_bold head" htmlFor="opt_dtls">
                           Optional Detail
                         </label>
                       </div>

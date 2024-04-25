@@ -24,6 +24,18 @@ export const adMinLoginSlice = createSlice({
             if (hasCookie("sideUser")) {
                 deleteCookie('sideUser')
             }
+            if (hasCookie("allowedPermissions")) {
+                deleteCookie('allowedPermissions')
+            }
+            if (hasCookie("btncolor")) {
+                deleteCookie('btncolor')
+            }
+            if (hasCookie("sidecolor")) {
+                deleteCookie('sidecolor')
+            }
+            if (hasCookie("topnavcolor")) {
+                deleteCookie('topnavcolor')
+            }
         },
         LoggedOut: (state) => {
             state.value = false;
@@ -35,6 +47,18 @@ export const adMinLoginSlice = createSlice({
             }
             if (hasCookie("Admin")) {
                 deleteCookie('Admin')
+            }
+            if (hasCookie("allowedPermissions")) {
+                deleteCookie('allowedPermissions')
+            }
+            if (hasCookie("btncolor")) {
+                deleteCookie('btncolor')
+            }
+            if (hasCookie("sidecolor")) {
+                deleteCookie('sidecolor')
+            }
+            if (hasCookie("topnavcolor")) {
+                deleteCookie('topnavcolor')
             }
         }
     },

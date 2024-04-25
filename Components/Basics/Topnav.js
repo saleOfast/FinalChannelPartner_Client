@@ -19,6 +19,7 @@ import { clearMode, masterMode, userMode } from "../../store/dbModeSlice";
 import { channel, crm, dms, sales } from "../../store/permissionSlice";
 import { startLoading, stopLoading } from "../../store/loaderSlice";
 import CP_Navbar from "../ChannelPartner/CP_NavBar/CP_NavBar"
+import { clearTheme } from "../../store/themeSlice";
 
 const Topnav = ({ allowedPermissions, topnavPermission }) => {
   const router = useRouter();
@@ -34,13 +35,14 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
     const isAdminMode = dbMode === "admin";
     const isMasterOrUserMode = dbMode === "master" || dbMode === "user";
     setshowConfirm(!showConfirm);
-    dispatch(clearMode());
+    dispatch(clearTheme());
     if (hasCookie("channel")) {
       router.push(isAdminMode ? "/Admin" : "/CHANNEL/Signin")
     } else {
       router.push(isAdminMode ? "/Admin" : "/")
     }
-    dispatch(isAdminMode ? LoggedOut() : userLogOut());
+    dispatch(isAdminMode ? LoggedOut()  : userLogOut());
+    dispatch(clearTheme())
     dispatch(stopLoading())
     toast.success("Logged Out Successfully");
   };

@@ -311,11 +311,11 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
               </div>
             ) : null}
 
-            <div className="user_profile">
+            <div className="user_profile p-2">
               <Dropdown>
                 <Dropdown.Toggle variant="none" id="profileBtn">
                   <div className="btn_wrapper">
-                    <div className=" img_sec">
+                    <div className="img_sec w-35 h-35">
                       {dbMode == "admin" ? (
                         <img
                           src={

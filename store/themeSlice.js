@@ -4,7 +4,8 @@ import { toast } from 'react-toastify'
 const initialState = {
     value: 'dark',
     side: '#405189',
-    buttons: '#405189'
+    buttons: '#405189',
+    topnav: '#405189'
 }
 
 export const themeSlice = createSlice({
@@ -32,9 +33,13 @@ export const themeSlice = createSlice({
         setbuttonColor : (state, action) => {
             state.buttons =  action.payload
         },
+        
+        setTopNavColor : (state, action) => {
+            state.topnav =  action.payload
+        },
     },
 })
 
-export const { nightMode, lightMode, gradient, setSidebarColor, setbuttonColor} = themeSlice.actions
+export const { nightMode, lightMode, gradient, setSidebarColor, setbuttonColor, setTopNavColor} = themeSlice.actions
 
 export default themeSlice.reducer

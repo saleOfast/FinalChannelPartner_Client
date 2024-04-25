@@ -1,14 +1,8 @@
 import React, { useState } from 'react'
 import MUIDataTable from "mui-datatables";
-import ViewIcon from '../../Svg/ViewIcon';
-import DisableIcon from '../../Svg/DisableIcon';
-import EditIcon from '../../Svg/EditIcon';
-import DeleteIcon from '../../Svg/DeleteIcon';
-import CheckIcon from '../../Svg/CheckIcon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import PlusIcon from '../../Svg/PlusIcon';
-import ListVicn from '../../Svg/ListVicn';
+
 
 
 

@@ -116,7 +116,7 @@ const CP_NavBar = () => {
               </li>
               <li className="nav-item">
                     <div className='user_profile'>
-                    <Dropdown>
+                    <Dropdown >
                   <Dropdown.Toggle variant="none" id="profileBtn">
                     <div className="btn_wrapper d-flex align-items-center">
                       <div className="img_sec me-2">
@@ -160,9 +160,10 @@ const CP_NavBar = () => {
                   </Dropdown.Menu>
                 </Dropdown>
                     </div>
-               
+              
               </li>
             </ul>
+            
           </div>
         </div>
       </nav>

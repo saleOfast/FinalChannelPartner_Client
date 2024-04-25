@@ -267,7 +267,7 @@ const ActivePartnersScreen = () => {
             toast.error("Something went wrong!");
           }
         }
-      };
+    };
 
 
     useEffect(() => {
@@ -289,16 +289,8 @@ const ActivePartnersScreen = () => {
                 actionType={deleteHandler}
                 title={"Are You Sure you want to Delete ?"} />
 
-            <div className="w-100 ps-4 pe-4" >
-                {/* <div className="bread_head">
-                    <h3 className="content_head">USER MASTER </h3>
-                    <nav aria-label="breadcrumb">
-                        <ol className="breadcrumb">
-                            <li className="breadcrumb-item"> <Link href='/'>Home</Link></li>
-                            <li className="breadcrumb-item active" aria-current="page">User Master</li>
-                        </ol>
-                    </nav>
-                </div> */}
+            <div className="w-100 ps-4 pe-4 overflow-scroll" >
+              
                 <div className="main_content">
                     <div className="table_screen">
                         <div className="top_btn_sec mb-2">
@@ -307,11 +299,6 @@ const ActivePartnersScreen = () => {
                                     <PlusIcon />
                                     ADD USER
                                 </button>
-{/*                             
-                            <button className="btn btn-primary Add_btn" onClick={handleShow}>
-                                <PlusIcon />
-                                Import CSV
-                            </button> */}
                             </div>
                         </div>
                         <DynamicTable
@@ -321,7 +308,10 @@ const ActivePartnersScreen = () => {
                             deleteConfirm={deleteConfirm}
                             setShowAssignTo={setShowAssignTo}
                             setoldAssignTo={setoldAssignTo}
+                            oldAssignTo={oldAssignTo}
                             setShowDateFilter={setShowDateFilter}
+                            usersList={usersList}
+                            getDataList={getDataList}
                         />
                     </div>
                 </div>

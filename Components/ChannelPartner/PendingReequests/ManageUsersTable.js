@@ -24,6 +24,7 @@ const ManageUsersTable = ({
   const [userData, setUserData] =  useState([])
   const [actionMode, setActionMode] =  useState('')
   const [showModal, setShowModal] =  useState(false)
+  const[id,setId]=useState("")
   const [userInfo, setUserInfo ] =  useState({
     user_code: '',
     reject_reason: ''
@@ -264,21 +265,26 @@ const ManageUsersTable = ({
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-            <div className="table_btns d-flex align-items-center justify-content-start gap-3">
-             
-                <button  onClick={()=>{setActionMode('Accept'); setShowModal(true); setUserInfo({
-                  ...userInfo, user_code: value
-                })}} style={{backgroundColor: '#61e25e'}} className="btn  rounded-5" >
-                  Accept
-                </button>
-
-                <button onClick={()=>{setActionMode('Reject'); setShowModal(true); setUserInfo({
-                  ...userInfo, user_code: value
-                })}} className=" btn btn-danger rounded-5">
-                  Reject
-                </button>
-              
-            </div>
+            
+              (tableMeta?.rowData[7]===3 || tableMeta?.rowData[7]===2) ?<div className="text-center"></div> 
+              :
+              <>  
+              <div className="table_btns d-flex align-items-center justify-content-start gap-3">
+              <button  onClick={()=>{setActionMode('Accept'); setShowModal(true);  setUserInfo({
+                ...userInfo, user_code: value
+              })}} style={{backgroundColor: '#61e25e'}} className="btn  rounded-5" >
+                Accept
+              </button>
+  
+              <button onClick={()=>{setActionMode('Reject'); setShowModal(true); setUserInfo({
+                ...userInfo, user_code: value
+              })}} className=" btn btn-danger rounded-5">
+                Reject
+              </button>
+          </div>
+              </>
+            
+           
           );
         },
       },
@@ -336,6 +342,58 @@ const ManageUsersTable = ({
       } else {
         toast.error("Something went wrong!");
       }
+    }
+  };
+
+  const updateBunchUserhandler = async () => {
+
+    let toastShown=false;
+    for(const element of userData){
+
+      if (!hasCookie("token")) return;
+    if (actionMode !== 'Accept' && userInfo.reject_reason === "") {
+      return toast.error("Please enter a reason");
+    }
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+    const header = {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        pass: "pass",
+      },
+    };
+
+    try {
+      const response = await axios.put(
+        `${Baseurl}/db/users`,
+        {
+          doc_verification: actionMode === 'Accept' ? 2 : 3,
+          reject_reason: userInfo.reject_reason,
+          user_code: element,
+        },
+        header
+      );
+      if (response.status === 200 || response.status === 201) {
+        if (!toastShown) {
+          toast.success(response.data.message);
+          toastShown = true;
+        }
+        getDataList()
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        if(!toastShown){
+          toast.error(error.response.data.message);
+          toastShown=true
+        }
+      } else {
+        if(!toastShown){
+          toast.error("Something went wrong!");
+          toastShown=true
+        }
+      }
+    }
     }
   };
 
@@ -402,7 +460,7 @@ const ManageUsersTable = ({
             type="button"
             className="rounded-5"
             onClick={() => {
-              updateUserhandler();
+              updateBunchUserhandler();
               setActionMode("");
               setShowModal(false)
             }}

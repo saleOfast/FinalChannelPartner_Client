@@ -28,9 +28,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <Link href={`/CHANNEL/ViewActiveUsers?id=${value}&mode=view`} className='status_box fw-bold' style={{color:"#0000ee"}} >
+                        <div  className='status_box fw-bold' style={{color:"#0000ee"}} >
                             {value}
-                        </Link>
+                        </div>
                     )
                 }
                   
@@ -48,9 +48,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box fw-bold' style={{color:"#0000ee"}}>
+                        <Link href={`/CHANNEL/ViewActiveUsers?id=${tableMeta?.rowData[0]}&mode=view`}  className='status_box fw-bold text-decoration-underline' style={{color:"#0000ee"}}>
                             {value}
-                        </div>
+                        </Link>
                     )
                 }
             },
@@ -73,7 +73,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     const year = date.getFullYear();
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            {`${day}${month}${year}`}
+                            {`${day}/${month}/${year}`}
                         </div>
                     )
                 }
@@ -170,23 +170,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
-                            {/* <Link href={`/CHANNEL/ViewActiveUsers?id=${value}&mode=view`}>
-                                <button
-                                    className="action_btn"
-                                    title='View'>
-                                    <ViewIcon />
-                                </button>
-                            </Link>
-
-                            <Link href={`/CHANNEL/ViewActiveUsers?id=${value}&mode=edit`}>
-                                <button
-                                    className="action_btn"
-                                    title='Edit'>
-                                    <EditIcon />
-                                </button>
-                            </Link> */}
-
-                          
                             <button
                                 onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta.rowData[5].user_id) }}
                                 style={{background:"#0000ee", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
@@ -221,22 +204,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         selectableRows: 'multiple',
         responsive: "standard",
         onRowsSelect : handleRowClick,
-
-        
-      
-      
-        
-        customBodyRender: (value, tableMeta, updateValue) => {
-            
-            return (
-                <tr >
-                    <th style={{ backgroundColor: '#1E90FF' }}>
-
-                    </th>
-                    {/* Your table cells here */}
-                </tr>
-            );
-        }
+       
     };
 
     const goto = (url) => {

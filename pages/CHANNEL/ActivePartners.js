@@ -1,12 +1,11 @@
 import React from 'react'
-import ActivePartnersScreen_copy from '../../Components/ChannelPartner/ActivePartners/ActivePartnersScreen_copy'
+import ActivePartnersScreen from '../../Components/ChannelPartner/ActivePartners/ActivePartnersScreen'
 import WithUserhoc_CP from '../../HOC/WithUserhoc_CP'
 
 const ActivePartners = () => {
   return (
     <>
-      {/* <ActivePartnersScreen/> */}
-      <ActivePartnersScreen_copy/>
+      <ActivePartnersScreen/>
     </>
   )
 }

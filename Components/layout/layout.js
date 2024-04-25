@@ -100,6 +100,7 @@ const Layout = ({Component, pageProps}) => {
             <style jsx global>{`
                 .btn-primary {
                     background-color: ${theme.buttons} !important;
+                    border: none;
                 }
 
                 .sideWrapper  .bar_icon  {
@@ -112,6 +113,41 @@ const Layout = ({Component, pageProps}) => {
 
                 .sideWrapper .icon {
                   background-color: ${theme.side} !important;
+                }
+
+                .image_sec{
+                  background-color: ${theme.side} !important;
+                }
+
+                .img_box svg path {
+                  fill: ${theme.side} !important;
+                }
+
+                .card_wrapper .icons svg path {
+                  fill: ${theme.side} !important;
+                }
+
+                .card_wrapper {
+                  border: 1px solid ${theme.side} !important;
+                }
+
+                .main_wrapper .content_wrapper .main_Box .main_content.admin_dashboard .settings_super_admin .settings_cards .card_Wrapper{
+                  border: 1px solid ${theme.side} !important;
+                }
+
+                .main_wrapper .topNav_Wrapper .top_nav .profile_sec .quick_add_sec .dropdown-menu , .main_wrapper .topNav_Wrapper .top_nav .profile_sec .quick_add_sec .dropdown-menu .quickaddlist::before,
+                .main_wrapper .topNav_Wrapper .top_nav .profile_sec .quick_add_sec .dropdown-menu .quickpermissionlist::before{
+                  background-color:  ${theme.buttons} !important;
+                }
+
+                
+                .main_wrapper .content_wrapper .main_Box .main_content.admin_dashboard .admin_setings_lists .card_wrapper .card_lists .settings_list .list_item::before {
+                  border-left: 2px solid ${theme.side} !important;
+                  border-bottom: 2px solid ${theme.side} !important;
+                }
+
+                .top_nav{
+                  background-color: ${theme.topnav} !important;
                 }
 
 

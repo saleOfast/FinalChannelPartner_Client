@@ -385,8 +385,8 @@ select.form-control::after {
   align-items: center;
 }
 .main_wrapper .topNav_Wrapper .top_nav .profile_sec .user_profile #profileBtn .btn_wrapper .img_sec {
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   margin-right: 10px;
   display: flex;
   align-items: center;

@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 // import ColorPicker from 'react-best-gradient-color-picker';
 import { HexColorPicker } from "react-colorful";
-import { setSidebarColor, setbuttonColor } from '../../store/themeSlice';
+import { setSidebarColor, setbuttonColor, setTopNavColor} from '../../store/themeSlice';
 
 const AddClientScreen = () => {
 
@@ -27,6 +27,7 @@ const AddClientScreen = () => {
     const [additionalFields, setAdditionalFields] = useState(false)
     const [sideColor, setSideColor] = useState(theme.side)
     const [buttonColor, setButtonColor] = useState(theme.buttons)
+    const [navColor, setNavColor] = useState(theme.topnav)
     const [isLoading, setisLoading] = useState(false)
     const [userInfo, setUserInfo] = useState({
         user: '',
@@ -111,11 +112,13 @@ const AddClientScreen = () => {
                 no_of_dms_license: tempDate.no_of_dms_license,
                 no_of_sales_license: tempDate.no_of_sales_license,
                 button_color: tempDate.button_color,
-                sidebar_color: tempDate.sidebar_color
+                sidebar_color: tempDate.sidebar_color,
+                top_nav_color: tempDate.top_nav_color,
                 });
 
                 setSideColor(tempDate.sidebar_color)
                 setButtonColor(tempDate.button_color)
+                setNavColor(tempDate.top_nav_color)
 
 
                 tempDate.db_client_platforms?.forEach(element => {
@@ -390,7 +393,12 @@ const AddClientScreen = () => {
         setUserInfo({...userInfo, button_color : buttonColor})
       }
 
-    },[sideColor, buttonColor])
+      if(theme.topnav !== navColor){
+        dispatch(setTopNavColor(navColor))
+        setUserInfo({...userInfo, top_nav_color : buttonColor})
+      }
+
+    },[sideColor, buttonColor, navColor])
 
 
 
@@ -659,8 +667,7 @@ const AddClientScreen = () => {
                   </div>
                 </div>
                 {/* for changing apps permission when we click on edit and logo */}
-                {editMode ? (
-                  <>
+               
                    <div className="other_details_info">
                       <div className="other_details">
                         <label className="text-blue head" htmlFor="opt_dtls">
@@ -678,11 +685,11 @@ const AddClientScreen = () => {
                                   type="checkbox"
                                   value="option1"
                                   id="option1"
-                                  checked={userInfo.isCRM}
+                                  checked={!editMode ? true : userInfo.isCRM }
                                   onChange={(e) => {
                                     setUserInfo({
                                       ...userInfo,
-                                      isCRM: e.target.checked ? 1 : 0,
+                                      isCRM: !editMode ? 1 : e.target.checked ? 1 : 0,
                                     });
                                     setErrorData({ ...errorData, isCRM: "" });
                                   }}
@@ -901,14 +908,16 @@ const AddClientScreen = () => {
                   
                     
                     </div>
+
+
                    <div className="mb-3">
-                   <div className="other_details_info">
-                      <div className="other_details">
-                        <label className="text-blue head" htmlFor="opt_dtls">
-                          Theme
-                        </label>
-                      </div>
-                  </div>
+                    <div className="other_details_info">
+                        <div className="other_details">
+                          <label className="text-blue head" htmlFor="opt_dtls">
+                            Theme
+                          </label>
+                        </div>
+                    </div>
 
                     <div className="row">
                     <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
@@ -932,7 +941,7 @@ const AddClientScreen = () => {
                     </div>
                     </div>
 
-                    <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mx-5 mb-3">
+                    <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12 mb-3">
                       <div className="d-flex flex-column gap-1 colorcomp">
                         <label className="form-label">SideBar </label>
                         <input
@@ -960,11 +969,24 @@ const AddClientScreen = () => {
 
                       </div>
                     </div>
+
+                    <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12 mb-3">
+                      <div className="d-flex flex-column gap-1 colorcomp">
+                        <label className="form-label">TopNav </label>
+                        <input
+                          type="text"
+                          value={theme.topnav}
+                          onChange={(e) => setNavColor(e.target.value)}
+                        
+                          className="form-control input-field"
+                        />
+                        <HexColorPicker  value={theme.topnav} onChange={setNavColor} height={100}    />
+
+                      </div>
+                    </div>
                     </div>
                  </div>
-                  </>
-                 
-                ) : null}
+                  
 
                 {/* country state city  and app permission on add */}
                
@@ -1179,7 +1201,7 @@ const AddClientScreen = () => {
                           Permission mode
                         </label>
                       </div>
-                  </div>
+                    </div>
 
                     <div className="row">
                     <div className="col-xl-3 col-md-6 col-sm-12 mb-3">
@@ -1409,13 +1431,13 @@ const AddClientScreen = () => {
                     {/* Theme Mode stated  */}
 
                       
-                  <div className="other_details_info">
-                      <div className="other_details">
-                        <label className="text-blue head" htmlFor="opt_dtls">
-                          Theme
-                        </label>
-                      </div>
-                  </div>
+                    {/* <div className="other_details_info">
+                        <div className="other_details">
+                          <label className="text-blue head" htmlFor="opt_dtls">
+                            Theme
+                          </label>
+                        </div>
+                    </div>
 
                     <div className="row">
                     <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
@@ -1468,7 +1490,7 @@ const AddClientScreen = () => {
 
                       </div>
                     </div>
-                    </div>
+                    </div> */}
 
                    {/* Optional mode */}
 

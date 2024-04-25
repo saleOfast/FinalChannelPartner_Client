@@ -1,20 +1,14 @@
 import React, { useState } from 'react'
 import MUIDataTable from "mui-datatables";
-import ViewIcon from '../../Svg/ViewIcon';
-import DisableIcon from '../../Svg/DisableIcon';
-import EditIcon from '../../Svg/EditIcon';
-import DeleteIcon from '../../Svg/DeleteIcon';
-import CheckIcon from '../../Svg/CheckIcon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import PlusIcon from '../../Svg/PlusIcon';
-import ListVicn from '../../Svg/ListVicn';
 import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
 import { Baseurl } from '../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
+
 
 
 

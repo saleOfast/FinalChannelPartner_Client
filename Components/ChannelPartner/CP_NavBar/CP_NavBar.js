@@ -104,10 +104,10 @@ const CP_NavBar = () => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex gap-2">
+            <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex gap-2 align-items-baseline">
               <li className="nav-item">
-                <Link className={`nav-link ${isActive('/')}`} href="/">Reports &amp; Dashboard</Link>
-              </li>
+                <Link className={`nav-link ${isActive('/')}`} href="/">Reports & Dashboard</Link>
+              </li>   
               <li className="nav-item">
                 <Link className={`nav-link ${isActive('/CHANNEL/ActivePartners')}`} href="/CHANNEL/ActivePartners">Channel Partners</Link>
               </li>
@@ -116,7 +116,7 @@ const CP_NavBar = () => {
               </li>
               <li className="nav-item">
                     <div className='user_profile'>
-                    <Dropdown >
+                    <Dropdown className='cp_nav_toggle' >
                   <Dropdown.Toggle variant="none" id="profileBtn">
                     <div className="btn_wrapper d-flex align-items-center">
                       <div className="img_sec me-2">
@@ -138,7 +138,7 @@ const CP_NavBar = () => {
                       </div>
                     </div>
                   </Dropdown.Toggle>
-                  <Dropdown.Menu>
+                  <Dropdown.Menu  >
                     <Link href={"/CHANNEL/ChannelProfile"}>
                       <Dropdown.Item className='d-flex' onClick={()=>{
                         router.push("/CHANNEL/ChannelProfile")
@@ -146,7 +146,7 @@ const CP_NavBar = () => {
                         <div style={{width:"15px",marginLeft:""}}>
                       <AvatarIcon/>
                         </div>
-                      <span className='ms-1 fs-5'>Profile</span> 
+                      <span className='ms-1 '>Profile</span> 
                       </Dropdown.Item>
                     </Link>
                     <Dropdown.Item className='d-flex' onClick={() => {
@@ -155,7 +155,7 @@ const CP_NavBar = () => {
                       <div style={{width:"15px"}}>
                       <LogoutIcon  />
                       </div>
-                      <span className='ms-1 fs-5'>Logout</span>
+                      <span className='ms-1 '>Logout</span>
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>

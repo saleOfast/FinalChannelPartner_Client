@@ -24,6 +24,7 @@ const ManageUsersTable = ({
   const [userData, setUserData] =  useState([])
   const [actionMode, setActionMode] =  useState('')
   const [showModal, setShowModal] =  useState(false)
+  const [showModalSingle, setShowModalSingle] =  useState(false)
   const[id,setId]=useState("")
   const [userInfo, setUserInfo ] =  useState({
     user_code: '',
@@ -270,13 +271,13 @@ const ManageUsersTable = ({
               :
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
-              <button  onClick={()=>{setActionMode('Accept'); setShowModal(true);  setUserInfo({
+              <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
                 ...userInfo, user_code: value
               })}} style={{backgroundColor: '#61e25e'}} className="btn  rounded-5" >
                 Accept
               </button>
   
-              <button onClick={()=>{setActionMode('Reject'); setShowModal(true); setUserInfo({
+              <button onClick={()=>{setActionMode('Reject'); setShowModalSingle(true); setUserInfo({
                 ...userInfo, user_code: value
               })}} className=" btn btn-danger rounded-5">
                 Reject
@@ -460,6 +461,7 @@ const ManageUsersTable = ({
             type="button"
             className="rounded-5"
             onClick={() => {
+
               updateBunchUserhandler();
               setActionMode("");
               setShowModal(false)
@@ -475,6 +477,77 @@ const ManageUsersTable = ({
             onClick={() => {
               setActionMode("");
               setShowModal(false)
+              setUserInfo({
+                ...userInfo,
+                reject_reason: "",
+              });
+            }}
+          >
+            No
+          </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
+      
+      </Modal>
+      <Modal
+        className="commonModal"
+        show={showModalSingle}
+        // onHide={handleClose}
+      >
+       
+        <Modal.Body>
+          <div className="add_user_form">
+            <div className="row">
+              <div className="col-xl-12 col-md-12 col-sm-12 col-12">
+                <div className="input_box text-center">
+                  <label htmlFor="email">
+                    Are you sure you want to {actionMode} this request?
+                  </label>
+                  {actionMode !== 'Accept' ?
+                  <input
+                    type="text"
+                    placeholder="Enter Reason"
+                    className="form-control"
+                    onChange={(e) => {
+                      setUserInfo({
+                        ...userInfo, reject_reason: e.target.value
+                      })
+                    }}
+                    value={userInfo.reject_reason}
+                  />
+                  : <> </>
+                }
+                </div>
+                <div className="d-flex align-items-center justify-content-center gap-2">
+              
+          <Button
+            variant="primary"
+            type="button"
+            className="rounded-5"
+            onClick={() => {
+              
+              updateUserhandler();
+              setActionMode("");
+              setShowModalSingle(false)
+            }}
+          >
+            Yes
+          </Button>
+
+          <Button
+            variant="secondary"
+            type="button"
+            className="rounded-5 "
+            onClick={() => {
+              setActionMode("");
+              setShowModalSingle(false)
+              setUserInfo({
+                ...userInfo,
+                reject_reason: "",
+              });
             }}
           >
             No

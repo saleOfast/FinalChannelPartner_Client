@@ -12,7 +12,7 @@ import axios from 'axios';
 import { validEmail } from '../../Utils/regex';
 import { assignPermissions, crm, dms,sales,channel } from '../../store/permissionSlice';
 import { startLoading, stopLoading } from '../../store/loaderSlice';
-import { setSidebarColor, setbuttonColor } from '../../store/themeSlice';
+import { setSidebarColor, setTopNavColor, setbuttonColor } from '../../store/themeSlice';
 
 
 export default function SignInScreen({ setLoggedIn }) {
@@ -85,9 +85,13 @@ export default function SignInScreen({ setLoggedIn }) {
                     setCookie('token', res.data.token);
                     setCookie('userInfo', res.data.userData);
                     setCookie('clientLogo', res.data.Logo);
+                    setCookie('sidecolor', res.data.userData.sidebar_color || '#405189');
+                    setCookie('btncolor', res.data.userData.sidebar_color || '#405189');
+                    setCookie('topnavcolor', res.data.userData.sidebar_color || '#405189');
                     setCookie('db_name', res.data.userData.db_name);
-                    dispatch(setSidebarColor(res.data.userData.sidebar_color))
-                    dispatch(setbuttonColor(res.data.userData.button_color))
+                    dispatch(setSidebarColor(res.data.userData.sidebar_color || '#405189'))
+                    dispatch(setbuttonColor(res.data.userData.button_color || '#405189'))
+                    dispatch(setTopNavColor(res.data.userData.top_nav_color || '#405189'))
                     initialPermission(res.data.platformData[0].platform_name)
                     assignPermission(res.data.platformData)
                     toast.success('Logged in SuccessFully')

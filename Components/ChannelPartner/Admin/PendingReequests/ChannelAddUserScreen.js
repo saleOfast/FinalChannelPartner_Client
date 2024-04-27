@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import CameraIcon from "../../Svg/CameraIcon";
 import { toast } from "react-toastify";
 import { hasCookie, getCookie } from "cookies-next";
 import axios from "axios";
-import { Baseurl, filesUrl } from "../../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../../../Utils/Constants";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-import { fetchData } from "../../../Utils/getReq";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import SaveIcon from "@mui/icons-material/Save";
-import Select from "react-select";
+import { fetchData } from "../../../../Utils/getReq";
 import { Button, Modal } from "react-bootstrap";
 
 const ChannelAddUserScreen = () => {

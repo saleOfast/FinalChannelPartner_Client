@@ -1,5 +1,5 @@
 import React from 'react'
-import PendingRequestsScreen from '../../Components/ChannelPartner/PendingReequests/PendingRequestsScreen'
+import PendingRequestsScreen from '../../Components/ChannelPartner/Admin/PendingReequests/PendingRequestsScreen'
 import WithUserhoc_CP from '../../HOC/WithUserhoc_CP'
 
 const PendingRequests = () => {

@@ -1,0 +1,145 @@
+import Link from 'next/link'
+import React, { useState } from 'react'
+import { Modal } from 'react-bootstrap'
+
+const VisitDetailsScreen = () => { 
+  return (
+    <div className='w-100 bg-white overflow-auto'>
+       <section className="Channel-profile  Visit-Details pt-4 pb-2">
+  <div className="container  mt-4 mb-4">
+    <div className="row gx-4">
+      <div className="profile-text mb-4">Visits/ Visit Detail</div>
+      <div className="col-12  col-lg-12">
+        <div className="lead-detail-sec overflow-hidden">
+          <ul className="list-group General-list h-auto rounded-0 m-0">
+            <li href="#" className="list-group-item list-group-item-action active active-list text-white d-flex justify-content-between" aria-current="true">
+              <span className="lead-id">NK12648</span>
+            </li>
+          </ul>
+          <ul className="list-group General-list d-flex flex-column gap-4 bg-white leads-content h-auto m-0">
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Lead Name</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">Shekhar Mittal</span>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Email</span>
+                </div>
+              </div>                            
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">shekharmi2938@gmail.com</span>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Contact No.</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">+919283948579</span>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Project</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">Emerald Grove Gardens
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Location</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">New Delhi</span>
+                </div>
+              </div>                            
+            </div>
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Pincode</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">110012</span>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Possible Visit Date</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">26/04/2024</span>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Possible Visit Time</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">11:30 AM</span>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Visit Status</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">Requested</span>
+                </div>
+              </div>
+            </div>
+
+          </ul></div>
+        <Link href={'/CHANNEL/Visits'} className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
+          <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0">Back to Visits</button>
+        </Link>
+      </div>  
+    </div>
+  </div>
+</section>
+
+
+    </div>
+
+  )
+}
+
+export default VisitDetailsScreen

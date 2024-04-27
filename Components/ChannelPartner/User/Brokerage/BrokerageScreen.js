@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
-import PlusIcon from '../../Svg/PlusIcon';
+import PlusIcon from '../../../Svg/PlusIcon';
 import axios from 'axios';
 import { hasCookie, getCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 
 import { useSelector } from 'react-redux';
-import Modal from "react-bootstrap/Modal";
-import { Button } from 'react-bootstrap';
+// import Modal from "react-bootstrap/Modal";
+// import { Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Row, Col, Dropdown } from 'react-bootstrap';
 import dynamic from 'next/dynamic'
 import Papa from "papaparse";
-import { Baseurl } from '../../../Utils/Constants';
-import ConfirmBox from '../../Basics/ConfirmBox';
+import { Baseurl } from '../../../../Utils/Constants';
+import ConfirmBox from '../../../Basics/ConfirmBox';
 import { useRouter } from 'next/router';
 import Select from 'react-select';
-import { fetchData } from '../../../Utils/getReq';
-import Daterange from '../../DateRangeCustom/Daterange';
+import { fetchData } from '../../../../Utils/getReq';
+import Daterange from '../../../DateRangeCustom/Daterange';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
 )
 
-const ActivePartnersScreen = () => {
+const BookingsScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
     const router = useRouter()
     const [dataList, setDataList] = useState([])
@@ -276,146 +277,106 @@ const ActivePartnersScreen = () => {
     }, [])
 
     return (
-        <>
-            <ConfirmBox
-                showConfirm={disableShowConfirm}
-                setshowConfirm={setdisableShowConfirm}
-                actionType={disableHandler}
-                title={`Are You Sure you want to ${confirmText} ?`} />
+      <>
+        <ConfirmBox
+          showConfirm={disableShowConfirm}
+          setshowConfirm={setdisableShowConfirm}
+          actionType={disableHandler}
+          title={`Are You Sure you want to ${confirmText} ?`}
+        />
 
-            <ConfirmBox
-                showConfirm={deleteshowConfirm}
-                setshowConfirm={setdeleteshowConfirm}
-                actionType={deleteHandler}
-                title={"Are You Sure you want to Delete ?"} />
+        <ConfirmBox
+          showConfirm={deleteshowConfirm}
+          setshowConfirm={setdeleteshowConfirm}
+          actionType={deleteHandler}
+          title={"Are You Sure you want to Delete ?"}
+        />
 
-            <div className="w-100 ps-4 pe-4 overflow-scroll" >
-              
-                <div className="main_content">
-                    <div className="table_screen">
-                        <div className="top_btn_sec mb-2">
-                            <div className="d-flex">
-                                <button className="btn ms-auto btn-primary Add_btn me-3" onClick={()=>goto('/CHANNEL/ViewActiveUsers')}>
-                                    <PlusIcon />
-                                    ADD USER
-                                </button>
-                            </div>
-                        </div>
-                        <DynamicTable
-                            title='Channel Partners'
-                            dataList={dataList}
-                            disableConfirm={disableConfirm}
-                            deleteConfirm={deleteConfirm}
-                            setShowAssignTo={setShowAssignTo}
-                            setoldAssignTo={setoldAssignTo}
-                            oldAssignTo={oldAssignTo}
-                            setShowDateFilter={setShowDateFilter}
-                            usersList={usersList}
-                            getDataList={getDataList}
-                        />
-                    </div>
-                </div>
+        <div className="w-100 ps-4 pe-4 overflow-auto">
+          <div className="main_content">
+            <div className="table_screen">
+              <DynamicTable
+                title="Brokerage"
+                dataList={dataList}
+                disableConfirm={disableConfirm}
+                deleteConfirm={deleteConfirm}
+                setShowAssignTo={setShowAssignTo}
+                setoldAssignTo={setoldAssignTo}
+                oldAssignTo={oldAssignTo}
+                setShowDateFilter={setShowDateFilter}
+                usersList={usersList}
+                getDataList={getDataList}
+              />
             </div>
+          </div>
+        </div>
 
-            <Modal className="commonModal" show={show} onHide={handleClose} >
-                <Modal.Header closeButton>
-                    <Modal.Title>  Import CSV </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="add_user_form">
-                        <div className="row">
-                            <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <div className="input_box">
-                                    <label htmlFor="AttendenceFile">Select File</label>
-                                    <input type="file"
-                                        name="AttendenceFile"
-                                        id="AttendenceFile"
-                                        accept=".csv"
-                                        onChange={importHandler}
-                                        className="form-control" />
-                                </div>
-                            </div>
-                            <div className="demoLink text-end py-2">
-                                <a className="text-decoration-underline text-primary" href="/Docs/demoUser.csv" download='user-Sample-File.csv'>Views Sample File </a>
-                            </div>
-                        </div>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <button className="btn btn-cancel me-2" onClick={handleClose}>Cancel</button>
-                    <Button variant="primary" onClick={csvSubmitHandler}>
-                        SUBMIT
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+        <Modal className="commonModal" show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title> Import CSV </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="add_user_form">
+              <div className="row">
+                <div className="col-xl-12 col-md-12 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="AttendenceFile">Select File</label>
+                    <input
+                      type="file"
+                      name="AttendenceFile"
+                      id="AttendenceFile"
+                      accept=".csv"
+                      onChange={importHandler}
+                      className="form-control"
+                    />
+                  </div>
+                </div>
+                <div className="demoLink text-end py-2">
+                  <a
+                    className="text-decoration-underline text-primary"
+                    href="/Docs/demoUser.csv"
+                    download="user-Sample-File.csv"
+                  >
+                    Views Sample File{" "}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <button className="btn btn-cancel me-2" onClick={handleClose}>
+              Cancel
+            </button>
+            <Button variant="primary" onClick={csvSubmitHandler}>
+              SUBMIT
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
-            <Modal className="commonModal"  show={!showAssignTo? false: true }   onHide={()=>setShowAssignTo("")} style={{}}>
-                <Modal.Header closeButton>
-                    <Modal.Title>  Assign to </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="add_user_form">
-                        <div className="row">
-                            <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <div className="input_box">
-                                   
-                                        <Select
-                                            id="select"
-                                            defaultValue={""}
-                                            options={usersList?.map((data, index) => {
-                                            return {
-                                                value: data?.user_id,
-                                                label: data?.user,
-                                            };
-                                            })}
-                                            value={usersList?.map((data, index) => {
-                                            if (oldAssignTo === data.user_id) {
-                                                return {
-                                                value: data?.user_id,
-                                                label: data?.user,
-                                                };
-                                            }
-                                            })}
-                                            onChange={(e) => {
-                                            setoldAssignTo(e.value)
-                                            
-                                            }}
-                                        />
-                                        
-                                      
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <button className="btn btn-cancel me-2" onClick={()=>setShowAssignTo("")}>Cancel</button>
-                    <Button variant="primary"  onClick={updateUserhandler} >
-                        SUBMIT
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-
-            <Modal className="w-100" size="xl" show={showDateFilter} onHide={()=>setShowDateFilter(false)} >
-                <Modal.Header closeButton>
-                    <Modal.Title>  Assign to </Modal.Title>
-                </Modal.Header>
-                <Modal.Body className='mx-auto'>
-                    <Daterange />
-                </Modal.Body>
-                <Modal.Footer>
-                    <button className="btn btn-cancel me-2" onClick={()=>setShowDateFilter(false)}>Cancel</button>
-                    <Button variant="primary" >
-                        SUBMIT
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-           
-            
-        </>
-    )
+        <Modal
+          className="w-100"
+          size="xl"
+          show={showDateFilter}
+          onHide={() => setShowDateFilter(false)}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title> Assign to </Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="mx-auto">
+            <Daterange />
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              className="btn btn-cancel me-2"
+              onClick={() => setShowDateFilter(false)}
+            >
+              Cancel
+            </button>
+            <Button variant="primary">SUBMIT</Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
 }
 
-export default ActivePartnersScreen
+export default BookingsScreen

@@ -5,9 +5,10 @@ import { useRouter } from 'next/router';
 import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
-import { Baseurl } from '../../../Utils/Constants';
+import { Baseurl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
+import PlusIcon from '../../../Svg/PlusIcon';
 
 
 
@@ -28,18 +29,18 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     const columns = [
         {
             name: 'user_code',
-            label: "Account ID",
+            label: "Booking ID",
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div  className='status_box fw-bold' style={{color:"#0000ee"}} >
-                            {value}
+                        <div  className='status_box fw-bold' style={{color:"#293790"}} >
+                            NK12647
                         </div>
                     )
                 }
@@ -48,18 +49,18 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         },
         {
             name: 'user',
-            label: "Account Name",
+            label: "Booking Name",
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <Link href={`/CHANNEL/ViewActiveUsers?id=${tableMeta?.rowData[0]}&mode=view`}  className='status_box fw-bold text-decoration-underline' style={{color:"#0000ee"}}>
-                            {value}
+                        <Link href={`/CHANNEL/BookingDetails`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
+                            Shekhar Mittal 
                         </Link>
                     )
                 }
@@ -68,22 +69,19 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         },
         {
             name: 'createdAt',
-            label: "Created Date",
+            label: "Email",
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
-                    const date = new Date(value);
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-                    const year = date.getFullYear();
+                    
                     return (
-                        <div className='status_box' style={{color:"#667799"}}>
-                            {`${day}/${month}/${year}`}
+                        <div className='status_box fw-bold' style={{color:"#293790"}}>
+                            shekharmi2938@gmail.com
                         </div>
                     )
                 }
@@ -92,18 +90,18 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         },
         {
             name: 'user',
-            label: "Leads Count",
+            label: "Contact No.",
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            108
+                            +91-8587493655
                         </div>
                     )
                 }
@@ -111,69 +109,71 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         },
         {
             name: 'user',
-            label: "Bookings Count",
+            label: "Project",
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            24
+                            Harmony Hills Estates
                         </div>
                     )
                 }
             }
         },
         {
-            name: 'reportToUser',
-            label: "Assigned to",
+            name: 'user',
+            label: "Location",
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box fw-bold' style={{color:"#0000ee"}}>
-                            {value && <span  >{value.user}</span>}
+                        <div className='status_box' style={{color:"#667799"}}>
+                            Noida
                         </div>
                     )
                 }
             }
         },
         {
-            name: 'user_status',
-            label: "Status",
+            name: 'user',
+            label: "Booking Status",
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box'>
-                            {value ? <span className='active status_btn'>active</span> :
-                                 <span className='inactive status_btn'>inactive</span>}
-                        </div>
+                        <div
+                        style={{background:"violet", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
+                        className='pe-3 ps-3'
+                        title='Assign - To'>
+                            Eligible for Brokerage Bill
+                    </div>
                     )
                 }
             }
         },
         {
             name: 'user_code',
-            label: "Action",
+            label: "Brokerage Bill",
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -181,11 +181,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     return (
                         <div className="table_btns">
                             <button
-                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[5]?.user_id) }}
-                                style={{background:"#0000ee", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
-                                className='pe-3 ps-3'
+                                onClick={()=>{setShowModal(value); }}
+                                style={{background:"white", color:"#293790",padding:"6px", borderRadius:"20px",border:"white"}}
+                                className='pe-3 ps-3 '
                                 title='Assign - To'>
-                                    Assign to
+                                  <span className=''>+</span> Create
                             </button>
                           
                         </div>
@@ -201,7 +201,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <button className='btn btn-secondary' onClick={()=>setShowDateFilter(true)}> Custom </button>
+                <button className='btn' style={{background:"#293790", color:"white"}} onClick={()=>setShowDateFilter(true)}> Custom </button>
             </div>
         );
     }
@@ -290,6 +290,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     data={dataList}
                     columns={columns}
                     options={options}
+
                 />
                 <div>
           {userData.length ?
@@ -299,7 +300,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
               <button onClick={()=>{setActionMode('Cancel'); setShowModal(false);setUserData([])}} className=" btn btn-danger rounded-5">
                 Cancel
               </button>
-              <button onClick={()=>{setActionMode('Assignto'); setShowModal(true)}} style={{backgroundColor: '#0000ee'}} className="btn  rounded-5 text-white" >
+              <button onClick={()=>{setActionMode('Assignto'); setShowModal(true)}} style={{backgroundColor: '#293790'}} className="btn  rounded-5 text-white" >
                 Assign to
               </button>
             
@@ -309,51 +310,93 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         </div>
             </div>
         
-            <Modal className="commonModal"  show={showModal}   onHide={()=>{setShowModal(false)}} style={{}}>
-                <Modal.Header closeButton>
-                    <Modal.Title>  Assign to </Modal.Title>
-                </Modal.Header>
+            <Modal className="commonModal"  show={showModal}   onHide={()=>{setShowModal(false)}} size="lg">
+                
                 <Modal.Body>
-                    <div className="add_user_form">
-                        <div className="row">
-                            <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <div className="input_box">
-                                   
-                                        <Select
-                                            id="select"
-                                            defaultValue={""}
-                                            options={usersList?.map((data, index) => {
-                                            return {
-                                                value: data?.user_id,
-                                                label: data?.user,
-                                            };
-                                            })}
-                                            value={usersList?.map((data, index) => {
-                                            if (oldAssignTo === data.user_id) {
-                                                return {
-                                                value: data?.user_id,
-                                                label: data?.user,
-                                                };
-                                            }
-                                            })}
-                                            onChange={(e) => {
-                                            setoldAssignTo(e.value)
-                                            
-                                            }}
-                                        />
-                                        
-                                      
-                                </div>
-                            </div>
+                <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{padding: '0 16px'}}>
+  <div className="container">
+    <div className="row">
+      <h3 className=" Perfect-Home text-center ">Create Brokerage Bill</h3>
+      <div className="col-12 mt-md-5">
+        <div className="Sign-In_Sign-Up Register w-100">
+          <div className="perfect-home-form pt-1">
+            <section className="Details_Form">
+              <div className="pt-3">
+                <form id="survey-form" method="GET" action>
+                  <div className="d-lg-flex justify-content-lg-around">
+                    <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
+                      <div className="rowTab">
+                        <div className="labels">
+                          <label htmlFor="project" className="pb-1">Project</label>
+                          <span className="star">*</span>
                         </div>
+                        <div className="rightTab d-flex gap-2">
+                          <select name className="form-select dropdown" style={{paddingTop: 12, paddingBottom: 12}}>
+                            <option value selected disabled />
+                            <option className="dropdown-item" href="#">Emerald Grove Gardens
+                            </option>
+                            <option className="dropdown-item" href="#">Harmony Hills Estates
+                            </option>
+                            <option className="dropdown-item" href="#">Horizon Vista Villas
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="rowTab">
+                        <div className="labels">
+                          <label htmlFor="name" className="pb-1">Amount</label>
+                          <span className="star">*</span>
+                        </div>
+                        <div className="rightTab">
+                          <input autofocus type="text" name="name" className="input-field" placeholder required />
+                        </div>
+                      </div>
+                      {/* <div className="rowTab">
+                        <div className="labels">
+                          <label htmlFor="name" className="pb-1">Status</label>
+                        </div>
+                        <div className="rightTab">
+                          <input autofocus type name="name" className="input-field" placeholder="Bill Sent" required />
+                        </div>
+                      </div> */}
                     </div>
+                    <div className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details">
+                      <div className="rowTab mt-3 mt-md-4 mt-lg-0">
+                        <div className="labels">
+                          <label htmlFor="Location" className="pb-1">Date</label>
+                          <span className="star">*</span>
+                        </div>
+                        <div className="rightTab">
+                          <input autofocus type="text" name="name" className="input-field" placeholder required />
+                        </div>
+                      </div>
+                      <div className="rowTab">
+                        <div className="labels">
+                          <label id="name-label" htmlFor="name" className="pb-1">Bill</label>
+                          <span className="star">*</span>
+                        </div>
+                        <div className="rightTab">
+                          <label htmlFor="adh" className="form-control d-flex flex-row-reverse justify-content-between align-items-center" style={{width: 227, height: 36}}>Upload Bill<img src="/ChannelPartner/upload-file.svg" alt style={{height: 16}} /></label>
+                          <input autofocus type="file" name="name" id="adh" className="input-field" placeholder="enter your aadhar number" style={{display: 'none'}} required />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="new-leades-btn d-flex justify-content-center gap-4">
+                    <div type="button" className="cancel-btn d-flex align-items-center justify-content-center bg-transparent" onClick={()=>setShowModal(false)}>Cancel</div>
+                    <button type='submit' className="submit-btn d-flex align-items-center justify-content-center text-white border-0">Submit</button>
+                  </div>
+                </form>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
                 </Modal.Body>
-                <Modal.Footer>
-                    <button className="btn btn-cancel me-2" onClick={()=>setShowModal(false)}>Cancel</button>
-                    <Button variant="primary"  onClick={updateUserHandler} >
-                        SUBMIT
-                    </Button>
-                </Modal.Footer>
             </Modal>
           
         </>

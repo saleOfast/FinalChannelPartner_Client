@@ -1,32 +1,30 @@
-import React from 'react'
-import { DateRangePicker } from 'react-date-range';
+import React, { useState } from "react";
+import Datepicker from "react-tailwindcss-datepicker";
 
-const Daterange = () => {
+const DateRange = () => {
 
-    const handleSelect = (ranges) => {
-        console.log(ranges);
-        // {
-        //   selection: {
-        //     startDate: [native Date Object],
-        //     endDate: [native Date Object],
-        //   }
-        // }
-      }
+  const [value, setValue] = useState({
 
-    const selectionRange = {
-        startDate: new Date(),
-        endDate: new Date(),
-        key: 'selection',
-      }
+    startDate: new Date(),
+    endDate: new Date().setMonth(11)
+
+  });
+
+  const handleValueChange = (newValue) => {
+    console.log("newValue:", newValue);
+    setValue(newValue);
+
+  }
 
   return (
-    <DateRangePicker
-        ranges={[selectionRange]}
-        onChange={handleSelect}
-        months={2}
-        direction='horizontal'
-      />
-  )
-}
+    <Datepicker
+      value={value}
+      onChange={handleValueChange}
+      showShortcuts={true} 
+      primaryColor={"blue"}
+      containerClassName="relative mt-8 border rounded-md mb-4 border-black  text-black inline-block" 
+    />
 
-export default Daterange
+  );
+};
+export default DateRange;

@@ -8,6 +8,7 @@ import axios from 'axios';
 import { Baseurl } from '../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
+import DateRange from '../../DateRangeCustom/Daterange';
 
 
 
@@ -201,7 +202,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <button className='btn btn-secondary' onClick={()=>setShowDateFilter(true)}> Custom </button>
+                {/* <button className='btn btn-secondary' onClick={()=>setShowDateFilter(true)}> Custom </button> */}
+                <DateRange />
             </div>
         );
     }

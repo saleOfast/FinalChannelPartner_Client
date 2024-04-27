@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import ConfirmBox from '../../Basics/ConfirmBox';
+import ConfirmBox from '../../../Basics/ConfirmBox';
 import { useDispatch, useSelector } from "react-redux";
-import { startLoading, stopLoading } from "../../../store/loaderSlice";
-import { clearMode } from "../../../store/dbModeSlice";
+import { startLoading, stopLoading } from "../../../../store/loaderSlice";
+import { clearMode } from "../../../../store/dbModeSlice";
 import { hasCookie, getCookie, setCookie, deleteCookie } from "cookies-next";
 import { useRouter } from 'next/router';
-import { userLogOut } from "../../../store/ClientLoginSlice";
+import { userLogOut } from "../../../../store/ClientLoginSlice";
 import { toast } from "react-toastify";
-import { Baseurl, filesUrl } from '../../../Utils/Constants';
+import { Baseurl, filesUrl } from '../../../../Utils/Constants';
 import axios from 'axios';
 
 

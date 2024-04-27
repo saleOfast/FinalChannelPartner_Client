@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
-import { Baseurl } from '../../../Utils/Constants';
+import { Baseurl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../DateRangeCustom/Daterange';
@@ -33,13 +33,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div  className='status_box fw-bold' style={{color:"#0000ee"}} >
+                        <div  className='status_box fw-bold' style={{color:"#293790"}} >
                             {value}
                         </div>
                     )
@@ -53,13 +53,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <Link href={`/CHANNEL/ViewActiveUsers?id=${tableMeta?.rowData[0]}&mode=view`}  className='status_box fw-bold text-decoration-underline' style={{color:"#0000ee"}}>
+                        <Link href={`/CHANNEL/ViewActiveUsers?id=${tableMeta?.rowData[0]}&mode=view`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
                             {value}
                         </Link>
                     )
@@ -73,7 +73,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -97,7 +97,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -116,7 +116,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -135,13 +135,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box fw-bold' style={{color:"#0000ee"}}>
+                        <div className='status_box fw-bold' style={{color:"#293790"}}>
                             {value && <span  >{value.user}</span>}
                         </div>
                     )
@@ -154,7 +154,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -174,7 +174,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#0000ee", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -183,7 +183,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                         <div className="table_btns">
                             <button
                                 onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[5]?.user_id) }}
-                                style={{background:"#0000ee", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
+                                style={{background:"#293790", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
                                 title='Assign - To'>
                                     Assign to
@@ -301,7 +301,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
               <button onClick={()=>{setActionMode('Cancel'); setShowModal(false);setUserData([])}} className=" btn btn-danger rounded-5">
                 Cancel
               </button>
-              <button onClick={()=>{setActionMode('Assignto'); setShowModal(true)}} style={{backgroundColor: '#0000ee'}} className="btn  rounded-5 text-white" >
+              <button onClick={()=>{setActionMode('Assignto'); setShowModal(true)}} style={{backgroundColor: '#293790'}} className="btn  rounded-5 text-white" >
                 Assign to
               </button>
             

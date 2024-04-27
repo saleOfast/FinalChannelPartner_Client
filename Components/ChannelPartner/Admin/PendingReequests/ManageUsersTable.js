@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import MUIDataTable from "mui-datatables";
-import ViewIcon from "../../Svg/ViewIcon";
-import DisableIcon from "../../Svg/DisableIcon";
-import EditIcon from "../../Svg/EditIcon";
-import DeleteIcon from "../../Svg/DeleteIcon";
-import CheckIcon from "../../Svg/CheckIcon";
 import Link from "next/link";
-import { Baseurl, filesUrl } from "../../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../../../Utils/Constants";
 import { Button, Modal } from "react-bootstrap";
 import { getCookie, hasCookie } from "cookies-next";
 import { toast } from "react-toastify";
@@ -71,7 +66,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -80,7 +75,7 @@ const ManageUsersTable = ({
           return (
           <span
           className="fw-bold"
-          style={{color: '#0000ee'}}
+          style={{color: '#293790'}}
           >
             {value}
         </span>
@@ -94,7 +89,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -102,7 +97,7 @@ const ManageUsersTable = ({
           return (
           <Link
           className="fw-bold text-decoration-underline"
-          style={{color: '#0000ee'}}
+          style={{color: '#293790'}}
           target="_blank"
           href={`/CHANNEL/ChannelAddUsersReject?id=${tableMeta.rowData[0]}&mode=view`}
           >
@@ -118,7 +113,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px'  }} >
+          <th style={{ background: "#293790", color: "white", paddingLeft: '15px'  }} >
             {columnMeta.label}
           </th>
         ),
@@ -141,7 +136,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -149,7 +144,7 @@ const ManageUsersTable = ({
           return (
           <Link
           className="text-decoration-underline"
-          style={{color: '#0000ee'}}
+          style={{color: '#293790'}}
           target="_blank"
           href={`${filesUrl}/adh/images${value?.aadhar_file}`}
           >
@@ -166,7 +161,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -174,7 +169,7 @@ const ManageUsersTable = ({
           return (
           <Link
           className="text-decoration-underline"
-          style={{color: '#0000ee'}}
+          style={{color: '#293790'}}
           target="_blank"
           href={`${filesUrl}/pan/images${value?.pan_file}`}
           >
@@ -191,7 +186,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -199,7 +194,7 @@ const ManageUsersTable = ({
           return (
           <Link
           className="text-decoration-underline"
-          style={{color: '#0000ee'}}
+          style={{color: '#293790'}}
           target="_blank"
           href={`${filesUrl}/rera/images${value?.rera_file}`}
           >
@@ -216,7 +211,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -224,7 +219,7 @@ const ManageUsersTable = ({
           return (
           <Link
           className="text-decoration-underline"
-          style={{color: '#0000ee'}}
+          style={{color: '#293790'}}
           target="_blank"
           href={`${filesUrl}/cheque/images${value?.c_cheque_file}`}
           >
@@ -242,7 +237,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#0000ee", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -258,7 +253,7 @@ const ManageUsersTable = ({
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
           <th
-            style={{ background: "#0000ee", color: "white",  paddingLeft: '65px' }}
+            style={{ background: "#293790", color: "white",  paddingLeft: '65px' }}
             
           >
             {columnMeta.label}

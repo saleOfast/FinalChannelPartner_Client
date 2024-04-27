@@ -1,21 +1,21 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { Baseurl, filesUrl } from '../../../Utils/Constants';
+import { Baseurl, filesUrl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { Dropdown } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import LogoutIcon from "../../Svg/LogoutIcon";
-import AvatarIcon from "../../Svg/AvatarIcon";
-import ConfirmBox from '../../Basics/ConfirmBox';
+import LogoutIcon from "../../../Svg/LogoutIcon";
+import AvatarIcon from "../../../Svg/AvatarIcon";
+import ConfirmBox from '../../../Basics/ConfirmBox';
 import { useDispatch, useSelector } from 'react-redux';
-import { startLoading, stopLoading } from '../../../store/loaderSlice';
-import { clearMode } from '../../../store/dbModeSlice';
-import { LoggedOut } from '../../../store/adMinLoginSlice';
-import { userLogOut } from '../../../store/ClientLoginSlice';
+import { startLoading, stopLoading } from '../../../../store/loaderSlice';
+import { clearMode } from '../../../../store/dbModeSlice';
+import { LoggedOut } from '../../../../store/adMinLoginSlice';
+import { userLogOut } from '../../../../store/ClientLoginSlice';
 
-const CP_NavBar = () => {
+const CP_NavBar_Admin = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [showConfirm, setshowConfirm] = useState(false);
@@ -173,4 +173,4 @@ const CP_NavBar = () => {
   );
 };
 
-export default CP_NavBar;
+export default CP_NavBar_Admin;

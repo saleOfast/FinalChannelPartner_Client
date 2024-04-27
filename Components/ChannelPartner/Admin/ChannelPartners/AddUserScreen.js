@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import CameraIcon from "../../Svg/CameraIcon";
+import CameraIcon from "../../../Svg/CameraIcon";
 import { toast } from "react-toastify";
 import { hasCookie, getCookie } from "cookies-next";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-import { fetchData } from "../../../Utils/getReq";
+import { fetchData } from "../../../../Utils/getReq";
 import Select from "react-select";
-import { Baseurl, filesUrl } from "../../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../../../Utils/Constants";
 
 const AddUserScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);

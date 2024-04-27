@@ -1,5 +1,5 @@
 import React from 'react'
-import AddUserScreen from '../../Components/ChannelPartner/ActivePartners/AddUserScreen'
+import AddUserScreen from '../../Components/ChannelPartner/Admin/ChannelPartners/AddUserScreen'
 import WithUserhoc_CP from '../../HOC/WithUserhoc_CP'
 
 const EditActiveUsers = () => {

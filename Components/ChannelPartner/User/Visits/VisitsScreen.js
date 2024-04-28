@@ -112,7 +112,7 @@ const VisitsScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, header);
+                const response = await axios.get(Baseurl + `/db/channel/visit`, header);
                     console.log(response.data.data)
                 setDataList(response.data.data);
             } catch (error) {

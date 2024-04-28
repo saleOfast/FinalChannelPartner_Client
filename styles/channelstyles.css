@@ -868,7 +868,24 @@
   margin-top: 50px;
 }
 
-/*  Create Brokerage Bill Start*/
+/*  Create Brokerage Bill End*/
+
+/* Visit-Date-and-Time Start */
+/* .Visit-Date-and-Time .container{
+  width: 461px;
+  height: 164px;
+}
+.Visit-Date-and-Time .rowTab .label{
+  color: #9C9AA5;
+  font-size: 14px;
+  font-weight: 400;
+}
+.Visit-Date-and-Time .rightTab .date{
+  color: #293790;
+  font-size: 12px;
+  font-weight: 700;
+} */
+/* Visit-Date-and-Time End */
 
 @media screen and (max-width: 992px) {
   .Sign-In .Perfect-Home {

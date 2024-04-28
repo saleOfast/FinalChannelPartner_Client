@@ -33,10 +33,27 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
   });
   
+  function formatTime(timeString) {
+    const timeParts = timeString.split(':');
+    const hours = parseInt(timeParts[0]);
+    const minutes = parseInt(timeParts[1]);
+  
+    const date = new Date(2000, 0, 1, hours, minutes);
+  
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+  
+  function formatDate(date) {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${day}/${month}/${year}`;
+  }
 
     const columns = [
         {
-            name: 'user_code',
+            name: 'visit_id',
             label: "Visit ID",
             options: {
                 filter: true,
@@ -48,7 +65,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div  className='status_box fw-bold' style={{color:"#293790"}} >
-                            NK12647
+                            {value}
                         </div>
                     )
                 }
@@ -56,7 +73,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'user',
+            name: 'leadData',
             label: "Lead Name",
             options: {
                 filter: true,
@@ -68,7 +85,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <Link href={`/CHANNEL/VisitDetails`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
-                            Shekhar Mittal 
+                            {value.lead_name}
                         </Link>
                     )
                 }
@@ -76,7 +93,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
         },
         {
-            name: 'createdAt',
+            name: 'leadData',
             label: "Email",
             options: {
                 filter: true,
@@ -89,7 +106,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     
                     return (
                         <div className='status_box fw-bold' style={{color:"#293790"}}>
-                            shekharmi2938@gmail.com
+                            {value.email_id}
                         </div>
                     )
                 }
@@ -97,7 +114,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'user',
+            name: 'leadData',
             label: "Contact No.",
             options: {
                 filter: true,
@@ -109,14 +126,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            +91-8587493655
+                            +91-{value.p_contact_no}
                         </div>
                     )
                 }
             }
         },
         {
-            name: 'user',
+            name: 'leadData',
             label: "Project",
             options: {
                 filter: true,
@@ -128,14 +145,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            Harmony Hills Estates
+                            {value?.projectData?.project}
                         </div>
                     )
                 }
             }
         },
         {
-            name: 'user',
+            name: 'p_visit_date',
             label: "Visit Date",
             options: {
                 filter: true,
@@ -147,14 +164,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            Noida
+                            {formatDate(value)}
                         </div>
                     )
                 }
             }
         },
         {
-            name: 'user',
+            name: 'p_visit_time',
             label: "Visit Time",
             options: {
                 filter: true,
@@ -169,7 +186,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                         style={{background:"violet", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                         className='pe-3 ps-3'
                         title='Assign - To'>
-                            Eligible for Brokerage Bill
+                            {formatTime(value)}
                     </div>
                     )
                 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MUIDataTable from "mui-datatables";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -14,12 +14,13 @@ import DateRange from '../../../DateRangeCustom/Daterange';
 
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
     const [actionMode, setActionMode] =  useState('')
     const [showModal, setShowModal] =  useState(false)
+    const [showModal2, setShowModal2] =  useState(false)
     const [userInfo, setUserInfo ] =  useState({
     user_code: '',
     reject_reason: ''
@@ -31,10 +32,77 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     endDate: new Date().setMonth(11)
 
   });
+  const[visitId,setVisitId]=useState("");
+  const[p_visit_date,setVisitDate]=useState("");
+  const[p_visit_time,setVisitTime]=useState("");
+
+  useEffect(()=>{
+    const getVisitInfo=async()=>{
+        if (hasCookie('token')) {
+            let token = (getCookie('token'));
+            let db_name = (getCookie('db_name'));
+      
+            let header = {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: "Bearer ".concat(token),
+                    db: db_name,
+                    m_id: 76,
+                }
+            }
+      
+            try {
+                
+                const {data} = await axios.get(Baseurl + `/db/channel/lead?lead_id=${visitId}`, header);
+                setVisitDate(data?.data?.p_visit_date)
+                setVisitTime(data?.data?.p_visit_time)
+            } catch (error) {
+                if (error?.response?.data?.message) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Something went wrong!");
+                }
+            }
+        }
+    }
+    getVisitInfo()
+  },[visitId])
+  
+  function formatDate(date) {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${day}/${month}/${year}`;
+  }
+
+  function formatTime(timeString) {
+    const timeParts = timeString.split(':');
+    const hours = parseInt(timeParts[0]);
+    const minutes = parseInt(timeParts[1]);
+  
+    const date = new Date(2000, 0, 1, hours, minutes);
+  
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
+  function getCurrentDateTime() {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+  
+    const formattedDateTime = `${year}-${month}-${day}: ${hours}:${minutes}:${seconds}`;
+    return formattedDateTime;
+  }
+
 
     const columns = [
         {
-            name: 'user_code',
+            name: 'lead_id',
             label: "Lead ID",
             options: {
                 filter: true,
@@ -46,7 +114,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div  className='status_box fw-bold' style={{color:"#293790"}} >
-                            NK12647
+                            {value}
                         </div>
                     )
                 }
@@ -54,7 +122,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'user',
+            name: 'lead_name',
             label: "Lead Name",
             options: {
                 filter: true,
@@ -65,8 +133,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <Link href={`/CHANNEL/LeadDetails`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
-                            Rakesh Dubey 
+                        <Link href={`/CHANNEL/LeadDetails?id=${tableMeta?.rowData[0]}`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
+                            {value}
                         </Link>
                     )
                 }
@@ -74,7 +142,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
         },
         {
-            name: 'createdAt',
+            name: 'email_id',
             label: "Email",
             options: {
                 filter: true,
@@ -87,7 +155,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     
                     return (
                         <div className='status_box fw-bold' style={{color:"#293790"}}>
-                            rakesh12@gmail.com
+                            {value}
                         </div>
                     )
                 }
@@ -95,7 +163,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'user',
+            name: 'p_contact_no',
             label: "Contact No.",
             options: {
                 filter: true,
@@ -107,14 +175,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            +91-8587493655
+                            +91-{value}
                         </div>
                     )
                 }
             }
         },
         {
-            name: 'user',
+            name: 'projectData',
             label: "Project",
             options: {
                 filter: true,
@@ -126,7 +194,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            Summer Valley
+                            {value?.project}
                         </div>
                     )
                 }
@@ -146,7 +214,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     return (
                         <div className="table_btns">
                             <button
-                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[5]?.user_id) }}
+                                onClick={()=>{setVisitId(tableMeta?.rowData[0]); setShowModal(true);}}
                                 style={{background:"#293790", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
                                 title='Assign - To'>
@@ -166,7 +234,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                {/* <button className='btn' style={{background:"#293790", color:"white"}} onClick={()=>setShowDateFilter(true)}> Custom </button> */}
                 <DateRange value={value} setValue={setValue} />
             </div>
         );
@@ -190,9 +257,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         router.push(url)
     }
 
-    const updateUserHandler = async () => {
-        let toastShown=false;
-        for (const element of userData) {
+    const updateUserHandler = async (e) => {
+        e.preventDefault()
           if (!hasCookie("token")) return;
           
           const token = getCookie("token");
@@ -206,60 +272,49 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
               m_id: 79,
             },
           };
-      
+
           try {
-            const response = await axios.put(`${Baseurl}/db/users`, {
-              db_name: db_name,
-              user_code: element,
-              report_to: oldAssignTo,
-            }, header);
-            
+            const response = await axios.post(`${Baseurl}/db/channel/visit`, {
+                lead_id:visitId,
+                p_visit_date,
+                p_visit_time,
+                current_date:getCurrentDateTime()
+              }, header);
             if (response.status === 200 || response.status === 201) {
-                if (!toastShown) { 
-                    toast.success(response.data.message);
-                    toastShown = true; 
-                }
-              setoldAssignTo('');
-              setShowModal(false);
-              setUserData([])
-              getDataList();
+              toast.success(response.data.message);
+              setShowModal(false)
+              toast.success(response.message)
+             
             }
           } catch (error) {
-            console.log(error)
             if (error?.response?.data?.status === 422) {
-                if (!toastShown) { 
-                    toast.error(error.response.data.message);
-                    toastShown = true; 
-                }
-            } else if (error?.response?.data?.message) {
-                if (!toastShown) { 
-                    toast.error(error.response.data.message);
-                    toastShown = true; 
-                }
+                  toast.error(error?.response?.data?.message)
+                  
+            }
+            if (error?.response?.data?.message) {
+              toast.error(error.response.data.message);
             } else {
-                if (!toastShown) { 
-                    toast.error("Something went wrong!");
-                    toastShown = true; 
-                }
+              toast.error("Something went wrong!");
             }
           }
-        }
+      
+        
+        
       };
       
  
 
     return (
-        <>
-            <div className="miuiTable channelTable">
-                <MUIDataTable
-                    title={<CustomToolbar/>}
-                    data={dataList}
-                    columns={columns}
-                    options={options}
-
-                />
-                <div>
-          {userData.length ?
+      <>
+        <div className="miuiTable channelTable">
+          <MUIDataTable
+            title={<CustomToolbar />}
+            data={leadList}
+            columns={columns}
+            options={options}
+          />
+          <div>
+            {/* {userData.length ?
           <div className="table_btns d-flex align-items-center justify-content-center gap-3 mt-4">
               
 
@@ -272,60 +327,213 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             
           </div>
           : <></>
-        }
+        } */}
+          </div>
         </div>
-            </div>
-        
-            <Modal className="commonModal"  show={showModal}   onHide={()=>{setShowModal(false)}} style={{}}>
-                <Modal.Header closeButton>
-                    <Modal.Title>  Assign to </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="add_user_form">
-                        <div className="row">
-                            <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <div className="input_box">
-                                   
-                                        <Select
-                                            id="select"
-                                            defaultValue={""}
-                                            options={usersList?.map((data, index) => {
-                                            return {
-                                                value: data?.user_id,
-                                                label: data?.user,
-                                            };
-                                            })}
-                                            value={usersList?.map((data, index) => {
-                                            if (oldAssignTo === data.user_id) {
-                                                return {
-                                                value: data?.user_id,
-                                                label: data?.user,
-                                                };
-                                            }
-                                            })}
-                                            onChange={(e) => {
-                                            setoldAssignTo(e.value)
-                                            
-                                            }}
-                                        />
-                                        
-                                      
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <button className="btn btn-cancel me-2" onClick={()=>setShowModal(false)}>Cancel</button>
-                    <Button variant="primary"  onClick={updateUserHandler} >
-                        SUBMIT
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-          
-        </>
 
-    )
+        <Modal
+          show={showModal}
+          onHide={() => {
+            setVisitDate("")
+            setVisitTime("")
+            setShowModal(false);
+          }}
+          size="lg"
+          centered
+        >
+          <Modal.Body>
+            <section
+              className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill Add-New-Visit-Date-and-Time Visit-Date-and-Time d-flex justify-content-center align-items-center"
+              style={{ padding: "0 16px" }}
+            >
+              <div className="container p-0">
+                <div className="row d-flex flex-column gap-3">
+                  <h3 className=" Perfect-Home text-center text-black">
+                    Visit Date and Time
+                  </h3>
+                  <div className>
+                    <div className="Sign-In_Sign-Up Register w-100">
+                      <div className="perfect-home-form pt-1">
+                        <section className="Details_Form">
+                          <div className>
+                            <form
+                              id="survey-form"
+                              method="post"
+                              action
+                              className="d-flex flex-column gap-4"
+                                onSubmit={(e)=>{
+                                    updateUserHandler(e)
+                                }}
+                            >
+                              <div className="d-flex align-items-center justify-content-lg-between gap-3">
+                                <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details text-center text-lg-start">
+                                  <div className="rowTab">
+                                    <div className="labels">
+                                      <span
+                                        htmlFor="name"
+                                        className="pb-1 label"
+                                        style={{ color: "#9C9AA5" }}
+                                      >
+                                        Possible Visit Date
+                                      </span>
+                                      <span className="star">*</span>
+                                    </div>
+                                    <div className="rightTab w-auto">
+                                      <span
+                                        style={{ color: "#293790" }}
+                                        className="date fw-bold"
+                                      >
+                                       {formatDate(p_visit_date)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details text-center text-lg-start">
+                                  <div className="rowTab">
+                                    <div className="labels">
+                                      <span
+                                        htmlFor="name"
+                                        className="pb-1 label"
+                                        style={{ color: "#9C9AA5" }}
+                                      >
+                                        Possible Visit Time
+                                      </span>
+                                      <span className="star">*</span>
+                                    </div>
+                                    <div className="rightTab w-auto">
+                                      <span
+                                        style={{ color: "#293790" }}
+                                        className="date fw-bold"
+                                      >
+                                        {p_visit_time}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="new-leades-btn d-flex justify-content-center gap-4 mt-2">
+                                <div
+                                  className="cancel-btn d-flex align-items-center justify-content-center cursor-pointer bg-transparent"
+                                  onClick={() => {
+                                    setShowModal2(true);
+                                    setShowModal(false);
+                                  }}
+                                >
+                                  Change
+                                </div>
+                                <button className="submit-btn d-flex align-items-center justify-content-center text-white border-0">
+                                  Confirm
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </Modal.Body>
+        </Modal>
+
+        <Modal
+          show={showModal2}
+          onHide={() => setShowModal2(false)}
+          size="lg"
+          centered
+        >
+          <Modal.Body>
+            <section
+              className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill Add-New-Visit-Date-and-Time"
+              style={{ padding: "0 16px" }}
+            >
+              <div className="container">
+                <div className="row">
+                  <h3 className=" Perfect-Home text-center text-black">
+                    Add New Visit Date and Time
+                  </h3>
+                  <div className="col-12 mt-md-5">
+                    <div className="Sign-In_Sign-Up Register w-100">
+                      <div className="perfect-home-form pt-1">
+                        <section className="Details_Form">
+                          <div className="pt-3">
+                            <form id="survey-form" method="GET" action>
+                              <div className="d-lg-flex justify-content-lg-between">
+                                <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
+                                  <div className="rowTab">
+                                    <div className="labels">
+                                      <label htmlFor="name" className="pb-1">
+                                        Possible Visit Date
+                                      </label>
+                                      <span className="star">*</span>
+                                    </div>
+                                    <div className="rightTab">
+                                      <input
+                                        autofocus
+                                        type="Date"
+                                        value={p_visit_date}
+                                        onChange={(e)=>{
+                                            setVisitDate(e.target.value)
+                                        }}
+                                        name="name"
+                                        className="input-field"
+                                        required
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details">
+                                  <div className="rowTab mt-3 mt-md-4 mt-lg-0">
+                                    <div className="labels">
+                                      <label
+                                        htmlFor="Location"
+                                        className="pb-1"
+                                      >
+                                        Possible Visit Time
+                                      </label>
+                                      <span className="star">*</span>
+                                    </div>
+                                    <div className="rightTab">
+                                      <input
+                                        autofocus
+                                        type="time"
+                                        value={p_visit_time}
+                                        onChange={(e)=>{
+                                            setVisitTime(e.target.value)
+                                        }}
+                                        name="name"
+                                        className="input-field"
+                                        required
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="new-leades-btn d-flex justify-content-center gap-4 mt-5">
+                                <div
+                                  className=" cursor-pointer cancel-btn d-flex align-items-center justify-content-center bg-transparent"
+                                  onClick={() => setShowModal2(false)}
+                                >
+                                  Cancel
+                                </div>
+                                <button className="submit-btn d-flex align-items-center justify-content-center text-white border-0">
+                                  Update
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </Modal.Body>
+        </Modal>
+      </>
+    );
 }
 
 export default ManageUsersTable 

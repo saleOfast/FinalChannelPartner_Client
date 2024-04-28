@@ -44,6 +44,21 @@ const LeadsScreen = () => {
         action: ''
     })
 
+    const [lead,setLead]=useState({
+      lead_id:"",
+      lead_name: "", 
+      email_id: "",
+      p_contact_no: "", 
+      address: "", 
+      pincode: "", 
+      p_visit_date: "",
+      p_visit_time: "", 
+      project_id:"",
+      project_name:"",
+    })
+    const [leadList,setLeadList]=useState([])
+    const [projectList,setProjectList]=useState([])
+
     function disableConfirm(value, type) {
         if (type == 1) {
             setconfirmText('enable')
@@ -70,10 +85,6 @@ const LeadsScreen = () => {
             action: 'delete'
         })
         setdeleteshowConfirm(true)
-    }
-
-    const goto = (url) => {
-        router.push(url)
     }
 
 
@@ -113,9 +124,11 @@ const LeadsScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, header);
-                    console.log(response.data.data)
-                setDataList(response.data.data);
+                
+                const leads = await axios.get(Baseurl + `/db/channel/lead`, header);
+                const projects = await axios.get(Baseurl + `/db/channel/project`, header);
+                setLeadList(leads.data.data);
+                setProjectList(projects.data.data);
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -125,74 +138,7 @@ const LeadsScreen = () => {
             }
         }
     }
-
-    async function disableHandler() {
-
-        const reqInfo = { user_code: currObj.id, user_status: currObj.action == 1 ? true : false }
-
-        if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
-
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    m_id: 79
-                }
-            }
-
-            try {
-                const response = await axios.put(Baseurl + `/db/users`, reqInfo, header);
-                if (response.status === 204 || response.status === 200) {
-                    toast.success(response.data.message)
-                    setdisableShowConfirm(false)
-                    setcurrObj({
-                        id: '',
-                        action: ''
-                    })
-                    getDataList();
-                }
-            } catch (error) {
-                toast.error(error.response.data.message);
-            }
-        }
-    }
-
-    async function deleteHandler() {
-        setdeleteshowConfirm(false)
-
-        if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
-
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    m_id: 80
-                }
-            }
-
-            try {
-                const response = await axios.delete(Baseurl + `/db/users?id=${currObj.id}`, header);
-                if (response.status === 204 || response.status === 200) {
-                    toast.success(response.data.message)
-                    setdeleteshowConfirm(false)
-                    setcurrObj({
-                        id: '',
-                        action: ''
-                    })
-                    getDataList();
-                }
-            } catch (error) {
-                toast.error(error.response.data.message)
-            }
-        }
-
-    }
+  
 
     async function csvSubmitHandler() {
         if (excelData.length <= 0) {
@@ -228,7 +174,9 @@ const LeadsScreen = () => {
         }
 
     }
-    const updateUserhandler = async () => {
+
+    const createLead =  async(e) => {
+     e.preventDefault();
         if (!hasCookie("token")) return;
         const token = getCookie("token");
         const db_name = getCookie("db_name");
@@ -243,16 +191,12 @@ const LeadsScreen = () => {
     
        
         try {
-          const response = await axios.put(`${Baseurl}/db/users`, {
-            db_name: db_name,
-            user_code: showAssignTo,
-            report_to: oldAssignTo,
-          }, header);
+          const response = await axios.post(`${Baseurl}/db/channel/lead`,lead, header);
           if (response.status === 200 || response.status === 201) {
             toast.success(response.data.message);
-            setoldAssignTo('')
-            setShowAssignTo('')
+            setShowAssignTo(false)
             toast.success(response.message)
+            setLead("")
             getDataList();
           }
         } catch (error) {
@@ -267,7 +211,7 @@ const LeadsScreen = () => {
           }
         }
     };
-
+    
 
     useEffect(() => {
         getDataList();
@@ -276,19 +220,7 @@ const LeadsScreen = () => {
 
     return (
       <>
-        <ConfirmBox
-          showConfirm={disableShowConfirm}
-          setshowConfirm={setdisableShowConfirm}
-          actionType={disableHandler}
-          title={`Are You Sure you want to ${confirmText} ?`}
-        />
-
-        <ConfirmBox
-          showConfirm={deleteshowConfirm}
-          setshowConfirm={setdeleteshowConfirm}
-          actionType={deleteHandler}
-          title={"Are You Sure you want to Delete ?"}
-        />
+        
 
         <div className="w-100 ps-4 pe-4 overflow-auto">
           <div className="main_content">
@@ -307,7 +239,7 @@ const LeadsScreen = () => {
               </div>
               <DynamicTable
                 title="Leads"
-                dataList={dataList}
+                leadList={leadList}
                 disableConfirm={disableConfirm}
                 deleteConfirm={deleteConfirm}
                 setShowAssignTo={setShowAssignTo}
@@ -380,7 +312,7 @@ const LeadsScreen = () => {
           <div className="perfect-home-form pt-1">
             <section className="Details_Form">
               <div className="">
-                <form id="survey-form" >
+                <form id="survey-form" method='post' onSubmit={(e)=>{createLead(e)}} >
                   <div className='row'>
                     <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
                       <div className='row '>
@@ -388,7 +320,10 @@ const LeadsScreen = () => {
                             <label htmlFor="name" className="pb-1">Lead Name<span className="star text-danger">*</span></label>
                           </div>
                           <div className="col-9">
-                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                            <input autofocus value={lead?.lead_name} onChange={(e)=>{
+                              setLead({...lead,lead_name:e.target.value})
+                            }} 
+                            type="text" name="name" className="input-field" placeholder required />
                           </div>
                       </div>
                     </div>
@@ -399,7 +334,9 @@ const LeadsScreen = () => {
                             <label htmlFor="name" className="pb-1">Location<span className="star text-danger">*</span></label>
                           </div>
                           <div className="col-9">
-                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                            <input autofocus value={lead?.address} onChange={(e)=>{
+                              setLead({...lead,address:e.target.value})
+                            }} type="text" name="name" className="input-field" placeholder required />
                           </div>
                       </div>
                     </div>
@@ -410,7 +347,9 @@ const LeadsScreen = () => {
                             <label htmlFor="name" className="pb-1">Email<span className="star text-danger">*</span></label>
                           </div>
                           <div className="col-9">
-                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                            <input autofocus value={lead?.email_id} onChange={(e)=>{
+                              setLead({...lead,email_id:e.target.value})
+                            }} type="text" name="name" className="input-field" placeholder required />
                           </div>
                       </div>
                     </div>
@@ -421,7 +360,9 @@ const LeadsScreen = () => {
                             <label htmlFor="name" className="pb-1">Pincode<span className="star text-danger">*</span></label>
                           </div>
                           <div className="col-9">
-                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                            <input autofocus  value={lead?.pincode} onChange={(e)=>{
+                              setLead({...lead,pincode:e.target.value})
+                            }}  type="text" name="name" className="input-field" placeholder required />
                           </div>
                       </div>
                     </div>
@@ -432,7 +373,9 @@ const LeadsScreen = () => {
                             <label htmlFor="name" className="pb-1">Contact No<span className="star text-danger">*</span></label>
                           </div>
                           <div className="col-9">
-                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                            <input autofocus  value={lead?.p_contact_no} onChange={(e)=>{
+                              setLead({...lead,p_contact_no:e.target.value})
+                            }} type="text" name="name" className="input-field" placeholder required />
                           </div>
                       </div>
                     </div>
@@ -443,7 +386,9 @@ const LeadsScreen = () => {
                             <label htmlFor="name" className="pb-1">Visit Date<span className="star text-danger">*</span></label>
                           </div>
                           <div className="col-9">
-                            <input autofocus type="Date" name="name" className="input-field" placeholder required />
+                            <input autofocus  value={lead?.p_visit_date} onChange={(e)=>{
+                              setLead({...lead,p_visit_date:e.target.value})
+                            }} type="Date" name="name" className="input-field" placeholder required />
                           </div>
                       </div>
                     </div>
@@ -454,14 +399,17 @@ const LeadsScreen = () => {
                             <label htmlFor="name" className="pb-1">Project<span className="star text-danger">*</span></label>
                           </div>
                           <div className="col-9">
-                          <select name className="form-select dropdown" style={{paddingTop: 12, paddingBottom: 12}}>
+                          <select name onChange={(e)=>{
+                            setLead({...lead,project_id:e.target.value})
+                          }} className="form-select dropdown" style={{paddingTop: 12, paddingBottom: 12}}>
                             <option value selected disabled>Select</option>
-                            <option className="dropdown-item" href="#">Emerald Grove Gardens
+                            {
+                              projectList?.map((project)=>(
+                                <option key={project?.project_id} value={project?.project_id} className="dropdown-item" href="#">
+                                  {project?.project}
                             </option>
-                            <option className="dropdown-item" href="#">Harmony Hills Estates
-                            </option>
-                            <option className="dropdown-item" href="#">Horizon Vista Villas
-                            </option>
+                              ))
+                            }
                           </select>
                           </div>
                       </div>
@@ -473,14 +421,19 @@ const LeadsScreen = () => {
                             <label htmlFor="name" className="pb-1">Visit Time<span className="star text-danger">*</span></label>
                           </div>
                           <div className="col-9">
-                            <input autofocus type="time" name="name" className="input-field" placeholder required />
+                            <input autofocus  value={lead?.p_visit_time} onChange={(e)=>{
+                              setLead({...lead,p_visit_time:e.target.value})
+                            }} type="time" name="name" className="input-field" placeholder required />
                           </div>
                       </div>
                     </div>
                     
                   </div>
                   <div className="new-leades-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
-                    <button className="cancel-btn d-flex align-items-center justify-content-center bg-transparent" onClick={() => setShowAssignTo("")}>Cancel</button>
+                    <button className="cancel-btn d-flex align-items-center justify-content-center bg-transparent" 
+                    onClick={() => {setShowAssignTo("")
+                    setLead("")
+                    }}>Cancel</button>
                     <button className="submit-btn d-flex align-items-center justify-content-center text-white border-0">Submit</button>
                   </div>
                 </form>
@@ -495,126 +448,6 @@ const LeadsScreen = () => {
 
           </Modal.Body>
         </Modal>
-        
-        {/* <Modal  show={!showAssignTo ? false : true}
-          onHide={() => setShowAssignTo("")} centered size='xl'>
-      <Modal.Header closeButton>
-        <Modal.Title>Create New Lead</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form id="survey-form" method="GET" action="">
-          <Row className="d-lg-flex d-md-block d-sm-inline-block justify-content-lg-around">
-            <Col className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
-              <Row className="rowTab">
-                <Col className="labels">
-                  <Form.Label htmlFor="name" className="pb-1">
-                    Lead Name
-                    <span className="star">*</span>
-                  </Form.Label>
-                </Col>
-                <Col className="rightTab">
-                  <Form.Control autoFocus type="text" name="name" placeholder="" required />
-                </Col>
-              </Row>
-              <Row className="rowTab">
-                <Col className="labels">
-                  <Form.Label htmlFor="email" className="pb-1">
-                    Email
-                    <span className="star">*</span>
-                  </Form.Label>
-                </Col>
-                <Col className="rightTab">
-                  <Form.Control type="email" name="email" placeholder="" required />
-                </Col>
-              </Row>
-              <Row className="rowTab">
-                <Col className="labels">
-                  <Form.Label htmlFor="number" className="pb-1">Contact No.</Form.Label>
-                </Col>
-                <Col className="rightTab">
-                  <Form.Control type="tel" name="number" required placeholder="" />
-                </Col>
-              </Row>
-              <Row className="rowTab">
-                <Col className="labels">
-                  <Form.Label htmlFor="project" className="pb-1">
-                    Project
-                    <span className="star">*</span>
-                  </Form.Label>
-                </Col>
-                <Col className="rightTab d-flex gap-2">
-                  <Dropdown>
-                    <Dropdown.Toggle className="form-select dropdown" style={{ paddingTop: 12, paddingBottom: 12 }}>
-                      Select
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      <Dropdown.Item href="#">Emerald Grove Gardens</Dropdown.Item>
-                      <Dropdown.Item href="#">Harmony Hills Estates</Dropdown.Item>
-                      <Dropdown.Item href="#">Horizon Vista Villas</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </Col>
-              </Row>
-            </Col>
-            <Col className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details">
-              <Row className="rowTab mt-3 mt-md-4 mt-lg-0">
-                <Col className="labels">
-                  <Form.Label htmlFor="Location" className="pb-1">
-                    Location
-                    <span className="star">*</span>
-                  </Form.Label>
-                </Col>
-                <Col className="rightTab">
-                  <Form.Control autoFocus type="text" name="name" placeholder="" required />
-                </Col>
-              </Row>
-              <Row className="rowTab">
-                <Col className="labels">
-                  <Form.Label htmlFor="code" className="pb-1">
-                    Pincode
-                    <span className="star">*</span>
-                  </Form.Label>
-                </Col>
-                <Col className="rightTab">
-                  <Form.Control type="text" name="pin" required placeholder="" />
-                </Col>
-              </Row>
-              <Row className="rowTab">
-                <Col className="labels">
-                  <Form.Label htmlFor="number" className="pb-1">
-                    Possible Visit Date
-                    <span className="star">*</span>
-                  </Form.Label>
-                </Col>
-                <Col className="rightTab possible-visit">
-                  <Form.Control type="text" name="date" required placeholder="" />
-                </Col>
-              </Row>
-              <Row className="rowTab">
-                <Col className="labels">
-                  <Form.Label htmlFor="number" className="pb-1">
-                    Possible Visit Time
-                    <span className="star">*</span>
-                  </Form.Label>
-                </Col>
-                <Col className="rightTab possible-visit">
-                  <Form.Control type="text" name="time" required placeholder="" />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Cancel
-        </Button>
-        <Button variant="primary">
-          Submit
-        </Button>
-      </Modal.Footer>
-    </Modal> */}
-        
 
         <Modal
           className="w-100"

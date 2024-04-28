@@ -1,9 +1,137 @@
+import axios from 'axios';
+import { getCookie, hasCookie } from 'cookies-next';
 import Link from 'next/link'
-import React, { useState } from 'react'
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
+import { Baseurl } from '../../../../Utils/Constants';
+import { toast } from 'react-toastify';
 
 const LeadDetailsScreen = () => {
   const [showAssignTo, setShowAssignTo] = useState("");
+  const router=useRouter();
+  const {id}=router.query;
+
+  const [lead,setLead]=useState({
+    lead_id:"",
+    lead_name: "", 
+    email_id: "",
+    p_contact_no: "", 
+    address: "", 
+    pincode: "", 
+    p_visit_date: "",
+    p_visit_time: "", 
+    project_id:"",
+    project_name:"",
+  })
+ 
+  const [projectList,setProjectList]=useState([])
+
+  useEffect(()=>{
+    if(id){
+      getDataListById();
+    }
+  },[id])
+
+  const getDataListById = async () => {
+    if (hasCookie('token')) {
+        let token = (getCookie('token'));
+        let db_name = (getCookie('db_name'));
+  
+        let header = {
+            headers: {
+                Accept: "application/json",
+                Authorization: "Bearer ".concat(token),
+                db: db_name,
+                m_id: 76,
+            }
+        }
+  
+        try {
+            
+            const leads = await axios.get(Baseurl + `/db/channel/lead?lead_id=${id}`, header);
+            const projects = await axios.get(Baseurl + `/db/channel/project`, header);
+            setLead({
+              ...lead,
+              lead_id:leads.data.data.lead_id,
+    lead_name: leads.data.data.lead_name, 
+    email_id: leads.data.data.email_id,
+    p_contact_no: leads.data.data.p_contact_no, 
+    address: leads.data.data.address, 
+    pincode: leads.data.data.pincode, 
+    p_visit_date: leads.data.data.p_visit_date,
+    p_visit_time: leads.data.data.p_visit_time, 
+    project_id:leads.data.data.projectData.project_id,
+    project_name:leads.data.data.projectData.project,
+            });
+            setProjectList(projects.data.data);
+        } catch (error) {
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Something went wrong!");
+            }
+        }
+    }
+  }
+  
+  const createLead =  async(e) => {
+  e.preventDefault();
+     if (!hasCookie("token")) return;
+     const token = getCookie("token");
+     const db_name = getCookie("db_name");
+     const header = {
+       headers: {
+         Accept: "application/json",
+         Authorization: `Bearer ${token}`,
+         db: db_name,
+         m_id: 79,
+       },
+     };
+ 
+    
+     try {
+       const response = await axios.put(`${Baseurl}/db/channel/lead`,lead, header);
+       if (response.status === 200 || response.status === 201) {
+         toast.success(response.data.message);
+         setShowAssignTo(false)
+         toast.success(response.message)
+         getDataListById();
+       }
+     } catch (error) {
+      console.log(error)
+       if (error?.response?.data?.status === 422) {
+             toast.error(error?.response?.data?.message)
+             
+       }
+       if (error?.response?.data?.message) {
+         toast.error(error.response.data.message);
+       } else {
+         toast.error("Something went wrong!");
+       }
+     }
+ };
+
+ function formatTime(timeString) {
+  const timeParts = timeString.split(':');
+  const hours = parseInt(timeParts[0]);
+  const minutes = parseInt(timeParts[1]);
+
+  const date = new Date(2000, 0, 1, hours, minutes);
+
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+function formatDate(date) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${day}/${month}/${year}`;
+}
+
+
+
   return (
     <div className='w-100 bg-white overflow-auto'>
   <section className="Channel-profile Booking-Detail Visit-Details bg-white pt-4 pb-2">
@@ -14,7 +142,7 @@ const LeadDetailsScreen = () => {
         <div className="lead-detail-sec overflow-hidden">
           <ul className="list-group General-list h-auto rounded-0 m-0">
             <li   className="list-group-item list-group-item-action active active-list text-white d-flex justify-content-between" aria-current="true">
-              <span className="lead-id">NK12648</span>
+              <span className="lead-id">{lead?.lead_id}</span>
               <img src="/ChannelPartner/profile-edit-white.svg" onClick={()=>setShowAssignTo(true)} alt />
             </li>
           </ul>
@@ -29,7 +157,7 @@ const LeadDetailsScreen = () => {
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">Shekhar Mittal</span>
+                      <span className="list-right">{lead?.lead_name}</span>
                     </div>
                   </div>
                 </div>
@@ -41,7 +169,7 @@ const LeadDetailsScreen = () => {
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">shekharmi2938@gmail.com</span>
+                      <span className="list-right">{lead?.email_id}</span>
                     </div>
                   </div>
                 </div>
@@ -53,7 +181,7 @@ const LeadDetailsScreen = () => {
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">+919283948579</span>
+                      <span className="list-right">{lead?.p_contact_no}</span>
                     </div>
                   </div>
                 </div>
@@ -65,7 +193,7 @@ const LeadDetailsScreen = () => {
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">Emerald Grove Gardens
+                      <span className="list-right">{lead?.project_name}
                       </span>
                     </div>
                   </div>
@@ -82,7 +210,7 @@ const LeadDetailsScreen = () => {
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">New Delhi</span>
+                      <span className="list-right">{lead?.address}</span>
                     </div>
                   </div>
                 </div>
@@ -94,7 +222,7 @@ const LeadDetailsScreen = () => {
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">110012</span>
+                      <span className="list-right">{lead?.pincode}</span>
                     </div>
                   </div>
                 </div>
@@ -106,7 +234,7 @@ const LeadDetailsScreen = () => {
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">26/04/2024</span>
+                      <span className="list-right">{formatDate(lead.p_visit_date)}</span>
                     </div>
                   </div>
                 </div>
@@ -118,7 +246,9 @@ const LeadDetailsScreen = () => {
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">11:30 AM</span>
+                    <span className="list-right">
+        {lead?.p_visit_time ? formatTime(lead?.p_visit_time) : ''}
+      </span>
                     </div>
                   </div>
                 </div>
@@ -135,7 +265,7 @@ const LeadDetailsScreen = () => {
   </div>
   </section>
   <Modal
-          className="commonModal"
+          className="w-100"
           show={!showAssignTo ? false : true}
           onHide={() => setShowAssignTo("")}
           size='xl'
@@ -150,96 +280,129 @@ const LeadDetailsScreen = () => {
         <div className="Sign-In_Sign-Up Register w-100">
           <div className="perfect-home-form pt-1">
             <section className="Details_Form">
-              <div className="pt-3">
-                <form id="survey-form" method="GET" action>
-                  <div className="d-lg-flex justify-content-lg-around">
-                    <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="name" className="pb-1">Lead Name</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab">
-                          <input autofocus type="text" name="name" className="input-field" placeholder required />
-                        </div>
+              <div className="">
+                <form id="survey-form" method='post' onSubmit={(e)=>{createLead(e)}} >
+                  <div className='row'>
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Lead Name<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus value={lead?.lead_name} onChange={(e)=>{
+                              setLead({...lead,lead_name:e.target.value})
+                            }} 
+                            type="text" name="name" className="input-field" placeholder required />
+                          </div>
                       </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="email" className="pb-1">Email</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab">
-                          <input type="email" name="email" className="input-field" required placeholder />
-                        </div>
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Location<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus value={lead?.address} onChange={(e)=>{
+                              setLead({...lead,address:e.target.value})
+                            }} type="text" name="name" className="input-field" placeholder required />
+                          </div>
                       </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="number" className="pb-1">Contact No.</label>
-                        </div>
-                        <div className="rightTab">
-                          <input type="tel" name="number" className="input-field" required placeholder />
-                        </div>
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Email<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus value={lead?.email_id} onChange={(e)=>{
+                              setLead({...lead,email_id:e.target.value})
+                            }} type="text" name="name" className="input-field" placeholder required />
+                          </div>
                       </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="project" className="pb-1">Project</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab d-flex gap-2">
-                          <select name className="form-select dropdown" style={{paddingTop: 12, paddingBottom: 12}}>
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Pincode<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus  value={lead?.pincode} onChange={(e)=>{
+                              setLead({...lead,pincode:e.target.value})
+                            }}  type="text" name="name" className="input-field" placeholder required />
+                          </div>
+                      </div>
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Contact No<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus  value={lead?.p_contact_no} onChange={(e)=>{
+                              setLead({...lead,p_contact_no:e.target.value})
+                            }} type="text" name="name" className="input-field" placeholder required />
+                          </div>
+                      </div>
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Visit Date<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus  value={lead?.p_visit_date} onChange={(e)=>{
+                              setLead({...lead,p_visit_date:e.target.value})
+                            }} type="Date" name="name" className="input-field" placeholder required />
+                          </div>
+                      </div>
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Project<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                          <select name value={lead?.project_id} onChange={(e)=>{
+                            setLead({...lead,project_id:e.target.value})
+                          }} className="form-select dropdown" style={{paddingTop: 12, paddingBottom: 12}}>
                             <option value selected disabled>Select</option>
-                            <option className="dropdown-item" href="#">Emerald Grove Gardens
+                            {
+                              projectList?.map((project)=>(
+                                <option key={project?.project_id} value={project?.project_id} className="dropdown-item" href="#">
+                                  {project?.project}
                             </option>
-                            <option className="dropdown-item" href="#">Harmony Hills Estates
-                            </option>
-                            <option className="dropdown-item" href="#">Horizon Vista Villas
-                            </option>
+                              ))
+                            }
                           </select>
-                        </div>
+                          </div>
                       </div>
                     </div>
-                    <div className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details">
-                      <div className="rowTab mt-3 mt-md-4 mt-lg-0">
-                        <div className="labels">
-                          <label htmlFor="Location" className="pb-1">Location</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab">
-                          <input autofocus type="text" name="name" className="input-field" placeholder required />
-                        </div>
-                      </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="code" className="pb-1">Pincode</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab">
-                          <input type="text" name="pin" className="input-field" required placeholder />
-                        </div>
-                      </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="number" className="pb-1">Possible Visit Date</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab possible-visit">
-                          <input type="text" name="date" className="input-field" required placeholder />
-                        </div>
-                      </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="number" className="pb-1">Possible Visit Time</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab possible-visit">
-                          <input type="text" name="time" className="input-field" required placeholder />
-                        </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Visit Time<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus  value={lead?.p_visit_time} onChange={(e)=>{
+                              setLead({...lead,p_visit_time:e.target.value})
+                            }} type="time" name="name" className="input-field" placeholder required />
+                          </div>
                       </div>
                     </div>
+                    
                   </div>
                   <div className="new-leades-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
-                    <button className="cancel-btn d-flex align-items-center justify-content-center bg-transparent" onClick={() => setShowAssignTo("")}>Cancel</button>
-                    <button className="submit-btn d-flex align-items-center justify-content-center text-white border-0">Update</button>
+                    <div  className="cancel-btn d-flex align-items-center cursor-pointer justify-content-center bg-transparent" 
+                    onClick={() => {setShowAssignTo("")
+                    }}>Cancel</div>
+                    <button className="submit-btn d-flex align-items-center justify-content-center text-white border-0">Submit</button>
                   </div>
                 </form>
               </div>

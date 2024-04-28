@@ -26,6 +26,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     reject_reason: ''
   })
 
+
   const [value, setValue] = useState({
 
     startDate: new Date(),
@@ -84,7 +85,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <Link href={`/CHANNEL/VisitDetails`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
+                        <Link href={`/CHANNEL/VisitDetails?id=${tableMeta?.rowData[0]}`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
                             {value.lead_name}
                         </Link>
                     )

@@ -1,8 +1,68 @@
+import axios from 'axios'
+import { getCookie, hasCookie } from 'cookies-next'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
+import { Baseurl } from '../../../../Utils/Constants'
+import { toast } from 'react-toastify'
 
 const VisitDetailsScreen = () => { 
+  const router=useRouter()
+  const{id}=router.query;
+  const[visitData,setVisitData]=useState([])
+
+  function formatTime(timeString) {
+    const timeParts = (timeString || '').split(':');
+    const hours = parseInt(timeParts[0]);
+    const minutes = parseInt(timeParts[1]);
+  
+    const date = new Date(2000, 0, 1, hours, minutes);
+  
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+  
+  function formatDate(date) {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${day}/${month}/${year}`;
+  }
+
+  useEffect(()=>{
+    if(id){
+      const getDataListById = async () => {
+        if (hasCookie('token')) {
+            let token = (getCookie('token'));
+            let db_name = (getCookie('db_name'));
+      
+            let header = {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: "Bearer ".concat(token),
+                    db: db_name,
+                    m_id: 76,
+                }
+            }
+      
+            try {
+                const {data} = await axios.get(Baseurl + `/db/channel/visit?visit_id=${id}`, header);
+               setVisitData(data?.data)
+                
+            } catch (error) {
+                if (error?.response?.data?.message) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Something went wrong!");
+                }
+            }
+        }
+      }
+      getDataListById()
+    }
+  },[id])
+  
   return (
     <div className='w-100 bg-white overflow-auto'>
        <section className="Channel-profile  Visit-Details pt-4 pb-2">
@@ -25,7 +85,7 @@ const VisitDetailsScreen = () => {
               </div>
               <div className="col-6 col-md-6">
                 <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-right">Shekhar Mittal</span>
+                  <span className="list-right">{visitData?.leadData?.lead_name}</span>
                 </div>
               </div>
             </div>
@@ -37,7 +97,7 @@ const VisitDetailsScreen = () => {
               </div>                            
               <div className="col-6 col-md-6">
                 <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-right">shekharmi2938@gmail.com</span>
+                  <span className="list-right">{visitData?.leadData?.email_id}</span>
                 </div>
               </div>
             </div>
@@ -49,7 +109,7 @@ const VisitDetailsScreen = () => {
               </div>
               <div className="col-6 col-md-6">
                 <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-right">+919283948579</span>
+                  <span className="list-right">+91-{visitData?.leadData?.p_contact_no}</span>
                 </div>
               </div>
             </div>
@@ -61,7 +121,7 @@ const VisitDetailsScreen = () => {
               </div>
               <div className="col-6 col-md-6">
                 <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-right">Emerald Grove Gardens
+                  <span className="list-right">{visitData?.leadData?.projectData?.project}
                   </span>
                 </div>
               </div>
@@ -74,7 +134,7 @@ const VisitDetailsScreen = () => {
               </div>
               <div className="col-6 col-md-6">
                 <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-right">New Delhi</span>
+                  <span className="list-right">{visitData?.leadData?.address}</span>
                 </div>
               </div>                            
             </div>
@@ -86,7 +146,7 @@ const VisitDetailsScreen = () => {
               </div>
               <div className="col-6 col-md-6">
                 <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-right">110012</span>
+                  <span className="list-right">{visitData?.leadData?.pincode}</span>
                 </div>
               </div>
             </div>
@@ -98,7 +158,7 @@ const VisitDetailsScreen = () => {
               </div>
               <div className="col-6 col-md-6">
                 <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-right">26/04/2024</span>
+                  <span className="list-right">{formatDate(visitData?.p_visit_date)}</span>
                 </div>
               </div>
             </div>
@@ -110,7 +170,7 @@ const VisitDetailsScreen = () => {
               </div>
               <div className="col-6 col-md-6">
                 <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-right">11:30 AM</span>
+                  <span className="list-right">{formatTime(visitData?.p_visit_time)}</span>
                 </div>
               </div>
             </div>

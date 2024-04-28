@@ -64,7 +64,7 @@ const VisitDetailsScreen = () => {
   },[id])
   
   return (
-    <div className='w-100 bg-white overflow-auto'>
+    <div className='w-100 bg-white overflow-auto pb-5'>
        <section className="Channel-profile  Visit-Details pt-4 pb-2">
   <div className="container  mt-4 mb-4">
     <div className="row gx-4">

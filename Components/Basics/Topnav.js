@@ -158,7 +158,7 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
 
   return (
     <>
-      {hasCookie("channel") && userInfo?.db_role === null ? (
+      {hasCookie("channel") && userInfo?.db_role !== null ? (
         <CP_Navbar_User />
       ) : (
         <CP_Navbar_Admin />

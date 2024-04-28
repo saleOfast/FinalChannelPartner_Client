@@ -27,6 +27,8 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
     email: "",
     password: "",
   });
+
+  
   const initialPermission = (permission) => {
     switch (permission) {
       case "CRM":
@@ -83,7 +85,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
           setCookie("userInfo", res.data.userData);
           setCookie('clientLogo', res.data.Logo[0]);
           setCookie("db_name", res.data.userData.db_name);
-          initialPermission(res.data.platformData[3].platform_name)
+          initialPermission("CHANNEL")
           assignPermission(res.data.platformData);
           toast.success("Logged in SuccessFully");  
           dispatch(stopLoading())

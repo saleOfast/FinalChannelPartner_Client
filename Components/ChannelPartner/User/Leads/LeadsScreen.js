@@ -364,7 +364,7 @@ const LeadsScreen = () => {
         </Modal>
 
         <Modal
-          className="commonModal"
+          className="w-100"
           show={!showAssignTo ? false : true}
           onHide={() => setShowAssignTo("")}
           size='xl'
@@ -379,42 +379,81 @@ const LeadsScreen = () => {
         <div className="Sign-In_Sign-Up Register w-100">
           <div className="perfect-home-form pt-1">
             <section className="Details_Form">
-              <div className="pt-3">
-                <form id="survey-form" method="GET" action>
-                  <div className="d-lg-flex justify-content-lg-around">
-                    <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="name" className="pb-1">Lead Name</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab">
-                          <input autofocus type="text" name="name" className="input-field" placeholder required />
-                        </div>
+              <div className="">
+                <form id="survey-form" >
+                  <div className='row'>
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Lead Name<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                          </div>
                       </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="email" className="pb-1">Email</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab">
-                          <input type="email" name="email" className="input-field" required placeholder />
-                        </div>
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Location<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                          </div>
                       </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="number" className="pb-1">Contact No.</label>
-                        </div>
-                        <div className="rightTab">
-                          <input type="tel" name="number" className="input-field" required placeholder />
-                        </div>
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Email<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                          </div>
                       </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="project" className="pb-1">Project</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab d-flex gap-2">
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Pincode<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                          </div>
+                      </div>
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Contact No<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                          </div>
+                      </div>
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Visit Date<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                          </div>
+                      </div>
+                    </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Project<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
                           <select name className="form-select dropdown" style={{paddingTop: 12, paddingBottom: 12}}>
                             <option value selected disabled>Select</option>
                             <option className="dropdown-item" href="#">Emerald Grove Gardens
@@ -424,47 +463,21 @@ const LeadsScreen = () => {
                             <option className="dropdown-item" href="#">Horizon Vista Villas
                             </option>
                           </select>
-                        </div>
+                          </div>
                       </div>
                     </div>
-                    <div className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details">
-                      <div className="rowTab mt-3 mt-md-4 mt-lg-0">
-                        <div className="labels">
-                          <label htmlFor="Location" className="pb-1">Location</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab">
-                          <input autofocus type="text" name="name" className="input-field" placeholder required />
-                        </div>
-                      </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="code" className="pb-1">Pincode</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab">
-                          <input type="text" name="pin" className="input-field" required placeholder />
-                        </div>
-                      </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="number" className="pb-1">Possible Visit Date</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab possible-visit">
-                          <input type="text" name="date" className="input-field" required placeholder />
-                        </div>
-                      </div>
-                      <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="number" className="pb-1">Possible Visit Time</label>
-                          <span className="star">*</span>
-                        </div>
-                        <div className="rightTab possible-visit">
-                          <input type="text" name="time" className="input-field" required placeholder />
-                        </div>
+
+                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                      <div className='row '>
+                        <div className="col-3">
+                            <label htmlFor="name" className="pb-1">Visit Time<span className="star text-danger">*</span></label>
+                          </div>
+                          <div className="col-9">
+                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                          </div>
                       </div>
                     </div>
+                    
                   </div>
                   <div className="new-leades-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
                     <button className="cancel-btn d-flex align-items-center justify-content-center bg-transparent" onClick={() => setShowAssignTo("")}>Cancel</button>

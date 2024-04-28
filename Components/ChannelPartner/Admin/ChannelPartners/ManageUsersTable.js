@@ -8,7 +8,7 @@ import axios from 'axios';
 import { Baseurl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
-import DateRange from '../../DateRangeCustom/Daterange';
+import DateRange from '../../../DateRangeCustom/Daterange';
 
 
 

@@ -9,6 +9,7 @@ import { Baseurl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
+import DateRange from '../../../DateRangeCustom/Daterange';
 
 
 
@@ -24,6 +25,12 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     user_code: '',
     reject_reason: ''
   })
+  const [value, setValue] = useState({
+
+    startDate: new Date(),
+    endDate: new Date().setMonth(11)
+
+  });
   
 
     const columns = [
@@ -201,7 +208,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <button className='btn' style={{background:"#293790", color:"white"}} onClick={()=>setShowDateFilter(true)}> Custom </button>
+                <DateRange value={value} setValue={setValue} />
+                {/* <button className='btn' style={{background:"#293790", color:"white"}} onClick={()=>setShowDateFilter(true)}> Custom </button> */}
             </div>
         );
     }

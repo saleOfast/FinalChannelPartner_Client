@@ -24,6 +24,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     user_code: '',
     reject_reason: ''
   })
+
+  const [value, setValue] = useState({
+
+    startDate: new Date(),
+    endDate: new Date().setMonth(11)
+
+  });
   
 
     const columns = [
@@ -203,7 +210,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
                 {/* <button className='btn btn-secondary' onClick={()=>setShowDateFilter(true)}> Custom </button> */}
-                <DateRange />
+                <DateRange value={value} setValue={setValue} />
             </div>
         );
     }

@@ -443,7 +443,7 @@ const LeadsScreen = () => {
                             <label htmlFor="name" className="pb-1">Visit Date<span className="star text-danger">*</span></label>
                           </div>
                           <div className="col-9">
-                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                            <input autofocus type="Date" name="name" className="input-field" placeholder required />
                           </div>
                       </div>
                     </div>
@@ -473,7 +473,7 @@ const LeadsScreen = () => {
                             <label htmlFor="name" className="pb-1">Visit Time<span className="star text-danger">*</span></label>
                           </div>
                           <div className="col-9">
-                            <input autofocus type="text" name="name" className="input-field" placeholder required />
+                            <input autofocus type="time" name="name" className="input-field" placeholder required />
                           </div>
                       </div>
                     </div>

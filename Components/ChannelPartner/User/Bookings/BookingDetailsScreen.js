@@ -177,30 +177,7 @@ const BookingDetailsScreen = () => {
         </div>
       </div>
     </div>
-    <div className="row gx-4 mt-4">
-      <div className="col-12  col-lg-12">
-        <div className="lead-detail-sec overflow-hidden">
-          <div className="row bg-white">
-            <div className="col-12  col-lg-6">
-              <div className="list-group General-list d-flex flex-column gap-4 bg-white leads-content h-auto m-0 py-2">
-                <div className="row">
-                  <div className="col-5 col-md-5 col-lg-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Booking Name</span>
-                    </div>
-                  </div>
-                  <div className="col-7 col-md-7 col-lg-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">Shekhar Mittal</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    
     <Link href={'/CHANNEL/Bookings'} className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
       <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0">Back to Bookings</button>
     </Link>

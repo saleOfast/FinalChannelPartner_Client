@@ -739,7 +739,7 @@
   justify-content: space-between;
 }
 .Create-New-Lead form .rightTab{
-  width: 80%;
+  width: 70%;
 }
 .Create-New-Lead form .possible-visit{
   width: 70%;
@@ -848,16 +848,16 @@
   padding: 11px 24px 11px 26px;
 }
 .Create-Brokerage-Bill .Leads-form-details .form-select{
-  width: 227px;
-  height: 36px;
+  width: 162px;
+  height: 35px;
 }
 .Create-Brokerage-Bill form input {
-  width: 227px;
-  height: 36px;
+  width: 162px;
+  height: 35px;
 }
 .Create-Brokerage-Bill .Create-New-Lead form input {
-  width: 227px;
-  height: 36px;
+  width: 162px;
+  height: 35px;
   padding: 8px 16px 8px 16px;
   gap: 10px;
   border-radius: 8px;
@@ -919,6 +919,27 @@
     margin-left: 0;
     width: 66px;
   }
+  .Leads-form-details {
+    width: 100% !important;
+}
+.Create-New-Lead .Sign-In_Sign-Up form .form-select{
+  margin: 0px !important;
+}
+.Create-Brokerage-Bill .Leads-form-details .form-select{
+  width: 100% !important;
+}
+.rightTab {
+  width: 100% !important;
+}
+  .Create-New-Lead .rowTab {
+    display: block;
+}
+.Create-Brokerage-Bill form input {
+  width: 100% !important;
+}
+.Create-Brokerage-Bill .Leads-form-details .form-control{
+  width: 100% !important;
+}
 
   /* DashBoard Start */
   .Reports-Dashboard #navbarSupportedContent{

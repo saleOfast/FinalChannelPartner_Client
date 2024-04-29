@@ -96,7 +96,7 @@ const VisitsScreen = () => {
     };
 
 
-    const getDataList = async () => {
+    const getVisitList = async (queryObjLeads) => {
 
         if (hasCookie('token')) {
             let token = (getCookie('token'));
@@ -112,7 +112,7 @@ const VisitsScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/channel/visit`, header);
+                const response = await axios.get(Baseurl + `/db/channel/visit`, {...header,params:queryObjLeads});
                     console.log(response.data.data)
                 setDataList(response.data.data);
             } catch (error) {
@@ -151,7 +151,7 @@ const VisitsScreen = () => {
                         id: '',
                         action: ''
                     })
-                    getDataList();
+                    getVisitList();
                 }
             } catch (error) {
                 toast.error(error.response.data.message);
@@ -184,7 +184,7 @@ const VisitsScreen = () => {
                         id: '',
                         action: ''
                     })
-                    getDataList();
+                    getVisitList();
                 }
             } catch (error) {
                 toast.error(error.response.data.message)
@@ -213,7 +213,7 @@ const VisitsScreen = () => {
                     const response = await axios.post(Baseurl + `/db/users/owner`, excelData, header);
                     if (response.status === 204 || response.status === 200) {
                         toast.success(response.data.message);
-                        getDataList();
+                        getVisitList();
                         handleClose();
                     }
                 } catch (error) {
@@ -252,7 +252,7 @@ const VisitsScreen = () => {
             setoldAssignTo('')
             setShowAssignTo('')
             toast.success(response.message)
-            getDataList();
+            getVisitList();
           }
         } catch (error) {
           if (error?.response?.data?.status === 422) {
@@ -269,7 +269,7 @@ const VisitsScreen = () => {
 
 
     useEffect(() => {
-        getDataList();
+        getVisitList();
         getUsersList();
     }, [])
 
@@ -288,7 +288,7 @@ const VisitsScreen = () => {
                 oldAssignTo={oldAssignTo}
                 setShowDateFilter={setShowDateFilter}
                 usersList={usersList}
-                getDataList={getDataList}
+                getVisitList={getVisitList}
               />
             </div>
           </div>

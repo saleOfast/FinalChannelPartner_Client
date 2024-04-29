@@ -108,7 +108,7 @@ const LeadsScreen = () => {
     };
 
 
-    const getDataList = async () => {
+    const getDataList = async (queryObjLeads) => {
 
         if (hasCookie('token')) {
             let token = (getCookie('token'));
@@ -124,8 +124,10 @@ const LeadsScreen = () => {
             }
 
             try {
-                
-                const leads = await axios.get(Baseurl + `/db/channel/lead`, header);
+                const leads = await axios.get(Baseurl + `/db/channel/lead`,{
+                  ...header,
+                  params:queryObjLeads
+                });
                 const projects = await axios.get(Baseurl + `/db/channel/project`, header);
                 setLeadList(leads.data.data);
                 setProjectList(projects.data.data);
@@ -175,8 +177,7 @@ const LeadsScreen = () => {
 
     }
 
-    const createLead =  async(e) => {
-     e.preventDefault();
+    const createLead =  async(queryObjLeads) => {
         if (!hasCookie("token")) return;
         const token = getCookie("token");
         const db_name = getCookie("db_name");
@@ -200,6 +201,7 @@ const LeadsScreen = () => {
             getDataList();
           }
         } catch (error) {
+          console.log(error)
           if (error?.response?.data?.status === 422) {
                 toast.error(error?.response?.data?.message)
                 
@@ -211,7 +213,7 @@ const LeadsScreen = () => {
           }
         }
     };
-    
+
 
     useEffect(() => {
         getDataList();
@@ -222,7 +224,7 @@ const LeadsScreen = () => {
       <>
         
 
-        <div className="w-100 ps-4 pe-4 overflow-auto">
+        <div className="w-100 ps-4 pe-4 overflow-auto ">
           <div className="main_content">
             <div className="table_screen">
               <div className="top_btn_sec mb-2">
@@ -312,7 +314,10 @@ const LeadsScreen = () => {
           <div className="perfect-home-form pt-1">
             <section className="Details_Form">
               <div className="">
-                <form id="survey-form" method='post' onSubmit={(e)=>{createLead(e)}} >
+                <form id="survey-form" method='post' onSubmit={(e)=>{
+                  e.preventDefault()
+                  createLead()
+                  }} >
                   <div className='row'>
                     <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
                       <div className='row '>

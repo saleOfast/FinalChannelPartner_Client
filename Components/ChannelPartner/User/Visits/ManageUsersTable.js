@@ -15,7 +15,7 @@ import DateRange from '../../../DateRangeCustom/Daterange';
 
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getVisitList }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -35,7 +35,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   });
   
   function formatTime(timeString) {
-    const timeParts = timeString.split(':');
+    const timeParts = (timeString || '').split(':');
     const hours = parseInt(timeParts[0]);
     const minutes = parseInt(timeParts[1]);
   
@@ -184,9 +184,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div
-                        style={{background:"violet", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
-                        className='pe-3 ps-3'
-                        title='Assign - To'>
+                        style={{background:"violet", color:"white",padding:"6px", borderRadius:"20px",border:"white", width:"fit-content"}}
+                        className='pe-3 ps-3 cursor-pointer'
+                        title='Visit Time'>
                             {formatTime(value)}
                     </div>
                     )
@@ -205,14 +205,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className="table_btns">
-                            <button
-                                
+                        <div className="">
+                            <div
                                 style={{padding:"6px", color:"white", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3 btn-warning btn '
-                                title='Assign - To'>
+                                title='Visit Status'>
                                    Requested
-                            </button>
+                            </div>
                           
                         </div>
                     )
@@ -227,7 +226,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <DateRange value={value} setValue={setValue} />
+                <DateRange value={value} setValue={setValue} getVisitList={getVisitList} visit={true} />
                 {/* <button className='btn' style={{background:"#293790", color:"white"}} onClick={()=>setShowDateFilter(true)}> Custom </button> */}
             </div>
         );
@@ -283,7 +282,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
               setoldAssignTo('');
               setShowModal(false);
               setUserData([])
-              getDataList();
+              getVisitList();
             }
           } catch (error) {
             console.log(error)

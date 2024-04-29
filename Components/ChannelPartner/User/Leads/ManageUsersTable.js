@@ -9,6 +9,7 @@ import { Baseurl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
+import Datepicker from 'react-tailwindcss-datepicker';
 
 
 
@@ -27,46 +28,44 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
   })
   
   const [value, setValue] = useState({
-
     startDate: new Date(),
     endDate: new Date().setMonth(11)
-
   });
   const[visitId,setVisitId]=useState("");
   const[p_visit_date,setVisitDate]=useState("");
   const[p_visit_time,setVisitTime]=useState("");
 
-  useEffect(()=>{
-    const getVisitInfo=async()=>{
-        if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
-      
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    m_id: 76,
-                }
+
+
+const getVisitInfo=async(visitId)=>{
+    if (hasCookie('token')) {
+        let token = (getCookie('token'));
+        let db_name = (getCookie('db_name'));
+        
+        let header = {
+            headers: {
+                Accept: "application/json",
+                Authorization: "Bearer ".concat(token),
+                db: db_name,
+                m_id: 76,
             }
-      
-            try {
-                
-                const {data} = await axios.get(Baseurl + `/db/channel/lead?lead_id=${visitId}`, header);
-                setVisitDate(data?.data?.p_visit_date)
-                setVisitTime(data?.data?.p_visit_time)
-            } catch (error) {
-                if (error?.response?.data?.message) {
-                    toast.error(error.response.data.message);
-                } else {
-                    toast.error("Something went wrong!");
-                }
+        }
+        
+        try {
+            
+            const {data} = await axios.get(Baseurl + `/db/channel/lead?lead_id=${visitId}`, header);
+            setVisitDate(data?.data?.p_visit_date)
+            setVisitTime(data?.data?.p_visit_time)
+            setShowModal(true);
+        } catch (error) {
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Something went wrong!");
             }
         }
     }
-    getVisitInfo()
-  },[visitId])
+}
   
   function formatDate(date) {
     const d = new Date(date);
@@ -77,7 +76,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
   }
 
   function formatTime(timeString) {
-    const timeParts = timeString.split(':');
+    const timeParts = (timeString || '').split(':');
     const hours = parseInt(timeParts[0]);
     const minutes = parseInt(timeParts[1]);
   
@@ -214,10 +213,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
                     return (
                         <div className="table_btns">
                             <button
-                                onClick={()=>{setVisitId(tableMeta?.rowData[0]); setShowModal(true);}}
+                                onClick={()=>{getVisitInfo(tableMeta?.rowData[0]); setVisitId(tableMeta?.rowData[0])}}
                                 style={{background:"#293790", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
-                                title='Assign - To'>
+                                title='Request Visit'>
                                     Request Visit
                             </button>
                           
@@ -229,12 +228,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
     ];
 
     
-  
+    
     const CustomToolbar = () => {
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <DateRange value={value} setValue={setValue} />
+                <DateRange value={value} setValue={setValue} lead={true} getDataList={getDataList} />
+                
             </div>
         );
     }
@@ -334,9 +334,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
         <Modal
           show={showModal}
           onHide={() => {
+            setShowModal(false);
             setVisitDate("")
             setVisitTime("")
-            setShowModal(false);
           }}
           size="lg"
           centered
@@ -405,7 +405,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
                                         style={{ color: "#293790" }}
                                         className="date fw-bold"
                                       >
-                                        {p_visit_time}
+                                        {formatTime(p_visit_time)}
                                       </span>
                                     </div>
                                   </div>
@@ -416,7 +416,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
                                   className="cancel-btn d-flex align-items-center justify-content-center cursor-pointer bg-transparent"
                                   onClick={() => {
                                     setShowModal2(true);
-                                    setShowModal(false);
                                   }}
                                 >
                                   Change
@@ -513,13 +512,21 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
                               <div className="new-leades-btn d-flex justify-content-center gap-4 mt-5">
                                 <div
                                   className=" cursor-pointer cancel-btn d-flex align-items-center justify-content-center bg-transparent"
-                                  onClick={() => setShowModal2(false)}
+                                  onClick={() =>{ 
+                                    setShowModal2(false);
+                                     setShowModal(false)
+                                    }}
                                 >
                                   Cancel
                                 </div>
-                                <button className="submit-btn d-flex align-items-center justify-content-center text-white border-0">
+                                <div 
+                                className="submit-btn d-flex align-items-center justify-content-center cursor-pointer text-white border-0"
+                                onClick={()=>{
+                                    setShowModal2(false)
+                                }}
+                                >
                                   Update
-                                </button>
+                                </div>
                               </div>
                             </form>
                           </div>

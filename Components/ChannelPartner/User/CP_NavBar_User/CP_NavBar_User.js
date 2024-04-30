@@ -217,7 +217,7 @@ const CP_NavBar = () => {
                               router.push("/CHANNEL/ChannelProfile");
                             }}
                           >
-                            <div style={{ width: "13px", marginLeft: "" }}>
+                            <div style={{ width: "13px" }}>
                               <AvatarIcon  />
                             </div>
                             <span className="ms-1 ">Profile</span>

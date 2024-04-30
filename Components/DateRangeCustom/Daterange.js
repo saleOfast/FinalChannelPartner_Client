@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 
-const DateRange = ({value, setValue,getDataList,lead,getVisitList,visit}) => {
+const DateRange = ({value,setValue,getData}) => {
 
 
 
@@ -12,17 +12,9 @@ const DateRange = ({value, setValue,getDataList,lead,getVisitList,visit}) => {
       f_date:newValue.startDate,
       t_date:newValue.endDate,
     }
-    if(lead){
-      getDataList(queryObjLeads)
-    }
-    if(visit){
-      getVisitList(queryObjLeads)
-    }
+    getData(queryObjLeads)
 
   }
-
-
-
   return (
     <Datepicker
       value={value}
@@ -31,7 +23,6 @@ const DateRange = ({value, setValue,getDataList,lead,getVisitList,visit}) => {
       primaryColor={"blue"}
       containerClassName="relative mt-8 border rounded-md mb-4 border-black  text-black inline-block" 
     />
-
   );
 };
 export default DateRange;

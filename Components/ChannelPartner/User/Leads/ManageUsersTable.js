@@ -269,7 +269,7 @@ const getVisitInfo=async(visitId)=>{
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <DateRange value={value} setValue={setValue} lead={true} getDataList={getDataList} />
+                <DateRange value={value} setValue={setValue}  getData={getDataList} />
                 
             </div>
         );

@@ -139,16 +139,16 @@ const CP_NavBar_Admin = () => {
                   </Dropdown.Toggle>
                   <Dropdown.Menu  >
                     <Link href={"/CHANNEL/ChannelProfile"}>
-                      <Dropdown.Item className='d-flex' onClick={()=>{
+                      <Dropdown.Item className='d-flex align-items-center' onClick={()=>{
                         router.push("/CHANNEL/ChannelProfile")
                       }}>
-                        <div style={{width:"15px",marginLeft:""}}>
+                        <div style={{width:"15px"}}>
                       <AvatarIcon/>
                         </div>
                       <span className='ms-1 '>Profile</span> 
                       </Dropdown.Item>
                     </Link>
-                    <Dropdown.Item className='d-flex' onClick={() => {
+                    <Dropdown.Item className='d-flex align-items-center' onClick={() => {
                       setshowConfirm(!showConfirm)
                     }}>
                       <div style={{width:"15px"}}>

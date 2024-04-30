@@ -226,7 +226,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <DateRange value={value} setValue={setValue} getVisitList={getVisitList} visit={true} />
+                <DateRange value={value} setValue={setValue} getData={getVisitList} />
                 {/* <button className='btn' style={{background:"#293790", color:"white"}} onClick={()=>setShowDateFilter(true)}> Custom </button> */}
             </div>
         );

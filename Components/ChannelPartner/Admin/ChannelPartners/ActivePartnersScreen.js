@@ -98,7 +98,7 @@ const ActivePartnersScreen = () => {
     };
 
 
-    const getDataList = async () => {
+    const getDataList = async (queryObjLeads) => {
 
         if (hasCookie('token')) {
             let token = (getCookie('token'));
@@ -114,8 +114,7 @@ const ActivePartnersScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, header);
-                    console.log(response.data.data)
+                const response = await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, {...header,params:queryObjLeads});
                 setDataList(response.data.data);
             } catch (error) {
                 if (error?.response?.data?.message) {

@@ -106,7 +106,7 @@ const getVisitInfo=async(visitId)=>{
         case "Requested":
             statusDate.setDate(statusDate.getDate() + 1); 
             
-            if (statusDate > currentDate) {
+            if (statusDate < currentDate) {
                 return false;
             } else {
                 return true;
@@ -114,12 +114,12 @@ const getVisitInfo=async(visitId)=>{
             break;
 
         case "Scheduled":
-            return false;
+            return true;
             break;
 
         case "Completed":
             statusDate.setDate(statusDate.getDate() + 90); 
-            if (statusDate > currentDate) {
+            if (statusDate < currentDate) {
                 return false;
             } else {
                 return true;
@@ -251,7 +251,7 @@ const getVisitInfo=async(visitId)=>{
                                 style={{background:permitVisit(value[0]?.status,value[0]?.createdAt) ? "#9C9AA5":"#293790", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
                                 title='Request Visit'
-                                disabled={permitVisit(value[0]?.status,value[0]?.createdAt)}
+                                disabled={permitVisit(value[0]?.status, value[0]?.createdAt)}
                                 >
                                     Request Visit
                             </button>

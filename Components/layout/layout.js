@@ -75,7 +75,7 @@ const Layout = ({Component, pageProps}) => {
               <>
               {showBasic ?
          
-              <main className="main_wrapper" style={{marginTop:"-80px"}}>
+              <main className="main_wrapper">
                 
                 <Topnav allowedPermissions={allowedPermissions} topnavPermission={topnavPermission} />
             

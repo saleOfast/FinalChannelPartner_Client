@@ -22,7 +22,7 @@ const CP_NavBar = () => {
   const [userInfo, setUserInfo] = useState({});
   const dbMode = useSelector((state) => state.dbMode.value);
 
-  const clientLogo = getCookie("clientLogo") ? getCookie("clientLogo") : null;
+  const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
 
   const isActive = (pathname) => {
     return router.pathname === pathname ? "active" : "";
@@ -106,7 +106,7 @@ const CP_NavBar = () => {
           <div className="container-fluid mx-3">
             <div className="navbar-brand">
               <img
-                src={`${filesUrl}/logo/images${clientLogo}`}
+                src={`${filesUrl}/logo/images${clientLogo?.logo}`}
                 alt=""
                 style={{ height: 66 }}
               />

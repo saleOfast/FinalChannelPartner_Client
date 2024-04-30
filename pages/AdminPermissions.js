@@ -31,7 +31,7 @@ import withAdmin from '../HOC/Withhoc';
             </Head>
             <main className="main_wrapper">
                 <Topnav />
-                <div className="content_wrapper">
+                <div className="content_wrapper" style={{marginTop:"-65px"}}>
                     <SideBar mode='admin' />
                     <AdminPermissionScreen />
                 </div>

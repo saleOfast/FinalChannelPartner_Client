@@ -38,8 +38,8 @@ function Products() {
                     <meta name="description" content="Leadshyne CMS" />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                     <link rel="icon" href="/favicon.ico" />
-                </Head>
-                <main className="main_wrapper">
+                </Head> 
+                <main className="main_wrapper"> 
                     <AdminDashboard />
                 </main>
             </> : <LoginScreen />}

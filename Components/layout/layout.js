@@ -75,11 +75,11 @@ const Layout = ({Component, pageProps}) => {
               <>
               {showBasic ?
          
-              <main className="main_wrapper">
+              <main className="main_wrapper" style={{marginTop:"-70px"}}>
                 
                 <Topnav allowedPermissions={allowedPermissions} topnavPermission={topnavPermission} />
             
-                  <div className="content_wrapper">
+                  <div className="content_wrapper" >
                       {sidebarMode==="crm" && <SideBar />}
                       {sidebarMode==="dms" && <SidebarDMS/> }
                       {/* {sidebarMode==="channel" && <SideBarChannel    />} */}

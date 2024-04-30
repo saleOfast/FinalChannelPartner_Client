@@ -252,7 +252,7 @@ export default function AdminDashboard() {
       </Head>
       <main className="main_wrapper">
         <Topnav />
-        <div className="content_wrapper">
+        <div className="content_wrapper" style={{marginTop:"-65px"}}>
           <SideBar mode='admin' />
           <div className={`main_Box  ${sideView}`}>
             <div className="bread_head">

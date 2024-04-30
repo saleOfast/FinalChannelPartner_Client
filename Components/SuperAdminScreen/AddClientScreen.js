@@ -630,6 +630,38 @@ const AddClientScreen = () => {
                   </div>
                 </div>
 
+                <div className="col-xl-6 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.user ? "input_box errorBox" : "input_box"
+                    }
+                  >
+                    <label htmlFor="Name">Client URL *</label>
+                    <input
+                      type="text"
+                      placeholder="Enter Client URL"
+                      name="Name"
+                      id="Name"
+                      className={
+                        errorData?.client_url
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, client_url: e.target.value });
+                        setErrorData({ ...errorData, client_url: "" });
+                      }}
+                      value={userInfo.client_url ? userInfo.client_url : ""}
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.client_url ? errorData.client_url : ""}
+                    </span>
+                  </div>
+                </div>
+
+                
+
                 {editMode ? null : (
                   <>
                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
@@ -1278,7 +1310,16 @@ const AddClientScreen = () => {
                 )}
               </div>
 
-              <div className="text-end">
+              <div className="text-end d-flex justify-content-end">
+              <button
+                      disabled={isLoading}
+                      className="btn btn-primary me-2"
+                      onClick={()=>{
+                        router.push("/Admin")
+                      }}
+                    >
+                      {isLoading ? "Loading ..." : "Cancel"}
+                    </button>
                 <div className="submit_btn">
                   {editMode ? (
                     <button

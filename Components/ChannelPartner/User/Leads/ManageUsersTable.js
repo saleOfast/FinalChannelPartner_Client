@@ -10,6 +10,7 @@ import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import Datepicker from 'react-tailwindcss-datepicker';
+import { Switch } from '@mui/material';
 
 
 
@@ -56,7 +57,6 @@ const getVisitInfo=async(visitId)=>{
             const {data} = await axios.get(Baseurl + `/db/channel/lead?lead_id=${visitId}`, header);
             setVisitDate(data?.data?.p_visit_date)
             setVisitTime(data?.data?.p_visit_time)
-            setShowModal(true);
         } catch (error) {
             if (error?.response?.data?.message) {
                 toast.error(error.response.data.message);
@@ -97,6 +97,40 @@ const getVisitInfo=async(visitId)=>{
     const formattedDateTime = `${year}-${month}-${day}: ${hours}:${minutes}:${seconds}`;
     return formattedDateTime;
   }
+
+  const permitVisit = (status, createdAt) => {
+    const currentDate = new Date(); 
+    const statusDate = new Date(createdAt); 
+
+    switch (status) {
+        case "Requested":
+            statusDate.setDate(statusDate.getDate() + 1); 
+            
+            if (statusDate > currentDate) {
+                return false;
+            } else {
+                return true;
+            }
+            break;
+
+        case "Scheduled":
+            return false;
+            break;
+
+        case "Completed":
+            statusDate.setDate(statusDate.getDate() + 90); 
+            if (statusDate > currentDate) {
+                return false;
+            } else {
+                return true;
+            }
+            break;
+
+        default:
+            return false;
+            break;
+    }
+}
 
 
     const columns = [
@@ -200,7 +234,7 @@ const getVisitInfo=async(visitId)=>{
             }
         },
         {
-            name: 'user_code',
+            name: 'visitList',
             label: "Action",
             options: {
                 filter: true,
@@ -213,10 +247,12 @@ const getVisitInfo=async(visitId)=>{
                     return (
                         <div className="table_btns">
                             <button
-                                onClick={()=>{getVisitInfo(tableMeta?.rowData[0]); setVisitId(tableMeta?.rowData[0])}}
-                                style={{background:"#293790", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
+                                onClick={()=>{getVisitInfo(tableMeta?.rowData[0]); setVisitId(tableMeta?.rowData[0]); setShowModal(true);}}
+                                style={{background:permitVisit(value[0]?.status,value[0]?.createdAt) ? "#9C9AA5":"#293790", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
-                                title='Request Visit'>
+                                title='Request Visit'
+                                disabled={permitVisit(value[0]?.status,value[0]?.createdAt)}
+                                >
                                     Request Visit
                             </button>
                           

@@ -212,24 +212,24 @@ const CP_NavBar = () => {
                       <Dropdown.Menu>
                         <Link href={"/CHANNEL/ChannelProfile"}>
                           <Dropdown.Item
-                            className="d-flex"
+                            className="d-flex align-items-center "
                             onClick={() => {
                               router.push("/CHANNEL/ChannelProfile");
                             }}
                           >
-                            <div style={{ width: "15px", marginLeft: "" }}>
-                              <AvatarIcon />
+                            <div style={{ width: "13px", marginLeft: "" }}>
+                              <AvatarIcon  />
                             </div>
                             <span className="ms-1 ">Profile</span>
                           </Dropdown.Item>
                         </Link>
                         <Dropdown.Item
-                          className="d-flex"
+                          className="d-flex align-items-center"
                           onClick={() => {
                             setshowConfirm(!showConfirm);
                           }}
                         >
-                          <div style={{ width: "15px" }}>
+                          <div style={{ width: "13px" }}>
                             <LogoutIcon />
                           </div>
                           <span className="ms-1 ">Logout</span>

@@ -887,6 +887,40 @@
 } */
 /* Visit-Date-and-Time End */
 
+/* Campaigns-Project-Details Start */
+.Campaigns-Project-Details{
+  width: 926px;
+  height: 478px;
+}
+.Campaigns-Project-Details  form label , input {
+  color: #9C9AA5;
+  font-size: 14px;
+  font-weight: 400;
+}
+.Campaigns-Project-Details .Leads-form-details{
+  width: 100% !important;
+}
+.Campaigns-Project-Details  form input{
+  background-color:  #EFEFEF;
+}
+.Campaigns-Project-Details form .rowTab .Campaign-contact-num::placeholder{
+  color: #000;
+}
+.Campaigns-Project-Details .new-leades-btn .cancel-btn {
+  background-color: #EFEFEF !important;
+  color: #9C9AA5 !important;
+ border: none !important;
+}
+.Campaigns-Project-Details .rowTab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.Campaigns-Project-Details .rightTab {
+  width: 70% !important;
+}
+/* Campaigns-Project-Details End*/
+
 @media screen and (max-width: 992px) {
   .Sign-In .Perfect-Home {
     font-size: 38px;
@@ -946,6 +980,14 @@
     margin-top: 10px;
    }
   /* DashBoard End */
+
+  .Campaign-upload .Campaign-upload-logo img{
+    height: 30px !important;
+  }
+  .Campaigns-Project-Details .rightTab {
+    width: 100% !important;
+  }
+
 }
 
 .resend-label {

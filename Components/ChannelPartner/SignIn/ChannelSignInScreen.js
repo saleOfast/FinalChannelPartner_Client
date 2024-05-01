@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LeadShyneIcon from "../../Svg/LeadShyneIcon";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -7,7 +7,7 @@ import { setCookie } from "cookies-next";
 import { useSelector, useDispatch } from "react-redux";
 import { userMode } from "../../../store/dbModeSlice";
 import { UserLogIN } from "../../../store/ClientLoginSlice";
-import { Baseurl } from "../../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../../Utils/Constants";
 import axios from "axios";
 import { validEmail } from "../../../Utils/regex";
 import {
@@ -27,6 +27,8 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
     email: "",
     password: "",
   });
+
+  const[clientData,setClientData]=useState();
 
   
   const initialPermission = (permission) => {
@@ -102,150 +104,174 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
     }
   };
 
+  useEffect(()=>{
+    const getSignInData=async()=>{
+      try {
+        const {data}=await axios.post(Baseurl+"/db/admin/url",{
+          client_url:"http://crm.cybermatrixsolutions.com/",
+        })
+        setClientData(data?.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getSignInData()
+  },[])
+
   return (
-
     <>
-    {!userLogin &&
-
-      <section className="Sign-In pt-4" style={{padding:'0 16px'}}>
-        <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-7">
-              <div className="row gx-3">
-                <div className="Sign-In-logo pb-4">
-                  <img src="/ChannelPartner/logo.png" alt />
-                </div>
-                <div className="col-6">
-                  <div
-                    style={{
-                      height: 290,
-                      width: "100%",
-                      backgroundImage: "url(/ChannelPartner/signup-img1.png)",
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      marginBottom: 15,
-                      borderTopLeftRadius: 10,
-                    }}
-                  ></div>
-                  <div
-                    style={{
-                      height: 200,
-                      width: "100%",
-                      backgroundImage: "url(/ChannelPartner/signup-img3.png)",
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      marginBottom: 15,
-                      borderBottomLeftRadius: 10,
-                    }}
-                  ></div>
-                  <div></div>
-                </div>
-                <div className="col-6">
-                  <div
-                    style={{
-                      height: 200,
-                      width: "100%",
-                      backgroundImage: "url(/ChannelPartner/signup-img2.png)",
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      marginBottom: 15,
-                      borderTopRightRadius: 10,
-                    }}
-                  ></div>
-                  <div
-                    style={{
-                      height: 290,
-                      width: "100%",
-                      backgroundImage: "url(/ChannelPartner/signup-img4.png)",
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      marginBottom: 15,
-                      borderBottomRightRadius: 10,
-                    }}
-                  ></div>
+      {!userLogin && (
+        <section className="Sign-In pt-4" style={{ padding: "0 16px" }}>
+          <div className="container">
+            <div className="row">
+              <div className="col-12 col-md-7">
+                <div className="row gx-3">
+                  <div className="Sign-In-logo pb-4">
+                    {/* <img src="/ChannelPartner/logo.png" alt /> */}
+                    <img
+                      src={
+                        clientData?.logo
+                          ? `${filesUrl}` +
+                            `/logo/images${clientData?.logo}`
+                          : "/ChannelPartner/logo.png"
+                      }
+                      alt
+                    />
+                  </div>
+                  <div className="col-6">
+                    <div
+                      style={{
+                        height: 290,
+                        width: "100%",
+                        backgroundImage: clientData?.client_image_1 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_1}`:`url(/ChannelPartner/signup-img1.png)`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "cover",
+                        marginBottom: 15,
+                        borderTopLeftRadius: 10,
+                      }}
+                    ></div>
+                    <div
+                      style={{
+                        height: 200,
+                        width: "100%",
+                        backgroundImage: clientData?.client_image_2 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_2}`:`url(/ChannelPartner/signup-img3.png)`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "cover",
+                        marginBottom: 15,
+                        borderBottomLeftRadius: 10,
+                      }}
+                    ></div>
+                    <div></div>
+                  </div>
+                  <div className="col-6">
+                    <div
+                      style={{
+                        height: 200,
+                        width: "100%",
+                        backgroundImage: clientData?.client_image_3 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_3}`:`url(/ChannelPartner/signup-img2.png)`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "cover",
+                        marginBottom: 15,
+                        borderTopRightRadius: 10,
+                      }}
+                    ></div>
+                    <div
+                      style={{
+                        height: 290,
+                        width: "100%",
+                        backgroundImage: clientData?.client_image_4 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_4}`:`url(/ChannelPartner/signup-img4.png)`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "cover",
+                        marginBottom: 15,
+                        borderBottomRightRadius: 10,
+                      }}
+                    ></div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-12 col-md-5 d-flex justify-content-center pt-5">
-              <div className="Sign-In_Sign-Up">
-                <h3 className="Perfect-Home">Find Your Perfect Home. </h3>
-                <div className="underline" />
-                <div className="d-flex justify-content-between pt-5">
-                  {" "}
-                  <div
-                    className="nav-link d-flex flex-column gap-2 align-items-center pb-3 Sign-In-btn"
-                    id="Sign-In"
-                  >
-                    Sign In
+              <div className="col-12 col-md-5 d-flex justify-content-center pt-5">
+                <div className="Sign-In_Sign-Up">
+                  <h3 className="Perfect-Home">Find Your Perfect Home. </h3>
+                  <div className="underline" />
+                  <div className="d-flex justify-content-between pt-5">
+                    {" "}
+                    <div
+                      className="nav-link d-flex flex-column gap-2 align-items-center pb-3 Sign-In-btn"
+                      id="Sign-In"
+                      style={{background:clientData?.button_color}}
+                    >
+                      Sign In
+                    </div>
                   </div>
-                
-                </div>
-                <div className="tab-content pt-4" id="Sign-In-tabContent">
-                  <div
-                    className="tab-pane fade active show"
-                    id="Sign-In-tab"
-                    role="tabpanel"
-                    aria-labelledby="Sign-In"
-                  >
-                    {/* signin-signup-page */}
-                    <div className="perfect-home-form pt-1">
-                      {/* FORMULAIRE */}
-                      <form className="form" onSubmit={submitHandler}>
-                        <div className="d-flex flex-column gap-1">
-                          <label id="user" htmlFor="username">
-                            Username
-                          </label>
-                          <input
-                            type="text"
-                            name="username"
-                            id="username"
-                            placeholder="Please enter your email"
-                            className="form-control"
-                            onChange={(e) => {
-                              setUserForm({
-                                ...userForm,
-                                email: e.target.value.trim(),
-                              });
-                            }}
-                          />
-                        </div>
-                        <div className="d-flex flex-column gap-1">
-                          <label id="pass" htmlFor="password">
-                            Password
-                          </label>
-                          <input
-                            type="password"
-                            name="password"
-                            id="password"
-                            placeholder="Please enter your password"
-                            className="form-control"
-                            onChange={(e) => {
-                              setUserForm({
-                                ...userForm,
-                                password: e.target.value,
-                              });
-                            }}
-                          />
-                        </div>
-                        <button type="submit" className="login_btn">
-                          Login
-                        </button>
-                      </form>
-                      {/* MOT DE PASSE OUBLIE ? */}
-                      <Link href="/CHANNEL/ForgotPassword" className="fp text-decoration-none">
-                        Forgot password?
-                      </Link>
-                      {/* BOUTTON LOGIN */}
-                      {/* <button type="submit" className="login_btn mt-5">Login</button> */}
+                  <div className="tab-content pt-4" id="Sign-In-tabContent">
+                    <div
+                      className="tab-pane fade active show"
+                      id="Sign-In-tab"
+                      role="tabpanel"
+                      aria-labelledby="Sign-In"
+                    >
+                      {/* signin-signup-page */}
+                      <div className="perfect-home-form pt-1">
+                        {/* FORMULAIRE */}
+                        <form className="form" onSubmit={submitHandler}>
+                          <div className="d-flex flex-column gap-1">
+                            <label id="user" htmlFor="username">
+                              Username
+                            </label>
+                            <input
+                              type="text"
+                              name="username"
+                              id="username"
+                              placeholder="Please enter your email"
+                              className="form-control"
+                              onChange={(e) => {
+                                setUserForm({
+                                  ...userForm,
+                                  email: e.target.value.trim(),
+                                });
+                              }}
+                            />
+                          </div>
+                          <div className="d-flex flex-column gap-1">
+                            <label id="pass" htmlFor="password">
+                              Password
+                            </label>
+                            <input
+                              type="password"
+                              name="password"
+                              id="password"
+                              placeholder="Please enter your password"
+                              className="form-control"
+                              onChange={(e) => {
+                                setUserForm({
+                                  ...userForm,
+                                  password: e.target.value,
+                                });
+                              }}
+                            />
+                          </div>
+                          <button type="submit" style={{background:clientData?.button_color}} className="login_btn">
+                            Login
+                          </button>
+                        </form>
+                        {/* MOT DE PASSE OUBLIE ? */}
+                        <Link
+                          href="/CHANNEL/ForgotPassword"
+                          className="fp text-decoration-none"
+                        >
+                          Forgot password?
+                        </Link>
+                        {/* BOUTTON LOGIN */}
+                        {/* <button type="submit" className="login_btn mt-5">Login</button> */}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    }
+        </section>
+      )}
     </>
   );
 }

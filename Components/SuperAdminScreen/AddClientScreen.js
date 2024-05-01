@@ -57,7 +57,17 @@ const AddClientScreen = () => {
         isCHANNEL:null ,
         logo:null,
         logoPreview:null,
-        _imageName: null
+        _imageName: null,
+        client_url:"",
+        client_image_1:null,
+        client_image_1_preview:null,
+        client_image_2:null,
+        client_image_2_preview:null,
+        client_image_3:null,
+        client_image_3_preview:null,
+        client_image_4:null,
+        client_image_4_preview:null,
+        
     })
 
     const minDate = new Date().toISOString().slice(0, 16);
@@ -103,17 +113,22 @@ const AddClientScreen = () => {
                   gst: tempDate.gst,
                   address: tempDate.address,
                   isCRM: true,  // Default values for flags
-                isDMS: false,
-                isSALES: false,
-                isCHANNEL: false,
-                _imageName:tempDate.logo,
-                logoPreview: `${filesUrl}`+`/logo/images${tempDate?.logo}`,
-                no_of_channel_license: tempDate.no_of_channel_license,
-                no_of_dms_license: tempDate.no_of_dms_license,
-                no_of_sales_license: tempDate.no_of_sales_license,
-                button_color: tempDate.button_color,
-                sidebar_color: tempDate.sidebar_color,
-                top_nav_color: tempDate.top_nav_color,
+                  isDMS: false,
+                  isSALES: false,
+                  isCHANNEL: false,
+                  _imageName:tempDate.logo,
+                  logoPreview: `${filesUrl}`+`/logo/images${tempDate?.logo}`,
+                  client_image_1_preview: `${filesUrl}`+`/clientdoc/images${tempDate?.client_image_1}`,
+                  client_image_2_preview: `${filesUrl}`+`/clientdoc/images${tempDate?.client_image_2}`,
+                  client_image_3_preview: `${filesUrl}`+`/clientdoc/images${tempDate?.client_image_3}`,
+                  client_image_4_preview: `${filesUrl}`+`/clientdoc/images${tempDate?.client_image_4}`,
+                  client_url:tempDate?.client_url,
+                  no_of_channel_license: tempDate.no_of_channel_license,
+                  no_of_dms_license: tempDate.no_of_dms_license,
+                  no_of_sales_license: tempDate.no_of_sales_license,
+                  button_color: tempDate.button_color,
+                  sidebar_color: tempDate.sidebar_color,
+                  top_nav_color: tempDate.top_nav_color,
                 });
 
                 setSideColor(tempDate.sidebar_color)
@@ -156,62 +171,62 @@ const AddClientScreen = () => {
     }
 
     async function addClientHandler() {
-        // console.log(userInfo)
-        if (hasCookie('saLsTkn')) {
-            setisLoading(true);
-            if (userInfo.password) {
-                if (!userInfo.conPassword) {
-                    toast.error('Please fill the Mandatory fields')
-                    return setErrorData({ ...errorData, conPassword: 'Confirm your Password' })
-                } else if (userInfo.password !== userInfo.conPassword) {
-                    toast.error('Please fill the Mandatory fields')
-                    return setErrorData({ ...errorData, conPassword: 'Password Does not match' })
-                }
-            }
-            let token = (getCookie('saLsTkn'));
-            let db_name = (getCookie('db_name'));
+        console.log(userInfo)
+        // if (hasCookie('saLsTkn')) {
+        //     setisLoading(true);
+        //     if (userInfo.password) {
+        //         if (!userInfo.conPassword) {
+        //             toast.error('Please fill the Mandatory fields')
+        //             return setErrorData({ ...errorData, conPassword: 'Confirm your Password' })
+        //         } else if (userInfo.password !== userInfo.conPassword) {
+        //             toast.error('Please fill the Mandatory fields')
+        //             return setErrorData({ ...errorData, conPassword: 'Password Does not match' })
+        //         }
+        //     }
+        //     let token = (getCookie('saLsTkn'));
+        //     let db_name = (getCookie('db_name'));
 
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
+        //     let header = {
+        //         headers: {
+        //             Accept: "application/json",
+        //             Authorization: "Bearer ".concat(token),
+        //             db: db_name,
 
-                }
-            }
-            const formData=new FormData();
-            for (const [key, value] of Object.entries(userInfo)) {
-              formData.append(key, value);
-            }
-            try {
+        //         }
+        //     }
+        //     const formData=new FormData();
+        //     for (const [key, value] of Object.entries(userInfo)) {
+        //       formData.append(key, value);
+        //     }
+        //     try {
 
-                const res = await axios.post(Baseurl + `/db`, formData, header);
-                if (res.status === 200 || res.status === 204) {
-                    toast.success('Client Added Successfully')
-                    router.push('/Admin');
-                    setisLoading(false);
-                }
-            } catch (error) {
-                setisLoading(false);
-                if (error?.response?.data?.status === 422) {
-                    const taskObject = {}
-                    const array = error?.response?.data?.data;
+        //         const res = await axios.post(Baseurl + `/db`, formData, header);
+        //         if (res.status === 200 || res.status === 204) {
+        //             toast.success('Client Added Successfully')
+        //             router.push('/Admin');
+        //             setisLoading(false);
+        //         }
+        //     } catch (error) {
+        //         setisLoading(false);
+        //         if (error?.response?.data?.status === 422) {
+        //             const taskObject = {}
+        //             const array = error?.response?.data?.data;
 
-                    for (let i = 0; i < array.length; i++) {
-                        const key = Object.keys(array[i])[0];
-                        const value = Object.values(array[i])[0];
-                        taskObject[key] = value;
-                    }
+        //             for (let i = 0; i < array.length; i++) {
+        //                 const key = Object.keys(array[i])[0];
+        //                 const value = Object.values(array[i])[0];
+        //                 taskObject[key] = value;
+        //             }
 
-                    setErrorData(taskObject);
-                }
-                if (error?.response?.data?.message) {
-                    toast.error(error.response.data.message);
-                } else {
-                    toast.error("Something went wrong!");
-                }
-            }
-        }
+        //             setErrorData(taskObject);
+        //         }
+        //         if (error?.response?.data?.message) {
+        //             toast.error(error.response.data.message);
+        //         } else {
+        //             toast.error("Something went wrong!");
+        //         }
+        //     }
+        // }
     };
 
     async function updateHandler() {
@@ -339,11 +354,25 @@ const AddClientScreen = () => {
       if (e.target.files[0]) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          
           setUserInfo({
             ...userInfo,
             logo:e.target.files[0],
             logoPreview:reader.result
+          });
+        };
+        
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    }; 
+    
+    const handleClientImageChange = (e,image,preview) => {
+      if (e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setUserInfo({
+            ...userInfo,
+            [image]:e.target.files[0],
+            [preview]:reader.result
           });
         };
         
@@ -630,10 +659,10 @@ const AddClientScreen = () => {
                   </div>
                 </div>
 
-                <div className="col-xl-6 col-md-3 col-sm-12 col-12">
+                <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                   <div
                     className={
-                      errorData?.user ? "input_box errorBox" : "input_box"
+                      errorData?.client_url ? "input_box errorBox" : "input_box"
                     }
                   >
                     <label htmlFor="Name">Client URL *</label>
@@ -659,6 +688,99 @@ const AddClientScreen = () => {
                     </span>
                   </div>
                 </div>
+
+                <div className="row">
+                    <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                    <div className="d-flex flex-column gap-1">
+                      <label className="form-label">Client Image 1 *</label>
+                      <input
+                        type="file"
+                        onChange={(e) => handleClientImageChange(e,"client_image_1","client_image_1_preview")}
+                        className="form-control input-field"
+                        required
+                      />
+                      {userInfo?.client_image_1_preview && (
+                        <img
+                          src={userInfo?.client_image_1_preview}
+                          alt={` Preview`}
+                          style={{
+                            maxWidth: "100px",
+                            maxHeight: "100px",
+                          }}
+                        />
+                      )}
+                    </div>
+                    </div>
+
+                    <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                    <div className="d-flex flex-column gap-1">
+                      <label className="form-label">Client Image 2 *</label>
+                      <input
+                        type="file"
+                        onChange={(e) => handleClientImageChange(e,"client_image_2","client_image_2_preview")}
+                        className="form-control input-field"
+                        required
+                      />
+                      {userInfo?.client_image_2_preview && (
+                        <img
+                          src={userInfo?.client_image_2_preview}
+                          alt={` Preview`}
+                          style={{
+                            maxWidth: "100px",
+                            maxHeight: "100px",
+                          }}
+                        />
+                      )}
+                    </div>
+                    </div>
+
+                    <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                    <div className="d-flex flex-column gap-1">
+                      <label className="form-label">Client Image 3 *</label>
+                      <input
+                        type="file"
+                        onChange={(e) => handleClientImageChange(e,"client_image_3","client_image_3_preview")}
+                        className="form-control input-field"
+                        required
+                      />
+                      {userInfo?.client_image_3_preview && (
+                        <img
+                          src={userInfo?.client_image_3_preview}
+                          alt={` Preview`}
+                          style={{
+                            maxWidth: "100px",
+                            maxHeight: "100px",
+                          }}
+                        />
+                      )}
+                    </div>
+                    </div>
+
+                    <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                    <div className="d-flex flex-column gap-1">
+                      <label className="form-label">Client Image 4 *</label>
+                      <input
+                        type="file"
+                        onChange={(e) => handleClientImageChange(e,"client_image_4","client_image_4_preview")}
+                        className="form-control input-field"
+                        required
+                      />
+                      {userInfo?.client_image_4_preview && (
+                        <img
+                          src={userInfo?.client_image_4_preview}
+                          alt={` Preview`}
+                          style={{
+                            maxWidth: "100px",
+                            maxHeight: "100px",
+                          }}
+                        />
+                      )}
+                    </div>
+                    </div>
+                    
+                    </div>
+
+                
 
                 
 

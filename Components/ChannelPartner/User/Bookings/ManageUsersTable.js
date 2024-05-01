@@ -359,14 +359,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                     <input autofocus type="text" name="name" className="input-field" placeholder required />
                                   </div>
                                 </div>
-                                {/* <div className="rowTab">
-                        <div className="labels">
-                          <label htmlFor="name" className="pb-1">Status</label>
-                        </div>
-                        <div className="rightTab">
-                          <input autofocus type name="name" className="input-field" placeholder="Bill Sent" required />
-                        </div>
-                      </div> */}
                               </div>
                               <div className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details">
                                 <div className="rowTab mt-3 mt-md-4 mt-lg-0">

@@ -175,9 +175,9 @@ const CP_NavBar = () => {
                 <li className="nav-item">
                   <Link
                     className={`nav-link ${isActive(
-                      "/CHANNEL/ActivePartners"
+                      "/CHANNEL/Campaign"
                     )}`}
-                    href="/CHANNEL/ActivePartners"
+                    href="/CHANNEL/Campaign"
                   >
                     Campaign
                   </Link>

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Baseurl, filesUrl } from '../../../../Utils/Constants';
-import { getCookie, hasCookie } from 'cookies-next';
+import { getCookie, hasCookie, removeCookies } from 'cookies-next';
 import { Dropdown } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -40,6 +40,7 @@ const CP_NavBar_Admin = () => {
       router.push(isAdminMode ? "/Admin" : "/")
     }
     dispatch(isAdminMode ? LoggedOut() : userLogOut());
+    removeCookies("clientBtnColor")
     dispatch(stopLoading())
     toast.success("Logged Out Successfully");
   };

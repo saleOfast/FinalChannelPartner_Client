@@ -58,6 +58,8 @@ const LeadsScreen = () => {
     })
     const [leadList,setLeadList]=useState([])
     const [projectList,setProjectList]=useState([])
+    const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+
 
     function disableConfirm(value, type) {
         if (type == 1) {
@@ -231,7 +233,7 @@ const LeadsScreen = () => {
                 <div className="d-flex">
                   <button
                     className="btn ms-auto  Add_btn me-3"
-                    style={{ background: "#293790" }}
+                    style={{ background: `${clientBtnColor}` }}
                     onClick={()=>{setShowAssignTo(true)}}
                   >
                     <PlusIcon />

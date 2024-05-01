@@ -44,6 +44,8 @@ const ActivePartnersScreen = () => {
         id: '',
         action: ''
     })
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+
 
     function disableConfirm(value, type) {
         if (type == 1) {
@@ -294,7 +296,7 @@ const ActivePartnersScreen = () => {
                     <div className="table_screen">
                         <div className="top_btn_sec mb-2">
                             <div className="d-flex">
-                                <button className="btn ms-auto Add_btn me-3" style={{background:"#293790"}} onClick={()=>goto('/CHANNEL/ViewActiveUsers')}>
+                                <button className="btn ms-auto Add_btn me-3" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/CHANNEL/ViewActiveUsers')}>
                                     <PlusIcon />
                                     ADD USER
                                 </button>

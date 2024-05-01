@@ -26,6 +26,7 @@ const LeadDetailsScreen = () => {
   })
  
   const [projectList,setProjectList]=useState([])
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
 
   useEffect(()=>{
     if(id){
@@ -138,10 +139,10 @@ function formatDate(date) {
   <div className="container mt-4 mb-4">
     <div className="row gx-4">
       <div className="profile-text mb-2 mb-md-4">Leads/ Lead Detail</div>
-      <div className="col-12  col-lg-12">
-        <div className="lead-detail-sec overflow-hidden">
+      <div className="col-12  col-lg-12"  >
+        <div className="lead-detail-sec overflow-hidden" >
           <ul className="list-group General-list h-auto rounded-0 m-0">
-            <li   className="list-group-item list-group-item-action active active-list text-white d-flex justify-content-between" aria-current="true">
+            <li  style={{background:`${clientBtnColor}`}}  className="list-group-item list-group-item-action active active-list text-white d-flex justify-content-between" aria-current="true">
               <span className="lead-id">{lead?.lead_id}</span>
               <img src="/ChannelPartner/profile-edit-white.svg" onClick={()=>setShowAssignTo(true)} alt />
             </li>
@@ -259,7 +260,7 @@ function formatDate(date) {
       </div>
     </div>
     <Link href={'/CHANNEL/Leads'} className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
-      <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0">
+      <button style={{background:`${clientBtnColor}`}} className="back-to-lead d-flex align-items-center justify-content-center text-white border-0">
         Back to Leads</button>
     </Link>
   </div>

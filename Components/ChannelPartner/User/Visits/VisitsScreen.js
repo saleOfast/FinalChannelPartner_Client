@@ -42,6 +42,7 @@ const VisitsScreen = () => {
         id: '',
         action: ''
     })
+    const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
 
     function disableConfirm(value, type) {
         if (type == 1) {

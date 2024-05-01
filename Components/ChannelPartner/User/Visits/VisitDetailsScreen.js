@@ -11,6 +11,7 @@ const VisitDetailsScreen = () => {
   const router=useRouter()
   const{id}=router.query;
   const[visitData,setVisitData]=useState([])
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
 
   function formatTime(timeString) {
     const timeParts = (timeString || '').split(':');
@@ -72,7 +73,7 @@ const VisitDetailsScreen = () => {
       <div className="col-12  col-lg-12">
         <div className="lead-detail-sec overflow-hidden">
           <ul className="list-group General-list h-auto rounded-0 m-0">
-            <li href="#" className="list-group-item list-group-item-action active active-list text-white d-flex justify-content-between" aria-current="true">
+            <li style={{background:`${clientBtnColor}`}} href="#" className="list-group-item list-group-item-action active active-list text-white d-flex justify-content-between" aria-current="true">
               <span className="lead-id">NK12648</span>
             </li>
           </ul>
@@ -189,7 +190,9 @@ const VisitDetailsScreen = () => {
 
           </ul></div>
         <Link href={'/CHANNEL/Visits'} className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
-          <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0">Back to Visits</button>
+          <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0"
+            style={{background:`${clientBtnColor}`}}
+          >Back to Visits</button>
         </Link>
       </div>  
     </div>

@@ -111,6 +111,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
           client_url:"http://crm.cybermatrixsolutions.com/",
         })
         setClientData(data?.data)
+        setCookie("clientBtnColor",data?.data?.button_color)
       } catch (error) {
         console.log(error)
       }

@@ -25,6 +25,8 @@ const ManageUsersTable = ({
     user_code: '',
     reject_reason: ''
   })
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+
   const channelUserStatus = (key) => {
     switch (key) {
       case 0:
@@ -66,7 +68,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -89,7 +91,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -113,7 +115,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: "white", paddingLeft: '15px'  }} >
+          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px'  }} >
             {columnMeta.label}
           </th>
         ),
@@ -136,7 +138,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -161,7 +163,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -186,7 +188,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -211,7 +213,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -237,7 +239,7 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: "white", paddingLeft: '15px' }} >
+          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
@@ -253,7 +255,7 @@ const ManageUsersTable = ({
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
           <th
-            style={{ background: "#293790", color: "white",  paddingLeft: '65px' }}
+            style={{ background:`${clientBtnColor}`, color: "white",  paddingLeft: '65px' }}
             
           >
             {columnMeta.label}

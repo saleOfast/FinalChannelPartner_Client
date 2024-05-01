@@ -1,8 +1,12 @@
+import { getCookie, hasCookie } from 'cookies-next'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 
 const BookingDetailsScreen = () => {
+
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+
   return (
     <div className='w-100 bg-white overflow-auto'>
       <section className="Channel-profile Booking-Detail Visit-Details pt-2 pb-1">
@@ -12,7 +16,7 @@ const BookingDetailsScreen = () => {
             <div className="col-12  col-lg-12">
               <div className="lead-detail-sec overflow-hidden">
                 <ul className="list-group General-list h-auto rounded-0 m-0">
-                  <li href="#" className="list-group-item list-group-item-action active active-list text-white" aria-current="true">
+                  <li style={{background:`${clientBtnColor}`}} href="#" className="list-group-item list-group-item-action active active-list text-white" aria-current="true">
                     <span className="lead-id">NK12648</span>
                     {/* <img src="./images/icons/profile-edit-white.svg" alt=""> */}
                   </li>
@@ -205,7 +209,7 @@ const BookingDetailsScreen = () => {
           </div>
 
           <Link href={'/CHANNEL/Bookings'} className="details-btn d-flex justify-content-center gap-4 mt-2 mt-md-4">
-            <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0">Back to Bookings</button>
+            <button style={{background:`${clientBtnColor}`}} className="back-to-lead d-flex align-items-center justify-content-center text-white border-0">Back to Bookings</button>
           </Link>
         </div></section>
 

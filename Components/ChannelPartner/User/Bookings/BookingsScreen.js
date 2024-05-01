@@ -46,6 +46,10 @@ const BookingsScreen = () => {
         action: ''
     })
 
+   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+
+    
+
     function disableConfirm(value, type) {
         if (type == 1) {
             setconfirmText('enable')
@@ -99,6 +103,7 @@ const BookingsScreen = () => {
     };
 
 
+
     const getDataList = async () => {
 
         if (hasCookie('token')) {
@@ -115,7 +120,7 @@ const BookingsScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, header);
+                const response = await axios.get(Baseurl + `/db/channel/booking`, header);
                     console.log(response.data.data)
                 setDataList(response.data.data);
             } catch (error) {

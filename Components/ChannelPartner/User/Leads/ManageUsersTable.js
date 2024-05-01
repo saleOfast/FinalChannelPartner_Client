@@ -9,8 +9,7 @@ import { Baseurl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
-import Datepicker from 'react-tailwindcss-datepicker';
-import { Switch } from '@mui/material';
+
 
 
 
@@ -35,7 +34,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
   const[visitId,setVisitId]=useState("");
   const[p_visit_date,setVisitDate]=useState("");
   const[p_visit_time,setVisitTime]=useState("");
-
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
 
 
 const getVisitInfo=async(visitId)=>{
@@ -140,7 +139,7 @@ const getVisitInfo=async(visitId)=>{
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -160,7 +159,7 @@ const getVisitInfo=async(visitId)=>{
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -180,7 +179,7 @@ const getVisitInfo=async(visitId)=>{
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -201,7 +200,7 @@ const getVisitInfo=async(visitId)=>{
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -220,7 +219,7 @@ const getVisitInfo=async(visitId)=>{
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -239,7 +238,7 @@ const getVisitInfo=async(visitId)=>{
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:"#293790", color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -248,7 +247,7 @@ const getVisitInfo=async(visitId)=>{
                         <div className="table_btns">
                             <button
                                 onClick={()=>{getVisitInfo(tableMeta?.rowData[0]); setVisitId(tableMeta?.rowData[0]); setShowModal(true);}}
-                                style={{background:permitVisit(value[0]?.status,value[0]?.createdAt) ? "#9C9AA5":"#293790", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
+                                style={{background:permitVisit(value[0]?.status,value[0]?.createdAt) ? "#9C9AA5":`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
                                 title='Request Visit'
                                 disabled={permitVisit(value[0]?.status, value[0]?.createdAt)}
@@ -270,7 +269,6 @@ const getVisitInfo=async(visitId)=>{
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
                 <DateRange value={value} setValue={setValue}  getData={getDataList} />
-                
             </div>
         );
     }
@@ -337,6 +335,7 @@ const getVisitInfo=async(visitId)=>{
         
         
       };
+    
       
  
 

@@ -32,23 +32,24 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     endDate: new Date().setMonth(11)
 
   });
-
-
+ 
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+ 
   const columns = [
     {
-      name: 'user_code',
+      name: 'booking_id',
       label: "Booking ID",
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className='status_box fw-bold' style={{ color: "#293790" }} >
-              NK12647
+              {value}
             </div>
           )
         }
@@ -56,19 +57,19 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       }
     },
     {
-      name: 'user',
+      name: 'BookingleadData',
       label: "Booking Name",
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <Link href={`/CHANNEL/BookingDetails`} className='status_box fw-bold text-decoration-underline' style={{ color: "#293790" }}>
-              Shekhar Mittal
+              {value?.lead_name}
             </Link>
           )
         }
@@ -76,12 +77,12 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
     },
     {
-      name: 'createdAt',
+      name: 'email',
       label: "Email",
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
             {columnMeta.label}
           </th>
         ),
@@ -89,7 +90,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
           return (
             <div className='status_box fw-bold' style={{ color: "#293790" }}>
-              shekharmi2938@gmail.com
+              {value}
             </div>
           )
         }
@@ -97,57 +98,57 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       }
     },
     {
-      name: 'user',
+      name: 'contact_no',
       label: "Contact No.",
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className='status_box' style={{ color: "#667799" }}>
-              +91-8587493655
+              +91-{value}
             </div>
           )
         }
       }
     },
     {
-      name: 'user',
+      name: 'BookingprojectData',
       label: "Project",
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className='status_box' style={{ color: "#667799" }}>
-              Harmony Hills Estates
+              {value?.project}
             </div>
           )
         }
       }
     },
     {
-      name: 'user',
+      name: 'Location',
       label: "Location",
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className='status_box' style={{ color: "#667799" }}>
-              Noida
+              {value}
             </div>
           )
         }
@@ -159,7 +160,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
             {columnMeta.label}
           </th>
         ),
@@ -180,7 +181,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: "#293790", color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
             {columnMeta.label}
           </th>
         ),

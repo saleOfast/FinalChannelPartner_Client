@@ -999,9 +999,9 @@ const AddUserScreen = () => {
                   <button className="btn btn-cancel me-2 ">Cancel</button>
                 </Link>
                 {
-                  editMode ?  null:(<Link href={`/CHANNEL/EditActiveUsers?id=${userInfo.user_code}&mode=edit`}>
+                  editMode ?  null: viewMode ?(<Link href={`/CHANNEL/EditActiveUsers?id=${userInfo.user_code}&mode=edit`}>
                   <button className="btn btn-cancel me-2 ">Edit</button>
-                </Link>)
+                </Link>) : null
                 }
                 {editMode ? (
                   <button

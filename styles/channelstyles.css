@@ -1003,11 +1003,11 @@
 
 /* mui table channel partner only */
 
-.channelTable .MuiPaper-root div .MuiTable-root .MuiTableHead-root .MuiTableRow-root .MuiTableCell-root {
+/* .channelTable .MuiPaper-root div .MuiTable-root .MuiTableHead-root .MuiTableRow-root .MuiTableCell-root {
   background-color: #293790 !important;
   color: white !important;
   text-wrap: nowrap !important;
-}
+} */
 
 .channelTable .MuiPaper-root div .MuiTable-root .MuiTableHead-root .MuiTableRow-root .MuiTableCell-root div .MuiButtonBase-root .MuiSvgIcon-root {
   color: white !important;

@@ -20,6 +20,7 @@ const Layout = ({Component, pageProps}) => {
     const [sidebarMode,setSidebarMode]=useState('') 
     const [allowedPermissions,setAllowedPermissions]=useState([])
     const [topnavPermission,setTopnavPermission]=useState("")
+    const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
    
     const checkUSer = () => {
    
@@ -152,6 +153,12 @@ const Layout = ({Component, pageProps}) => {
 
                 .top_nav{
                   background-color: ${theme.topnav} !important;
+                }
+
+                .channelTable .MuiPaper-root div .MuiTable-root .MuiTableHead-root .MuiTableRow-root .MuiTableCell-root {
+                  background-color: ${clientBtnColor} !important;
+                  color: white !important;
+                  text-wrap: nowrap !important;
                 }
 
 

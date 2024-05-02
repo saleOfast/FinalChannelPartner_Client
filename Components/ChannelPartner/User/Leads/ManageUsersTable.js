@@ -449,13 +449,14 @@ const getVisitInfo=async(visitId)=>{
                               <div className="new-leades-btn d-flex justify-content-center gap-4 mt-2">
                                 <div
                                   className="cancel-btn d-flex align-items-center justify-content-center cursor-pointer bg-transparent"
+                                  style={{borderColor:clientBtnColor,color:clientBtnColor ? clientBtnColor:"white"}}
                                   onClick={() => {
                                     setShowModal2(true);
                                   }}
                                 >
                                   Change
                                 </div>
-                                <button className="submit-btn d-flex align-items-center justify-content-center text-white border-0">
+                                <button className="submit-btn d-flex align-items-center justify-content-center text-white border-0" style={{background:clientBtnColor}}>
                                   Confirm
                                 </button>
                               </div>
@@ -547,6 +548,7 @@ const getVisitInfo=async(visitId)=>{
                               <div className="new-leades-btn d-flex justify-content-center gap-4 mt-5">
                                 <div
                                   className=" cursor-pointer cancel-btn d-flex align-items-center justify-content-center bg-transparent"
+                                  style={{borderColor:clientBtnColor,color:clientBtnColor ? clientBtnColor:"white"}}
                                   onClick={() =>{ 
                                     setShowModal2(false);
                                      setShowModal(false)
@@ -556,6 +558,7 @@ const getVisitInfo=async(visitId)=>{
                                 </div>
                                 <div 
                                 className="submit-btn d-flex align-items-center justify-content-center cursor-pointer text-white border-0"
+                                style={{background:clientBtnColor}}
                                 onClick={()=>{
                                     setShowModal2(false)
                                 }}

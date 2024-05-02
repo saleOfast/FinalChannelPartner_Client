@@ -52,8 +52,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                             {value}
                         </div>
                     )
-                }
-                  
+                }   
             }
         },
         {
@@ -68,7 +67,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <Link href={`/CHANNEL/ViewActiveUsers?id=${tableMeta?.rowData[0]}&mode=view`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
+                        <Link href={`/CHANNEL/ChannelPartnersDetails?id=${tableMeta?.rowData[0]}&mode=view`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
                             {value}
                         </Link>
                     )
@@ -310,7 +309,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
               <button onClick={()=>{setActionMode('Cancel'); setShowModal(false);setUserData([])}} className=" btn btn-danger rounded-5">
                 Cancel
               </button>
-              <button onClick={()=>{setActionMode('Assignto'); setShowModal(true)}} style={{backgroundColor: '#293790'}} className="btn  rounded-5 text-white" >
+              <button onClick={()=>{setActionMode('Assignto'); setShowModal(true)}} style={{backgroundColor:clientBtnColor}} className="btn  rounded-5 text-white" >
                 Assign to
               </button>
             
@@ -360,10 +359,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button className="btn btn-cancel me-2" onClick={()=>setShowModal(false)}>Cancel</button>
-                    <Button variant="primary"  onClick={updateUserHandler} >
-                        SUBMIT
-                    </Button>
+                    <button className=" btn btn-danger rounded-5" onClick={()=>setShowModal(false)}>Cancel</button>
+                    <button style={{background:clientBtnColor}} className='btn rounded-5 text-white'  onClick={updateUserHandler} >
+                        Submit
+                    </button>
                 </Modal.Footer>
             </Modal>
           

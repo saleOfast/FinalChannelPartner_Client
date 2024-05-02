@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import LogoutIcon from "../../../Svg/LogoutIcon";
 import AvatarIcon from "../../../Svg/AvatarIcon";
-import ConfirmBox from "../../../Basics/ConfirmBox";
+import ConfirmBox from "./ConfirmBox";
 import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "../../../../store/loaderSlice";
 import { clearMode } from "../../../../store/dbModeSlice";

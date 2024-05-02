@@ -29,6 +29,7 @@ const PendingRequestsScreen = () => {
         action: ''
     })
 
+
     function disableConfirm(value, type) {
         if (type == 1) {
             setconfirmText('enable')
@@ -214,18 +215,6 @@ const PendingRequestsScreen = () => {
 
     return (
         <>
-            <ConfirmBox
-                showConfirm={disableShowConfirm}
-                setshowConfirm={setdisableShowConfirm}
-                actionType={disableHandler}
-                title={`Are You Sure you want to ${confirmText} ?`} />
-
-            <ConfirmBox
-                showConfirm={deleteshowConfirm}
-                setshowConfirm={setdeleteshowConfirm}
-                actionType={deleteHandler}
-                title={"Are You Sure you want to Delete ?"} />
-
             <div className="w-100 ps-4 pe-4 pb-4 overflow-scroll" >
                 
                 <div className="main_content">

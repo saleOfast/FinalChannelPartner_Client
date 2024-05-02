@@ -68,6 +68,7 @@ const ChannelAddUserScreen = () => {
     user_l_name: "",
 
   });
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#61E25E"
 
   const inputFields = [
     { label: "Aadhar Card *", field: "aadhar" },
@@ -642,13 +643,13 @@ const ChannelAddUserScreen = () => {
                             {(formFields.doc_verification === 0 || formFields.doc_verification === 1) && (
                               <>
                                 <button
-                                  className="btn btn-success Add_btn me-3"
+                                  className="btn btn-success text-white Add_btn me-3"
                                   type="button"
                                   onClick={() => {
                                     updateUserhandler(2);
                                   }}
                                   style={{
-                                    backgroundColor: "#61e25e"
+                                    backgroundColor: clientBtnColor
                                   }}
                                 >
                                   Accept

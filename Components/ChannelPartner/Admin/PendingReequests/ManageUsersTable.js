@@ -25,7 +25,8 @@ const ManageUsersTable = ({
     user_code: '',
     reject_reason: ''
   })
-  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#61E25E"
+
 
   const channelUserStatus = (key) => {
     switch (key) {
@@ -100,8 +101,7 @@ const ManageUsersTable = ({
           <Link
           className="fw-bold text-decoration-underline"
           style={{color: '#293790'}}
-          target="_blank"
-          href={`/CHANNEL/ChannelAddUsersReject?id=${tableMeta.rowData[0]}&mode=view`}
+          href={`/CHANNEL/PendingRequestsDetail?id=${tableMeta.rowData[0]}&mode=view`}
           >
             {value}
         </Link>
@@ -270,7 +270,7 @@ const ManageUsersTable = ({
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
                 ...userInfo, user_code: value
-              })}} style={{backgroundColor: '#61e25e'}} className="btn  rounded-5" >
+              })}} style={{backgroundColor: clientBtnColor}} className="btn text-white rounded-5" >
                 Accept
               </button>
   
@@ -409,12 +409,14 @@ const ManageUsersTable = ({
           {userData.length ?
           <div className="table_btns d-flex align-items-center justify-content-center gap-3 mt-4">
               
-              <button onClick={()=>{setActionMode('Accept'); setShowModal(true)}} style={{backgroundColor: '#61e25e'}} className="btn  rounded-5" >
-                Accept
-              </button>
+              
 
               <button onClick={()=>{setActionMode('Reject'); setShowModal(true)}} className=" btn btn-danger rounded-5">
                 Reject
+              </button>
+
+              <button onClick={()=>{setActionMode('Accept'); setShowModal(true)}} style={{backgroundColor: clientBtnColor}} className="btn  rounded-5 text-white" >
+                Accept
               </button>
             
           </div>

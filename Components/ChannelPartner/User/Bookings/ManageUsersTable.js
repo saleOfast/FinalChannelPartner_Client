@@ -68,7 +68,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-            <Link href={`/CHANNEL/BookingDetails`} className='status_box fw-bold text-decoration-underline' style={{ color: "#293790" }}>
+            <Link href={`/CHANNEL/BookingDetails?booking_id=${tableMeta?.rowData[0]}`} className='status_box fw-bold text-decoration-underline' style={{ color: "#293790" }}>
               {value?.lead_name}
             </Link>
           )
@@ -189,8 +189,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
           return (
             <div className="table_btns">
               <div
-                onClick={() => { setShowModal(value); }}
-                style={{ background: "white", color: "#293790", padding: "6px", borderRadius: "20px", border: "white", cursor: "pointer" }}
+                onClick={() => { setShowModal(true); }}
+                style={{ background:`${clientBtnColor}`, color: "white", padding: "6px", borderRadius: "20px", border: "white", cursor: "pointer" }}
                 className='pe-3 ps-3 '
               >
                 <span className=''>+</span> Create
@@ -229,68 +229,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     onRowSelectionChange: handleRowClick,
   };
 
-  const goto = (url) => {
-    router.push(url)
-  }
-
-  const updateUserHandler = async () => {
-    let toastShown = false;
-    for (const element of userData) {
-      if (!hasCookie("token")) return;
-
-      const token = getCookie("token");
-      const db_name = getCookie("db_name");
-
-      const header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-          db: db_name,
-          m_id: 79,
-        },
-      };
-
-      try {
-        const response = await axios.put(`${Baseurl}/db/users`, {
-          db_name: db_name,
-          user_code: element,
-          report_to: oldAssignTo,
-        }, header);
-
-        if (response.status === 200 || response.status === 201) {
-          if (!toastShown) {
-            toast.success(response.data.message);
-            toastShown = true;
-          }
-          setoldAssignTo('');
-          setShowModal(false);
-          setUserData([])
-          getDataList();
-        }
-      } catch (error) {
-        console.log(error)
-        if (error?.response?.data?.status === 422) {
-          if (!toastShown) {
-            toast.error(error.response.data.message);
-            toastShown = true;
-          }
-        } else if (error?.response?.data?.message) {
-          if (!toastShown) {
-            toast.error(error.response.data.message);
-            toastShown = true;
-          }
-        } else {
-          if (!toastShown) {
-            toast.error("Something went wrong!");
-            toastShown = true;
-          }
-        }
-      }
-    }
-  };
-
-
-
   return (
     <>
       <div className="miuiTable channelTable">
@@ -319,7 +257,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         </div>
       </div>
 
-      <Modal className="commonModal" show={showModal} onHide={() => { setShowModal(false) }} size="lg">
+      <Modal className="commonModal" centered show={showModal} onHide={() => { setShowModal(false) }} size="lg">
 
         <Modal.Body>
           <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
@@ -331,12 +269,12 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     <div className="perfect-home-form pt-1">
                       <section className="Details_Form">
                         <div className="pt-3">
-                          <form id="survey-form" method="GET" action>
+                          <form id="survey-form" >
                             <div className="d-lg-flex justify-content-lg-around">
                               <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
                                 <div className="rowTab">
                                   <div className="labels">
-                                    <label htmlFor="project" className="pb-1">Project</label>
+                                    <label htmlFor="project" className="pb-1">Booking</label>
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab d-flex gap-2">
@@ -357,7 +295,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab">
-                                    <input autofocus type="text" name="name" className="input-field" placeholder required />
+                                    <input autofocus type="number" name="name" className="input-field" placeholder required />
                                   </div>
                                 </div>
                               </div>
@@ -368,7 +306,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab">
-                                    <input autofocus type="text" name="name" className="input-field" placeholder required />
+                                    <input autofocus type="date" name="name" className="input-field" placeholder required />
                                   </div>
                                 </div>
                                 <div className="rowTab">
@@ -377,15 +315,15 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab">
-                                    <label htmlFor="adh" className="form-control d-flex flex-row-reverse justify-content-between align-items-center" style={{ width: 162, height: 35 }}>Upload Bill<img src="/ChannelPartner/upload-file.svg" alt style={{ height: 16 }} /></label>
-                                    <input autofocus type="file" name="name" id="adh" className="input-field" placeholder="enter your aadhar number" style={{ display: 'none' }} required />
+                                    <label htmlFor="adh" className="form-control d-flex flex-row-reverse justify-content-between align-items-center" style={{ width: 162, height: 35, background:clientBtnColor }}>Upload Bill<img src="/ChannelPartner/upload-file.svg" alt style={{ height: 16 }} /></label>
+                                    <input autofocus type="file" name="name" id="adh" className="input-field" placeholder="enter your aadhar number" style={{ display: 'none' }} required />  
                                   </div>
                                 </div>
                               </div>
                             </div>
                             <div className="new-leades-btn d-flex justify-content-center gap-4">
-                              <div type="button" className="cancel-btn d-flex align-items-center justify-content-center bg-transparent" onClick={() => setShowModal(false)}>Cancel</div>
-                              <button type='submit' className="submit-btn d-flex align-items-center justify-content-center text-white border-0">Submit</button>
+                              <div type="button" className="cancel-btn d-flex align-items-center justify-content-center bg-transparent" onClick={() => setShowModal(false)} style={{borderColor:clientBtnColor,color:clientBtnColor ? clientBtnColor:"#293790"}}>Cancel</div>
+                              <button type='submit' className="submit-btn d-flex align-items-center justify-content-center text-white border-0" style={{background:clientBtnColor}}>Submit</button>
                             </div>
                           </form>
                         </div>

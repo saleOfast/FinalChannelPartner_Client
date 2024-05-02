@@ -290,13 +290,15 @@ const ActivePartnersScreen = () => {
                 actionType={deleteHandler}
                 title={"Are You Sure you want to Delete ?"} />
 
+                
+
             <div className="w-100 ps-4 pe-4 overflow-scroll" >
               
                 <div className="main_content">
                     <div className="table_screen">
                         <div className="top_btn_sec mb-2">
                             <div className="d-flex">
-                                <button className="btn ms-auto Add_btn me-3" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/CHANNEL/ViewActiveUsers')}>
+                                <button className="btn ms-auto Add_btn me-3" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/CHANNEL/ChannelPartnersDetails')}>
                                     <PlusIcon />
                                     ADD USER
                                 </button>
@@ -390,10 +392,10 @@ const ActivePartnersScreen = () => {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button className="btn btn-cancel me-2" onClick={()=>setShowAssignTo("")}>Cancel</button>
-                    <Button variant="primary"  onClick={updateUserhandler} >
+                    <button className=" btn btn-danger rounded-5" onClick={()=>setShowAssignTo("")}>Cancel</button>
+                    <div style={{background:clientBtnColor}} className='btn rounded-5 text-white'  onClick={updateUserhandler} >
                         SUBMIT
-                    </Button>
+                    </div>
                 </Modal.Footer>
             </Modal>
 

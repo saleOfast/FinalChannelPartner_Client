@@ -49,6 +49,8 @@ const AddUserScreen = () => {
     reraPreview:null,
     chequePreview:null,
   });
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#405189"
+
 
   async function getRolesList() {
     await fetchData("/db/role", setUserroles, errorToast, setErrorToast);
@@ -996,26 +998,29 @@ const AddUserScreen = () => {
             <div className="text-end">
               <div className="submit_btn">
                 <Link href="/CHANNEL/ActivePartners">
-                  <button className="btn btn-cancel me-2 ">Cancel</button>
+                  <button className=" btn btn-danger rounded-2 me-2">Cancel</button>
                 </Link>
                 {
                   editMode ?  null: viewMode ?(<Link href={`/CHANNEL/EditActiveUsers?id=${userInfo.user_code}&mode=edit`}>
-                  <button className="btn btn-cancel me-2 ">Edit</button>
+                  <button className="btn btn-cancel text-white me-2 " style={{background:`${clientBtnColor}` }}>Edit</button>
                 </Link>) : null
                 }
                 {editMode ? (
                   <button
                     disabled={isLoading}
-                    className="btn btn-primary"
+                    className="btn text-white"
                     onClick={updateUserhandler}
+                    style={{background:`${clientBtnColor}` }}
                   >
                     {isLoading ? "Loading..." : "Update"}
                   </button>
                 ) : viewMode ? null : (
                   <button
                     disabled={isLoading}
-                    className="btn btn-primary"
+                    className="btn text-white"
                     onClick={addUserHandler}
+                    style={{background:`${clientBtnColor}` }}
+
                   >
                     {isLoading ? "Loading..." : "Save & Submit"}
                   </button>

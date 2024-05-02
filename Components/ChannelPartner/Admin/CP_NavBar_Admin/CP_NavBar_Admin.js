@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import LogoutIcon from "../../../Svg/LogoutIcon";
 import AvatarIcon from "../../../Svg/AvatarIcon";
-import ConfirmBox from '../../../Basics/ConfirmBox';
+import ConfirmBox from './ConfirmBox';
 import { useDispatch, useSelector } from 'react-redux';
 import { startLoading, stopLoading } from '../../../../store/loaderSlice';
 import { clearMode } from '../../../../store/dbModeSlice';
@@ -23,6 +23,8 @@ const CP_NavBar_Admin = () => {
   const dbMode = useSelector((state) => state.dbMode.value);
 
   const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+
 
   const isActive = (pathname) => {
     return router.pathname === pathname ? 'active' : '';

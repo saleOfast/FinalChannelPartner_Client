@@ -437,11 +437,17 @@ const LeadsScreen = () => {
                     
                   </div>
                   <div className="new-leades-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
-                    <button className="cancel-btn d-flex align-items-center justify-content-center bg-transparent" 
+                    <button 
+                    className="cancel-btn d-flex align-items-center justify-content-center bg-transparent" 
                     onClick={() => {setShowAssignTo("")
                     setLead("")
-                    }}>Cancel</button>
-                    <button className="submit-btn d-flex align-items-center justify-content-center text-white border-0">Submit</button>
+                    }}
+                    style={{color:clientBtnColor==="#293790" ?"#293790" :clientBtnColor, borderColor:clientBtnColor==="#293790" ?"#293790" :clientBtnColor}}
+                    >Cancel</button>
+                    <button 
+                    className="submit-btn d-flex align-items-center justify-content-center text-white border-0"
+                    style={{background:clientBtnColor}}
+                    >Submit</button>
                   </div>
                 </form>
               </div>

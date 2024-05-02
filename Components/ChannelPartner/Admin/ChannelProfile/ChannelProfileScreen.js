@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import ConfirmBox from '../../../Basics/ConfirmBox';
+import ConfirmBox from './ConfirmBox';
 import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "../../../../store/loaderSlice";
 import { clearMode } from "../../../../store/dbModeSlice";
-import { hasCookie, getCookie, setCookie, deleteCookie } from "cookies-next";
+import { hasCookie, getCookie, setCookie, deleteCookie, removeCookies } from "cookies-next";
 import { useRouter } from 'next/router';
 import { userLogOut } from "../../../../store/ClientLoginSlice";
 import { toast } from "react-toastify";
@@ -17,6 +17,8 @@ const ChannelProfileScreen = () => {
     const [userInfo, setuserInfo] = useState({});
     const [showConfirm, setshowConfirm] = useState(false);
     const dbMode = useSelector((state) => state.dbMode.value);
+    const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+
 
 
     const logouthandler = () => {
@@ -26,14 +28,15 @@ const ChannelProfileScreen = () => {
         setshowConfirm(!showConfirm);
         dispatch(clearMode());
         if (hasCookie("channel")) {
-            router.push(isAdminMode ? "/Admin" : "/CHANNEL/Signin")
+          router.push(isAdminMode ? "/Admin" : "/CHANNEL/Signin")
         } else {
-            router.push(isAdminMode ? "/Admin" : "/")
+          router.push(isAdminMode ? "/Admin" : "/")
         }
         dispatch(isAdminMode ? LoggedOut() : userLogOut());
+        removeCookies("clientBtnColor")
         dispatch(stopLoading())
         toast.success("Logged Out Successfully");
-    };
+      };
 
 
     const getUserInfo = async (id) => {
@@ -102,7 +105,7 @@ const ChannelProfileScreen = () => {
                                 <div className="profile-text mb-4">Profile</div>
                                 <div className="col-12 col-lg-4">
                                     <div className="position-relative profile-details image d-flex flex-column justify-content-center">
-                                        <div className="text-center"> 
+                                        <div className="text-center d-flex justify-content-center align-items-center"> 
                                         <img style={{height:"120px", width:"120px"}}
                           src={
                             userInfo?.db_user_profile?.user_image_file
@@ -154,8 +157,10 @@ const ChannelProfileScreen = () => {
                                 </div>
                                 <div className="col-12 col-lg-8">
                                     <ul className="list-group General-list">
-                                        <li href="#" className="list-group-item list-group-item-action active active-list text-white"
-                                            aria-current="true">
+                                        <li href="#" className="list-group-item list-group-item-action  text-white"
+                                            aria-current="true" 
+                                                style={{background:clientBtnColor}}                                                
+                                            >
                                             General Details
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">

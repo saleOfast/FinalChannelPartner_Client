@@ -579,7 +579,7 @@ function formatDate(date) {
                             </div>
                             <div className="new-leades-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
                               <div
-                                className="cancel-btn d-flex align-items-center cursor-pointer justify-content-center bg-transparent"
+                                className="btn btn-danger text-white rounded-5"
                                 onClick={() => {
                                   setShowAssignTo("");
                                 }}
@@ -592,7 +592,7 @@ function formatDate(date) {
                               >
                                 Cancel
                               </div>
-                              <button className="submit-btn d-flex align-items-center justify-content-center text-white border-0" style={{background:clientBtnColor}}>
+                              <button className="btn rounded-5 text-white" style={{background:clientBtnColor}}>
                                 Submit
                               </button>
                             </div>

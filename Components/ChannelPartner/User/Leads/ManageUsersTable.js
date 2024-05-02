@@ -275,8 +275,8 @@ const getVisitInfo=async(visitId)=>{
 
     const handleRowClick = (rowData, rowMeta) => {
         const data = rowMeta?.reduce((accu, value) => {
-            accu.push(dataList[value.dataIndex].user_code);
-            return accu; // Return the accumulator
+            accu.push(leadList[value.dataIndex].user_code);
+            return accu;
         }, []);
         setUserData([...data]);
     };
@@ -284,7 +284,7 @@ const getVisitInfo=async(visitId)=>{
     const options = {
         selectableRows: 'multiple',
         responsive: "standard",
-        onRowSelectionChange : handleRowClick,
+        onRowSelectionChange : handleRowClick
     };
 
     const goto = (url) => {
@@ -448,7 +448,7 @@ const getVisitInfo=async(visitId)=>{
                               </div>
                               <div className="new-leades-btn d-flex justify-content-center gap-4 mt-2">
                                 <div
-                                  className="cancel-btn d-flex align-items-center justify-content-center cursor-pointer bg-transparent"
+                                  className="btn rounded-5"
                                   style={{borderColor:clientBtnColor,color:clientBtnColor ? clientBtnColor:"white"}}
                                   onClick={() => {
                                     setShowModal2(true);
@@ -456,7 +456,7 @@ const getVisitInfo=async(visitId)=>{
                                 >
                                   Change
                                 </div>
-                                <button className="submit-btn d-flex align-items-center justify-content-center text-white border-0" style={{background:clientBtnColor}}>
+                                <button className="btn text-white rounded-5" style={{background:clientBtnColor}}>
                                   Confirm
                                 </button>
                               </div>

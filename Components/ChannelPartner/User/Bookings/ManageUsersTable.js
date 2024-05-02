@@ -240,7 +240,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
         />
         <div>
-          {userData.length ?
+          {/* {userData.length ?
             <div className="table_btns d-flex align-items-center justify-content-center gap-3 mt-4">
 
 
@@ -253,7 +253,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
             </div>
             : <></>
-          }
+          } */}
         </div>
       </div>
 

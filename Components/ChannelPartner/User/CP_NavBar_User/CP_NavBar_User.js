@@ -28,6 +28,8 @@ const CP_NavBar = () => {
     return router.pathname === pathname ? "active" : "";
   };
 
+
+  
   const logouthandler = () => {
     dispatch(startLoading());
     const isAdminMode = dbMode === "admin";

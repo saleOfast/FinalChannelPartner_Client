@@ -547,8 +547,7 @@ const getVisitInfo=async(visitId)=>{
                               </div>
                               <div className="new-leades-btn d-flex justify-content-center gap-4 mt-5">
                                 <div
-                                  className=" cursor-pointer cancel-btn d-flex align-items-center justify-content-center bg-transparent"
-                                  style={{borderColor:clientBtnColor,color:clientBtnColor ? clientBtnColor:"white"}}
+                                  className='btn btn-danger rounded-5 text-white'
                                   onClick={() =>{ 
                                     setShowModal2(false);
                                      setShowModal(false)
@@ -557,7 +556,7 @@ const getVisitInfo=async(visitId)=>{
                                   Cancel
                                 </div>
                                 <div 
-                                className="submit-btn d-flex align-items-center justify-content-center cursor-pointer text-white border-0"
+                                className="btn rounded-5 text-white"
                                 style={{background:clientBtnColor}}
                                 onClick={()=>{
                                     setShowModal2(false)

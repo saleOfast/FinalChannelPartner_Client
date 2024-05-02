@@ -322,8 +322,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                               </div>
                             </div>
                             <div className="new-leades-btn d-flex justify-content-center gap-4">
-                              <div type="button" className="cancel-btn d-flex align-items-center justify-content-center bg-transparent" onClick={() => setShowModal(false)} style={{borderColor:clientBtnColor,color:clientBtnColor ? clientBtnColor:"#293790"}}>Cancel</div>
-                              <button type='submit' className="submit-btn d-flex align-items-center justify-content-center text-white border-0" style={{background:clientBtnColor}}>Submit</button>
+                              <div type="button" className="btn btn-danger rounded-5 text-white" onClick={() => setShowModal(false)} >Cancel</div>
+                              <button type='submit' className="btn text-white rounded-5" style={{background:clientBtnColor}}>Submit</button>
                             </div>
                           </form>
                         </div>

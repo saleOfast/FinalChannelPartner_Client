@@ -320,86 +320,86 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         </div>
             </div>
         
-        <Modal className="commonModal" centered show={showModal} onHide={() => { setShowModal(false) }} size="lg">
+            <Modal className="commonModal" centered show={showModal} onHide={() => { setShowModal(false) }} size="lg">
 
-        <Modal.Body>
-          <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
-            <div className="container">
-              <div className="row">
-                <h3 className=" Perfect-Home text-center ">Create Brokerage Bill</h3>
-                <div className="col-12 mt-md-5">
-                  <div className="Sign-In_Sign-Up Register w-100">
-                    <div className="perfect-home-form pt-1">
-                      <section className="Details_Form">
-                        <div className="pt-3">
-                          <form id="survey-form" >
-                            <div className="d-lg-flex justify-content-lg-around">
-                              <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
-                                <div className="rowTab">
-                                  <div className="labels">
-                                    <label htmlFor="project" className="pb-1">Booking</label>
-                                    <span className="star">*</span>
-                                  </div>
-                                  <div className="rightTab d-flex gap-2">
-                                    <select name className="form-select dropdown" style={{ paddingTop: 12, paddingBottom: 12, marginLeft: "auto" }}>
-                                      <option value selected disabled />
-                                      <option className="dropdown-item" href="#">Emerald Grove Gardens
-                                      </option>
-                                      <option className="dropdown-item" href="#">Harmony Hills Estates
-                                      </option>
-                                      <option className="dropdown-item" href="#">Horizon Vista Villas
-                                      </option>
-                                    </select>
-                                  </div>
-                                </div>
-                                <div className="rowTab">
-                                  <div className="labels">
-                                    <label htmlFor="name" className="pb-1">Amount</label>
-                                    <span className="star">*</span>
-                                  </div>
-                                  <div className="rightTab">
-                                    <input autofocus type="number" name="name" className="input-field" placeholder required />
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details">
-                                <div className="rowTab mt-3 mt-md-4 mt-lg-0">
-                                  <div className="labels">
-                                    <label htmlFor="Location" className="pb-1">Date</label>
-                                    <span className="star">*</span>
-                                  </div>
-                                  <div className="rightTab">
-                                    <input autofocus type="date" name="name" className="input-field" placeholder required />
-                                  </div>
-                                </div>
-                                <div className="rowTab">
-                                  <div className="labels">
-                                    <label id="name-label" htmlFor="name" className="pb-1">Bill</label>
-                                    <span className="star">*</span>
-                                  </div>
-                                  <div className="rightTab">
-                                    <label htmlFor="adh" className="form-control d-flex flex-row-reverse justify-content-between align-items-center" style={{ width: 162, height: 35, background:clientBtnColor }}>Upload Bill<img src="/ChannelPartner/upload-file.svg" alt style={{ height: 16 }} /></label>
-                                    <input autofocus type="file" name="name" id="adh" className="input-field" placeholder="enter your aadhar number" style={{ display: 'none' }} required />  
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="new-leades-btn d-flex justify-content-center gap-4">
-                              <div type="button" className="cancel-btn d-flex align-items-center justify-content-center bg-transparent" onClick={() => setShowModal(false)} style={{borderColor:clientBtnColor,color:clientBtnColor ? clientBtnColor:"#293790"}}>Cancel</div>
-                              <button type='submit' className="submit-btn d-flex align-items-center justify-content-center text-white border-0" style={{background:clientBtnColor}}>Update</button>
-                            </div>
-                          </form>
+<Modal.Body>
+  <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
+    <div className="container">
+      <div className="row">
+        <h3 className=" Perfect-Home text-center ">Create Brokerage Bill</h3>
+        <div className="col-12 mt-md-5">
+          <div className="Sign-In_Sign-Up Register w-100">
+            <div className="perfect-home-form pt-1">
+              <section className="Details_Form">
+                <div className="pt-3">
+                  <form id="survey-form" >
+                    <div className="d-lg-flex justify-content-lg-around">
+                      <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
+                        <div className="rowTab">
+                          <div className="labels">
+                            <label htmlFor="project" className="pb-1">Booking</label>
+                            <span className="star">*</span>
+                          </div>
+                          <div className="rightTab d-flex gap-2">
+                            <select name className="form-select dropdown" style={{ paddingTop: 12, paddingBottom: 12, marginLeft: "auto" }}>
+                              <option value selected disabled />
+                              <option className="dropdown-item" href="#">Emerald Grove Gardens
+                              </option>
+                              <option className="dropdown-item" href="#">Harmony Hills Estates
+                              </option>
+                              <option className="dropdown-item" href="#">Horizon Vista Villas
+                              </option>
+                            </select>
+                          </div>
                         </div>
-                      </section>
+                        <div className="rowTab">
+                          <div className="labels">
+                            <label htmlFor="name" className="pb-1">Amount</label>
+                            <span className="star">*</span>
+                          </div>
+                          <div className="rightTab">
+                            <input autofocus type="number" name="name" className="input-field" placeholder required />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details">
+                        <div className="rowTab mt-3 mt-md-4 mt-lg-0">
+                          <div className="labels">
+                            <label htmlFor="Location" className="pb-1">Date</label>
+                            <span className="star">*</span>
+                          </div>
+                          <div className="rightTab">
+                            <input autofocus type="date" name="name" className="input-field" placeholder required />
+                          </div>
+                        </div>
+                        <div className="rowTab">
+                          <div className="labels">
+                            <label id="name-label" htmlFor="name" className="pb-1">Bill</label>
+                            <span className="star">*</span>
+                          </div>
+                          <div className="rightTab">
+                            <label htmlFor="adh" className="form-control d-flex flex-row-reverse justify-content-between align-items-center" style={{ width: 162, height: 35, background:clientBtnColor }}>Upload Bill<img src="/ChannelPartner/upload-file.svg" alt style={{ height: 16 }} /></label>
+                            <input autofocus type="file" name="name" id="adh" className="input-field" placeholder="enter your aadhar number" style={{ display: 'none' }} required />  
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                    <div className="new-leades-btn d-flex justify-content-center gap-4">
+                      <div type="button" className="btn btn-danger rounded-5 text-white" onClick={() => setShowModal(false)} >Cancel</div>
+                      <button type='submit' className="btn text-white rounded-5" style={{background:clientBtnColor}}>Submit</button>
+                    </div>
+                  </form>
                 </div>
-              </div>
+              </section>
             </div>
-          </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        </Modal.Body>
-      </Modal>
+</Modal.Body>
+</Modal>
           
         </>
 

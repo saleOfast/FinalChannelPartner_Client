@@ -182,7 +182,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">11:30 AM</span>
+                            <span className="list-right">{bookingData?.visit_done_time}</span>
                           </div>
                         </div>
                       </div>
@@ -194,8 +194,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">Lorem ipsum dolor sit amet consectetur.
-                              Ultricies mattis </span>
+                            <span className="list-right">{bookingData?.visit_remarks} </span>
                           </div>
                         </div>
                       </div>
@@ -207,8 +206,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">Lorem ipsum dolor sit amet consectetur.
-                              Ultricies mattis </span>
+                            <span className="list-right">{bookingData?.revisit_remarks} </span>
                           </div>
                         </div>
                       </div>
@@ -220,7 +218,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">26/04/2024</span>
+                            <span className="list-right">{bookingData?.revisit_done_date}</span>
                           </div>
                         </div>
                       </div>
@@ -232,7 +230,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">11:30 AM</span>
+                            <span className="list-right">{bookingData?.revisit_done_time}</span>
                           </div>
                         </div>
                       </div>

@@ -9,6 +9,7 @@ import { Baseurl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
+import { Visibility } from '@mui/icons-material';
 
 
 
@@ -133,8 +134,29 @@ const getVisitInfo=async(visitId)=>{
 
 
     const columns = [
+      {
+        name: 'lead_id',
+        label: "Lead ID",
+        options: {
+          display:false,
+            filter: true,
+            customHeadRender: (columnMeta, updateDirection) => (
+                <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                  {columnMeta.label}
+                </th>
+              ),
+              customBodyRender: (value, tableMeta, updateValue) => {
+                return (
+                    <div  className='status_box fw-bold' style={{color:"#293790"}} >
+                        {value}
+                    </div>
+                )
+            }
+              
+        }
+    },
         {
-            name: 'lead_id',
+            name: 'lead_code',
             label: "Lead ID",
             options: {
                 filter: true,
@@ -164,6 +186,7 @@ const getVisitInfo=async(visitId)=>{
                     </th>
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
+                    console.log(tableMeta)
                     return (
                         <Link href={`/CHANNEL/LeadDetails?id=${tableMeta?.rowData[0]}`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
                             {value}
@@ -281,6 +304,7 @@ const getVisitInfo=async(visitId)=>{
         setUserData([...data]);
     };
 
+    
     const options = {
         selectableRows: 'multiple',
         responsive: "standard",
@@ -335,7 +359,6 @@ const getVisitInfo=async(visitId)=>{
         
         
       };
-    
       
  
 

@@ -171,62 +171,61 @@ const AddClientScreen = () => {
     }
 
     async function addClientHandler() {
-        console.log(userInfo)
-        // if (hasCookie('saLsTkn')) {
-        //     setisLoading(true);
-        //     if (userInfo.password) {
-        //         if (!userInfo.conPassword) {
-        //             toast.error('Please fill the Mandatory fields')
-        //             return setErrorData({ ...errorData, conPassword: 'Confirm your Password' })
-        //         } else if (userInfo.password !== userInfo.conPassword) {
-        //             toast.error('Please fill the Mandatory fields')
-        //             return setErrorData({ ...errorData, conPassword: 'Password Does not match' })
-        //         }
-        //     }
-        //     let token = (getCookie('saLsTkn'));
-        //     let db_name = (getCookie('db_name'));
+        
+        if (hasCookie('saLsTkn')) {
+            setisLoading(true);
+            if (userInfo.password) {
+                if (!userInfo.conPassword) {
+                    toast.error('Please fill the Mandatory fields')
+                    return setErrorData({ ...errorData, conPassword: 'Confirm your Password' })
+                } else if (userInfo.password !== userInfo.conPassword) {
+                    toast.error('Please fill the Mandatory fields')
+                    return setErrorData({ ...errorData, conPassword: 'Password Does not match' })
+                }
+            }
+            let token = (getCookie('saLsTkn'));
+            let db_name = (getCookie('db_name'));
 
-        //     let header = {
-        //         headers: {
-        //             Accept: "application/json",
-        //             Authorization: "Bearer ".concat(token),
-        //             db: db_name,
+            let header = {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: "Bearer ".concat(token),
+                    db: db_name,
+                }
+            }
+            const formData=new FormData();
+            for (const [key, value] of Object.entries(userInfo)) {
+              formData.append(key, value);
+            }
+            try {
 
-        //         }
-        //     }
-        //     const formData=new FormData();
-        //     for (const [key, value] of Object.entries(userInfo)) {
-        //       formData.append(key, value);
-        //     }
-        //     try {
+                const res = await axios.post(Baseurl + `/db`, formData, header);
+                if (res.status === 200 || res.status === 204) {
+                    toast.success('Client Added Successfully')
+                    router.push('/Admin');
+                    setisLoading(false);
+                }
+            } catch (error) {
+                setisLoading(false);
+                if (error?.response?.data?.status === 422) {
+                    const taskObject = {}
+                    const array = error?.response?.data?.data;
 
-        //         const res = await axios.post(Baseurl + `/db`, formData, header);
-        //         if (res.status === 200 || res.status === 204) {
-        //             toast.success('Client Added Successfully')
-        //             router.push('/Admin');
-        //             setisLoading(false);
-        //         }
-        //     } catch (error) {
-        //         setisLoading(false);
-        //         if (error?.response?.data?.status === 422) {
-        //             const taskObject = {}
-        //             const array = error?.response?.data?.data;
+                    for (let i = 0; i < array.length; i++) {
+                        const key = Object.keys(array[i])[0];
+                        const value = Object.values(array[i])[0];
+                        taskObject[key] = value;
+                    }
 
-        //             for (let i = 0; i < array.length; i++) {
-        //                 const key = Object.keys(array[i])[0];
-        //                 const value = Object.values(array[i])[0];
-        //                 taskObject[key] = value;
-        //             }
-
-        //             setErrorData(taskObject);
-        //         }
-        //         if (error?.response?.data?.message) {
-        //             toast.error(error.response.data.message);
-        //         } else {
-        //             toast.error("Something went wrong!");
-        //         }
-        //     }
-        // }
+                    setErrorData(taskObject);
+                }
+                if (error?.response?.data?.message) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Something went wrong!");
+                }
+            }
+        }
     };
 
     async function updateHandler() {

@@ -83,9 +83,6 @@ const BookingsScreen = () => {
     }
 
 
-    async function getUsersList() {
-        await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
-      }
 
 
     const importHandler = (event, type) => {
@@ -277,24 +274,10 @@ const BookingsScreen = () => {
 
     useEffect(() => {
         getDataList();
-        getUsersList();
     }, [])
 
     return (
       <>
-        <ConfirmBox
-          showConfirm={disableShowConfirm}
-          setshowConfirm={setdisableShowConfirm}
-          actionType={disableHandler}
-          title={`Are You Sure you want to ${confirmText} ?`}
-        />
-
-        <ConfirmBox
-          showConfirm={deleteshowConfirm}
-          setshowConfirm={setdeleteshowConfirm}
-          actionType={deleteHandler}
-          title={"Are You Sure you want to Delete ?"}
-        />
 
         <div className="w-100 ps-4 pe-4 overflow-auto">
           <div className="main_content">

@@ -180,6 +180,9 @@ const LeadsScreen = () => {
     }
 
     const createLead =  async(queryObjLeads) => {
+      if(lead.project_id===""){
+        return toast.error("Pls Select Project")
+      }
         if (!hasCookie("token")) return;
         const token = getCookie("token");
         const db_name = getCookie("db_name");
@@ -406,7 +409,7 @@ const LeadsScreen = () => {
                             <label htmlFor="name" className="pb-1">Project<span className="star text-danger">*</span></label>
                           </div>
                           <div className="col-9">
-                          <select name onChange={(e)=>{
+                          <select required name onChange={(e)=>{
                             setLead({...lead,project_id:e.target.value})
                           }} className="form-select dropdown" style={{paddingTop: 12, paddingBottom: 12}}>
                             <option value selected disabled>Select</option>

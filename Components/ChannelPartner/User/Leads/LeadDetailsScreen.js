@@ -147,7 +147,7 @@ function formatDate(date) {
                     className="list-group-item list-group-item-action text-white d-flex justify-content-between"
                     aria-current="true"
                   >
-                    <span className="lead-id text-white">{lead?.lead_id}</span>
+                    <span className="lead-id text-white">{lead?.lead_code}</span>
                     <img
                       src="/ChannelPartner/profile-edit-white.svg"
                       onClick={() => setShowAssignTo(true)}

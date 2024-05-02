@@ -21,7 +21,7 @@ const DateRange = ({value,setValue,getData}) => {
       onChange={handleValueChange}
       showShortcuts={true} 
       primaryColor={"blue"}
-      containerClassName="relative mt-8 border rounded-md mb-4 border-black  text-black inline-block" 
+      containerClassName="relative w-64 mt-8 border rounded-md mb-4 border-black  text-black inline-block" 
     />
   );
 };

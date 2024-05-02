@@ -74,7 +74,7 @@ const VisitDetailsScreen = () => {
         <div className="lead-detail-sec overflow-hidden">
           <ul className="list-group General-list h-auto rounded-0 m-0">
             <li style={{background:`${clientBtnColor}`}} href="#" className="list-group-item list-group-item-action  text-white d-flex justify-content-between" aria-current="true">
-              <span className="lead-id text-white">{visitData?.visit_id}</span>
+              <span className="lead-id text-white">{visitData?.visit_code}</span>
             </li>
           </ul>
           <ul className="list-group General-list d-flex flex-column gap-4 bg-white leads-content h-auto m-0">

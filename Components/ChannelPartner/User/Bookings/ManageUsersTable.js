@@ -26,18 +26,45 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     user_code: '',
     reject_reason: ''
   })
+  
   const [value, setValue] = useState({
-
     startDate: new Date(),
     endDate: new Date().setMonth(11)
-
   });
+  const[brokerageBill,setBrokerageBill]=useState({
+    booking_id:'',
+    file:null,
+    amount:"",
+    date:"",
+    status:""
+  })
  
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
  
   const columns = [
     {
       name: 'booking_id',
+      label: "Booking ID",
+      options: {
+        display:false,
+        filter: true,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
+            {columnMeta.label}
+          </th>
+        ),
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <div className='status_box fw-bold' style={{ color: "#293790" }} >
+              {value}
+            </div>
+          )
+        }
+
+      }
+    },
+    {
+      name: 'booking_code',
       label: "Booking ID",
       options: {
         filter: true,
@@ -57,7 +84,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       }
     },
     {
-      name: 'BookingleadData',
+      name: 'booking_name',
       label: "Booking Name",
       options: {
         filter: true,
@@ -155,7 +182,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       }
     },
     {
-      name: 'user',
+      name: 'status',
       label: "Booking Status",
       options: {
         filter: true,
@@ -169,14 +196,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             <div
               style={{ background: "violet", color: "white", padding: "6px", borderRadius: "20px", border: "white", width: "fit-content"}}
               className='pe-3 ps-3'>
-              Eligible for Brokerage Bill
+              {value}
             </div>
           )
         }
       }
     },
     {
-      name: 'user_code',
+      name: 'BrokerageBookingList',
       label: "Brokerage Bill",
       options: {
         filter: true,
@@ -188,16 +215,29 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="table_btns">
-              <div
-                onClick={() => { setShowModal(true); }}
-                style={{ background:`${clientBtnColor}`, color: "white", padding: "6px", borderRadius: "20px", border: "white", cursor: "pointer" }}
-                className='pe-3 ps-3 '
+              <button
+                onClick={() => {
+                  setShowModal(true);
+                  setBrokerageBill({
+                    ...brokerageBill,
+                    booking_id: tableMeta.rowData[0],
+                  })
+                }}
+                style={{
+                  background:value.length>0 ? "#9C9AA5" :`${clientBtnColor}`,
+                  color: "white",
+                  padding: "6px",
+                  borderRadius: "20px",
+                  border: "white",
+                  cursor: "pointer",
+                }}
+                disabled={value.length>0 ? true:false }
+                className="pe-3 ps-3 "
               >
-                <span className=''>+</span> Create
-              </div>
-
+                + Create
+              </button>
             </div>
-          )
+          );
         }
       }
     },
@@ -223,6 +263,62 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     setUserData([...data]);
   };
 
+  const handleFileChange = (e) => {
+    if (e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBrokerageBill({
+          ...brokerageBill,
+          file:e.target.files[0],
+        });
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  }; 
+
+  const createBrokerageBill =  async() => {
+    console.log(brokerageBill)
+    if(brokerageBill.file===null){
+      return toast.error("Pls Upload Bill")
+    }
+      if (!hasCookie("token")) return;
+      const token = getCookie("token");
+      const db_name = getCookie("db_name");
+      const header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          db: db_name,
+          m_id: 79,
+        },
+      };
+
+      const formData=new FormData();
+      for (const [key, value] of Object.entries(brokerageBill)) {
+        formData.append(key, value);
+      }
+      try {
+        const response = await axios.post(`${Baseurl}/db/channel/brokerage`,formData, header);
+        if (response.status === 200 || response.status === 201) {
+          toast.success(response.data.message);
+          setBrokerageBill("")
+          setShowModal(false)
+          getDataList()
+        }
+      } catch (error) {
+        console.log(error)
+        if (error?.response?.data?.status === 422) {
+              toast.error(error?.response?.data?.message)
+              
+        }
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+  };
+
   const options = {
     selectableRows: 'multiple',
     responsive: "standard",
@@ -237,7 +333,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
           data={dataList}
           columns={columns}
           options={options}
-
         />
         <div>
           {/* {userData.length ?
@@ -257,73 +352,180 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         </div>
       </div>
 
-      <Modal className="commonModal" centered show={showModal} onHide={() => { setShowModal(false) }} size="lg">
-
+      <Modal
+        className="commonModal"
+        centered
+        show={showModal}
+        onHide={() => {
+          setShowModal(false);
+          setBrokerageBill("")
+        }}
+        size="lg"
+      >
         <Modal.Body>
-          <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
+          <section
+            className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill"
+            style={{ padding: "0 16px" }}
+          >
             <div className="container">
               <div className="row">
-                <h3 className=" Perfect-Home text-center ">Create Brokerage Bill</h3>
+                <h3 className=" Perfect-Home text-center ">
+                  Create Brokerage Bill
+                </h3>
                 <div className="col-12 mt-md-5">
                   <div className="Sign-In_Sign-Up Register w-100">
                     <div className="perfect-home-form pt-1">
                       <section className="Details_Form">
                         <div className="pt-3">
-                          <form id="survey-form" >
+                          <form id="survey-form" onSubmit={(e)=>{
+                            e.preventDefault();
+                            createBrokerageBill()
+                          }}>
                             <div className="d-lg-flex justify-content-lg-around">
                               <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
                                 <div className="rowTab">
                                   <div className="labels">
-                                    <label htmlFor="project" className="pb-1">Booking</label>
+                                    <label htmlFor="project" className="pb-1">
+                                      Booking
+                                    </label>
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab d-flex gap-2">
-                                    <select name className="form-select dropdown" style={{ paddingTop: 12, paddingBottom: 12, marginLeft: "auto" }}>
-                                      <option value selected disabled />
-                                      <option className="dropdown-item" href="#">Emerald Grove Gardens
-                                      </option>
-                                      <option className="dropdown-item" href="#">Harmony Hills Estates
-                                      </option>
-                                      <option className="dropdown-item" href="#">Horizon Vista Villas
-                                      </option>
+                                    <select
+                                      name
+                                      className="form-select dropdown"
+                                      style={{
+
+                                        marginLeft: "auto",
+                                      }}
+                                      value={dataList.find((list)=>(
+                                          list?.booking_id === brokerageBill?.booking_id ? list?.BookingleadData?.lead_name : null
+                                      ))}
+                                      onChange={(e)=>{
+                                        setBrokerageBill({
+                                          ...brokerageBill,
+                                          booking_id: e.target.value
+                                        })
+                                      }}
+                                    >
+                                      {
+                                        dataList?.map((list)=>(
+                                          <option
+                                          key={list?.booking_id}
+                                          value={list?.booking_id}
+                                        >
+                                          {list?.BookingleadData?.lead_name}
+                                        </option>
+                                        ))
+                                      }
+                                     
                                     </select>
                                   </div>
                                 </div>
                                 <div className="rowTab">
                                   <div className="labels">
-                                    <label htmlFor="name" className="pb-1">Amount</label>
+                                    <label htmlFor="name" className="pb-1">
+                                      Amount
+                                    </label>
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab">
-                                    <input autofocus type="number" name="name" className="input-field" placeholder required />
+                                    <input
+                                      autofocus
+                                      type="number"
+                                      name="name"
+                                      value={brokerageBill?.amount}
+                                      onChange={(e)=>{
+                                        setBrokerageBill({
+                                          ...brokerageBill,
+                                          amount:e.target.value
+                                        })
+                                      }}
+                                      className="input-field"
+                                      placeholder
+                                      required
+                                    />
                                   </div>
                                 </div>
                               </div>
                               <div className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details">
                                 <div className="rowTab mt-3 mt-md-4 mt-lg-0">
                                   <div className="labels">
-                                    <label htmlFor="Location" className="pb-1">Date</label>
+                                    <label htmlFor="Location" className="pb-1">
+                                      Date
+                                    </label>
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab">
-                                    <input autofocus type="date" name="name" className="input-field" placeholder required />
+                                    <input
+                                      autofocus
+                                      type="date"
+                                      name="name"
+                                      value={brokerageBill?.date}
+                                      onChange={(e)=>{
+                                        setBrokerageBill({...brokerageBill,date:e.target.value})
+                                      }}
+                                      className="input-field"
+                                      placeholder
+                                      required
+                                    />
                                   </div>
                                 </div>
                                 <div className="rowTab">
                                   <div className="labels">
-                                    <label id="name-label" htmlFor="name" className="pb-1">Bill</label>
+                                    <label
+                                      id="name-label"
+                                      htmlFor="name"
+                                      className="pb-1"
+                                    >
+                                      Bill
+                                    </label>
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab">
-                                    <label htmlFor="adh" className="form-control d-flex flex-row-reverse justify-content-between align-items-center" style={{ width: 162, height: 35, background:clientBtnColor }}>Upload Bill<img src="/ChannelPartner/upload-file.svg" alt style={{ height: 16 }} /></label>
-                                    <input autofocus type="file" name="name" id="adh" className="input-field" placeholder="enter your aadhar number" style={{ display: 'none' }} required />  
+                                    <label
+                                      htmlFor="adh"
+                                      className="form-control d-flex flex-row-reverse justify-content-between align-items-center"
+                                      style={{
+                                        width: 162,
+                                        height: 35,
+                                        background: clientBtnColor,
+                                      }}
+                                    >
+                                      Upload Bill
+                                      <img
+                                        src="/ChannelPartner/upload-file.svg"
+                                        alt
+                                        style={{ height: 16 }}
+                                      />
+                                    </label>
+                                    <input
+                                      type="file"
+                                      id="adh"
+                                      onChange={(e)=>handleFileChange(e)}
+                                      className="input-field"
+                                      style={{ display: "none" }}
+                                      required
+                                    />
                                   </div>
                                 </div>
                               </div>
                             </div>
                             <div className="new-leades-btn d-flex justify-content-center gap-4">
-                              <div type="button" className="btn btn-danger rounded-5 text-white" onClick={() => setShowModal(false)} >Cancel</div>
-                              <button type='submit' className="btn text-white rounded-5" style={{background:clientBtnColor}}>Submit</button>
+                              <div
+                                type="button"
+                                className="btn btn-danger rounded-5 text-white"
+                                onClick={() =>{ setShowModal(false); setBrokerageBill("");}}
+                              >
+                                Cancel
+                              </div>
+                              <button
+                                type="submit"
+                                className="btn text-white rounded-5"
+                                style={{ background: clientBtnColor }}
+                              >
+                                Submit
+                              </button>
                             </div>
                           </form>
                         </div>
@@ -334,13 +536,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
               </div>
             </div>
           </section>
-
         </Modal.Body>
       </Modal>
-
     </>
-
-  )
+  );
 }
 
 export default ManageUsersTable 

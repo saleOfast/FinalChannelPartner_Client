@@ -54,8 +54,29 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   }
 
     const columns = [
+      {
+        name: 'visit_id',
+        label: "Visit ID",
+        options: {
+          display:false,
+            filter: true,
+            customHeadRender: (columnMeta, updateDirection) => (
+                <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                  {columnMeta.label}
+                </th>
+              ),
+              customBodyRender: (value, tableMeta, updateValue) => {
+                return (
+                    <div  className='status_box fw-bold' style={{color:"#293790"}} >
+                        {value}
+                    </div>
+                )
+            }
+              
+        }
+    },
         {
-            name: 'visit_id',
+            name: 'visit_code',
             label: "Visit ID",
             options: {
                 filter: true,

@@ -77,14 +77,6 @@ const BookingsScreen = () => {
         setdeleteshowConfirm(true)
     }
 
-    const goto = (url) => {
-        router.push(url)
-    }
-
-
-    async function getUsersList() {
-        await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
-      }
 
 
     const importHandler = (event, type) => {
@@ -118,8 +110,7 @@ const BookingsScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, header);
-                    console.log(response.data.data)
+                const response = await axios.get(Baseurl + `/db/channel/brokerage`, header);
                 setDataList(response.data.data);
             } catch (error) {
                 if (error?.response?.data?.message) {
@@ -129,74 +120,6 @@ const BookingsScreen = () => {
                 }
             }
         }
-    }
-
-    async function disableHandler() {
-
-        const reqInfo = { user_code: currObj.id, user_status: currObj.action == 1 ? true : false }
-
-        if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
-
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    m_id: 79
-                }
-            }
-
-            try {
-                const response = await axios.put(Baseurl + `/db/users`, reqInfo, header);
-                if (response.status === 204 || response.status === 200) {
-                    toast.success(response.data.message)
-                    setdisableShowConfirm(false)
-                    setcurrObj({
-                        id: '',
-                        action: ''
-                    })
-                    getDataList();
-                }
-            } catch (error) {
-                toast.error(error.response.data.message);
-            }
-        }
-    }
-
-    async function deleteHandler() {
-        setdeleteshowConfirm(false)
-
-        if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
-
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    m_id: 80
-                }
-            }
-
-            try {
-                const response = await axios.delete(Baseurl + `/db/users?id=${currObj.id}`, header);
-                if (response.status === 204 || response.status === 200) {
-                    toast.success(response.data.message)
-                    setdeleteshowConfirm(false)
-                    setcurrObj({
-                        id: '',
-                        action: ''
-                    })
-                    getDataList();
-                }
-            } catch (error) {
-                toast.error(error.response.data.message)
-            }
-        }
-
     }
 
     async function csvSubmitHandler() {
@@ -233,6 +156,7 @@ const BookingsScreen = () => {
         }
 
     }
+
     const updateUserhandler = async () => {
         if (!hasCookie("token")) return;
         const token = getCookie("token");
@@ -276,24 +200,11 @@ const BookingsScreen = () => {
 
     useEffect(() => {
         getDataList();
-        getUsersList();
     }, [])
 
     return (
       <>
-        <ConfirmBox
-          showConfirm={disableShowConfirm}
-          setshowConfirm={setdisableShowConfirm}
-          actionType={disableHandler}
-          title={`Are You Sure you want to ${confirmText} ?`}
-        />
-
-        <ConfirmBox
-          showConfirm={deleteshowConfirm}
-          setshowConfirm={setdeleteshowConfirm}
-          actionType={deleteHandler}
-          title={"Are You Sure you want to Delete ?"}
-        />
+       
 
         <div className="w-100 ps-4 pe-4 overflow-auto">
           <div className="main_content">

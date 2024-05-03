@@ -165,7 +165,7 @@ const VisitsScreen = () => {
                 dataList={dataList}
                 disableConfirm={disableConfirm}
                 deleteConfirm={deleteConfirm}
-                setShowAssignTo={setShowAssignTo}
+             
                 setoldAssignTo={setoldAssignTo}
                 oldAssignTo={oldAssignTo}
                 setShowDateFilter={setShowDateFilter}

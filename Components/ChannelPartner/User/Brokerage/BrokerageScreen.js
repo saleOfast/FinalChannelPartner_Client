@@ -94,7 +94,7 @@ const BookingsScreen = () => {
     };
 
 
-    const getDataList = async () => {
+    const getDataList = async (queryObjLeads) => {
 
         if (hasCookie('token')) {
             let token = (getCookie('token'));
@@ -110,7 +110,7 @@ const BookingsScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/channel/brokerage`, header);
+                const response = await axios.get(Baseurl + `/db/channel/brokerage`, {...header,params:queryObjLeads});
                 setDataList(response.data.data);
             } catch (error) {
                 if (error?.response?.data?.message) {

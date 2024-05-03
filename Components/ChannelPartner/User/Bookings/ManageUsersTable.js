@@ -224,7 +224,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   })
                 }}
                 style={{
-                  background:value.length>0 ? "#9C9AA5" :`${clientBtnColor}`,
+                  background:value?.length>0 ? "#9C9AA5" :clientBtnColor,
                   color: "white",
                   padding: "6px",
                   borderRadius: "20px",
@@ -250,7 +250,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       <div className=' d-flex justify-content-start gap-3 align-items-center '>
         <p className='fw-bold ' style={{ fontSize: "18px" }} >{title}</p>
         <DateRange value={value} setValue={setValue} />
-        {/* <button className='btn' style={{background:"#293790", color:"white"}} onClick={()=>setShowDateFilter(true)}> Custom </button> */}
       </div>
     );
   }
@@ -277,7 +276,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   }; 
 
   const createBrokerageBill =  async() => {
-    console.log(brokerageBill)
+
     if(brokerageBill.file===null){
       return toast.error("Pls Upload Bill")
     }
@@ -399,7 +398,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                         marginLeft: "auto",
                                       }}
                                       value={dataList.find((list)=>(
-                                          list?.booking_id === brokerageBill?.booking_id ? list?.BookingleadData?.lead_name : null
+                                          list?.booking_id === brokerageBill?.booking_id ? list?.booking_name : null
                                       ))}
                                       onChange={(e)=>{
                                         setBrokerageBill({
@@ -414,7 +413,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                           key={list?.booking_id}
                                           value={list?.booking_id}
                                         >
-                                          {list?.BookingleadData?.lead_name}
+                                          {list?.booking_name}
                                         </option>
                                         ))
                                       }

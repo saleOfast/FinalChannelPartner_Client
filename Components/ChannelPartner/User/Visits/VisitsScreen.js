@@ -23,25 +23,13 @@ const DynamicTable = dynamic(
 const VisitsScreen = () => {
     const router = useRouter()
     const [dataList, setDataList] = useState([])
-    const [disableShowConfirm, setdisableShowConfirm] = useState(false)
-    const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
-    const [confirmText, setconfirmText] = useState('')
+
     const [show, setShow] = useState(false);
-    const [showAssignTo, setShowAssignTo] = useState("");
+    
     const [oldAssignTo, setoldAssignTo] = useState("");
     const [showDateFilter, setShowDateFilter] = useState(false);
     const [excelData, setexcelData] = useState([]);
-    const [errorToast, setErrorToast] = useState(false);
-    const [usersList, setUsersList] = useState([]);
-    const [DateEvent, seDateEvent] = useState({
-        type: 'Custom',
-        fDate: '',
-        eDate: ''
-    });
-    const [currObj, setcurrObj] = useState({
-        id: '',
-        action: ''
-    })
+    
     const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
 
     function disableConfirm(value, type) {
@@ -72,14 +60,9 @@ const VisitsScreen = () => {
         setdeleteshowConfirm(true)
     }
 
-    const goto = (url) => {
-        router.push(url)
-    }
+   
 
-
-    async function getUsersList() {
-        await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
-      }
+   
 
 
     const importHandler = (event, type) => {
@@ -126,73 +109,9 @@ const VisitsScreen = () => {
         }
     }
 
-    async function disableHandler() {
+    
 
-        const reqInfo = { user_code: currObj.id, user_status: currObj.action == 1 ? true : false }
-
-        if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
-
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    m_id: 79
-                }
-            }
-
-            try {
-                const response = await axios.put(Baseurl + `/db/users`, reqInfo, header);
-                if (response.status === 204 || response.status === 200) {
-                    toast.success(response.data.message)
-                    setdisableShowConfirm(false)
-                    setcurrObj({
-                        id: '',
-                        action: ''
-                    })
-                    getVisitList();
-                }
-            } catch (error) {
-                toast.error(error.response.data.message);
-            }
-        }
-    }
-
-    async function deleteHandler() {
-        setdeleteshowConfirm(false)
-
-        if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
-
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    m_id: 80
-                }
-            }
-
-            try {
-                const response = await axios.delete(Baseurl + `/db/users?id=${currObj.id}`, header);
-                if (response.status === 204 || response.status === 200) {
-                    toast.success(response.data.message)
-                    setdeleteshowConfirm(false)
-                    setcurrObj({
-                        id: '',
-                        action: ''
-                    })
-                    getVisitList();
-                }
-            } catch (error) {
-                toast.error(error.response.data.message)
-            }
-        }
-
-    }
+   
 
     async function csvSubmitHandler() {
         if (excelData.length <= 0) {
@@ -228,50 +147,12 @@ const VisitsScreen = () => {
         }
 
     }
-    const updateUserhandler = async () => {
-        if (!hasCookie("token")) return;
-        const token = getCookie("token");
-        const db_name = getCookie("db_name");
-        const header = {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-            db: db_name,
-            m_id: 79,
-          },
-        };
     
-       
-        try {
-          const response = await axios.put(`${Baseurl}/db/users`, {
-            db_name: db_name,
-            user_code: showAssignTo,
-            report_to: oldAssignTo,
-          }, header);
-          if (response.status === 200 || response.status === 201) {
-            toast.success(response.data.message);
-            setoldAssignTo('')
-            setShowAssignTo('')
-            toast.success(response.message)
-            getVisitList();
-          }
-        } catch (error) {
-          if (error?.response?.data?.status === 422) {
-                toast.error(error?.response?.data?.message)
-                
-          }
-          if (error?.response?.data?.message) {
-            toast.error(error.response.data.message);
-          } else {
-            toast.error("Something went wrong!");
-          }
-        }
-    };
 
 
     useEffect(() => {
         getVisitList();
-        getUsersList();
+        
     }, [])
 
     return (
@@ -288,7 +169,6 @@ const VisitsScreen = () => {
                 setoldAssignTo={setoldAssignTo}
                 oldAssignTo={oldAssignTo}
                 setShowDateFilter={setShowDateFilter}
-                usersList={usersList}
                 getVisitList={getVisitList}
               />
             </div>

@@ -50,7 +50,7 @@ useEffect(()=>{
 },[booking_id])
 
 function formatTime(timeString) {
-  const timeParts = timeString.split(':');
+  const timeParts = (timeString || '').split(':');
   const hours = parseInt(timeParts[0]);
   const minutes = parseInt(timeParts[1]);
 
@@ -93,7 +93,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-6">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{bookingData?.BookingleadData?.lead_name}</span>
+                            <span className="list-right">{bookingData?.booking_name}</span>
                           </div>
                         </div>
                       </div>
@@ -182,7 +182,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{bookingData?.visit_done_time}</span>
+                            <span className="list-right">{formatTime(bookingData?.visit_done_time)}</span>
                           </div>
                         </div>
                       </div>
@@ -213,24 +213,24 @@ function formatDate(date) {
                       <div className="row">
                         <div className="col-5 col-md-5 col-lg-4">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-left">Possible Visit Date</span>
+                            <span className="list-left">Revisit Done Date</span>
                           </div>
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{bookingData?.revisit_done_date}</span>
+                            <span className="list-right">{formatDate(bookingData?.revisit_done_date)}</span>
                           </div>
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-5 col-md-5 col-lg-4">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-left">Possible Visit Time</span>
+                            <span className="list-left">Revisit Done Time</span>
                           </div>
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{bookingData?.revisit_done_time}</span>
+                            <span className="list-right">{formatTime(bookingData?.revisit_done_time)}</span>
                           </div>
                         </div>
                       </div>

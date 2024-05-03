@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
-import { Baseurl } from '../../../../Utils/Constants';
+import { Baseurl, filesUrl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
@@ -35,7 +35,16 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   });
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   const[brokerageId,setBrokerageId]=useState("")
-  const[brokerageBill,setBrokerageBill]=useState()
+  const[updateBill,setUpdateBill]=useState({
+    date:"",
+    amount:"",
+    booking_id:"",
+    brokerage_id:"",
+    file:null,
+    booking_name:"",
+    status:"",
+    file_name:""
+  })
   
 
   const getDataListById = async () => {
@@ -55,7 +64,16 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
         try {
             const response = await axios.get(Baseurl + `/db/channel/brokerage?brokerage_id=${brokerageId}`, header);
-            setBrokerageBill(response.data.data);
+            setUpdateBill({
+              ...updateBill,
+              booking_name:response?.data?.data?.BrokerageBookingtData?.booking_name,
+              amount:response?.data?.data?.amount,
+              status:response?.data?.data?.status,
+              date:response?.data?.data?.date,
+              file:response?.data?.data?.bill_file,
+              booking_id:response?.data?.data?.BrokerageBookingtData?.booking_id,
+              brokerage_id:response?.data?.data?.brokerage_id
+            })
         } catch (error) {
             if (error?.response?.data?.message) {
                 toast.error(error.response.data.message);
@@ -65,11 +83,51 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         }
     }
 }
+
 useEffect(()=>{
   if(brokerageId){
     getDataListById();
     }
 },[brokerageId])
+
+const updateBrokerageBill =  async() => {
+    console.log("clicked ")
+    if (!hasCookie("token")) return;
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+    const header = {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        db: db_name,
+        m_id: 79,
+      },
+    };
+
+    const formData=new FormData();
+    for (const [key, value] of Object.entries(updateBill)) {
+      formData.append(key, value);
+    }
+    try {
+      const response = await axios.put(`${Baseurl}/db/channel/brokerage`,formData, header);
+      if (response.status === 200 || response.status === 201) {
+        toast.success(response.data.message);
+        setShowModal2(false)
+        getDataList()
+      }
+    } catch (error) {
+      console.log(error)
+      if (error?.response?.data?.status === 422) {
+            toast.error(error?.response?.data?.message)
+            
+      }
+      if (error?.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong!");
+      }
+    }
+};
 
     const columns = [
         {
@@ -269,9 +327,7 @@ useEffect(()=>{
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <DateRange value={value} setValue={setValue} />
-
-                {/* <button className='btn' style={{background:`${clientBtnColor}`, color:"white"}} onClick={()=>setShowDateFilter(true)}> Custom </button> */}
+                <DateRange value={value} setValue={setValue} getData={getDataList} />
             </div>
         );
     }
@@ -298,9 +354,19 @@ useEffect(()=>{
       return `${day}/${month}/${year}`;
     }
 
-    
-      
- 
+    const handleFileChange = (e) => {
+      if (e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setUpdateBill({
+            ...updateBill,
+            file:e.target.files[0],
+            file_name:e.target.files[0].name,
+          });
+        };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    };
 
     return (
         <>
@@ -330,87 +396,9 @@ useEffect(()=>{
         </div>
             </div>
         
-      <Modal className="commonModal" centered show={showModal2} onHide={() => { setShowModal2(false); setBrokerageId("") }} size="lg">
-        <Modal.Body>
-          <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
-            <div className="container">
-              <div className="row">
-                <h3 className=" Perfect-Home text-center ">Create Brokerage Bill</h3>
-                <div className="col-12 mt-md-5">
-                  <div className="Sign-In_Sign-Up Register w-100">
-                    <div className="perfect-home-form pt-1">
-                      <section className="Details_Form">
-                        <div className="pt-3">
-                          <form id="survey-form" >
-                            <div className="d-lg-flex justify-content-lg-around">
-                              <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
-                                <div className="rowTab">
-                                  <div className="labels">
-                                    <label htmlFor="project" className="pb-1">Booking</label>
-                                    <span className="star">*</span>
-                                  </div>
-                                  <div className="rightTab d-flex gap-2">
-                                    <select name className="form-select dropdown" style={{ paddingTop: 12, paddingBottom: 12, marginLeft: "auto" }}>
-                                      <option value selected disabled />
-                                      <option className="dropdown-item" href="#">Emerald Grove Gardens
-                                      </option>
-                                      <option className="dropdown-item" href="#">Harmony Hills Estates
-                                      </option>
-                                      <option className="dropdown-item" href="#">Horizon Vista Villas
-                                      </option>
-                                    </select>
-                                  </div>
-                                </div>
-                                <div className="rowTab">
-                                  <div className="labels">
-                                    <label htmlFor="name" className="pb-1">Amount</label>
-                                    <span className="star">*</span>
-                                  </div>
-                                  <div className="rightTab">
-                                    <input autofocus type="number" name="name" className="input-field" placeholder required />
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details">
-                                <div className="rowTab mt-3 mt-md-4 mt-lg-0">
-                                  <div className="labels">
-                                    <label htmlFor="Location" className="pb-1">Date</label>
-                                    <span className="star">*</span>
-                                  </div>
-                                  <div className="rightTab">
-                                    <input autofocus type="date" name="name" className="input-field" placeholder required />
-                                  </div>
-                                </div>
-                                <div className="rowTab">
-                                  <div className="labels">
-                                    <label id="name-label" htmlFor="name" className="pb-1">Bill</label>
-                                    <span className="star">*</span>
-                                  </div>
-                                  <div className="rightTab">
-                                    <label htmlFor="adh" className="form-control d-flex flex-row-reverse justify-content-between align-items-center" style={{ width: 162, height: 35, background:clientBtnColor }}>Upload Bill<img src="/ChannelPartner/upload-file.svg" alt style={{ height: 16 }} /></label>
-                                    <input autofocus type="file" name="name" id="adh" className="input-field" placeholder="enter your aadhar number" style={{ display: 'none' }} required />  
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="new-leades-btn d-flex justify-content-center gap-4">
-                              <div type="button" className="btn btn-danger rounded-5 text-white" onClick={() => setShowModal2(false)} >Cancel</div>
-                              <button type='submit' className="btn text-white rounded-5" style={{background:clientBtnColor}}>Submit</button>
-                            </div>
-                          </form>
-                        </div>
-                      </section>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-        </Modal.Body>
-      </Modal>
-
-<Modal className="" centered show={showModal} onHide={() => { setShowModal(false); setBrokerageId("") }} size="lg">
+      
+      {/* Brokerage Bill Modal */}
+      <Modal className="" centered show={showModal} onHide={() => { setShowModal(false); setBrokerageId("") }} size="lg">
         <Modal.Body>
           <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
           <div className='d-flex justify-content-end align-items-center pb-2'>
@@ -451,7 +439,7 @@ useEffect(()=>{
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab fw-semibold" style={{color:"#293790"}}>
-                                    {brokerageBill?.BrokerageBookingtData?.booking_name}
+                                    {updateBill?.booking_name}
                                   </div>
                                 </div>
                                 <div className="rowTab">
@@ -460,7 +448,7 @@ useEffect(()=>{
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab fw-semibold" style={{color:"#293790"}}>
-                                  ₹ {brokerageBill?.amount}.00
+                                  ₹ {updateBill?.amount}.00  
                                   </div>
                                 </div>
                                 <div className="rowTab">
@@ -469,7 +457,7 @@ useEffect(()=>{
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab fw-semibold" style={{color:"#293790"}}>
-                                  {brokerageBill?.status}
+                                  {updateBill?.status}
                                   </div>
                                 </div>
                               </div>
@@ -480,7 +468,7 @@ useEffect(()=>{
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab fw-semibold" style={{color:"#293790"}}>
-                                  {formatDate(brokerageBill?.date)}
+                                  {formatDate(updateBill?.date)}
                                   </div>
                                 </div>
                                 <div className="rowTab">
@@ -488,11 +476,166 @@ useEffect(()=>{
                                     <label htmlFor="name" className="pb-1">Bill</label>
                                     <span className="star">*</span>
                                   </div>
-                                  <div className="rightTab fw-semibold text-decoration-underline" style={{color:"#293790"}}>
-                                  {brokerageBill?.bill_file}
+                                  <Link 
+                                   href={`${filesUrl}/brokerage/images${updateBill?.file}`}
+                                   target='_black' className="rightTab fw-semibold text-decoration-underline" style={{color:"#293790"}}>
+                                  {updateBill?.file}
+                                  </Link>
+                                </div>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </section>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </Modal.Body>
+      </Modal>
+      
+      {/* Create/Update Brokerage Bill Modal */}
+      <Modal className="commonModal" centered show={showModal2} onHide={() => { setShowModal2(false); setBrokerageId("") }} size="lg">
+        <Modal.Body>
+          <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
+            <div className="container">
+              <div className="row">
+                <h3 className=" Perfect-Home text-center ">Update Brokerage Bill</h3>
+                <div className="col-12 mt-md-5">
+                  <div className="Sign-In_Sign-Up Register w-100">
+                    <div className="perfect-home-form pt-1">
+                      <section className="Details_Form">
+                        <div className="pt-3">
+                          <form id="survey-form" >
+                            <div className="d-lg-flex justify-content-lg-around">
+                              <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
+                              <div className="rowTab">
+                                  <div className="labels">
+                                    <label htmlFor="project" className="pb-1">
+                                      Booking
+                                    </label>
+                                    <span className="star">*</span>
+                                  </div>
+                                  <div className="rightTab d-flex gap-2">
+                                    <select
+                                      name
+                                      className="form-select dropdown"
+                                      style={{
+
+                                        marginLeft: "auto",
+                                      }}
+                                      value={dataList.find((list)=>(
+                                          list?.BrokerageBookingtData?.booking_id === updateBill?.booking_id ? list?.BrokerageBookingtData?.booking_name : null
+                                      ))}
+                                      onChange={(e)=>{
+                                        setUpdateBill({
+                                          ...updateBill,
+                                          booking_id: e.target.value
+                                        })
+                                      }}
+                                    >
+                                      {
+                                        dataList?.map((list)=>(
+                                          <option
+                                          key={list?.BrokerageBookingtData?.booking_id}
+                                          value={list?.BrokerageBookingtData?.booking_id}
+                                        >
+                                          {list?.BrokerageBookingtData?.booking_name}
+                                        </option>
+                                        ))
+                                      }
+                                     
+                                    </select>
+                                  </div>
+                                </div>
+                                <div className="rowTab">
+                                  <div className="labels">
+                                    <label htmlFor="name" className="pb-1">Amount</label>
+                                    <span className="star">*</span>
+                                  </div>
+                                  <div className="rightTab">
+                                    <input autofocus type="number" value={updateBill?.amount} 
+                                    onChange={(e)=>setUpdateBill({...updateBill,amount:e.target.value})} name="name" className="" placeholder required /> 
+                                  </div>
+                                </div>
+                                <div className="rowTab">
+                                  <div className="labels">
+                                    <label htmlFor="project" className="pb-1">Status</label>
+                                    <span className="star">*</span>
+                                  </div>
+                                  <div className="rightTab d-flex gap-2">
+                                    <select className="form-select dropdown" 
+                                    value={updateBill.status}
+                                    onChange={(e)=>{
+                                      setUpdateBill({
+                                        ...updateBill,
+                                        status:e.target.value
+                                      })
+                                    }}
+                                    >
+                                      <option className="dropdown-item" >Bill Sent
+                                      </option>
+                                      <option className="dropdown-item" >Payment Received
+                                      </option>
+                                      <option className="dropdown-item" >Payment Rejected
+                                      </option>
+                                    </select>
                                   </div>
                                 </div>
                               </div>
+                              <div className="d-flex flex-column  gap-3 gap-md-4 gap-lg-5 Leads-form-details">
+                                <div className="rowTab mt-3 mt-md-4 mt-lg-0">
+                                  <div className="labels">
+                                    <label htmlFor="Location" className="pb-1">Date</label>
+                                    <span className="star">*</span>
+                                  </div>
+                                  <div className="rightTab">
+                                    <input autofocus type="date" value={updateBill?.date} onChange={(e)=>{
+                                      setUpdateBill({
+                                        ...updateBill,
+                                        date:e.target.value
+                                      })
+                                    }} name="name" className="input-field" placeholder required />
+                                  </div>
+                                </div>
+                                <div className="rowTab">
+                                    <div className="labels">
+                                      <label id="name-label" htmlFor="name" className="pb-1">Bill</label>
+                                      <span className="star">*</span>
+                                    </div>
+                                    <div className="rightTab">
+                                      {updateBill?.file ? (
+                                        <div className="file-info py-2 ps-1 pe-2 rounded border d-flex justify-content-center align-items-center">
+                                          <span className='text-sm' style={{color:clientBtnColor}}>{updateBill?.file_name ?updateBill?.file_name:updateBill?.file}</span>
+                                          <button onClick={()=>{
+                                            setUpdateBill({
+                                              ...updateBill,
+                                              file:''
+                                            })
+                                          }} >
+                                            <img src="/ChannelPartner/cross-icon.png" alt="Clear" style={{ height: 20 }} />
+                                          </button>
+                                        </div>
+                                      ) : (
+                                        <label htmlFor="adh" className="form-control d-flex flex-row-reverse justify-content-between align-items-center" style={{ width: 162, height: 35, background: clientBtnColor }}>
+                                          Upload Bill
+                                          <img src="/ChannelPartner/upload-file.svg" alt="Upload" style={{ height: 16 }} />
+                                        </label>
+                                      )}
+                                      <input autoFocus type="file" name="name" id="adh" className="input-field" placeholder="enter your aadhar number" style={{ display: 'none' }} onChange={handleFileChange} required />  
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="new-leades-btn d-flex justify-content-center gap-4">
+                              <div  className="btn btn-danger rounded-5 text-white" onClick={() => setShowModal2(false)} >Cancel</div>
+                              <button type='button'  className="btn text-white rounded-5" style={{background:clientBtnColor}} onClick={(e)=>{
+                              e.preventDefault()
+                                updateBrokerageBill()
+                              }}>Update</button>
                             </div>
                           </form>
                         </div>

@@ -751,7 +751,7 @@
   gap: 10px;
   border-radius: 8px;
   border: 1px solid #EFEFEF;
-  /* box-shadow: 0px 0px 1px 0px; */
+  box-shadow: 0px 0px 1px 0px;
 }
 .Create-New-Lead form .Leads-form-details{
   width: 40%;
@@ -888,6 +888,53 @@
 /* Visit-Date-and-Time End */
 
 /* Campaigns-Project-Details Start */
+.Campaigns .Campaign-img{
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 16 / 9;
+  background-repeat: no-repeat;
+  border-radius: 8px;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  height: 256px;
+}
+.Campaigns .overlay{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  aspect-ratio: 16/9;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 25px 24px;
+  z-index: 1;
+}.Campaigns .cart-overlay-items{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  padding: 25px 24px;
+}
+.cart-overlay-items .Campaign-name h3{
+   font-size: 36px;
+   font-weight: 700;
+}
+.Campaigns .Campaign-img{
+  height: 480px;
+}
+.Campaign-upload .list-group-item{
+  background-color: #F9F9F9;
+}
+.Campaign-upload .list-group-item-action:hover {
+ background-color: transparent;
+}
+.Campaign-upload  .details-btn .back-to-lead {
+  width: 158px !important;
+  height: 32px;
+}
 .Campaigns-Project-Details{
   width: 926px;
   height: 478px;

@@ -16,6 +16,7 @@ const DashBoardScreenCHANNEL = () => {
     : "#293790";
   const [projectData, setProjectData] = useState({
     project: "",
+    project_id:"",
     location: "",
     property_size: "",
     unit_area: "",
@@ -24,10 +25,10 @@ const DashBoardScreenCHANNEL = () => {
     file: null,
     file_name:""
   });
-  const[projectId,setProjectId]=useState("")
-
+  const[editMode,setEditMode]=useState(false)
   const[projects,setProjects]=useState([]);
   
+
   const getDataList = async () => {
     if (hasCookie("token")) {
       let token = getCookie("token");
@@ -79,14 +80,15 @@ const DashBoardScreenCHANNEL = () => {
         );
         setProjectData({
             ...projectData,
-            project: data?.project,
-            location: data?.location,
-            property_size: data?.property_size,
-            unit_area: data?.unit_area,
-            price: data?.price,
-            contact_no: data?.contact_no,
-            file: data?.cover_image,
-            file_name: data?.cover_image,
+            project: data?.data?.project,
+            project_id: data?.data?.project_id,
+            location: data?.data?.location,
+            property_size: data?.data?.property_size,
+            unit_area: data?.data?.unit_area,
+            price: data?.data?.price,
+            contact_no: data?.data?.contact_no,
+            file: data?.data?.cover_image,
+            file_name: data?.data?.cover_image,
         })
       } catch (error) {
         if (error?.response?.data?.message) {
@@ -158,6 +160,49 @@ const DashBoardScreenCHANNEL = () => {
       }
   };
 
+  const updateProject=  async() => {
+   
+    if (!hasCookie("token")) return;
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+    const header = {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        db: db_name,
+        m_id: 79,
+      },
+    };
+
+    const formData=new FormData();
+  for (const [key, value] of Object.entries(projectData)) {
+    formData.append(key, value);
+  }
+
+    try {
+      const response = await axios.put(`${Baseurl}/db/channel/project`,formData, header);
+      if (response.status === 200 || response.status === 201) {
+        toast.success(response.data.message);
+        setShowModal(false)
+        setProjectData("")
+        getDataList();
+      }
+    } catch (error) {
+      console.log(error)
+      if (error?.response?.data?.status === 422) {
+            toast.error(error?.response?.data?.message)
+            
+      }
+      if (error?.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong!");
+      }
+    }
+};
+
+  
+
   return (
     <>
       <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
@@ -202,8 +247,10 @@ const DashBoardScreenCHANNEL = () => {
                           <img
                             src="/ChannelPartner/profile-edit-white.svg"
                             onClick={()=>{
+                                setEditMode(true)
+                               
                                 getDataListById(project?.project_id)
-                                setShowModal2(true)
+                                setShowModal(true)
                             }}
                             alt
                             style={{ height: 17 }}
@@ -229,7 +276,7 @@ const DashBoardScreenCHANNEL = () => {
       <Modal
         show={showModal}
         onHide={() => {
-            setProjectData("")
+          setProjectData("")
           setShowModal(false);
         }}
         size="lg"
@@ -238,7 +285,8 @@ const DashBoardScreenCHANNEL = () => {
         <Modal.Body>
           <form className="  d-flex flex-column gap-4 p-4 " onSubmit={(e)=>{
             e.preventDefault()
-            createProject()
+            editMode ?  updateProject():createProject()
+           
           }}>
             <div
               className=" text-center fs-4 "
@@ -396,192 +444,29 @@ const DashBoardScreenCHANNEL = () => {
               >
                 Cancel
               </div>
-              <button
-                className="btn text-white rounded-5"
-                style={{ background: clientBtnColor }}
-              >
-                Create
-              </button>
-            </div>
-          </form>
-        </Modal.Body>
-      </Modal>
-
-
-      <Modal
-        show={showModal2}
-        onHide={() => {
-          setShowModal2(false);
-        }}
-        size="lg"
-        centered
-      >
-        <Modal.Body>
-          <div className="  d-flex flex-column gap-4 p-4 ">
-            <div
-              className=" text-center fs-4 "
-              style={{ color: clientBtnColor }}
-            >
-              Project Details
-            </div>
-
-            <div className="d-flex flex-column gap-3">
-              <div className="d-flex justify-content-between gap-5 align-items-center">
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Name
-                  </label>
-                  <input
-                    type="text"
-                    value={projectData?.project}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        project: e.target.value,
-                      });
-                    }}
-                    placeholder="Burrow Real Estate"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div>
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Size
-                  </label>
-                  <input
-                    type="text"
-                    value={projectData?.project}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        project: e.target.value,
-                      });
-                    }}
-                    placeholder="3,4,5 BHK"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div>
-              </div>
-
-              <div className="d-flex justify-content-between gap-5 align-items-center">
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Location
-                  </label>
-                  <input
-                    type="text"
-                    value={projectData?.project}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        project: e.target.value,
-                      });
-                    }}
-                    placeholder="Ex:- Vasant Kunj"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div>
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Unit Area
-                  </label>
-                  <input
-                    type="text"
-                    value={projectData?.project}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        project: e.target.value,
-                      });
-                    }}
-                    placeholder="4000 sq ft"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div>
-              </div>
-
-              <div className="d-flex justify-content-between gap-5 align-items-center">
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Contact No.
-                  </label>
-                  <input
-                    type="text"
-                    value={projectData?.project}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        project: e.target.value,
-                      });
-                    }}
-                    placeholder="+91-8787675466"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div>
-                <div className="w-50 d-flex justify-content-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Price
-                  </label>
-                  <input
-                    type="text"
-                    value={projectData?.project}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        project: e.target.value,
-                      });
-                    }}
-                    placeholder="₹ 3.57 Cr onwards"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div>
-              </div>
-
-
-              <div className="d-flex justify-content-between gap-5 align-items-center">
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Logo
-                  </label>
-                  <input
-                    type="file"
-                    onChange={handleFileChange}
-                    id="fileInput"
-                    // style={{ display: "none" }}
-                  />
-                  {/* <div
-                      htmlFor="fileInput"
-                      className="w-73 border p-2 ps-1 rounded-md text-black"
-                      style={{ outline: "none", cursor: "pointer" }}
-                    >
-                      Click here to choose file
-                    </div> */}
-                </div>
-                <div className="w-50 justify-content-lg-between align-items-center"></div>
-              </div>
-            </div>
-
-            <div className="d-flex justify-content-center align-items-center gap-3 ">
-              <div
-                className="btn btn-danger rounded-5"
-                onClick={() => setShowModal2(false)}
-              >
-                Cancel
-              </div>
-              <button
+              {
+                editMode ?
+                (
+                    <button
                 className="btn text-white rounded-5"
                 style={{ background: clientBtnColor }}
               >
                 Update
               </button>
+                ) 
+                :
+                (
+                    <button
+                className="btn text-white rounded-5"
+                style={{ background: clientBtnColor }}
+              >
+                Create
+              </button>
+                )
+              }
+
             </div>
-          </div>
+          </form>
         </Modal.Body>
       </Modal>
     </>

@@ -14,15 +14,15 @@ const ForgotPassword = () => {
   const [token, setToken] = useState('')
 
   const handleSubmit = async () => {
-    if (!newPassword.trim()) {
+    if (newPassword.trim() === '') {
       toast.error("New Password is required.");
       return;
     }
-    if (!confirmPassword.trim()) {
+    if (confirmPassword.trim() === '') {
       toast.error("Confirm Password is required.");
       return;
     }
-    if (!email.trim()) {
+    if (email.trim() === '') {
       toast.error("Email is required.");
       return;
     }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import BasicRangeShortcuts from "../../../DateRangeCustom/Daterange";
 import axios from "axios";
 import PlusIcon from "../../../Svg/PlusIcon";
 
@@ -225,8 +224,8 @@ const DashBoardScreenCHANNEL = () => {
             <div className="row gx-4 gy-4">
               <div className="profile-text">Campaigns</div>
             {
-                projects?.map((project)=>(
-                    <div className="col-12 col-md-6">
+                projects?.map((project, i)=> (
+                    <div key={i} className="col-12 col-md-6">
                 <div
                   className="w-100 position-relative Campaign-img"
                   style={{

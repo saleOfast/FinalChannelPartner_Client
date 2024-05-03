@@ -6,10 +6,12 @@ import { Baseurl, filesUrl } from "../../../../Utils/Constants";
 import { getCookie, hasCookie } from "cookies-next";
 import { toast, useToast } from "react-toastify";
 import { Modal } from "react-bootstrap";
+import { Delete } from "@mui/icons-material";
 
 const DashBoardScreenCHANNEL = () => {
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
+  const [imgFile, setImgFile] = useState("");
   const clientBtnColor = hasCookie("clientBtnColor")
     ? getCookie("clientBtnColor")
     : "#293790";
@@ -89,6 +91,7 @@ const DashBoardScreenCHANNEL = () => {
             file: data?.data?.cover_image,
             file_name: data?.data?.cover_image,
         })
+        setImgFile([`${filesUrl}/project/images${data?.data?.cover_image}`])
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -116,11 +119,16 @@ const DashBoardScreenCHANNEL = () => {
         });
       };
       reader.readAsDataURL(e.target.files[0]);
+      const ImagesArray = Array.from(e.target.files).map((file) =>URL.createObjectURL(file)
+    );
+    console.log("ImagesArray",ImagesArray)
+    setImgFile(ImagesArray);
     }
   };
   
   const createProject=  async() => {
-   
+    if(!projectData.project) return toast.warning("please enter project name")
+   if(!projectData.file) return toast.warning("please upload cover image")
       if (!hasCookie("token")) return;
       const token = getCookie("token");
       const db_name = getCookie("db_name");
@@ -182,6 +190,7 @@ const DashBoardScreenCHANNEL = () => {
       const response = await axios.put(`${Baseurl}/db/channel/project`,formData, header);
       if (response.status === 200 || response.status === 201) {
         toast.success(response.data.message);
+        setEditMode(false)
         setShowModal(false)
         setProjectData("")
         getDataList();
@@ -275,6 +284,7 @@ const DashBoardScreenCHANNEL = () => {
       <Modal
         show={showModal}
         onHide={() => {
+            setEditMode(false)
           setProjectData("")
           setShowModal(false);
         }}
@@ -422,15 +432,25 @@ const DashBoardScreenCHANNEL = () => {
                     type="file"
                     onChange={handleFileChange}
                     id="fileInput"
-                    // style={{ display: "none" }}
+                    style={{ display: "none" }}
                   />
-                  {/* <div
+                  {imgFile.length > 0 ? 
+                    <div className="relative">
+                        <img src={imgFile[0]} />
+                        <span className="absolute top-0 right-0" onClick={()=>setImgFile([])}>
+                            <Delete style={{color: 'red'}}/>
+                        </span>
+                        
+                    </div>
+                    : 
+                  <label
                       htmlFor="fileInput"
                       className="w-73 border p-2 ps-1 rounded-md text-black"
                       style={{ outline: "none", cursor: "pointer" }}
                     >
                       Click here to choose file
-                    </div> */}
+                    </label>
+                    }
                 </div>
                 <div className="w-50 justify-content-lg-between align-items-center"></div>
               </div>
@@ -439,7 +459,7 @@ const DashBoardScreenCHANNEL = () => {
             <div className="d-flex justify-content-center align-items-center gap-3 ">
               <div
                 className="btn btn-danger rounded-5"
-                onClick={() => {setShowModal(false); setProjectData("")}}
+                onClick={() => {setShowModal(false); setProjectData(""); setEditMode(false); setImgFile("")} }
               >
                 Cancel
               </div>

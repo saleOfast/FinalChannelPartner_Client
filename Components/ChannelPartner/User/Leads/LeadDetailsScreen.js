@@ -13,6 +13,7 @@ const LeadDetailsScreen = () => {
   const {id}=router.query;
 
   const [lead,setLead]=useState({
+    lead_code:"",
     lead_id:"",
     lead_name: "", 
     email_id: "",
@@ -55,15 +56,16 @@ const LeadDetailsScreen = () => {
             setLead({
               ...lead,
               lead_id:leads.data.data.lead_id,
-    lead_name: leads.data.data.lead_name, 
-    email_id: leads.data.data.email_id,
-    p_contact_no: leads.data.data.p_contact_no, 
-    address: leads.data.data.address, 
-    pincode: leads.data.data.pincode, 
-    p_visit_date: leads.data.data.p_visit_date,
-    p_visit_time: leads.data.data.p_visit_time, 
-    project_id:leads.data.data.projectData.project_id,
-    project_name:leads.data.data.projectData.project,
+              lead_code:leads.data.data.lead_code,
+              lead_name: leads.data.data.lead_name, 
+              email_id: leads.data.data.email_id,
+              p_contact_no: leads.data.data.p_contact_no, 
+              address: leads.data.data.address, 
+              pincode: leads.data.data.pincode, 
+              p_visit_date: leads.data.data.p_visit_date,
+              p_visit_time: leads.data.data.p_visit_time, 
+              project_id:leads.data.data.projectData.project_id,
+              project_name:leads.data.data.projectData.project,
             });
             setProjectList(projects.data.data);
         } catch (error) {
@@ -157,7 +159,7 @@ function formatDate(date) {
                 </ul>
                 <div className="row bg-white">
                   <div className="col-12 col-lg-6">
-                    <div className="list-group General-list d-flex flex-column gap-4 bg-white leads-content h-auto m-0 border-bottom border-lg-0">
+                    <div className="list-group General-list d-flex flex-column gap-4 bg-white leads-content h-auto m-0 border-lg-0">
                       <div className="row">
                         <div className="col-5 col-md-5">
                           <div className="list-group-item list-group-item-action p-0 border-0">

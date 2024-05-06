@@ -84,7 +84,7 @@ function formatDate(date) {
                 </ul>
                 <div className="row bg-white">
                   <div className="col-12 col-lg-6">
-                    <div className="list-group General-list d-flex flex-column gap-4 bg-white leads-content h-auto m-0 border-bottom border-lg-0">
+                    <div className="list-group General-list d-flex flex-column gap-4 bg-white leads-content h-auto m-0  border-lg-0">
                       <div className="row">
                         <div className="col-5 col-md-5">
                           <div className="list-group-item list-group-item-action p-0 border-0">

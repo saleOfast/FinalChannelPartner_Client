@@ -10,6 +10,8 @@ import { UserLogIN } from "../../../store/ClientLoginSlice";
 import { Baseurl, filesUrl } from "../../../Utils/Constants";
 import axios from "axios";
 import { validEmail } from "../../../Utils/regex";
+import { clearTheme, setSidebarColor, setTopNavColor, setbuttonColor } from '../../../store/themeSlice';
+
 import {
   assignPermissions,
   crm,
@@ -87,6 +89,12 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
           setCookie("userInfo", res.data.userData);
           setCookie('clientLogo', res.data.Logo[0]);
           setCookie("db_name", res.data.userData.db_name);
+          setCookie('sidecolor', res.data.userData.sidebar_color || '#405189');
+          setCookie('btncolor', res.data.userData.button_color || '#405189');
+          setCookie('topnavcolor', res.data.userData.top_nav_color || '#405189');
+          dispatch(setSidebarColor(res.data.userData.sidebar_color || '#405189'))
+          dispatch(setbuttonColor(res.data.userData.button_color || '#405189'))
+          dispatch(setTopNavColor(res.data.userData.top_nav_color || '#405189'))
           initialPermission("CHANNEL")
           assignPermission(res.data.platformData);
           toast.success("Logged in SuccessFully");  
@@ -107,8 +115,9 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
   useEffect(()=>{
     const getSignInData=async()=>{
       try {
+        const baseUrl = window.location.origin;
         const {data}=await axios.post(Baseurl+"/db/admin/url",{
-          client_url:"http://crm.cybermatrixsolutions.com/",
+          client_url:`${baseUrl}`,
         })
         setClientData(data?.data)
         setCookie("clientBtnColor",data?.data?.button_color)

@@ -111,7 +111,6 @@ const CP_NavBar = () => {
               <img
                 src={`${filesUrl}/logo/images${clientLogo?.logo}`}
                 alt=""
-                style={{ height: 66 }}
               />
             </div>
             <button

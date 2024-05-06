@@ -17,7 +17,7 @@ const DashBoardScreenCHANNEL = () => {
     : "#293790";
   const [projectData, setProjectData] = useState({
     project: "",
-    project_id:"",
+    project_id:null,
     location: "",
     property_size: "",
     unit_area: "",
@@ -215,7 +215,7 @@ const DashBoardScreenCHANNEL = () => {
     <>
       <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
         <div className="top_btn_sec mb-2">
-          <div className="d-flex">
+          <div className="d-flex ">
             <button
               className="btn ms-auto  Add_btn me-3"
               style={{ background: `${clientBtnColor}` }}
@@ -287,6 +287,7 @@ const DashBoardScreenCHANNEL = () => {
             setEditMode(false)
           setProjectData("")
           setShowModal(false);
+          setImgFile("")
         }}
         size="lg"
         centered

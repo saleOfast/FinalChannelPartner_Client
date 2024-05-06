@@ -247,7 +247,7 @@ function formatDate(date) {
                     
                       <div className="list-group General-list d-flex flex-column gap-4 bg-white leads-content h-auto m-0 py-2">
                         <div className="row">
-                          <div className="col-5 col-md-5 col-lg-5">
+                          <div className="col-5 col-md-5 col-lg-2">
                             <div className="list-group-item list-group-item-action p-0 border-0">
                               <span className="list-left">Booking Status</span>
                             </div>

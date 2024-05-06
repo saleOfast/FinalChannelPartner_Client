@@ -235,7 +235,7 @@ const LeadsScreen = () => {
               <div className="top_btn_sec mb-2">
                 <div className="d-flex">
                   <button
-                    className="btn ms-auto  Add_btn me-3"
+                    className="btn ms-auto  Add_btn "
                     style={{ background: `${clientBtnColor}` }}
                     onClick={()=>{setShowAssignTo(true)}}
                   >

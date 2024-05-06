@@ -10,6 +10,7 @@ import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
 import DateRange from '../../../DateRangeCustom/Daterange';
+import { saveAs } from 'file-saver';
 
 
 
@@ -28,7 +29,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   })
 
   const [value, setValue] = useState({
-
     startDate: new Date(),
     endDate: new Date().setMonth(11)
 
@@ -45,9 +45,25 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     status:"",
     file_name:""
   })
-  
 
-  const getDataListById = async () => {
+  console.log("brokerageId", brokerageId, "updateBill", updateBill)
+
+  const resetUpdateData = () => {
+    setUpdateBill({
+      date:"",
+      amount:"",
+      booking_id:"",
+      brokerage_id:"",
+      file:null,
+      booking_name:"",
+      status:"",
+      file_name:""
+    })
+  }
+  
+  const [resetData,setResetData]=useState(false)
+
+  const getDataListById = async (brokerageId) => {
 
     if (hasCookie('token')) {
         let token = (getCookie('token'));
@@ -64,6 +80,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
         try {
             const response = await axios.get(Baseurl + `/db/channel/brokerage?brokerage_id=${brokerageId}`, header);
+            console.log("response", response)
             setUpdateBill({
               ...updateBill,
               booking_name:response?.data?.data?.BrokerageBookingtData?.booking_name,
@@ -87,11 +104,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 useEffect(()=>{
   if(brokerageId){
     getDataListById();
-    }
+  }
 },[brokerageId])
 
 const updateBrokerageBill =  async() => {
-    console.log("clicked ")
     if (!hasCookie("token")) return;
     const token = getCookie("token");
     const db_name = getCookie("db_name");
@@ -113,7 +129,9 @@ const updateBrokerageBill =  async() => {
       if (response.status === 200 || response.status === 201) {
         toast.success(response.data.message);
         setShowModal2(false)
+        resetUpdateData()
         getDataList()
+        
       }
     } catch (error) {
       console.log(error)
@@ -306,7 +324,11 @@ const updateBrokerageBill =  async() => {
                     return (
                         <div className="table_btns">
                             <button
-                                onClick={()=>{setShowModal(true); setBrokerageId(tableMeta?.rowData[0]);  }}
+                                onClick={()=>{
+                                  setShowModal(true);
+                                  //  setBrokerageId(tableMeta?.rowData[0]);
+                                  getDataListById(tableMeta.rowData[0])
+                                    }}
                                 style={{background:clientBtnColor, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3 justify-content-center align-items-center d-flex '
                                 title='view'>
@@ -368,6 +390,8 @@ const updateBrokerageBill =  async() => {
       }
     };
 
+
+
     return (
         <>
             <div className="miuiTable channelTable">
@@ -416,6 +440,7 @@ const updateBrokerageBill =  async() => {
                      onClick={()=>{
                       setShowModal(false)
                       setBrokerageId("")
+                      resetUpdateData()
                      }}
                      style={{width:"29px"}}
                       src="/ChannelPartner/cross-icon.png"
@@ -476,11 +501,16 @@ const updateBrokerageBill =  async() => {
                                     <label htmlFor="name" className="pb-1">Bill</label>
                                     <span className="star">*</span>
                                   </div>
-                                  <Link 
-                                   href={`${filesUrl}/brokerage/images${updateBill?.file}`}
-                                   target='_black' className="rightTab fw-semibold text-decoration-underline" style={{color:"#293790"}}>
+                                  <a
+                                  
+                                  //  href={`${filesUrl}/brokerage/images${updateBill?.file}`}
+                                  onClick={()=>{
+                                    saveAs(`${filesUrl}/brokerage/images${updateBill?.file}`,"Brokerage-Bill")
+                                  }}
+                                   
+                                   target='_black' className="rightTab cursor-pointer fw-semibold text-decoration-underline" style={{color:"#293790"}}>
                                   {updateBill?.file}
-                                  </Link>
+                                  </a>
                                 </div>
                               </div>
                             </div>
@@ -538,9 +568,9 @@ const updateBrokerageBill =  async() => {
                                       }}
                                     >
                                       {
-                                        dataList?.map((list)=>(
+                                        dataList?.map((list, i)=>(
                                           <option
-                                          key={list?.BrokerageBookingtData?.booking_id}
+                                          key={i}
                                           value={list?.BrokerageBookingtData?.booking_id}
                                         >
                                           {list?.BrokerageBookingtData?.booking_name}
@@ -631,10 +661,13 @@ const updateBrokerageBill =  async() => {
                               </div>
                             </div>
                             <div className="new-leades-btn d-flex justify-content-center gap-4">
-                              <div  className="btn btn-danger rounded-5 text-white" onClick={() => setShowModal2(false)} >Cancel</div>
+                              <div  className="btn btn-danger rounded-5 text-white" onClick={() =>{ 
+                                setShowModal2(false)
+                                }} >Cancel</div>
                               <button type='button'  className="btn text-white rounded-5" style={{background:clientBtnColor}} onClick={(e)=>{
                               e.preventDefault()
                                 updateBrokerageBill()
+                                
                               }}>Update</button>
                             </div>
                           </form>

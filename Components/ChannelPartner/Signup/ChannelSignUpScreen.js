@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Baseurl, filesUrl } from "../../../Utils/Constants";
+import { setCookie } from "cookies-next";
 
 
 const ChannelSignUpScreen = () => {
@@ -32,6 +33,7 @@ const ChannelSignUpScreen = () => {
   const [statelist, setStatelist] = useState([]);
   const [citylist, setCitylist] = useState([]);
   const [errorToast, setErrorToast] = useState(false);
+  const[clientData,setClientData]=useState();
 
 
   const router = useRouter();
@@ -232,6 +234,21 @@ const ChannelSignUpScreen = () => {
     }
   }, [formFields.state_id]);
 
+  useEffect(()=>{
+    const getSignInData=async()=>{
+      try {
+        const baseUrl = window.location.origin;
+        const {data}=await axios.post(Baseurl+"/db/admin/url",{
+          client_url:`${baseUrl}`,
+        })
+        setClientData(data?.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getSignInData()
+  },[])
+
   return (
     <>
       <section className="Sign-Up pt-4" style={{padding:'0 16px'}}>
@@ -240,14 +257,20 @@ const ChannelSignUpScreen = () => {
             <div className="col-12 col-md-7">
               <div className="row gx-3">
                 <div className="Sign-In-logo pb-4">
-                  <img style={{height: '90px'}} src="/ChannelPartner/logo.png" alt />
+                  <img style={{height: '90px'}} src={
+                        clientData?.logo
+                          ? `${filesUrl}` +
+                            `/logo/images${clientData?.logo}`
+                          : "/ChannelPartner/logo.png"
+                      } alt />
                 </div>
                 <div className="col-6">
                   <div
                     style={{
                       height: 320,
                       width: "100%",
-                      backgroundImage: "url(/ChannelPartner/signup-img1.png)",
+                      // backgroundImage: "url(/ChannelPartner/signup-img1.png)",
+                      backgroundImage: clientData?.client_image_1 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_1}`:`url(/ChannelPartner/signup-img1.png)`,
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",
                       marginBottom: 15,
@@ -258,7 +281,8 @@ const ChannelSignUpScreen = () => {
                     style={{
                       height: 336,
                       width: "100%",
-                      backgroundImage: "url(/ChannelPartner/signup-img3.png)",
+                      // backgroundImage: "url(/ChannelPartner/signup-img3.png)",
+                      backgroundImage: clientData?.client_image_2 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_2}`:`url(/ChannelPartner/signup-img3.png)`,
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",
                       marginBottom: 15,
@@ -272,7 +296,8 @@ const ChannelSignUpScreen = () => {
                     style={{
                       height: 176,
                       width: "100%",
-                      backgroundImage: "url(/ChannelPartner/signup-img2.png)",
+                      // backgroundImage: "url(/ChannelPartner/signup-img2.png)",
+                      backgroundImage: clientData?.client_image_3 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_3}`:`url(/ChannelPartner/signup-img2.png)`,
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",
                       marginBottom: 15,
@@ -283,7 +308,8 @@ const ChannelSignUpScreen = () => {
                     style={{
                       height: 368,
                       width: "100%",
-                      backgroundImage: "url(/ChannelPartner/signup-img4.png)",
+                      // backgroundImage: "url(/ChannelPartner/signup-img4.png)",
+                      backgroundImage: clientData?.client_image_4 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_4}`:`url(/ChannelPartner/signup-img4.png)`,
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",
                       marginBottom: 15,
@@ -296,7 +322,8 @@ const ChannelSignUpScreen = () => {
                     style={{
                       height: 192,
                       width: "100%",
-                      backgroundImage: "url(/ChannelPartner/signup-img2.png)",
+                      // backgroundImage: "url(/ChannelPartner/signup-img2.png)",
+                      backgroundImage: clientData?.client_image_1 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_1}`:`url(/ChannelPartner/signup-img2.png)`,
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",
                       marginBottom: 15,
@@ -307,7 +334,8 @@ const ChannelSignUpScreen = () => {
                     style={{
                       height: 304,
                       width: "100%",
-                      backgroundImage: "url(/ChannelPartner/signup-img5.png)",
+                      // backgroundImage: "url(/ChannelPartner/signup-img5.png)",
+                      backgroundImage: clientData?.client_image_2 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_2}`:`url(/ChannelPartner/signup-img5.png)`,
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",
                       marginBottom: 15,
@@ -328,7 +356,7 @@ const ChannelSignUpScreen = () => {
                     id="Sign-Up"
                     data-bs-toggle="tab"
                     data-bs-target="#Sign-Up-tab"
-                    style={{ backgroundColor: "#293790" }}
+                    style={{ backgroundColor: `${clientData?.button_color || '#293790'}`}}
                   >
                     Sign Up
                   </div>

@@ -9,7 +9,7 @@ import { Modal } from "react-bootstrap";
 import { Delete } from "@mui/icons-material";
 import Link from "next/link";
 
-const CampaignScreen = () => {
+const CampaignAdminScreen = () => {
   const [showModal, setShowModal] = useState(false);
   const [imgFile, setImgFile] = useState("");
   const clientBtnColor = hasCookie("clientBtnColor")
@@ -96,9 +96,9 @@ const CampaignScreen = () => {
             file:campaign?.cover_image,
             file_preview: `${filesUrl}/project/images${campaign?.cover_image}`,
             logo:campaign?.logo_image,
-            logo_preview: `${filesUrl}/projectLogo/images${campaign?.logo_image}`,
-            template:campaign?.html_file,
-            template_name:campaign?.html_file,
+                logo_preview: `${filesUrl}/projectLogo/images${campaign?.logo_image}`,
+                template:campaign?.html_file,
+                template_name:campaign?.html_file,
         })
       } catch (error) {
         if (error?.response?.data?.message) {
@@ -201,7 +201,7 @@ const CampaignScreen = () => {
   }
 
     try {
-      const response = await axios.post(`${Baseurl}/db/channel/project/usertemplate`,formData, header);
+      const response = await axios.put(`${Baseurl}/db/channel/project`,formData, header);
       if (response.status === 200 || response.status === 201) {
         toast.success(response.data.message);
         setEditMode(false)
@@ -228,7 +228,20 @@ const CampaignScreen = () => {
   return (
     <>
       <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
-        
+        <div className="top_btn_sec mb-2">
+          <div className="d-flex ">
+            <button
+              className="btn ms-auto  Add_btn me-3"
+              style={{ background: `${clientBtnColor}` }}
+              onClick={() => {
+                setShowModal(true);
+              }}
+            >
+              <PlusIcon />
+              Create Campaign
+            </button>
+          </div>
+        </div>
         <section className="Channel-profile Booking-Detail Visit-Details Campaigns pt-4 pb-2 bg-white">
           <div className="container mt-4 mb-4">
             <div className="row gx-4 gy-4">
@@ -264,7 +277,7 @@ const CampaignScreen = () => {
                             style={{ height: 17 }}
                           />
                           <Link
-                            href={`/CHANNEL/CampaignDetails?id=${project?.project_id}`}
+                            href={`/CHANNEL/CampaignDetailsAdmin?id=${project?.project_id}`}
                           >
                           <img
                             src="/ChannelPartner/download-file-white.svg"
@@ -317,7 +330,6 @@ const CampaignScreen = () => {
                   </label>
                   <input
                     type="text"
-                    disabled={true}
                     value={projectData?.project}
                     onChange={(e) => {
                       setProjectData({
@@ -336,7 +348,6 @@ const CampaignScreen = () => {
                   </label>
                   <input
                     type="text"
-                    disabled
                     value={projectData?.property_size}
                     onChange={(e) => {
                       setProjectData({
@@ -358,7 +369,6 @@ const CampaignScreen = () => {
                   </label>
                   <input
                     type="text"
-                    disabled
                     value={projectData?.location}
                     onChange={(e) => {
                       setProjectData({
@@ -377,7 +387,6 @@ const CampaignScreen = () => {
                   </label>
                   <input
                     type="text"
-                    disabled
                     value={projectData?.unit_area}
                     onChange={(e) => {
                       setProjectData({
@@ -417,7 +426,6 @@ const CampaignScreen = () => {
                   </label>
                   <input
                     type="text"
-                    disabled
                     value={projectData?.price}
                     onChange={(e) => {
                       setProjectData({
@@ -434,7 +442,37 @@ const CampaignScreen = () => {
 
 
               <div className="d-flex justify-content-between gap-5 align-items-center">
-                
+                <div className="w-50  d-flex justify-content-lg-between align-items-center">
+                  <label className="w-27" style={{ color: "#9C9AA5" }}>
+                    Property Cover
+                  </label>
+                  <input
+                    type="file"
+                    onChange={(e)=>{
+                      handleFileChange(e,"file","file_preview")
+                    }}
+                    id="fileInput"
+                    style={{ display: "none" }}
+                  />
+                  {projectData?.file_preview ?
+                    <div className="relative">
+                        <img src={projectData?.file_preview} />
+                        <span className="absolute top-0 right-0" onClick={()=>{
+                          setProjectData({...projectData, file: null,file_preview:null})
+                        }}>
+                            <Delete style={{color: 'red'}}/>
+                        </span>
+                    </div>
+                    : 
+                  <label
+                      htmlFor="fileInput"
+                      className="w-73 border p-2 ps-1 rounded-md text-black"
+                      style={{ outline: "none", cursor: "pointer" }}
+                    >
+                      Click here to choose file
+                    </label>
+                    }
+                </div>
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Property Logo
@@ -473,7 +511,42 @@ const CampaignScreen = () => {
                 </div>
               </div>
 
-             
+              <div className="d-flex justify-content-between gap-5 align-items-center">
+                <div className="w-50  d-flex justify-content-lg-between align-items-center">
+                  <label className="w-27" style={{ color: "#9C9AA5" }}>
+                    Template File
+                  </label>
+                  <input
+                    type="file"
+                    onChange={(e)=>{
+                      handleFileChange(e,"template","template_name")
+                    }}
+                    id="templateInput"
+                    style={{ display: "none" }}
+                  />
+                  {projectData?.template_name ? 
+                    <div className="relative w-73">
+                        <div  >{projectData?.template_name}</div>
+                        <span className="absolute top-0 right-0" onClick={()=>{
+                          setProjectData({...projectData, template_name: null, template_file: null})
+                        }}>
+                            <Delete style={{color: 'red'}}/>
+                        </span>
+                    </div>
+                    : 
+                  <label
+                      htmlFor="templateInput"
+                      className="w-73 border p-2 ps-1 rounded-md text-black"
+                      style={{ outline: "none", cursor: "pointer" }}
+                    >
+                      Click here to choose file
+                    </label>
+                    }
+                </div>
+                <div className="w-50 d-flex justify-content-lg-between align-items-center">
+                 
+                </div>
+              </div>
 
             </div>
 
@@ -513,4 +586,4 @@ const CampaignScreen = () => {
   );
 };
 
-export default CampaignScreen;
+export default CampaignAdminScreen;

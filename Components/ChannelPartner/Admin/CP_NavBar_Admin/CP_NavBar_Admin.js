@@ -117,6 +117,11 @@ const CP_NavBar_Admin = () => {
                 <Link className={`nav-link ${isActive('/CHANNEL/PendingRequests')}`} href="/CHANNEL/PendingRequests">Pending Requests</Link>
               </li>
               <li className="nav-item">
+                <Link className={`nav-link ${isActive('/CHANNEL/CampaignAdmin')}`} href="/CHANNEL/CampaignAdmin">
+                  Campaign
+                </Link>
+              </li>
+              <li className="nav-item">
                     <div className='user_profile'>
                     <Dropdown className='cp_nav_toggle' >
                   <Dropdown.Toggle variant="none" id="profileBtn">

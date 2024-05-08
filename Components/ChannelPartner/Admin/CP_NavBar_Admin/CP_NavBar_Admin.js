@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Baseurl, filesUrl } from '../../../../Utils/Constants';
-import { getCookie, hasCookie, removeCookies } from 'cookies-next';
+import { deleteCookie, getCookie, hasCookie, removeCookies, setCookie } from 'cookies-next';
 import { Dropdown } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -14,6 +14,7 @@ import { startLoading, stopLoading } from '../../../../store/loaderSlice';
 import { clearMode } from '../../../../store/dbModeSlice';
 import { LoggedOut } from '../../../../store/adMinLoginSlice';
 import { userLogOut } from '../../../../store/ClientLoginSlice';
+import { setActiveLink } from '../../../../store/cpActiveLinkSlice';
 
 const CP_NavBar_Admin = () => {
   const router = useRouter();
@@ -24,13 +25,15 @@ const CP_NavBar_Admin = () => {
 
   const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
-
+  const activeLink=useSelector(state=>state.cpActiveLink.activeLink)
 
   const isActive = (pathname) => {
-    return router.pathname === pathname ? 'active' : '';
+    return activeLink === pathname ? 'active' : '';
   };
 
   const logouthandler = () => {
+    deleteCookie("clientBtnColor")
+    setCookie("activeLink","/")
     dispatch(startLoading())
     const isAdminMode = dbMode === "admin";
     const isMasterOrUserMode = dbMode === "master" || dbMode === "user";
@@ -42,7 +45,6 @@ const CP_NavBar_Admin = () => {
       router.push(isAdminMode ? "/Admin" : "/")
     }
     dispatch(isAdminMode ? LoggedOut() : userLogOut());
-    removeCookies("clientBtnColor")
     dispatch(stopLoading())
     toast.success("Logged Out Successfully");
   };
@@ -87,6 +89,13 @@ const CP_NavBar_Admin = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const activeLinkFromCookie = getCookie("activeLink")
+    if (activeLinkFromCookie) {
+      dispatch(setActiveLink(activeLinkFromCookie));
+    }
+  }, []);
+
   return (
     <>
       <ConfirmBox
@@ -108,17 +117,37 @@ const CP_NavBar_Admin = () => {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex gap-2 align-items-baseline">
               <li className="nav-item">
-                <Link className={`nav-link ${isActive('/')}`} href="/">Reports & Dashboard</Link>
+                <Link className={`nav-link ${isActive('/')}`} href="/"
+                  onClick={()=>{
+                    dispatch(setActiveLink("/"))
+                    setCookie("activeLink","/")
+                  }}
+                >Reports & Dashboard</Link>
               </li>   
               <li className="nav-item">
-                <Link className={`nav-link ${isActive('/CHANNEL/ActivePartners')}`} href="/CHANNEL/ActivePartners">Channel Partners</Link>
+                <Link className={`nav-link ${isActive('/CHANNEL/ActivePartners')}`} href="/CHANNEL/ActivePartners"
+                  onClick={()=>{
+                    dispatch(setActiveLink("/CHANNEL/ActivePartners"))
+                    setCookie("activeLink","/CHANNEL/ActivePartners")
+                  }}
+                >Channel Partners</Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${isActive('/CHANNEL/PendingRequests')}`} href="/CHANNEL/PendingRequests">Pending Requests</Link>
+                <Link className={`nav-link ${isActive('/CHANNEL/PendingRequests')}`} 
+                  onClick={()=>{
+                    dispatch(setActiveLink("/CHANNEL/PendingRequests"))
+                    setCookie("activeLink","/CHANNEL/PendingRequests")
+                  }}
+                href="/CHANNEL/PendingRequests">Pending Requests</Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${isActive('/CHANNEL/CampaignAdmin')}`} href="/CHANNEL/CampaignAdmin">
-                  Campaign
+                <Link className={`nav-link ${isActive('/CHANNEL/CampaignAdmin')}`} 
+                  onClick={()=>{
+                    dispatch(setActiveLink("/CHANNEL/CampaignAdmin"))
+                    setCookie("activeLink","/CHANNEL/CampaignAdmin")
+                  }}
+                href="/CHANNEL/CampaignAdmin">
+                  Campaign 
                 </Link>
               </li>
               <li className="nav-item">
@@ -149,6 +178,8 @@ const CP_NavBar_Admin = () => {
                     <Link href={"/CHANNEL/ChannelProfile"}>
                       <Dropdown.Item className='d-flex align-items-center' onClick={()=>{
                         router.push("/CHANNEL/ChannelProfile")
+                        dispatch(setActiveLink("/CHANNEL/ChannelProfileAdmin"))
+                        setCookie("activeLink","/CHANNEL/ChannelProfileAdmin")
                       }}>
                         <div style={{width:"15px"}}>
                       <AvatarIcon/>

@@ -27,6 +27,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     user_code: '',
     reject_reason: ''
   })
+    const [roleId,setRoleId]=useState()
 
   const [value, setValue] = useState({
     startDate: new Date(),
@@ -46,8 +47,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     file_name:""
   })
 
-  console.log("brokerageId", brokerageId, "updateBill", updateBill)
-
   const resetUpdateData = () => {
     setUpdateBill({
       date:"",
@@ -61,7 +60,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     })
   }
   
-  const [resetData,setResetData]=useState(false)
 
   const getDataListById = async (brokerageId) => {
 
@@ -106,6 +104,13 @@ useEffect(()=>{
     getDataListById();
   }
 },[brokerageId])
+
+useEffect(() => {
+  if (hasCookie("userInfo")) {
+    const userInfoData = JSON.parse(getCookie("userInfo"));
+    setRoleId(userInfoData.role_id)
+  }
+}, []);
 
 const updateBrokerageBill =  async() => {
     if (!hasCookie("token")) return;
@@ -426,15 +431,19 @@ const updateBrokerageBill =  async() => {
         <Modal.Body>
           <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
           <div className='d-flex justify-content-end align-items-center pb-2'>
-                    <img
-                    className=' cursor-pointer'
-                      src="/ChannelPartner/profile-edit.svg"
-                      onClick={()=>{
-                        setShowModal(false)
-                        setShowModal2(true)
-                      }}
-                      alt
-                    />
+                  {
+                    roleId===2 && (
+                      <img
+                      className=' cursor-pointer'
+                        src="/ChannelPartner/profile-edit.svg"
+                        onClick={()=>{
+                          setShowModal(false)
+                          setShowModal2(true)
+                        }}
+                        alt
+                      />
+                    )
+                  }
                      <img
                      className='ms-4 cursor-pointer'
                      onClick={()=>{

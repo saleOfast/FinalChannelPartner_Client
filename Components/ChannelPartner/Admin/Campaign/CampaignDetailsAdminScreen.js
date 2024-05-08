@@ -39,7 +39,7 @@ const CampaignDetailsAdminScreen = () => {
 
     const targetRef=useRef();
     const options = {
-      filename: "using-function.pdf",
+      filename: `${projectData?.project}-Template.pdf`,
       page: {
         margin: 20
       }
@@ -158,7 +158,7 @@ const CampaignDetailsAdminScreen = () => {
                 [field]: e.target.files[0],
                 [fieldPreview]: URL.createObjectURL(e.target.files[0]),
               });
-            }
+            }       
             
           };
           reader.readAsDataURL(e.target.files[0]);

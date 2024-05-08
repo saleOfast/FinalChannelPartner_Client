@@ -8,6 +8,7 @@ import sideViewSlice from './sideViewSlice'
 import  dbPermissionModeSlice  from './permissionSlice'
 import dmsCartSlice from './dmsCartSlice'
 import loaderSlice from "./loaderSlice"
+import cpActiveLinkSlice from './cpActiveLinkSlice'
 
 
 
@@ -21,7 +22,8 @@ export const store = configureStore({
         isActiveSlice: isActiveSliceReducer,
         permissionMode:dbPermissionModeSlice,
         dmsCart:dmsCartSlice,
-        loader:loaderSlice
+        loader:loaderSlice,
+        cpActiveLink:cpActiveLinkSlice
     },
     
 })

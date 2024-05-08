@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Baseurl, filesUrl } from "../../../../Utils/Constants";
-import { deleteCookie, getCookie, hasCookie, removeCookies } from "cookies-next";
+import { deleteCookie, getCookie, hasCookie, removeCookies, setCookie } from "cookies-next";
 import { Dropdown } from "react-bootstrap";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -14,24 +14,29 @@ import { startLoading, stopLoading } from "../../../../store/loaderSlice";
 import { clearMode } from "../../../../store/dbModeSlice";
 import { LoggedOut } from "../../../../store/adMinLoginSlice";
 import { userLogOut } from "../../../../store/ClientLoginSlice";
+import { setActiveLink } from "../../../../store/cpActiveLinkSlice";
 
 const CP_NavBar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [showConfirm, setshowConfirm] = useState(false);
   const [userInfo, setUserInfo] = useState({});
+  const [roleId,setRoleId]=useState();
   const dbMode = useSelector((state) => state.dbMode.value);
 
   const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
+  const activeLink=useSelector(state=>state.cpActiveLink.activeLink)
 
   const isActive = (pathname) => {
-    return router.pathname === pathname ? "active" : "";
+    return  activeLink===pathname ? "active" : "";
   };
 
-
+  
   
   const logouthandler = () => {
     dispatch(startLoading());
+    deleteCookie("clientBtnColor")
+    setCookie("activeLink","/")
     const isAdminMode = dbMode === "admin";
     const isMasterOrUserMode = dbMode === "master" || dbMode === "user";
     setshowConfirm(!showConfirm);
@@ -42,7 +47,6 @@ const CP_NavBar = () => {
       router.push(isAdminMode ? "/Admin" : "/");
     }
     dispatch(isAdminMode ? LoggedOut() : userLogOut());
-    deleteCookie("clientBtnColor")
     dispatch(stopLoading());
     toast.success("Logged Out Successfully");
   };
@@ -68,7 +72,7 @@ const CP_NavBar = () => {
         );
         setUserInfo(response.data.data);
       } catch (error) {
-        console.log(error);
+        
         if (
           error?.response?.data?.message === "please login again token expired"
         ) {
@@ -85,9 +89,19 @@ const CP_NavBar = () => {
   useEffect(() => {
     if (hasCookie("userInfo")) {
       const userInfoData = JSON.parse(getCookie("userInfo"));
+      setRoleId(userInfoData.role_id)
       getUserInfo(userInfoData.user_code);
     }
   }, []);
+
+  useEffect(() => {
+    const activeLinkFromCookie = getCookie("activeLink")
+    if (activeLinkFromCookie) {
+      dispatch(setActiveLink(activeLinkFromCookie));
+    }
+  }, []);
+
+
 
   return (
     <>
@@ -129,8 +143,16 @@ const CP_NavBar = () => {
               id="navbarSupportedContent"
             >
               <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex gap-2 align-items-baseline">
-                <li className="nav-item">
-                  <Link className={`nav-link ${isActive("/")}`} href="/">
+                {
+                  roleId===1 && (
+                    <>
+                      <li className="nav-item">
+                  <Link className={`nav-link ${isActive("/")}`} href="/" 
+                    onClick={()=>{
+                      dispatch(setActiveLink("/"))
+                      setCookie("activeLink","/")
+                    }}
+                  >
                     Reports & Dashboard
                   </Link>
                 </li>
@@ -140,6 +162,10 @@ const CP_NavBar = () => {
                       "/CHANNEL/Leads"
                     )}`}
                     href="/CHANNEL/Leads"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Leads"))
+                      setCookie("activeLink","/CHANNEL/Leads")
+                    }}
                   >
                     Leads
                   </Link>
@@ -150,6 +176,10 @@ const CP_NavBar = () => {
                       "/CHANNEL/Bookings"
                     )}`}
                     href="/CHANNEL/Bookings"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Bookings"))
+                      setCookie("activeLink","/CHANNEL/Bookings")
+                    }}
                   >
                     Bookings
                   </Link>
@@ -160,6 +190,10 @@ const CP_NavBar = () => {
                       "/CHANNEL/Visits"
                     )}`}
                     href="/CHANNEL/Visits"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Visits"))
+                      setCookie("activeLink","/CHANNEL/Visits")
+                    }}
                   >
                     Visits
                   </Link>
@@ -170,6 +204,10 @@ const CP_NavBar = () => {
                       "/CHANNEL/Brokerage"
                     )}`}
                     href="/CHANNEL/Brokerage"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Brokerage"))
+                      setCookie("activeLink","/CHANNEL/Brokerage")
+                    }}
                   >
                     Brokerage
                   </Link>
@@ -180,10 +218,48 @@ const CP_NavBar = () => {
                       "/CHANNEL/Campaign"
                     )}`}
                     href="/CHANNEL/Campaign"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Campaign"))
+                      setCookie("activeLink","/CHANNEL/Campaign")
+                    }}
                   >
                     Campaign
                   </Link>
                 </li>
+                    </>
+                  )
+                }
+                {
+                  roleId===2 && (
+                    <>
+                    <li className="nav-item">
+                  <Link className={`nav-link ${isActive("/")}`} href="/" 
+                    onClick={()=>{
+                      dispatch(setActiveLink("/"))
+                      setCookie("activeLink","/")
+                    }}
+                  >
+                    Reports & Dashboard
+                  </Link>
+                </li>
+                        <li className="nav-item">
+                  <Link
+                    className={`nav-link ${isActive(
+                      "/CHANNEL/Brokerage"
+                    )}`}
+                    href="/CHANNEL/Brokerage"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Brokerage"))
+                      setCookie("activeLink","/CHANNEL/Brokerage")
+                    }}
+                  >
+                    Brokerage
+                  </Link>
+                </li>
+                    </>
+                  )
+                }
+                
                 <li className="nav-item">
                   <div className="user_profile">
                     <Dropdown className="cp_nav_toggle">
@@ -217,6 +293,8 @@ const CP_NavBar = () => {
                             className="d-flex align-items-center "
                             onClick={() => {
                               router.push("/CHANNEL/ChannelProfile");
+                              dispatch(setActiveLink("/CHANNEL/ChannelProfile"))
+                              setCookie("activeLink","/CHANNEL/ChannelProfile")
                             }}
                           >
                             <div style={{ width: "13px" }}>

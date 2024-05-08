@@ -7,9 +7,6 @@ import { toast } from 'react-toastify';
 import { Baseurl, filesUrl } from '../../../../Utils/Constants';
 import { Modal } from 'react-bootstrap';
 import { Delete } from '@mui/icons-material';
-import { useReactToPrint } from "react-to-print";
-import * as htmlparser2 from "htmlparser2";
-// import { usePDF } from 'react-to-pdf';
 import generatePDF, { Options } from 'react-to-pdf';
 
 
@@ -29,7 +26,7 @@ const CampaignDetailsScreen = () => {
         price: "",
         contact_no: "",
         file: null,
-        file_preview:"",
+        file_preview:"", 
         logo:null,
         logo_preview:null,
         template:null,
@@ -41,12 +38,12 @@ const CampaignDetailsScreen = () => {
 
     const targetRef=useRef();
     const options = {
-      filename: "using-function.pdf",
+      filename: `${projectData?.project}-Template.pdf`,
       page: {
         margin: 20
       }
     };
-    // const {toPDF,targetRef}=usePDF({filename:`page.pdf`})
+
     const getTargetElement = () => document.getElementById("content2");
     const downloadPdf = () => generatePDF(getTargetElement, options);
 
@@ -167,134 +164,125 @@ const CampaignDetailsScreen = () => {
         }
       };
 
-    // const downloadPdf = useReactToPrint({
-    //     content: () => document.getElementById("content"),
-        
-    // })
-
    
   return (
     <>
              <section ref={targetRef}  className="Channel-profile Booking-Detail Visit-Details Campaigns overflow-auto w-100  Campaign-upload pt-4 pb-2 bg-white">
-  <div  className="container mt-4 mb-4" id='content2'>
-    <div className="row gx-4 gy-4">
-      <div className="d-flex justify-content-end gap-2">
-        <img src="/ChannelPartner/profile-edit.svg" alt style={{height: 17,fontWeight:"bold"}} 
-            onClick={()=>{
-                setShowModal(true)
-                getCampaignById(id)
-            }}
-        />
-        <img src="/ChannelPartner/download-file-blue.svg" alt style={{height: 17}} 
-        // onClick={()=>{
-        //     // downloadPdf() 
-        //     toPDF()
-        // }} 
-        onClick={() => downloadPdf()}
-        />
-      </div>
-      <div className="d-flex justify-content-between Campaign-upload-logo">
-      <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt=""  />
-        <img src={projectData?.logo_preview} alt />
-      </div>
-     
-     <div dangerouslySetInnerHTML={{__html: projectData?.htmlString  || ``}}>
+            <div  className="container mt-4 mb-4" id='content2'>
+              <div className="row gx-4 gy-4">
+                <div className="d-flex justify-content-end gap-2">
+                  <img src="/ChannelPartner/profile-edit.svg" alt style={{height: 17,fontWeight:"bold"}} 
+                      onClick={()=>{
+                          setShowModal(true)
+                          getCampaignById(id)
+                      }}
+                  />
+                  <img src="/ChannelPartner/download-file-blue.svg" alt style={{height: 17}} 
+                  onClick={() => downloadPdf()}
+                  />
+                </div>
+                <div className="d-flex justify-content-between Campaign-upload-logo">
+                <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt=""  />
+                  <img src={projectData?.logo_preview} alt />
+                </div>
+              
+              <div dangerouslySetInnerHTML={{__html: projectData?.htmlString  || ``}}>
 
-     </div>
-    </div>
-    <div className="row gx-4 mt-5">
-      <div className="profile-text mb-2 mb-md-4">Project Details</div>
-      <div className="col-12  col-lg-12">
-        <div className="lead-detail-sec overflow-hidden">
-          <div className="row" style={{backgroundColor: '#F9F9F9'}}>
-            <div className="col-12 col-lg-6">
-              <div className="list-group General-list d-flex flex-column gap-3  leads-content h-auto m-0 border-bottom border-lg-0">
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Property Name</span>
-                    </div>
-                  </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{projectData?.project} </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Location</span>
-                    </div>
-                  </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{projectData?.location}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Contact No.</span>
-                    </div>
-                  </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">+91{projectData?.contact_no}</span>
+              </div>
+              </div>
+              <div className="row gx-4 mt-5">
+                <div className="profile-text mb-2 mb-md-4">Project Details</div>
+                <div className="col-12  col-lg-12">
+                  <div className="lead-detail-sec overflow-hidden">
+                    <div className="row" style={{backgroundColor: '#F9F9F9'}}>
+                      <div className="col-12 col-lg-6">
+                        <div className="list-group General-list d-flex flex-column gap-3  leads-content h-auto m-0 border-bottom border-lg-0">
+                          <div className="row">
+                            <div className="col-5 col-md-5">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-left">Property Name</span>
+                              </div>
+                            </div>
+                            <div className="col-7 col-md-6">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-right">{projectData?.project} </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-5 col-md-5">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-left">Location</span>
+                              </div>
+                            </div>
+                            <div className="col-7 col-md-6">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-right">{projectData?.location}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-5 col-md-5">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-left">Contact No.</span>
+                              </div>
+                            </div>
+                            <div className="col-7 col-md-6">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-right">+91{projectData?.contact_no}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-12 col-lg-6">
+                        <div className="list-group General-list d-flex flex-column gap-3  leads-content h-auto m-0">
+                          <div className="row">
+                            <div className="col-5 col-md-5">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-left">Property Size</span>
+                              </div>
+                            </div>
+                            <div className="col-7 col-md-6">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-right">{projectData?.property_size}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-5 col-md-5">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-left">Unit Area</span>
+                              </div>
+                            </div>
+                            <div className="col-7 col-md-6">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-right">{projectData?.unit_area}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-5 col-md-5">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-left">Price</span>
+                              </div>
+                            </div>
+                            <div className="col-7 col-md-6">
+                              <div className="list-group-item list-group-item-action p-0 border-0">
+                                <span className="list-right"> {projectData?.price}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="col-12 col-lg-6">
-              <div className="list-group General-list d-flex flex-column gap-3  leads-content h-auto m-0">
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Property Size</span>
-                    </div>
-                  </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{projectData?.property_size}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Unit Area</span>
-                    </div>
-                  </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{projectData?.unit_area}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Price</span>
-                    </div>
-                  </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right"> {projectData?.price}</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
+                <Link href={`/CHANNEL/CampaignAdmin`} className="back-to-lead d-flex align-items-center justify-content-center text-white border-0" style={{background:clientBtnColor}}>Back to Campaigns</Link>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
-      <Link href={`/CHANNEL/CampaignAdmin`} className="back-to-lead d-flex align-items-center justify-content-center text-white border-0" style={{background:clientBtnColor}}>Back to Campaigns</Link>
-    </div>
-  </div>
 </section>
 
      <Modal

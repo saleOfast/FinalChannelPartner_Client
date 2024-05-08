@@ -253,7 +253,7 @@ function formatDate(date) {
                         <div className="col-7 col-md-6">
                           <div className="list-group-item list-group-item-action p-0 border-0">
                             <span className="list-right">
-                              {formatDate(lead.p_visit_date)}
+                              {formatDate(lead.p_visit_date)=="NaN/NaN/NaN"? "":formatDate(lead.p_visit_date)}
                             </span>
                           </div>
                         </div>

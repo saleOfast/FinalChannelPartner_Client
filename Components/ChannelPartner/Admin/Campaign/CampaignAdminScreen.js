@@ -274,7 +274,7 @@ const CampaignAdminScreen = () => {
                                 setShowModal(true)
                             }}
                             alt
-                            style={{ height: 17 }}
+                            style={{ height: 17,cursor:"pointer" }}
                           />
                           <Link
                             href={`/CHANNEL/CampaignDetailsAdmin?id=${project?.project_id}`}
@@ -460,7 +460,7 @@ const CampaignAdminScreen = () => {
                         <span className="absolute top-0 right-0" onClick={()=>{
                           setProjectData({...projectData, file: null,file_preview:null})
                         }}>
-                            <Delete style={{color: 'red'}}/>
+                            <Delete style={{color: 'red',cursor:"pointer"}}/>
                         </span>
                     </div>
                     : 
@@ -495,7 +495,7 @@ const CampaignAdminScreen = () => {
                             logo_preview:null
                           })
                         }}>
-                            <Delete style={{color: 'red'}}/>
+                            <Delete style={{color: 'red',cursor:"pointer"}}/>
                         </span>
                         
                     </div>
@@ -530,7 +530,7 @@ const CampaignAdminScreen = () => {
                         <span className="absolute top-0 right-0" onClick={()=>{
                           setProjectData({...projectData, template_name: null, template_file: null})
                         }}>
-                            <Delete style={{color: 'red'}}/>
+                            <Delete style={{color: 'red',cursor:"pointer"}}/>
                         </span>
                     </div>
                     : 

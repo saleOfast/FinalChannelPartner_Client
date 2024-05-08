@@ -169,19 +169,19 @@ const CampaignDetailsAdminScreen = () => {
   return (
     <>
              <section ref={targetRef}  className="Channel-profile Booking-Detail Visit-Details Campaigns overflow-auto w-100  Campaign-upload pt-4 pb-2 bg-white">
-  <div  className="container mt-4 mb-4" id='content2'>
-    <div className="row gx-4 gy-4">
-      <div className="d-flex justify-content-end gap-2">
-        <img src="/ChannelPartner/profile-edit.svg" alt style={{height: 17,fontWeight:"bold"}} 
+             <div className="d-flex justify-content-end gap-2 pe-5 ">
+        <img src="/ChannelPartner/profile-edit.svg" alt style={{height: 17,fontWeight:"bold",cursor:"pointer"}} 
             onClick={()=>{
                 setShowModal(true)
                 getCampaignById(id)
             }}
         />
-        <img src="/ChannelPartner/download-file-blue.svg" alt style={{height: 17}} onClick={()=>{
+        <img src="/ChannelPartner/download-file-blue.svg" alt style={{height: 17,cursor:"pointer"}} onClick={()=>{
             downloadPdf() 
         }} />
       </div>
+  <div  className="container mt-4 mb-4" id='content2'>
+    <div className="row gx-4 gy-4">
       <div className="d-flex justify-content-between Campaign-upload-logo">
       <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt=""  />
         <img src={projectData?.logo_preview} alt />
@@ -191,7 +191,7 @@ const CampaignDetailsAdminScreen = () => {
 
      </div>
     </div>
-    <div className="row gx-4 mt-5">
+    <div className="row gx-4 ">
       <div className="profile-text mb-2 mb-md-4">Project Details</div>
       <div className="col-12  col-lg-12">
         <div className="lead-detail-sec overflow-hidden">
@@ -200,37 +200,37 @@ const CampaignDetailsAdminScreen = () => {
               <div className="list-group General-list d-flex flex-column gap-3  leads-content h-auto m-0 border-bottom border-lg-0">
                 <div className="row">
                   <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Property Name</span>
+                    <div className="list-group-item list-group-item-action p-0 border-0 ">
+                      <span className="list-left fs-4">Property Name</span>
                     </div>
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{projectData?.project} </span>
+                      <span className="list-right fs-4">{projectData?.project} </span>
                     </div>
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-5 col-md-5">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Location</span>
+                      <span className="list-left fs-4">Location</span>
                     </div>
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{projectData?.location}</span>
+                      <span className="list-right fs-4">{projectData?.location}</span>
                     </div>
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-5 col-md-5">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Contact No.</span>
+                      <span className="list-left fs-4">Contact No.</span>
                     </div>
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">+91{projectData?.contact_no}</span>
+                      <span className="list-right fs-4">+91-{projectData?.contact_no}</span>
                     </div>
                   </div>
                 </div>
@@ -241,36 +241,36 @@ const CampaignDetailsAdminScreen = () => {
                 <div className="row">
                   <div className="col-5 col-md-5">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Property Size</span>
+                      <span className="list-left fs-4">Property Size</span>
                     </div>
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{projectData?.property_size}</span>
+                      <span className="list-right fs-4">{projectData?.property_size}</span>
                     </div>
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-5 col-md-5">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Unit Area</span>
+                      <span className="list-left fs-4">Unit Area</span>
                     </div>
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{projectData?.unit_area}</span>
+                      <span className="list-right fs-4">{projectData?.unit_area}</span>
                     </div>
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-5 col-md-5">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Price</span>
+                      <span className="list-left fs-4">Price</span>
                     </div>
                   </div>
                   <div className="col-7 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right"> {projectData?.price}</span>
+                      <span className="list-right fs-4"> {projectData?.price}</span>
                     </div>
                   </div>
                 </div>
@@ -280,10 +280,10 @@ const CampaignDetailsAdminScreen = () => {
         </div>
       </div>
     </div>
-    <div className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
+  </div>
+  <div className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5 pb-4">
       <Link href={`/CHANNEL/CampaignAdmin`} className="back-to-lead d-flex align-items-center justify-content-center text-white border-0" style={{background:clientBtnColor}}>Back to Campaigns</Link>
     </div>
-  </div>
 </section>
 
      <Modal
@@ -444,7 +444,7 @@ const CampaignDetailsAdminScreen = () => {
                         <span className="absolute top-0 right-0" onClick={()=>{
                           setProjectData({...projectData, file: null,file_preview:null})
                         }}>
-                            <Delete style={{color: 'red'}}/>
+                            <Delete style={{color: 'red',cursor:'pointer'}}/>
                         </span>
                     </div>
                     : 
@@ -479,7 +479,7 @@ const CampaignDetailsAdminScreen = () => {
                             logo_preview:null
                           })
                         }}>
-                            <Delete style={{color: 'red'}}/>
+                            <Delete style={{color: 'red',cursor:'pointer'}}/>
                         </span>
                         
                     </div>
@@ -514,7 +514,7 @@ const CampaignDetailsAdminScreen = () => {
                         <span className="absolute top-0 right-0" onClick={()=>{
                           setProjectData({...projectData, template_name: null, template_file: null})
                         }}>
-                            <Delete style={{color: 'red'}}/>
+                            <Delete style={{color: 'red',cursor:'pointer'}}/>
                         </span>
                     </div>
                     : 

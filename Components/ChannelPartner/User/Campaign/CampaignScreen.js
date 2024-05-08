@@ -261,7 +261,8 @@ const CampaignScreen = () => {
                                 setShowModal(true)
                             }}
                             alt
-                            style={{ height: 17 }}
+                            
+                            style={{ height: 17,cursor:"pointer" }}
                           />
                           <Link
                             href={`/CHANNEL/CampaignDetails?id=${project?.project_id}`}
@@ -269,6 +270,7 @@ const CampaignScreen = () => {
                           <img
                             src="/ChannelPartner/download-file-white.svg"
                             alt
+                            className=" cursor-pointer"
                             style={{ height: 17 }}
                           />
                           </Link>
@@ -457,7 +459,7 @@ const CampaignScreen = () => {
                             logo_preview:null
                           })
                         }}>
-                            <Delete style={{color: 'red'}}/>
+                            <Delete  style={{color: 'red',cursor:"pointer"}}/>
                         </span>
                         
                     </div>

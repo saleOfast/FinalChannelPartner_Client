@@ -36,6 +36,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   });
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   const[brokerageId,setBrokerageId]=useState("")
+  const[rejectRemark,setRejectRemark]=useState(false)
   const[updateBill,setUpdateBill]=useState({
     date:"",
     amount:"",
@@ -44,7 +45,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     file:null,
     booking_name:"",
     status:"",
-    file_name:""
+    file_name:"",
+    reject_remark:null
   })
 
   const resetUpdateData = () => {
@@ -56,8 +58,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       file:null,
       booking_name:"",
       status:"",
-      file_name:""
+      file_name:"",
+      reject_remark:null
     })
+    setRejectRemark(false)
   }
   
 
@@ -78,16 +82,16 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
         try {
             const response = await axios.get(Baseurl + `/db/channel/brokerage?brokerage_id=${brokerageId}`, header);
-            console.log("response", response)
             setUpdateBill({
               ...updateBill,
               booking_name:response?.data?.data?.BrokerageBookingtData?.booking_name,
               amount:response?.data?.data?.amount,
-              status:response?.data?.data?.status,
+              status:response?.data?.data?.status === 'Bill sent'? 'Bill Received': response?.data?.data?.status,
               date:response?.data?.data?.date,
               file:response?.data?.data?.bill_file,
               booking_id:response?.data?.data?.BrokerageBookingtData?.booking_id,
-              brokerage_id:response?.data?.data?.brokerage_id
+              brokerage_id:response?.data?.data?.brokerage_id,
+              reject_remark:response?.data?.data?.reject_remark,
             })
         } catch (error) {
             if (error?.response?.data?.message) {
@@ -432,7 +436,7 @@ const updateBrokerageBill =  async() => {
           <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
           <div className='d-flex justify-content-end align-items-center pb-2'>
                   {
-                    roleId===2 && (
+                    roleId===2 && (updateBill?.status==="Bill Received" || updateBill?.status==="Bill sent") &&  (
                       <img
                       className=' cursor-pointer'
                         src="/ChannelPartner/profile-edit.svg"
@@ -521,6 +525,20 @@ const updateBrokerageBill =  async() => {
                                   {updateBill?.file}
                                   </a>
                                 </div>
+                                {
+                                  updateBill?.status==="Payment Rejected" ?(
+                                    <div className="rowTab">
+                                  <div className="labels">
+                                    <label htmlFor="name" className="pb-1">Reject Remark</label>
+                                    <span className="star"></span>
+                                  </div>
+                                  <div className="rightTab fw-semibold" style={{color:"#293790"}}>
+                                  {updateBill?.reject_remark}
+                                  </div>
+                                </div>
+                                  ):""
+                                }
+                                
                               </div>
                             </div>
                           </form>
@@ -537,7 +555,7 @@ const updateBrokerageBill =  async() => {
       </Modal>
       
       {/* Create/Update Brokerage Bill Modal */}
-      <Modal className="commonModal" centered show={showModal2} onHide={() => { setShowModal2(false); setBrokerageId("") }} size="lg">
+      <Modal className="commonModal" centered show={showModal2} onHide={() => { setShowModal2(false); setBrokerageId(""); resetUpdateData() }} size="lg">
         <Modal.Body>
           <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
             <div className="container">
@@ -601,6 +619,16 @@ const updateBrokerageBill =  async() => {
                                     onChange={(e)=>setUpdateBill({...updateBill,amount:e.target.value})} name="name" className="" placeholder required style={{background:"#E9ECEF"}} /> 
                                   </div>
                                 </div>
+                                {/* <div className="rowTab">
+                                  <div className="labels" >
+                                    <label htmlFor="name" className="pb-1">Current Status</label>
+                                    <span className="star">*</span>
+                                  </div>
+                                  <div className="rightTab">
+                                    <input autofocus disabled type="text" value={updateBill?.status==="Bill sent" ? "Bill Received" :updateBill?.status} 
+                                    onChange={(e)=>setUpdateBill({...updateBill,amount:e.target.value})} name="name" className="" placeholder required style={{background:"#E9ECEF"}} /> 
+                                  </div>
+                                </div> */}
                                 <div className="rowTab">
                                   <div className="labels">
                                     <label htmlFor="project" className="pb-1">Status</label>
@@ -613,10 +641,10 @@ const updateBrokerageBill =  async() => {
                                       setUpdateBill({
                                         ...updateBill,
                                         status:e.target.value
-                                      })
+                                      }); e.target.value === 'Payment Rejected' ?  setRejectRemark(true): setRejectRemark(false)
                                     }}
                                     >
-                                      <option className="dropdown-item" >Bill Sent
+                                      <option  className="dropdown-item" >Bill Received
                                       </option>
                                       <option className="dropdown-item" >Payment Received
                                       </option>
@@ -672,11 +700,31 @@ const updateBrokerageBill =  async() => {
                                       <input autoFocus type="file" name="name" id="adh" className="input-field" placeholder="enter your aadhar number" style={{ display: 'none' }} onChange={handleFileChange} required />  
                                     </div>
                                 </div>
+                                {
+                                    rejectRemark && (
+                                      <div className="rowTab mt-3 mt-md-4 mt-lg-0">
+                                      <div className="labels">
+                                        <label htmlFor="Location" className="pb-1">Remark</label>
+                                        <span className="star">*</span>
+                                      </div>
+                                      <div className="rightTab">
+                                          <input  autofocus  type="text" value={updateBill?.reject_remark} onChange={(e)=>{
+                                            setUpdateBill({
+                                              ...updateBill,
+                                              reject_remark:e.target.value
+                                            })
+                                          }} name="name" className="input-field" placeholder required />
+                                        </div>
+                                    </div>
+                                    )
+                                  }
+                                
                               </div>
                             </div>
                             <div className="new-leades-btn d-flex justify-content-center gap-4">
                               <div  className="btn btn-danger rounded-5 text-white" onClick={() =>{ 
                                 setShowModal2(false)
+                                resetUpdateData()
                                 }} >Cancel</div>
                               <button type='button'  className="btn text-white rounded-5" style={{background:clientBtnColor}} onClick={(e)=>{
                               e.preventDefault()

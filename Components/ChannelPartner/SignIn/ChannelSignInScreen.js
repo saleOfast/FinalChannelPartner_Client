@@ -144,9 +144,8 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                     <img
                       src={
                         clientData?.logo
-                          ? `${filesUrl}` +
-                            `/logo/images${clientData?.logo}`
-                          : "/ChannelPartner/logo.png"
+                          &&( `${filesUrl}` +
+                            `/logo/images${clientData?.logo}`)
                       }
                       alt
                     />

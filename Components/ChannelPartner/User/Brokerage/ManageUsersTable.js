@@ -561,6 +561,7 @@ const updateBrokerageBill =  async() => {
                                   <div className="rightTab d-flex gap-2">
                                     <select
                                       name
+                                      disabled
                                       className="form-select dropdown"
                                       style={{
 
@@ -591,13 +592,13 @@ const updateBrokerageBill =  async() => {
                                   </div>
                                 </div>
                                 <div className="rowTab">
-                                  <div className="labels">
+                                  <div className="labels" >
                                     <label htmlFor="name" className="pb-1">Amount</label>
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab">
-                                    <input autofocus type="number" value={updateBill?.amount} 
-                                    onChange={(e)=>setUpdateBill({...updateBill,amount:e.target.value})} name="name" className="" placeholder required /> 
+                                    <input autofocus disabled type="number" value={updateBill?.amount} 
+                                    onChange={(e)=>setUpdateBill({...updateBill,amount:e.target.value})} name="name" className="" placeholder required style={{background:"#E9ECEF"}} /> 
                                   </div>
                                 </div>
                                 <div className="rowTab">
@@ -606,7 +607,7 @@ const updateBrokerageBill =  async() => {
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab d-flex gap-2">
-                                    <select className="form-select dropdown" 
+                                    <select className="form-select dropdown cursor-pointer" 
                                     value={updateBill.status}
                                     onChange={(e)=>{
                                       setUpdateBill({
@@ -632,7 +633,7 @@ const updateBrokerageBill =  async() => {
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab">
-                                    <input autofocus type="date" value={updateBill?.date} onChange={(e)=>{
+                                    <input style={{background:"#E9ECEF"}} autofocus disabled type="date" value={updateBill?.date} onChange={(e)=>{
                                       setUpdateBill({
                                         ...updateBill,
                                         date:e.target.value
@@ -647,15 +648,19 @@ const updateBrokerageBill =  async() => {
                                     </div>
                                     <div className="rightTab">
                                       {updateBill?.file ? (
-                                        <div className="file-info py-2 ps-1 pe-2 rounded border d-flex justify-content-center align-items-center">
-                                          <span className='text-sm' style={{color:clientBtnColor}}>{updateBill?.file_name ?updateBill?.file_name:updateBill?.file}</span>
-                                          <button onClick={()=>{
+                                        <div  className="file-info py-2 ps-1 pe-2 rounded border d-flex justify-content-center align-items-center" style={{background:"#E9EcEf"}}>
+                                          <span
+                                          onClick={()=>{
+                                            saveAs(`${filesUrl}/brokerage/images${updateBill?.file}`,"Brokerage-Bill")
+                                          }}
+                                          className='text-sm cursor-pointer' style={{color:clientBtnColor}}>{updateBill?.file_name ?updateBill?.file_name:updateBill?.file}</span>
+                                          <button  onClick={()=>{
                                             setUpdateBill({
                                               ...updateBill,
                                               file:''
                                             })
                                           }} >
-                                            <img src="/ChannelPartner/cross-icon.png" alt="Clear" style={{ height: 20 }} />
+                                            {/* <img src="/ChannelPartner/cross-icon.png" alt="Clear" style={{ height: 20 }} /> */}
                                           </button>
                                         </div>
                                       ) : (

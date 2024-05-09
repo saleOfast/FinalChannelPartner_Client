@@ -17,6 +17,8 @@ import RevenueChart from '../../../../pages/RevenueChart';
 import ReChart from './ReChart';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import Datepicker from 'react-tailwindcss-datepicker';
+import generatePDF from 'react-to-pdf';
+import { setDate } from 'date-fns';
 
 
 const DashboardUser = () => {
@@ -35,6 +37,17 @@ const DashboardUser = () => {
     const [checkInState, setCheckInState] = useState('')
     const [userDetails, setUserDetails] = useState({})
     const[value,setValue]=useState()
+
+
+    const getTargetElement = () => document.getElementById("to-be-printed");
+    const options = {
+      filename: `ChannelPartner-${new Date().getDate()}.pdf`,
+      page: {
+        margin: 20
+      }
+    };
+    const downloadPdf = () => generatePDF(getTargetElement, options);
+
 
     const handleValueChange = (newValue) => {
       setValue(newValue);
@@ -269,9 +282,16 @@ const DashboardUser = () => {
     }, [])
 
     return (
-        <div className={`main_Box w-100 `}>
-            
-            <div className="main_content dashboard indxx">
+      <div className='d-block'>
+      <div>
+      <div className=' d-flex justify-content-end pe-4 pb-2 pt-2'>
+      <img src="/ChannelPartner/download-file-blue.svg" alt style={{height: 17,cursor:"pointer"}} onClick={()=>{
+            downloadPdf() 
+        }} />
+      </div>
+      </div>
+          <div className={`main_Box w-100 `} id='to-be-printed'>
+            <div className="main_content dashboard indxx" >
                 <div className="Cards_side w-100">
                     <div className="dashboard_head">
                         <div className="time_filter" style={{marginTop:"-40px",marginBottom:"-10px"}}>
@@ -410,6 +430,8 @@ const DashboardUser = () => {
             </div>
 
         </div>
+      </div>
+        
     )
 }
 

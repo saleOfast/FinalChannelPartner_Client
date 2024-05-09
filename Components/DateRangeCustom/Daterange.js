@@ -6,7 +6,6 @@ const DateRange = ({value,setValue,getData}) => {
 
 
   const handleValueChange = (newValue) => {
-    console.log("newValue:", newValue);
     setValue(newValue);
     const queryObjLeads={
       f_date:newValue.startDate,
@@ -17,6 +16,7 @@ const DateRange = ({value,setValue,getData}) => {
   }
   return (
     <Datepicker
+     showFooter={true}
       value={value}
       onChange={handleValueChange}
       showShortcuts={true} 

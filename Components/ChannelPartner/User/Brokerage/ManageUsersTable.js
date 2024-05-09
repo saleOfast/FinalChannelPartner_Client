@@ -91,7 +91,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
               file:response?.data?.data?.bill_file,
               booking_id:response?.data?.data?.BrokerageBookingtData?.booking_id,
               brokerage_id:response?.data?.data?.brokerage_id,
-              reject_remark:response?.data?.data?.reject_remark,
+              reject_remark:response?.data?.data?.reject_remark,              
             })
         } catch (error) {
             if (error?.response?.data?.message) {

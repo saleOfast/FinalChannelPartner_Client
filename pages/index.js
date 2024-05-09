@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 
 import LandingPageDMS from '../Components/DMS/LandingPageDMS/LandingPageDMS';
 import DashBoardScreenSALES from '../Components/Dashboard/SALES/DashBoardScreenSALES';
-import DashBoardScreenCHANNEL from '../Components/ChannelPartner/Admin/Reports&Dashboard/DashBoardScreenCHANNEL';
+import DashBoardScreenCHANNEL from '../Components/ChannelPartner/Reports&Dashboard/DashBoardScreenCHANNEL';
 import DashBoardScreen from '../Components/Dashboard/CRM/DashBoardScreen';
 import Tabs from '../Components/DMS/Tabs/Tabs';
 import Loader from '../Components/Loader/Loader';
@@ -68,7 +68,18 @@ export default  function Home() {
 
         case "channel":
           return(
-            dbMode==="user" ? <DashBoardScreenCHANNEL /> : <DashBoardScreenCHANNEL />
+            dbMode==="user" ?
+            (
+                <>
+                    <DashBoardScreenCHANNEL /> 
+                </> 
+            ) 
+            :
+            (
+              <>
+                    <DashBoardScreenCHANNEL /> 
+              </> 
+            ) 
           )
           break;
 

@@ -232,7 +232,7 @@ const CP_NavBar = () => {
                 {
                   roleId===2 && (
                     <>
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                   <Link className={`nav-link ${isActive("/")}`} href="/" 
                     onClick={()=>{
                       dispatch(setActiveLink("/"))
@@ -241,7 +241,7 @@ const CP_NavBar = () => {
                   >
                     Reports & Dashboard
                   </Link>
-                </li>
+                </li> */}
                         <li className="nav-item">
                   <Link
                     className={`nav-link ${isActive(

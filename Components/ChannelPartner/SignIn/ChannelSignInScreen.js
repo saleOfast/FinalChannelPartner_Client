@@ -80,7 +80,6 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
         });
 
         if (res.status === 200) {
-          console.log(res.data)
           dispatch(userMode());
           dispatch(UserLogIN());
           setCookie("user", "true");
@@ -99,7 +98,14 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
           assignPermission(res.data.platformData);
           toast.success("Logged in SuccessFully");  
           dispatch(stopLoading())
-          router.push("/");
+          // router.push("/");
+          if(res?.data?.userData?.role_id===2){
+            router.push("/CHANNEL/Brokerage")
+            setCookie("activeLink","/CHANNEL/Brokerage")
+          }
+          else{
+            router.push("/");
+          }
         }
       } catch (error) {
         dispatch(stopLoading())

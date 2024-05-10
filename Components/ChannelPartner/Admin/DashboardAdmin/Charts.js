@@ -1,6 +1,6 @@
 import React from 'react'
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip ,head } from 'recharts';
-const Charts = ({dataList}) => {
+const Charts = ({dataList, keyX='lead', keyY='booking'}) => {
     return (
         <>
 
@@ -10,8 +10,8 @@ const Charts = ({dataList}) => {
                 <XAxis dataKey="date"/>
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="lead" fill="#8884d8" />
-                <Bar dataKey="booking" fill="#82ca9d" />
+                <Bar dataKey={keyX} fill="#8884d8" />
+                <Bar dataKey={keyY} fill="#82ca9d" />
             </BarChart>
         </ResponsiveContainer> : <></>}
         </>

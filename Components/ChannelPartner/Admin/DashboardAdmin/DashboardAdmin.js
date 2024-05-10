@@ -6,7 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import DashboardRevnueCard from './DashboardRevnueCard'
 import DashLeadsCard from './DashLeadsCard'
-import TopOpportunityCard from './TopOpportunityCard';
+
 import TasksCard from './TasksCard';
 import OpportunityCard from './OpportunityCard';
 import { Baseurl } from '../../../../Utils/Constants';
@@ -19,6 +19,9 @@ import DateRange from '../../../DateRangeCustom/Daterange';
 import Datepicker from 'react-tailwindcss-datepicker';
 import generatePDF from 'react-to-pdf';
 import { setDate } from 'date-fns';
+import Top5Bookings from './Top5Bookings';
+import Top5Leads from './Top5Leads';
+import Top5Visits from './Top5Visits';
 
 
 const DashboardAdmin = () => {
@@ -247,7 +250,7 @@ const DashboardAdmin = () => {
                 },
             };
             try {
-                const response = await axios.get(Baseurl + `/db/channel/dashboard?endDate=${end}&&startDate=${start}`, header);
+                const response = await axios.get(Baseurl + `/db/channel/dashboard/admin?endDate=${end}&&startDate=${start}`, header);
                 setDataList(response.data.data);
             } catch (error) {
                 console.log(error);
@@ -331,8 +334,8 @@ const DashboardAdmin = () => {
                             </div>
                             <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                                 <DashLeadsCard
-                                    head='TAT FOR LEADS'
-                                    price={dataList.averageHours} 
+                                    head='TAT FOR BROKERS'
+                                    price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/usericon.png' 
                                     />
@@ -341,53 +344,61 @@ const DashboardAdmin = () => {
                         
 
                         
-                        <div className='d-flex flex-column flex-lg-row gap-1 '>
-                        <div className="row"> 
-                           {dataList?.barchart?.length ?
-                               <div className="col-xl-12 col-md-12 col-12 col-sm-12 mt-2">
+                        <div className='row'>
+                        {dataList?.EnrolVsAcceptChart?.length ?
+                        <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                               <div className="">
                                    <div className="dash_card chartSec">
                                        <ReChart
                                            head='Brokers Enrolled Vs Accepted'
-                                           dataList={dataList?.barchart}
+                                           keyX='enrolled'
+                                           keyY='approved'
+                                           dataList={dataList?.EnrolVsAcceptChart}
                                        />
                                    </div>
-                               </div> : 
-                           null}
-                       </div>
-                       <div className="row"> 
-                            {dataList?.barchart?.length ?
-                                <div className="col-xl-12 col-md-12 col-12 col-sm-12 mt-2">
+                               </div> 
+                       </div>: 
+                        null}
+                            {dataList?.RequestedVsCompleteChart?.length ?
+                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                                <div className="">
                                     <div className="dash_card chartSec">
                                         <ReChart
                                             head='Site visit requested Vs Site Visit completed'
-                                            dataList={dataList?.barchart}
+                                            keyX='Requested'
+                                            keyY='Completed'
+                                            dataList={dataList?.RequestedVsCompleteChart}
                                         />
                                     </div>
+                        </div>
                                 </div> : 
                             null}
                         </div>
-                        </div>
                         
-                        <div className='d-flex flex-column flex-lg-row gap-1 '>
-                        <div className="row"> 
-                           {dataList?.barchart?.length ?
-                               <div className="col-xl-12 col-md-12 col-12 col-sm-12 mt-2">
+                        <div className='row'>
+                        <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                           {dataList?.rangewiseBrokergaeVsBookingChart?.length ?
+                               <div className="">
                                    <div className="dash_card chartSec">
                                        <ReChart
                                            head='Bookings created Vs Brokerage bills created'
-                                           dataList={dataList?.barchart}
+                                           keyX='brokerage'
+                                           keyY='booking'
+                                           dataList={dataList?.rangewiseBrokergaeVsBookingChart}
                                        />
                                    </div>
                                </div> : 
                            null}
                        </div>
-                       <div className="row"> 
-                            {dataList?.barchart?.length ?
-                                <div className="col-xl-12 col-md-12 col-12 col-sm-12 mt-2">
+                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                            {dataList?.rangewiseVisitVsBookingsCharts?.length ?
+                                <div className="">
                                     <div className="dash_card chartSec">
                                         <ReChart
                                             head='Visits vs Bookings'
-                                            dataList={dataList?.barchart}
+                                            keyX='visit'
+                                            keyY='booking'
+                                            dataList={dataList?.rangewiseVisitVsBookingsCharts}
                                         />
                                     </div>
                                 </div> : 
@@ -398,7 +409,7 @@ const DashboardAdmin = () => {
                     </div>
                 </div>
                 <div className="Task_side">
-                    <div className="checkInBtns">
+                    {/* <div className="checkInBtns">
                         <div className="Box_head">Attendence</div>
 
                         {isLoading ? <div className='loading'>Loading...</div> : <div className="checkinBtn btnBox">
@@ -423,16 +434,30 @@ const DashboardAdmin = () => {
                                 </div>)}
                         </div>}
 
-                    </div>
+                    </div> */}
 
-                    <div className="task_Box">
+                    {/* <div className="task_Box">
                         <TasksCard
                             dataList={dataList}
                         />
+                    </div> */}
+                    <div className="opertunity_box">
+                        <Top5Bookings
+                            dataList={dataList}
+                            name="Top 5 Bookings"
+                        />
+
                     </div>
                     <div className="opertunity_box">
-                        <TopOpportunityCard
+                        <Top5Leads
                             dataList={dataList}
+                            name="Top 5 Leads"
+                        />
+                    </div>
+                    <div className="opertunity_box">
+                        <Top5Visits
+                            dataList={dataList}
+                            name="Top 5 Visits"
                         />
                     </div>
                 </div>

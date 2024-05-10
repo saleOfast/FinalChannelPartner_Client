@@ -5,19 +5,19 @@ import axios from "axios";
 import { Baseurl } from "../../../../Utils/Constants";
 import Link from "next/link";
 
-const TopOpportunityCard = ({ dataList }) => {
+const Top5Leads = ({ dataList,name }) => {
     return (
-        <div className="task_card">
-            <div className="task_head">Top 5 Opportunities</div>
+        <div className="task_card mt-4">
+            <div className="task_head">{name}</div>
 
             <div className="tasks_details">
                 <ul className="tasks_list">
-                    {dataList?.topOpportunities?.map(({ opp_id, opp_name, amount }, i) => {
+                    {dataList?.topFiveLeads?.map((lead, i) => {
                         return (
-                            <li key={opp_id} className="list-item">
+                            <li key={lead?.lead_id} className="list-item">
                                 <div className="opp_box">
-                                    <div className="name">{opp_name}</div>
-                                    <div className="price">&#8377; {amount}</div>
+                                    <div className="name">{lead?.lead_name}</div>
+                                    <div className="price"> {lead?.createdAt.split("T")[0]}</div>
                                 </div>
                             </li>
 
@@ -34,4 +34,4 @@ const TopOpportunityCard = ({ dataList }) => {
     )
 }
 
-export default TopOpportunityCard
+export default Top5Leads

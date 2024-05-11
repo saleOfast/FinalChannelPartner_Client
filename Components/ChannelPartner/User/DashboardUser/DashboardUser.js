@@ -9,7 +9,7 @@ import DashLeadsCard from './DashLeadsCard'
 import TopOpportunityCard from './TopOpportunityCard';
 import TasksCard from './TasksCard';
 import OpportunityCard from './OpportunityCard';
-import { Baseurl } from '../../../../Utils/Constants';
+import { Baseurl, filesUrl } from '../../../../Utils/Constants';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import Charts from '../../../../pages/Charts';
@@ -23,7 +23,8 @@ import { setDate } from 'date-fns';
 
 const DashboardUser = () => {
     const sideView = useSelector((state) => state.sideView.value);
-
+    const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
+    const[showLogo,setShowLogo]=useState(false)
     const router = useRouter();
     const { id } = router.query;
 
@@ -44,10 +45,19 @@ const DashboardUser = () => {
     const options = {
       filename: `ChannelPartner-${new Date().getDate()}.pdf`,
       page: {
-        margin: 20
+        margin: 10
       }
     };
-    const downloadPdf = () => generatePDF(getTargetElement, options);
+    const downloadPdf = () =>{ 
+        setTimeout(()=>{
+            generatePDF(getTargetElement, options);
+        },0)
+            
+        setTimeout(()=>{
+            setShowLogo(false)
+        },1)
+    }
+    
 
 
     const handleValueChange = (newValue) => {
@@ -287,6 +297,7 @@ const DashboardUser = () => {
       <div>
       <div className=' d-flex justify-content-end pe-4 pb-2 pt-2'>
       <img src="/ChannelPartner/download-file-blue.svg" alt style={{height: 17,cursor:"pointer"}} onClick={()=>{
+         setShowLogo(true)
             downloadPdf() 
         }} />
       </div>
@@ -296,55 +307,24 @@ const DashboardUser = () => {
                 <div className="Cards_side w-100">
                     <div className="dashboard_head">
                         <div className="time_filter" style={{marginTop:"-40px",marginBottom:"-10px"}}>
-                            {/* <div
-                                className={timeFilter == 'weekly' ? "links active" : 'links'}
-                                onClick={() => currentWeak()}>
-                                Weekly
-                            </div>
-                            <div
-                                className={timeFilter == 'monthly' ? "links active" : 'links'}
-                                onClick={(e) => currentMonth()}  >
-                                Monthly
-                            </div>
-                            <div
-                                className={timeFilter == 'all' ? "links active" : 'links'}
-                                onClick={() => AllData()}>
-                                All
-                            </div> */}
-                             <Datepicker
-                                value={value}
-                                showFooter={true}
-                                onChange={handleValueChange}
-                                showShortcuts={true}
-                                primaryColor={"blue"}
-                                containerClassName="relative w-64 mt-8  border rounded-md mb-4 border-black  text-black inline-block" 
-                                // configs={{
-                                // shortcuts: {
-                                // last3Days: { 
-                                // text: "Last 3 days",
-                                // period: {
-                                // start: "2024-05-06",
-                                // end: "2024-05-08"
-                                // }, 
-                                // }, 
-                                // yesterday: "Yesterday", 
-                                // customToday: { 
-                                // text: "Custom Today",
-                                // period: {
-                                // start: "2024-05-09",
-                                // end: "2024-05-09"
-                                // }, 
-                                // }, 
-                                // next8Days: { 
-                                // text: "Next 8 days",
-                                // period: {
-                                // start: "2024-05-10",
-                                // end: "2024-05-17"
-                                // }, 
-                                // } 
-                                // }
-                                // }} 
-                              />
+                        {
+                                showLogo ? 
+                                 (
+                                    <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="" className='pt-3 pb-3'  />
+                                    
+                                 )
+                                    :
+                                 (
+                                    <Datepicker
+                                    value={value}
+                                    showFooter={true}
+                                    onChange={handleValueChange}
+                                    showShortcuts={true}
+                                    primaryColor={"blue"}
+                                    containerClassName="relative w-64 mt-8 p-1 border rounded-md mb-4 border-black  text-black inline-block" 
+                                    />
+                                 )
+                            } 
                         </div>
                     </div>
                     <div className="cards_Box">

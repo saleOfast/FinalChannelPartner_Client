@@ -319,7 +319,7 @@ const DashboardAdmin = () => {
                                     onChange={handleValueChange}
                                     showShortcuts={true}
                                     primaryColor={"blue"}
-                                    containerClassName="relative w-64 mt-8 p-1 border rounded-md mb-4 border-black  text-black inline-block" 
+                                    containerClassName="relative w-64 mt-8  border rounded-md mb-4 border-black  text-black inline-block" 
                                     />
                                  )
                             }    
@@ -361,7 +361,7 @@ const DashboardAdmin = () => {
                         
 
                         
-                        <div className='row'>
+                        {/* <div className='row'>
                         {dataList?.EnrolVsAcceptChart?.length ?
                         <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
                                <div className="">
@@ -390,9 +390,69 @@ const DashboardAdmin = () => {
                         </div>
                                 </div> : 
                             null}
+                        </div> */}
+
+
+                        <div className='row'>
+                        {dataList?.EnrolVsAcceptChart?.length ?
+                        <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                               <div className="">
+                                   <div className="dash_card chartSec">
+                                       <ReChart
+                                           head='Brokers Enrolled V/s Accepted'
+                                           keyX='enrolled'
+                                           keyY='approved'
+                                           dataList={dataList?.EnrolVsAcceptChart}
+                                       />
+                                   </div>
+                               </div> 
+                       </div>: 
+                        null}
+                            {dataList?.RequestedVsCompleteChart?.length ?
+                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                                <div className="">
+                                    <div className="dash_card chartSec">
+                                        <ReChart
+                                            head='Site Visit Requested V/s Site Visit Completed'
+                                            keyX='Requested'
+                                            keyY='Completed'
+                                            dataList={dataList?.RequestedVsCompleteChart}
+                                        />
+                                    </div>
+                        </div>
+                                </div> : 
+                            null}
+                             <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                           {dataList?.rangewiseBrokergaeVsBookingChart?.length ?
+                               <div className="">
+                                   <div className="dash_card chartSec">
+                                       <ReChart
+                                           head='Bookings Created V/s Brokerage Bills Created'
+                                           keyX='brokerage'
+                                           keyY='booking'
+                                           dataList={dataList?.rangewiseBrokergaeVsBookingChart}
+                                       />
+                                   </div>
+                               </div> : 
+                           null}
+                       </div>
+                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                            {dataList?.rangewiseVisitVsBookingsCharts?.length ?
+                                <div className="">
+                                    <div className="dash_card chartSec">
+                                        <ReChart
+                                            head='Visits V/s Bookings'
+                                            keyX='visit'
+                                            keyY='booking'
+                                            dataList={dataList?.rangewiseVisitVsBookingsCharts}
+                                        />
+                                    </div>
+                                </div> : 
+                            null}
+                        </div>
                         </div>
                         
-                        <div className='row'>
+                        {/* <div className='row'>
                         <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
                            {dataList?.rangewiseBrokergaeVsBookingChart?.length ?
                                <div className="">
@@ -421,7 +481,7 @@ const DashboardAdmin = () => {
                                 </div> : 
                             null}
                         </div>
-                        </div>
+                        </div> */}
                         
                     </div>
                 </div>

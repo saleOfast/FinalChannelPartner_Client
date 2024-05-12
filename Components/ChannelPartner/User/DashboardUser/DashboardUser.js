@@ -367,7 +367,7 @@ const DashboardUser = () => {
                                 <div className="col-xl-12 col-md-6 col-12 col-sm-12 mt-2">
                                     <div className="dash_card chartSec">
                                         <ReChart
-                                            head='Leads Generated Vs Leads Booked'
+                                            head='Leads Generated V/s Leads Booked'
                                             dataList={dataList?.barchart}
                                         />
                                     </div>
@@ -376,45 +376,6 @@ const DashboardUser = () => {
                         
                     </div>
                 </div>
-                {/* <div className="Task_side">
-                    <div className="checkInBtns">
-                        <div className="Box_head">Attendence</div>
-
-                        {isLoading ? <div className='loading'>Loading...</div> : <div className="checkinBtn btnBox">
-                            <div className="btn-box">
-                                {!checkInInfo?.check_in && <button className="btn checkin btn-primary" onClick={checkInFunc}>Check In</button>}
-                            </div>
-                            {checkInInfo?.check_in && (
-                                <div className="time">
-                                    <span className="head">Check In time :</span>
-                                    <span className="value">{moment(checkInInfo?.check_in).format("DD-MM-YYYY LT")}</span>
-                                </div>
-                            )}
-
-                            <div className="btn-box">
-                                {!checkInInfo?.check_out && checkInState !== '1' && <button className="btn btn-primary" onClick={checkoutFunc}>Check Out</button>}
-                            </div>
-
-                            {checkInInfo?.check_out && (
-                                <div className="time mb-0">
-                                    <span className="head">Check Out time :</span>
-                                    <span className="value">{moment(checkInInfo?.check_out).format("DD-MM-YYYY LT")}</span>
-                                </div>)}
-                        </div>}
-
-                    </div>
-
-                    <div className="task_Box">
-                        <TasksCard
-                            dataList={dataList}
-                        />
-                    </div>
-                    <div className="opertunity_box">
-                        <TopOpportunityCard
-                            dataList={dataList}
-                        />
-                    </div>
-                </div> */}
             </div>
 
         </div>

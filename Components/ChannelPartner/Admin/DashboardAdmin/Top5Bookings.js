@@ -13,10 +13,10 @@ const Top5Bookings = ({ dataList, name }) => {
                 <ul className="tasks_list">
                     {dataList?.topFiveBooking?.map((booking, i) => {
                         return (
-                            <li key={booking?.booking_id} className="list-item">
+                            <li key={i} className="list-item">
                                 <div className="opp_box">
-                                    <div className="name">{booking?.booking_name}</div>
-                                    <div className="price"> {booking?.createdAt.split("T")[0]}</div>
+                                    <div className="name">{booking?.user}</div>
+                                    <div className="price"> {booking?.bookingCount}</div>
                                 </div>
                             </li>
 
@@ -26,7 +26,7 @@ const Top5Bookings = ({ dataList, name }) => {
             </div>
             <div className="card_footer">
                 <Link href='/Opportunity'>
-                    <div className="text_more">view more</div>
+                    {/* <div className="text_more">view more</div> */}
                 </Link>
             </div>
         </div>

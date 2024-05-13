@@ -14,10 +14,10 @@ const Top5Visits = ({ dataList,name }) => {
                 <ul className="tasks_list">
                     {dataList?.topFiveVisits?.map((visit, i) => {
                         return (
-                            <li key={visit?.visit_id} className="list-item">
+                            <li key={i} className="list-item">
                                 <div className="opp_box">
-                                    <div className="name">{visit?.visit_code}</div>
-                                    <div className="price"> {visit?.leadData?.lead_name}</div>
+                                    <div className="name">{visit?.user}</div>
+                                    <div className="price"> {visit?.visitCount}</div>
                                 </div>
                             </li>
 
@@ -27,7 +27,7 @@ const Top5Visits = ({ dataList,name }) => {
             </div>
             <div className="card_footer">
                 <Link href='/Opportunity'>
-                    <div className="text_more">view more</div>
+                    {/* <div className="text_more">view more</div> */}
                 </Link>
             </div>
         </div>

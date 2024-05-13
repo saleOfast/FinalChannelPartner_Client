@@ -14,10 +14,10 @@ const Top5Leads = ({ dataList,name }) => {
                 <ul className="tasks_list">
                     {dataList?.topFiveLeads?.map((lead, i) => {
                         return (
-                            <li key={lead?.lead_id} className="list-item">
+                            <li key={i} className="list-item">
                                 <div className="opp_box">
-                                    <div className="name">{lead?.lead_name}</div>
-                                    <div className="price"> {lead?.createdAt.split("T")[0]}</div>
+                                    <div className="name">{lead?.user}</div>
+                                    <div className="price"> {lead?.leadCount}</div>
                                 </div>
                             </li>
 
@@ -27,7 +27,7 @@ const Top5Leads = ({ dataList,name }) => {
             </div>
             <div className="card_footer">
                 <Link href='/Opportunity'>
-                    <div className="text_more">view more</div>
+                    {/* <div className="text_more">view more</div> */}
                 </Link>
             </div>
         </div>

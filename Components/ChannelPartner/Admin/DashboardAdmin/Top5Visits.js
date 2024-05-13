@@ -20,7 +20,6 @@ const Top5Visits = ({ dataList,name }) => {
                                     <div className="price"> {visit?.visitCount}</div>
                                 </div>
                             </li>
-
                         );
                     })}
                 </ul>

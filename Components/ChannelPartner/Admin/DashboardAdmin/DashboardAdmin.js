@@ -320,6 +320,7 @@ const DashboardAdmin = () => {
                                     showShortcuts={true}
                                     displayFormat={"DD-MM-YYYY"}
                                     primaryColor={"blue"}
+                                    popoverDirection="down"
                                     containerClassName="relative w-64 mt-8  border rounded-md mb-4 border-black  text-black inline-block" 
                                     />
                                  )

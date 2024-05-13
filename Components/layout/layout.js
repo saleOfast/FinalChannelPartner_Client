@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Topnav from '../Basics/Topnav';
 import SideBar from '../Basics/SideBar';
 import SidebarDMS from '../DMS/Sidebar/SidebarDMS';
@@ -8,6 +8,7 @@ import Loader from '../Loader/Loader';
 import SideBarSales from '../Basics/SideBarSales';
 import { getCookie, hasCookie } from 'cookies-next';
 import Tabs from '../DMS/Tabs/Tabs';
+import { setSidebarColor, setTopNavColor, setbuttonColor } from '../../store/themeSlice';
 
 const Layout = ({Component, pageProps}) => {
     const userLogin = useSelector((state) => state.userLogin.value);
@@ -15,7 +16,7 @@ const Layout = ({Component, pageProps}) => {
     const theme = useSelector((state) => state.themeMode);
     const allowedpermission = useSelector((state) => state.permissionMode.allowedPermissions );
     const isLoading=useSelector((state)=>state.loader.isLoading)
-    
+    const dispatch = useDispatch()
     const [showBasic, setShowBasic] = useState(false)
     const [sidebarMode,setSidebarMode]=useState('') 
     const [allowedPermissions,setAllowedPermissions]=useState([])
@@ -34,6 +35,7 @@ const Layout = ({Component, pageProps}) => {
     }
   
   
+   
     const checkSidebar=()=> {
       if(hasCookie("crm")){
         setSidebarMode("crm")
@@ -49,6 +51,17 @@ const Layout = ({Component, pageProps}) => {
         setTopnavPermission("channel")
       }
     }
+
+    const checkColor=()=> {
+      if(hasCookie("clientLogo")){
+        const data = JSON.parse(getCookie("clientLogo"))
+        dispatch(setSidebarColor(data[0].sidebar_color))
+        dispatch(setbuttonColor(data[0].button_color))
+        dispatch(setTopNavColor(data[0].button_color))
+      } 
+    
+    }
+
 
     const checkAllowedPermissions=()=>{
       if(hasCookie("allowedPermissions")){
@@ -66,7 +79,11 @@ const Layout = ({Component, pageProps}) => {
 
       useEffect(() => {
         checkAllowedPermissions()
+        
       }, [allowedpermission]);
+      useEffect(()=>{
+        checkColor()
+      },[])
 
   return (
     <>

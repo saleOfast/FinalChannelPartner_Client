@@ -19,6 +19,7 @@ const DateRange = ({value,setValue,getData}) => {
      showFooter={true}
       value={value}
       onChange={handleValueChange}
+      displayFormat={"DD/MM/YYYY"}
       showShortcuts={true} 
       primaryColor={"blue"}
       containerClassName="relative w-64 mt-8 border rounded-md mb-4 border-black  text-black inline-block" 

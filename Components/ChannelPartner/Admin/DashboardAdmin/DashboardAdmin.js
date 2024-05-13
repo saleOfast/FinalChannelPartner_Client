@@ -318,6 +318,7 @@ const DashboardAdmin = () => {
                                     showFooter={true}
                                     onChange={handleValueChange}
                                     showShortcuts={true}
+                                    displayFormat={"DD-MM-YYYY"}
                                     primaryColor={"blue"}
                                     containerClassName="relative w-64 mt-8  border rounded-md mb-4 border-black  text-black inline-block" 
                                     />

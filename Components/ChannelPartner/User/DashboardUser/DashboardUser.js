@@ -318,6 +318,7 @@ const DashboardUser = () => {
                                     <Datepicker
                                     value={value}
                                     showFooter={true}
+                                    displayFormat={"DD-MM-YYYY"}
                                     onChange={handleValueChange}
                                     showShortcuts={true}
                                     primaryColor={"blue"}

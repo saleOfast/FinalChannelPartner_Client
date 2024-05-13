@@ -5,7 +5,7 @@ const DashLeadsCard = ({ head, price, date, img }) => {
         <>
             <div className="dash_card">
                 <div className="detail_sec">
-                    <div className="head_text">{head}</div>
+                    <div className="head_text" style={{fontSize:"14px"}}>{head}</div>
                     <div className="price">{price}</div>
                     <div className="date">{date}</div>
                 </div>

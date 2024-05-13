@@ -7,10 +7,11 @@ import { toast } from 'react-toastify';
 import { Baseurl, filesUrl } from '../../../../Utils/Constants';
 import { Modal } from 'react-bootstrap';
 import { Delete } from '@mui/icons-material';
+import { useReactToPrint } from "react-to-print";
 import generatePDF, { Options } from 'react-to-pdf';
 
 
-const CampaignDetailsScreen = () => {
+const CampaignDetailsAdminScreen = () => {
     const router=useRouter()
     const {id}=router.query;
     const [showModal, setShowModal] = useState(false);
@@ -26,7 +27,7 @@ const CampaignDetailsScreen = () => {
         price: "",
         contact_no: "",
         file: null,
-        file_preview:"", 
+        file_preview:"",
         logo:null,
         logo_preview:null,
         template:null,
@@ -46,18 +47,6 @@ const CampaignDetailsScreen = () => {
 
     const getTargetElement = () => document.getElementById("content2");
     const downloadPdf = () => generatePDF(getTargetElement, options);
-    const downloadHtml = () => {
-      const htmlContent = document.getElementById("content2").innerHTML;
-      const blob = new Blob([htmlContent], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${projectData?.project}-Template.html`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    };
 
     useEffect(()=>{
         if(id){
@@ -132,7 +121,7 @@ const CampaignDetailsScreen = () => {
       }
     
         try {
-          const response = await axios.post(`${Baseurl}/db/channel/project/usertemplate`,formData, header);
+          const response = await axios.put(`${Baseurl}/db/channel/project`,formData, header);
           if (response.status === 200 || response.status === 201) {
             toast.success(response.data.message);
             setShowModal(false)
@@ -169,7 +158,7 @@ const CampaignDetailsScreen = () => {
                 [field]: e.target.files[0],
                 [fieldPreview]: URL.createObjectURL(e.target.files[0]),
               });
-            }
+            }       
             
           };
           reader.readAsDataURL(e.target.files[0]);
@@ -179,99 +168,123 @@ const CampaignDetailsScreen = () => {
    
   return (
     <>
-      
-      <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}>
-
-      {/* Edit and Download Start */}
-      <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"15px"}}>
-          <img src="/ChannelPartner/profile-edit.svg" alt="Profile Edit" style={{ fontWeight: "bold", cursor: "pointer"}} 
-              onClick={() => {
-                  setShowModal(true);
-                  getCampaignById(id);
-              }}
-          />
-          <img 
-          src="/ChannelPartner/download-file-blue.svg" 
-          alt="Download File" 
-          style={{height: "1.2rem", cursor: "pointer"}} 
-          onClick={()=>{
-            downloadHtml()
-            // downloadPdf()
-          }}
-          />
+             <section ref={targetRef}  className="Channel-profile Booking-Detail Visit-Details Campaigns overflow-auto w-100  Campaign-upload pt-4 pb-2 bg-white">
+             <div className="d-flex justify-content-end gap-2 pe-5 ">
+        <img src="/ChannelPartner/profile-edit.svg" alt style={{height: 17,fontWeight:"bold",cursor:"pointer"}} 
+            onClick={()=>{
+                setShowModal(true)
+                getCampaignById(id)
+            }}
+        />
+        <img src="/ChannelPartner/download-file-blue.svg" alt style={{height: 17,cursor:"pointer"}} onClick={()=>{
+            downloadPdf() 
+        }} />
       </div>
-      {/* Edit and Download End */}
-
-        
-      {/* To be downloaded as html start */}
-      <div style={{padding:"10px"}} id="content2">
-      <div style={{padding: "1rem", display: "flex", flexDirection: "column", gap: "1rem"}} >
-
-
-      {/* company logo and client logo start*/}
-      <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-          <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="Client Logo" style={{maxHeight: "3rem"}} />
-          <img src={projectData?.logo_preview} alt="Project Logo" style={{maxHeight: "3rem"}} />
+  <div  className="container mt-4 mb-4" id='content2'>
+    <div className="row gx-4 gy-4">
+      <div className="d-flex justify-content-between Campaign-upload-logo">
+      <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt=""  />
+        <img src={projectData?.logo_preview} alt />
       </div>
-      {/* company logo and client logo end*/}
+     
+     <div dangerouslySetInnerHTML={{__html: projectData?.htmlString  || ``}}>
 
-      {/* uploaded html by admin start*/}
-      <div dangerouslySetInnerHTML={{__html: projectData?.htmlString  || ``}}></div>
-      {/* uploaded html by admin end*/}
-
-      {/* Project Detail Start  */}
-      <div style={{gap: "1rem", display: "flex", flexDirection: "column"}} >
-          <div style={{fontWeight: "bold", fontSize: "1.25rem"}}>Project Details</div>
-
-          <div style={{border: "2px solid", borderRadius: "0.5rem", background: "#EBECEE", padding: "2rem"}}>
-              <div style={{display: "flex", flexDirection: "column",gap:"20px"}}>
-                  <div style={{display: "flex", justifyContent: "space-between"}}>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Name</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.project}</div>
-                      </div>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Size</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.property_size}</div>
-                      </div>
+     </div>
+    </div>
+    <div className="row gx-4 ">
+      <div className="profile-text mb-2 mb-md-4">Project Details</div>
+      <div className="col-12  col-lg-12">
+        <div className="lead-detail-sec overflow-hidden">
+          <div className="row" style={{backgroundColor: '#F9F9F9'}}>
+            <div className="col-12 col-lg-6">
+              <div className="list-group General-list d-flex flex-column gap-3  leads-content h-auto m-0 border-bottom border-lg-0">
+                <div className="row">
+                  <div className="col-5 col-md-5">
+                    <div className="list-group-item list-group-item-action p-0 border-0 ">
+                      <span className="list-left fs-4">Property Name</span>
+                    </div>
                   </div>
-                  <div style={{display: "flex", justifyContent: "space-between"}}>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Location</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.location}</div>
-                      </div>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Unit Area</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.unit_area}</div>
-                      </div>
+                  <div className="col-7 col-md-6">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-right fs-4">{projectData?.project} </span>
+                    </div>
                   </div>
-                  <div style={{display: "flex", justifyContent: "space-between"}}>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Contact No.</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>+91-{projectData?.contact_no}</div>
-                      </div>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Price</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.price}</div>
-                      </div>
+                </div>
+                <div className="row">
+                  <div className="col-5 col-md-5">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-left fs-4">Location</span>
+                    </div>
                   </div>
+                  <div className="col-7 col-md-6">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-right fs-4">{projectData?.location}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-5 col-md-5">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-left fs-4">Contact No.</span>
+                    </div>
+                  </div>
+                  <div className="col-7 col-md-6">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-right fs-4">+91-{projectData?.contact_no}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
+            </div>
+            <div className="col-12 col-lg-6">
+              <div className="list-group General-list d-flex flex-column gap-3  leads-content h-auto m-0">
+                <div className="row">
+                  <div className="col-5 col-md-5">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-left fs-4">Property Size</span>
+                    </div>
+                  </div>
+                  <div className="col-7 col-md-6">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-right fs-4">{projectData?.property_size}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-5 col-md-5">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-left fs-4">Unit Area</span>
+                    </div>
+                  </div>
+                  <div className="col-7 col-md-6">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-right fs-4">{projectData?.unit_area}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-5 col-md-5">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-left fs-4">Price</span>
+                    </div>
+                  </div>
+                  <div className="col-7 col-md-6">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-right fs-4"> {projectData?.price}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
       </div>
-      {/* Project Detail End  */}
-
-      </div>
-      </div>
-      {/* To be downloaded as html end */}
-
-
-      {/* Back to campaign button start */}
-      <div style={{display:"flex", justifyContent:"center",alignItems:"center"}}>
-          <Link href={`/CHANNEL/CampaignAdmin`} style={{background:clientBtnColor,color:"white",padding:"5px 10px",borderRadius:"20px"}}>Back to Campaigns</Link>
-      </div>
-      {/* Back to campaign button end */}
-
-      </div>
+    </div>
+  </div>
+  <div className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5 pb-4">
+      <Link href={`/CHANNEL/CampaignAdmin`} className="back-to-lead d-flex align-items-center justify-content-center text-white border-0" style={{background:clientBtnColor}}>Back to Campaigns</Link>
+    </div>
+</section>
 
      <Modal
         show={showModal}
@@ -301,7 +314,6 @@ const CampaignDetailsScreen = () => {
                   </label>
                   <input
                     type="text"
-                    disabled
                     value={projectData?.project}
                     onChange={(e) => {
                       setProjectData({
@@ -320,7 +332,6 @@ const CampaignDetailsScreen = () => {
                   </label>
                   <input
                     type="text"
-                    disabled
                     value={projectData?.property_size}
                     onChange={(e) => {
                       setProjectData({
@@ -342,7 +353,6 @@ const CampaignDetailsScreen = () => {
                   </label>
                   <input
                     type="text"
-                    disabled
                     value={projectData?.location}
                     onChange={(e) => {
                       setProjectData({
@@ -361,7 +371,6 @@ const CampaignDetailsScreen = () => {
                   </label>
                   <input
                     type="text"
-                    disabled
                     value={projectData?.unit_area}
                     onChange={(e) => {
                       setProjectData({
@@ -383,7 +392,6 @@ const CampaignDetailsScreen = () => {
                   </label>
                   <input
                     type="text"
-                    
                     value={projectData?.contact_no}
                     onChange={(e) => {
                       setProjectData({
@@ -402,7 +410,6 @@ const CampaignDetailsScreen = () => {
                   </label>
                   <input
                     type="text"
-                    disabled
                     value={projectData?.price}
                     onChange={(e) => {
                       setProjectData({
@@ -419,7 +426,7 @@ const CampaignDetailsScreen = () => {
 
 
               <div className="d-flex justify-content-between gap-5 align-items-center">
-                {/* <div className="w-50  d-flex justify-content-lg-between align-items-center">
+                <div className="w-50  d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Property Cover
                   </label>
@@ -437,7 +444,7 @@ const CampaignDetailsScreen = () => {
                         <span className="absolute top-0 right-0" onClick={()=>{
                           setProjectData({...projectData, file: null,file_preview:null})
                         }}>
-                            <Delete style={{color: 'red'}}/>
+                            <Delete style={{color: 'red',cursor:'pointer'}}/>
                         </span>
                     </div>
                     : 
@@ -449,7 +456,7 @@ const CampaignDetailsScreen = () => {
                       Click here to choose file
                     </label>
                     }
-                </div> */}
+                </div>
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Property Logo
@@ -487,7 +494,7 @@ const CampaignDetailsScreen = () => {
                     }
                 </div>
               </div>
-{/* 
+
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50  d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
@@ -507,7 +514,7 @@ const CampaignDetailsScreen = () => {
                         <span className="absolute top-0 right-0" onClick={()=>{
                           setProjectData({...projectData, template_name: null, template_file: null})
                         }}>
-                            <Delete style={{color: 'red'}}/>
+                            <Delete style={{color: 'red',cursor:'pointer'}}/>
                         </span>
                     </div>
                     : 
@@ -523,7 +530,7 @@ const CampaignDetailsScreen = () => {
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                  
                 </div>
-              </div> */}
+              </div>
 
             </div>
 
@@ -551,4 +558,4 @@ const CampaignDetailsScreen = () => {
   )
 }
 
-export default CampaignDetailsScreen
+export default CampaignDetailsAdminScreen

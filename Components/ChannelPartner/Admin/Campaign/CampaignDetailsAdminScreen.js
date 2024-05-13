@@ -47,6 +47,19 @@ const CampaignDetailsAdminScreen = () => {
 
     const getTargetElement = () => document.getElementById("content2");
     const downloadPdf = () => generatePDF(getTargetElement, options);
+    const downloadHtml = () => {
+      const htmlContent = document.getElementById("content2").innerHTML;
+      const blob = new Blob([htmlContent], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${projectData?.project}-Template.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+    
 
     useEffect(()=>{
         if(id){
@@ -168,125 +181,100 @@ const CampaignDetailsAdminScreen = () => {
    
   return (
     <>
-             <section ref={targetRef}  className="Channel-profile Booking-Detail Visit-Details Campaigns overflow-auto w-100  Campaign-upload pt-4 pb-2 bg-white">
-             <div className="d-flex justify-content-end gap-2 pe-5 ">
-        <img src="/ChannelPartner/profile-edit.svg" alt style={{height: 17,fontWeight:"bold",cursor:"pointer"}} 
-            onClick={()=>{
-                setShowModal(true)
-                getCampaignById(id)
-            }}
-        />
-        <img src="/ChannelPartner/download-file-blue.svg" alt style={{height: 17,cursor:"pointer"}} onClick={()=>{
-            downloadPdf() 
-        }} />
-      </div>
-  <div  className="container mt-4 mb-4" id='content2'>
-    <div className="row gx-4 gy-4">
-      <div className="d-flex justify-content-between Campaign-upload-logo">
-      <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt=""  />
-        <img src={projectData?.logo_preview} alt />
-      </div>
-     
-     <div dangerouslySetInnerHTML={{__html: projectData?.htmlString  || ``}}>
+      <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}>
 
-     </div>
-    </div>
-    <div className="row gx-4 ">
-      <div className="profile-text mb-2 mb-md-4">Project Details</div>
-      <div className="col-12  col-lg-12">
-        <div className="lead-detail-sec overflow-hidden">
-          <div className="row" style={{backgroundColor: '#F9F9F9'}}>
-            <div className="col-12 col-lg-6">
-              <div className="list-group General-list d-flex flex-column gap-3  leads-content h-auto m-0 border-bottom border-lg-0">
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0 ">
-                      <span className="list-left fs-4">Property Name</span>
-                    </div>
+      {/* Edit and Download Start */}
+      <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"15px"}}>
+          <img src="/ChannelPartner/profile-edit.svg" alt="Profile Edit" style={{ fontWeight: "bold", cursor: "pointer"}} 
+              onClick={() => {
+                  setShowModal(true);
+                  getCampaignById(id);
+              }}
+          />
+          <img 
+          src="/ChannelPartner/download-file-blue.svg" 
+          alt="Download File" 
+          style={{height: "1.2rem", cursor: "pointer"}} 
+          onClick={()=>{
+            downloadHtml()
+            // downloadPdf()
+          }}
+          />
+      </div>
+      {/* Edit and Download End */}
+
+        
+      {/* To be downloaded as html start */}
+      <div style={{padding:"10px"}} id="content2">
+      <div style={{padding: "1rem", display: "flex", flexDirection: "column", gap: "1rem"}} >
+
+
+      {/* company logo and client logo start*/}
+      <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+          <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="Client Logo" style={{maxHeight: "3rem"}} />
+          <img src={projectData?.logo_preview} alt="Project Logo" style={{maxHeight: "3rem"}} />
+      </div>
+      {/* company logo and client logo end*/}
+
+      {/* uploaded html by admin start*/}
+      <div dangerouslySetInnerHTML={{__html: projectData?.htmlString  || ``}}></div>
+      {/* uploaded html by admin end*/}
+
+      {/* Project Detail Start  */}
+      <div style={{gap: "1rem", display: "flex", flexDirection: "column"}} >
+          <div style={{fontWeight: "bold", fontSize: "1.25rem"}}>Project Details</div>
+
+          <div style={{border: "2px solid", borderRadius: "0.5rem", background: "#EBECEE", padding: "2rem"}}>
+              <div style={{display: "flex", flexDirection: "column",gap:"20px"}}>
+                  <div style={{display: "flex", justifyContent: "space-between"}}>
+                      <div style={{width: "50%",display:"flex"}}>
+                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Name</label>
+                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.project}</div>
+                      </div>
+                      <div style={{width: "50%",display:"flex"}}>
+                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Size</label>
+                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.property_size}</div>
+                      </div>
                   </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right fs-4">{projectData?.project} </span>
-                    </div>
+                  <div style={{display: "flex", justifyContent: "space-between"}}>
+                      <div style={{width: "50%",display:"flex"}}>
+                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Location</label>
+                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.location}</div>
+                      </div>
+                      <div style={{width: "50%",display:"flex"}}>
+                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Unit Area</label>
+                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.unit_area}</div>
+                      </div>
                   </div>
-                </div>
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left fs-4">Location</span>
-                    </div>
+                  <div style={{display: "flex", justifyContent: "space-between"}}>
+                      <div style={{width: "50%",display:"flex"}}>
+                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Contact No.</label>
+                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>+91-{projectData?.contact_no}</div>
+                      </div>
+                      <div style={{width: "50%",display:"flex"}}>
+                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Price</label>
+                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.price}</div>
+                      </div>
                   </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right fs-4">{projectData?.location}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left fs-4">Contact No.</span>
-                    </div>
-                  </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right fs-4">+91-{projectData?.contact_no}</span>
-                    </div>
-                  </div>
-                </div>
               </div>
-            </div>
-            <div className="col-12 col-lg-6">
-              <div className="list-group General-list d-flex flex-column gap-3  leads-content h-auto m-0">
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left fs-4">Property Size</span>
-                    </div>
-                  </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right fs-4">{projectData?.property_size}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left fs-4">Unit Area</span>
-                    </div>
-                  </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right fs-4">{projectData?.unit_area}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-5 col-md-5">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left fs-4">Price</span>
-                    </div>
-                  </div>
-                  <div className="col-7 col-md-6">
-                    <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right fs-4"> {projectData?.price}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
       </div>
-    </div>
-  </div>
-  <div className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5 pb-4">
-      <Link href={`/CHANNEL/CampaignAdmin`} className="back-to-lead d-flex align-items-center justify-content-center text-white border-0" style={{background:clientBtnColor}}>Back to Campaigns</Link>
-    </div>
-</section>
+      {/* Project Detail End  */}
 
-     <Modal
+      </div>
+      </div>
+      {/* To be downloaded as html end */}
+
+
+      {/* Back to campaign button start */}
+      <div style={{display:"flex", justifyContent:"center",alignItems:"center"}}>
+          <Link href={`/CHANNEL/CampaignAdmin`} style={{background:clientBtnColor,color:"white",padding:"5px 10px",borderRadius:"20px"}}>Back to Campaigns</Link>
+      </div>
+      {/* Back to campaign button end */}
+
+      </div>
+
+      <Modal
         show={showModal}
         onHide={() => {
           setShowModal(false);
@@ -552,7 +540,6 @@ const CampaignDetailsAdminScreen = () => {
           </form>
         </Modal.Body>
       </Modal>
-
     </>
 
   )

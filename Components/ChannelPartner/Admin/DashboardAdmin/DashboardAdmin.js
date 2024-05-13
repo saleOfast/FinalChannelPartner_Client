@@ -293,14 +293,14 @@ const DashboardAdmin = () => {
     return (
       <div className='d-block '>
       <div>
-      <div className=' d-flex justify-content-end pe-4 pb-2 pt-2'>
+      <div className=' d-flex justify-content-end pe-4 pb-1 pt-3'>
       <img src="/ChannelPartner/download-file-blue.svg" alt style={{height: 17,cursor:"pointer"}} onClick={()=>{
             setShowLogo(true)
             downloadPdf()
         }} />
       </div>
       </div>
-          <div className={`main_Box w-100`} >
+          <div className={`main_Box w-100 `} >
             <div className="main_content dashboard indxx"id='to-be-printed' >
                 <div className="Cards_side w-100">
                     <div className="dashboard_head">
@@ -392,6 +392,37 @@ const DashboardAdmin = () => {
                             null}
                         </div> */}
 
+                         {/* <div className='row'>
+                        <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                           {dataList?.rangewiseBrokergaeVsBookingChart?.length ?
+                               <div className="">
+                                   <div className="dash_card chartSec">
+                                       <ReChart
+                                           head='Bookings created Vs Brokerage bills created'
+                                           keyX='brokerage'
+                                           keyY='booking'
+                                           dataList={dataList?.rangewiseBrokergaeVsBookingChart}
+                                       />
+                                   </div>
+                               </div> : 
+                           null}
+                       </div>
+                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                            {dataList?.rangewiseVisitVsBookingsCharts?.length ?
+                                <div className="">
+                                    <div className="dash_card chartSec">
+                                        <ReChart
+                                            head='Visits vs Bookings'
+                                            keyX='visit'
+                                            keyY='booking'
+                                            dataList={dataList?.rangewiseVisitVsBookingsCharts}
+                                        />
+                                    </div>
+                                </div> : 
+                            null}
+                        </div>
+                        </div> */}
+
 
                         <div className='row'>
                         {dataList?.EnrolVsAcceptChart?.length ?
@@ -452,89 +483,27 @@ const DashboardAdmin = () => {
                         </div>
                         </div>
                         
-                        {/* <div className='row'>
-                        <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
-                           {dataList?.rangewiseBrokergaeVsBookingChart?.length ?
-                               <div className="">
-                                   <div className="dash_card chartSec">
-                                       <ReChart
-                                           head='Bookings created Vs Brokerage bills created'
-                                           keyX='brokerage'
-                                           keyY='booking'
-                                           dataList={dataList?.rangewiseBrokergaeVsBookingChart}
-                                       />
-                                   </div>
-                               </div> : 
-                           null}
-                       </div>
-                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
-                            {dataList?.rangewiseVisitVsBookingsCharts?.length ?
-                                <div className="">
-                                    <div className="dash_card chartSec">
-                                        <ReChart
-                                            head='Visits vs Bookings'
-                                            keyX='visit'
-                                            keyY='booking'
-                                            dataList={dataList?.rangewiseVisitVsBookingsCharts}
-                                        />
-                                    </div>
-                                </div> : 
-                            null}
-                        </div>
-                        </div> */}
+                       
                         
                     </div>
                 </div>
                 <div className="Task_side">
-                    {/* <div className="checkInBtns">
-                        <div className="Box_head">Attendence</div>
-
-                        {isLoading ? <div className='loading'>Loading...</div> : <div className="checkinBtn btnBox">
-                            <div className="btn-box">
-                                {!checkInInfo?.check_in && <button className="btn checkin btn-primary" onClick={checkInFunc}>Check In</button>}
-                            </div>
-                            {checkInInfo?.check_in && (
-                                <div className="time">
-                                    <span className="head">Check In time :</span>
-                                    <span className="value">{moment(checkInInfo?.check_in).format("DD-MM-YYYY LT")}</span>
-                                </div>
-                            )}
-
-                            <div className="btn-box">
-                                {!checkInInfo?.check_out && checkInState !== '1' && <button className="btn btn-primary" onClick={checkoutFunc}>Check Out</button>}
-                            </div>
-
-                            {checkInInfo?.check_out && (
-                                <div className="time mb-0">
-                                    <span className="head">Check Out time :</span>
-                                    <span className="value">{moment(checkInInfo?.check_out).format("DD-MM-YYYY LT")}</span>
-                                </div>)}
-                        </div>}
-
-                    </div> */}
-
-                    {/* <div className="task_Box">
-                        <TasksCard
-                            dataList={dataList}
-                        />
-                    </div> */}
-                    <div className="opertunity_box">
-                        <Top5Bookings
-                            dataList={dataList}
-                            name="Top 5 Bookings"
-                        />
-
-                    </div>
                     <div className="opertunity_box">
                         <Top5Leads
                             dataList={dataList}
-                            name="Top 5 Leads"
+                            name="Broker Wise Leads"
                         />
                     </div>
                     <div className="opertunity_box">
                         <Top5Visits
                             dataList={dataList}
-                            name="Top 5 Visits"
+                            name="Broker wise Visits"
+                        />
+                    </div>
+                    <div className="opertunity_box">
+                        <Top5Bookings
+                            dataList={dataList}
+                            name="Broker wise Booking"
                         />
                     </div>
                 </div>

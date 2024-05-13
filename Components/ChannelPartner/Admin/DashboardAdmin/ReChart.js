@@ -6,7 +6,7 @@ const ReChart = ({ head, dataList, keyX='lead', keyY='booking'}) => {
     return (
         <>
                  <div className="row pb-0">
-                 <div className=' fw-bold fs-5 '>
+                 <div className=' fw-bold fs-5'  >
                         {head}
                         </div>
                     <div className="col-xl-6 col-md-8 col-sm-6 col-6">

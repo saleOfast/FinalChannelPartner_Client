@@ -658,7 +658,7 @@ const AddClientScreen = () => {
                   </div>
                 </div>
 
-                <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div
                     className={
                       errorData?.client_url ? "input_box errorBox" : "input_box"
@@ -684,6 +684,36 @@ const AddClientScreen = () => {
                     <span className="errorText">
                       {" "}
                       {errorData?.client_url ? errorData.client_url : ""}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.host_name ? "input_box errorBox" : "input_box"
+                    }
+                  >
+                    <label htmlFor="Name">Salesforce Host URL *</label>
+                    <input
+                      type="text"
+                      placeholder="Salesforce Host URL"
+                      name="Name"
+                      id="Name"
+                      className={
+                        errorData?.host_name
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, host_name: e.target.value });
+                        setErrorData({ ...errorData, host_name: "" });
+                      }}
+                      value={userInfo.host_name ? userInfo.host_name : ""}
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.host_name ? errorData.host_name : ""}
                     </span>
                   </div>
                 </div>
@@ -898,35 +928,7 @@ const AddClientScreen = () => {
                       </div>
                     </div>
 
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div
-                    className={
-                      errorData?.host_name ? "input_box errorBox" : "input_box"
-                    }
-                  >
-                    <label htmlFor="Name">Salesforce Host URL *</label>
-                    <input
-                      type="text"
-                      placeholder="Salesforce Host URL"
-                      name="Name"
-                      id="Name"
-                      className={
-                        errorData?.host_name
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      onChange={(e) => {
-                        setUserInfo({ ...userInfo, host_name: e.target.value });
-                        setErrorData({ ...errorData, host_name: "" });
-                      }}
-                      value={userInfo.host_name ? userInfo.host_name : ""}
-                    />
-                    <span className="errorText">
-                      {" "}
-                      {errorData?.host_name ? errorData.host_name : ""}
-                    </span>
-                  </div>
-                </div>
+                    
 
                   </> 
                 )}

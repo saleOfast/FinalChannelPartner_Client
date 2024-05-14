@@ -295,7 +295,7 @@ const DashboardUser = () => {
     return (
       <div className='d-block w-100'>
       <div>
-      <div className=' d-flex justify-content-end pe-4 pb-2 pt-2'>
+      <div className=' d-flex justify-content-end pe-4  pt-3'>
       <img src="/ChannelPartner/download-file-blue.svg" alt style={{height: 17,cursor:"pointer"}} onClick={()=>{
          setShowLogo(true)
             downloadPdf() 

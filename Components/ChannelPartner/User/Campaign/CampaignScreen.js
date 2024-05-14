@@ -229,8 +229,8 @@ const CampaignScreen = () => {
     <>
       <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
         
-        <section className="Channel-profile Booking-Detail Visit-Details Campaigns pt-4 pb-2 bg-white">
-          <div className="container mt-4 mb-4">
+        <section className="Channel-profile Booking-Detail Visit-Details Campaigns  pb-2 bg-white">
+          <div className="container mt-3 mb-4">
             <div className="row gx-4 gy-4">
               <div className="profile-text">Campaigns</div>
             {

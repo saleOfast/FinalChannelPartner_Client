@@ -184,7 +184,7 @@ const CampaignDetailsAdminScreen = () => {
       <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}>
 
       {/* Edit and Download Start */}
-      <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"15px"}}>
+      <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"11px"}}>
           <img src="/ChannelPartner/profile-edit.svg" alt="Profile Edit" style={{ fontWeight: "bold", cursor: "pointer"}} 
               onClick={() => {
                   setShowModal(true);

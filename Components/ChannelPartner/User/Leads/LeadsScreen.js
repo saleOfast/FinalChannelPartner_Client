@@ -232,7 +232,7 @@ const LeadsScreen = () => {
         <div className="w-100 ps-4 pe-4 overflow-auto ">
           <div className="main_content">
             <div className="table_screen">
-              <div className="top_btn_sec mb-2">
+              <div className="top_btn_sec mb-3 " style={{paddingRight:"0px"}}>
                 <div className="d-flex">
                   <button
                     className="btn ms-auto  Add_btn  "

@@ -228,11 +228,11 @@ const CampaignAdminScreen = () => {
   return (
     <>
       <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
-        <div className="top_btn_sec mb-2">
+        <div className="top_btn_sec mb-4" >
           <div className="d-flex ">
             <button
-              className="btn ms-auto  Add_btn me-3"
-              style={{ background: `${clientBtnColor}` }}
+              className="btn ms-auto  Add_btn "
+              style={{ background: `${clientBtnColor}`}}
               onClick={() => {
                 setShowModal(true);
               }}
@@ -243,7 +243,7 @@ const CampaignAdminScreen = () => {
           </div>
         </div>
         <section className="Channel-profile Booking-Detail Visit-Details Campaigns pt-4 pb-2 bg-white">
-          <div className="container mt-4 mb-4">
+          <div className="container mb-4">
             <div className="row gx-4 gy-4">
               <div className="profile-text">Campaigns</div>
             {

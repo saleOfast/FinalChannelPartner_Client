@@ -282,9 +282,9 @@ const ActivePartnersScreen = () => {
               
                 <div className="main_content">
                     <div className="table_screen">
-                        <div className="top_btn_sec mb-2">
+                        <div className="top_btn_sec mb-3" style={{paddingRight:"0px"}} >
                             <div className="d-flex">
-                                <button className="btn ms-auto Add_btn me-3" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/CHANNEL/ChannelPartnersDetails')}>
+                                <button className="btn ms-auto Add_btn  mb-2" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/CHANNEL/ChannelPartnersDetails')}>
                                     <PlusIcon />
                                     ADD USER
                                 </button>

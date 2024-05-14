@@ -49,7 +49,7 @@ const Layout = ({Component, pageProps}) => {
       } else{
         setSidebarMode("channel")
         setTopnavPermission("channel")
-      }
+      } 
     }
 
     const checkColor=()=> {

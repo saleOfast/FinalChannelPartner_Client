@@ -85,7 +85,7 @@ export default function SignInScreen({ setLoggedIn }) {
                     setCookie('sideUser', 'true');
                     setCookie('token', res.data.token);
                     setCookie('userInfo', res.data.userData);
-                    setCookie('clientLogo', res.data.Logo);
+                    setCookie('clientLogo', res.data.Logo[0]);
                     setCookie('db_name', res.data.userData.db_name);
                     dispatch(setSidebarColor(res.data.Logo[0].sidebar_color || '#405189'))
                     dispatch(setbuttonColor(res.data.Logo[0].button_color || '#405189'))

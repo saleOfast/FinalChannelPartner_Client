@@ -55,9 +55,9 @@ const Layout = ({Component, pageProps}) => {
     const checkColor=()=> {
       if(hasCookie("clientLogo")){
         const data = JSON.parse(getCookie("clientLogo"))
-        dispatch(setSidebarColor(data[0].sidebar_color))
-        dispatch(setbuttonColor(data[0].button_color))
-        dispatch(setTopNavColor(data[0].button_color))
+        dispatch(setSidebarColor(data.sidebar_color))
+        dispatch(setbuttonColor(data.button_color))
+        dispatch(setTopNavColor(data.button_color))
       } 
     
     }
@@ -81,6 +81,7 @@ const Layout = ({Component, pageProps}) => {
         checkAllowedPermissions()
         
       }, [allowedpermission]);
+
       useEffect(()=>{
         checkColor()
       },[])

@@ -22,6 +22,7 @@ import Head from 'next/head';
 function App({ Component, pageProps }) {
   return (
     <>
+  
    
       <Provider store={store}>
         <SSRProvider>

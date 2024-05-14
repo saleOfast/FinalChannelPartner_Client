@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { Baseurl } from "../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../Utils/Constants";
 import { setCookie } from "cookies-next";
+import Link from "next/link";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -12,6 +13,7 @@ const ForgotPassword = () => {
   const [isShowVerification, setIsShowVerification] = useState(false);
   const [showResetBtn, setShowResetBtn] = useState(false);
   const [timer, setTimer] = useState(30);
+  const[clientData,setClientData]=useState()
   const router = useRouter();
 
   const resendCode = async () => {
@@ -84,6 +86,25 @@ const ForgotPassword = () => {
     }, 30000);
   };
 
+  useEffect(()=>{
+    const getSignInData=async()=>{
+      try {
+        let baseUrl = window.location.origin;
+        if(baseUrl==="http://localhost:3000"){
+          baseUrl="http://crm.cybermatrixsolutions.com"
+        }
+        const {data}=await axios.post(Baseurl+"/db/admin/url",{
+          client_url:`${baseUrl}`,
+        })
+        setClientData(data?.data)
+        setCookie("clientBtnColor",data?.data?.button_color)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getSignInData()
+  },[])
+
   return (
     <>
       <section className="Sign-In pt-4" style={{ padding: "0 16px" }}>
@@ -92,11 +113,19 @@ const ForgotPassword = () => {
             <div className="col-12">
               <div className="row">
                 <div className="col-7 Sign-In-logo">
-                  <img src="/ChannelPartner/logo.png" alt="login" />
+                  {/* <img src="/ChannelPartner/logo.png" alt="login" /> */}
+                  <img
+                      src={
+                        clientData?.logo
+                          &&( `${filesUrl}` +
+                            `/logo/images${clientData?.logo}`)
+                      }
+                      alt
+                    />
                 </div>
                 <div className="col-5 d-flex justify-content-md-end">
                   <div className="Sign-In_Sign-Up Register">
-                    <h3 className="Perfect-Home">Find Your Perfect Home. </h3>
+                    <h3 className="Perfect-Home" >Find Your Perfect Home. </h3>
                     <div className="underline" />
                   </div>
                 </div>
@@ -170,9 +199,11 @@ const ForgotPassword = () => {
                           </div>
                         )}
                       </form>
+                      <div className="d-block gap-1">
                       <button
                         type="button"
                         className="login_btn mt-5"
+                        style={{background:clientData?.button_color}}
                         onClick={() =>
                           isShowVerification
                             ? handleVerify()
@@ -183,6 +214,11 @@ const ForgotPassword = () => {
                           ? "Verify"
                           : "Send Verification Code"}
                       </button>
+                      <Link href="/CHANNEL/Signin" className="login_btn btn  mt-2">
+                          Login
+                      </Link>
+                      </div>
+                      
                     </div>
                   </div>
                 </div>

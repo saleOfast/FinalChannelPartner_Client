@@ -1,9 +1,9 @@
 import axios from "axios";
-import { getCookie, hasCookie } from "cookies-next";
+import { getCookie, hasCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Baseurl } from "../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../Utils/Constants";
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -11,6 +11,7 @@ const ForgotPassword = () => {
   const [email] = useState(getCookie("resetPasswordEmail"));
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const[clientData,setClientData]=useState()
 
   const handleSubmit = async () => {
     if (!newPassword.trim()) {
@@ -56,6 +57,25 @@ const ForgotPassword = () => {
     }
   }, [router]);
 
+  useEffect(()=>{
+    const getSignInData=async()=>{
+      try {
+        let baseUrl = window.location.origin;
+        if(baseUrl==="http://localhost:3000"){
+          baseUrl="http://crm.cybermatrixsolutions.com"
+        }
+        const {data}=await axios.post(Baseurl+"/db/admin/url",{
+          client_url:`${baseUrl}`,
+        })
+        setClientData(data?.data)
+        setCookie("clientBtnColor",data?.data?.button_color)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getSignInData()
+  },[])
+
   return (
     <>
       <section className="Sign-In pt-4" style={{ padding: "0 16px" }}>
@@ -64,7 +84,15 @@ const ForgotPassword = () => {
             <div className="col-12">
               <div className="row d-flex align-items-end">
                 <div className="col-7 Sign-In-logo">
-                  <img src="/ChannelPartner/logo.png" alt="login" />
+                  {/* <img src="/ChannelPartner/logo.png" alt="login" /> */}
+                  <img
+                      src={
+                        clientData?.logo
+                          &&( `${filesUrl}` +
+                            `/logo/images${clientData?.logo}`)
+                      }
+                      alt
+                    />
                 </div>
                 <div className="col-5 d-flex justify-content-md-end">
                   <div className="Sign-In_Sign-Up Register">
@@ -132,6 +160,7 @@ const ForgotPassword = () => {
                       <button
                         type="button"
                         className="login_btn mt-3"
+                        style={{background:clientData?.button_color}}
                         onClick={() => handleSubmit()}
                       >
                         Update Password

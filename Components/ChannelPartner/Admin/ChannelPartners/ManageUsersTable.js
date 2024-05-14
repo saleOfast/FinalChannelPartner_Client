@@ -86,6 +86,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     </th>
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
+                    
                     const date = new Date(value);
                     const day = String(date.getDate()).padStart(2, '0');
                     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
@@ -100,7 +101,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'user',
+            name: 'lead_count',
             label: "Leads Count",
             options: {
                 filter: true,
@@ -112,14 +113,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            108
+                            {value}
                         </div>
                     )
                 }
             }
         },
         {
-            name: 'user',
+            name: 'booking_count',
             label: "Bookings Count",
             options: {
                 filter: true,
@@ -131,7 +132,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            24
+                            {value}
                         </div>
                     )
                 }

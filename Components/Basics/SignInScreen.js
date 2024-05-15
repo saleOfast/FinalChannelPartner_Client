@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LeadShyneIcon from '../Svg/LeadShyneIcon';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -7,7 +7,7 @@ import { setCookie } from 'cookies-next';
 import { useSelector, useDispatch } from 'react-redux';
 import { userMode } from '../../store/dbModeSlice';
 import { UserLogIN } from '../../store/ClientLoginSlice';
-import { Baseurl } from '../../Utils/Constants';
+import { Baseurl, filesUrl } from '../../Utils/Constants';
 import axios from 'axios';
 import { validEmail } from '../../Utils/regex';
 import { assignPermissions, crm, dms,sales,channel } from '../../store/permissionSlice';
@@ -19,6 +19,7 @@ export default function SignInScreen({ setLoggedIn }) {
   
     const router = useRouter()
     const dispatch = useDispatch()
+  const[clientData,setClientData]=useState();
     const [userForm, setUserForm] = useState({
         email: "",
         password: ""
@@ -108,10 +109,39 @@ export default function SignInScreen({ setLoggedIn }) {
         }
     }
 
+    useEffect(()=>{
+        const getSignInData=async()=>{
+          try {
+            let baseUrl = window.location.origin;
+            if(baseUrl==="http://localhost:3000"){
+              baseUrl="http://crm.cybermatrixsolutions.com"
+            }
+            const {data}=await axios.post(Baseurl+"/db/admin/url",{
+              client_url:`${baseUrl}`,
+            })
+            setClientData(data?.data)
+            setCookie("clientBtnColor",data?.data?.button_color)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+        getSignInData()
+      },[])
+
     return (
         <div className="login_wrapper">
             <div className="login_box">
-                <div className="img_logo"> <LeadShyneIcon /> </div>
+                <div className="img_logo">
+                     {/* <LeadShyneIcon />  */}
+                     <img
+                      src={
+                        clientData?.logo
+                          &&( `${filesUrl}` +
+                            `/logo/images${clientData?.logo}`)
+                      }
+                      alt
+                    />
+                </div>
                 <div className="header"> Please Login to Continue </div>
                 <div className="content_box">
                     <form className='login_form' onSubmit={submitHandler}>

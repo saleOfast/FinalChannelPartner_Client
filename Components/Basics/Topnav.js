@@ -30,6 +30,7 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
   const [showConfirm, setshowConfirm] = useState(false);
   const isCHannel = hasCookie("channel") || false
   const [path, setPath] = useState('');
+  const[clientData,setClientData]=useState();
 
   const logouthandler = () => {
     dispatch(startLoading())
@@ -156,6 +157,25 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
     }
   }, []);
 
+  useEffect(()=>{
+    const getSignInData=async()=>{
+      try {
+        let baseUrl = window.location.origin;
+        if(baseUrl==="http://localhost:3000"){
+          baseUrl="http://crm.cybermatrixsolutions.com"
+        }
+        const {data}=await axios.post(Baseurl+"/db/admin/url",{
+          client_url:`${baseUrl}`,
+        })
+        setClientData(data?.data)
+        setCookie("clientBtnColor",data?.data?.button_color)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getSignInData()
+  },[])
+
   return (
     <>
       {hasCookie("channel") && userInfo?.db_role !== null ? (
@@ -180,7 +200,17 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
           >
             <div className="top_nav">
               <div className="brand_icon">
-                {hasCookie("crm") && <LeadShyneIcon />}
+                {hasCookie("crm") &&
+                //  <LeadShyneIcon />
+                <img
+                src={
+                  clientData?.logo
+                    &&( `${filesUrl}` +
+                      `/logo/images${clientData?.logo}`)
+                }
+                alt
+              />
+                 }
                 {hasCookie("dms") && (
                   <img src="/DMS_IMAGES/kloudmart.png" className />
                 )}

@@ -234,7 +234,7 @@ select.form-control::after {
 
 .main_wrapper {
   max-width: 100vw;
-  max-height: 100vh;
+  /* max-height: 100vh; */
   overflow: hidden;
 }
 .main_wrapper::-webkit-scrollbar {
@@ -831,6 +831,7 @@ select.form-control::after {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-top:20px;
 }
 .main_wrapper .content_wrapper .main_Box .bread_head .content_head {
   color: var(--text-black);
@@ -1078,14 +1079,14 @@ select.form-control::after {
 }
 .main_wrapper .content_wrapper .main_Box .main_content.admin_dashboard .admin_setings_lists .card_wrapper .card_lists .settings_list .list_item {
   position: relative;
-  padding: 10px 0px;
+  padding: 10px 22px;
 }
 .main_wrapper .content_wrapper .main_Box .main_content.admin_dashboard .admin_setings_lists .card_wrapper .card_lists .settings_list .list_item::before {
   content: "";
   position: absolute;
   width: 7px;
   height: 7px;
-  left: -15px;
+  left: 2px;
   top: 20px;
   rotate: -135deg;
   border-left: 2px solid #00b7eb;

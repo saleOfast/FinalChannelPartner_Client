@@ -17,6 +17,13 @@ const ManageLeadTable = ({
 
   const columns = [
     {
+      name: "lead_code",
+      label: "Lead ID",
+      options: {
+        filter: true,
+      },
+    },
+    {
       name: "lead_name",
       label: "Lead Name",
       options: {
@@ -77,6 +84,7 @@ const ManageLeadTable = ({
       options: {
         filter: true,
         customBodyRender: (value, tableMeta, updateValue) => {
+          console.log(tableMeta)
           return (
             // /AddLeads?id=${value}&vw=mds`
             <div className="table_btns">
@@ -85,18 +93,29 @@ const ManageLeadTable = ({
                   <ViewIcon />
                 </button>
               </Link>
-              <Link href={`/AddLeads?id=${value}`}>
-                <button className="action_btn" title="Edit">
-                  <EditIcon />
-                </button>
-              </Link>
-              <button
+              
+              {
+                  tableMeta?.rowData[6]?.lead_status_id == 3 && tableMeta?.rowData[6]?.lead_status_id == 4 &&
+                  tableMeta?.rowData[6]?.lead_status_id == 1 && tableMeta?.rowData[6]?.lead_status_id == 2 ?
+                  null : (
+                    <>
+                        <button
                 onClick={() => disableConfirm(value)}
                 className="action_btn"
                 title="Delete">
                 <DeleteIcon />
               </button>
-              {tableMeta?.rowData[5]?.lead_status_id == 1 || tableMeta?.rowData[5]?.lead_status_id == 2 ?
+              <Link href={`/AddLeads?id=${value}`}>
+              <button className="action_btn" title="Edit">
+                <EditIcon />
+              </button>
+            </Link>
+                    </>
+                    
+                  )
+              }
+              
+              {tableMeta?.rowData[6]?.lead_status_id == 1 || tableMeta?.rowData[6]?.lead_status_id == 2 ?
                 <button
                   onClick={() => openCloseConvert(value)}
                   className="action_btn x2"

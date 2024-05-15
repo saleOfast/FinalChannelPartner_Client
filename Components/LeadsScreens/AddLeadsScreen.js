@@ -77,6 +77,7 @@ const AddLeadsScreen = () => {
     acc_id: null,
     db_lead_fields: [],
     related_to: "",
+    loss_reason:""
   });
   const [newFields, setNewFields] = useState({
     field_lable: null,
@@ -94,8 +95,8 @@ const AddLeadsScreen = () => {
   });
 
   const handleClose = () => {
-    if (!userInfo.loss_id || userInfo.loss_id == '') {
-      setUserInfo({ ...userInfo, lead_status_id: '1' })
+    if (!userInfo.loss_reason || userInfo.loss_reason == '') {
+      setUserInfo({ ...userInfo, lead_status_id: '3' })
     }
     setShow(false)
   };
@@ -414,7 +415,7 @@ const AddLeadsScreen = () => {
   }
 
   const lossReasonSubmit = () => {
-    if (!userInfo.loss_id || userInfo.loss_id == '') {
+    if (!userInfo.loss_reason || userInfo.loss_reason == '') {
       toast.error('Please Select a Reason')
     } else {
       handleClose();
@@ -1086,6 +1087,33 @@ const AddLeadsScreen = () => {
                           <span className="errorText"> {errorData?.company_name ? errorData.company_name : ''}</span>
                         </div>
                       </div>
+
+                      {
+                        userInfo?.lead_status_id === 3 ?(
+                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                          <div className={errorData?.loss_reason ? 'input_box errorBox' : 'input_box'}>
+                            <label htmlFor="profilelevel">Loss Reason </label>
+                            <input
+                              type="text"
+                              placeholder="Enter Organization Name"
+                              disabled={viewMode}
+                              name=""
+                              id=""
+                              className={errorData?.loss_reason ? 'form-control is-invalid' : 'form-control'}
+                              onChange={(e) => {
+                                setUserInfo({
+                                  ...userInfo,
+                                  loss_reason: e.target.value,
+                                })
+                                setErrorData({ ...errorData, loss_reason: '' })
+                              }}
+                              value={userInfo.loss_reason ? userInfo.loss_reason : ""}
+                            />
+                            <span className="errorText"> {errorData?.loss_reason ? errorData.loss_reason : ''}</span>
+                          </div>
+                        </div>
+                        ) :null
+                      }
                     </div>
                     <div className="row">
                       <div className="col-xl-6 col-md-6 col-sm-12 col-12">
@@ -1214,7 +1242,7 @@ const AddLeadsScreen = () => {
                         <div className="input_box">
                           <label htmlFor="email">Created On</label>
                           <input
-                            type="date"
+                            type="datetime-local"
                             disabled
                             name="date"
                             id="date"
@@ -1225,15 +1253,16 @@ const AddLeadsScreen = () => {
                                 created_on: e.target.value,
                               })
                             }
-                            value={moment(userInfo?.created_on).format("YYYY-MM-DD")}
-                          />
+                            // value={moment(userInfo?.created_on).format("YYYY-MM-DD")}
+                            value={moment(userInfo?.created_on).format("YYYY-MM-DDTHH:mm")}
+                            />
                         </div>
                       </div>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                         <div className="input_box">
                           <label htmlFor="mod_date">Last Modified On</label>
                           <input
-                            type="date"
+                            type="datetime-local"
                             disabled
                             placeholder="Enter Contact no."
                             name="mod_date"
@@ -1245,7 +1274,8 @@ const AddLeadsScreen = () => {
                                 updated_on: e.target.value,
                               })
                             }
-                            value={userInfo.updated_on ? userInfo.updated_on : ""}
+                            // value={userInfo.updated_on ? userInfo.updated_on : ""}
+                            value={moment(userInfo?.updated_on).format("YYYY-MM-DDTHH:mm")}
                           />
                         </div>
                       </div>
@@ -1970,7 +2000,7 @@ const AddLeadsScreen = () => {
                     <select
                       className="form-control"
                       name="loss_reson" id="loss_reson"
-                      onChange={(e) => setUserInfo({ ...userInfo, loss_id: e.target.value })} >
+                      onChange={(e) => setUserInfo({ ...userInfo, lead_status_id: 3, loss_reason: e.target.value })} >
                       <option value="">Select Reason</option>
                       {lossLists?.map((data, i) => {
                         return <option key={i} value={data.loss_id}>{data.loss_reason}</option>
@@ -1981,7 +2011,8 @@ const AddLeadsScreen = () => {
               </div>
             </div>
 
-          </Modal.Body> : <Modal.Body>
+          </Modal.Body> : 
+          <Modal.Body>
 
             <div className="add_user_form">
               <div className="row">

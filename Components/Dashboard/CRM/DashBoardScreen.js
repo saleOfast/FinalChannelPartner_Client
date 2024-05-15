@@ -249,7 +249,7 @@ const DashBoardScreen = () => {
     return (
         <div className={`main_Box  ${sideView}`}>
             <div className="bread_head">
-                <h3 className="content_head mt-3">DASHBOARD CRM</h3>
+                <h3 className="content_head">DASHBOARD CRM</h3>
             </div>
             <div className="main_content dashboard indxx">
                 <div className="Cards_side">

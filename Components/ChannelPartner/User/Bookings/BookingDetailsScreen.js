@@ -129,8 +129,9 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-6">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{bookingData?.BookingprojectData?.project}
-                            </span>
+                            <span className="list-right">{bookingData?.BookingprojectData?.project ||  '-------'}</span>
+
+                            
                           </div>
                         </div>
                       </div>

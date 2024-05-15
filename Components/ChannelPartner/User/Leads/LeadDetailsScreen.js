@@ -55,20 +55,21 @@ const LeadDetailsScreen = () => {
             const projects = await axios.get(Baseurl + `/db/channel/project`, header);
             setLead({
               ...lead,
-              lead_id:leads.data.data.lead_id,
-              lead_code:leads.data.data.lead_code,
-              lead_name: leads.data.data.lead_name, 
-              email_id: leads.data.data.email_id,
-              p_contact_no: leads.data.data.p_contact_no, 
-              address: leads.data.data.address, 
-              pincode: leads.data.data.pincode, 
-              p_visit_date: leads.data.data.p_visit_date,
-              p_visit_time: leads.data.data.p_visit_time, 
-              project_id:leads.data.data.projectData.project_id,
-              project_name:leads.data.data.projectData.project,
+              lead_id:leads?.data?.data?.lead_id,
+              lead_code:leads?.data?.data?.lead_code,
+              lead_name: leads?.data?.data?.lead_name, 
+              email_id: leads?.data?.data?.email_id,
+              p_contact_no: leads?.data?.data?.p_contact_no, 
+              address: leads?.data?.data?.address, 
+              pincode: leads?.data?.data?.pincode, 
+              p_visit_date: leads?.data?.data?.p_visit_date,
+              p_visit_time: leads?.data?.data?.p_visit_time, 
+              project_id:leads?.data?.data?.projectData?.project_id,
+              project_name:leads?.data?.data?.projectData?.project,
             });
             setProjectList(projects.data.data);
         } catch (error) {
+          console.log(error)
             if (error?.response?.data?.message) {
                 toast.error(error.response.data.message);
             } else {
@@ -209,7 +210,7 @@ function formatDate(date) {
                         <div className="col-7 col-md-6">
                           <div className="list-group-item list-group-item-action p-0 border-0">
                             <span className="list-right">
-                              {lead?.project_name}
+                              {lead?.project_name || "------"}
                             </span>
                           </div>
                         </div>

@@ -186,7 +186,7 @@ const getVisitInfo=async(visitId)=>{
                     </th>
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
-                    console.log(tableMeta)
+                    
                     return (
                         <Link href={`/CHANNEL/LeadDetails?id=${tableMeta?.rowData[0]}`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
                             {value}

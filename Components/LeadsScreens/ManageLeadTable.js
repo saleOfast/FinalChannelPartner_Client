@@ -65,7 +65,7 @@ const ManageLeadTable = ({
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="status_box">
-              <span className={`status${value.lead_status_id} status_btn`}>{value?.lead_status_id ? value.status_name : ""}</span>
+              <span className={`status${value?.lead_status_id} status_btn`}>{value?.lead_status_id ? value?.status_name : ""}</span>
             </div>
           );
         },

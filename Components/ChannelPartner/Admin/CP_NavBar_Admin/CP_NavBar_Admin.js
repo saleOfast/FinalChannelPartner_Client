@@ -16,6 +16,8 @@ import { LoggedOut } from '../../../../store/adMinLoginSlice';
 import { userLogOut } from '../../../../store/ClientLoginSlice';
 import { setActiveLink } from '../../../../store/cpActiveLinkSlice';
 
+
+
 const CP_NavBar_Admin = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -96,6 +98,19 @@ const CP_NavBar_Admin = () => {
     }
   }, []);
 
+  useEffect(() => {
+    // Dynamically load Bootstrap JavaScript on the client-side
+    if (typeof window !== 'undefined') {
+      import('bootstrap/dist/js/bootstrap.bundle.min.js')
+        .then(() => {
+          // Bootstrap JavaScript is loaded, you can use Bootstrap components here
+        })
+        .catch((error) => {
+          console.error('Error loading Bootstrap JavaScript:', error);
+        });
+    }
+  }, []);
+
   return (
     <>
       <ConfirmBox
@@ -105,13 +120,13 @@ const CP_NavBar_Admin = () => {
                 title={"Are You Sure you want to Logout ?"}
             />
 
-<section className="Reports-Dashboard bg-white">
+{/* <section className="Reports-Dashboard bg-white">
       <nav className="navbar navbar-expand-lg navbar-light" style={{ borderTop: '1px solid #F5F5F5', borderBottom: '1px solid #F5F5F5' }}>
         <div className="container-fluid mx-3">
           <div className="navbar-brand">
             <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt=""  />
           </div>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -205,10 +220,112 @@ const CP_NavBar_Admin = () => {
           </div>
         </div>
       </nav>
-    </section>
+
+      
+      
+    </section> */}
+
+    <nav className="navbar navbar-expand-lg navbar-light bg-white">
+  <div className="container-fluid">
+  <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt=""  />
+    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span className="navbar-toggler-icon" />
+    </button>
+    <div className="collapse navbar-collapse " id="navbarNavDropdown">
+      <ul className="navbar-nav ms-auto">
+        <li className="nav-item">
+        <Link className={`nav-link ${isActive('/')}`} href="/"
+                  onClick={()=>{
+                    dispatch(setActiveLink("/"))
+                    setCookie("activeLink","/")
+                  }}
+                >Reports & Dashboard</Link>
+        </li>
+        <li className="nav-item">
+        <Link className={`nav-link ${isActive('/CHANNEL/ActivePartners')}`} href="/CHANNEL/ActivePartners"
+                  onClick={()=>{
+                    dispatch(setActiveLink("/CHANNEL/ActivePartners"))
+                    setCookie("activeLink","/CHANNEL/ActivePartners")
+                  }}
+                >Channel Partners</Link>
+        </li>
+        <li className="nav-item">
+        <Link className={`nav-link ${isActive('/CHANNEL/PendingRequests')}`} 
+                  onClick={()=>{
+                    dispatch(setActiveLink("/CHANNEL/PendingRequests"))
+                    setCookie("activeLink","/CHANNEL/PendingRequests")
+                  }}
+                href="/CHANNEL/PendingRequests">Pending Requests</Link>
+        </li>
+        <li className="nav-item">
+                <Link className={`nav-link ${isActive('/CHANNEL/CampaignAdmin')}`} 
+                  onClick={()=>{
+                    dispatch(setActiveLink("/CHANNEL/CampaignAdmin"))
+                    setCookie("activeLink","/CHANNEL/CampaignAdmin")
+                  }}
+                href="/CHANNEL/CampaignAdmin">
+                  Campaign 
+                </Link>
+        </li>
+        <li className="nav-item">
+                    <div className='user_profile'>
+                    <Dropdown className='cp_nav_toggle' >
+                  <Dropdown.Toggle variant="none" id="profileBtn">
+                    <div className="btn_wrapper d-flex align-items-center">
+                      <div className="img_sec me-2">
+                        <img
+                          style={{ width: "30px", height: "30px", borderRadius: "50%" }}
+                          src={
+                            userInfo?.db_user_profile?.user_image_file
+                              ? `${filesUrl}/lsUser/images${userInfo?.db_user_profile?.user_image_file}`
+                              : `/images/profile_picture.png`
+                          }
+                          alt="Profile"
+                        />
+                      </div>
+                      <div className="name_sec">
+                        <div className="name">
+                          {userInfo.user ? userInfo.user : "user"}
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu  >
+                    <Link href={"/CHANNEL/ChannelProfile"}>
+                      <Dropdown.Item className='d-flex align-items-center' onClick={()=>{
+                        router.push("/CHANNEL/ChannelProfile")
+                        dispatch(setActiveLink("/CHANNEL/ChannelProfileAdmin"))
+                        setCookie("activeLink","/CHANNEL/ChannelProfileAdmin")
+                      }}>
+                        <div style={{width:"15px"}}>
+                      <AvatarIcon/>
+                        </div>
+                      <span className='ms-1 '>Profile</span> 
+                      </Dropdown.Item>
+                    </Link>
+                    <Dropdown.Item className='d-flex align-items-center' onClick={() => {
+                      setshowConfirm(!showConfirm)
+                    }}>
+                      <div style={{width:"15px"}}>
+                      <LogoutIcon  />
+                      </div>
+                      <span className='ms-1 '>Logout</span>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+                    </div>
+              
+              </li>
+      </ul>
+    </div>
+  </div>
+    </nav>
+
     </>
     
   );
 };
 
 export default CP_NavBar_Admin;
+

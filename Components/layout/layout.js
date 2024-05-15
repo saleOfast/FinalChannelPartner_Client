@@ -57,7 +57,7 @@ const Layout = ({Component, pageProps}) => {
         const data = JSON.parse(getCookie("clientLogo"))
         dispatch(setSidebarColor(data.sidebar_color))
         dispatch(setbuttonColor(data.button_color))
-        dispatch(setTopNavColor(data.button_color))
+        dispatch(setTopNavColor(data.top_nav_color))
       } 
     
     }

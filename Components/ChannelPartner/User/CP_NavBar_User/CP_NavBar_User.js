@@ -101,6 +101,19 @@ const CP_NavBar = () => {
     }
   }, []);
 
+  useEffect(() => {
+    // Dynamically load Bootstrap JavaScript on the client-side
+    if (typeof window !== 'undefined') {
+      import('bootstrap/dist/js/bootstrap.bundle.min.js')
+        .then(() => {
+          // Bootstrap JavaScript is loaded, you can use Bootstrap components here
+        })
+        .catch((error) => {
+          console.error('Error loading Bootstrap JavaScript:', error);
+        });
+    }
+  }, []);
+
 
 
   return (
@@ -112,7 +125,7 @@ const CP_NavBar = () => {
         title={"Are You Sure you want to Logout ?"}
       />
 
-      <section className="Reports-Dashboard bg-white">
+      {/* <section className="Reports-Dashboard bg-white">
         <nav
           className="navbar navbar-expand-lg navbar-light"
           style={{
@@ -232,16 +245,6 @@ const CP_NavBar = () => {
                 {
                   roleId===2 && (
                     <>
-                    {/* <li className="nav-item">
-                  <Link className={`nav-link ${isActive("/")}`} href="/" 
-                    onClick={()=>{
-                      dispatch(setActiveLink("/"))
-                      setCookie("activeLink","/")
-                    }}
-                  >
-                    Reports & Dashboard
-                  </Link>
-                </li> */}
                         <li className="nav-item">
                   <Link
                     className={`nav-link ${isActive(
@@ -322,7 +325,176 @@ const CP_NavBar = () => {
             </div>
           </div>
         </nav>
-      </section>
+      </section> */}
+
+      <nav className="navbar navbar-expand-lg navbar-light bg-white">
+  <div className="container-fluid">
+  <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt=""  />
+    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span className="navbar-toggler-icon" />
+    </button>
+    <div className="collapse navbar-collapse " id="navbarNavDropdown">
+      <ul className="navbar-nav ms-auto">
+        {
+          roleId===1 && (
+            <>
+                <li className="nav-item">
+        <Link className={`nav-link ${isActive('/')}`} href="/"
+                  onClick={()=>{
+                    dispatch(setActiveLink("/"))
+                    setCookie("activeLink","/")
+                  }}
+                >Reports & Dashboard</Link>
+        </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/CHANNEL/Leads"
+                    )}`}
+                    href="/CHANNEL/Leads"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Leads"))
+                      setCookie("activeLink","/CHANNEL/Leads")
+                    }}
+                  >
+                    Leads
+                  </Link>
+        </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/CHANNEL/Bookings"
+                    )}`}
+                    href="/CHANNEL/Bookings"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Bookings"))
+                      setCookie("activeLink","/CHANNEL/Bookings")
+                    }}
+                  >
+                    Bookings
+                  </Link>
+        </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/CHANNEL/Visits"
+                    )}`}
+                    href="/CHANNEL/Visits"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Visits"))
+                      setCookie("activeLink","/CHANNEL/Visits")
+                    }}
+                  >
+                    Visits
+                  </Link>
+        </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/CHANNEL/Brokerage"
+                    )}`}
+                    href="/CHANNEL/Brokerage"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Brokerage"))
+                      setCookie("activeLink","/CHANNEL/Brokerage")
+                    }}
+                  >
+                    Brokerage
+                  </Link>
+        </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/CHANNEL/Campaign"
+                    )}`}
+                    href="/CHANNEL/Campaign"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Campaign"))
+                      setCookie("activeLink","/CHANNEL/Campaign")
+                    }}
+                  >
+                    Campaign
+                  </Link>
+        </li>
+            </>
+          )
+        }
+        
+        {
+                  roleId===2 && (
+                    <>
+                        <li className="nav-item">
+                  <Link
+                    className={`nav-link ${isActive(
+                      "/CHANNEL/Brokerage"
+                    )}`}
+                    href="/CHANNEL/Brokerage"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/CHANNEL/Brokerage"))
+                      setCookie("activeLink","/CHANNEL/Brokerage")
+                    }}
+                  >
+                    Brokerage
+                  </Link>
+                </li>
+                    </>
+                  )
+                }
+        <li className="nav-item">
+                    <div className='user_profile'>
+                    <Dropdown className='cp_nav_toggle' >
+                  <Dropdown.Toggle variant="none" id="profileBtn">
+                    <div className="btn_wrapper d-flex align-items-center">
+                      <div className="img_sec me-2">
+                        <img
+                          style={{ width: "30px", height: "30px", borderRadius: "50%" }}
+                          src={
+                            userInfo?.db_user_profile?.user_image_file
+                              ? `${filesUrl}/lsUser/images${userInfo?.db_user_profile?.user_image_file}`
+                              : `/images/profile_picture.png`
+                          }
+                          alt="Profile"
+                        />
+                      </div>
+                      <div className="name_sec">
+                        <div className="name">
+                          {userInfo.user ? userInfo.user : "user"}
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu  >
+                    <Link href={"/CHANNEL/ChannelProfile"}>
+                      <Dropdown.Item className='d-flex align-items-center' onClick={()=>{
+                        router.push("/CHANNEL/ChannelProfile")
+                        dispatch(setActiveLink("/CHANNEL/ChannelProfileAdmin"))
+                        setCookie("activeLink","/CHANNEL/ChannelProfileAdmin")
+                      }}>
+                        <div style={{width:"15px"}}>
+                      <AvatarIcon/>
+                        </div>
+                      <span className='ms-1 '>Profile</span> 
+                      </Dropdown.Item>
+                    </Link>
+                    <Dropdown.Item className='d-flex align-items-center' onClick={() => {
+                      setshowConfirm(!showConfirm)
+                    }}>
+                      <div style={{width:"15px"}}>
+                      <LogoutIcon  />
+                      </div>
+                      <span className='ms-1 '>Logout</span>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+                    </div>
+              
+              </li>
+      </ul>
+    </div>
+  </div>
+    </nav>
+
     </>
   );
 };

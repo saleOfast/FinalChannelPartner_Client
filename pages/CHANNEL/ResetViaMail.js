@@ -74,7 +74,6 @@ useEffect(()=>{
         client_url:`${baseUrl}`,
       })
       setClientData(data?.data)
-      setCookie("clientBtnColor",data?.data?.button_color)
     } catch (error) {
       console.log(error)
     }

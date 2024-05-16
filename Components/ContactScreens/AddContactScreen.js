@@ -827,7 +827,7 @@ const AddContactScreen = () => {
                                         <div className="input_box">
                                             <label htmlFor="created_on">Created On</label>
                                             <input
-                                                type="date"
+                                                type="datetime-local"
                                                 name="per_cont"
                                                 id="per_cont"
                                                 disabled
@@ -838,7 +838,7 @@ const AddContactScreen = () => {
                                                         created_on: e.target.value,
                                                     })
                                                 }
-                                                value={moment(userInfo?.created_on).format("YYYY-MM-DD")}
+                                                value={moment(userInfo?.created_on).format("YYYY-MM-DDTHH:mm")}
                                             />
                                         </div>
                                     </div>
@@ -847,7 +847,7 @@ const AddContactScreen = () => {
                                         <div className="input_box">
                                             <label htmlFor="last_modified">Last Modified On</label>
                                             <input
-                                                type="date"
+                                                type="datetime-local"
                                                 name="per_cont"
                                                 id="per_cont"
                                                 disabled
@@ -858,7 +858,7 @@ const AddContactScreen = () => {
                                                         updated_on: e.target.value,
                                                     })
                                                 }
-                                                value={moment(userInfo?.updated_on).format("YYYY-MM-DD")}
+                                                value={moment(userInfo?.updated_on).format("YYYY-MM-DDTHH:mm")}
                                             />
                                         </div>
                                     </div>

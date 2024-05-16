@@ -525,7 +525,10 @@ const CampaignDetailsAdminScreen = () => {
             <div className="d-flex justify-content-center align-items-center gap-3 ">
               <div
                 className="btn btn-danger rounded-5"
-                onClick={() => {setShowModal(false); } }
+                onClick={() => {
+                  setShowModal(false);
+                  getCampaignById()
+                } }
               >
                 Cancel
               </div>

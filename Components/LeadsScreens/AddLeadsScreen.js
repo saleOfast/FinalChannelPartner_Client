@@ -1107,7 +1107,9 @@ const AddLeadsScreen = () => {
                                 })
                                 setErrorData({ ...errorData, loss_reason: '' })
                               }}
-                              value={userInfo.loss_reason ? userInfo.loss_reason : ""}
+                              value={isNaN(userInfo.loss_reason) ? userInfo.loss_reason : 
+                                lossLists?.find((data, i) => userInfo.loss_reason == data.loss_id)?.loss_reason
+                              }
                             />
                             <span className="errorText"> {errorData?.loss_reason ? errorData.loss_reason : ''}</span>
                           </div>

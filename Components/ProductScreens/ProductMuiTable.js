@@ -77,6 +77,7 @@ const ProductMuiTable = ({
           console.log(value)
           return(
             <div>
+              {!value ? <></> :
             <img
               src={`${filesUrl}`+`/product/images${value}`}
               alt="Preview"
@@ -86,6 +87,7 @@ const ProductMuiTable = ({
                 
               }}
             />
+          }
           </div>
           )
         }

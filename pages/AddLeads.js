@@ -13,7 +13,7 @@ import { setIsActive } from '../store/isActiveSidebarSlice';
     }, []);
     return (
         <>
-                    <AddLeadsScreen />
+            <AddLeadsScreen />
         </>
     )
 }

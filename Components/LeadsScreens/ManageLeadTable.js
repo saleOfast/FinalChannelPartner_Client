@@ -95,8 +95,7 @@ const ManageLeadTable = ({
               </Link>
               
               {
-                  tableMeta?.rowData[6]?.lead_status_id == 3 && tableMeta?.rowData[6]?.lead_status_id == 4 &&
-                  tableMeta?.rowData[6]?.lead_status_id == 1 && tableMeta?.rowData[6]?.lead_status_id == 2 ?
+                  tableMeta?.rowData[6]?.lead_status_id == 3 || tableMeta?.rowData[6]?.lead_status_id == 4  ?
                   null : (
                     <>
                         <button

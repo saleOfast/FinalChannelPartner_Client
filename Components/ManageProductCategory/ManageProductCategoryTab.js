@@ -32,14 +32,17 @@ const ManageProductCategoryTab = ({ deleteConfirm, disableConfirm, dataList, ope
               customBodyRender:(value)=>{
                 return(
                   <div>
-                  <img
+                    {value == null ? <></> : <img
                     src={`${filesUrl}`+`/category/images${value}`}
                     alt="Preview"
+                    
                     style={{
+                    
                       width: "80px",
                       height: "60px",
                     }}
-                  />
+                  />}
+                  
                 </div>
                 )
               }

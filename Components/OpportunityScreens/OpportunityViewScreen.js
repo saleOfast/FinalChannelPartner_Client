@@ -223,8 +223,6 @@ const OpportunityViewScreen = () => {
       toast.error("Please enter the subject");
     } else if (contactInfo.comments == "") {
       toast.error("Please enter the Comments");
-    } else if (contactInfo.contact_person_name == "") {
-      toast.error("Please enter contact person name");
     } else if (contactInfo.relate_to == "") {
       toast.error("Please enter related person");
     } else {
@@ -659,7 +657,7 @@ const OpportunityViewScreen = () => {
                                     : ""
                                 }
                               >
-                                <option value="">Select Leads</option>
+                                <option value="">Select User</option>
                                 {userList?.map((data, index) => {
                                   return (
                                     <option key={index} value={data.user_id}>

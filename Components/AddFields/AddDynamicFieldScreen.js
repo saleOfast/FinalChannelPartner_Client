@@ -188,7 +188,7 @@ export default function AddDynamicFieldScreen() {
 
     const createInputField = async (e) => {
         e.preventDefault();
-        const { field_lable, input_type, field_type, option } = newFields;
+        const { field_lable, input_type, field_type, option ,field_size} = newFields;
 
         const showError = (errorMessage) => {
             toast.error(errorMessage);
@@ -206,8 +206,8 @@ export default function AddDynamicFieldScreen() {
                 showError('Please select the Field Type');
                 return false;
             }
-            else if (input_type === 'input' && !field_size) {
-                showError('Please Enyer Field Size');
+            else if (input_type === 'input' && !field_size && field_type !== 'checkbox' && field_type !== 'date') {
+                showError('Please Enter Field Size');
                 return false;
             }
             else if (input_type === 'select' && !option) {
@@ -231,12 +231,13 @@ export default function AddDynamicFieldScreen() {
     };
 
     async function postFieldsFunc(data) {
+        
         if (hasCookie("token")) {
             setisLoading(true)
             let token = getCookie("token");
             let db_name = getCookie("db_name");
             let header = {
-                headers: {
+                headers: {  
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
@@ -354,7 +355,7 @@ export default function AddDynamicFieldScreen() {
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                                            {/* <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                                                 <div className="input_box">
                                                     <label htmlFor='field_size'>Field Size</label>
                                                     <input
@@ -367,7 +368,7 @@ export default function AddDynamicFieldScreen() {
                                                         onChange={(e) => setNewFields({ ...newFields, field_size: e.target.value, option: null })}
                                                     />
                                                 </div>
-                                            </div>
+                                            </div> */}
                                         </>
                                     )}
 
@@ -387,6 +388,25 @@ export default function AddDynamicFieldScreen() {
                                             </div>
                                         </div>
                                     )}
+
+                                    {
+                                        newFields?.input_type==="input" &&( newFields?.field_type==="text" ||  newFields?.field_type==="email" || newFields?.field_type==="number" ) && (
+                                            <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                                                <div className="input_box">
+                                                    <label htmlFor='field_size'>Field Size</label>
+                                                    <input
+                                                        type='number'
+                                                        name="field_size"
+                                                        className='form-control'
+                                                        placeholder='Enter field size'
+                                                        value={newFields.field_size ? newFields.field_size : ''}
+                                                        id="field_size"
+                                                        onChange={(e) => setNewFields({ ...newFields, field_size: e.target.value, option: null })}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )
+                                    }
                                 </div>
 
                                 <div className="btn-row my-4">

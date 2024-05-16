@@ -182,7 +182,7 @@ const SideBar = ({}) => {
         </div>
       </div>
       {(dbMode === "user" || dbMode === "master") && (
-        <ul className="sidebar-list">
+        <ul className="sidebar-list h-auto">
           <Link href="/">
             <li title="Dashboard" className={`list-item ${isactive === "dashboard" ? "active" : ""}`}>
               <div className="linkBox">

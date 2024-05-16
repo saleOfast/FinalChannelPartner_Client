@@ -169,6 +169,7 @@ const AddProductScreen = () => {
             router.push("/Products");
           }
         } catch (error) {
+          console.log(error)
           if (error?.response?.data?.status === 422) {
             const taskObject = {};
             const array = error?.response?.data?.data;
@@ -691,7 +692,7 @@ const AddProductScreen = () => {
                 <div className="input_box">
                   <label htmlFor="email">Created On</label>
                   <input
-                    type="date"
+                    type="datetime-local"
                     placeholder="Enter Email Id"
                     name="email"
                     disabled
@@ -705,7 +706,7 @@ const AddProductScreen = () => {
                     }
                     value={
                       userInfo.created_on
-                        ? moment(userInfo.created_on).format("YYYY-MM-DD")
+                        ? moment(userInfo.created_on).format("YYYY-MM-DDTHH:mm")
                         : ""
                     }
                   />
@@ -715,7 +716,7 @@ const AddProductScreen = () => {
                 <div className="input_box">
                   <label htmlFor="per_cont">Last Modified On</label>
                   <input
-                    type="date"
+                    type="datetime-local"
                     placeholder="Enter Contact no."
                     name="per_cont"
                     id="per_cont"
@@ -729,7 +730,7 @@ const AddProductScreen = () => {
                     }
                     value={
                       userInfo.updated_on
-                        ? moment(userInfo.updated_on).format("YYYY-MM-DD")
+                        ? moment(userInfo.updated_on).format("YYYY-MM-DDTHH:mm")
                         : ""
                     }
                   />

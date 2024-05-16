@@ -129,6 +129,7 @@ const ProductViewScreen = () => {
                       head="Image"
                       // value={dataList?.unit_in_case}
                       imgSrc={dataList?.image ? `${filesUrl}`+`/product/images${dataList.image}` : "noImg"}
+                      
                     />
 
                     <ProductDetailComponent

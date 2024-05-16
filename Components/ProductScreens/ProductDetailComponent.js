@@ -12,13 +12,13 @@ const ProductDetailComponent = ({ head, value, imgSrc }) => {
             <div className="value">{value ? value : "------------"}</div>
           </div>
         ) : null}
-        {imgSrc ? (
+        {imgSrc==="noImg" ? null:(
           <div className="col-xl-6 col-sm-6 col-sm-12 col-12">
             <div className="" >
-              <img width={"150px"} src={imgSrc} />
+              <img width={"150px"} src={imgSrc}  />
             </div>
           </div>
-        ) : null}
+        ) }
       </div>
     </div>
   );

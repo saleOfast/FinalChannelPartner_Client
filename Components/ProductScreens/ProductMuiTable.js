@@ -40,7 +40,7 @@ const ProductMuiTable = ({
     },
     {
       name: "discount",
-      label: "Discount",
+      label: "Discount %",
       options: {
         filter: true,
       },

@@ -865,7 +865,7 @@ const AddQuotationScreen = () => {
             onClick={() => setAddSec(!addSec)}
             aria-controls="TaskCollapse"
             aria-expanded={addSec} >
-            <span className="text_bold">Billing & Shipping Address</span>
+            <span className="text_bold cursor-pointer">Billing & Shipping Address</span>
           </div>
 
           <Collapse in={addSec}>
@@ -1154,7 +1154,7 @@ const AddQuotationScreen = () => {
             onClick={() => setPrdSer(!prdSer)}
             aria-controls="TaskCollapse"
             aria-expanded={prdSer} >
-            <span className="text_bold">Product Or Services</span>
+            <span className="text_bold cursor-pointer">Product Or Services</span>
           </div>
           <Collapse in={prdSer}>
             <div className="add_user_form">

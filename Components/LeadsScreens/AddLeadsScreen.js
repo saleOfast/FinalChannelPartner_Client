@@ -874,7 +874,15 @@ const AddLeadsScreen = () => {
 
   const updateFieldInfo = (e, ind) => {
     let newData = JSON.parse(JSON.stringify(userInfo))
-    newData.db_lead_fields[ind].input_value = e.target.value
+
+    if( newData.db_lead_fields[ind].field_type === 'checkbox'){
+      newData.db_lead_fields[ind].input_value = e.target.checked
+
+    }else{
+
+      newData.db_lead_fields[ind].input_value = e.target.value
+    }
+   
     setUserInfo(newData)
 
   };
@@ -1431,6 +1439,7 @@ const AddLeadsScreen = () => {
                                 disabled={viewMode}
                                 onChange={(e) => updateFieldInfo(e, ind)}
                                 //value={userInfo.field_name ? userInfo.field_name : ""}
+                                checked={input_value === '1'? true: false}
                                 value={input_value}
 
                               />

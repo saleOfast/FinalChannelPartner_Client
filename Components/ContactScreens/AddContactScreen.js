@@ -394,7 +394,16 @@ const AddContactScreen = () => {
     const updateFieldInfo = (e, ind) => {
 
         let newData = JSON.parse(JSON.stringify(userInfo));
+
+        if( newData.db_contact_fields[ind].field_type === 'checkbox'){
+            newData.db_contact_fields[ind].input_value = e.target.checked
+      
+        }else{
+    
         newData.db_contact_fields[ind].input_value = e.target.value
+        }
+
+        // newData.db_contact_fields[ind].input_value = e.target.value
         setUserInfo(newData)
         console.log('here', e.target.value);
     };
@@ -1018,6 +1027,7 @@ const AddContactScreen = () => {
                                                         name={field_name}
                                                         placeholder={field_lable}
                                                         onChange={(e) => updateFieldInfo(e, ind)}
+                                                        checked={input_value === '1'? true: false}
                                                         value={input_value}
                                                     />
                                                 ) : null}

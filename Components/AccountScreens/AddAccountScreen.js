@@ -351,7 +351,13 @@ const AddAccountScreen = () => {
 
   const updateFieldInfo = (e, ind) => {
     let newData = JSON.parse(JSON.stringify(userInfo))
-    newData.db_acc_fields[ind].input_value = e.target.value
+    if( newData.db_acc_fields[ind].field_type === 'checkbox'){
+      newData.db_acc_fields[ind].input_value = e.target.checked
+
+    }else{
+
+      newData.db_acc_fields[ind].input_value = e.target.value
+    }
     setUserInfo(newData)
 
   };
@@ -1199,6 +1205,7 @@ const AddAccountScreen = () => {
                               disabled={viewMode}
                               placeholder={field_lable}
                               onChange={(e) => updateFieldInfo(e, ind)}
+                              checked={input_value === '1'? true: false}
                               value={input_value}
                             />
                           ) : null}

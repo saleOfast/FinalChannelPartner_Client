@@ -737,7 +737,7 @@ const AddOpportunityScreen = () => {
                         onClick={() => setPrdSer(!prdSer)}
                         aria-controls="TaskCollapse"
                         aria-expanded={prdSer} >
-                        <span className="text_bold">Product Or Services</span>
+                        <span className="text_bold cursor-pointer">Product Or Services</span>
                     </div>
                     <Collapse in={prdSer}>
                         <div className="add_user_form">

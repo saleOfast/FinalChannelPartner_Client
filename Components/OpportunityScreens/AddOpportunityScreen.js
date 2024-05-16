@@ -902,7 +902,7 @@ const AddOpportunityScreen = () => {
                                 <div className="input_box">
                                     <label htmlFor="created_on">Created On</label>
                                     <input
-                                        type="date"
+                                        type="datetime-local"
                                         name="created_on"
                                         id="created_on"
                                         disabled
@@ -913,7 +913,7 @@ const AddOpportunityScreen = () => {
                                                 created_on: e.target.value,
                                             })
                                         }
-                                        value={userInfo?.created_on ? moment(userInfo?.created_on).format("YYYY-MM-DD") : ''}
+                                        value={userInfo?.created_on ? moment(userInfo?.created_on).format("YYYY-MM-DDTHH:mm") : ''}
                                     />
                                 </div>
                             </div>
@@ -922,7 +922,7 @@ const AddOpportunityScreen = () => {
                                 <div className="input_box">
                                     <label htmlFor="last_modified">Last Modified On</label>
                                     <input
-                                        type="date"
+                                        type="datetime-local"
                                         name="last_modified"
                                         disabled
                                         id="last_modified"
@@ -933,7 +933,7 @@ const AddOpportunityScreen = () => {
                                                 updated_on: e.target.value,
                                             })
                                         }
-                                        value={userInfo?.updated_on ? moment(userInfo?.updated_on).format("YYYY-MM-DD") : ''}
+                                        value={userInfo?.updated_on ? moment(userInfo?.updated_on).format("YYYY-MM-DDTHH:mm") : ''}
                                     />
                                 </div>
                             </div>

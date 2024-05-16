@@ -1,9 +1,9 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LeadShyneIcon from '../Components/Svg/LeadShyneIcon'
 import Link from 'next/link'
 import axios from "axios";
-import { Baseurl } from "../Utils/Constants";
+import { Baseurl, filesUrl } from "../Utils/Constants";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 
@@ -11,6 +11,7 @@ const ResetPassword = () => {
 
     const router = useRouter();
     const [userInfo, setUserInfo] = useState({ email: "" });
+    const[clientData,setClientData]=useState();
 
     const submitHandler = async () => {
 
@@ -44,10 +45,38 @@ const ResetPassword = () => {
 
     }
 
+    useEffect(()=>{
+        const getSignInData=async()=>{
+          try {
+            let baseUrl = window.location.origin;
+            if(baseUrl==="http://localhost:3000"){
+              baseUrl="http://crm.cybermatrixsolutions.com"
+            }
+            const {data}=await axios.post(Baseurl+"/db/admin/url",{
+              client_url:`${baseUrl}`,
+            })
+            setClientData(data?.data)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+        getSignInData()
+      },[])
+
     return (
         <div className="login_wrapper">
             <div className="login_box">
-                <div className="img_logo"> <LeadShyneIcon /> </div>
+                <div className="img_logo">
+                     {/* <LeadShyneIcon />  */}
+                     <img
+                      src={
+                        clientData?.logo
+                          &&( `${filesUrl}` +
+                            `/logo/images${clientData?.logo}`)
+                      }
+                      alt
+                    />
+                     </div>
                 <div className="header"> Please Enter Your mail </div>
                 <div className="content_box">
                     <div className="login_form">

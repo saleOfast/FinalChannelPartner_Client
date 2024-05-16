@@ -274,7 +274,7 @@ const DashBoardScreen = () => {
                     </div>
                     <div className="cards_Box">
                         <div className="row">
-                            <div className="col-xl-6 col-md-6 col-12 col-sm-12">
+                            {/* <div className="col-xl-6 col-md-6 col-12 col-sm-12">
                                 <DashboardRevnueCard
                                     head='Total Revenue Generate'
                                     price='0'
@@ -287,7 +287,7 @@ const DashBoardScreen = () => {
                                     price='0'
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/expenses.png' />
-                            </div>
+                            </div> */}
                         </div>
                         <div className="row leads_row">
                             <div className="col-xl-4 col-md-4 col-12 col-sm-12">

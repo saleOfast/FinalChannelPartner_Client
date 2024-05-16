@@ -554,8 +554,8 @@ const AddTaskScreen = () => {
                   <div className="input_box">
                     <label htmlFor="email">Created On</label>
                     <input
-                      type="date"
-                      placeholder="Enter Email Id"
+                      type="datetime-local"
+                      placeholder="Created On"
                       name="email"
                       disabled
                       id="email"
@@ -566,7 +566,7 @@ const AddTaskScreen = () => {
                           createdAt: e.target.value,
                         })
                       }
-                      value={userInfo.createdAt ? moment(userInfo.createdAt).format("YYYY-MM-DD") : ""}
+                      value={userInfo.createdAt ? moment(userInfo.createdAt).format("YYYY-MM-DDTHH:mm") : ""}
                     />
                   </div>
                 </div>
@@ -574,7 +574,7 @@ const AddTaskScreen = () => {
                   <div className="input_box">
                     <label htmlFor="per_cont">Last Modified On</label>
                     <input
-                      type="date"
+                      type="datetime-local"
                       placeholder="Enter Contact no."
                       name="per_cont"
                       id="per_cont"
@@ -587,7 +587,7 @@ const AddTaskScreen = () => {
                         })
                       }
 
-                      value={userInfo.updatedAt ? moment(userInfo.updatedAt).format("YYYY-MM-DD") : ""}
+                      value={userInfo.updatedAt ? moment(userInfo.updatedAt).format("YYYY-MM-DDTHH:mm") : ""}
                     />
                   </div>
                 </div>

@@ -431,7 +431,8 @@ const OpportunityViewScreen = () => {
                               <label htmlFor="profilelevel">Created On</label>
                               <input
                                 className='form-control'
-                                value={moment(dataList?.created_on).format("DD-MM-YYYY LT")}
+                                type="datetime-local"
+                                value={moment(dataList?.created_on).format("YYYY-MM-DDTHH:mm")}
                                 disabled
                               />
                             </div>
@@ -441,7 +442,8 @@ const OpportunityViewScreen = () => {
                               <label htmlFor="profilelevel">Last Modified On</label>
                               <input
                                 className='form-control'
-                                value={moment(dataList?.updated_on).format("DD-MM-YYYY LT")}
+                                type="datetime-local"
+                                value={moment(dataList?.updated_on).format("YYYY-MM-DDTHH:mm")}
                                 disabled
                               />
                             </div>

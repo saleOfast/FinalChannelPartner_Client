@@ -84,7 +84,6 @@ const ManageLeadTable = ({
       options: {
         filter: true,
         customBodyRender: (value, tableMeta, updateValue) => {
-          console.log(tableMeta)
           return (
             // /AddLeads?id=${value}&vw=mds`
             <div className="table_btns">

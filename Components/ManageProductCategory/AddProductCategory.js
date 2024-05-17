@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import { hasCookie, getCookie } from 'cookies-next';
 import axios from 'axios';
-import { Baseurl } from '../../Utils/Constants';
+import { Baseurl, filesUrl } from '../../Utils/Constants';
 import { useRouter } from 'next/router'
 import { useSelector } from "react-redux";
 
@@ -22,8 +22,9 @@ export default function AddProductCategory() {
   const [userInfo, setUserInfo] = useState({
     p_cat_name: '',
     parent_id: '0',
-    image:""
+    image:"",
   })
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
 
   const getDataList = async () => {
 
@@ -40,7 +41,7 @@ export default function AddProductCategory() {
         }
       }
       try {
-        const response = await axios.get(Baseurl + `/db/productCat/all`, header);
+        const response = await axios.get(Baseurl + `/db/productCat`, header);
         setDataList(response.data.data);
       } catch (error) {
         if (error?.response?.data?.message) {
@@ -276,6 +277,7 @@ export default function AddProductCategory() {
                     </label>
                     <select
                       name="parent_id" id="parent_id"
+                      value={userInfo?.parent_id ? userInfo?.parent_id : ''}
                       onChange={(e) => getItem(e, dataList)}
                       className="form-control" >
                       <option value="">Select parent</option>
@@ -305,6 +307,11 @@ export default function AddProductCategory() {
                     type="file"
                     id="image"
                     onChange={(e)=>{
+                      const reader=new FileReader()
+                      reader.onload=()=>{
+                        setImagePreviewUrl(reader.result)
+                      }
+                      reader.readAsDataURL(e.target.files[0])
                         setUserInfo({
                             ...userInfo,
                             image:e.target.files[0]
@@ -313,7 +320,22 @@ export default function AddProductCategory() {
                   />
                 </div>
             </div>
+            
             </div>
+            <div className="col-xl-4 col-md-4 col-sm-12 col-10">
+                {userInfo.image && (
+                  <div className=" d-flex align-items-center justify-content-center">
+                    <img
+                      src={imagePreviewUrl ? imagePreviewUrl: `${filesUrl}` + `/category/images${userInfo.image}`}
+                      alt="Preview"
+                      style={{
+                        width: "150px",
+                        marginTop: "10px",
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
 
             <div className="text-end">
                 <div className="submit_btn">

@@ -90,9 +90,7 @@ const LeadsScreen = () => {
     }
 
 
-    async function getUsersList() {
-        await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
-      }
+    
 
 
     const importHandler = (event, type) => {
@@ -130,9 +128,9 @@ const LeadsScreen = () => {
                   ...header,
                   params:queryObjLeads
                 });
-                const projects = await axios.get(Baseurl + `/db/channel/project`, header);
-                setLeadList(leads.data.data);
-                setProjectList(projects.data.data);
+                const projects = await axios.get(Baseurl + `/db/channel/lead/projects`, header);
+                setLeadList(leads?.data?.data);
+                setProjectList(projects?.data?.data?.records);
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -142,6 +140,7 @@ const LeadsScreen = () => {
             }
         }
     }
+
   
 
     async function csvSubmitHandler() {
@@ -179,7 +178,7 @@ const LeadsScreen = () => {
 
     }
 
-    const createLead =  async(queryObjLeads) => {
+    const createLead =  async() => {
       if(lead.project_id===""){
         return toast.error("Pls Select Project")
       }
@@ -219,10 +218,14 @@ const LeadsScreen = () => {
         }
     };
 
+    const createLeads=()=>{
+      console.log(lead)
+    }
+
 
     useEffect(() => {
         getDataList();
-        getUsersList();
+        
     }, [])
 
     return (
@@ -253,7 +256,7 @@ const LeadsScreen = () => {
                 setoldAssignTo={setoldAssignTo}
                 oldAssignTo={oldAssignTo}
                 setShowDateFilter={setShowDateFilter}
-                usersList={usersList}
+                
                 getDataList={getDataList}
               />
             </div>
@@ -311,155 +314,163 @@ const LeadsScreen = () => {
         >
           <Modal.Body >
           <section className="Sign-In pt-4 Create-New-Lead" style={{padding: '0 16px'}}>
-  <div className="container">
-    <div className="row">
-      <h3 className=" Perfect-Home text-center ">Create New Lead</h3>
-      <div className="col-12 mt-md-5">
-        <div className="Sign-In_Sign-Up Register w-100">
-          <div className="perfect-home-form pt-1">
-            <section className="Details_Form">
-              <div className="">
-                <form id="survey-form" method='post' onSubmit={(e)=>{
-                  e.preventDefault()
-                  createLead()
-                  }} >
-                  <div className='row'>
-                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
-                      <div className='row '>
-                        <div className="col-3">
-                            <label htmlFor="name" className="pb-1">Lead Name<span className="star text-danger">*</span></label>
-                          </div>
-                          <div className="col-9">
-                            <input autofocus value={lead?.lead_name} onChange={(e)=>{
-                              setLead({...lead,lead_name:e.target.value})
-                            }} 
-                            type="text" name="name" className="input-field" placeholder required />
-                          </div>
-                      </div>
-                    </div>
+            <div className="container">
+              <div className="row">
+                <h3 className=" Perfect-Home text-center ">Create New Lead</h3>
+                <div className="col-12 mt-md-5">
+                  <div className="Sign-In_Sign-Up Register w-100">
+                    <div className="perfect-home-form pt-1">
+                      <section className="Details_Form">
+                        <div className="">
+                          <form id="survey-form" method='post' onSubmit={(e)=>{
+                            e.preventDefault()
+                            createLead()
+                            }} >
+                            <div className='row'>
+                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                                <div className='row '>
+                                  <div className="col-3">
+                                      <label htmlFor="name" className="pb-1">Lead Name<span className="star text-danger">*</span></label>
+                                    </div>
+                                    <div className="col-9">
+                                      <input autofocus value={lead?.lead_name} onChange={(e)=>{
+                                        setLead({...lead,lead_name:e.target.value})
+                                      }} 
+                                      type="text" name="name" className="input-field" placeholder required />
+                                    </div>
+                                </div>
+                              </div>
 
-                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
-                      <div className='row '>
-                        <div className="col-3">
-                            <label htmlFor="name" className="pb-1">Location<span className="star text-danger">*</span></label>
-                          </div>
-                          <div className="col-9">
-                            <input autofocus value={lead?.address} onChange={(e)=>{
-                              setLead({...lead,address:e.target.value})
-                            }} type="text" name="name" className="input-field" placeholder required />
-                          </div>
-                      </div>
-                    </div>
+                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                                <div className='row '>
+                                  <div className="col-3">
+                                      <label htmlFor="name" className="pb-1">Location<span className="star text-danger">*</span></label>
+                                    </div>
+                                    <div className="col-9">
+                                      <input autofocus value={lead?.address} onChange={(e)=>{
+                                        setLead({...lead,address:e.target.value})
+                                      }} type="text" name="name" className="input-field" placeholder required />
+                                    </div>
+                                </div>
+                              </div>
 
-                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
-                      <div className='row '>
-                        <div className="col-3">
-                            <label htmlFor="name" className="pb-1">Email<span className="star text-danger">*</span></label>
-                          </div>
-                          <div className="col-9">
-                            <input autofocus value={lead?.email_id} onChange={(e)=>{
-                              setLead({...lead,email_id:e.target.value})
-                            }} type="text" name="name" className="input-field" placeholder required />
-                          </div>
-                      </div>
-                    </div>
+                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                                <div className='row '>
+                                  <div className="col-3">
+                                      <label htmlFor="name" className="pb-1">Email<span className="star text-danger">*</span></label>
+                                    </div>
+                                    <div className="col-9">
+                                      <input autofocus value={lead?.email_id} onChange={(e)=>{
+                                        setLead({...lead,email_id:e.target.value})
+                                      }} type="text" name="name" className="input-field" placeholder required />
+                                    </div>
+                                </div>
+                              </div>
 
-                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
-                      <div className='row '>
-                        <div className="col-3">
-                            <label htmlFor="name" className="pb-1">Pincode<span className="star text-danger">*</span></label>
-                          </div>
-                          <div className="col-9">
-                            <input autofocus  value={lead?.pincode} onChange={(e)=>{
-                              setLead({...lead,pincode:e.target.value})
-                            }}  type="text" name="name" className="input-field" placeholder required />
-                          </div>
-                      </div>
-                    </div>
+                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                                <div className='row '>
+                                  <div className="col-3">
+                                      <label htmlFor="name" className="pb-1">Pincode<span className="star text-danger">*</span></label>
+                                    </div>
+                                    <div className="col-9">
+                                      <input autofocus  value={lead?.pincode} onChange={(e)=>{
+                                        setLead({...lead,pincode:e.target.value})
+                                      }}  type="text" name="name" className="input-field" placeholder required />
+                                    </div>
+                                </div>
+                              </div>
 
-                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
-                      <div className='row '>
-                        <div className="col-3">
-                            <label htmlFor="name" className="pb-1">Contact No<span className="star text-danger">*</span></label>
-                          </div>
-                          <div className="col-9">
-                            <input autofocus  value={lead?.p_contact_no} onChange={(e)=>{
-                              setLead({...lead,p_contact_no:e.target.value})
-                            }} type="text" name="name" className="input-field" placeholder required />
-                          </div>
-                      </div>
-                    </div>
+                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                                <div className='row '>
+                                  <div className="col-3">
+                                      <label htmlFor="name" className="pb-1">Contact No<span className="star text-danger">*</span></label>
+                                    </div>
+                                    <div className="col-9">
+                                      <input autofocus  value={lead?.p_contact_no} onChange={(e)=>{
+                                        setLead({...lead,p_contact_no:e.target.value})
+                                      }} type="text" name="name" className="input-field" placeholder required />
+                                    </div>
+                                </div>
+                              </div>
 
-                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
-                      <div className='row '>
-                        <div className="col-3">
-                            <label htmlFor="name" className="pb-1">Visit Date<span className="star text-danger">*</span></label>
-                          </div>
-                          <div className="col-9">
-                            <input autofocus  value={lead?.p_visit_date} onChange={(e)=>{
-                              setLead({...lead,p_visit_date:e.target.value})
-                            }} type="Date" name="name" className="input-field" placeholder required />
-                          </div>
-                      </div>
-                    </div>
+                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                                <div className='row '>
+                                  <div className="col-3">
+                                      <label htmlFor="name" className="pb-1">Visit Date<span className="star text-danger">*</span></label>
+                                    </div>
+                                    <div className="col-9">
+                                      <input autofocus  value={lead?.p_visit_date} onChange={(e)=>{
+                                        setLead({...lead,p_visit_date:e.target.value})
+                                      }} type="Date" name="name" className="input-field" placeholder required />
+                                    </div>
+                                </div>
+                              </div>
 
-                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
-                      <div className='row '>
-                        <div className="col-3">
-                            <label htmlFor="name" className="pb-1">Project<span className="star text-danger">*</span></label>
-                          </div>
-                          <div className="col-9">
-                          <select required name onChange={(e)=>{
-                            setLead({...lead,project_id:e.target.value})
-                          }} className="form-select dropdown" style={{paddingTop: 12, paddingBottom: 12}}>
-                            <option value selected disabled>Select</option>
-                            {
-                              projectList?.map((project)=>(
-                                <option key={project?.project_id} value={project?.project_id} className="dropdown-item" href="#">
-                                  {project?.project}
-                            </option>
-                              ))
-                            }
-                          </select>
-                          </div>
-                      </div>
-                    </div>
+                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                                <div className='row '>
+                                  <div className="col-3">
+                                      <label htmlFor="name" className="pb-1">Project<span className="star text-danger">*</span></label>
+                                    </div>
+                                    <div className="col-9">
+                                    <select required name 
+                                    onChange={(e) => {
+                                      
+                                      const p_name = projectList?.find((p) => p?.Id === e.target.value)?.Project_Name__c
+                                      setLead((lead) => ({
+                                        ...lead,
+                                        project_name: p_name,
+                                        project_id: e.target.value
+                                      }));
+                                    }} 
+                                    className="form-select dropdown" style={{paddingTop: 12, paddingBottom: 12}}>
+                                      <option value selected disabled>Select</option>
+                                      {
+                                        projectList?.map((project)=>(
+                                          <option key={project?.Id} value={project?.Id} className="dropdown-item" href="#">
+                                            {project?.Project_Name__c}
+                                      </option>
+                                        ))
+                                      }
+                                    </select>
+                                    </div>
+                                </div>
+                              </div>
 
-                    <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
-                      <div className='row '>
-                        <div className="col-3">
-                            <label htmlFor="name" className="pb-1">Visit Time<span className="star text-danger">*</span></label>
-                          </div>
-                          <div className="col-9">
-                            <input autofocus  value={lead?.p_visit_time} onChange={(e)=>{
-                              setLead({...lead,p_visit_time:e.target.value})
-                            }} type="time" name="name" className="input-field" placeholder required />
-                          </div>
-                      </div>
+                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                                <div className='row '>
+                                  <div className="col-3">
+                                      <label htmlFor="name" className="pb-1">Visit Time<span className="star text-danger">*</span></label>
+                                    </div>
+                                    <div className="col-9">
+                                      <input autofocus  value={lead?.p_visit_time} onChange={(e)=>{
+                                        setLead({...lead,p_visit_time:e.target.value})
+                                      }} type="time" name="name" className="input-field" placeholder required />
+                                    </div>
+                                </div>
+                              </div>
+                              
+                            </div>
+                            <div className="new-leades-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
+                              <button 
+                              className='btn btn-danger rounded-5' 
+                              onClick={() => {setShowAssignTo("")
+                              setLead("")
+                              }}
+                              
+                              >Cancel</button>
+                              <button 
+                              className="btn rounded-5 text-white"
+                              style={{background:clientBtnColor}}
+                              >Submit</button>
+                            </div>
+                          </form>
+                        </div>
+                      </section>
                     </div>
-                    
                   </div>
-                  <div className="new-leades-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
-                    <button 
-                    className='btn btn-danger rounded-5' 
-                    onClick={() => {setShowAssignTo("")
-                    setLead("")
-                    }}
-                    
-                    >Cancel</button>
-                    <button 
-                    className="btn rounded-5 text-white"
-                    style={{background:clientBtnColor}}
-                    >Submit</button>
-                  </div>
-                </form>
+                </div>
               </div>
-            </section>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+            </div>
           </section>
 
           </Modal.Body>

@@ -101,6 +101,7 @@ const CP_NavBar = () => {
     }
   }, []);
 
+
   useEffect(() => {
     // Dynamically load Bootstrap JavaScript on the client-side
     if (typeof window !== 'undefined') {

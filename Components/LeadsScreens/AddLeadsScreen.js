@@ -641,7 +641,7 @@ const AddLeadsScreen = () => {
 
   const createInputField = (e) => {
     e.preventDefault();
-    const { field_lable, input_type, field_type, option } = newFields;
+    const { field_lable, input_type, field_type,field_size, option } = newFields;
 
     const showError = (errorMessage) => {
       toast.error(errorMessage);
@@ -655,12 +655,12 @@ const AddLeadsScreen = () => {
         showError('Please select the Input Type');
         return false;
       }
-      else if (input_type === 'input' && !field_type) {
+      else if (input_type === 'input' && !field_type ) {
         showError('Please select the Field Type');
         return false;
       }
-      else if (input_type === 'input' && !field_size) {
-        showError('Please Enyer Field Size');
+      else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
+        showError('Please Enter Field Size');
         return false;
       }
       else if (input_type === 'select' && !option) {
@@ -1439,7 +1439,7 @@ const AddLeadsScreen = () => {
                                 disabled={viewMode}
                                 onChange={(e) => updateFieldInfo(e, ind)}
                                 //value={userInfo.field_name ? userInfo.field_name : ""}
-                                checked={input_value === '1'? true: false}
+                                checked={input_value == "1" ? true: false}
                                 value={input_value}
 
                               />
@@ -1524,7 +1524,7 @@ const AddLeadsScreen = () => {
                                   </select>
                                 </div>
                               </div>
-                              <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                              {/* <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                                 <div className="input_box">
                                   <label htmlFor='field_size'>Field Size</label>
                                   <input
@@ -1536,10 +1536,29 @@ const AddLeadsScreen = () => {
                                     onChange={(e) => setNewFields({ ...newFields, field_size: e.target.value })}
                                   />
                                 </div>
-                              </div>
+                              </div> */}
 
                             </>
                           )}
+
+                          {
+                            newFields.input_type === 'input' && (newFields?.field_type==="text" ||  newFields?.field_type==="email" || newFields?.field_type==="number") && (
+                              <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                              <div className="input_box">
+                                <label htmlFor='field_size'>Field Size</label>
+                                <input
+                                  type='number'
+                                  name="field_size"
+                                  className='form-control'
+                                  placeholder='Enter field size'
+                                  id="field_size"
+                                  onChange={(e) => setNewFields({ ...newFields, field_size: e.target.value })}
+                                />
+                              </div>
+                            </div>
+                            )
+                          }
+                         
 
                           {newFields.input_type === 'select' && (
                             <div className="col-xl-4 col-md-4 col-sm-12 col-12">
@@ -1556,6 +1575,9 @@ const AddLeadsScreen = () => {
                               </div>
                             </div>
                           )}
+
+
+
                         </div>
 
                         <div className="btn-row my-4">

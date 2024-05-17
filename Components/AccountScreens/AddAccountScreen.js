@@ -238,7 +238,7 @@ const AddAccountScreen = () => {
 
   const createInputField = (e) => {
     e.preventDefault();
-    const { field_lable, input_type, field_type, option } = newFields;
+    const { field_lable, input_type, field_type, option,field_size } = newFields;
 
     const showError = (errorMessage) => {
       toast.error(errorMessage);
@@ -256,8 +256,8 @@ const AddAccountScreen = () => {
         showError('Please select the Field Type');
         return false;
       }
-      else if (input_type === 'input' && !field_size) {
-        showError('Please Enyer Field Size');
+      else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
+        showError('Please Enter Field Size');
         return false;
       }
       else if (input_type === 'select' && !option) {
@@ -1205,7 +1205,7 @@ const AddAccountScreen = () => {
                               disabled={viewMode}
                               placeholder={field_lable}
                               onChange={(e) => updateFieldInfo(e, ind)}
-                              checked={input_value === '1'? true: false}
+                              checked={input_value == '1'? true: false}
                               value={input_value}
                             />
                           ) : null}
@@ -1288,7 +1288,7 @@ const AddAccountScreen = () => {
                                 </select>
                               </div>
                             </div>
-                            <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                            {/* <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                               <div className="input_box">
                                 <label htmlFor='field_size'>Field Size</label>
                                 <input
@@ -1300,9 +1300,27 @@ const AddAccountScreen = () => {
                                   onChange={(e) => setNewFields({ ...newFields, field_size: e.target.value })}
                                 />
                               </div>
-                            </div>
+                            </div> */}
                           </>
                         )}
+
+                         {
+                          newFields.input_type === 'input' && (newFields?.field_type==="text" ||  newFields?.field_type==="email" || newFields?.field_type==="number") && (
+                            <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                            <div className="input_box">
+                                <label htmlFor='field_size'>Field Size</label>
+                                <input
+                                type='number'
+                                name="field_size"
+                                className='form-control'
+                                placeholder='Enter field size'
+                                id="field_size"
+                                onChange={(e) => setNewFields({ ...newFields, field_size: e.target.value })}
+                                />
+                            </div>
+                            </div>
+                            )               
+                        }
 
                         {newFields.input_type === 'select' && (
                           <div className="col-xl-4 col-md-4 col-sm-12 col-12">

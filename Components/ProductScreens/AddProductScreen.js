@@ -495,9 +495,8 @@ const AddProductScreen = () => {
                                 name={p_cat_name}
                                 key={p_cat_id}
                                 value={p_cat_id}
-                              >
-                                {" "}
-                                {p_cat_name}{" "}
+                              > 
+                                {p_cat_name}
                               </option>
                               {checkChildrens(children, p_cat_id, i)}
                             </>
@@ -519,12 +518,12 @@ const AddProductScreen = () => {
                     errorData?.discount ? "input_box errorBox" : "input_box"
                   }
                 >
-                  <label htmlFor="discount">Discount *</label>
+                  <label htmlFor="discount">Discount % *</label>
                   <input
                     type="number"
                     name="discount"
                     id="discount"
-                    placeholder="Enter List Price"
+                    placeholder="Enter Discount %"
                     className={
                       errorData?.discount
                         ? "form-control is-invalid"

@@ -237,7 +237,7 @@ const getVisitInfo=async(visitId)=>{
             }
         },
         {
-            name: 'projectData',
+            name: 'sales_project_name',
             label: "Project",
             options: {
                 filter: true,
@@ -249,7 +249,7 @@ const getVisitInfo=async(visitId)=>{
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            {value?.project}
+                            {value}
                         </div>
                     )
                 }

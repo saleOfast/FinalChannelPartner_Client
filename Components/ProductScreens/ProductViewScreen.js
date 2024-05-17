@@ -107,7 +107,7 @@ const ProductViewScreen = () => {
                     />
 
                     <ProductDetailComponent
-                      head="Discount"
+                      head="Discount %"
                       value={dataList?.discount}
                     />
 

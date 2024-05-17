@@ -52,7 +52,7 @@ const LeadDetailsScreen = () => {
         try {
             
             const leads = await axios.get(Baseurl + `/db/channel/lead?lead_id=${id}`, header);
-            const projects = await axios.get(Baseurl + `/db/channel/project`, header);
+            const projects = await axios.get(Baseurl + `/db/channel/lead/projects`, header);
             setLead({
               ...lead,
               lead_id:leads?.data?.data?.lead_id,
@@ -64,10 +64,10 @@ const LeadDetailsScreen = () => {
               pincode: leads?.data?.data?.pincode, 
               p_visit_date: leads?.data?.data?.p_visit_date,
               p_visit_time: leads?.data?.data?.p_visit_time, 
-              project_id:leads?.data?.data?.projectData?.project_id,
-              project_name:leads?.data?.data?.projectData?.project,
+              project_id:leads?.data?.data?.sales_project_id,
+              project_name:leads?.data?.data?.sales_project_name,
             });
-            setProjectList(projects.data.data);
+            setProjectList(projects?.data?.data?.records);
         } catch (error) {
           console.log(error)
             if (error?.response?.data?.message) {
@@ -152,6 +152,7 @@ function formatDate(date) {
                   >
                     <span className="lead-id text-white">{lead?.lead_code}</span>
                     <img
+                      className=' cursor-pointer'
                       src="/ChannelPartner/profile-edit-white.svg"
                       onClick={() => setShowAssignTo(true)}
                       alt
@@ -537,12 +538,12 @@ function formatDate(date) {
                                       </option>
                                       {projectList?.map((project) => (
                                         <option
-                                          key={project?.project_id}
-                                          value={project?.project_id}
+                                          key={project?.Id}
+                                          value={project?.Id}
                                           className="dropdown-item"
                                           href="#"
                                         >
-                                          {project?.project}
+                                          {project?.Project_Name__c}
                                         </option>
                                       ))}
                                     </select>

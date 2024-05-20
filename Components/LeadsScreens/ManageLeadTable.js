@@ -14,6 +14,10 @@ const ManageLeadTable = ({
   title,
   disableConfirm,
 }) => {
+  
+  const getUserName = (userObject) => {
+    return userObject?.user ? userObject.user : "";
+  };
 
   const columns = [
     {
@@ -60,19 +64,23 @@ const ManageLeadTable = ({
       options: {
         filter: true,
         customBodyRender: (value, tableMeta, updateValue) => {
-          return <>{value?.user ? value.user : ""}</>;
+          // return <>{value?.user ? value.user : ""}</>;
+          return <>{value}</>;
         },
       },
     },
+    
     {
       name: "db_lead_status",
       label: "Status",
       options: {
         filter: true,
         customBodyRender: (value, tableMeta, updateValue) => {
+          console.log(tableMeta)
           return (
             <div className="status_box">
-              <span className={`status${value?.lead_status_id} status_btn`}>{value?.lead_status_id ? value?.status_name : ""}</span>
+              {/* <span className={`status${value?.lead_status_id} status_btn`}>{value?.lead_status_id ? value?.status_name : ""}</span> */}
+              <span className={`status${tableMeta?.rowData[8]} status_btn`}>{ value}</span>
             </div>
           );
         },
@@ -82,7 +90,7 @@ const ManageLeadTable = ({
       name: "lead_id",
       label: "Action",
       options: {
-        filter: true,
+        filter: false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             // /AddLeads?id=${value}&vw=mds`
@@ -125,18 +133,42 @@ const ManageLeadTable = ({
         },
       },
     },
+    {
+      name: "lead_status_id",
+      label: "Creation Date",
+      options: {
+        filter: false,
+        display:false,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return <>{value} </>;
+        },
+      },
+    },
   ];
   const options = {
     selectableRows: 'none',
     responsive: "standard"
   };
 
+  const mappedDataList=dataList?.map(list=>({
+    lead_code:list?.lead_code,
+    lead_name:list?.lead_name,
+    company_name:list?.company_name,
+    p_contact_no:list?.p_contact_no,
+    createdAt:list?.createdAt,
+    db_user:list?.db_user?.user,
+    db_lead_status:list?.db_lead_status?.status_name,
+    lead_id:list?.lead_id,
+    lead_status_id:list?.db_lead_status?.lead_status_id
+  }))
+
   return (
     <>
       <div className="miuiTable">
         <MUIDataTable
           title={title}
-          data={dataList}
+          // data={dataList}
+          data={mappedDataList}
           columns={columns}
           options={options}
         />

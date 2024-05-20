@@ -49,7 +49,8 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="status_box">
-                            <span  className={`status${value?.lead_status_id} status_btn`}>{value?.lead_status_id ? value.status_name : ""}</span>
+                            {/* <span  className={`status${value?.lead_status_id} status_btn`}>{value?.lead_status_id ? value.status_name : ""}</span> */}
+                            <span  className={`status${tableMeta?.rowData[8]} status_btn`}>{tableMeta?.rowData[8] ? value : ""}</span>
                         </div>
                     );
                 },
@@ -83,7 +84,7 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
             name: "lead_id",
             label: " ",
             options: {
-                filter: true,
+                filter: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -101,7 +102,15 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
             name: "assigned_lead",
             label: "Creation Date",
             options: {
-                filter: true,
+                filter: false,
+                display: false
+            },
+        },
+        {
+            name: "lead_status_id",
+            label: "Creation Date",
+            options: {
+                filter: false,
                 display: false
             },
         },
@@ -112,12 +121,24 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
         
     };
 
+    const mappedDataList=dataList?.map(list=>({
+        lead_name:list?.lead_name,
+        company_name:list?.company_name,
+        p_contact_no:list?.p_contact_no,
+        createdAt:list?.createdAt,
+        db_lead_status:list?.db_lead_status?.status_name,
+        lead_id:list?.lead_id,
+        assigned_lead:list?.assigned_lead,
+        lead_status_id:list?.db_lead_status?.lead_status_id
+    }))
+
     return (
         <>
             <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={dataList}
+                    // data={dataList}
+                    data={mappedDataList}
                     columns={columns}
                     options={options}
                 />

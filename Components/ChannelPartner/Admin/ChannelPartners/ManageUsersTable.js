@@ -231,9 +231,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         onRowSelectionChange : handleRowClick,
     };
 
-    const goto = (url) => {
-        router.push(url)
-    }
+   
 
     const updateUserHandler = async () => {
         let toastShown=false;

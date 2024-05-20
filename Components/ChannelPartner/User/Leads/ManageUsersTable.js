@@ -308,12 +308,10 @@ const getVisitInfo=async(visitId)=>{
     const options = {
         selectableRows: 'multiple',
         responsive: "standard",
-        onRowSelectionChange : handleRowClick
+        onRowSelectionChange : handleRowClick,
     };
 
-    const goto = (url) => {
-        router.push(url)
-    }
+    
 
     const updateUserHandler = async (e) => {
         e.preventDefault()

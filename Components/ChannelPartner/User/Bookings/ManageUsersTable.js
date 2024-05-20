@@ -213,6 +213,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
+          console.log(tableMeta)
           return (
             <div className="table_btns">
               <button
@@ -231,7 +232,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   border: "white",
                   cursor: "pointer",
                 }}
-                disabled={value.length>0 ? true:false }
+                disabled={value?.length>0 ? true:false }
                 className="pe-3 ps-3 "
               >
                 + Create

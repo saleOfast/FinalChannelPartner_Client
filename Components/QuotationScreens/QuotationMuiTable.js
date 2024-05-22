@@ -25,7 +25,8 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.opp_name}</>
+                        // <>{value?.opp_name}</>
+                        <>{value}</>
                     );
                 },
             }
@@ -38,7 +39,8 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.user}</>
+                        // <>{value?.user}</>
+                        <>{value}</>
                     );
                 },
             }
@@ -58,7 +60,8 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
-                            <span className='active status_btn'>{value?.quat_status_name}</span>
+                            {/* <span className='active status_btn'>{value?.quat_status_name}</span> */}
+                            <span className='active status_btn'>{value}</span>
                         </div>
                     )
                 }
@@ -69,6 +72,7 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
             label: "Action",
             options: {
                 filter: true,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -103,12 +107,22 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
         responsive: "standard"
     };
 
+    const mappedDataList=dataList?.map(list=>({
+        quat_code:list?.quat_code,
+        quatOpportunity:list?.quatOpportunity?.opp_name,
+        quatOwner:list?.quatOwner?.user,
+        grand_total:list?.grand_total,
+        quatStatus:list?.quatStatus?.quat_status_name,
+        quat_mast_id:list?.quat_mast_id
+    }))
+
     return (
         <>
             <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={dataList}
+                    // data={dataList}
+                    data={mappedDataList}
                     columns={columns}
                     options={options}
                 />

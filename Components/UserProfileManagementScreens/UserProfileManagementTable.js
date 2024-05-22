@@ -36,7 +36,8 @@ const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disable
             name: 'role_id',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">

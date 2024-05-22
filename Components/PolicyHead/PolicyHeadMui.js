@@ -42,8 +42,10 @@ const PolicyHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, ti
             name: 'status',
             label: "Status",
             options: {
-                filter: true,
+                filter: false,
                 display: false,
+                download:false,
+                viewColumns:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -58,7 +60,9 @@ const PolicyHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, ti
             name: 'policy_id',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
+                
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -96,8 +100,10 @@ const PolicyHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, ti
             name: 'is_travel',
             label: "expense Type",
             options: {
-                filter: true,
-                display: false
+                filter: false,
+                display: false,
+                download:false,
+                viewColumns:false
             }
         },
     ];

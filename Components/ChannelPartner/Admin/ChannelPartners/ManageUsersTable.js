@@ -151,7 +151,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box fw-bold' style={{color:"#293790"}}>
-                            {value && <span  >{value.user}</span>}
+                            {/* {value && <span  >{value.user}</span>} */}
+                            {value && <span  >{value}</span>}
                         </div>
                     )
                 }
@@ -181,17 +182,32 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             name: 'user_code',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
+                // customBodyRender: (value, tableMeta, updateValue) => {
+                //     return (
+                //         <div className="table_btns">
+                //             <button
+                //                 onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[5]?.user_id) }}
+                //                 style={{background:`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
+                //                 className='pe-3 ps-3'
+                //                 title='Assign - To'>
+                //                     Assign to
+                //             </button>
+                          
+                //         </div>
+                //     )
+                // }
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
                             <button
-                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[5]?.user_id) }}
+                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[8]?.user_id) }}
                                 style={{background:`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
                                 title='Assign - To'>
@@ -201,6 +217,16 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                         </div>
                     )
                 }
+            }
+        },
+        {
+            name: 'reportToUserId',
+            label: "ReportToUserId",
+            options: {
+                filter: false,
+                viewColumns:false,
+                download:false,
+                display:false
             }
         },
     ];
@@ -289,14 +315,24 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         }
       };
       
- 
+      const mappedDataList=dataList?.map(list=>({
+        user_code:list?.user_code,
+        user:list?.user,
+        createdAt:list?.createdAt,
+        lead_count:list?.lead_count,
+        booking_count:list?.booking_count,
+        reportToUser:list?.reportToUser?.user,
+        user_status:list?.user_status,
+        reportToUserId:list?.reportToUser?.user_id,
+      }))
 
     return (
         <>
             <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
-                    data={dataList}
+                    // data={dataList}
+                    data={mappedDataList}
                     columns={columns}
                     options={options}
                 />

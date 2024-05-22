@@ -32,7 +32,8 @@ const AccountTypeScreenTab = ({
       name: "status",
       label: "Status",
       options: {
-        filter: true,
+        filter: false,
+                download:false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="status_box">
@@ -50,7 +51,8 @@ const AccountTypeScreenTab = ({
       name: "account_type_id",
       label: "Action",
       options: {
-        filter: true,
+        filter: false,
+                download:false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="table_btns">

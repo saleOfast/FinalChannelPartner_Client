@@ -186,6 +186,7 @@ export default function UserEditProfile({ setEditMode, userData }) {
                                                 <label htmlFor="first_name">Name *</label>
                                                 <input
                                                     type="text"
+                                                    disabled
                                                     placeholder="Enter First Name"
                                                     name="first_name"
                                                     id="first_name"
@@ -223,6 +224,7 @@ export default function UserEditProfile({ setEditMode, userData }) {
                                                 <input
                                                     type="email"
                                                     name="email"
+                                                    disabled
                                                     placeholder="Enter Email Id"
                                                     id="Email"
                                                     className={errorData?.email ? 'form-control is-invalid' : 'form-control'}

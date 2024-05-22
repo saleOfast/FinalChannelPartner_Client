@@ -161,8 +161,10 @@ const updateBrokerageBill =  async() => {
             name: 'brokerage_id',
             label: "Booking ID",
             options: {
-                filter: true,
+                filter: false,
                 display:false,
+                download:false,
+                viewColumns:false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -199,7 +201,7 @@ const updateBrokerageBill =  async() => {
           }
       },
         {
-            name: 'BrokerageBookingtData',
+            name: 'BrokerageBookingtDataName',
             label: "Booking Name",
             options: {
                 filter: true,
@@ -211,7 +213,8 @@ const updateBrokerageBill =  async() => {
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div  className='status_box fw-bold ' style={{color:"#293790"}}>
-                            {value?.booking_name}
+                            {/* {value?.booking_name} */}
+                            {value}
                         </div>
                     )
                 }
@@ -219,7 +222,7 @@ const updateBrokerageBill =  async() => {
 
         },
         {
-            name: 'BrokerageBookingtData',
+            name: 'BrokerageBookingtDataEmail',
             label: "Email",
             options: {
                 filter: true,
@@ -232,7 +235,8 @@ const updateBrokerageBill =  async() => {
                     
                     return (
                         <div className='status_box fw-bold' style={{color:"#293790"}}>
-                            {value?.email}
+                            {/* {value?.email} */}
+                            {value}
                         </div>
                     )
                 }
@@ -240,7 +244,7 @@ const updateBrokerageBill =  async() => {
             }
         },
         {
-            name: 'BrokerageBookingtData',
+            name: 'BrokerageBookingtDataContact',
             label: "Contact No.",
             options: {
                 filter: true,
@@ -252,14 +256,15 @@ const updateBrokerageBill =  async() => {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            +91-{value?.contact_no}
+                            {/* +91-{value?.contact_no} */}
+                            +91-{value}
                         </div>
                     )
                 }
             }
         },
         {
-            name: 'BrokerageBookingtData',
+            name: 'BrokerageBookingtDataProject',
             label: "Project",
             options: {
                 filter: true,
@@ -271,14 +276,15 @@ const updateBrokerageBill =  async() => {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            {value?.BookingprojectData?.project}
+                            {/* {value?.BookingprojectData?.project} */}
+                            {value}
                         </div>
                     )
                 }
             }
         },
         {
-            name: 'BrokerageBookingtData',
+            name: 'BrokerageBookingtDataLocation',
             label: "Location",
             options: {
                 filter: true,
@@ -290,7 +296,8 @@ const updateBrokerageBill =  async() => {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            {value?.Location}
+                            {/* {value?.Location} */}
+                            {value}
                         </div>
                     )
                 }
@@ -319,10 +326,11 @@ const updateBrokerageBill =  async() => {
             }
         },
         {
-            name: 'user_code',
+            name: '',
             label: "Brokerage Bill",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -399,14 +407,24 @@ const updateBrokerageBill =  async() => {
       }
     };
 
-
+    const mappedDataList=dataList?.map(list=>({
+      brokerage_id:list?.brokerage_id,
+      brokerage_code:list?.brokerage_code,
+      BrokerageBookingtDataName:list?.BrokerageBookingtData?.booking_name,
+      BrokerageBookingtDataEmail:list?.BrokerageBookingtData?.email,
+      BrokerageBookingtDataContact:list?.BrokerageBookingtData?.contact_no,
+      BrokerageBookingtDataProject:list?.BrokerageBookingtData?.BookingprojectData?.project,
+      BrokerageBookingtDataLocation:list?.BrokerageBookingtData?.Location,
+      status:list?.status
+    }))
 
     return (
         <>
             <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
-                    data={dataList}
+                    data={mappedDataList}
+                    // data={dataList}
                     columns={columns}
                     options={options}
 

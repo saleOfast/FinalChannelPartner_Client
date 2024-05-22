@@ -32,7 +32,8 @@ const ManageLeadStageTab = ({
       name: "status",
       label: "Lead Status",
       options: {
-        filter: true,
+        filter: false,
+                download:false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="status_box">
@@ -50,7 +51,8 @@ const ManageLeadStageTab = ({
       name: "lead_stg_id",
       label: "Action",
       options: {
-        filter: true,
+        filter: false,
+                download:false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="table_btns">

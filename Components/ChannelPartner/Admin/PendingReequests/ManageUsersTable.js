@@ -136,7 +136,8 @@ const ManageUsersTable = ({
       name: "db_user_profile",
       label: "Aadhar",
       options: {
-        filter: true,
+        download:false,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
@@ -161,7 +162,8 @@ const ManageUsersTable = ({
       name: "db_user_profile",
       label: "PAN",
       options: {
-        filter: true,
+        download:false,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
@@ -186,7 +188,8 @@ const ManageUsersTable = ({
       name: "db_user_profile",
       label: "Rera License",
       options: {
-        filter: true,
+        filter: false,
+        download:false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
@@ -211,7 +214,8 @@ const ManageUsersTable = ({
       name: "db_user_profile",
       label: "Cancelled Cheque",
       options: {
-        filter: true,
+        filter: false,
+        download:false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
@@ -252,7 +256,8 @@ const ManageUsersTable = ({
       name: "user_code",
       label: "Action",
       options: {
-        filter: true,
+        filter: false,
+        download:false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th
             style={{ background:`${clientBtnColor}`, color: "white",  paddingLeft: '65px' }}

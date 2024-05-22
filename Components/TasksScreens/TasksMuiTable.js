@@ -167,6 +167,8 @@ const TasksMuiTable = ({
       label: "Action",
       options: {
         filter: false,
+        download:false,
+        viewColumns:false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="table_btns">
@@ -195,16 +197,20 @@ const TasksMuiTable = ({
       name: "lead_id",
       label: "Task Name",
       options: {
+        display:false,
         filter: false,
-        display:false
+        download:false,
+        viewColumns:false,
       },
     },
     {
       name: "opp_id",
       label: "Task Name",
       options: {
+        display:false,
         filter: false,
-        display:false
+        download:false,
+        viewColumns:false,
       },
     },
   ];

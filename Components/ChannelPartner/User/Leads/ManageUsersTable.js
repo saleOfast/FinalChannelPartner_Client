@@ -9,7 +9,7 @@ import { Baseurl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
-import { Visibility } from '@mui/icons-material';
+import { ViewColumn, Visibility } from '@mui/icons-material';
 
 
 
@@ -139,7 +139,9 @@ const getVisitInfo=async(visitId)=>{
         label: "Lead ID",
         options: {
           display:false,
-            filter: true,
+            filter: false,
+            download:false,
+            viewColumns:false,
             customHeadRender: (columnMeta, updateDirection) => (
                 <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                   {columnMeta.label}
@@ -247,6 +249,7 @@ const getVisitInfo=async(visitId)=>{
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
+                  console.log(tableMeta)
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
                             {value}
@@ -259,7 +262,8 @@ const getVisitInfo=async(visitId)=>{
             name: 'visitList',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -357,6 +361,16 @@ const getVisitInfo=async(visitId)=>{
         
         
       };
+
+      const mappedDataList=leadList?.map(list=>({
+        lead_id:list?.lead_id,
+        lead_code:list?.lead_code,
+        lead_name:list?.lead_name,
+        email_id:list?.email_id,
+        p_contact_no:list?.p_contact_no,
+        sales_project_name:list?.sales_project_name,
+        visitList:list?.visitList
+      }))
       
  
 
@@ -365,7 +379,8 @@ const getVisitInfo=async(visitId)=>{
         <div className="miuiTable channelTable">
           <MUIDataTable
             title={<CustomToolbar />}
-            data={leadList}
+            // data={leadList}
+            data={mappedDataList}
             columns={columns}
             options={options}
           />

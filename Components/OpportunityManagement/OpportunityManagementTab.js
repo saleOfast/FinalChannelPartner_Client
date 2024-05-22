@@ -27,7 +27,8 @@ const OpportunityManagementTab = ({ deleteConfirm, disableConfirm, dataList, ope
             name: 'status',
             label: "Lead Status",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -42,7 +43,8 @@ const OpportunityManagementTab = ({ deleteConfirm, disableConfirm, dataList, ope
             name: 'opportunity_stg_id',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">

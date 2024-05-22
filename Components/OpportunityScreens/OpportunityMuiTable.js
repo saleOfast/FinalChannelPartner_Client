@@ -37,7 +37,8 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox }) => {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.acc_name? value.acc_name : ''}</>
+                        // <>{value?.acc_name? value.acc_name : ''}</>
+                        <>{value ? value : ''}</>
                     )
                 }
             }
@@ -57,7 +58,8 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox }) => {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.user? value.user : ''}</>
+                        // <>{value?.user? value.user : ''}</>
+                        <>{value ? value : ''}</>
                     )
                 }
             }
@@ -70,7 +72,8 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox }) => {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.opportunity_stg_name? value.opportunity_stg_name : ''}</>
+                        // <>{value?.opportunity_stg_name? value.opportunity_stg_name : ''}</>
+                        <>{value ? value : ''}</>
                     )
                 }
             }
@@ -81,7 +84,8 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox }) => {
             name: 'opp_id',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -110,12 +114,22 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox }) => {
         responsive: "standard"
     };
 
+    const mappedDataList=dataList?.map(list=>({
+        opp_name:list?.opp_name,
+        accName:list?.accName?.acc_name,
+        amount:list?.amount,
+        oppOwner:list?.oppOwner?.user,
+        db_opportunity_stg:list?.db_opportunity_stg?.opportunity_stg_name,
+        opp_id:list?.opp_id,
+    }))
+
     return (
         <>
             <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={dataList}
+                    // data={dataList}
+                    data={mappedDataList}
                     columns={columns}
                     options={options}
                 />

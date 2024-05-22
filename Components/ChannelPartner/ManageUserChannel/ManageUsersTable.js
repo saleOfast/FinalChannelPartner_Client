@@ -59,7 +59,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             name: 'doc_verification',
             label: "Status",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -75,7 +76,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             name: 'user_code',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
 
                     return (

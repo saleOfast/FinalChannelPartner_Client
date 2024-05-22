@@ -47,7 +47,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       label: "Booking ID",
       options: {
         display:false,
-        filter: true,
+        filter: false,
+        download:false,
+        viewColumns:false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
             {columnMeta.label}
@@ -156,7 +158,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className='status_box' style={{ color: "#667799" }}>
-              {value?.project}
+              {/* {value?.project} */}
+              {value}
             </div>
           )
         }
@@ -206,14 +209,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       name: 'BrokerageBookingList',
       label: "Brokerage Bill",
       options: {
-        filter: true,
+        filter: false,
+        download:false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
-          console.log(tableMeta)
           return (
             <div className="table_btns">
               <button
@@ -325,12 +328,25 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     onRowSelectionChange: handleRowClick,
   };
 
+  const mappedDataList=dataList?.map(list=>({
+      booking_id:list?.booking_id,
+      booking_code:list?.booking_code,
+      booking_name:list?.booking_name,
+      email:list?.email,
+      contact_no:list?.contact_no,
+      BookingprojectData:list?.BookingprojectData?.project,
+      Location:list?.Location,
+      status:list?.status,
+      BrokerageBookingList:list?.BrokerageBookingList
+  }))
+
   return (
     <>
       <div className="miuiTable channelTable">
         <MUIDataTable
           title={<CustomToolbar />}
-          data={dataList}
+          // data={dataList}
+          data={mappedDataList}
           columns={columns}
           options={options}
         />

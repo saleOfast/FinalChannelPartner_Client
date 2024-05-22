@@ -139,6 +139,7 @@ const ManageProductCategoryTab = ({ deleteConfirm, disableConfirm, dataList, ope
             name:"image",
             label:"Image",
             options:{
+                filter:true,
               customBodyRender:(value)=>{
                 return(
                   <div>
@@ -159,7 +160,8 @@ const ManageProductCategoryTab = ({ deleteConfirm, disableConfirm, dataList, ope
             name: 'status',
             label: "Status",
             options: {
-                filter: true,
+                filter:false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -174,7 +176,8 @@ const ManageProductCategoryTab = ({ deleteConfirm, disableConfirm, dataList, ope
             name: 'p_cat_id',
             label: "Action",
             options: {
-                filter: true,
+                filter:false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">

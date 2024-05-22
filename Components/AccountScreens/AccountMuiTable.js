@@ -36,7 +36,8 @@ const AccountMuiTable = ({ accountsList, openConfirmBox }) => {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.user ? value.user : ''}</>
+                        // <>{value?.user ? value.user : ''}</>
+                        <>{value ? value : ''}</>
                     )
                 }
             }
@@ -63,8 +64,8 @@ const AccountMuiTable = ({ accountsList, openConfirmBox }) => {
             name: 'acc_id',
             label: "Action",
             options: {
-                filter: true,
-                download: false, 
+                filter: false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -93,12 +94,23 @@ const AccountMuiTable = ({ accountsList, openConfirmBox }) => {
         responsive: "standard"
     };
 
+    const mappedDataList=accountsList?.map(list=>({
+        acc_name:list?.acc_name,
+        acc_code:list?.acc_code,
+        website:list?.website,
+        account_owner:list?.account_owner?.user,
+        parent_name:list?.parent_name,
+        lead_count:list?.lead_count,
+        acc_id:list?.acc_id,
+    }))
+
     return (
         <>
             <div className="miuiTable">
                 <MUIDataTable
                     title={"Accounts List"}
-                    data={accountsList}
+                    // data={accountsList}
+                    data={mappedDataList}
                     columns={columns}
                     options={options}
                 />

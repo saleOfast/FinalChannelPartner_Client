@@ -91,6 +91,7 @@ const ManageLeadTable = ({
       label: "Action",
       options: {
         filter: false,
+        download:false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             // /AddLeads?id=${value}&vw=mds`
@@ -102,7 +103,9 @@ const ManageLeadTable = ({
               </Link>
               
               {
-                  tableMeta?.rowData[6]?.lead_status_id == 3 || tableMeta?.rowData[6]?.lead_status_id == 4  ?
+                  // tableMeta?.rowData[6]?.lead_status_id == 3 || tableMeta?.rowData[6]?.lead_status_id == 4  
+                  tableMeta?.rowData[8] == 3 || tableMeta?.rowData[8] == 4  
+                  ?
                   null : (
                     <>
                         <button
@@ -121,7 +124,10 @@ const ManageLeadTable = ({
                   )
               }
               
-              {tableMeta?.rowData[6]?.lead_status_id == 1 || tableMeta?.rowData[6]?.lead_status_id == 2 ?
+              {
+              // tableMeta?.rowData[6]?.lead_status_id == 1 || tableMeta?.rowData[6]?.lead_status_id == 2 
+              tableMeta?.rowData[8] == 1 || tableMeta?.rowData[8] == 2 
+              ?
                 <button
                   onClick={() => openCloseConvert(value)}
                   className="action_btn x2"
@@ -135,10 +141,12 @@ const ManageLeadTable = ({
     },
     {
       name: "lead_status_id",
-      label: "Creation Date",
+      label: "Lead Status Id",
       options: {
         filter: false,
         display:false,
+        download:false,
+        viewColumns:false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return <>{value} </>;
         },

@@ -28,7 +28,8 @@ const ManageDesignationTable = ({ deleteConfirm, disableConfirm, dataList, openE
             name: 'status',
             label: "Status",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -42,7 +43,8 @@ const ManageDesignationTable = ({ deleteConfirm, disableConfirm, dataList, openE
             name: 'des_id',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">

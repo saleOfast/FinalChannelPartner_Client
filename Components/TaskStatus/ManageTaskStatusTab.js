@@ -50,7 +50,8 @@ const ManageTaskStatusTab = ({
       name: "task_status_id",
       label: "Action ss",
       options: {
-        filter: true,
+        filter: false,
+        download:false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="table_btns">

@@ -59,7 +59,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         label: "Visit ID",
         options: {
           display:false,
-            filter: true,
+            filter: false,
+            download:false,
+            viewColumns:false,
             customHeadRender: (columnMeta, updateDirection) => (
                 <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                   {columnMeta.label}
@@ -96,7 +98,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'leadData',
+            name: 'leadDataName',
             label: "Lead Name",
             options: {
                 filter: true,
@@ -108,7 +110,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <Link href={`/CHANNEL/VisitDetails?id=${tableMeta?.rowData[0]}`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
-                            {value.lead_name}
+                            {/* {value.lead_name} */}
+                            {value}
                         </Link>
                     )
                 }
@@ -116,7 +119,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
         },
         {
-            name: 'leadData',
+            name: 'leadDataEmail',
             label: "Email",
             options: {
                 filter: true,
@@ -129,7 +132,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     
                     return (
                         <div className='status_box fw-bold' style={{color:"#293790"}}>
-                            {value.email_id}
+                            {/* {value.email_id} */}
+                            {value}
                         </div>
                     )
                 }
@@ -137,7 +141,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'leadData',
+            name: 'leadDataContact',
             label: "Contact No.",
             options: {
                 filter: true,
@@ -149,14 +153,15 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            +91-{value.p_contact_no}
+                            {/* +91-{value.p_contact_no} */}
+                            +91-{value}
                         </div>
                     )
                 }
             }
         },
         {
-            name: 'leadData',
+            name: 'leadDataProject',
             label: "Project",
             options: {
                 filter: true,
@@ -168,7 +173,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
-                            {value?.projectData?.project}
+                            {/* {value?.projectData?.project} */}
+                            {value}
                         </div>
                     )
                 }
@@ -216,7 +222,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'user_code',
+            name: 'status',
             label: "Visit Status",
             options: {
                 filter: true,
@@ -232,7 +238,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                 style={{padding:"6px", color:"white", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3 btn-warning btn '
                                 title='Visit Status'>
-                                   Requested
+                                   {value}
                             </div>
                           
                         </div>
@@ -268,74 +274,26 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         onRowSelectionChange : handleRowClick,
     };
 
-    const goto = (url) => {
-        router.push(url)
-    }
-
-    const updateUserHandler = async () => {
-        let toastShown=false;
-        for (const element of userData) {
-          if (!hasCookie("token")) return;
-          
-          const token = getCookie("token");
-          const db_name = getCookie("db_name");
-          
-          const header = {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-              db: db_name,
-              m_id: 79,
-            },
-          };
-      
-          try {
-            const response = await axios.put(`${Baseurl}/db/users`, {
-              db_name: db_name,
-              user_code: element,
-              report_to: oldAssignTo,
-            }, header);
-            
-            if (response.status === 200 || response.status === 201) {
-                if (!toastShown) { 
-                    toast.success(response.data.message);
-                    toastShown = true; 
-                }
-              setoldAssignTo('');
-              setShowModal(false);
-              setUserData([])
-              getVisitList();
-            }
-          } catch (error) {
-            console.log(error)
-            if (error?.response?.data?.status === 422) {
-                if (!toastShown) { 
-                    toast.error(error.response.data.message);
-                    toastShown = true; 
-                }
-            } else if (error?.response?.data?.message) {
-                if (!toastShown) { 
-                    toast.error(error.response.data.message);
-                    toastShown = true; 
-                }
-            } else {
-                if (!toastShown) { 
-                    toast.error("Something went wrong!");
-                    toastShown = true; 
-                }
-            }
-          }
-        }
-      };
+    const mappedDataList=dataList?.map(list=>({
+      visit_id:list?.visit_id,
+      visit_code:list?.visit_code,
+      leadDataName:list?.leadData?.lead_name,
+      leadDataEmail:list?.leadData?.email_id,
+      leadDataContact:list?.leadData?.p_contact_no,
+      leadDataProject:list?.leadData?.projectData?.project,
+      p_visit_date:list?.p_visit_date,
+      p_visit_time:list?.p_visit_time,
+      status:list?.status
+    }))
       
  
-
     return (
         <>
             <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
-                    data={dataList}
+                    data={mappedDataList}
+                    // data={dataList}
                     columns={columns}
                     options={options}
 

@@ -33,7 +33,8 @@ const LeaveHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, tit
             name: 'status',
             label: "Status",
             options: {
-                filter: true,
+                filter:false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -48,7 +49,8 @@ const LeaveHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, tit
             name: 'head_leave_id',
             label: "Action",
             options: {
-                filter: true,
+                filter:false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">

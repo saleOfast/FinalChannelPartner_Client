@@ -298,7 +298,7 @@ const OpportunityViewScreen = () => {
                 <Link href="/">Home </Link>
               </li>
               <li className="breadcrumb-item">
-                <Link href="/ManageLeads">Manage Opportunity </Link>
+                <Link href="/Opportunity">Manage Opportunity </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
                 Opportunity

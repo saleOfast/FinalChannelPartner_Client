@@ -27,7 +27,8 @@ const ManageLeadIndustryTab = ({ deleteConfirm, disableConfirm, dataList, openEd
             name: 'status',
             label: "Status",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -42,7 +43,8 @@ const ManageLeadIndustryTab = ({ deleteConfirm, disableConfirm, dataList, openEd
             name: 'ind_id',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">

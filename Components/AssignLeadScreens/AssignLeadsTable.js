@@ -59,7 +59,9 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
             name: "lead_id",
             label: "Assign Lead",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
+                viewColumns:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -85,6 +87,8 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
             label: " ",
             options: {
                 filter: false,
+                download:false,
+                viewColumns:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -103,7 +107,9 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
             label: "Creation Date",
             options: {
                 filter: false,
-                display: false
+                display: false,
+                download:false,
+                viewColumns:false,
             },
         },
         {
@@ -111,7 +117,9 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
             label: "Creation Date",
             options: {
                 filter: false,
-                display: false
+                display: false,
+                download:false,
+                viewColumns:false,
             },
         },
     ];

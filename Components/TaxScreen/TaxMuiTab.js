@@ -46,7 +46,8 @@ const TaxMuiTab = ({ opnCnfrmBox, taxList, openEdtMdl, title }) => {
             name: 'tax_id',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">

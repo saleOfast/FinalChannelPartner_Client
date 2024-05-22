@@ -52,7 +52,8 @@ const ProductMuiTable = ({
         filter: true,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-            <>{value?.p_cat_name}</>
+            // <>{value?.p_cat_name}</>
+            <>{value}</>
           );
         },
       },
@@ -64,7 +65,8 @@ const ProductMuiTable = ({
         filter: true,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-            <>{value?.brand_name}</>
+            // <>{value?.brand_name}</>
+            <>{value}</>
           );
         },
       },
@@ -73,8 +75,8 @@ const ProductMuiTable = ({
       name:"image",
       label:"Image",
       options:{
+        filter:true,
         customBodyRender:(value)=>{
-          console.log(value)
           return(
             <div>
               {!value ? <></> :
@@ -84,7 +86,6 @@ const ProductMuiTable = ({
               style={{
                 width: "80px",
                 height: "60px",
-                
               }}
             />
           }
@@ -115,7 +116,8 @@ const ProductMuiTable = ({
       name: "p_id",
       label: "Status",
       options: {
-        filter: true,
+        filter: false,
+        download:false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="status_box">
@@ -134,7 +136,8 @@ const ProductMuiTable = ({
       name: "p_id",
       label: "Action",
       options: {
-        filter: true,
+        filter: false,
+        download:false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="table_btns">
@@ -175,12 +178,26 @@ const ProductMuiTable = ({
         responsive: "standard"
     };
 
+  const mappedDataList=dataList?.map(list=>({
+      p_name:list?.p_name,
+      p_code:list?.p_code,
+      p_price:list?.p_price,
+      discount:list?.discount,
+      db_p_cat:list?.db_p_cat?.p_cat_name,
+      db_dms_brand:list?.db_dms_brand?.brand_name,
+      image:list?.image,
+      unit_in_case:list?.unit_in_case,
+      createdAt:list?.createdAt,
+      p_id:list?.p_id
+  }))
+
   return (
     <>
       <div className="miuiTable">
         <MUIDataTable
           title={title}
-          data={dataList}
+          // data={dataList}
+          data={mappedDataList}
           columns={columns}
           options={options}
         />

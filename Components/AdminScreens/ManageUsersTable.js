@@ -44,9 +44,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
+                    console.log(tableMeta)
                     return (
                         <div className='status_box'>
-                            {value && <span >{value.role_name}</span>}
+                            {/* {value && <span >{value.role_name}</span>} */}
+                            {value && <span >{value}</span>}
                         </div>
                     )
                 }
@@ -60,7 +62,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
-                            {value && <span  >{value.user}</span>}
+                            {/* {value && <span  >{value.user}</span>} */}
+                            {value && <span  >{value}</span>}
                         </div>
                     )
                 }
@@ -70,7 +73,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             name: 'user_status',
             label: "Status",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -85,7 +89,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             name: 'user_code',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
+                
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -136,12 +142,24 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         responsive: "standard"
     };
 
+    const mappedDataList=dataList?.map(list=>({
+        user:list?.user,
+        email:list?.email,
+        contact_number:list?.contact_number,
+        user_code:list?.user_code,
+        db_role:list?.db_role?.role_name,
+        reportToUser:list?.reportToUser?.user,
+        user_status:list?.user_status,
+        
+    }))
+
     return (
         <>
             <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={dataList}
+                    data={mappedDataList}
+                    // data={dataList}
                     columns={columns}
                     options={options}
                 />

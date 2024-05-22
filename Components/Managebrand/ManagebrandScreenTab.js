@@ -25,6 +25,7 @@ const ManagebrandScreenTab = ({
       name: "brand_image",
       label: "Preview",
       options: {
+        filter:true,
         customBodyRender: (value, tableMeta, updateValue) => {
                 return (
                   <div>
@@ -46,7 +47,8 @@ const ManagebrandScreenTab = ({
       name: "brand_id",
       label: "Action",
       options: {
-        filter: true,
+        filter: false,
+        download:false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="table_btns">

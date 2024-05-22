@@ -27,7 +27,8 @@ const ManageLossReasonTab = ({ deleteConfirm, disableConfirm, dataList, openEdtM
             name: 'status',
             label: "Status",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -42,7 +43,8 @@ const ManageLossReasonTab = ({ deleteConfirm, disableConfirm, dataList, openEdtM
             name: 'loss_id',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">

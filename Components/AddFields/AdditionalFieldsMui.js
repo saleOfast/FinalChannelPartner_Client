@@ -54,7 +54,8 @@ const AdditionalFieldsMui = ({ dataList, changeHandler, usersList, title, delete
             name: "field_id",
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">

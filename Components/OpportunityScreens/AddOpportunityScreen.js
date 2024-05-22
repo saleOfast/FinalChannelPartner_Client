@@ -75,7 +75,7 @@ const AddOpportunityScreen = () => {
     const addRowHandler = (i) => {
         const ArrLength = formValues.length - 1;
         if (formValues[ArrLength].p_id == '') {
-            toast.error('Please Select a Product')
+            toast.error('Please Select a Product')  
         }
         else if (formValues[ArrLength].qty == '') {
             toast.error('Please Enter Product Quanitity')
@@ -384,13 +384,41 @@ const AddOpportunityScreen = () => {
     }
 
     const deleteRow = (ind, product_id) => {
+        productDelete(product_id)
         const updatedItem = formValues.filter((elem, i) => {
             return ind !== i;
         })
         setFormValues(updatedItem);
         const totalprice = sumPrices(updatedItem);
         setUserInfo({ ...userInfo, amount: totalprice })
-        toast.success('Product Removed')
+        // toast.success('Product Removed')
+    }
+
+    const productDelete = async (product_id) => {
+        
+        if (hasCookie("token")) {
+            let token = getCookie("token");
+            let db_name = getCookie("db_name");
+            let header = {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: "Bearer ".concat(token),
+                    db: db_name,
+                    m_id: 34,
+                },
+            };
+
+            
+            try {
+                const response = await axios.delete(Baseurl + `/db/oppro?o_p_id=${product_id}`,header);
+                if (response.status === 204 || response.status === 200) {
+                    toast.success(response?.data?.message)
+                }
+
+            } catch (error) {
+                console.log(error)
+            }
+        }
     }
 
    
@@ -825,7 +853,7 @@ const AddOpportunityScreen = () => {
                                     <div className="col-xl-1 col-md-1 col-sm-12 col-12">
                                         <div className="AddRowBtn">
                                             {index == 0 ? <button onClick={() => addRowHandler(index)} title="Add Row" className="actionBtn"><PlusIcon /></button> :
-                                                <button onClick={() => deleteRow(index, data.p_id)} title="Delete Row" className="actionBtn"><DeleteIcon /></button>}
+                                                <button onClick={() => deleteRow(index, data?.o_p_id)} title="Delete Row" className="actionBtn"><DeleteIcon /></button>}
                                         </div>
                                     </div>
                                 </div>

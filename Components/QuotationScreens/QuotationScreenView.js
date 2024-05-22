@@ -60,7 +60,7 @@ const QuotationScreenView = () => {
 
     function checkLogin() {
         if (hasCookie("userInfo")) {
-            let token = getCookie("userInfo");
+            let token = getCookie("userInfo");      
             setloginDetails(JSON.parse(token));
         }
     }

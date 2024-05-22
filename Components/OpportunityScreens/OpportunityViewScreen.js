@@ -14,6 +14,8 @@ import Collapse from "react-bootstrap/Collapse";
 import moment from "moment";
 import OpportunityDetailComponent from "./OpportunityDetailComponent";
 import { useSelector } from "react-redux";
+import { fetchData } from "../../Utils/getReq";
+import Select from 'react-select';
 
 
 const OpportunityViewScreen = () => {
@@ -28,6 +30,8 @@ const OpportunityViewScreen = () => {
   const [callList, setCallList] = useState([]);
   const [sideTab, setSideTab] = useState("task");
   const [userList, setUserList] = useState([]);
+  const [productList, setProductList] = useState([])
+  const [errorToast, setErrorToast] = useState(false)
   const [userInfo, setUserInfo] = useState({
     task_name: "",
     due_date: "",
@@ -35,6 +39,8 @@ const OpportunityViewScreen = () => {
     contact_person_name: "",
     related_to: "",
   });
+  const [formValues, setFormValues] = useState(
+    [{ p_id: null, qty: 0, price: 0 }])
 
   const [contactInfo, seContactInfo] = useState({
     call_subject: "",
@@ -266,6 +272,40 @@ const OpportunityViewScreen = () => {
     }
   };
 
+  const getProductData = async (id) => {
+    if (hasCookie("token")) {
+        let token = getCookie("token");
+        let db_name = getCookie("db_name");
+
+        let header = {
+            headers: {
+                Accept: "application/json",
+                Authorization: "Bearer ".concat(token),
+                db: db_name,
+                m_id: 36,
+            },
+        };
+
+        try {
+            const response = await axios.get(
+                Baseurl + `/db/oppro?opp_id=${id}`,
+                header
+            );
+            setFormValues(response.data.data);
+        } catch (error) {
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Something went wrong!");
+            }
+        }
+    }
+};
+
+const getProductList = async () => {
+  await fetchData(`/db/product`, setProductList, errorToast, setErrorToast)
+}
+
   useEffect(() => {
     if (!router.isReady) return;
     if (router.query.id) {
@@ -273,11 +313,13 @@ const OpportunityViewScreen = () => {
       getDataList(id);
       getTaskInLead(id);
       getCallsInLead(id)
+      getProductData(id)
     }
   }, [router.isReady, id]);
 
   useEffect(() => {
     getUserList();
+    getProductList()
   }, []);
 
   return (
@@ -448,12 +490,95 @@ const OpportunityViewScreen = () => {
                               />
                             </div>
                           </div>
+                          
+                          {
+                            formValues?.length>0 ?
+                            (
+                              <div className="mt-2"  >
+                           <span className="text_bold cursor-pointer">Product Or Services</span>
+                          </div>
+                            ) : ""
+                          }
+                          
+                          {formValues?.map((data, index) => {
+                                return <div className="row mt-2" key={index} >
+
+                                    <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                                        <div className={'input_box'}>
+                                            <label htmlFor="task_name">Product of Services </label>
+                                            <Select
+                                                name="p_id"
+                                                isDisabled={true}
+                                                id={userInfo.p_id}
+                                                defaultValue={""}
+                                                options={productList?.map((data, i) => {
+                                                    return {
+                                                        value: data?.p_id,
+                                                        label: data?.p_name,
+                                                        name: "p_id"
+                                                    }
+                                                })}
+                                                value={productList?.map((pData, i) => {
+                                                    if (pData.p_id === data.p_id)  {
+                                                        return {
+                                                            value: pData?.p_id,
+                                                            label: pData?.p_name,
+                                                            name: "p_id"
+                                                            
+                                                        }
+                                                    }
+                                                })}
+                                                onChange={(e) => {handleChange(e, index, 1, "p_id")}}
+                                            />
+                                            
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                                        <div className="input_box">
+                                            <label htmlFor="qty">Quantity </label>
+                                            <input
+                                                disabled
+                                                type="number"
+                                                placeholder="Enter Quantity"
+                                                name="qty"
+                                                min="1"
+                                                id="qty"
+                                                className="form-control"
+                                                onChange={e => handleChange(e, index, 2,  "qty")}
+                                                value={data?.qty ? data.qty : ''}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                                        <div className="input_box">
+                                            <label htmlFor="price">Price </label>
+                                            <input
+                                                type="number"
+                                                disabled
+                                                placeholder="Enter price"
+                                                name="price"
+                                                id="price"
+                                                className="form-control"
+                                                onChange={e => handleChange(e, index,"price")}
+                                                value={data?.price ? data.price : ''}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    
+                                </div>
+                            })}
+                          
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+
+             
+
               <div
                 className="col-xl-4 col-md-4 col-sm-12 col-12"
                 style={{ backgroundColor: "#F7F5F5" }}

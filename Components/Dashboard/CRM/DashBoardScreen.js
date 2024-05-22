@@ -246,6 +246,22 @@ const DashBoardScreen = () => {
         getAttndncData();
     }, [])
 
+    function formatAmount(amount) {
+        const formatter = new Intl.NumberFormat('en-IN', {
+            maximumFractionDigits: 2,
+        });
+    
+        if (amount >= 10000000) {
+            return formatter.format(amount / 10000000) + ' Cr';
+        } else if (amount >= 100000) {
+            return formatter.format(amount / 100000) + ' L';
+        } else if (amount >= 1000) {
+            return formatter.format(amount / 1000) + ' K';
+        } else {
+            return formatter.format(amount);
+        }
+    }
+
     return (
         <div className={`main_Box  ${sideView}`}>
             <div className="bread_head">
@@ -274,20 +290,20 @@ const DashBoardScreen = () => {
                     </div>
                     <div className="cards_Box">
                         <div className="row">
-                            {/* <div className="col-xl-6 col-md-6 col-12 col-sm-12">
+                            <div className="col-xl-6 col-md-6 col-12 col-sm-12">
                                 <DashboardRevnueCard
                                     head='Total Revenue Generate'
-                                    price='0'
+                                    price={formatAmount(dataList?.quotationCost)}
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/business-card-trading.png' />
                             </div>
                             <div className="col-xl-6 col-md-6 col-12 col-sm-12">
                                 <DashboardRevnueCard
                                     head='TOTAL PIPELINE DEAL VALUE'
-                                    price='0'
+                                    price={formatAmount(dataList?.opportunitiesCost)}
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/expenses.png' />
-                            </div> */}
+                            </div>
                         </div>
                         <div className="row leads_row">
                             <div className="col-xl-4 col-md-4 col-12 col-sm-12">

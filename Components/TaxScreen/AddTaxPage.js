@@ -275,7 +275,9 @@ const AddTaxPage = () => {
                     />{" "}
                   </div>
                 </div>
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                {
+                  userInfo.tax_type === "GST" &&(
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div className="input_box">
                     <label htmlFor="profilelevel">Gst Type *</label>
                     <select
@@ -288,7 +290,7 @@ const AddTaxPage = () => {
                           gts_type: e.target.value,
                         })
                       }
-                      value={userInfo.gts_type ? userInfo.gts_type : ""}
+                      value={userInfo.gts_type ? userInfo.gts_type.trim() : ""}
                     >
                       <option value="">Select </option>
                       <option value="CGST">CGST </option>
@@ -299,6 +301,9 @@ const AddTaxPage = () => {
                     </select>
                   </div>
                 </div>
+                  )
+                }
+                
 
                 {/*  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div className="input_box">
@@ -349,7 +354,7 @@ const AddTaxPage = () => {
                   </div>
                 </div>
 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div className="input_box">
                     <label htmlFor="selectInter">
                       Row Postions
@@ -374,8 +379,8 @@ const AddTaxPage = () => {
                       <option value="5">5</option>
                     </select>
                   </div>
-                </div>
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                </div> */}
+                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div className="input_box">
                     <label htmlFor="profilelevel">Mode *</label>
                     <input
@@ -393,7 +398,7 @@ const AddTaxPage = () => {
                       value={userInfo.mode ? userInfo.mode : ""}
                     />
                   </div>
-                </div>
+                </div> */}
                 <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                   <div className="input_box">
                     <label htmlFor="descriptions">Description *</label>

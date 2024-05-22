@@ -33,6 +33,20 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
         },
 
         {
+            name: 'quatAccount',
+            label: "Related Account",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        // <>{value?.opp_name}</>
+                        <>{value}</>
+                    );
+                },
+            }
+        },
+
+        {
             name: 'quatOwner',
             label: "Owner",
             options: {
@@ -110,6 +124,7 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
     const mappedDataList=dataList?.map(list=>({
         quat_code:list?.quat_code,
         quatOpportunity:list?.quatOpportunity?.opp_name,
+        quatAccount:list?.quatOpportunity?.accName?.acc_name,
         quatOwner:list?.quatOwner?.user,
         grand_total:list?.grand_total,
         quatStatus:list?.quatStatus?.quat_status_name,

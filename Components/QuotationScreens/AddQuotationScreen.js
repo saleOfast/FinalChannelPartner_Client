@@ -63,6 +63,8 @@ const AddQuotationScreen = () => {
     "product_scat": ""
 
   })
+  const[relatedOpportunityId,setRelatedOpportunityId]=useState("");
+  const[relatedAccountId,setRelatedAccountId]=useState("");
 
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DD")
 
@@ -656,7 +658,22 @@ const AddQuotationScreen = () => {
                 </div>
               </div>
 
-
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={ 'input_box'}>
+                  <label htmlFor="contact_no">Related Account</label>
+                  <input
+                    type="text"
+                    disabled
+                    name="related_acc"
+                    id="related_acc"
+                    placeholder="Related Account"
+                    className={'form-control'}
+                    value={opprtunityList?.find(account=>{
+                      return account?.opp_id===userInfo?.opp_id
+                    })?.accName?.acc_name}
+                  />
+                </div>
+              </div>
 
               <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                 <div className={errorData?.contact_no ? 'input_box errorBox' : 'input_box'}>

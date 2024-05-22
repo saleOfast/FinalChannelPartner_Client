@@ -1,14 +1,27 @@
 import React from 'react'
 import LeadShyneIcon from '../Svg/LeadShyneIcon'
 import moment from "moment";
+import { getCookie, hasCookie } from 'cookies-next';
+import { filesUrl } from '../../Utils/Constants';
 
 const PdfComponent = ({ dataList, loginDetails }) => {
+
+    const clientLogo=hasCookie("clientLogo") ? JSON.parse(getCookie("clientLogo")) : "";
+
     return (
         <div className='pdfWrapper'>
             {dataList ? <div className='quotation_view'>
                 <div className="quat-head">
                     <div className="brand_img">
-                        <LeadShyneIcon />
+                        {/* <LeadShyneIcon /> */}
+                        <img
+                      src={ 
+                        clientLogo?.logo
+                          &&( `${filesUrl}` +
+                            `/logo/images${clientLogo?.logo}`)
+                      }
+                      alt
+                    />
                     </div>
                     <div className="info_sec">
                         <div className="info_line">
@@ -30,7 +43,7 @@ const PdfComponent = ({ dataList, loginDetails }) => {
                     </div>
                 </div>
                 <div className="quatDtlLine">
-                    <div className="lineRow widSixty">
+                    <div className="lineRow ">
                         <div className="box-inside W33">
                             <div className="head">QUOTATION CODE</div>
                             <div className="value">{dataList?.quatMasterData[0]?.quat_code}</div>
@@ -38,6 +51,14 @@ const PdfComponent = ({ dataList, loginDetails }) => {
                         <div className="box-inside W33">
                             <div className="head">GENERATE DATE</div>
                             <div className="value">{moment(dataList?.quatMasterData[0]?.createdAt).format("DD-MM-YYYY LT")}</div>
+                        </div>
+                        <div className="box-inside W33">
+                            <div className="head">OPPORTUNITY</div>
+                            <div className="value">{dataList?.quatMasterData[0]?.quatOpportunity?.opp_name}</div>
+                        </div>
+                        <div className="box-inside W33">
+                            <div className="head">ACCOUNT</div>
+                            <div className="value">{dataList?.quatMasterData[0]?.quatOpportunity?.accName?.acc_name}</div>
                         </div>
                         <div className="box-inside W33">
                             <div className="head">STATUS</div>
@@ -59,6 +80,7 @@ const PdfComponent = ({ dataList, loginDetails }) => {
                             <div className="head">EMAIL ID</div>
                             <div className="value">{dataList?.quatMasterData[0]?.email}</div>
                         </div>
+                        
                     </div>
                     <div className="lineRow widForty">
                         <div className="box-inside w-50">

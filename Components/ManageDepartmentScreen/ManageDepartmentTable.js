@@ -85,7 +85,8 @@ const ManageDepartmentTable = ({ deleteConfirm, disableConfirm, dataList, openEd
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"DepartmentList.csv"}
     };
 
     return (

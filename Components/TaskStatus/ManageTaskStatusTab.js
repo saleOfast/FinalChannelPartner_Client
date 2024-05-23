@@ -93,7 +93,8 @@ const ManageTaskStatusTab = ({
 
  const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"TaskStatusList.csv"}
     };
 
   return (

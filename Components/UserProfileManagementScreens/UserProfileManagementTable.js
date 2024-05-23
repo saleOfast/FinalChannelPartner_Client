@@ -77,7 +77,8 @@ const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disable
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"UsersProfileList.csv"}
     };
 
     return (

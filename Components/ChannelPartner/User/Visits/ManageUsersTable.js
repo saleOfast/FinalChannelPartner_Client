@@ -270,8 +270,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
     const options = {
         selectableRows: 'multiple',
-        responsive: "standard",
+        responsive: "simple",
         onRowSelectionChange : handleRowClick,
+        downloadOptions:{filename:"ChannelVisits"}
     };
 
     const mappedDataList=dataList?.map(list=>({

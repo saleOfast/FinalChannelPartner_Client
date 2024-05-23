@@ -17,7 +17,7 @@ const DashAdminSetCard = ({name, subname}) => {
                 </svg>
             </div>
             <div className="card_name"> {name} </div>
-            <div className="sub_name"> {subname} </div>
+            <div className="sub_name"> {subname} </div> 
         </div>
     )
 }

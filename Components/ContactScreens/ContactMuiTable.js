@@ -80,7 +80,8 @@ const ContactMuiTable = ({ accountsList, openConfirmBox , title }) => {
     
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"ContactList.csv"}
     };
 
     const mappedDataList=accountsList?.map(list=>({

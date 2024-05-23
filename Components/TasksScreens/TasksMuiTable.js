@@ -216,7 +216,8 @@ const TasksMuiTable = ({
   ];
  const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"TasksList.csv"}
     };
 
   const mappedDataList=dataList?.map(list=>({

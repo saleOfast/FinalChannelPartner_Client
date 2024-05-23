@@ -83,7 +83,8 @@ const ManageDesignationTable = ({ deleteConfirm, disableConfirm, dataList, openE
     ];
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"DesignationList.csv"}
     };
 
     return (

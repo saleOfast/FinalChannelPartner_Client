@@ -10,11 +10,7 @@ import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import { ViewColumn, Visibility } from '@mui/icons-material';
-
-
-
-
-
+import { useRef } from 'react';
 
 const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
     const router = useRouter()
@@ -36,7 +32,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
   const[p_visit_date,setVisitDate]=useState("");
   const[p_visit_time,setVisitTime]=useState("");
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
-
+  const [classType,setClassType]=useState("")
 
 const getVisitInfo=async(visitId)=>{
     if (hasCookie('token')) {
@@ -98,10 +94,10 @@ const getVisitInfo=async(visitId)=>{
     return formattedDateTime;
   }
 
+
   const permitVisit = (status, createdAt) => {
     const currentDate = new Date(); 
     const statusDate = new Date(createdAt); 
-
     switch (status) {
         case "Requested":
             statusDate.setDate(statusDate.getDate() + 1); 
@@ -109,11 +105,13 @@ const getVisitInfo=async(visitId)=>{
             if (statusDate < currentDate) {
                 return false;
             } else {
+              setClassType("requested_hover")
                 return true;
             }
             break;
 
         case "Scheduled":
+          setClassType("requested_hover")
             return true;
             break;
 
@@ -122,6 +120,7 @@ const getVisitInfo=async(visitId)=>{
             if (statusDate < currentDate) {
                 return false;
             } else {
+              setClassType("completed_hover")
                 return true;
             }
             break;
@@ -270,18 +269,32 @@ const getVisitInfo=async(visitId)=>{
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
+                  const isDisabled=permitVisit(value[0]?.status, value[0]?.createdAt);
                     return (
                         <div className="table_btns">
                             <button
                                 onClick={()=>{getVisitInfo(tableMeta?.rowData[0]); setVisitId(tableMeta?.rowData[0]); setShowModal(true);}}
-                                style={{background:permitVisit(value[0]?.status,value[0]?.createdAt) ? "#9C9AA5":`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
-                                className='pe-3 ps-3'
+                                style={{background:isDisabled ? "#9C9AA5":`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
+                                className={`pe-3 ps-3 ${isDisabled ? classType : ""}` }
+                                
                                 title='Request Visit'
-                                disabled={permitVisit(value[0]?.status, value[0]?.createdAt)}
+                                disabled={isDisabled}
                                 >
                                     Request Visit
                             </button>
-                          
+                            <div className=' hide_div1' >
+                                <div className='d-flex justify-content-center fw-bold'>
+                                <img style={{width:"20px",paddingRight:"2px"}} src='/ChannelPartner/error.png'/>
+                                Cannot request visit.Last visit completed within 90 days
+                                </div>
+                            </div>
+                            <div className=' hide_div2'>
+                                <div className='d-flex justify-content-center fw-bold'>
+                                <img style={{width:"20px",paddingRight:"2px"}} src='/ChannelPartner/error.png'/>
+                                Cannot request visit.Last visit created within 24 hours
+                                </div>
+                            </div>
+                            
                         </div>
                     )
                 }
@@ -311,8 +324,9 @@ const getVisitInfo=async(visitId)=>{
     
     const options = {
         selectableRows: 'multiple',
-        responsive: "standard",
+        responsive: "simple",
         onRowSelectionChange : handleRowClick,
+        downloadOptions:{filename:"ChannelLeads"}
     };
 
     
@@ -384,22 +398,7 @@ const getVisitInfo=async(visitId)=>{
             columns={columns}
             options={options}
           />
-          <div>
-            {/* {userData.length ?
-          <div className="table_btns d-flex align-items-center justify-content-center gap-3 mt-4">
-              
-
-              <button onClick={()=>{setActionMode('Cancel'); setShowModal(false);setUserData([])}} className=" btn btn-danger rounded-5">
-                Cancel
-              </button>
-              <button onClick={()=>{setActionMode('Assignto'); setShowModal(true)}} style={{backgroundColor: '#293790'}} className="btn  rounded-5 text-white" >
-                Assign to
-              </button>
-            
-          </div>
-          : <></>
-        } */}
-          </div>
+         
         </div>
 
         <Modal
@@ -445,7 +444,7 @@ const getVisitInfo=async(visitId)=>{
                                         className="pb-1 label"
                                         style={{ color: "#9C9AA5" }}
                                       >
-                                        Possible Visit Date
+                                        Schedule Visit Date
                                       </span>
                                       <span className="star">*</span>
                                     </div>
@@ -467,7 +466,7 @@ const getVisitInfo=async(visitId)=>{
                                         className="pb-1 label"
                                         style={{ color: "#9C9AA5" }}
                                       >
-                                        Possible Visit Time
+                                        Schedule Visit Time
                                       </span>
                                       <span className="star">*</span>
                                     </div>

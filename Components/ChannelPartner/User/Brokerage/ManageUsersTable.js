@@ -381,8 +381,9 @@ const updateBrokerageBill =  async() => {
 
     const options = {
         selectableRows: 'multiple',
-        responsive: "standard",
+        responsive: "simple",
         onRowSelectionChange : handleRowClick,
+        downloadOptions:{filename:"ChannelBrokerage"}
     };
 
     function formatDate(date) {

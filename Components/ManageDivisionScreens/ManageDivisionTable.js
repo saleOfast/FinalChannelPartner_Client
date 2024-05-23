@@ -85,7 +85,8 @@ const ManageDivisionTable = ({ deleteConfirm, disableConfirm, dataList, openEdtM
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"DivisionList.csv"}
     };
 
     return (

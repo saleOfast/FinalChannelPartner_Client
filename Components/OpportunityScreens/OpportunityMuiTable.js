@@ -32,6 +32,7 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox }) => {
         
         {
             name: 'accName',
+            
             label: "Account Owner",
             options: {
                 filter: true,
@@ -111,7 +112,11 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox }) => {
     
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{
+            filename:"OpportunityList.csv"
+        },
+    
     };
 
     const mappedDataList=dataList?.map(list=>({

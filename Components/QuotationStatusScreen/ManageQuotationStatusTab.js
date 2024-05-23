@@ -82,7 +82,8 @@ const ManageQuotationStatusTab  = ({ deleteConfirm, disableConfirm, dataList, op
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"QuotationStatusList.csv"}
     };
 
     return (

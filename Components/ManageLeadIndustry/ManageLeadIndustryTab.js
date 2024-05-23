@@ -84,7 +84,8 @@ const ManageLeadIndustryTab = ({ deleteConfirm, disableConfirm, dataList, openEd
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"LeadIndustryList.csv"}
     };
 
     return (

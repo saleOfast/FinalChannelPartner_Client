@@ -97,7 +97,8 @@ const ManageLeadStageTab = ({
 
  const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"LeadStageList.csv"}
     };
 
   return (

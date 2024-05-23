@@ -118,7 +118,8 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"QuotationList.csv"}
     };
 
     const mappedDataList=dataList?.map(list=>({

@@ -98,6 +98,7 @@ const getVisitInfo=async(visitId)=>{
   const permitVisit = (status, createdAt) => {
     const currentDate = new Date(); 
     const statusDate = new Date(createdAt); 
+    console.log(statusDate)
     switch (status) {
         case "Requested":
             statusDate.setDate(statusDate.getDate() + 1); 
@@ -111,7 +112,7 @@ const getVisitInfo=async(visitId)=>{
             break;
 
         case "Scheduled":
-          setClassType("requested_hover")
+          setClassType("scheduled_hover")
             return true;
             break;
 
@@ -270,14 +271,15 @@ const getVisitInfo=async(visitId)=>{
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                   const isDisabled=permitVisit(value[0]?.status, value[0]?.createdAt);
+                   
                     return (
                         <div className="table_btns">
                             <button
                                 onClick={()=>{getVisitInfo(tableMeta?.rowData[0]); setVisitId(tableMeta?.rowData[0]); setShowModal(true);}}
                                 style={{background:isDisabled ? "#9C9AA5":`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
-                                className={`pe-3 ps-3 ${isDisabled ? classType : ""}` }
+                                className={`pe-3 ps-3 ${isDisabled && value[0]?.status==="Requested" ? "requested_hover" : isDisabled && value[0]?.status==="Scheduled" ? "scheduled_hover": isDisabled && value[0]?.status==="Completed" ?"completed_hover" :"" }` }
                                 
-                                title='Request Visit'
+                                
                                 disabled={isDisabled}
                                 >
                                     Request Visit
@@ -291,9 +293,14 @@ const getVisitInfo=async(visitId)=>{
                             <div className=' hide_div2'>
                                 <div className='d-flex justify-content-center fw-bold'>
                                 <img style={{width:"20px",paddingRight:"2px"}} src='/ChannelPartner/error.png'/>
-                                Cannot request visit.Last visit created within 24 hours
+                                {
+                                  value[0]?.status==="Scheduled" ? "Cannot request visit.Visit already scheduled" : "Cannot request visit.Last visit created within 24 hours"
+                                }
+                                
+                                
                                 </div>
                             </div>
+                            
                             
                         </div>
                     )

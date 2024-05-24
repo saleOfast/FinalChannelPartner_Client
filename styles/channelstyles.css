@@ -1109,5 +1109,10 @@
   border-radius:10px;
 }
 
+.table_btns .scheduled_hover:hover + .hide_div1+.hide_div2{
+  display: block;
+  border-radius:10px;
+}
+
 
 /* lead visit request hover end */

@@ -21,7 +21,7 @@ const ContactMuiTable = ({ accountsList, openConfirmBox , title }) => {
         },
         {
             name: 'accountName',
-            label: "Account Owner",
+            label: "Account Name",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {

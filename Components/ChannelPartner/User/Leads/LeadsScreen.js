@@ -204,7 +204,8 @@ const LeadsScreen = () => {
             setLead("")
             getDataList();
           }
-        } catch (error) {
+        } 
+        catch (error) {
           console.log(error)
           if (error?.response?.data?.status === 422) {
                 toast.error(error?.response?.data?.message)

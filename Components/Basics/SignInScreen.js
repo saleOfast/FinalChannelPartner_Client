@@ -76,7 +76,6 @@ export default function SignInScreen({ setLoggedIn }) {
                     "email": userForm.email.toLowerCase(),
                     "password": userForm.password
                 })
-
                 if (res.status === 200) {
                     dispatch(stopLoading())
                     dispatch(userMode())

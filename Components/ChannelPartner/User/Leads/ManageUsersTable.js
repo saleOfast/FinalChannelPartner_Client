@@ -259,6 +259,25 @@ const getVisitInfo=async(visitId)=>{
             }
         },
         {
+          name: 'db_lead_stage',
+          label: "Stages",
+          options: {
+              filter: true,
+              customHeadRender: (columnMeta, updateDirection) => (
+                  <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    {columnMeta.label}
+                  </th>
+                ),
+              customBodyRender: (value, tableMeta, updateValue) => {
+                  return (
+                      <div className='status_box' style={{color:"#667799"}}>
+                          {value}
+                      </div>
+                  )
+              }
+          }
+      },
+        {
             name: 'visitList',
             label: "Action",
             options: {
@@ -390,7 +409,8 @@ const getVisitInfo=async(visitId)=>{
         email_id:list?.email_id,
         p_contact_no:list?.p_contact_no,
         sales_project_name:list?.sales_project_name,
-        visitList:list?.visitList
+        visitList:list?.visitList,
+        db_lead_stage:list?.db_lead_stage?.stage
       }))
       
  

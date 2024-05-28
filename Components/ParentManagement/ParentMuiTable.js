@@ -67,7 +67,8 @@ const ParentMuiTable = () =>{
             name: 'createdAt',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
+                download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -89,7 +90,8 @@ const ParentMuiTable = () =>{
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        enableNestedDataAccess:"."
     };
 
     return(

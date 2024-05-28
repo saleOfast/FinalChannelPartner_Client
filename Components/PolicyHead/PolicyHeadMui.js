@@ -110,7 +110,8 @@ const PolicyHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, ti
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"PolicyHeadList.csv"}
     };
 
     return (

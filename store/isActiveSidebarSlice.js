@@ -7,7 +7,6 @@ export const isActiveSlice = createSlice({
     initialState,
     reducers: {
         setIsActive: (state, action) => {
-            console.log("action.payload",action.payload)
             state.value = action.payload
         },
     },

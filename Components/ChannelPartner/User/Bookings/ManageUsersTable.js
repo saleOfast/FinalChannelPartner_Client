@@ -197,7 +197,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div
-              style={{ background: "violet", color: "white", padding: "6px", borderRadius: "20px", border: "white", width: "fit-content"}}
+              style={{ 
+                background:value==="Payment Initiated" ? "#FFA825" : value==="Payment Received" ?"#84CA4D" : value==="Aggrement Done" ? "#17B4E7" : value==="Eligible for brokerage bill" ? "#186EBC" : value==="bill Received" ? "#FCCC37" :"violet"
+                , color: "white", padding: "6px", borderRadius: "20px", border: "white", width: "fit-content"}}
               className='pe-3 ps-3'>
               {value}
             </div>
@@ -324,8 +326,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
   const options = {
     selectableRows: 'multiple',
-    responsive: "standard",
+    responsive: "simple",
     onRowSelectionChange: handleRowClick,
+    downloadOptions:{filename:"ChannelBookings"}
   };
 
   const mappedDataList=dataList?.map(list=>({

@@ -1,0 +1,23 @@
+import UserPrflMgmtscreens from '../Components/UserProfileManagementScreens/UserPrflMgmtscreens'
+import { useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { setCookie } from 'cookies-next'
+import withUser from '../HOC/WithUserhoc'
+import { setIsActive } from '../store/isActiveSidebarSlice'
+import EmailConfigScreen from '../Components/EmailConfiguration/EmailConfigScreen'
+
+export default withUser( function EmailConfiguration() {
+  const dispatch = useDispatch()
+  useEffect(() => {
+      setCookie('isActive', 'emailConfig')
+      dispatch(setIsActive('emailConfig'))
+  }, []);
+  return (
+    <>
+      
+          <EmailConfigScreen/>
+   
+    </>
+  )
+}
+)

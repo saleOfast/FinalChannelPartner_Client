@@ -126,7 +126,7 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
     const options = {
         selectableRows: 'none',
         responsive: "standard",
-        
+        downloadOptions:{filename:"AssignLeadsList.csv"}
     };
 
     const mappedDataList=dataList?.map(list=>({

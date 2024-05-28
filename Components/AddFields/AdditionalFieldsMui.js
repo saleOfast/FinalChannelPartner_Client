@@ -79,7 +79,8 @@ const AdditionalFieldsMui = ({ dataList, changeHandler, usersList, title, delete
     ];
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"DynamicFields.csv"}
     };
 
     return (

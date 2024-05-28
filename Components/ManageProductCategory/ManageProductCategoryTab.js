@@ -243,6 +243,7 @@ const ManageProductCategoryTab = ({ deleteConfirm, disableConfirm, dataList, ope
     const options = {
         selectableRows: 'none',
         responsive: "standard",
+        downloadOptions:{filename:"ProductCategoryList.csv"}
     };
 
     

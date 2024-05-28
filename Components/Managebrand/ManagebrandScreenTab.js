@@ -78,7 +78,8 @@ const ManagebrandScreenTab = ({
 
  const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"BrandList.csv"}
     };
 
   return (

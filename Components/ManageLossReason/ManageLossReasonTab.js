@@ -85,7 +85,8 @@ const ManageLossReasonTab = ({ deleteConfirm, disableConfirm, dataList, openEdtM
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"LossReasonList.csv"}
     };
 
     return (

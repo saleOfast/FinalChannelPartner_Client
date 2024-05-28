@@ -91,7 +91,8 @@ const AccountMuiTable = ({ accountsList, openConfirmBox }) => {
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"AccountsList.csv"}
     };
 
     const mappedDataList=accountsList?.map(list=>({

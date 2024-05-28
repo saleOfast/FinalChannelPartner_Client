@@ -105,7 +105,8 @@ const Managebannerscreentab = ({
 
  const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"BannerList.csv"}
     };
 
   return (

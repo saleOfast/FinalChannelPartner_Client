@@ -155,7 +155,8 @@ const ManageLeadTable = ({
   ];
   const options = {
     selectableRows: 'none',
-    responsive: "standard"
+    responsive: "standard",
+    downloadOptions:{filename:"LeadList.csv"}
   };
 
   const mappedDataList=dataList?.map(list=>({

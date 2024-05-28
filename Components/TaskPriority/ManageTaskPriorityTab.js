@@ -95,7 +95,8 @@ const ManageTaskPriorityTab = ({
 
  const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"TaskPriorityList.csv"}
     };
 
   return (

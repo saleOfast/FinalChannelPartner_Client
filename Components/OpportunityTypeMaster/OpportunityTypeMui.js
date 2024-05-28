@@ -82,7 +82,8 @@ const OpportunityTypeMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMd
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"OpportunityTypeList.csv"}
     };
 
     return (

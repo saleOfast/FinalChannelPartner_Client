@@ -77,7 +77,8 @@ const ManageCouponScreenTab = ({
 
  const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"CouponList.csv"}
     };
 
   return (

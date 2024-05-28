@@ -248,7 +248,7 @@ function formatDate(date) {
                         <div className="col-5 col-md-5">
                           <div className="list-group-item list-group-item-action p-0 border-0">
                             <span className="list-left">
-                              Possible Visit Date
+                              Schedule Visit Date
                             </span>
                           </div>
                         </div>
@@ -264,7 +264,7 @@ function formatDate(date) {
                         <div className="col-5 col-md-5">
                           <div className="list-group-item list-group-item-action p-0 border-0">
                             <span className="list-left">
-                              Possible Visit Time
+                            Schedule Visit Time
                             </span>
                           </div>
                         </div>

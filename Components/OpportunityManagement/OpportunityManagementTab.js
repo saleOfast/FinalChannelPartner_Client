@@ -84,7 +84,8 @@ const OpportunityManagementTab = ({ deleteConfirm, disableConfirm, dataList, ope
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"OpportunityStageList.csv"}
     };
 
     return (

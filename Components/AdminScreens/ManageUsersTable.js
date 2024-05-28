@@ -139,7 +139,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"UsersList.csv"}
     };
 
     const mappedDataList=dataList?.map(list=>({

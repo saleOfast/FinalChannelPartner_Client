@@ -1198,7 +1198,10 @@ const AddContactScreen = () => {
                             </div>
 
                         </div>
-                        {viewMode ? <div className="col-xl-3 col-md-3 col-sm-12 col-12 sideCardAdd">
+                        
+                      
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12 sideCardAdd">
+                      {viewMode ?(
                             <div className="opertunity_box">
                                 <div className="task_card mb-4">
                                     <div className="task_head">Lead List</div>
@@ -1224,8 +1227,77 @@ const AddContactScreen = () => {
                                     </div>
                                 </div>
                             </div>
+                        )
+                        : null}
+
+                        {viewMode ? (
+                        <div className="opertunity_box">
+                            <div className="task_card mb-4">
+                                <div className="task_head">Account List</div>
+                                <div className="tasks_details">
+                                    <ul className="tasks_list">
+                                        {userInfo?.db_leads?.reduce((acc, lead) => {
+                                            if (!acc.some(account => account.acc_id === lead.db_account.acc_id)) {
+                                                acc.push(lead.db_account);
+                                            }
+                                            return acc;
+                                        }, []).map((account, i) => (
+                                            <li key={i} className="list-item">
+                                                <div className="opp_box">
+                                                    <Link href={`/AddAccount?id=${account.acc_id}&vw=mds`}>
+                                                        <div className="name">{account.acc_name}</div>
+                                                    </Link>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div className="card_footer">
+                                    <Link href='/Accounts'>
+                                        <div className="text_more">view more</div>
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
-                            : null}
+                    ) : null}
+                        
+                        {viewMode ? (
+                        <div className="opertunity_box">
+                            <div className="task_card mb-4">
+                                <div className="task_head">Opportunity List</div>
+                                <div className="tasks_details">
+                                    <ul className="tasks_list">
+                                        {userInfo?.db_leads?.reduce((acc, lead) => {
+                                            if (!acc.some(opportunity => opportunity.opp_id === lead.db_opportunity.opp_id)) {
+                                                acc.push(lead.db_opportunity);
+                                            }
+                                            return acc;
+                                        }, []).map((opportunity, i) => (
+                                            <li key={i} className="list-item">
+                                                <div className="opp_box">
+                                                    <Link href={`/OpportunityView?id=${opportunity.opp_id}`}>
+                                                        <div className="name">{opportunity.opp_name}</div>
+                                                    </Link>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div className="card_footer">
+                                    <Link href='/Opportunity'>
+                                        <div className="text_more">view more</div>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    ) : null}
+                        
+                        </div>                           
+                      
+                        
+                        
+                        
+                           
 
                     </div>
                 </div>

@@ -21,7 +21,7 @@ const ContactMuiTable = ({ accountsList, openConfirmBox , title }) => {
         },
         {
             name: 'accountName',
-            label: "Account Owner",
+            label: "Account Name",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -80,7 +80,8 @@ const ContactMuiTable = ({ accountsList, openConfirmBox , title }) => {
     
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"ContactList.csv"}
     };
 
     const mappedDataList=accountsList?.map(list=>({

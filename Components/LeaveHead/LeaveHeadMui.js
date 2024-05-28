@@ -89,7 +89,8 @@ const LeaveHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, tit
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"LeaveHeadList.csv"}
     };
 
     return (

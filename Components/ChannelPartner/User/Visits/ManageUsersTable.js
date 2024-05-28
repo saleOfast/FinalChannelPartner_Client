@@ -235,7 +235,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     return (
                         <div className="">
                             <div
-                                style={{padding:"6px", color:"white", borderRadius:"20px",border:"white"}}
+                                style={{padding:"6px", color:"white",background:value==="Completed" ?"#84CA4d":value==="Requested" ?"#FEC925":value==="Scheduled" ? "#17B4E7":"",borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3 btn-warning btn '
                                 title='Visit Status'>
                                    {value}
@@ -270,8 +270,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
     const options = {
         selectableRows: 'multiple',
-        responsive: "standard",
+        responsive: "simple",
         onRowSelectionChange : handleRowClick,
+        downloadOptions:{filename:"ChannelVisits"}
     };
 
     const mappedDataList=dataList?.map(list=>({

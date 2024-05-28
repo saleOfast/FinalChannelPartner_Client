@@ -305,8 +305,9 @@ const ManageUsersTable = ({
 
   const options = {
     selectableRows: 'multiple',
-    responsive: "standard",
+    responsive: "simple",
     onRowSelectionChange : handleRowClick,
+    downloadOptions:{filename:"PendingRequestList"}
   };
 
   const updateUserhandler = async () => {

@@ -71,7 +71,8 @@ const TaxMuiTab = ({ opnCnfrmBox, taxList, openEdtMdl, title }) => {
     ];
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        downloadOptions:{filename:"TaxList.csv"}
     };
 
     return (

@@ -910,7 +910,7 @@ const AddUserScreen = () => {
 
               <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                 <div className="d-flex flex-column gap-1">
-                  <label className="form-label">Aadhar Card *</label>
+                  <label className="form-label">Aadhar Card </label>
                   <input
                     type="file"
                     onChange={(e) => {
@@ -944,7 +944,7 @@ const AddUserScreen = () => {
 
               <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                 <div className="d-flex flex-column gap-1">
-                  <label className="form-label">PAN Card *</label>
+                  <label className="form-label">PAN Card </label>
                   <input
                     type="file"
                     onChange={(e) => {
@@ -978,7 +978,7 @@ const AddUserScreen = () => {
 
               <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                 <div className="d-flex flex-column gap-1">
-                  <label className="form-label">RERA License *</label>
+                  <label className="form-label">RERA License </label>
                   <input
                     type="file"
                     onChange={(e) => {

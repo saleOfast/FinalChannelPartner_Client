@@ -45,7 +45,7 @@ const LeadsScreen = () => {
     })
 
     const [lead,setLead]=useState({
-      lead_id:"",
+      lead_id:null,
       lead_name: "", 
       email_id: "",
       p_contact_no: "", 

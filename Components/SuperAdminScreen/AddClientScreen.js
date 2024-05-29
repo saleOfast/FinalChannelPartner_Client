@@ -1174,7 +1174,7 @@ const AddClientScreen = () => {
                         <div className="row">
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                         <div className="d-flex flex-column gap-1">
-                          <label className="form-label">Client Image 1 *</label>
+                          <label className="form-label">Client Image 1 </label>
                           <input
                             type="file"
                             onChange={(e) => handleClientImageChange(e,"client_image_1","client_image_1_preview")}
@@ -1196,7 +1196,7 @@ const AddClientScreen = () => {
     
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                         <div className="d-flex flex-column gap-1">
-                          <label className="form-label">Client Image 2 *</label>
+                          <label className="form-label">Client Image 2 </label>
                           <input
                             type="file"
                             onChange={(e) => handleClientImageChange(e,"client_image_2","client_image_2_preview")}
@@ -1218,7 +1218,7 @@ const AddClientScreen = () => {
     
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                         <div className="d-flex flex-column gap-1">
-                          <label className="form-label">Client Image 3 *</label>
+                          <label className="form-label">Client Image 3 </label>
                           <input
                             type="file"
                             onChange={(e) => handleClientImageChange(e,"client_image_3","client_image_3_preview")}
@@ -1240,7 +1240,7 @@ const AddClientScreen = () => {
     
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                         <div className="d-flex flex-column gap-1">
-                          <label className="form-label">Client Image 4 *</label>
+                          <label className="form-label">Client Image 4 </label>
                           <input
                             type="file"
                             onChange={(e) => handleClientImageChange(e,"client_image_4","client_image_4_preview")}

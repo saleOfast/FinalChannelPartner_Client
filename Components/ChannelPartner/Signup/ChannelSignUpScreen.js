@@ -446,7 +446,7 @@ const ChannelSignUpScreen = () => {
                           </div>
                           <div className="rightTab">
                             <input
-                              type="number"
+                              type="tel"
                               name="number"
                               id="num"
                               className="input-field"

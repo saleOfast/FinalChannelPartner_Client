@@ -73,14 +73,7 @@ const AddTaxPage = () => {
       toast.error("Please choose gst type");
     } else if (userInfo.state_type == "") {
       toast.error("Please choose the state");
-    } else if (userInfo.position == "") {
-      toast.error("Please enter the position");
-    } else if (userInfo.mode == "") {
-      toast.error("Please enter the mode");
-    } else if (userInfo.tax_code == "") {
-      toast.error("Please enter the tax code");
-    }
-    else if (userInfo.description == "") {
+    } else if (userInfo.description == "") {
       toast.error("Please enter the description");
     } else {
       if (hasCookie("token")) {
@@ -131,14 +124,7 @@ const AddTaxPage = () => {
       toast.error("Please choose gst type");
     } else if (userInfo.state_type == "") {
       toast.error("Please choose the state");
-    } else if (userInfo.position == "") {
-      toast.error("Please enter the position");
-    } else if (userInfo.mode == "") {
-      toast.error("Please enter the mode");
-    } else if (userInfo.tax_code == "") {
-      toast.error("Please enter the tax code");
-    }
-    else if (userInfo.description == "") {
+    } else if (userInfo.description == "") {
       toast.error("Please enter the description");
     } else {
       if (hasCookie("token")) {

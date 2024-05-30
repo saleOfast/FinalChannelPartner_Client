@@ -289,7 +289,7 @@ const ManageCouponScreen = () => {
     <div className="row">
       <div className="col-xl-12 col-md-12 col-sm-12 col-12">
         <div className="input_box">
-          <label htmlFor="coupon_name">Coupon Name</label>
+          <label htmlFor="coupon_name">Coupon Name *</label>
           <input
             type="text"
             placeholder="Enter Coupon Name"
@@ -303,7 +303,7 @@ const ManageCouponScreen = () => {
       </div>
       <div className="col-xl-12 col-md-12 col-sm-12 col-12">
         <div className="input_box">
-          <label htmlFor="value">Value</label>
+          <label htmlFor="value">Value *</label>
           <input
             type="number"
             placeholder="Enter Value"

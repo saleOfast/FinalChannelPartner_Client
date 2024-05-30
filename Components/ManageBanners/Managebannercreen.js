@@ -154,7 +154,7 @@ const Managebannercreen = () => {
 
   const addBrandHandler = async () => {
     if (brandInfo.banner_alt == "") {
-      return toast.error("Please enter the brand alt");
+      return toast.error("Please enter the Banner Name");
     }
     
     if (brandInfo.file == null) {
@@ -329,10 +329,10 @@ const Managebannercreen = () => {
             <div className="row">
               <div className="col-xl-12 col-md-12 col-sm-12 col-12">
                 <div className="input_box">
-                  <label htmlFor="email">Banner Name</label>
+                  <label htmlFor="email">Banner Name *</label>
                   <input
                     type="text"
-                    placeholder="Enter Banner ALt"
+                    placeholder="Enter Banner Name"
                     name="banner_alt"
                     id="banner_alt"
                     className="form-control"
@@ -406,7 +406,7 @@ const Managebannercreen = () => {
              
               <div className="col-xl-12 col-md-12 col-sm-12 col-12">
                 <div className="input_box">
-                  <label htmlFor="image">Upload Image</label>
+                  <label htmlFor="image">Upload Image *</label>
                   <input
                     className="form-control"
                     name="image"
@@ -422,8 +422,8 @@ const Managebannercreen = () => {
                         src={brandInfo.imagePreview}
                         alt="Preview"
                         style={{
-                          width: "50%",
-                          height: "50%",
+                          width: "35%",
+                          height: "35%",
                           marginTop: "10px",
                         }}
                       />

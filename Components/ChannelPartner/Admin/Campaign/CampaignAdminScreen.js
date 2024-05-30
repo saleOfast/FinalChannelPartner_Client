@@ -141,8 +141,10 @@ const CampaignAdminScreen = () => {
   };
   
   const createProject=  async() => {
-    if(!projectData.project) return toast.warning("please enter project name")
-   if(!projectData.file) return toast.warning("please upload cover image")
+    if(!projectData?.project) return toast.warning("please enter property name")
+   if(!projectData?.file) return toast.warning("please upload property cover image")
+   if(!projectData?.logo) return toast.warning("please upload property logo")
+   if(!projectData?.template) return toast.warning("please upload HTML template")
       if (!hasCookie("token")) return;
       const token = getCookie("token");
       const db_name = getCookie("db_name");

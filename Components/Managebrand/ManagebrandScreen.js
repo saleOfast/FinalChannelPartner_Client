@@ -291,7 +291,7 @@ const ManagebrandScreen = () => {
             <div className="row">
               <div className="col-xl-12 col-md-12 col-sm-12 col-12">
                 <div className="input_box">
-                  <label htmlFor="email">Brand Name</label>
+                  <label htmlFor="email">Brand Name *</label>
                   <input
                     type="text"
                     placeholder="Enter Brand Name"
@@ -310,7 +310,7 @@ const ManagebrandScreen = () => {
               </div>
               <div className="col-xl-12 col-md-12 col-sm-12 col-12">
                 <div className="input_box">
-                  <label htmlFor="image">Upload Image</label>
+                  <label htmlFor="image">Upload Image *</label>
                   <input
                     class="form-control"
                     name="image"
@@ -326,8 +326,8 @@ const ManagebrandScreen = () => {
                         src={brandInfo.imagePreview}
                         alt="Preview"
                         style={{
-                          width: "50%",
-                          height: "50%",
+                          width: "35%",
+                          height: "35%",
                           marginTop: "10px",
                         }}
                       />

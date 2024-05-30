@@ -16,7 +16,20 @@ const AddProductScreen = () => {
 
   const router = useRouter();
   const { id } = router.query;
-  const [userInfo, setUserInfo] = useState({});
+  const [userInfo, setUserInfo] = useState( {
+    p_name:"",
+    p_code:"",
+    p_price:"",
+    p_cat_id:"",
+    unit_in_case:"",
+    p_desc:"",
+    image:"",
+    created_on:"",
+    updated_on:"",
+    discount:0,
+    brand_name:"",
+    brand_id:""
+  });
   const [errorData, setErrorData] = useState({});
   const [brandList, setBrandList] = useState([]);
   const [selected, setSelected] = useState({
@@ -158,6 +171,7 @@ const AddProductScreen = () => {
         formData.append("brand_name", selected.brand_name);
         formData.append("brand_id", selected.brand_id);
 
+
         try {
           const response = await axios.put(
             Baseurl + `/db/product`,
@@ -213,7 +227,20 @@ const AddProductScreen = () => {
           Baseurl + `/db/product?p_id=${id}`,
           header
         );
-        setUserInfo(response.data.data);
+        // setUserInfo(response?.data?.data);
+        setUserInfo({
+          ...userInfo,
+          p_name:response?.data?.data?.p_name,
+          p_code:response?.data?.data?.p_code,
+          p_price:response?.data?.data?.p_price,
+          p_cat_id:response?.data?.data?.p_cat_id,
+          unit_in_case:response?.data?.data?.unit_in_case,
+          p_desc:response?.data?.data?.p_desc,
+          image:response?.data?.data?.image,
+          created_on:response?.data?.data?.created_on,
+          updated_on:response?.data?.data?.updated_on,
+          discount:response?.data?.data?.discount,
+        });
         setSelected({
           ...selected,
           p_cat_name: response?.data?.data?.db_p_cat?.p_cat_name,
@@ -265,6 +292,7 @@ const AddProductScreen = () => {
         formData.append("discount", userInfo.discount);
         formData.append("brand_name", selected.brand_name);
         formData.append("brand_id", selected.brand_id);
+       
 
         try {
           const response = await axios.post(
@@ -518,7 +546,7 @@ const AddProductScreen = () => {
                     errorData?.discount ? "input_box errorBox" : "input_box"
                   }
                 >
-                  <label htmlFor="discount">Discount % *</label>
+                  <label htmlFor="discount">Discount % </label>
                   <input
                     type="number"
                     name="discount"

@@ -453,7 +453,9 @@ const ChannelSignUpScreen = () => {
                               required
                               placeholder="Enter Mobile Number"
                               value={formFields.mobile}
-                              
+                              onChange={(e)=>{
+                                setFormFields({...formFields,mobile:e.target.value})
+                              }} 
                             />
                           </div>
                         </div>
@@ -567,7 +569,7 @@ const ChannelSignUpScreen = () => {
                         <div className="rowTab">
                           <div className="labels">
                             <label id="GST" htmlFor="name">
-                              GST Number
+                              GST Number *
                             </label>
                             <span />
                           </div>

@@ -293,14 +293,14 @@ const DashBoardScreen = () => {
                             <div className="col-xl-6 col-md-6 col-12 col-sm-12">
                                 <DashboardRevnueCard
                                     head='Total Revenue Generate'
-                                    price={formatAmount(dataList?.quotationCost)}
+                                    price={dataList?.quotationCost ? formatAmount(dataList?.quotationCost) :0 }
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/business-card-trading.png' />
                             </div>
                             <div className="col-xl-6 col-md-6 col-12 col-sm-12">
                                 <DashboardRevnueCard
                                     head='TOTAL PIPELINE DEAL VALUE'
-                                    price={formatAmount(dataList?.opportunitiesCost)}
+                                    price={dataList?.opportunitiesCost ? formatAmount(dataList?.opportunitiesCost) :0  }
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/expenses.png' />
                             </div>

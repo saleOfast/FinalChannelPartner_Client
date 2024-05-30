@@ -35,13 +35,13 @@ const TaxMuiTab = ({ opnCnfrmBox, taxList, openEdtMdl, title }) => {
                 filter: true,
             }
         },
-        {
-            name: 'mode',
-            label: "Tax Mode",
-            options: {
-                filter: true,
-            }
-        },
+        // {
+        //     name: 'mode',
+        //     label: "Tax Mode",
+        //     options: {
+        //         filter: true,
+        //     }
+        // },
          {
             name: 'tax_id',
             label: "Action",

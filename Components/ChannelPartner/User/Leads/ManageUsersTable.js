@@ -32,7 +32,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
   const[p_visit_date,setVisitDate]=useState("");
   const[p_visit_time,setVisitTime]=useState("");
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
-  const [classType,setClassType]=useState("")
 
 const getVisitInfo=async(visitId)=>{
     if (hasCookie('token')) {
@@ -98,7 +97,6 @@ const getVisitInfo=async(visitId)=>{
   const permitVisit = (status, createdAt) => {
     const currentDate = new Date(); 
     const statusDate = new Date(createdAt); 
-    console.log(statusDate)
     switch (status) {
         case "Requested":
             statusDate.setDate(statusDate.getDate() + 1); 
@@ -106,13 +104,13 @@ const getVisitInfo=async(visitId)=>{
             if (statusDate < currentDate) {
                 return false;
             } else {
-              setClassType("requested_hover")
+              
                 return true;
             }
             break;
 
         case "Scheduled":
-          setClassType("scheduled_hover")
+          
             return true;
             break;
 
@@ -121,7 +119,7 @@ const getVisitInfo=async(visitId)=>{
             if (statusDate < currentDate) {
                 return false;
             } else {
-              setClassType("completed_hover")
+              
                 return true;
             }
             break;
@@ -249,7 +247,7 @@ const getVisitInfo=async(visitId)=>{
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
-                  console.log(tableMeta)
+                  
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
                             {value}
@@ -384,7 +382,7 @@ const getVisitInfo=async(visitId)=>{
               toast.success(response.data.message);
               setShowModal(false)
               toast.success(response.message)
-             
+              getDataList()
             }
           } catch (error) {
             if (error?.response?.data?.status === 422) {

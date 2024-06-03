@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import Select from 'react-select';
 import { fetchData } from '../../../../Utils/getReq';
 import Daterange from '../../../DateRangeCustom/Daterange';
+import moment from 'moment';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -43,6 +44,7 @@ const LeadsScreen = () => {
         id: '',
         action: ''
     })
+    const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
 
     const [lead,setLead]=useState({
       lead_id:null,
@@ -55,11 +57,14 @@ const LeadsScreen = () => {
       p_visit_time: "", 
       project_id:"",
       project_name:"",
+      created_on:DateNow,
+      updated_on:DateNow
     })
     const [leadList,setLeadList]=useState([])
     const [projectList,setProjectList]=useState([])
     const [locationList,setLocationList]=useState([])
     const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+
 
 
     function disableConfirm(value, type) {
@@ -435,7 +440,7 @@ const LeadsScreen = () => {
                                     <div className="col-9">
                                       <input autofocus  value={lead?.p_visit_date} onChange={(e)=>{
                                         setLead({...lead,p_visit_date:e.target.value})
-                                      }} type="Date" name="name" className="input-field" placeholder required />
+                                      }} type="Date" name="name" className="input-field"  min={moment().format("YYYY-MM-DD")} placeholder required />
                                     </div>
                                 </div>
                               </div>

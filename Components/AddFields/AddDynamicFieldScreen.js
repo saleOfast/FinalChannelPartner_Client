@@ -206,10 +206,10 @@ export default function AddDynamicFieldScreen() {
                 showError('Please select the Field Type');
                 return false;
             }
-            else if (input_type === 'input' && !field_size && field_type !== 'checkbox' && field_type !== 'date') {
-                showError('Please Enter Field Size');
-                return false;
-            }
+            // else if (input_type === 'input' && !field_size && field_type !== 'checkbox' && field_type !== 'date') {
+            //     showError('Please Enter Field Size');
+            //     return false;
+            // }
             else if (input_type === 'select' && !option) {
                 showError('Please select input Options');
                 return false;
@@ -389,7 +389,7 @@ export default function AddDynamicFieldScreen() {
                                         </div>
                                     )}
 
-                                    {
+                                    {/* {
                                         newFields?.input_type==="input" &&( newFields?.field_type==="text" ||  newFields?.field_type==="email" || newFields?.field_type==="number" ) && (
                                             <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                                                 <div className="input_box">
@@ -406,7 +406,7 @@ export default function AddDynamicFieldScreen() {
                                                 </div>
                                             </div>
                                         )
-                                    }
+                                    } */}
                                 </div>
 
                                 <div className="btn-row my-4">

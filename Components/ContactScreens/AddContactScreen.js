@@ -32,7 +32,7 @@ const AddContactScreen = () => {
     const [contError, setContError] = useState({})
     const [errorToast, setErrorToast] = useState(false)
     const [loginDetails, setloginDetails] = useState({})
-    const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DD");
+    const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
     const [newFields, setNewFields] = useState({
         field_lable: null,
         input_type: null,
@@ -238,7 +238,9 @@ const AddContactScreen = () => {
                 },
             };
 
-            let newData = JSON.parse(JSON.stringify(userInfo))
+            let newUserInfo={...userInfo,updated_on:DateNow}
+
+            let newData = JSON.parse(JSON.stringify(newUserInfo))
 
             try {
                 const response = await axios.put(
@@ -297,10 +299,10 @@ const AddContactScreen = () => {
                 showError('Please select the Field Type');
                 return false;
             }
-            else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
-                showError('Please Enter Field Size');
-                return false;
-            }
+            // else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
+            //     showError('Please Enter Field Size');
+            //     return false;
+            // }
             else if (input_type === 'select' && !option) {
                 showError('Please select input Options');
                 return false;
@@ -1130,7 +1132,7 @@ const AddContactScreen = () => {
                                                         </div> */}
                                                     </>
                                                 )}
-                                                {
+                                                {/* {
                                                     newFields.input_type === 'input' && (newFields?.field_type==="text" ||  newFields?.field_type==="email" || newFields?.field_type==="number") && (
                                                     <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                                                     <div className="input_box">
@@ -1146,7 +1148,7 @@ const AddContactScreen = () => {
                                                     </div>
                                                     </div>
                                                     )
-                                                }
+                                                } */}
 
                                                 {newFields.input_type === 'select' && (
                                                     <div className="col-xl-4 col-md-4 col-sm-12 col-12">

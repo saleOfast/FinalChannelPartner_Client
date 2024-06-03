@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import { ViewColumn, Visibility } from '@mui/icons-material';
 import { useRef } from 'react';
+import moment from 'moment';
 
 const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
     const router = useRouter()
@@ -29,6 +30,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
     endDate: new Date().setMonth(11)
   });
   const[visitId,setVisitId]=useState("");
+  // const [p_visit_date, setVisitDate] = useState(moment().format("YYYY-MM-DD"));
   const[p_visit_date,setVisitDate]=useState("");
   const[p_visit_time,setVisitTime]=useState("");
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
@@ -559,7 +561,7 @@ const getVisitInfo=async(visitId)=>{
                                   <div className="rowTab">
                                     <div className="labels">
                                       <label htmlFor="name" className="pb-1">
-                                        Possible Visit Date
+                                        Schedule Visit Date
                                       </label>
                                       <span className="star">*</span>
                                     </div>
@@ -567,6 +569,7 @@ const getVisitInfo=async(visitId)=>{
                                       <input
                                         autofocus
                                         type="Date"
+                                        min={moment().format("YYYY-MM-DD")} 
                                         value={p_visit_date}
                                         onChange={(e)=>{
                                             setVisitDate(e.target.value)
@@ -585,7 +588,7 @@ const getVisitInfo=async(visitId)=>{
                                         htmlFor="Location"
                                         className="pb-1"
                                       >
-                                        Possible Visit Time
+                                        Schedule Visit Time
                                       </label>
                                       <span className="star">*</span>
                                     </div>

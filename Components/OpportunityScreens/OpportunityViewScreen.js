@@ -203,7 +203,7 @@ const OpportunityViewScreen = () => {
             header
           );
           if (response.status === 204 || response.status === 200) {
-            toast.success("Leads Created Successfully");
+            toast.success("Task Created Successfully");
             getTaskInLead(router.query.id);
             setUserInfo({
               task_name: "",

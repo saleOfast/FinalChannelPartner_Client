@@ -814,6 +814,7 @@ const AddQuotationScreen = () => {
                     type="date"
                     name="valid_till"
                     id="valid_till"
+                    min={moment().format("YYYY-MM-DD")}
                     className={errorData?.valid_till ? 'form-control is-invalid' : 'form-control'}
                     onChange={(e) => {
                       setUserInfo({ ...userInfo, valid_till: e.target.value })

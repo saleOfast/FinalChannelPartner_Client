@@ -21,6 +21,8 @@ const AddLeadsScreen = () => {
 
   const router = useRouter();
   const { id } = router.query;
+  const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
+  
 
   const [show, setShow] = useState(false);
   const [countrylist, setcountrylist] = useState([]);
@@ -60,8 +62,8 @@ const AddLeadsScreen = () => {
     p_contact_no: null,
     whatsapp_no: null,
     official_no: null,
-    created_on: "",
-    updated_on: "",
+    created_on: DateNow,
+    updated_on: DateNow,
     pincode: null,
     address: "",
     city_id: null,
@@ -77,7 +79,8 @@ const AddLeadsScreen = () => {
     acc_id: null,
     db_lead_fields: [],
     related_to: "",
-    loss_reason:""
+    loss_reason:"",
+    lead_code:""
   });
   const [newFields, setNewFields] = useState({
     field_lable: null,
@@ -101,7 +104,7 @@ const AddLeadsScreen = () => {
     setShow(false)
   };
 
-  const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DD");
+  
   const minDate = new Date().toISOString().slice(0, 16);
 
   const handleShow = () => setShow(true);
@@ -152,7 +155,7 @@ const AddLeadsScreen = () => {
 
 
   const submitHandler = async () => {
-
+      
     if (hasCookie("token")) {
       setisLoading(true)
       let token = getCookie("token");
@@ -191,7 +194,7 @@ const AddLeadsScreen = () => {
           setErrorData(taskObject);
         }
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error.response?.data?.message);
         } else {
           toast.error("Something went wrong!");
 
@@ -286,7 +289,7 @@ const AddLeadsScreen = () => {
             setErrorData(taskObject);
           }
           if (error?.response?.data?.message) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message);
           } else {
             toast.error("Something went wrong!");
           }
@@ -493,7 +496,7 @@ const AddLeadsScreen = () => {
         },
       };
 
-      let userInfoBody = { ...userInfo }
+      let userInfoBody = { ...userInfo,updated_on:DateNow }
 
       if (editAccId !== null) {
         userInfoBody.acc_id = editAccId
@@ -659,10 +662,10 @@ const AddLeadsScreen = () => {
         showError('Please select the Field Type');
         return false;
       }
-      else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
-        showError('Please Enter Field Size');
-        return false;
-      }
+      // else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
+      //   showError('Please Enter Field Size');
+      //   return false;
+      // }
       else if (input_type === 'select' && !option) {
         showError('Please select input Options');
         return false;
@@ -953,6 +956,28 @@ const AddLeadsScreen = () => {
                   <span className="text_bold">Fill Details</span> ( * Fields are mandatory)
                   <div className="add_user_form">
                     <div className="row">
+
+                    {
+                        userInfo?.lead_code && (
+                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                          <div className={errorData?.lead_code ? 'input_box errorBox' : 'input_box'}>
+                            <label htmlFor="profilelevel">Lead ID </label>
+                            <input
+                              type="text"
+                              placeholder="Lead ID"
+                              disabled={viewMode || editMode}
+                              name=""
+                              id=""
+                              className={errorData?.lead_code ? 'form-control is-invalid' : 'form-control'}
+                             
+                              value={userInfo.lead_code ? userInfo.lead_code : ""}
+                            />
+                            <span className="errorText"> {errorData?.lead_code ? errorData.lead_code : ''}</span>
+                          </div>
+                        </div>
+                        )
+                      }
+
                       <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                         <div className={errorData?.lead_owner ? 'input_box errorBox' : 'input_box'}>
                           <label htmlFor="lead_owner">Owner</label>
@@ -1095,6 +1120,9 @@ const AddLeadsScreen = () => {
                           <span className="errorText"> {errorData?.company_name ? errorData.company_name : ''}</span>
                         </div>
                       </div>
+
+                      
+                      
 
                       {
                         userInfo?.lead_status_id === 3 ?(
@@ -1261,7 +1289,6 @@ const AddLeadsScreen = () => {
                                 created_on: e.target.value,
                               })
                             }
-                            // value={moment(userInfo?.created_on).format("YYYY-MM-DD")}
                             value={moment(userInfo?.created_on).format("YYYY-MM-DDTHH:mm")}
                             />
                         </div>
@@ -1541,7 +1568,7 @@ const AddLeadsScreen = () => {
                             </>
                           )}
 
-                          {
+                          {/* {
                             newFields.input_type === 'input' && (newFields?.field_type==="text" ||  newFields?.field_type==="email" || newFields?.field_type==="number") && (
                               <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                               <div className="input_box">
@@ -1557,7 +1584,7 @@ const AddLeadsScreen = () => {
                               </div>
                             </div>
                             )
-                          }
+                          } */}
                          
 
                           {newFields.input_type === 'select' && (

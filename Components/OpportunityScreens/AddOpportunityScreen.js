@@ -50,7 +50,7 @@ const AddOpportunityScreen = () => {
     const [productList, setProductList] = useState([])
     const [isLoading, setisLoading] = useState(false)
 
-    const Datenow = moment(new Date().toISOString()).format("YYYY-MM-DD");
+    const Datenow =  moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
 
     const getAccountsList = async () => {
         await fetchData(`/db/account`, setAccountsList, errorToast, setErrorToast)
@@ -267,11 +267,13 @@ const AddOpportunityScreen = () => {
                     m_id: 36,
                 },
             };
+      let userInfoBody = { ...userInfo,updated_on:Datenow }
+
 
             try {
                 const response = await axios.put(
                     Baseurl + `/db//opportunity`,
-                    userInfo,
+                    userInfoBody,
                     header
                 );
                 if (response.status === 204 || response.status === 200) {
@@ -573,6 +575,7 @@ const AddOpportunityScreen = () => {
                                             setErrorData({ ...errorData, close_date: '' })
                                         }}
                                         value={moment(userInfo?.close_date).format("YYYY-MM-DD")}
+                                        min={moment().format("YYYY-MM-DD")}
                                     />
                                     <span className="errorText"> {errorData?.close_date ? errorData.close_date : ''}</span>
                                 </div>
@@ -944,7 +947,7 @@ const AddOpportunityScreen = () => {
                                         value={userInfo?.created_on ? moment(userInfo?.created_on).format("YYYY-MM-DDTHH:mm") : ''}
                                     />
                                 </div>
-                            </div>
+                            </div>  
 
                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className="input_box">

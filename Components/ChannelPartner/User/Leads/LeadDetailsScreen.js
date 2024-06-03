@@ -6,11 +6,13 @@ import React, { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { Baseurl } from '../../../../Utils/Constants';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 
 const LeadDetailsScreen = () => {
   const [showAssignTo, setShowAssignTo] = useState("");
   const router=useRouter();
   const {id}=router.query;
+  const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
 
   const [lead,setLead]=useState({
     lead_code:"",
@@ -24,6 +26,8 @@ const LeadDetailsScreen = () => {
     p_visit_time: "", 
     project_id:"",
     project_name:"",
+    created_on:DateNow,
+    updated_on:DateNow
   })
  
   const [projectList,setProjectList]=useState([])
@@ -95,10 +99,11 @@ const LeadDetailsScreen = () => {
          m_id: 79,
        },
      };
- 
+     
+     let updatedLeads={...lead,updated_on:DateNow}
     
      try {
-       const response = await axios.put(`${Baseurl}/db/channel/lead`,lead, header);
+       const response = await axios.put(`${Baseurl}/db/channel/lead`,updatedLeads, header);
        if (response.status === 200 || response.status === 201) {
          toast.success(response.data.message);
          setShowAssignTo(false)
@@ -493,6 +498,7 @@ function formatDate(date) {
                                   <div className="col-9">
                                     <input
                                       autofocus
+                                      min={moment().format("YYYY-MM-DD")}
                                       value={lead?.p_visit_date}
                                       onChange={(e) => {
                                         setLead({

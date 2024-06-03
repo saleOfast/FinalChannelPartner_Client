@@ -9,6 +9,7 @@ import { validPhone, validZip } from "../../Utils/regex";
 import { useSelector } from "react-redux";
 import { fetchData } from "../../Utils/getReq";
 import Select from 'react-select';
+import moment from "moment";
 
 const AddAccountScreen = () => {
   const router = useRouter();
@@ -65,6 +66,8 @@ const AddAccountScreen = () => {
     'ship_address': "",
     'assigned_to': null,
     'bill_address': "",
+    'createdAt':"",
+    'updatedAt':"",
     db_acc_fields: []
 
 
@@ -256,10 +259,10 @@ const AddAccountScreen = () => {
         showError('Please select the Field Type');
         return false;
       }
-      else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
-        showError('Please Enter Field Size');
-        return false;
-      }
+      // else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
+      //   showError('Please Enter Field Size');
+      //   return false;
+      // }
       else if (input_type === 'select' && !option) {
         showError('Please select input Options');
         return false;
@@ -898,6 +901,57 @@ const AddAccountScreen = () => {
               </div>
 
               <div className="add_screen_head">
+                    <span className="text_bold">System Information </span>
+                  </div>
+
+
+                  <div className="add_user_form">
+                    <div className="row">
+                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="email">Created On</label>
+                          <input
+                            type="datetime-local"
+                            disabled
+                            name="date"
+                            id="date"
+                            className="form-control"
+                            onChange={(e) =>
+                              setUserInfo({
+                                ...userInfo,
+                                createdAt: e.target.value,
+                              })
+                            }
+                            value={moment(userInfo?.createdAt).format("YYYY-MM-DDTHH:mm")}
+                            />
+                        </div>
+                      </div>
+                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="mod_date">Last Modified On</label>
+                          <input
+                            type="datetime-local"
+                            disabled
+                            placeholder="Enter Contact no."
+                            name="mod_date"
+                            id="mod_date"
+                            className="form-control"
+                            onChange={(e) =>
+                              setUserInfo({
+                                ...userInfo,
+                                updatedAt: e.target.value,
+                              })
+                            }
+                            // value={userInfo.updated_on ? userInfo.updated_on : ""}
+                            value={moment(userInfo?.updatedAt).format("YYYY-MM-DDTHH:mm")}
+                            
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+              <div className="add_screen_head">
                 <span className="text_bold">Billing & Shipping Address</span>
               </div>
 
@@ -1227,6 +1281,10 @@ const AddAccountScreen = () => {
                       </div>
                     ))}
                   </div>
+
+                  
+
+                  
                   {/* <div className="btn-box">
                                 <button
                                     disabled={isLoading}
@@ -1304,7 +1362,7 @@ const AddAccountScreen = () => {
                           </>
                         )}
 
-                         {
+                         {/* {
                           newFields.input_type === 'input' && (newFields?.field_type==="text" ||  newFields?.field_type==="email" || newFields?.field_type==="number") && (
                             <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                             <div className="input_box">
@@ -1320,7 +1378,7 @@ const AddAccountScreen = () => {
                             </div>
                             </div>
                             )               
-                        }
+                        } */}
 
                         {newFields.input_type === 'select' && (
                           <div className="col-xl-4 col-md-4 col-sm-12 col-12">
@@ -1346,7 +1404,7 @@ const AddAccountScreen = () => {
                     </div>
                   )}
                 </div>
-
+                  
 
                 <div className="text-end">
                   <div className="submit_btn">

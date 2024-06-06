@@ -213,7 +213,7 @@ const ForgotPassword = () => {
                           ? "Verify"
                           : "Send Verification Code"}
                       </button>
-                      <Link href="/CHANNEL/Signin" className="login_btn btn  mt-2">
+                      <Link href="/partner" className="login_btn btn  mt-2">
                           Login
                       </Link>
                       </div>

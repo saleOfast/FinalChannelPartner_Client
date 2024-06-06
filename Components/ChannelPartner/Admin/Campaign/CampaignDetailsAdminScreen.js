@@ -191,7 +191,7 @@ const CampaignDetailsAdminScreen = () => {
                   getCampaignById(id);
               }}
           />
-          <img 
+          {/* <img 
           src="/ChannelPartner/download-file-blue.svg" 
           alt="Download File" 
           style={{height: "1.2rem", cursor: "pointer"}} 
@@ -199,7 +199,7 @@ const CampaignDetailsAdminScreen = () => {
             downloadHtml()
             // downloadPdf()
           }}
-          />
+          /> */}
       </div>
       {/* Edit and Download End */}
 

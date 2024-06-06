@@ -44,7 +44,7 @@ const ForgotPassword = () => {
       });
       if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
-          router.push('/CHANNEL/Signin')
+          router.push('/partner')
       }
   } catch (error) {
       console.log(error);

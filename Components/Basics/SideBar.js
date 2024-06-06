@@ -44,7 +44,7 @@ const SideBar = ({}) => {
     deleteCookie(`side${isAdmin ? "User" : "Admin"}`);
     dispatch(isAdmin ? masterMode() : userMode());
     toast.info(`Switched to ${mode} Mode`);
-    router.push("/");
+    router.push("/crm");
   };
 
   const handleClick = debounce(sideToggle, 500);
@@ -219,7 +219,7 @@ const SideBar = ({}) => {
                 <div className="sidebar-sublist">
                   <ul className="sublists">
                     {children?.map((item) => (
-                      <Link  href={`/crm/${item.link}`} key={item.menu_id}>
+                      <Link  href={`${dbMode !== 'user' ?  `/${item.link}` : `/crm/${item.link}`} `} key={item.menu_id}>
                         <li  onClick={sideViewFunc} className="sub-list-item"> {item.allais_menu} </li>
                       </Link>
                     ))}

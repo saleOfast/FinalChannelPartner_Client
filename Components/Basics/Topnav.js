@@ -27,7 +27,7 @@ const Topnav = ({  topnavPermission }) => {
   const allowedpermission = hasCookie("allowedpermissions")? JSON.parse(getCookie("allowedpermissions")) :"";
   const dbMode = useSelector((state) => state.dbMode.value);
   const dispatch = useDispatch();
-  const [userInfo, setuserInfo] = useState({});
+  const [userInfo, setuserInfo] = useState(null);
   const [showConfirm, setshowConfirm] = useState(false);
   const isCHannel = hasCookie("channel") || false
   const [path, setPath] = useState('');
@@ -40,7 +40,7 @@ const Topnav = ({  topnavPermission }) => {
     setshowConfirm(!showConfirm);
     dispatch(clearTheme());
     if (hasCookie("channel")) {
-      router.push(isAdminMode ? "/admin" : "/channel/Signin")
+      router.push(isAdminMode ? "/admin" : "/partner")
     } else {
       router.push(isAdminMode ? "/admin" : "/")
     }
@@ -62,38 +62,39 @@ const Topnav = ({  topnavPermission }) => {
     }
   }, []);
 
-  const getUserInfo = async (id) => {
-    if (hasCookie("token")) {
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
+  // const getUserInfo = async (id) => {
+  //   if (hasCookie("token")) {
+  //     let token = getCookie("token");
+  //     let db_name = getCookie("db_name");
 
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          pass: "pass",
-        },
-      };
-      try {
-        const response = await axios.get(
-          Baseurl + `/db/users?id=${id}`,
-          header
-        );
-        setuserInfo(response.data.data);
-      } catch (error) {
-        if (
-          error?.response?.data?.message === "please login again token expired"
-        ) {
-          toast.error(error.response.data.message);
-          dispatch(userLogOut());
-          router.push("/");
-        } else {
-          toast.error("Something went wrong!");
-        }
-      }
-    }
-  };
+  //     let header = {
+  //       headers: {
+  //         Accept: "application/json",
+  //         Authorization: "Bearer ".concat(token),
+  //         db: db_name,
+  //         pass: "pass",
+  //       },
+  //     };
+  //     try {
+  //       const response = await axios.get(
+  //         Baseurl + `/db/users?id=${id}`,
+  //         header
+  //       );
+  //       setuserInfo(response.data.data);
+  //     } catch (error) {
+  //       if (
+  //         error?.response?.data?.message === "please login again token expired"
+  //       ) {
+  //         toast.error(error.response.data.message);
+  //         dispatch(userLogOut());
+  //         router.push("/");
+  //       } else {
+  //         toast.error("Something went wrong!");
+  //       }
+  //     }
+  //   }
+  // };
+
 
   const getAdminInfo = async () => {
     if (hasCookie("saLsTkn")) {
@@ -119,28 +120,28 @@ const Topnav = ({  topnavPermission }) => {
     }
   };
 
-  const switchPermission = (permission) => {
-    switch (permission) {
-      case "crm":
-        dispatch(crm());
-        break;
+  // const switchPermission = (permission) => {
+  //   switch (permission) {
+  //     case "crm":
+  //       dispatch(crm());
+  //       break;
 
-      case "sales":
-        dispatch(sales());
-        break;
+  //     case "sales":
+  //       dispatch(sales());
+  //       break;
 
-      case "channel":
-        dispatch(channel());
-        break;
+  //     case "channel":
+  //       dispatch(channel());
+  //       break;
 
-      case "dms":
-        dispatch(dms());
-        break;
+  //     case "dms":
+  //       dispatch(dms());
+  //       break;
 
-      default:
-        break;
-    }
-  };
+  //     default:
+  //       break;
+  //   }
+  // };
 
   useEffect(()=>{
     if(!router.isReady) return
@@ -153,7 +154,8 @@ const Topnav = ({  topnavPermission }) => {
   useEffect(() => {
     if (hasCookie("userInfo")) {
       const userInfo = JSON.parse(getCookie("userInfo"));
-      getUserInfo(userInfo.user_code);
+      setuserInfo(userInfo);
+      // getUserInfo(userInfo.user_code);
     } else {
       getAdminInfo();
     }
@@ -179,11 +181,24 @@ const Topnav = ({  topnavPermission }) => {
 
   return (
     <>
-      {hasCookie("channel") && userInfo?.db_role != null && userInfo?.db_role?.role_id != 3  ? (
+
+        {
+          userInfo ?
+          hasCookie("channel") && userInfo != null && userInfo?.role_id != 3  ? (
+            <CP_Navbar_User  />
+          ) : (
+    
+            <CP_Navbar_Admin  />
+          )
+          : null
+        }
+
+      {/* {hasCookie("channel") && userInfo?.db_role != null && userInfo?.db_role?.role_id != 3  ? (
         <CP_Navbar_User  />
       ) : (
+
         <CP_Navbar_Admin  />
-      )}
+      )} */}
 
       {!hasCookie("channel") && (
         <>
@@ -360,8 +375,8 @@ const Topnav = ({  topnavPermission }) => {
                           {dbMode == "admin" ? (
                             <img
                               src={
-                                userInfo.profile_img
-                                  ? `${filesUrl}/adminProfile/images${userInfo.profile_img}`
+                                userInfo?.profile_img
+                                  ? `${filesUrl}/adminProfile/images${userInfo?.profile_img}`
                                   : `/images/profile_picture.png`
                               }
                               alt=""
@@ -380,7 +395,7 @@ const Topnav = ({  topnavPermission }) => {
                         <div className="name_sec">
                           <div className="name">
                             {" "}
-                            {userInfo.user ? userInfo.user : "user"}{" "}
+                            {userInfo?.user ? userInfo.user : "user"}{" "}
                           </div>
                           <div className="role"> {} </div>
                         </div>
@@ -428,3 +443,4 @@ const Topnav = ({  topnavPermission }) => {
 };
 
 export default Topnav;
+

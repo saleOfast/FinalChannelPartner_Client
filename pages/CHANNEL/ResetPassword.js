@@ -40,7 +40,7 @@ const ForgotPassword = () => {
       });
       if (response.data.status == 200) {
         toast.success(response.data.message);
-        router.push("/CHANNEL/Signin");
+        router.push("/partner");
       } else {
         toast.error(response.data.message);
       }

@@ -15,7 +15,7 @@ const WithUserhoc_CP = (WrappedComponent) => {
       if (hasCookie("SaLsUsr")) {
         router.push('/Admin');
       }else if(!hasCookie("user")){
-        router.push('/channel/Signin');
+        router.push('/partner');
         
       }else{
         setRendercomponent(true)

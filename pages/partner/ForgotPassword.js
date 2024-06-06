@@ -40,7 +40,7 @@ const ForgotPassword = () => {
       if (response.data.status == 200) {
         toast.success(response.data.message);
         setCookie('resetPasswordEmail',email);
-        router.push("/CHANNEL/ResetPassword/");
+        router.push("/partner/ResetPassword/");
       } else {
         toast.error(response.data.message);
       }
@@ -213,7 +213,7 @@ const ForgotPassword = () => {
                           ? "Verify"
                           : "Send Verification Code"}
                       </button>
-                      <Link href="/CHANNEL/Signin" className="login_btn btn  mt-2">
+                      <Link href="/partner" className="login_btn btn  mt-2">
                           Login
                       </Link>
                       </div>

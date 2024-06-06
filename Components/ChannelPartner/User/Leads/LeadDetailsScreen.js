@@ -293,7 +293,7 @@ function formatDate(date) {
             </div>
           </div>
           <Link
-            href={"/CHANNEL/Leads"}
+            href={"/partner/Leads"}
             className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5"
           >
             <button
@@ -498,7 +498,7 @@ function formatDate(date) {
                                   <div className="col-9">
                                     <input
                                       autofocus
-                                      min={moment().format("YYYY-MM-DD")}
+                                      
                                       value={lead?.p_visit_date}
                                       onChange={(e) => {
                                         setLead({

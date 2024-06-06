@@ -138,7 +138,7 @@ const ContactScreen = () => {
                     <h3 className="content_head">CONTACT</h3>
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"> <Link href='/'>Home </Link></li>
+                            <li className="breadcrumb-item"> <Link href='/crm'>Home </Link></li>
                             <li className="breadcrumb-item active" aria-current="page">Contact List</li>
                         </ol>
                     </nav>
@@ -147,7 +147,7 @@ const ContactScreen = () => {
                     <div className="table_screen">
                         <div className="top_btn_sec">
                             <div className="d-flex">
-                                <Link href='/AddContact'>
+                                <Link href='/crm/AddContact'>
                                     <button className="btn btn-primary Add_btn me-3">
                                         <PlusIcon />
                                         ADD CONTACT

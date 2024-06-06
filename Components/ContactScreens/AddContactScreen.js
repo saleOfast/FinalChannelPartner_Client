@@ -194,7 +194,7 @@ const AddContactScreen = () => {
                     await postFieldsFunc(response.data.data.contact_id, userInfo.db_contact_fields)
                     toast.success(response.data.message);
                     setisLoading(false)
-                    router.push('/Contacts')
+                    router.push('/crm/Contacts')
                 }
             } catch (error) {
                 if (error?.response?.data?.status === 422) {
@@ -253,7 +253,7 @@ const AddContactScreen = () => {
                     await postFieldsFunc(newData.contact_id, newData.db_contact_fields)
                     toast.success(response.data.message);
                     setisLoading(false)
-                    router.push("/Contacts");
+                    router.push("/crm/Contacts");
                 }
             } catch (error) {
                 if (error?.response?.data?.status === 422) {
@@ -555,10 +555,10 @@ const AddContactScreen = () => {
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item">
-                            <Link href="/">Home</Link>
+                            <Link href="/crm">Home</Link>
                         </li>
                         <li className="breadcrumb-item">
-                            <Link href="/Contacts"> Contact List </Link>
+                            <Link href="/crm/Contacts"> Contact List </Link>
                         </li>
                         <li className="breadcrumb-item active" aria-current="page">
                             {viewMode ? 'View' : <>
@@ -1182,7 +1182,7 @@ const AddContactScreen = () => {
                                                     <span className="text_bold"><button className='btn btn-primary ' onClick={AddFieldsFunc}> Add More Fields</button>  </span>
                                                 </div>}
                                             {viewMode ? null : <>
-                                                <Link href='/Contacts'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
+                                                <Link href='/crm/Contacts'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
                                                 {editMode ? (
                                                     <button disabled={isLoading} className="btn btn-primary" onClick={UpdateHandler}>
                                                         {isLoading ? 'Loading...' : 'Update'}
@@ -1213,7 +1213,7 @@ const AddContactScreen = () => {
                                                 return (
                                                     <li key={lead_id} className="list-item">
                                                         <div className="opp_box">
-                                                            <Link href={`/LeadsView?id=${lead_id}`}>
+                                                            <Link href={`/crm/LeadsView?id=${lead_id}`}>
                                                                 <div className="name">{lead_name}</div>
                                                             </Link>
                                                         </div>
@@ -1223,7 +1223,7 @@ const AddContactScreen = () => {
                                         </ul>
                                     </div>
                                     <div className="card_footer">
-                                        <Link href='/ManageLeads'>
+                                        <Link href='/crm/ManageLeads'>
                                             <div className="text_more">view more</div>
                                         </Link>
                                     </div>
@@ -1246,7 +1246,7 @@ const AddContactScreen = () => {
                                         }, []).map((account, i) => (
                                             <li key={i} className="list-item">
                                                 <div className="opp_box">
-                                                    <Link href={`/AddAccount?id=${account.acc_id}&vw=mds`}>
+                                                    <Link href={`/crm/AddAccount?id=${account.acc_id}&vw=mds`}>
                                                         <div className="name">{account.acc_name}</div>
                                                     </Link>
                                                 </div>
@@ -1255,7 +1255,7 @@ const AddContactScreen = () => {
                                     </ul>
                                 </div>
                                 <div className="card_footer">
-                                    <Link href='/Accounts'>
+                                    <Link href='/crm/Accounts'>
                                         <div className="text_more">view more</div>
                                     </Link>
                                 </div>
@@ -1277,7 +1277,7 @@ const AddContactScreen = () => {
                                         }, []).map((opportunity, i) => (
                                             <li key={i} className="list-item">
                                                 <div className="opp_box">
-                                                    <Link href={`/OpportunityView?id=${opportunity.opp_id}`}>
+                                                    <Link href={`/crm/OpportunityView?id=${opportunity.opp_id}`}>
                                                         <div className="name">{opportunity.opp_name}</div>
                                                     </Link>
                                                 </div>
@@ -1286,7 +1286,7 @@ const AddContactScreen = () => {
                                     </ul>
                                 </div>
                                 <div className="card_footer">
-                                    <Link href='/Opportunity'>
+                                    <Link href='/crm/Opportunity'>
                                         <div className="text_more">view more</div>
                                     </Link>
                                 </div>

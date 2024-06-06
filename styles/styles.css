@@ -2778,3 +2778,55 @@ select.form-control::after {
     text-align: center;
   }
 }/*# sourceMappingURL=styles.css.map */
+
+
+
+
+/* ---------------------------------------New Login Screen CSS Start--------------------------------------------------- */
+.NewLoginScreen .login{
+  height: 100vh;
+}
+.NewLoginScreen .login .form-left{
+  height: 100vh;
+}
+.NewLoginScreen .login .input-group input{
+  border: 2px solid #A7A7A7;
+  border-radius: 8px;
+}
+.NewLoginScreen .login .input-group:not(.has-validation)>.dropdown-toggle:nth-last-child(n+3),.NewLoginScreen .login .input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu) {
+border-top-right-radius: 8px;
+border-bottom-right-radius: 8px;
+}
+.NewLoginScreen .login .image-one, .image-two{
+height: 235px;
+}
+.NewLoginScreen .login .logo{
+width: 40%;
+}
+.NewLoginScreen .login .form-right{
+width: 520px;
+}
+.NewLoginScreen .login .btn-primary{
+border-radius: 20px;
+}
+.NewLoginScreen .login .input-group>.form-control:focus, .NewLoginScreen .login .input-group>.form-select:focus {
+z-index: 0;
+}
+@media screen and (max-width: 768px) {
+.NewLoginScreen .login{
+  height: 100vh;
+}
+.NewLoginScreen .login .form-left{
+  height: 34vh;
+}
+.NewLoginScreen .image-one, .NewLoginScreen .image-two{
+      height: auto;
+  }
+  .NewLoginScreen .login .logo{
+      width: 200px;
+  }
+  .NewLoginScreen .login .btn-primary{
+border-radius: 10px;
+}
+}
+/* ---------------------------------------New Login Screen CSS End--------------------------------------------------- */

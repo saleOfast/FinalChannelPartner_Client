@@ -26,7 +26,7 @@ const TopOpportunityCard = ({ dataList }) => {
                 </ul>
             </div>
             <div className="card_footer">
-                <Link href='/Opportunity'>
+                <Link href='/CRM/Opportunity'>
                     <div className="text_more">view more</div>
                 </Link>
             </div>

@@ -172,12 +172,12 @@ const TasksMuiTable = ({
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="table_btns">
-              <Link href={`/AddTask?id=${value}&vw=md`}>
+              <Link href={`/crm/AddTask?id=${value}&vw=md`}>
                 <button className="action_btn" title="View">
                   <ViewIcon />
                 </button>
               </Link>
-              <Link href={`/AddTask?id=${value}`}>
+              <Link href={`/crm/AddTask?id=${value}`}>
                 <button className="action_btn" title="Edit">
                   <EditIcon />
                 </button>

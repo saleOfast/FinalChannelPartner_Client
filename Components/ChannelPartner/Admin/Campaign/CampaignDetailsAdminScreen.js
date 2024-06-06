@@ -268,7 +268,7 @@ const CampaignDetailsAdminScreen = () => {
 
       {/* Back to campaign button start */}
       <div style={{display:"flex", justifyContent:"center",alignItems:"center"}}>
-          <Link href={`/CHANNEL/CampaignAdmin`} style={{background:clientBtnColor,color:"white",padding:"5px 10px",borderRadius:"20px"}}>Back to Campaigns</Link>
+          <Link href={`/partner/CampaignAdmin`} style={{background:clientBtnColor,color:"white",padding:"5px 10px",borderRadius:"20px"}}>Back to Campaigns</Link>
       </div>
       {/* Back to campaign button end */}
 

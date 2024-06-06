@@ -131,7 +131,7 @@ const AddAccountScreen = () => {
           await postFieldsFunc(response.data.data.acc_id, oppBody.db_acc_fields)
           toast.success(response.data.message)
           setisLoading(false)
-          router.push('/Accounts');
+          router.push('/crm/Accounts');
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -179,7 +179,7 @@ const AddAccountScreen = () => {
           await postFieldsFunc(userInfo.acc_id, userInfo.db_acc_fields)
           toast.success(response.data.message)
           setisLoading(false)
-          router.push('/Accounts');
+          router.push('/crm/Accounts');
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -591,10 +591,10 @@ const AddAccountScreen = () => {
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               {" "}
-              <Link href="/">Home</Link>
+              <Link href="/crm">Home</Link>
             </li>
             <li className="breadcrumb-item">
-              <Link href="/Accounts"> Account List </Link>
+              <Link href="/crm/Accounts"> Account List </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
               {viewMode ? 'View' : <>
@@ -1414,7 +1414,7 @@ const AddAccountScreen = () => {
                         <span className="text_bold"><button className='btn btn-primary ' onClick={AddFieldsFunc}> Add More Fields</button>  </span>
                       </div>}
                     {viewMode ? null : <>
-                      <Link href='/Accounts'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
+                      <Link href='/crm/Accounts'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
                       {editMode ? (
                         <button disabled={isLoading} className="btn btn-primary " onClick={UpdateHandler}>
                           {isLoading ? 'Loading...' : 'Update'}
@@ -1440,7 +1440,7 @@ const AddAccountScreen = () => {
                         return (
                           <li key={opp_id} className="list-item">
                             <div className="opp_box">
-                              <Link href={`/OpportunityView?id=${opp_id}`}>
+                              <Link href={`/crm/OpportunityView?id=${opp_id}`}>
                                 <div className="name">{opp_name} </div>
                               </Link>
                               <div className="price">&#8377; {amount}</div>
@@ -1451,7 +1451,7 @@ const AddAccountScreen = () => {
                     </ul>
                   </div>
                   <div className="card_footer">
-                    <Link href='/Opportunity'>
+                    <Link href='/crm/Opportunity'>
                       <div className="text_more">view more</div>
                     </Link>
                   </div>
@@ -1464,7 +1464,7 @@ const AddAccountScreen = () => {
                         return (
                           <li key={contact_id} className="list-item">
                             <div className="opp_box">
-                              <Link href={`/AddContact?id=${contact_id}&vw=mds`}>
+                              <Link href={`/crm/AddContact?id=${contact_id}&vw=mds`}>
                                 <div className="name">{first_name}</div>
                               </Link>
                             </div>
@@ -1474,7 +1474,7 @@ const AddAccountScreen = () => {
                     </ul>
                   </div>
                   <div className="card_footer">
-                    <Link href='/Contacts'>
+                    <Link href='/crm/Contacts'>
                       <div className="text_more">view more</div>
                     </Link>
                   </div>
@@ -1488,7 +1488,7 @@ const AddAccountScreen = () => {
                         return (
                           <li key={lead_id} className="list-item">
                             <div className="opp_box">
-                              <Link href={`/LeadsView?id=${lead_id}&vw=mds`}>
+                              <Link href={`/crm/LeadsView?id=${lead_id}&vw=mds`}>
                                 <div className="name">{lead_name}</div>
                               </Link>
                             </div>
@@ -1498,7 +1498,7 @@ const AddAccountScreen = () => {
                     </ul>
                   </div>
                   <div className="card_footer">
-                    <Link href='/ManageLeads'>
+                    <Link href='/crm/ManageLeads'>
                       <div className="text_more">view more</div>
                     </Link>
                   </div>

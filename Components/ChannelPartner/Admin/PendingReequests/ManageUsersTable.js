@@ -101,7 +101,7 @@ const ManageUsersTable = ({
           <Link
           className="fw-bold text-decoration-underline"
           style={{color: '#293790'}}
-          href={`/CHANNEL/PendingRequestsDetail?id=${tableMeta.rowData[0]}&mode=view`}
+          href={`/partner/PendingRequestsDetail?id=${tableMeta.rowData[0]}&mode=view`}
           >
             {value}
         </Link>

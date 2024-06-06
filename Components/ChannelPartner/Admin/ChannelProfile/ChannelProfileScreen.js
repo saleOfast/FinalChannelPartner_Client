@@ -22,18 +22,19 @@ const ChannelProfileScreen = () => {
 
 
     const logouthandler = () => {
+        deleteCookie("clientBtnColor")
+        setCookie("activeLink","/")
         dispatch(startLoading())
         const isAdminMode = dbMode === "admin";
         const isMasterOrUserMode = dbMode === "master" || dbMode === "user";
         setshowConfirm(!showConfirm);
         dispatch(clearMode());
         if (hasCookie("channel")) {
-          router.push(isAdminMode ? "/Admin" : "/CHANNEL/Signin")
+          router.push(isAdminMode ? "/Admin" : "/partner")
         } else {
           router.push(isAdminMode ? "/Admin" : "/")
         }
         dispatch(isAdminMode ? LoggedOut() : userLogOut());
-        removeCookies("clientBtnColor")
         dispatch(stopLoading())
         toast.success("Logged Out Successfully");
       };

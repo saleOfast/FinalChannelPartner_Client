@@ -69,12 +69,12 @@ const AccountMuiTable = ({ accountsList, openConfirmBox }) => {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
-                            <Link href={`/AddAccount/?id=${value}&vw=mds`}>
+                            <Link href={`/crm/AddAccount/?id=${value}&vw=mds`}>
                                 <button className="action_btn" title="View">
                                     <ViewIcon />
                                 </button>
                             </Link>
-                            <Link href={`/AddAccount?id=${value}`}>
+                            <Link href={`/crm/AddAccount?id=${value}`}>
                                 <button className="action_btn" title='Edit'>
                                     <EditIcon />
                                 </button>

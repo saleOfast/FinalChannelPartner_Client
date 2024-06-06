@@ -134,7 +134,7 @@ const AccountScreen = () => {
                     <h3 className="content_head">Accounts</h3>
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"> <Link href='/'>Home   </Link></li>
+                            <li className="breadcrumb-item"> <Link href='/crm'>Home   </Link></li>
                             <li className="breadcrumb-item active" aria-current="page">Account List</li>
                         </ol>
                     </nav>
@@ -143,7 +143,7 @@ const AccountScreen = () => {
                     <div className="table_screen">
                         <div className="top_btn_sec">
                         <div className="d-flex">
-                            <Link href='/AddAccount'>
+                            <Link href='/crm/AddAccount'>
                                 <button className="btn btn-primary Add_btn me-3">
                                     <PlusIcon />
                                     ADD ACCOUNT

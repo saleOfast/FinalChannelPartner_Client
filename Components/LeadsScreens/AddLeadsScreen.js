@@ -178,7 +178,7 @@ const AddLeadsScreen = () => {
           await postFieldsFunc(response.data.data.lead_id, oppBody.db_lead_fields)
           toast.success(response.data.message);
           setisLoading(false)
-          router.push('/ManageLeads')
+          router.push('/crm/ManageLeads')
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -527,7 +527,7 @@ const AddLeadsScreen = () => {
           await postFieldsFunc(userInfoBody.lead_id, userInfoBody.db_lead_fields)
           toast.success(response.data.message);
           setisLoading(false)
-          router.push("/ManageLeads");
+          router.push("/crm/ManageLeads");
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -936,10 +936,10 @@ const AddLeadsScreen = () => {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <Link href="/">Home</Link>
+                <Link href="/crm">Home</Link>
               </li>
               <li className="breadcrumb-item">
-                <Link href="/ManageLeads"> Manage Leads </Link>
+                <Link href="/crm/ManageLeads"> Manage Leads </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
                 {viewMode ? 'View' : <>
@@ -1622,7 +1622,7 @@ const AddLeadsScreen = () => {
                             <span className="text_bold"><button className='btn btn-primary ' onClick={AddFieldsFunc}> Add More Fields</button>  </span>
                           </div> </>}
                         {viewMode ? null : <>
-                          <Link href='/ManageLeads'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
+                          <Link href='/crm/ManageLeads'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
                           {editMode ? (
                             <button disabled={isLoading} className="btn btn-primary" onClick={updateHandler}>
                               {isLoading ? 'Loading...' : 'Update'}

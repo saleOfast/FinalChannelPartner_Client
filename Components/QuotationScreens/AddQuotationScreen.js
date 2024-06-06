@@ -296,7 +296,7 @@ const AddQuotationScreen = () => {
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message);
           setisLoading(false)
-          router.push('/Quotations')
+          router.push('/crm/Quotations')
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -367,7 +367,7 @@ const AddQuotationScreen = () => {
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message);
           setisLoading(false)
-          router.push('/Quotations')
+          router.push('/crm/Quotations')
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -608,10 +608,10 @@ const AddQuotationScreen = () => {
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
-              <Link href="/">Home</Link>
+              <Link href="/crm">Home</Link>
             </li>
             <li className="breadcrumb-item">
-              <Link href="/Quotations">Quotation</Link>
+              <Link href="/crm/Quotations">Quotation</Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
               {editMode ? 'Edit' : 'Add'}  Quotation
@@ -1332,7 +1332,7 @@ const AddQuotationScreen = () => {
 
           <div className="text-end">
             <div className="submit_btn p-3">
-              <Link href="Quotations"><button className="btn btn-cancel me-2" >Cancel</button></Link>
+              <Link href="/crm/Quotations"><button className="btn btn-cancel me-2" >Cancel</button></Link>
               {editMode ?
                 <button disabled={isLoading} className="btn btn-primary" onClick={upDateHandler}>{isLoading ? 'Loading...' : 'Update'} </button> :
                 <button disabled={isLoading} className="btn btn-primary" onClick={handleSubmit}>{isLoading ? 'Loading...' : 'Save & Submit'}</button>}

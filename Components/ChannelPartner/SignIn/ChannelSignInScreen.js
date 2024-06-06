@@ -100,11 +100,11 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
           dispatch(stopLoading())
           // router.push("/");
           if(res?.data?.userData?.role_id===2){
-            router.push("/CHANNEL/Brokerage")
-            setCookie("activeLink","/CHANNEL/Brokerage")
+            router.push("/partner/Brokerage")
+            setCookie("activeLink","/partner/Brokerage")
           }
           else{
-            router.push("/");
+            router.push("/partner");
           }
         }
       } catch (error) {

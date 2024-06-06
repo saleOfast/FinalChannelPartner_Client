@@ -202,7 +202,7 @@ const AddClientScreen = () => {
                 const res = await axios.post(Baseurl + `/db`, formData, header);
                 if (res.status === 200 || res.status === 204) {
                     toast.success('Client Added Successfully')
-                    router.push('/Admin');
+                    router.push('/admin');
                     setisLoading(false);
                 }
             } catch (error) {
@@ -252,7 +252,7 @@ const AddClientScreen = () => {
                 const res = await axios.put(Baseurl + `/db/admin`, formData, header);
                 if (res.status === 200 || res.status === 204) {
                     toast.success('Client Updated Successfully')
-                    router.push('/Admin');
+                    router.push('/admin');
                     setisLoading(false);
                 }
             } catch (error) {
@@ -439,8 +439,8 @@ const AddClientScreen = () => {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                {" "}
-                <Link href="/Admin">All Clients </Link>
+                
+                <Link href="/admin">All Clients </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
                 {editMode ? "Edit" : "Add"} Client
@@ -1480,7 +1480,7 @@ const AddClientScreen = () => {
                       disabled={isLoading}
                       className="btn btn-primary me-2"
                       onClick={()=>{
-                        router.push("/Admin")
+                        router.push("/admin")
                       }}
                     >
                       {isLoading ? "Loading ..." : "Cancel"}

@@ -90,12 +90,12 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox }) => {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
-                            <Link href={`/OpportunityView?id=${value}`}>
+                            <Link href={`/crm/OpportunityView?id=${value}`}>
                                 <button className="action_btn" title="View">
                                     <ViewIcon />
                                 </button>
                             </Link>
-                            <Link href={`/AddOpportunity?id=${value}`}>
+                            <Link href={`/crm/AddOpportunity?id=${value}`}>
                                 <button className="action_btn" title='Edit'>
                                     <EditIcon />
                                 </button>

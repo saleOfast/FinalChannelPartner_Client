@@ -1,7 +1,4 @@
-import Head from 'next/head';
 import { useEffect, useState } from 'react'
-import SideBar from '../Components/Basics/SideBar';
-import Topnav from '../Components/Basics/Topnav';
 import { useDispatch } from 'react-redux'
 import { getCookie, hasCookie, setCookie } from 'cookies-next';
 import { Baseurl } from '../Utils/Constants';

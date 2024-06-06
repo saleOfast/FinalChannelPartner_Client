@@ -33,6 +33,8 @@ const SideBar = ({}) => {
   const [dynamicFields, setDynamicFields] = useState([]);
   const [sidebarLoaded, setSidebarLoaded] = useState(false);
   
+  const [sideAdmin, setSideAdmin] = useState(hasCookie("sideAdmin")? getCookie("sideAdmin"): false)
+  const [sideUser, setSideUser] = useState(hasCookie("sideUser")? getCookie("sideUser"): false)
 
 
   const sideToggle = () => {
@@ -132,6 +134,10 @@ const SideBar = ({}) => {
       dispatch(closedView());
     }
   }, []);
+
+  useEffect(()=>{
+    setSideAdmin(!sideAdmin)
+  },[setSideAdmin])
   
 
   useEffect(() => {
@@ -183,7 +189,7 @@ const SideBar = ({}) => {
       </div>
       {(dbMode === "user" || dbMode === "master") && (
         <ul className="sidebar-list h-auto">
-          <Link href="/">
+          <Link href="/crm">
             <li title="Dashboard" className={`list-item ${isactive === "dashboard" ? "active" : ""}`}>
               <div className="linkBox">
                 <div className="svg_icon">
@@ -213,7 +219,7 @@ const SideBar = ({}) => {
                 <div className="sidebar-sublist">
                   <ul className="sublists">
                     {children?.map((item) => (
-                      <Link  href={`/${item.link}`} key={item.menu_id}>
+                      <Link  href={`/crm/${item.link}`} key={item.menu_id}>
                         <li  onClick={sideViewFunc} className="sub-list-item"> {item.allais_menu} </li>
                       </Link>
                     ))}
@@ -236,7 +242,7 @@ const SideBar = ({}) => {
 
       {dbMode === "admin" && (
         <ul className="sidebar-list">
-          <Link href="/Admin">
+          <Link href="/admin">
             <li title="Dashboard" className={`list-item ${isactive === "dashboard" ? "active" : ""}`}>
               <div className="linkBox">
                 <div className="svg_icon">

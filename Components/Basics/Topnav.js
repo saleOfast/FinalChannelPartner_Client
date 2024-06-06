@@ -16,14 +16,15 @@ import Link from "next/link";
 import { Baseurl, filesUrl } from "../../Utils/Constants";
 import axios from "axios";
 import { clearMode, masterMode, userMode } from "../../store/dbModeSlice";
-import { channel, crm, dms, sales } from "../../store/permissionSlice";
+import { channel, clearValue, crm, dms, sales } from "../../store/permissionSlice";
 import { startLoading, stopLoading } from "../../store/loaderSlice";
 import CP_Navbar_Admin from "../ChannelPartner/Admin/CP_NavBar_Admin/CP_NavBar_Admin"
 import CP_Navbar_User from "../ChannelPartner/User/CP_NavBar_User/CP_NavBar_User"
 import { clearTheme } from "../../store/themeSlice";
 
-const Topnav = ({ allowedPermissions, topnavPermission }) => {
+const Topnav = ({  topnavPermission }) => {
   const router = useRouter();
+  const allowedpermission = hasCookie("allowedpermissions")? JSON.parse(getCookie("allowedpermissions")) :"";
   const dbMode = useSelector((state) => state.dbMode.value);
   const dispatch = useDispatch();
   const [userInfo, setuserInfo] = useState({});
@@ -39,11 +40,12 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
     setshowConfirm(!showConfirm);
     dispatch(clearTheme());
     if (hasCookie("channel")) {
-      router.push(isAdminMode ? "/Admin" : "/CHANNEL/Signin")
+      router.push(isAdminMode ? "/admin" : "/channel/Signin")
     } else {
-      router.push(isAdminMode ? "/Admin" : "/")
+      router.push(isAdminMode ? "/admin" : "/")
     }
-    dispatch(isAdminMode ? LoggedOut()  : userLogOut());
+    dispatch(clearValue())
+    dispatch(isAdminMode ? LoggedOut()  : userLogOut()); 
     dispatch(clearTheme())
     dispatch(stopLoading())
     toast.success("Logged Out Successfully");
@@ -178,9 +180,9 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
   return (
     <>
       {hasCookie("channel") && userInfo?.db_role != null && userInfo?.db_role?.role_id != 3  ? (
-        <CP_Navbar_User />
+        <CP_Navbar_User  />
       ) : (
-        <CP_Navbar_Admin />
+        <CP_Navbar_Admin  />
       )}
 
       {!hasCookie("channel") && (
@@ -194,13 +196,13 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
           <div
             className="topNav_Wrapper"
             style={{
-              height: path !== "/CHANNEL/ActivePartners" ? "8vh" : "1vh",
+              height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
             }}
           >
             <div className="top_nav">
               <div className="brand_icon">
-                {hasCookie("crm") &&
-                //  <LeadShyneIcon />
+                {!hasCookie("Admin") &&
+                
                 <img
                 src={
                   clientData?.logo
@@ -210,6 +212,7 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
                 alt
               />
                  }
+                 
                 {hasCookie("dms") && (
                   <img src="/DMS_IMAGES/kloudmart.png" className />
                 )}
@@ -217,7 +220,7 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
               <div className="profile_sec">
                 {dbMode !== "admin" && !isCHannel ? (
                   <div className="quick_add_sec d-flex gap-2 ">
-                    {allowedPermissions?.length > 1 && (
+                    {/* {allowedPermissions?.length > 1 && (
                       <Dropdown>
                         <Dropdown.Toggle variant="primary" id="quickAdd">
                           <div className="plusicon">
@@ -261,7 +264,19 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
                           ))}
                         </Dropdown.Menu>
                       </Dropdown>
-                    )}
+                    )} */}
+                    {
+                      hasCookie("crm") && allowedpermission?.length>1 && (
+                        <img
+                        style={{width:"20px"}} 
+                        src="/switch.svg"
+                        onClick={()=>{
+                          deleteCookie("crm")
+                          dispatch(clearValue())
+                          router.push("/")
+                        }}/>
+                      )
+                    }
                     {hasCookie("crm") && (
                       <Dropdown>
                         <Dropdown.Toggle variant="primary" id="quickAdd">
@@ -407,221 +422,7 @@ const Topnav = ({ allowedPermissions, topnavPermission }) => {
           </div>
         </>
       )}
-      {/* <ConfirmBox
-        showConfirm={showConfirm}
-        setshowConfirm={setshowConfirm}
-        actionType={logouthandler}
-        title={"Are You Sure you want to Logout ?"}
-      />
-      <div className="topNav_Wrapper" style={{
-        height: path !== '/CHANNEL/ActivePartners' ? "8vh": "1vh"
-      }}>
-        <div className="top_nav">
-          <div className="brand_icon">
-            {
-              hasCookie("crm")  && (
-                <LeadShyneIcon />
-              )
-            }
-            {
-              hasCookie("dms") &&(
-                <img src="/DMS_IMAGES/kloudmart.png"  className />
-              )
-            }
-          </div>
-          <div className="profile_sec">
-            {dbMode !== "admin" && !isCHannel ? (
-              <div className="quick_add_sec d-flex gap-2 ">
-                {allowedPermissions?.length > 1 && (
-                  <Dropdown>
-                    <Dropdown.Toggle variant="primary" id="quickAdd">
-                      <div className="plusicon">
-                        <PlusIcon />{" "}
-                      </div>
-
-                      <div className="btn_text">
-                        {" "}
-                        {topnavPermission.toUpperCase()}{" "}
-                      </div>
-
-                      <div className="chevrolet">
-                        <ChevroletLeftIcon />{" "}
-                      </div>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      {allowedPermissions.map((permission, index) => (
-                        <div className="quickpermissionlist" key={index}>
-                          <div
-                            className="text list-item "
-                            onClick={() => {
-                              switchPermission(permission);
-                            }}
-                          >
-                            <div className="text"
-                             onClick={()=>{
-                              if(hasCookie("sideAdmin")){
-                                deleteCookie(`sideAdmin`);
-                                setCookie('sideUser',"true")
-                                dispatch(userMode())
-                              }
-                              
-                              router.push("/")}
-                            }
-                             >
-                              {permission.toUpperCase()}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown>
-                )}
-                {
-                  hasCookie("crm") && (
-                    <Dropdown>
-                  <Dropdown.Toggle variant="primary" id="quickAdd">
-                    <div className="plusicon">
-                      <PlusIcon />{" "}
-                    </div>
-                    <div className="btn_text"> Quick Add </div>
-                    <div className="chevrolet">
-                      <ChevroletLeftIcon />{" "}
-                    </div>
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu>
-                    <ul className="quickaddlist">
-                      <Link href="/AddLeads">
-                        <li className="list-item">
-                          <div className="plus_icon">
-                            {" "}
-                            <PlusIcon />{" "}
-                          </div>
-                          <div className="text"> Lead </div>
-                        </li>
-                      </Link>
-                      <Link href="/AddAccount">
-                        <li className="list-item">
-                          <div className="plus_icon">
-                            {" "}
-                            <PlusIcon />{" "}
-                          </div>
-                          <div className="text"> Account </div>
-                        </li>
-                      </Link>
-                      <Link href="/AddContact">
-                        <li className="list-item">
-                          <div className="plus_icon">
-                            {" "}
-                            <PlusIcon />{" "}
-                          </div>
-                          <div className="text"> Contact </div>
-                        </li>
-                      </Link>
-                      <Link href="/AddOpportunity">
-                        <li className="list-item">
-                          <div className="plus_icon">
-                            {" "}
-                            <PlusIcon />{" "}
-                          </div>
-                          <div className="text"> Opportunity </div>
-                        </li>
-                      </Link>
-                      <Link href="/AddQuotations">
-                        <li className="list-item">
-                          <div className="plus_icon">
-                            {" "}
-                            <PlusIcon />{" "}
-                          </div>
-                          <div className="text"> Quotation </div>
-                        </li>
-                      </Link>
-                      <Link href="/AddTask">
-                        <li className="list-item">
-                          <div className="plus_icon">
-                            {" "}
-                            <PlusIcon />{" "}
-                          </div>
-                          <div className="text"> Task </div>
-                        </li>
-                      </Link>
-                    </ul>
-                  </Dropdown.Menu>
-                </Dropdown>
-                  )
-                }
-                
-              </div>
-            ) : null}
-
-            <div className="user_profile">
-              <Dropdown>
-                <Dropdown.Toggle variant="none" id="profileBtn">
-                  <div className="btn_wrapper">
-                    <div className=" img_sec">
-                      {dbMode == "admin" ? (
-                        <img
-                          src={
-                            userInfo.profile_img
-                              ? `${filesUrl}/adminProfile/images${userInfo.profile_img}`
-                              : `/images/profile_picture.png`
-                          }
-                          alt=""
-                        />
-                      ) : (
-                        <img
-                          src={
-                            userInfo?.db_user_profile?.user_image_file
-                              ? `${filesUrl}/lsUser/images${userInfo?.db_user_profile?.user_image_file}`
-                              : `/images/profile_picture.png`
-                          }
-                          alt=""
-                        />
-                      )}
-                    </div>
-                    <div className="name_sec">
-                      <div className="name">
-                        {" "}
-                        {userInfo.user ? userInfo.user : "user"}{" "}
-                      </div>
-                      <div className="role"> {} </div>
-                    </div>
-                  </div>
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                  <ul className="profile_list">
-                    <Link
-                      href={dbMode == "admin" ? "/Profile" : "/UserProfile"}
-                    >
-                      <li className="list-item">
-                        <div className="icon">
-                          <AvatarIcon />
-                        </div>
-                        <div className="text"> Profile </div>
-                      </li>
-                    </Link>
-
-                    <li className="list-item">
-                      <div className="icon">
-                        {" "}
-                        <LogoutIcon />{" "}
-                      </div>
-                      <div
-                        className="text"
-                        onClick={() => setshowConfirm(!showConfirm)}
-                      >
-                        {" "}
-                        logout{" "}
-                      </div>
-                    </li>
-                  </ul>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-          </div>
-        </div>
-      </div> */}
+      
     </>
   );
 };

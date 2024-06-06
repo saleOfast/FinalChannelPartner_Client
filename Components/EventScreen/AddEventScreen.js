@@ -74,7 +74,7 @@ const AddEventScreen = () => {
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setisLoading(false)
-          router.push('/EventScreen')
+          router.push('/crm/EventScreen')
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -125,7 +125,7 @@ const AddEventScreen = () => {
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setisLoading(false)
-          router.push('/EventScreen')
+          router.push('/crm/EventScreen')
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -210,10 +210,10 @@ const AddEventScreen = () => {
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               {" "}
-              <Link href="/">Home</Link>
+              <Link href="/crm">Home</Link>
             </li>
             <li className="breadcrumb-item">
-              <Link href="/EventScreen"> Event List </Link>
+              <Link href="/crm/EventScreen"> Event List </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
               {viewMode ? 'View' : <> {editMode ? "Edit" : "Add"}</>}  Event
@@ -446,18 +446,18 @@ const AddEventScreen = () => {
               </Link> */}
 
               {viewMode ? <>
-                <Link href={`/AddEvent/?id=${router.query.id}`}>
+                <Link href={`/crm/AddEvent/?id=${router.query.id}`}>
                   <button className="btn btn-primary" onClick={() => setViewMode(!viewMode)}>
                     Edit Event
                   </button>
                 </Link>
               </> : <>
-                <Link href='/EventScreen'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
+                <Link href='/crm/EventScreen'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
                 {editMode ? <button disabled={isLoading} className="btn btn-primary" onClick={updateHandler}>
                   {isLoading ? 'Loading...' : 'Update'}
                 </button> : <button disabled={isLoading} className="btn btn-primary" onClick={callLogSubmit}>
                   {isLoading ? 'Loading...' : 'Save & Submit'}
-                </button>}
+                </button>}  
               </>}
             </div>
           </div>

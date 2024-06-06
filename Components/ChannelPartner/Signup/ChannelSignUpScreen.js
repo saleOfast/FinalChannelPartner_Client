@@ -105,7 +105,7 @@ const ChannelSignUpScreen = () => {
             gst: data.data.gst || "",
           });
           setInterval(()=>{
-            router.push("/CHANNEL/Signin")
+            router.push("/channel/Signin")
           },[1000])
         } else{
           toast.success("Documents Rejected");
@@ -128,7 +128,7 @@ const ChannelSignUpScreen = () => {
             gst: data.data.gst || "",
           });
           setInterval(()=>{
-            router.push("/CHANNEL/Signin")
+            router.push("/channel/Signin")
           },[1000])
         }
         

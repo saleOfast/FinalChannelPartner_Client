@@ -337,10 +337,10 @@ const getProductList = async () => {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <Link href="/">Home </Link>
+                <Link href="/crm">Home </Link>
               </li>
               <li className="breadcrumb-item">
-                <Link href="/Opportunity">Manage Opportunity </Link>
+                <Link href="/crm/Opportunity">Manage Opportunity </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
                 Opportunity
@@ -946,7 +946,7 @@ const getProductList = async () => {
                                                 return (
                                                     <li key={quat_mast_id} className="list-item">
                                                         <div className="opp_box">
-                                                            <Link href={`/QuotationView?id=${quat_mast_id}`}>
+                                                            <Link href={`/crm/QuotationView?id=${quat_mast_id}`}>
                                                                 <div className="name">{quat_code}</div>
                                                             </Link>
                                                         </div>
@@ -956,7 +956,7 @@ const getProductList = async () => {
                                         </ul>
                                     </div>
                                     <div className="card_footer">
-                                        <Link href='/Quotations'>
+                                        <Link href='/crm/Quotations'>
                                             <div className="text_more">view more</div>
                                         </Link>
                                     </div>
@@ -973,7 +973,7 @@ const getProductList = async () => {
                                                 return (
                                                     <li key={lead_id} className="list-item">
                                                         <div className="opp_box">
-                                                            <Link href={`/LeadsView?id=${lead_id}`}>
+                                                            <Link href={`/crm/LeadsView?id=${lead_id}`}>
                                                                 <div className="name">{lead_name}</div>
                                                             </Link>
                                                         </div>
@@ -983,7 +983,7 @@ const getProductList = async () => {
                                         </ul>
                                     </div>
                                     <div className="card_footer">
-                                        <Link href='/ManageLeads'>
+                                        <Link href='/crm/ManageLeads'>
                                             <div className="text_more">view more</div>
                                         </Link>
                                     </div>

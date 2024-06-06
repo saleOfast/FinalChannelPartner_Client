@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState={
-    activeLink:"/"
+    activeLink:"/partner"
 }
 
 export const cpActiveLinkSlice=createSlice({

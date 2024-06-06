@@ -215,7 +215,7 @@ const AddUserScreen = () => {
         AddUploadPicture(userId, "cheque", uploadDocs.cheque[0], 0);
         if (userImage) AddUploadPicture(userId, "lsUser", userImage[0], 0);
         setisLoading(false);
-        router.push("/CHANNEL/ActivePartners");
+        router.push("/partner/ActivePartners");
       }
     } catch (error) {
       if (error?.response?.data?.status === 422) {
@@ -285,7 +285,7 @@ const AddUserScreen = () => {
             userInfo.user_image_file
           );
         setisLoading(false);
-        router.push("/CHANNEL/ActivePartners");
+        router.push("/partner/ActivePartners");
       }
     } catch (error) {
       if (error?.response?.data?.status === 422) {
@@ -670,7 +670,7 @@ const AddUserScreen = () => {
                     errorData?.report_to ? "input_box errorBox" : "input_box"
                   }
                 >
-                  <label htmlFor="task_name">Report/Assign To </label>
+                  <label htmlFor="task_name">Report/Assign To  </label>
                   <Select
                     id={userInfo.des_id}
                     defaultValue={""}
@@ -997,11 +997,11 @@ const AddUserScreen = () => {
 
             <div className="text-end">
               <div className="submit_btn">
-                <Link href="/CHANNEL/ActivePartners">
+                <Link href="/partner/ActivePartners">
                   <button className=" btn btn-danger rounded-2 me-2">Cancel</button>
                 </Link>
                 {
-                  editMode ?  null: viewMode ?(<Link href={`/CHANNEL/EditActiveUsers?id=${userInfo.user_code}&mode=edit`}>
+                  editMode ?  null: viewMode ?(<Link href={`/partner/EditActiveUsers?id=${userInfo.user_code}&mode=edit`}>
                   <button className="btn btn-cancel text-white me-2 " style={{background:`${clientBtnColor}` }}>Edit</button>
                 </Link>) : null
                 }

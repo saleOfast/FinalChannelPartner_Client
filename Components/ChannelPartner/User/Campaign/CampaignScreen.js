@@ -265,7 +265,7 @@ const CampaignScreen = () => {
                             style={{ height: 17,cursor:"pointer" }}
                           />
                           <Link
-                            href={`/CHANNEL/CampaignDetails?id=${project?.project_id}`}
+                            href={`/partner/CampaignDetails?id=${project?.project_id}`}
                           >
                           <img
                             src="/ChannelPartner/download-file-white.svg"

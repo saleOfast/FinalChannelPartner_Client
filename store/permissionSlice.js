@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { deleteCookie, hasCookie, setCookie } from 'cookies-next';
 
-const initialState = { value: '',allowedPermissions:[] }
+const initialState = { value: '' ,allowedPermissions:[] }
 
 export const assignPermissions=(permissions)=>(dispatch)=>{
+    
     dispatch(allowpermissions(permissions))
 }
 
@@ -65,13 +66,17 @@ export const dbPermissionModeSlice = createSlice({
             state.value='channel'
         },
         allowpermissions:(state,action)=>{
-            state.allowedPermissions=action.payload
-            setCookie("allowedPermissions",JSON.stringify(action.payload))
+            state.allowedPermissions= action.payload;
+            setCookie('allowedpermissions', action.payload);
+           
+        },
+        clearValue:(state,action)=>{
+            state.value=null
         }
     },
 })
 
-export const { crm,dms,sales,channel,allowpermissions } = dbPermissionModeSlice.actions
+export const { crm,dms,sales,channel,allowpermissions,clearValue } = dbPermissionModeSlice.actions
 
 export default dbPermissionModeSlice.reducer
 

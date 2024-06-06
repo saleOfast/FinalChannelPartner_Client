@@ -274,13 +274,12 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                         </form>
                         {/* MOT DE PASSE OUBLIE ? */}
                         <Link
-                          href="/CHANNEL/ForgotPassword"
+                          href="/partner/ForgotPassword"
                           className="fp text-decoration-none"
                         >
                           Forgot password?
                         </Link>
-                        {/* BOUTTON LOGIN */}
-                        {/* <button type="submit" className="login_btn mt-5">Login</button> */}
+                       
                       </div>
                     </div>
                   </div>

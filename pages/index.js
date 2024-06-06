@@ -129,7 +129,7 @@ export default function Home() {
       ) : (
         <>
           {loggedIn ? (
-            <div className="NewLoginScreen bg-white w-100">
+            <div className="NewLoginScreen bg-white w-100 overflow-auto">
               <div className="row m-0  login">
                 <div className="col-12 col-lg-6 m-0 p-0">
                   <div className="form-left d-flex flex-column justify-content-between">
@@ -162,12 +162,12 @@ export default function Home() {
                   {allowedpermission?.map((permission, i) => (
                     <div
                       key={i}
-                      className=" h-25 p-3"
+                      className=" h-25 p-3 "
                       onClick={() => {
                         handleClick(permission);
                       }}
                     >
-                      <div className="text-center text-white fw-bold rounded-lg p-3 fs-5" style={{backgroundColor:"#0460E7"}}>
+                      <div className="text-center text-white fw-bold rounded-lg p-3 fs-5 cursor-pointer" style={{backgroundColor:"#0460E7"}}>
                         {permission.toUpperCase()}
                         
                       </div>

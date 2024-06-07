@@ -85,12 +85,12 @@ const ProductCard = ({discount,image,p_name,p_desc,p_price,unit_in_case,product_
          <div className="card" style={{width: '18rem'}}>
             <div className>
               <div className="vector">
-                <img src="/DMS_IMAGES/ICONS/card_vector.png" alt />
+                <img src="/DMS_IMAGES/ICONS/card_vector.png" alt="normal"/>
                 <span>{discount}%</span>
               </div>
-              {/* <div className="items_img text-center"> <img src="./DMS_IMAGES/discounted_items1.png" alt /></div> */}
+              {/* <div className="items_img text-center"> <img src="./DMS_IMAGES/discounted_items1.png" alt="normal"/></div> */}
               <div className="items_img text-center" > 
-              <img src={`${filesUrl}/product/images${image}`} style={{width:"115px",height:"70px"}} alt />
+              <img src={`${filesUrl}/product/images${image}`} style={{width:"115px",height:"70px"}} alt="normal"/>
               </div> 
               <div className="biscuits">
                 <div className="com_name">

@@ -11,7 +11,7 @@ export default withUser( function EmailConfiguration() {
   useEffect(() => {
       setCookie('isActive', 'emailConfig')
       dispatch(setIsActive('emailConfig'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
       

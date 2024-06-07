@@ -10,7 +10,7 @@ export default withUser (function Leave() {
     useEffect(() => {
         setCookie('isActive', 'HRProcess')
         dispatch(setIsActive('HRProcess'))
-    }, []);
+    }, [dispatch]);
     return (
         <> 
                     <LeaveScreen/>

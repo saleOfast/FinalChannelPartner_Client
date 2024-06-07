@@ -438,6 +438,7 @@ const AddOpportunityScreen = () => {
             updated_on: Datenow,
             opp_owner: loginDetails.user_id
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
@@ -448,6 +449,7 @@ const AddOpportunityScreen = () => {
             getSingleData(id);
             getProductData(id);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.isReady, id]);
     return (
         <div className={`main_Box  ${sideView}`}>

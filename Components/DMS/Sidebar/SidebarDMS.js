@@ -5,18 +5,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import debounce from "lodash.debounce";
-import DashbardIcon from "../../Svg/DashbardIcon";
-import ChevroletLeftIcon from "../../Svg/ChevroletLeftIcon";
-import SettingsIcon from "../../Svg/SettingsIcon";
 import BarsIcon from "../../Svg/BarsIcon";
 import CrossIcon from "../../Svg/CrossIcon";
-import SidebarSkelton from "./SidebarSkelton";
 import { masterMode, userMode } from "../../../store/dbModeSlice";
 import { closedView, fullView } from "../../../store/sideViewSlice";
 import { hasCookie, getCookie, setCookie, deleteCookie } from "cookies-next";
 import { LoggedOut } from "../../../store/adMinLoginSlice";
 import { userLogOut } from "../../../store/ClientLoginSlice";
-import { Baseurl, filesUrl } from "../../../Utils/Constants";
+import { Baseurl } from "../../../Utils/Constants";
 
 const SidebarDMS = ({}) => {
   const router = useRouter();
@@ -138,7 +134,7 @@ const SidebarDMS = ({}) => {
     if (window.innerWidth <= 500) {
       dispatch(closedView());
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const sideUserCookie = hasCookie("sideUser");

@@ -10,7 +10,7 @@ export default withUser (function ManageLeadSource() {
   useEffect(() => {
       setCookie('isActive', 'leadManage')
       dispatch(setIsActive('leadManage'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <ManageLeadSourceScreen/>

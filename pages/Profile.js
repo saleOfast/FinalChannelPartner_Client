@@ -45,7 +45,7 @@ function Profile() {
       dispatch(adminMode())
     }
     getSingleData();
-  }, [])
+  }, [dispatch])
 
   return (
     <>

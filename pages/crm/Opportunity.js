@@ -10,7 +10,7 @@ export default withUser( function Opportunity() {
   useEffect(() => {
       setCookie('isActive', 'opportunity')
       dispatch(setIsActive('opportunity'))
-  }, []);
+  }, [dispatch]);
     return (
         <>
                     <OpportunityScreen />

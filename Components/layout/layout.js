@@ -71,18 +71,22 @@ const Layout = ({Component, pageProps}) => {
   
     useEffect(() => {
       checkSidebar()
-    }, [ permission]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [permission]);
     
     useEffect(() => {
         checkUSer()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [userLogin]);
 
       useEffect(() => {
         checkAllowedPermissions()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [allowedpermission]);
 
       useEffect(()=>{
         checkColor()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       },[])
 
   return (

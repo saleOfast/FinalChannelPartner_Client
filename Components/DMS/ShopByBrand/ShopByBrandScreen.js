@@ -98,7 +98,7 @@ const ShopByBrandScreen = () => {
               </div>
               <div className="logo">
                 <a href="#">
-                  <img src="/DMS_IMAGES/kloudmart.png" alt />
+                  <img src="/DMS_IMAGES/kloudmart.png" alt="normal"/>
                 </a>
               </div>
             </div>
@@ -126,7 +126,7 @@ const ShopByBrandScreen = () => {
                   </div>
                 </div>
                 <div className="cart position-relative">
-                  <img src="/DMS_IMAGES/ICONS/shopping-cart.svg" alt />
+                  <img src="/DMS_IMAGES/ICONS/shopping-cart.svg" alt="normal"/>
                   <div className="circle d-flex justify-content-center align-items-center position-absolute">
                     <span>0</span>
                   </div>

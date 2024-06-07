@@ -11,7 +11,7 @@ export default withUser( function ManageLeadHeadScreen() {
   useEffect(() => {
       setCookie('isActive', 'HRProcess')
       dispatch(setIsActive('HRProcess'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <LeaveHeadScreen/>

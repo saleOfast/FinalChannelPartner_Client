@@ -262,7 +262,7 @@ const ChannelSignUpScreen = () => {
                           ? `${filesUrl}` +
                             `/logo/images${clientData?.logo}`
                           : "/ChannelPartner/logo.png"
-                      } alt />
+                      } alt="normal"/>
                 </div>
                 <div className="col-6">
                   <div
@@ -607,7 +607,7 @@ const ChannelSignUpScreen = () => {
                                   Upload
                                   <img
                                     src="/ChannelPartner/upload-file.svg"
-                                    alt=""
+                                    alt="normal"
                                     style={{ height: 24 }}
                                   />
                                 </label>

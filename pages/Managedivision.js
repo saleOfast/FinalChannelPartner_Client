@@ -10,7 +10,7 @@ export default withUser (function Managedivision() {
   useEffect(() => {
       setCookie('isActive', 'organization')
       dispatch(setIsActive('organization'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <ManageDivisionScreen />

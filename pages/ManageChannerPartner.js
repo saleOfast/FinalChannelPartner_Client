@@ -10,7 +10,7 @@ export default withUser( function ManageUsers() {
   useEffect(() => {
       setCookie('isActive', 'userManage')
       dispatch(setIsActive('userManage'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <ManageUserChannelScreens />

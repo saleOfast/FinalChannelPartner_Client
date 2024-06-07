@@ -10,7 +10,7 @@ export default withUser (function OpportunityManagement() {
   useEffect(() => {
       setCookie('isActive', 'opportunityManage')
       dispatch(setIsActive('opportunityManage'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <OpportuntyManagementScreen/>

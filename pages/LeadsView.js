@@ -10,7 +10,7 @@ export default withUser (function LeadsView() {
     useEffect(() => {
         setCookie('isActive', 'leads')
         dispatch(setIsActive('leads'))
-    }, []);
+    }, [dispatch]);
   return (
     <>
           <LeadViewScreen />

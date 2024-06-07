@@ -11,7 +11,7 @@ export default withUser (function ManageTaskStatus() {
   useEffect(() => {
       setCookie('isActive', 'taskManage')
       dispatch(setIsActive('taskManage'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <ManageTaskStatusScreen/>

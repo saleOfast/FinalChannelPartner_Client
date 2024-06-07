@@ -10,7 +10,7 @@ import { setIsActive } from '../store/isActiveSidebarSlice'
   useEffect(() => {
       setCookie('isActive', 'tasks')
       dispatch(setIsActive('tasks'))
-  }, []);
+  }, [dispatch]);
     return (
         <>
 

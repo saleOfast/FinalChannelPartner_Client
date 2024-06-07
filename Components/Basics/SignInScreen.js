@@ -176,7 +176,7 @@ export default function SignInScreen({ setLoggedIn }) {
         <div className="row m-0  login">
           <div className="col-12 col-lg-6 m-0 p-0">
             <div className="form-left d-flex flex-column justify-content-between">
-              <img src="/images/Ellipse26.png" alt className="image-one" />
+              <img src="/images/Ellipse26.png" alt="normal"className="image-one" />
               <img
                 src={
                   clientData?.logo

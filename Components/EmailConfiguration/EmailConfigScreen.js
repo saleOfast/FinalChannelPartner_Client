@@ -141,6 +141,7 @@ const updateEmailConfig = async (e) => {
 
   useEffect(()=>{
       getEmailConfig()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   return (

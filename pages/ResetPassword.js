@@ -74,7 +74,7 @@ const ResetPassword = () => {
                           &&( `${filesUrl}` +
                             `/logo/images${clientData?.logo}`)
                       }
-                      alt
+                      alt=""
                     />
                      </div>
                 <div className="header"> Please Enter Your mail </div>

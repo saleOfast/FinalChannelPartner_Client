@@ -751,7 +751,7 @@ const AddUserScreen = () => {
                         ) : (
                           <>
                             <div className="img_holder">
-                              <img src="/images/add_user_avatar.png" alt="" />
+                              <img src="/images/add_user_avatar.png" alt="normal" />
                               <div className="icon">
                                 <CameraIcon />
                               </div>

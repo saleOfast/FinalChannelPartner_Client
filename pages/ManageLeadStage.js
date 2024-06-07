@@ -10,7 +10,7 @@ export default withUser (function ManageLeadStage() {
   useEffect(() => {
       setCookie('isActive', 'leadManage')
       dispatch(setIsActive('leadManage'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
         <ManageLeadStageScreen/> 

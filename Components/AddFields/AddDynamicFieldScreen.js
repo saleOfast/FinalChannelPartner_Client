@@ -276,7 +276,7 @@ export default function AddDynamicFieldScreen() {
 
     useEffect(() => {
         if (!router.isReady) return;
-        if (router.query.id) {
+        if (id) {
             setEditMode(true);
             getSingleList(id);
         }

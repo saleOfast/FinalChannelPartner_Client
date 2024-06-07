@@ -852,6 +852,7 @@ const AddLeadsScreen = () => {
     getContactList();
     getOppurtunityList();
     getusersList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -861,6 +862,7 @@ const AddLeadsScreen = () => {
       getTaskInLead(id);
       getCallsInLead(id)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id]);
 
 
@@ -896,6 +898,8 @@ const AddLeadsScreen = () => {
     } else {
       getcity(userInfo.state_id);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.state_id]);
 
   useEffect(() => {
@@ -904,11 +908,13 @@ const AddLeadsScreen = () => {
     } else {
       getState(userInfo.country_id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.country_id]);
 
   useEffect(() => {
     getState();
     getCountryList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -924,7 +930,7 @@ const AddLeadsScreen = () => {
     if (router.query.vw) {
       setViewMode(true)
     }
-
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id]);
 
   return (

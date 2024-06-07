@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import PlusIcon from "../Svg/PlusIcon";
-import Modal from "react-bootstrap/Modal";
+
 import axios from "axios";
 import { Baseurl, filesUrl } from "../../Utils/Constants";
 import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
-import Button from "react-bootstrap/Button";
-import ConfirmBox from "../Basics/ConfirmBox";
+
 import { useRouter } from "next/router";
 import moment from "moment";
 import { useSelector } from "react-redux";
@@ -361,6 +359,7 @@ const AddProductScreen = () => {
       created_on: DateNow,
       updated_on: DateNow,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -369,6 +368,7 @@ const AddProductScreen = () => {
       setEditMode(true);
       getData(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id]);
 
   return (

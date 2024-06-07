@@ -11,7 +11,7 @@ export default withUser( function ViewUsers() {
     useEffect(() => {
         setCookie('isActive', 'leads')
         dispatch(setIsActive('leads'))
-    }, []);
+    }, [dispatch]);
     return (
         <>
                     <ViewUserScreens />

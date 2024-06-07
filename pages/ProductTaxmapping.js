@@ -10,7 +10,7 @@ export default( function ProductTaxmapping() {
     useEffect(() => {
         setCookie('isActive', 'product')
         dispatch(setIsActive('product'))
-    }, []);
+    }, [dispatch]);
     return (
         <>
                     <ProductTaxMappingScreen />

@@ -12,7 +12,7 @@ export default withUser (function ManageRating() {
   useEffect(() => {
       setCookie('isActive', 'leadManage')
       dispatch(setIsActive('leadManage'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
       

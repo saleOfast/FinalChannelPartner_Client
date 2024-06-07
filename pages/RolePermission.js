@@ -10,7 +10,7 @@ export default withUser( function UserProfileManagement() {
   useEffect(() => {
       setCookie('isActive', 'userprflMgt')
       dispatch(setIsActive('userprflMgt'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <RolePermissionScreens />

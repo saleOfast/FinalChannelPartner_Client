@@ -547,11 +547,13 @@ const AddAccountScreen = () => {
   }, [userInfo.ship_cont]);
 
   useEffect(() => {
+
     if (!userInfo.bill_state) {
       return;
     } else {
       getBillCity(userInfo.bill_state);
     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.bill_state]);
 
   useEffect(() => {
@@ -560,6 +562,7 @@ const AddAccountScreen = () => {
     } else {
       getShipCity(userInfo.ship_state);
     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.ship_state]);
 
   useEffect(() => {
@@ -577,6 +580,7 @@ const AddAccountScreen = () => {
     if (router.query.vw) [
       setViewMode(true)
     ]
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }
     , [router.isReady, id]);
 

@@ -45,7 +45,7 @@ const ViewUserScreens = () => {
 
     useEffect(() => {
         if (!router.isReady) return;
-        if (router.query.id) {
+        if (id) {
             getDataList(id)
         }
     }, [router.isReady, id])

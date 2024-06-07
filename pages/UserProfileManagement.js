@@ -10,7 +10,7 @@ export default withUser( function UserProfileManagement() {
   useEffect(() => {
       setCookie('isActive', 'userProfile')
       dispatch(setIsActive('userProfile'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
       

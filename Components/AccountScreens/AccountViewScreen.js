@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
-
-import PlusIcon from "../Svg/PlusIcon";
 import Link from "next/link";
 import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { Baseurl } from "../../Utils/Constants";
-import ConfirmBox from "../Basics/ConfirmBox";
 import AccountDetailComponent from "./AccountDetailComponent";
-import Button from "react-bootstrap/Button";
 import moment from "moment";
 import { useSelector } from "react-redux";
 
@@ -52,10 +48,10 @@ const AccountViewScreen = () => {
     };
     useEffect(() => {
         if (!router.isReady) return;
-        if (router.query.id) {
+        if (router.query) {
             getDataList(id);
         }
-    }, [router.isReady, id]);
+    }, [router.isReady, router.query, id]);
 
     return (
         <>

@@ -84,7 +84,7 @@ const ViewUserScreens = () => {
 
                                     <div className="header">User Information</div>
                                     <div className="profile_pic">
-                                        <img src={dataList?.db_user_profile?.user_image_file ? `${filesUrl}/lsUser/images${dataList?.db_user_profile?.user_image_file}` : `/images/add_user_avatar.png`} alt="" />
+                                        <img src={dataList?.db_user_profile?.user_image_file ? `${filesUrl}/lsUser/images${dataList?.db_user_profile?.user_image_file}` : `/images/add_user_avatar.png`} alt="normal" />
                                     </div>
                                     <div className="info_boxes">
                                         <UserDetailComponent head='Profile Level' value={dataList?.db_role?.role_name} />

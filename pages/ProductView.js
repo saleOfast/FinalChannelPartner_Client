@@ -10,7 +10,7 @@ export default withUser (function ProductView() {
   useEffect(() => {
       setCookie('isActive', 'product')
       dispatch(setIsActive('product'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <ProductViewScreen/>

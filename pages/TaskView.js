@@ -10,7 +10,7 @@ export default withUser( function LeadsView() {
     useEffect(() => {
         setCookie('isActive', 'tasks')
         dispatch(setIsActive('tasks'))
-    }, []);
+    }, [dispatch]);
   return (
     <>
       

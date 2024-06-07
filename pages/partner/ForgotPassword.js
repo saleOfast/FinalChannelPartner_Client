@@ -119,7 +119,7 @@ const ForgotPassword = () => {
                           &&( `${filesUrl}` +
                             `/logo/images${clientData?.logo}`)
                       }
-                      alt
+                      alt="normal"
                     />
                 </div>
                 <div className="col-5 d-flex justify-content-md-end">

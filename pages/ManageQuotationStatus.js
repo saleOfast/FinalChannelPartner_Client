@@ -11,7 +11,7 @@ export default withUser( function ManageQuotationStatus() {
   useEffect(() => {
       setCookie('isActive', 'QuotationsManage')
       dispatch(setIsActive('QuotationsManage'))
-  }, []);
+  }, [dispatch]);
     return (
         <>
            

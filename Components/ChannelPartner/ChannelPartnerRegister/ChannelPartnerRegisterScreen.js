@@ -177,7 +177,7 @@ const ChannelPartnerRegisterScreen = () => {
               </div>
               <div className="logo">
                 <a href="#">
-                  <img src="/DMS_IMAGES/kloudmart.png" alt />
+                  <img src="/DMS_IMAGES/kloudmart.png" alt="normal"/>
                 </a>
               </div>
             </div>

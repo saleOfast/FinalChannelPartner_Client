@@ -382,7 +382,7 @@ const Topnav = ({  topnavPermission }) => {
                                   ? `${filesUrl}/adminProfile/images${userInfo?.profile_img}`
                                   : `/images/profile_picture.png`
                               }
-                              alt=""
+                              alt="normal"
                             />
                           ) : (
                             <img
@@ -391,7 +391,7 @@ const Topnav = ({  topnavPermission }) => {
                                   ? `${filesUrl}/lsUser/images${userInfo?.db_user_profile?.user_image_file}`
                                   : `/images/profile_picture.png`
                               }
-                              alt=""
+                              alt="normal"
                             />
                           )}
                         </div>

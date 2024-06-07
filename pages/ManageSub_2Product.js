@@ -12,7 +12,7 @@ import { setIsActive } from '../store/isActiveSidebarSlice';
   useEffect(() => {
       setCookie('isActive', 'ProfilePermissionManagement')
       dispatch(setIsActive('ProfilePermissionManagement'))
-  }, []);
+  }, [dispatch]);
     return(
 
         <>

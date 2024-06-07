@@ -11,7 +11,7 @@ import { setCookie } from 'cookies-next';
     useEffect(() => {
         setCookie('isActive', 'expense')
         dispatch(setIsActive('expense'))
-    }, []);
+    }, [dispatch]);
     return (
         <>
          

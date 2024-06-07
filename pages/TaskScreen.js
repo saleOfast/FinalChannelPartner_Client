@@ -11,7 +11,7 @@ export default withUser( function TaskScreen() {
     useEffect(() => {
         setCookie('isActive', 'tasks')
         dispatch(setIsActive('tasks'))
-    }, []);
+    }, [dispatch]);
     return (
         <>
                     <Taskscreens />

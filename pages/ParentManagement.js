@@ -11,7 +11,7 @@ export default withUser( function ParentManagement() {
   useEffect(() => {
       setCookie('isActive', 'Parent')
       dispatch(setIsActive('Parent'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
    

@@ -10,7 +10,7 @@ export default withUser (function ManageProductCategory() {
   useEffect(() => {
       setCookie('isActive', 'productManage')
       dispatch(setIsActive('productManage'))
-  }, []);
+  }, [dispatch]);
   return (
 
     <>

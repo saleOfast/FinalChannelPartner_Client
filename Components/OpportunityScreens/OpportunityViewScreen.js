@@ -315,11 +315,13 @@ const getProductList = async () => {
       getCallsInLead(id)
       getProductData(id)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id]);
 
   useEffect(() => {
     getUserList();
     getProductList()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

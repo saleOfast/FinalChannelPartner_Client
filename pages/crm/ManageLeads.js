@@ -11,7 +11,7 @@ import { setIsActive } from '../../store/isActiveSidebarSlice'
   useEffect(() => {
       setCookie('isActive', 'leads ')
       dispatch(setIsActive('leads'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
       <ManageLeadScreen />

@@ -18,7 +18,7 @@ const NewOrderScreen = () => {
         </div>
         <div className="logo">
           <a href="#">
-            <img src="/DMS_IMAGES/kloudmart.png" alt />
+            <img src="/DMS_IMAGES/kloudmart.png" alt="" />
           </a>
         </div>
       </div>
@@ -34,7 +34,7 @@ const NewOrderScreen = () => {
             </div>
           </div>
           <div className="cart position-relative" onClick={()=>router.push("/DMS/Cart")}>
-            <img src="/DMS_IMAGES/ICONS/shopping-cart.svg" alt />
+            <img src="/DMS_IMAGES/ICONS/shopping-cart.svg" alt="normal"/>
             <div className="circle d-flex justify-content-center align-items-center position-absolute">
               <span>0</span>
             </div>
@@ -151,10 +151,10 @@ const NewOrderScreen = () => {
       <div className="card" style={{width: '18rem'}}>
         <div className>
           <div className="vector">
-            <img src="/DMS_IMAGES/ICONS/card_vector.png" alt />
+            <img src="/DMS_IMAGES/ICONS/card_vector.png" alt="normal"/>
             <span>32%</span>
           </div>
-          <div className="items_img text-center"> <img src="/DMS_IMAGES/discounted_items1.png" alt /></div>
+          <div className="items_img text-center"> <img src="/DMS_IMAGES/discounted_items1.png" alt="normal"/></div>
           <div className="biscuits">
             <div className="com_name">
               <p>McVities Digestive</p>
@@ -210,10 +210,10 @@ const NewOrderScreen = () => {
       <div className="card" style={{width: '18rem'}}>
         <div className>
           <div className="vector">
-            <img src="/DMS_IMAGES/ICONS/card_vector.png" alt />
+            <img src="/DMS_IMAGES/ICONS/card_vector.png" alt="normal"/>
             <span>32%</span>
           </div>
-          <div className="items_img text-center pt-2"> <img src="/DMS_IMAGES/discounted_items2.png" alt /></div>
+          <div className="items_img text-center pt-2"> <img src="/DMS_IMAGES/discounted_items2.png" alt="normal"/></div>
           <div className="biscuits ">
             <div className="com_name">
               <p>Britannia Good Day</p>

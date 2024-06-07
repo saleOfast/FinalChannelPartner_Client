@@ -11,7 +11,7 @@ export default withUser (function Quotations() {
   useEffect(() => {
       setCookie('isActive', 'quotation')
       dispatch(setIsActive('quotation'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
  

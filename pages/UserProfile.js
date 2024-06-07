@@ -16,7 +16,7 @@ import withUser from '../HOC/WithUserhoc';
     useEffect(() => {
         setCookie('isActive', 'taxManage')
         dispatch(setIsActive('taxManage'))
-    }, []);
+    }, [dispatch]);
     const [editMode, setEditMode] = useState(false)
     const [userData, setUserData] = useState({})
 

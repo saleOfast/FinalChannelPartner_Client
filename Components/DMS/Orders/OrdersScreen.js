@@ -68,7 +68,7 @@ const OrdersScreen = () => {
       </div>
       <div className="logo">
         <a href="#">
-          <img src="/DMS_IMAGES/kloudmart.png" alt />
+          <img src="/DMS_IMAGES/kloudmart.png" alt="normal"/>
         </a>
       </div>
     </div>
@@ -109,7 +109,7 @@ const OrdersScreen = () => {
                   <div className="body shop_by_category pt-3">
                     
                       <div className="d-flex  align-items-center pb-2">
-                        <div className="items_img text-center"> <img src={`${filesUrl}/product/images${order.OrderProductData.image}`} style={{width:"150px"}} alt className="shadow-none" />
+                        <div className="items_img text-center"> <img src={`${filesUrl}/product/images${order.OrderProductData.image}`} style={{width:"150px"}} alt="normal"className="shadow-none" />
                         </div>
                         <div className="d-flex flex-column ms-4">
                           <div className="d-flex flex-column gap-2">
@@ -172,7 +172,7 @@ const OrdersScreen = () => {
                 <div className="body shop_by_category pt-3">
                   <div className>
                     <div className="d-flex justify-content-between align-items-center pb-2">
-                      <div className="items_img text-center"> <img src="/DMS_IMAGES/discounted_items1.png" alt className="shadow-none" />
+                      <div className="items_img text-center"> <img src="/DMS_IMAGES/discounted_items1.png" alt="normal"className="shadow-none" />
                       </div>
                       <div className="d-flex flex-column">
                         <div className="d-flex flex-column gap-2">

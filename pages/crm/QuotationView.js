@@ -10,7 +10,7 @@ export default withUser( function QuotationView() {
   useEffect(() => {
       setCookie('isActive', 'quotation')
       dispatch(setIsActive('quotation'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <QuotationScreenView/>

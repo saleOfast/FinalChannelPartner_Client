@@ -10,7 +10,7 @@ export default withUser( function Viewleaves() {
   useEffect(() => {
       setCookie('isActive', 'leaveType')
       dispatch(setIsActive('leaveType'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
      

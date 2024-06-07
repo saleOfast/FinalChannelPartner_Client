@@ -10,7 +10,7 @@ export default withUser (function ManageLeadIndustry() {
   useEffect(() => {
       setCookie('isActive', 'leadManage')
       dispatch(setIsActive('leadManage'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
     

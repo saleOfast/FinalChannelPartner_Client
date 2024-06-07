@@ -296,7 +296,7 @@ const DashboardUser = () => {
       <div className='d-block w-100'>
       <div>
       <div className=' d-flex justify-content-end pe-4  pt-3'>
-      <img src="/ChannelPartner/download-file-blue.svg" alt style={{height: 17,cursor:"pointer"}} onClick={()=>{
+      <img src="/ChannelPartner/download-file-blue.svg" alt="normal"style={{height: 17,cursor:"pointer"}} onClick={()=>{
          setShowLogo(true)
             downloadPdf() 
         }} />
@@ -310,7 +310,7 @@ const DashboardUser = () => {
                         {
                                 showLogo ? 
                                  (
-                                    <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="" className='pt-3 pb-3'  />
+                                    <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="normal" className='pt-3 pb-3'  />
                                     
                                  )
                                     :

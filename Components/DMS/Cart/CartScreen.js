@@ -145,7 +145,7 @@ const CartScreen = () => {
               </div>
               <div className="logo">
                 <a href="#">
-                  <img src="/DMS_IMAGES/kloudmart.png" alt />
+                  <img src="/DMS_IMAGES/kloudmart.png" alt="normal"/>
                 </a>
               </div>
             </div>
@@ -257,7 +257,7 @@ const CartScreen = () => {
         <div className="container">
           <div className="heading">Discounts</div>
           <button className="Apply_Coupon bg-transparent d-flex align-items-center gap-2 mt-3">
-            <img src="/DMS_IMAGES/ICONS/iconamoon_discount-fill.svg" alt />
+            <img src="/DMS_IMAGES/ICONS/iconamoon_discount-fill.svg" alt="normal"/>
             Apply Coupon{" "}
             <img
               src="/DMS_IMAGES/ICONS/chevron-down.svg"
@@ -317,7 +317,7 @@ const CartScreen = () => {
             <div className="row py-1">
               <div className="col-6">
                 <div className="d-flex gap-2">
-                  <img src="/DMS_IMAGES/ICONS/navigation.svg" alt />
+                  <img src="/DMS_IMAGES/ICONS/navigation.svg" alt="normal"/>
                   <div className="d-flex flex-column deliver_address">
                     <span className="deliver">Deliver at</span>
                     <span className="noida">Noida 201301</span>
@@ -342,7 +342,7 @@ const CartScreen = () => {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      <img src="/DMS_IMAGES/ICONS/phonepe.svg" alt />
+                      <img src="/DMS_IMAGES/ICONS/phonepe.svg" alt="normal"/>
                     </button>
                     <ul className="dropdown-menu">
                       <li>

@@ -10,7 +10,7 @@ export default withUser (function PolicyTypes() {
   useEffect(() => {
       setCookie('isActive', 'policy')
       dispatch(setIsActive('policy'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <PolicyTypesScreen />

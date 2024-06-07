@@ -113,11 +113,11 @@ const ChannelProfileScreen = () => {
                               ? `${filesUrl}/lsUser/images${userInfo?.db_user_profile?.user_image_file}`
                               : `/images/profile_picture.png`
                           }
-                          alt=""
+                          alt="normal"
                         />
                                         </div>
                                         <div className="profile-edit">
-                                            {/* <img src="/ChannelPartner/profile-edit.svg" alt="" className="position-absolute" style={{ cursor: "pointer"  }}/> */}
+                                            {/* <img src="/ChannelPartner/profile-edit.svg" alt="normal" className="position-absolute" style={{ cursor: "pointer"  }}/> */}
                                         </div>
                                         <div className="d-flex flex-column gap-4">
                                             <div className="d-flex flex-column justify-content-center align-items-center gap-1">
@@ -129,7 +129,7 @@ const ChannelProfileScreen = () => {
                                                         <span className="edit-email">
                                                             Email
                                                         </span>
-                                                        {/* <img src="/ChannelPartner/profile-edit.svg" alt="" style={{ height: "17px", cursor: "pointer"  }} /> */}
+                                                        {/* <img src="/ChannelPartner/profile-edit.svg" alt="normal" style={{ height: "17px", cursor: "pointer"  }} /> */}
                                                        
                                                     </div>
                                                     <div>
@@ -141,7 +141,7 @@ const ChannelProfileScreen = () => {
                                                         <span className="edit-phone">
                                                             Phone
                                                         </span>
-                                                        {/* <img src="/ChannelPartner/profile-edit.svg" alt="" style={{ height: "17px", cursor: "pointer" }} /> */}
+                                                        {/* <img src="/ChannelPartner/profile-edit.svg" alt="normal" style={{ height: "17px", cursor: "pointer" }} /> */}
                                                     </div>
                                                     <div>
                                                         <span className="edit-phone text-black">+91-{userInfo.contact_number}</span>
@@ -153,7 +153,7 @@ const ChannelProfileScreen = () => {
 
                                     <div className="profile-logout d-flex justify-content-between align-items-center mt-4" onClick={() => setshowConfirm(!showConfirm)}>
                                         <span>Logout</span>
-                                        <img src="/ChannelPartner/profile-logout.svg" alt="" />
+                                        <img src="/ChannelPartner/profile-logout.svg" alt="normal" />
                                     </div>
                                 </div>
                                 <div className="col-12 col-lg-8">

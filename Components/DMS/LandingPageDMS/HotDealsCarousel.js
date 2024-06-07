@@ -123,21 +123,21 @@ export default HotDealsCarousel;
           <div className="carousel-item active">
             <div className>
               <div className=" d-flex align-items-center">
-                <img src="./DMS_IMAGES/banner_img.png" alt className="w-100" />
+                <img src="./DMS_IMAGES/banner_img.png" alt="normal"className="w-100" />
               </div>
             </div>
           </div>
           <div className="carousel-item">
             <div className>
               <div className=" d-flex align-items-center">
-                <img src="./DMS_IMAGES/banner_img.png" alt className="w-100" />
+                <img src="./DMS_IMAGES/banner_img.png" alt="normal"className="w-100" />
               </div>
             </div>
           </div>
           <div className="carousel-item">
             <div className>
               <div className=" d-flex align-items-center">
-                <img src="./DMS_IMAGES/banner_img.png" alt className="w-100" />
+                <img src="./DMS_IMAGES/banner_img.png" alt="normal"className="w-100" />
               </div>
             </div>
           </div>
@@ -146,7 +146,7 @@ export default HotDealsCarousel;
       <div className="carousel-item">
         <div className="row">
           <div className="col-4">
-            <img src="./DMS_IMAGES/glucond_img1.png" alt />
+            <img src="./DMS_IMAGES/glucond_img1.png" alt="normal"/>
           </div>
           <div className="col-8">
             <h1 className="text-wrapper-3">Battling Tiredness?</h1>
@@ -178,7 +178,7 @@ export default HotDealsCarousel;
       <div className="carousel-item">
         <div className="row">
           <div className="col-4">
-            <img src="./DMS_IMAGES/glucond_img1.png" alt />
+            <img src="./DMS_IMAGES/glucond_img1.png" alt="normal"/>
           </div>
           <div className="col-8">
             <h1 className="text-wrapper-3">Battling Tiredness?</h1>

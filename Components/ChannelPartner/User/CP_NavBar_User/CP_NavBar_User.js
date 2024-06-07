@@ -131,7 +131,7 @@ const CP_NavBar = () => {
 
       <nav className="navbar navbar-expand-lg navbar-light bg-white">
   <div className="container-fluid">
-  <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt=""  />
+  <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="normal"  />
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span className="navbar-toggler-icon" />
     </button>

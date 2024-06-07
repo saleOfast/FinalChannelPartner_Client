@@ -564,22 +564,27 @@ const AddQuotationScreen = () => {
       ...userInfo,
       genrated_date: DateNow,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     if (userInfo.bill_cont) getBillState(userInfo.bill_cont);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.bill_cont]);
 
   useEffect(() => {
     if (userInfo.ship_cont) getShipState(userInfo.ship_cont);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.ship_cont]);
 
   useEffect(() => {
     if (userInfo.bill_state) getBillCity(userInfo.bill_state);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.bill_state]);
 
   useEffect(() => {
     if (userInfo.ship_state) getShipCity(userInfo.ship_state);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.ship_state]);
 
   useEffect(() => {
@@ -588,6 +593,7 @@ const AddQuotationScreen = () => {
       setEditMode(true)
       getQuatationData(id)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id])
 
   useEffect(() => {
@@ -596,7 +602,7 @@ const AddQuotationScreen = () => {
       // call the api with this acoount name 
       getSingleOpportunityList(userInfo.opp_id);
     }
-
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.opp_id]);
 
 

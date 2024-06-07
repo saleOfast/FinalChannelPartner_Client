@@ -10,7 +10,7 @@ export default withUser (function ManageCoupon() {
   useEffect(() => {
       setCookie('isActive', 'managebrand')
       dispatch(setIsActive('managebrand'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
         <ManageCouponScreen />

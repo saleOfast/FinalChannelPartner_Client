@@ -252,6 +252,7 @@ const AddLeave = () => {
     useEffect(() => {
         getLeaveHead();
         getUserLeaves();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -260,6 +261,7 @@ const AddLeave = () => {
             setEditMode(true);
             getSingleData(id);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.isReady, id]);
 
     return (

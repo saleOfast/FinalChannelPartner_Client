@@ -11,7 +11,7 @@ export default withUser (function OpportunityView() {
   useEffect(() => {
       setCookie('isActive', 'opportunity')
       dispatch(setIsActive('opportunity'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <OpportunityViewScreen/>

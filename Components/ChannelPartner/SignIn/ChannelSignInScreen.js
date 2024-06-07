@@ -146,7 +146,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
               <div className="col-12 col-md-7">
                 <div className="row gx-3">
                   <div className="Sign-In-logo pb-4">
-                    {/* <img src="/ChannelPartner/logo.png" alt /> */}
+                    {/* <img src="/ChannelPartner/logo.png" alt="normal"/> */}
                     <img
                       src={
                         clientData?.logo

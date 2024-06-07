@@ -227,6 +227,7 @@ export default function AddProductCategory() {
       setEditMode(true)
       getSingleData(id)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id])
 
   return (

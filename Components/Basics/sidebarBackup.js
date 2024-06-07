@@ -568,7 +568,7 @@ const SidebarCopy= ({ isactive, mode }) => {
               <li title="Taxes Master" onClick={() => openSideOpt('Manage taxes')} className={isactive === "taxManage" ? "list-item active" : "list-item"} >
                 <div className="linkBox ">
                   <div className="svg_icon">
-                    <img className="side_link" src="/images/taxIcon.png" alt="" />
+                    <img className="side_link" src="/images/taxIcon.png" alt="normal" />
                   </div>
                   <div className="link_name">
                     <div className="header"> Taxes Master </div>

@@ -57,6 +57,7 @@ const ProductViewScreen = () => {
     if (router.query.id) {
       getData(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id]);
 
   return (

@@ -31,7 +31,7 @@ export default function ProfileScreen({ setEditMode, userData }) {
 
                                     <div className="header">Profile Information</div>
                                     <div className="profile_pic">
-                                        {userData ? <img src={userData?.profile_img ? `${filesUrl}/adminProfile/images${userData?.profile_img}` : `/images/add_user_avatar.png`} alt="" /> : ''}
+                                        {userData ? <img src={userData?.profile_img ? `${filesUrl}/adminProfile/images${userData?.profile_img}` : `/images/add_user_avatar.png`} alt="normal" /> : ''}
                                     </div>
                                     <div className="info_boxes">
                                         <DetailComponent head='Name' value={userData?.user} />

@@ -11,7 +11,7 @@ export default withUser (function ManageOpportunityTypeMaster() {
   useEffect(() => {
       setCookie('isActive', 'opportunityType')
       dispatch(setIsActive('opportunityType'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
      

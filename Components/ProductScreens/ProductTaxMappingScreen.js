@@ -235,6 +235,7 @@ const ProductTaxMappingScreen = () => {
 
     useEffect(() => {
         getTaxList();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -242,6 +243,7 @@ const ProductTaxMappingScreen = () => {
         if (router.query.id) {
             getData(id);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.isReady, id]);
 
     return (

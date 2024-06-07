@@ -79,7 +79,7 @@ function formatDate(date) {
                 <ul className="list-group General-list h-auto rounded-0 m-0">
                   <li style={{background:`${clientBtnColor}`}} href="#" className="list-group-item list-group-item-action  text-white" aria-current="true">
                     <span className="lead-id text-white">{bookingData?.booking_code}</span>
-                    {/* <img src="./images/icons/profile-edit-white.svg" alt=""> */}
+                    {/* <img src="./images/icons/profile-edit-white.svg" alt="normal"> */}
                   </li>
                 </ul>
                 <div className="row bg-white">

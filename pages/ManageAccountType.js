@@ -10,7 +10,7 @@ export default withUser (function ManageAccountType() {
   useEffect(() => {
       setCookie('isActive', 'accountManage')
       dispatch(setIsActive('accountManage'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
           <AccountTypeScreen />

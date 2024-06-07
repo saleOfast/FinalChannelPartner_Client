@@ -10,7 +10,7 @@ export default withUser (function TaxScreen() {
     useEffect(() => {
         setCookie('isActive', 'taxManage')
         dispatch(setIsActive('taxManage'))
-    }, []);
+    }, [dispatch]);
   return (
     <>
       

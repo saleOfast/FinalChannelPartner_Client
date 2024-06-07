@@ -186,6 +186,7 @@ const AddEventScreen = () => {
       updatedAt: DateNow,
       event_type: "lead event"
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -197,6 +198,7 @@ const AddEventScreen = () => {
     if (router.query.vw) [
       setViewMode(true)
     ]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id]);
 
   return (

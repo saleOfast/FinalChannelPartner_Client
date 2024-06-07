@@ -10,7 +10,7 @@ export default withUser( function Parent() {
   useEffect(() => {
       setCookie('isActive', 'Parent')
       dispatch(setIsActive('Parent'))
-  }, []);
+  }, [dispatch]);
   return (
     <> 
       <ParentScreen/>

@@ -134,6 +134,7 @@ export default function UserEditProfile({ setEditMode, userData }) {
 
     useEffect(() => {
         checkCurrentImg();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userInfo.user_image_file, imgFile]);
 
     return (
@@ -168,7 +169,7 @@ export default function UserEditProfile({ setEditMode, userData }) {
                                                 <img src={`${filesUrl}/lsUser/images${userInfo.db_user_profile.user_image_file}`} alt="logo" width='100%' /> :
                                                 <>
                                                     <div className="img_holder">
-                                                        <img src="/images/add_user_avatar.png" alt="" />
+                                                        <img src="/images/add_user_avatar.png" alt="normal" />
                                                         <div className="icon">
                                                             <CameraIcon />
                                                         </div>

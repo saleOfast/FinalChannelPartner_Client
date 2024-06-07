@@ -10,7 +10,7 @@ export default withUser (function Managebrand() {
   useEffect(() => {
       setCookie('isActive', 'managebrand')
       dispatch(setIsActive('managebrand'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
         <ManagebrandScreen />

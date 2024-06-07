@@ -12,7 +12,7 @@ export default withUser (function ManageTaskPriority() {
   useEffect(() => {
       setCookie('isActive', 'taskManage')
       dispatch(setIsActive('taskManage'))
-  }, []);
+  }, [dispatch]);
   return (
     <>
      

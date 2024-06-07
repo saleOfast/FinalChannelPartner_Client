@@ -383,7 +383,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                           <span className="star">*</span>
                         </div>
                         <div className="rightTab">
-                          <label htmlFor="adh" className="form-control d-flex flex-row-reverse justify-content-between align-items-center" style={{width: 227, height: 36}}>Upload Bill<img src="/ChannelPartner/upload-file.svg" alt style={{height: 16}} /></label>
+                          <label htmlFor="adh" className="form-control d-flex flex-row-reverse justify-content-between align-items-center" style={{width: 227, height: 36}}>Upload Bill<img src="/ChannelPartner/upload-file.svg" alt="normal"style={{height: 16}} /></label>
                           <input autofocus type="file" name="name" id="adh" className="input-field" placeholder="enter your aadhar number" style={{display: 'none'}} required />
                         </div>
                       </div>

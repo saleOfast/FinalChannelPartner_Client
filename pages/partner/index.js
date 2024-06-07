@@ -2,6 +2,7 @@ import React from 'react'
 import DashBoardScreenCHANNEL from '../../Components/ChannelPartner/Reports&Dashboard/DashBoardScreenCHANNEL'
 import ChannelSignInScreen from '../../Components/ChannelPartner/SignIn/ChannelSignInScreen';
 import { useSelector } from 'react-redux';
+import { hasCookie } from 'cookies-next';
 
 const Index = () => {
 const userInfo=hasCookie("userInfo") ? true:false;

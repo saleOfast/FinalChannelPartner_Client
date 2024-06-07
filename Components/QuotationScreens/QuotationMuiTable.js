@@ -90,14 +90,14 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
-                            <Link href={`/AddQuotations?id=${value}`}>
+                            <Link href={`/crm/AddQuotations?id=${value}`}>
                                 <button
                                     className="action_btn"
                                     title='Edit'>
                                     <EditIcon />
                                 </button>
                             </Link>
-                            <Link href={`/QuotationView?id=${value}`}>
+                            <Link href={`/crm/QuotationView?id=${value}`}>
                                 <button className="action_btn" title="View">
                                     <ViewIcon />
                                 </button>

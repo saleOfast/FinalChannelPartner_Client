@@ -194,7 +194,7 @@ const AdminPermissionScreen = () => {
                     {permissionView ? <> {renderMenu(permissionView)}</> : ''}
 
                     <div className="submit-btn-box">
-                        <Link href='/Admin'><button className="btn btn-cancel">Go Back</button></Link>
+                        <Link href='/admin'><button className="btn btn-cancel">Go Back</button></Link>
                         <button onClick={submitFunc} className="btn btn-primary">Submit</button>
                     </div>
                 </div>

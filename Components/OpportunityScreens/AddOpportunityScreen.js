@@ -50,7 +50,7 @@ const AddOpportunityScreen = () => {
     const [productList, setProductList] = useState([])
     const [isLoading, setisLoading] = useState(false)
 
-    const Datenow = moment(new Date().toISOString()).format("YYYY-MM-DD");
+    const Datenow =  moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
 
     const getAccountsList = async () => {
         await fetchData(`/db/account`, setAccountsList, errorToast, setErrorToast)
@@ -199,7 +199,7 @@ const AddOpportunityScreen = () => {
                     toast.success(response.data.message);
                     await productSubmit(formValues, response.data.data.opp_id)
                     setisLoading(false)
-                    router.push("/Opportunity");
+                    router.push("/crm/Opportunity");
                 }
             } catch (error) {
                 if (error?.response?.data?.status === 422) {
@@ -267,18 +267,20 @@ const AddOpportunityScreen = () => {
                     m_id: 36,
                 },
             };
+      let userInfoBody = { ...userInfo,updated_on:Datenow }
+
 
             try {
                 const response = await axios.put(
                     Baseurl + `/db//opportunity`,
-                    userInfo,
+                    userInfoBody,
                     header
                 );
                 if (response.status === 204 || response.status === 200) {
                     toast.success(response.data.message);
                     productUpdate(formValues, router.query.id)
                     setisLoading(false)
-                    router.push("/Opportunity");
+                    router.push("/crm/Opportunity");
                 }
             } catch (error) {
                 if (error?.response?.data?.status === 422) {
@@ -457,10 +459,10 @@ const AddOpportunityScreen = () => {
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item">
                             {" "}
-                            <Link href="/">Home</Link>
+                            <Link href="/crm">Home</Link>
                         </li>
                         <li className="breadcrumb-item">
-                            <Link href="/Opportunity"> Opportunity </Link>
+                            <Link href="/crm/Opportunity"> Opportunity </Link>
                         </li>
                         <li className="breadcrumb-item active" aria-current="page">
                             {editMode ? "Edit" : "ADD"} Opportunity
@@ -550,7 +552,7 @@ const AddOpportunityScreen = () => {
                                             setErrorData({ ...errorData, account_name: '' })
                                         }}
                                     />
-                                    {!editMode ? null : <p className="label_link">  <Link href="/AddAccount">+ Add New</Link></p>}
+                                    {!editMode ? null : <p className="label_link">  <Link href="/crm/AddAccount">+ Add New</Link></p>}
                                     <span className="errorText"> {errorData?.account_name ? errorData.account_name : ''}</span>
                                 </div>
                             </div>
@@ -573,6 +575,7 @@ const AddOpportunityScreen = () => {
                                             setErrorData({ ...errorData, close_date: '' })
                                         }}
                                         value={moment(userInfo?.close_date).format("YYYY-MM-DD")}
+                                        min={moment().format("YYYY-MM-DD")}
                                     />
                                     <span className="errorText"> {errorData?.close_date ? errorData.close_date : ''}</span>
                                 </div>
@@ -944,7 +947,7 @@ const AddOpportunityScreen = () => {
                                         value={userInfo?.created_on ? moment(userInfo?.created_on).format("YYYY-MM-DDTHH:mm") : ''}
                                     />
                                 </div>
-                            </div>
+                            </div>  
 
                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className="input_box">
@@ -968,7 +971,7 @@ const AddOpportunityScreen = () => {
                         </div>
                         <div className="text-end">
                             <div className="submit_btn">
-                                <Link href="Opportunity"><button className="btn btn-cancel m-3 " >Cancel</button></Link>
+                                <Link href="/crm/Opportunity"><button className="btn btn-cancel m-3 " >Cancel</button></Link>
                                 {editMode ? (
                                     <button disabled={isLoading} className="btn btn-primary" onClick={UpdateHandler}>
                                         {isLoading ? 'Loading...' : 'Update'}

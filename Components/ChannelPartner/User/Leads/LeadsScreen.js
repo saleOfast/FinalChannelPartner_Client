@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import Select from 'react-select';
 import { fetchData } from '../../../../Utils/getReq';
 import Daterange from '../../../DateRangeCustom/Daterange';
+import moment from 'moment';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -43,6 +44,7 @@ const LeadsScreen = () => {
         id: '',
         action: ''
     })
+    const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
 
     const [lead,setLead]=useState({
       lead_id:null,
@@ -55,10 +57,14 @@ const LeadsScreen = () => {
       p_visit_time: "", 
       project_id:"",
       project_name:"",
+      created_on:DateNow,
+      updated_on:DateNow
     })
     const [leadList,setLeadList]=useState([])
     const [projectList,setProjectList]=useState([])
+    const [locationList,setLocationList]=useState([])
     const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+
 
 
     function disableConfirm(value, type) {
@@ -129,8 +135,10 @@ const LeadsScreen = () => {
                   params:queryObjLeads
                 });
                 const projects = await axios.get(Baseurl + `/db/channel/lead/projects`, header);
+                const locations = await axios.get(Baseurl + `/db/channel/lead/location`, header);
                 setLeadList(leads?.data?.data);
                 setProjectList(projects?.data?.data?.records);
+                setLocationList(locations?.data?.data)
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -219,9 +227,10 @@ const LeadsScreen = () => {
         }
     };
 
-    const createLeads=()=>{
+    const createLead2=()=>{
       console.log(lead)
     }
+   
 
 
     useEffect(() => {
@@ -342,7 +351,7 @@ const LeadsScreen = () => {
                                 </div>
                               </div>
 
-                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                              {/* <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
                                 <div className='row '>
                                   <div className="col-3">
                                       <label htmlFor="name" className="pb-1">Location<span className="star text-danger">*</span></label>
@@ -351,6 +360,35 @@ const LeadsScreen = () => {
                                       <input autofocus value={lead?.address} onChange={(e)=>{
                                         setLead({...lead,address:e.target.value})
                                       }} type="text" name="name" className="input-field" placeholder required />
+                                    </div>
+                                </div>
+                              </div> */}
+
+                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                                <div className='row '>
+                                  <div className="col-3">
+                                      <label htmlFor="name" className="pb-1">Location<span className="star text-danger">*</span></label>
+                                    </div>
+                                    <div className="col-9">
+                                    <select required name 
+                                    onChange={(e) => {
+                                      
+                                      const location_name = locationList?.find((l) => l?.name === e.target.value)?.name
+                                      setLead((lead) => ({
+                                        ...lead,
+                                        address: location_name,
+                                      }));
+                                    }} 
+                                    className="form-select dropdown" style={{paddingTop: 12, paddingBottom: 12}}>
+                                      <option value selected disabled>Select</option>
+                                      {
+                                        locationList?.map((location)=>(
+                                          <option key={location?.lead_location_id} value={location?.name} className="dropdown-item" >
+                                            {location?.name}
+                                          </option>
+                                        ))
+                                      }
+                                    </select>
                                     </div>
                                 </div>
                               </div>
@@ -402,7 +440,7 @@ const LeadsScreen = () => {
                                     <div className="col-9">
                                       <input autofocus  value={lead?.p_visit_date} onChange={(e)=>{
                                         setLead({...lead,p_visit_date:e.target.value})
-                                      }} type="Date" name="name" className="input-field" placeholder required />
+                                      }} type="Date" name="name" className="input-field"  min={moment().format("YYYY-MM-DD")} placeholder required />
                                     </div>
                                 </div>
                               </div>

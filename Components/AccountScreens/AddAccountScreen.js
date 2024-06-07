@@ -9,6 +9,7 @@ import { validPhone, validZip } from "../../Utils/regex";
 import { useSelector } from "react-redux";
 import { fetchData } from "../../Utils/getReq";
 import Select from 'react-select';
+import moment from "moment";
 
 const AddAccountScreen = () => {
   const router = useRouter();
@@ -65,6 +66,8 @@ const AddAccountScreen = () => {
     'ship_address': "",
     'assigned_to': null,
     'bill_address': "",
+    'createdAt':"",
+    'updatedAt':"",
     db_acc_fields: []
 
 
@@ -128,7 +131,7 @@ const AddAccountScreen = () => {
           await postFieldsFunc(response.data.data.acc_id, oppBody.db_acc_fields)
           toast.success(response.data.message)
           setisLoading(false)
-          router.push('/Accounts');
+          router.push('/crm/Accounts');
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -176,7 +179,7 @@ const AddAccountScreen = () => {
           await postFieldsFunc(userInfo.acc_id, userInfo.db_acc_fields)
           toast.success(response.data.message)
           setisLoading(false)
-          router.push('/Accounts');
+          router.push('/crm/Accounts');
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -256,10 +259,10 @@ const AddAccountScreen = () => {
         showError('Please select the Field Type');
         return false;
       }
-      else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
-        showError('Please Enter Field Size');
-        return false;
-      }
+      // else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
+      //   showError('Please Enter Field Size');
+      //   return false;
+      // }
       else if (input_type === 'select' && !option) {
         showError('Please select input Options');
         return false;
@@ -588,10 +591,10 @@ const AddAccountScreen = () => {
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               {" "}
-              <Link href="/">Home</Link>
+              <Link href="/crm">Home</Link>
             </li>
             <li className="breadcrumb-item">
-              <Link href="/Accounts"> Account List </Link>
+              <Link href="/crm/Accounts"> Account List </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
               {viewMode ? 'View' : <>
@@ -896,6 +899,57 @@ const AddAccountScreen = () => {
                   </div>
                 </div>
               </div>
+
+              <div className="add_screen_head">
+                    <span className="text_bold">System Information </span>
+                  </div>
+
+
+                  <div className="add_user_form">
+                    <div className="row">
+                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="email">Created On</label>
+                          <input
+                            type="datetime-local"
+                            disabled
+                            name="date"
+                            id="date"
+                            className="form-control"
+                            onChange={(e) =>
+                              setUserInfo({
+                                ...userInfo,
+                                createdAt: e.target.value,
+                              })
+                            }
+                            value={moment(userInfo?.createdAt).format("YYYY-MM-DDTHH:mm")}
+                            />
+                        </div>
+                      </div>
+                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="mod_date">Last Modified On</label>
+                          <input
+                            type="datetime-local"
+                            disabled
+                            placeholder="Enter Contact no."
+                            name="mod_date"
+                            id="mod_date"
+                            className="form-control"
+                            onChange={(e) =>
+                              setUserInfo({
+                                ...userInfo,
+                                updatedAt: e.target.value,
+                              })
+                            }
+                            // value={userInfo.updated_on ? userInfo.updated_on : ""}
+                            value={moment(userInfo?.updatedAt).format("YYYY-MM-DDTHH:mm")}
+                            
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
               <div className="add_screen_head">
                 <span className="text_bold">Billing & Shipping Address</span>
@@ -1227,6 +1281,10 @@ const AddAccountScreen = () => {
                       </div>
                     ))}
                   </div>
+
+                  
+
+                  
                   {/* <div className="btn-box">
                                 <button
                                     disabled={isLoading}
@@ -1304,7 +1362,7 @@ const AddAccountScreen = () => {
                           </>
                         )}
 
-                         {
+                         {/* {
                           newFields.input_type === 'input' && (newFields?.field_type==="text" ||  newFields?.field_type==="email" || newFields?.field_type==="number") && (
                             <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                             <div className="input_box">
@@ -1320,7 +1378,7 @@ const AddAccountScreen = () => {
                             </div>
                             </div>
                             )               
-                        }
+                        } */}
 
                         {newFields.input_type === 'select' && (
                           <div className="col-xl-4 col-md-4 col-sm-12 col-12">
@@ -1346,7 +1404,7 @@ const AddAccountScreen = () => {
                     </div>
                   )}
                 </div>
-
+                  
 
                 <div className="text-end">
                   <div className="submit_btn">
@@ -1356,7 +1414,7 @@ const AddAccountScreen = () => {
                         <span className="text_bold"><button className='btn btn-primary ' onClick={AddFieldsFunc}> Add More Fields</button>  </span>
                       </div>}
                     {viewMode ? null : <>
-                      <Link href='/Accounts'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
+                      <Link href='/crm/Accounts'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
                       {editMode ? (
                         <button disabled={isLoading} className="btn btn-primary " onClick={UpdateHandler}>
                           {isLoading ? 'Loading...' : 'Update'}
@@ -1382,7 +1440,7 @@ const AddAccountScreen = () => {
                         return (
                           <li key={opp_id} className="list-item">
                             <div className="opp_box">
-                              <Link href={`/OpportunityView?id=${opp_id}`}>
+                              <Link href={`/crm/OpportunityView?id=${opp_id}`}>
                                 <div className="name">{opp_name} </div>
                               </Link>
                               <div className="price">&#8377; {amount}</div>
@@ -1393,7 +1451,7 @@ const AddAccountScreen = () => {
                     </ul>
                   </div>
                   <div className="card_footer">
-                    <Link href='/Opportunity'>
+                    <Link href='/crm/Opportunity'>
                       <div className="text_more">view more</div>
                     </Link>
                   </div>
@@ -1406,7 +1464,7 @@ const AddAccountScreen = () => {
                         return (
                           <li key={contact_id} className="list-item">
                             <div className="opp_box">
-                              <Link href={`/AddContact?id=${contact_id}&vw=mds`}>
+                              <Link href={`/crm/AddContact?id=${contact_id}&vw=mds`}>
                                 <div className="name">{first_name}</div>
                               </Link>
                             </div>
@@ -1416,7 +1474,7 @@ const AddAccountScreen = () => {
                     </ul>
                   </div>
                   <div className="card_footer">
-                    <Link href='/Contacts'>
+                    <Link href='/crm/Contacts'>
                       <div className="text_more">view more</div>
                     </Link>
                   </div>
@@ -1430,7 +1488,7 @@ const AddAccountScreen = () => {
                         return (
                           <li key={lead_id} className="list-item">
                             <div className="opp_box">
-                              <Link href={`/LeadsView?id=${lead_id}&vw=mds`}>
+                              <Link href={`/crm/LeadsView?id=${lead_id}&vw=mds`}>
                                 <div className="name">{lead_name}</div>
                               </Link>
                             </div>
@@ -1440,7 +1498,7 @@ const AddAccountScreen = () => {
                     </ul>
                   </div>
                   <div className="card_footer">
-                    <Link href='/ManageLeads'>
+                    <Link href='/crm/ManageLeads'>
                       <div className="text_more">view more</div>
                     </Link>
                   </div>

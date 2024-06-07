@@ -135,7 +135,7 @@ const Taskscreens = () => {
           <h3 className="content_head">Task</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
-              <li className="breadcrumb-item"> <Link href='/'>Home   </Link></li>
+              <li className="breadcrumb-item"> <Link href='/crm'>Home   </Link></li>
               <li className="breadcrumb-item active" aria-current="page">Task List</li>
             </ol>
           </nav>
@@ -144,7 +144,7 @@ const Taskscreens = () => {
           <div className="table_screen">
             <div className="top_btn_sec">
             <div className="d-flex">
-              <Link href='/AddTask'>
+              <Link href='/crm/AddTask'>
               <button className="btn btn-primary Add_btn me-3">
                   <PlusIcon />
                   ADD TASK

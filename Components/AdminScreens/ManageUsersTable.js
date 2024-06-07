@@ -39,12 +39,12 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'db_role',
+            // name: 'db_role',
+            name: 'db_role.role_name',
             label: "Role",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
-                    console.log(tableMeta)
                     return (
                         <div className='status_box'>
                             {/* {value && <span >{value.role_name}</span>} */}
@@ -55,7 +55,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'reportToUser',
+            // name: 'reportToUser',
+            name: 'reportToUser.user',
             label: "Report/Assign To",
             options: {
                 filter: true,
@@ -93,6 +94,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 download:false,
                 
                 customBodyRender: (value, tableMeta, updateValue) => {
+                    console.log(tableMeta)
                     return (
                         <div className="table_btns">
                             <Link href={`/AddUsers?id=${value}&mode=view`}>
@@ -110,7 +112,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                     <EditIcon />
                                 </button>
                             </Link>
-                            {tableMeta.rowData[5] ?
+                            {tableMeta.rowData[6] ?
                                 <button
                                     onClick={() => disableConfirm(value, 0)}
                                     className="action_btn"
@@ -124,12 +126,12 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                     <CheckIcon />
                                 </button>}
 
-                            <button
+                            {/* <button
                                 onClick={() => deleteConfirm(value, 0)}
                                 className="action_btn"
                                 title='Delete'>
                                 <DeleteIcon />
-                            </button>
+                            </button> */}
                         </div>
                     )
                 }
@@ -140,7 +142,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions:{filename:"UsersList.csv"}
+        downloadOptions:{filename:"UsersList.csv"},
+        enableNestedDataAccess:"."
     };
 
     const mappedDataList=dataList?.map(list=>({
@@ -159,8 +162,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={mappedDataList}
-                    // data={dataList}
+                    // data={mappedDataList}
+                    data={dataList}
                     columns={columns}
                     options={options}
                 />

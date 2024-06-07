@@ -15,6 +15,7 @@ import { clearMode } from '../../../../store/dbModeSlice';
 import { LoggedOut } from '../../../../store/adMinLoginSlice';
 import { userLogOut } from '../../../../store/ClientLoginSlice';
 import { setActiveLink } from '../../../../store/cpActiveLinkSlice';
+import { clearValue } from '../../../../store/permissionSlice';
 
 
 
@@ -24,7 +25,7 @@ const CP_NavBar_Admin = () => {
   const [showConfirm, setshowConfirm] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const dbMode = useSelector((state) => state.dbMode.value);
-
+  const allowedpermission = hasCookie("allowedpermissions")? JSON.parse(getCookie("allowedpermissions")) :"";
   const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   const activeLink=useSelector(state=>state.cpActiveLink.activeLink)
@@ -35,14 +36,14 @@ const CP_NavBar_Admin = () => {
 
   const logouthandler = () => {
     deleteCookie("clientBtnColor")
-    setCookie("activeLink","/")
+    setCookie("activeLink","/partner")
     dispatch(startLoading())
     const isAdminMode = dbMode === "admin";
     const isMasterOrUserMode = dbMode === "master" || dbMode === "user";
     setshowConfirm(!showConfirm);
     dispatch(clearMode());
     if (hasCookie("channel")) {
-      router.push(isAdminMode ? "/Admin" : "/CHANNEL/Signin")
+      router.push(isAdminMode ? "/Admin" : "/partner")
     } else {
       router.push(isAdminMode ? "/Admin" : "/")
     }
@@ -124,43 +125,52 @@ const CP_NavBar_Admin = () => {
 
     <nav className="navbar navbar-expand-lg navbar-light bg-white">
   <div className="container-fluid">
-  <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt=""  />
-    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon" />
-    </button>
-    <div className="collapse navbar-collapse " id="navbarNavDropdown">
+      <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt=""  />
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon" />
+        </button>
+     <div className="collapse navbar-collapse " id="navbarNavDropdown">
       <ul className="navbar-nav ms-auto">
+                    {
+                      hasCookie("channel") && allowedpermission?.length>1 && (
+                        <li className='nav-item cursor-pointer pt-2' onClick={()=>{
+                          deleteCookie("channel")
+                          dispatch(clearValue())
+                          router.push("/")
+                        }}><img src='/switch.svg' style={{width:"20px"}}/></li>
+                      )
+                    }
         <li className="nav-item">
-        <Link className={`nav-link ${isActive('/')}`} href="/"
+        <Link className={`nav-link ${isActive('/partner')}`} href="/partner"
                   onClick={()=>{
-                    dispatch(setActiveLink("/"))
-                    setCookie("activeLink","/")
+                    dispatch(setActiveLink("/partner"))
+                    setCookie("activeLink","/partner")
                   }}
                 >Reports & Dashboard</Link>
         </li>
         <li className="nav-item">
-        <Link className={`nav-link ${isActive('/CHANNEL/ActivePartners')}`} href="/CHANNEL/ActivePartners"
+        <Link className={`nav-link ${isActive('/partner/ActivePartners')}`} href="/partner/ActivePartners"
                   onClick={()=>{
-                    dispatch(setActiveLink("/CHANNEL/ActivePartners"))
-                    setCookie("activeLink","/CHANNEL/ActivePartners")
+                    dispatch(setActiveLink("/partner/ActivePartners"))
+                    setCookie("activeLink","/partner/ActivePartners")
                   }}
                 >Channel Partners</Link>
         </li>
         <li className="nav-item">
-        <Link className={`nav-link ${isActive('/CHANNEL/PendingRequests')}`} 
+        <Link className={`nav-link ${isActive('/partner/PendingRequests')}`} 
                   onClick={()=>{
-                    dispatch(setActiveLink("/CHANNEL/PendingRequests"))
-                    setCookie("activeLink","/CHANNEL/PendingRequests")
+                    dispatch(setActiveLink("/partner/PendingRequests"))
+                    setCookie("activeLink","/partner/PendingRequests")
                   }}
-                href="/CHANNEL/PendingRequests">Pending Requests</Link>
+                href="/partner/PendingRequests">Pending Requests</Link>
         </li>
         <li className="nav-item">
-                <Link className={`nav-link ${isActive('/CHANNEL/CampaignAdmin')}`} 
+                <Link className={`nav-link ${isActive('/partner/CampaignAdmin')}`} 
                   onClick={()=>{
-                    dispatch(setActiveLink("/CHANNEL/CampaignAdmin"))
-                    setCookie("activeLink","/CHANNEL/CampaignAdmin")
+                    dispatch(setActiveLink("/partner/CampaignAdmin"))
+                    setCookie("activeLink","/partner/CampaignAdmin")
                   }}
-                href="/CHANNEL/CampaignAdmin">
+                href="/partner/CampaignAdmin">
                   Campaign 
                 </Link>
         </li>
@@ -189,11 +199,11 @@ const CP_NavBar_Admin = () => {
                     </div>
                   </Dropdown.Toggle>
                   <Dropdown.Menu  >
-                    <Link href={"/CHANNEL/ChannelProfile"}>
+                    <Link href={"/partner/ChannelProfile"}>
                       <Dropdown.Item className='d-flex align-items-center' onClick={()=>{
-                        router.push("/CHANNEL/ChannelProfile")
-                        dispatch(setActiveLink("/CHANNEL/ChannelProfileAdmin"))
-                        setCookie("activeLink","/CHANNEL/ChannelProfileAdmin")
+                        router.push("/partner/ChannelProfile")
+                        dispatch(setActiveLink("/partner/ChannelProfileAdmin"))
+                        setCookie("activeLink","/partner/ChannelProfileAdmin")
                       }}>
                         <div style={{width:"15px"}}>
                       <AvatarIcon/>

@@ -100,11 +100,11 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
           dispatch(stopLoading())
           // router.push("/");
           if(res?.data?.userData?.role_id===2){
-            router.push("/CHANNEL/Brokerage")
-            setCookie("activeLink","/CHANNEL/Brokerage")
+            router.push("/partner/Brokerage")
+            setCookie("activeLink","/partner/Brokerage")
           }
           else{
-            router.push("/");
+            router.push("/partner");
           }
         }
       } catch (error) {
@@ -274,13 +274,12 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                         </form>
                         {/* MOT DE PASSE OUBLIE ? */}
                         <Link
-                          href="/CHANNEL/ForgotPassword"
+                          href="/partner/ForgotPassword"
                           className="fp text-decoration-none"
                         >
                           Forgot password?
                         </Link>
-                        {/* BOUTTON LOGIN */}
-                        {/* <button type="submit" className="login_btn mt-5">Login</button> */}
+                       
                       </div>
                     </div>
                   </div>

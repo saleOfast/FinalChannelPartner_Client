@@ -105,7 +105,7 @@ const AddTaskScreen = () => {
         if (response.status === 204 || response.status === 200) {
           toast.success("Task Created Successfully");
           setisLoading(false)
-          router.push('/TaskScreen')
+          router.push('/crm/TaskScreen')
         }
 
       } catch (error) {
@@ -159,7 +159,7 @@ const AddTaskScreen = () => {
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message);
           setisLoading(false)
-          router.push("/TaskScreen");
+          router.push("/crm/TaskScreen");
 
         }
       } catch (error) {
@@ -248,10 +248,10 @@ const AddTaskScreen = () => {
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               {" "}
-              <Link href="/">Home</Link>
+              <Link href="/crm">Home</Link>
             </li>
             <li className="breadcrumb-item">
-              <Link href="/TaskScreen"> Tasks List </Link>
+              <Link href="/crm/TaskScreen"> Tasks List </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
               {viewMode ? 'View' : <>{editMode ? "Edit" : "Add"}</>} Task
@@ -595,7 +595,7 @@ const AddTaskScreen = () => {
               <div className="text-end">
                 <div className="submit_btn">
                   {viewMode ? null : <>
-                    <Link href='/TaskScreen'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
+                    <Link href='/crm/TaskScreen'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
                     {editMode ? (
                       <button disabled={isLoading} className="btn btn-primary" onClick={updateHandler}>
                         {isLoading ? 'Loading...' : 'Update'} </button>

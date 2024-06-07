@@ -96,7 +96,7 @@ const ManageLeadTable = ({
           return (
             // /AddLeads?id=${value}&vw=mds`
             <div className="table_btns">
-              <Link href={`AddLeads?id=${value}&vw=mds`}>
+              <Link href={`/crm/AddLeads?id=${value}&vw=mds`}>
                 <button className="action_btn" title="View">
                   <ViewIcon />
                 </button>
@@ -114,7 +114,7 @@ const ManageLeadTable = ({
                 title="Delete">
                 <DeleteIcon />
               </button>
-              <Link href={`/AddLeads?id=${value}`}>
+              <Link href={`/crm/AddLeads?id=${value}`}>
               <button className="action_btn" title="Edit">
                 <EditIcon />
               </button>

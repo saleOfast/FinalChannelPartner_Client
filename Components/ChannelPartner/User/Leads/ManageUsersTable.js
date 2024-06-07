@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import { ViewColumn, Visibility } from '@mui/icons-material';
 import { useRef } from 'react';
+import moment from 'moment';
 
 const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
     const router = useRouter()
@@ -29,10 +30,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
     endDate: new Date().setMonth(11)
   });
   const[visitId,setVisitId]=useState("");
+  // const [p_visit_date, setVisitDate] = useState(moment().format("YYYY-MM-DD"));
   const[p_visit_date,setVisitDate]=useState("");
   const[p_visit_time,setVisitTime]=useState("");
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
-  const [classType,setClassType]=useState("")
 
 const getVisitInfo=async(visitId)=>{
     if (hasCookie('token')) {
@@ -98,7 +99,6 @@ const getVisitInfo=async(visitId)=>{
   const permitVisit = (status, createdAt) => {
     const currentDate = new Date(); 
     const statusDate = new Date(createdAt); 
-    console.log(statusDate)
     switch (status) {
         case "Requested":
             statusDate.setDate(statusDate.getDate() + 1); 
@@ -106,13 +106,13 @@ const getVisitInfo=async(visitId)=>{
             if (statusDate < currentDate) {
                 return false;
             } else {
-              setClassType("requested_hover")
+              
                 return true;
             }
             break;
 
         case "Scheduled":
-          setClassType("scheduled_hover")
+          
             return true;
             break;
 
@@ -121,7 +121,7 @@ const getVisitInfo=async(visitId)=>{
             if (statusDate < currentDate) {
                 return false;
             } else {
-              setClassType("completed_hover")
+              
                 return true;
             }
             break;
@@ -190,7 +190,7 @@ const getVisitInfo=async(visitId)=>{
                   customBodyRender: (value, tableMeta, updateValue) => {
                     
                     return (
-                        <Link href={`/CHANNEL/LeadDetails?id=${tableMeta?.rowData[0]}`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
+                        <Link href={`/partner/LeadDetails?id=${tableMeta?.rowData[0]}`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
                             {value}
                         </Link>
                     )
@@ -249,7 +249,7 @@ const getVisitInfo=async(visitId)=>{
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
-                  console.log(tableMeta)
+                  
                     return (
                         <div className='status_box' style={{color:"#667799"}}>
                             {value}
@@ -384,7 +384,7 @@ const getVisitInfo=async(visitId)=>{
               toast.success(response.data.message);
               setShowModal(false)
               toast.success(response.message)
-             
+              getDataList()
             }
           } catch (error) {
             if (error?.response?.data?.status === 422) {
@@ -561,7 +561,7 @@ const getVisitInfo=async(visitId)=>{
                                   <div className="rowTab">
                                     <div className="labels">
                                       <label htmlFor="name" className="pb-1">
-                                        Possible Visit Date
+                                        Schedule Visit Date
                                       </label>
                                       <span className="star">*</span>
                                     </div>
@@ -569,6 +569,7 @@ const getVisitInfo=async(visitId)=>{
                                       <input
                                         autofocus
                                         type="Date"
+                                        min={moment().format("YYYY-MM-DD")} 
                                         value={p_visit_date}
                                         onChange={(e)=>{
                                             setVisitDate(e.target.value)
@@ -587,7 +588,7 @@ const getVisitInfo=async(visitId)=>{
                                         htmlFor="Location"
                                         className="pb-1"
                                       >
-                                        Possible Visit Time
+                                        Schedule Visit Time
                                       </label>
                                       <span className="star">*</span>
                                     </div>

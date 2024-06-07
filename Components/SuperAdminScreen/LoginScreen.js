@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import LeadShyneIcon from '../Svg/LeadShyneIcon'
 import { toast } from 'react-toastify'
 import { setCookie } from 'cookies-next';
@@ -8,12 +8,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import { adminMode, clearMode } from '../../store/dbModeSlice'
 import { LoggedIn, LoggedOut } from '../../store/adMinLoginSlice'
 import axios from 'axios';
-import { Baseurl } from '../../Utils/Constants'
+import { Baseurl, filesUrl } from '../../Utils/Constants'
 import { validEmail } from '../../Utils/regex'
 
 const LoginScreen = ({ isLoggedIn, setisLoggedIn }) => {
     const dispatch = useDispatch()
-
+    const[clientData,setClientData]=useState();
     const [userForm, setUserForm] = useState({
         email: "",
         password: ""
@@ -53,10 +53,38 @@ const LoginScreen = ({ isLoggedIn, setisLoggedIn }) => {
         }
     }
 
+    useEffect(()=>{
+        const getSignInData=async()=>{
+          try {
+            let baseUrl = window.location.origin;
+            if(baseUrl==="http://localhost:3000"){
+              baseUrl="http://crm.cybermatrixsolutions.com"
+            }
+            const {data}=await axios.post(Baseurl+"/db/admin/url",{
+              client_url:`${baseUrl}`,
+            })
+            setClientData(data?.data)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+        getSignInData()
+      },[])
+
     return (
         <div className="login_wrapper">
             <div className="login_box">
-                <div className="img_logo"> <LeadShyneIcon /> </div>
+                <div className="img_logo">
+                     {/* <LeadShyneIcon />  */}
+                     <img
+                      src={
+                        clientData?.logo
+                          &&( `${filesUrl}` +
+                            `/logo/images${clientData?.logo}`)
+                      }
+                      alt
+                    />
+                </div>
                 <div className="header"> Please Login to Continue </div>
                 <div className="content_box">
                     <form className='login_form' onSubmit={submitHandler}>

@@ -189,7 +189,7 @@ const VisitDetailsScreen = () => {
             </div>
 
           </ul></div>
-        <Link href={'/CHANNEL/Visits'} className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
+        <Link href={'/partner/Visits'} className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
           <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0"
             style={{background:`${clientBtnColor}`}}
           >Back to Visits</button>

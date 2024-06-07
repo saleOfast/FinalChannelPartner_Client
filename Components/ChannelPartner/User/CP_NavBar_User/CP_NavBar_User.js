@@ -15,6 +15,7 @@ import { clearMode } from "../../../../store/dbModeSlice";
 import { LoggedOut } from "../../../../store/adMinLoginSlice";
 import { userLogOut } from "../../../../store/ClientLoginSlice";
 import { setActiveLink } from "../../../../store/cpActiveLinkSlice";
+import { allowpermissions, clearValue } from "../../../../store/permissionSlice";
 
 const CP_NavBar = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const CP_NavBar = () => {
   const [userInfo, setUserInfo] = useState({});
   const [roleId,setRoleId]=useState();
   const dbMode = useSelector((state) => state.dbMode.value);
-
+  const allowedpermission = hasCookie("allowedpermissions")? JSON.parse(getCookie("allowedpermissions")) :"";
   const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
   const activeLink=useSelector(state=>state.cpActiveLink.activeLink)
 
@@ -36,13 +37,13 @@ const CP_NavBar = () => {
   const logouthandler = () => {
     dispatch(startLoading());
     deleteCookie("clientBtnColor")
-    setCookie("activeLink","/")
+    setCookie("activeLink","/partner")
     const isAdminMode = dbMode === "admin";
     const isMasterOrUserMode = dbMode === "master" || dbMode === "user";
     setshowConfirm(!showConfirm);
     dispatch(clearMode());
     if (hasCookie("channel")) {
-      router.push(isAdminMode ? "/Admin" : "/CHANNEL/Signin");
+      router.push(isAdminMode ? "/Admin" : "/partner");
     } else {
       router.push(isAdminMode ? "/Admin" : "/");
     }
@@ -139,23 +140,32 @@ const CP_NavBar = () => {
         {
           roleId===1 && (
             <>
+                    {
+                      hasCookie("channel") && allowedpermission?.length>1 && (
+                        <li className='nav-item cursor-pointer pt-2' onClick={()=>{
+                          deleteCookie("channel")
+                          dispatch(clearValue()) //for clearing the value (initial state in permission mode)
+                          router.push("/")
+                        }}><img src='/switch.svg' style={{width:"19px"}}/></li>
+                      )
+                    }
                 <li className="nav-item">
-        <Link className={`nav-link ${isActive('/')}`} href="/"
+        <Link className={`nav-link ${isActive('/partner')}`} href="/partner"
                   onClick={()=>{
-                    dispatch(setActiveLink("/"))
-                    setCookie("activeLink","/")
+                    dispatch(setActiveLink("/partner"))
+                    setCookie("activeLink","/partner")
                   }}
                 >Reports & Dashboard</Link>
         </li>
         <li className="nav-item">
         <Link
                     className={`nav-link ${isActive(
-                      "/CHANNEL/Leads"
+                      "/partner/Leads"
                     )}`}
-                    href="/CHANNEL/Leads"
+                    href="/partner/Leads"
                     onClick={()=>{
-                      dispatch(setActiveLink("/CHANNEL/Leads"))
-                      setCookie("activeLink","/CHANNEL/Leads")
+                      dispatch(setActiveLink("/partner/Leads"))
+                      setCookie("activeLink","/partner/Leads")
                     }}
                   >
                     Leads
@@ -164,12 +174,12 @@ const CP_NavBar = () => {
         <li className="nav-item">
         <Link
                     className={`nav-link ${isActive(
-                      "/CHANNEL/Bookings"
+                      "/partner/Bookings"
                     )}`}
-                    href="/CHANNEL/Bookings"
+                    href="/partner/Bookings"
                     onClick={()=>{
-                      dispatch(setActiveLink("/CHANNEL/Bookings"))
-                      setCookie("activeLink","/CHANNEL/Bookings")
+                      dispatch(setActiveLink("/partner/Bookings"))
+                      setCookie("activeLink","/partner/Bookings")
                     }}
                   >
                     Bookings
@@ -178,12 +188,12 @@ const CP_NavBar = () => {
         <li className="nav-item">
         <Link
                     className={`nav-link ${isActive(
-                      "/CHANNEL/Visits"
+                      "/partner/Visits"
                     )}`}
-                    href="/CHANNEL/Visits"
+                    href="/partner/Visits"
                     onClick={()=>{
-                      dispatch(setActiveLink("/CHANNEL/Visits"))
-                      setCookie("activeLink","/CHANNEL/Visits")
+                      dispatch(setActiveLink("/partner/Visits"))
+                      setCookie("activeLink","/partner/Visits")
                     }}
                   >
                     Visits
@@ -192,12 +202,12 @@ const CP_NavBar = () => {
         <li className="nav-item">
         <Link
                     className={`nav-link ${isActive(
-                      "/CHANNEL/Brokerage"
+                      "/partner/Brokerage"
                     )}`}
-                    href="/CHANNEL/Brokerage"
+                    href="/partner/Brokerage"
                     onClick={()=>{
-                      dispatch(setActiveLink("/CHANNEL/Brokerage"))
-                      setCookie("activeLink","/CHANNEL/Brokerage")
+                      dispatch(setActiveLink("/partner/Brokerage"))
+                      setCookie("activeLink","/partner/Brokerage")
                     }}
                   >
                     Brokerage
@@ -206,12 +216,12 @@ const CP_NavBar = () => {
         <li className="nav-item">
         <Link
                     className={`nav-link ${isActive(
-                      "/CHANNEL/Campaign"
+                      "/partner/Campaign"
                     )}`}
-                    href="/CHANNEL/Campaign"
+                    href="/partner/Campaign"
                     onClick={()=>{
-                      dispatch(setActiveLink("/CHANNEL/Campaign"))
-                      setCookie("activeLink","/CHANNEL/Campaign")
+                      dispatch(setActiveLink("/partner/Campaign"))
+                      setCookie("activeLink","/partner/Campaign")
                     }}
                   >
                     Campaign
@@ -227,12 +237,12 @@ const CP_NavBar = () => {
                         <li className="nav-item">
                   <Link
                     className={`nav-link ${isActive(
-                      "/CHANNEL/Brokerage"
+                      "/partner/Brokerage"
                     )}`}
-                    href="/CHANNEL/Brokerage"
+                    href="/partner/Brokerage"
                     onClick={()=>{
-                      dispatch(setActiveLink("/CHANNEL/Brokerage"))
-                      setCookie("activeLink","/CHANNEL/Brokerage")
+                      dispatch(setActiveLink("/partner/Brokerage"))
+                      setCookie("activeLink","/partner/Brokerage")
                     }}
                   >
                     Brokerage
@@ -266,18 +276,18 @@ const CP_NavBar = () => {
                     </div>
                   </Dropdown.Toggle>
                   <Dropdown.Menu  >
-                    <Link href={"/CHANNEL/ChannelProfile"}>
+                    
                       <Dropdown.Item className='d-flex align-items-center' onClick={()=>{
-                        router.push("/CHANNEL/ChannelProfile")
-                        dispatch(setActiveLink("/CHANNEL/ChannelProfileAdmin"))
-                        setCookie("activeLink","/CHANNEL/ChannelProfileAdmin")
+                        router.push("/partner/ChannelProfile")
+                        dispatch(setActiveLink("/partner/ChannelProfileAdmin"))
+                        setCookie("activeLink","/partner/ChannelProfileAdmin")
                       }}>
                         <div style={{width:"15px"}}>
                       <AvatarIcon/>
                         </div>
                       <span className='ms-1 '>Profile</span> 
                       </Dropdown.Item>
-                    </Link>
+                    
                     <Dropdown.Item className='d-flex align-items-center' onClick={() => {
                       setshowConfirm(!showConfirm)
                     }}>

@@ -202,7 +202,7 @@ const AddClientScreen = () => {
                 const res = await axios.post(Baseurl + `/db`, formData, header);
                 if (res.status === 200 || res.status === 204) {
                     toast.success('Client Added Successfully')
-                    router.push('/Admin');
+                    router.push('/admin');
                     setisLoading(false);
                 }
             } catch (error) {
@@ -252,7 +252,7 @@ const AddClientScreen = () => {
                 const res = await axios.put(Baseurl + `/db/admin`, formData, header);
                 if (res.status === 200 || res.status === 204) {
                     toast.success('Client Updated Successfully')
-                    router.push('/Admin');
+                    router.push('/admin');
                     setisLoading(false);
                 }
             } catch (error) {
@@ -439,8 +439,8 @@ const AddClientScreen = () => {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                {" "}
-                <Link href="/Admin">All Clients </Link>
+                
+                <Link href="/admin">All Clients </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
                 {editMode ? "Edit" : "Add"} Client
@@ -1166,7 +1166,7 @@ const AddClientScreen = () => {
                         <div className="other_details_info" style={{padding: '20px 0px', borderTop: '1px dashed #dfdfff'}}>
                             <div className="other_details">
                               <label className="text_bold head" htmlFor="opt_dtls">
-                                Client Image
+                                Images for Channel Partner login page
                               </label>
                             </div>
                         </div>
@@ -1174,7 +1174,7 @@ const AddClientScreen = () => {
                         <div className="row">
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                         <div className="d-flex flex-column gap-1">
-                          <label className="form-label">Client Image 1 </label>
+                          <label className="form-label"> Image 1 </label>
                           <input
                             type="file"
                             onChange={(e) => handleClientImageChange(e,"client_image_1","client_image_1_preview")}
@@ -1196,7 +1196,7 @@ const AddClientScreen = () => {
     
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                         <div className="d-flex flex-column gap-1">
-                          <label className="form-label">Client Image 2 </label>
+                          <label className="form-label"> Image 2 </label>
                           <input
                             type="file"
                             onChange={(e) => handleClientImageChange(e,"client_image_2","client_image_2_preview")}
@@ -1218,7 +1218,7 @@ const AddClientScreen = () => {
     
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                         <div className="d-flex flex-column gap-1">
-                          <label className="form-label">Client Image 3 </label>
+                          <label className="form-label"> Image 3 </label>
                           <input
                             type="file"
                             onChange={(e) => handleClientImageChange(e,"client_image_3","client_image_3_preview")}
@@ -1240,7 +1240,7 @@ const AddClientScreen = () => {
     
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                         <div className="d-flex flex-column gap-1">
-                          <label className="form-label">Client Image 4 </label>
+                          <label className="form-label">Image 4 </label>
                           <input
                             type="file"
                             onChange={(e) => handleClientImageChange(e,"client_image_4","client_image_4_preview")}
@@ -1480,7 +1480,7 @@ const AddClientScreen = () => {
                       disabled={isLoading}
                       className="btn btn-primary me-2"
                       onClick={()=>{
-                        router.push("/Admin")
+                        router.push("/admin")
                       }}
                     >
                       {isLoading ? "Loading ..." : "Cancel"}

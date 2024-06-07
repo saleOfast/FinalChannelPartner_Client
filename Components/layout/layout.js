@@ -79,7 +79,6 @@ const Layout = ({Component, pageProps}) => {
 
       useEffect(() => {
         checkAllowedPermissions()
-        
       }, [allowedpermission]);
 
       useEffect(()=>{

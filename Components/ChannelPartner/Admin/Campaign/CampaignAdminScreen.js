@@ -279,7 +279,7 @@ const CampaignAdminScreen = () => {
                             style={{ height: 17,cursor:"pointer" }}
                           />
                           <Link
-                            href={`/CHANNEL/CampaignDetailsAdmin?id=${project?.project_id}`}
+                            href={`/partner/CampaignDetailsAdmin?id=${project?.project_id}`}
                           >
                           <img
                             src="/ChannelPartner/download-file-white.svg"

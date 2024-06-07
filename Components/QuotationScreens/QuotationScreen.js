@@ -142,7 +142,7 @@ export default function QuotationScreen() {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <Link href="/">Home</Link>
+                <Link href="/crm">Home</Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
                 Quotation List
@@ -154,7 +154,7 @@ export default function QuotationScreen() {
           <div className="table_screen">
             <div className="top_btn_sec">
               <div className="d-flex">
-                <Link href="/AddQuotations">
+                <Link href="/crm/AddQuotations">
                   <button className="btn btn-primary Add_btn me-3">
                     <PlusIcon />
                     ADD QUOTATION

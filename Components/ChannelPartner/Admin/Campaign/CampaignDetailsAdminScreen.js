@@ -191,7 +191,7 @@ const CampaignDetailsAdminScreen = () => {
                   getCampaignById(id);
               }}
           />
-          <img 
+          {/* <img 
           src="/ChannelPartner/download-file-blue.svg" 
           alt="Download File" 
           style={{height: "1.2rem", cursor: "pointer"}} 
@@ -199,7 +199,7 @@ const CampaignDetailsAdminScreen = () => {
             downloadHtml()
             // downloadPdf()
           }}
-          />
+          /> */}
       </div>
       {/* Edit and Download End */}
 
@@ -268,7 +268,7 @@ const CampaignDetailsAdminScreen = () => {
 
       {/* Back to campaign button start */}
       <div style={{display:"flex", justifyContent:"center",alignItems:"center"}}>
-          <Link href={`/CHANNEL/CampaignAdmin`} style={{background:clientBtnColor,color:"white",padding:"5px 10px",borderRadius:"20px"}}>Back to Campaigns</Link>
+          <Link href={`/partner/CampaignAdmin`} style={{background:clientBtnColor,color:"white",padding:"5px 10px",borderRadius:"20px"}}>Back to Campaigns</Link>
       </div>
       {/* Back to campaign button end */}
 

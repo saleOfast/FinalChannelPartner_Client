@@ -268,7 +268,7 @@ function formatDate(date) {
 
           </div>
 
-          <Link href={'/CHANNEL/Bookings'} className="details-btn d-flex justify-content-center gap-4 mt-2 mt-md-4">
+          <Link href={'/partner/Bookings'} className="details-btn d-flex justify-content-center gap-4 mt-2 mt-md-4">
             <button style={{background:`${clientBtnColor}`}} className="back-to-lead d-flex align-items-center justify-content-center text-white border-0">Back to Bookings</button>
           </Link>
         </div></section>

@@ -144,7 +144,7 @@ export default function UserEditProfile({ setEditMode, userData }) {
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
                             <li className="breadcrumb-item">
-                                <Link href={dbMode == 'admin' ? '/Admin' : '/'}>Home</Link>
+                                <Link href={dbMode == 'admin' ? '/admin' : '/CRM'}>Home</Link>
                             </li>
                             <li className="breadcrumb-item active" aria-current="page">
                                 Profile

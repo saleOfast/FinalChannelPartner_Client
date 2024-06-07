@@ -137,7 +137,7 @@ export default function EventScreens() {
           <h3 className="content_head">EVENTS</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
-              <li className="breadcrumb-item"> <Link href='/'>Home   </Link></li>
+              <li className="breadcrumb-item"> <Link href='/crm'>Home   </Link></li>
               <li className="breadcrumb-item active" aria-current="page">Events List</li>
             </ol>
           </nav>
@@ -146,7 +146,7 @@ export default function EventScreens() {
           <div className="table_screen">
             <div className="top_btn_sec">
               <div className="d-flex">
-                <Link href='/AddEvent'>
+                <Link href='/crm/AddEvent'>
                   <button className="btn btn-primary Add_btn">
                     <PlusIcon />
                     ADD EVENT

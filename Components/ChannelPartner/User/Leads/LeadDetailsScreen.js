@@ -6,11 +6,13 @@ import React, { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { Baseurl } from '../../../../Utils/Constants';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 
 const LeadDetailsScreen = () => {
   const [showAssignTo, setShowAssignTo] = useState("");
   const router=useRouter();
   const {id}=router.query;
+  const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
 
   const [lead,setLead]=useState({
     lead_code:"",
@@ -24,9 +26,12 @@ const LeadDetailsScreen = () => {
     p_visit_time: "", 
     project_id:"",
     project_name:"",
+    created_on:DateNow,
+    updated_on:DateNow
   })
  
   const [projectList,setProjectList]=useState([])
+  const [locationList,setLocationList]=useState([])
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
 
   useEffect(()=>{
@@ -53,6 +58,7 @@ const LeadDetailsScreen = () => {
             
             const leads = await axios.get(Baseurl + `/db/channel/lead?lead_id=${id}`, header);
             const projects = await axios.get(Baseurl + `/db/channel/lead/projects`, header);
+            const locations = await axios.get(Baseurl + `/db/channel/lead/location`, header);
             setLead({
               ...lead,
               lead_id:leads?.data?.data?.lead_id,
@@ -68,6 +74,7 @@ const LeadDetailsScreen = () => {
               project_name:leads?.data?.data?.sales_project_name,
             });
             setProjectList(projects?.data?.data?.records);
+            setLocationList(locations?.data?.data)
         } catch (error) {
           console.log(error)
             if (error?.response?.data?.message) {
@@ -79,7 +86,7 @@ const LeadDetailsScreen = () => {
     }
   }
   
-  const createLead =  async(e) => {
+  const editLead =  async(e) => {
   e.preventDefault();
      if (!hasCookie("token")) return;
      const token = getCookie("token");
@@ -92,10 +99,11 @@ const LeadDetailsScreen = () => {
          m_id: 79,
        },
      };
- 
+     
+     let updatedLeads={...lead,updated_on:DateNow}
     
      try {
-       const response = await axios.put(`${Baseurl}/db/channel/lead`,lead, header);
+       const response = await axios.put(`${Baseurl}/db/channel/lead`,updatedLeads, header);
        if (response.status === 200 || response.status === 201) {
          toast.success(response.data.message);
          setShowAssignTo(false)
@@ -285,7 +293,7 @@ function formatDate(date) {
             </div>
           </div>
           <Link
-            href={"/CHANNEL/Leads"}
+            href={"/partner/Leads"}
             className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5"
           >
             <button
@@ -323,7 +331,7 @@ function formatDate(date) {
                             id="survey-form"
                             method="post"
                             onSubmit={(e) => {
-                              createLead(e);
+                              editLead(e);
                             }}
                           >
                             <div className="row">
@@ -357,33 +365,33 @@ function formatDate(date) {
                                 </div>
                               </div>
 
-                              <div className="col col-xl-6 col-md-6 col-sm-12 my-2">
-                                <div className="row ">
+                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                                <div className='row '>
                                   <div className="col-3">
-                                    <label htmlFor="name" className="pb-1">
-                                      Location
-                                      <span className="star text-danger">
-                                        *
-                                      </span>
-                                    </label>
-                                  </div>
-                                  <div className="col-9">
-                                    <input
-                                      autofocus
-                                      value={lead?.address}
-                                      onChange={(e) => {
-                                        setLead({
-                                          ...lead,
-                                          address: e.target.value,
-                                        });
-                                      }}
-                                      type="text"
-                                      name="name"
-                                      className="input-field"
-                                      placeholder
-                                      required
-                                    />
-                                  </div>
+                                      <label htmlFor="name" className="pb-1">Location<span className="star text-danger">*</span></label>
+                                    </div>
+                                    <div className="col-9">
+                                    <select required name 
+                                    value={lead?.address}
+                                    onChange={(e) => {
+                                      
+                                      const location_name = locationList?.find((l) => l?.name === e.target.value)?.name
+                                      setLead((lead) => ({
+                                        ...lead,
+                                        address: location_name,
+                                      }));
+                                    }} 
+                                    className="form-select dropdown" style={{paddingTop: 12, paddingBottom: 12}}>
+                                      <option value selected disabled>Select</option>
+                                      {
+                                        locationList?.map((location)=>(
+                                          <option key={location?.lead_location_id} value={location?.name} className="dropdown-item" >
+                                            {location?.name}
+                                          </option>
+                                        ))
+                                      }
+                                    </select>
+                                    </div>
                                 </div>
                               </div>
 
@@ -490,6 +498,7 @@ function formatDate(date) {
                                   <div className="col-9">
                                     <input
                                       autofocus
+                                      
                                       value={lead?.p_visit_date}
                                       onChange={(e) => {
                                         setLead({

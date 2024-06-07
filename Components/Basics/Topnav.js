@@ -184,7 +184,7 @@ const Topnav = ({  topnavPermission }) => {
 
         {
           userInfo ?
-          hasCookie("channel") && userInfo.role_id != null && userInfo?.role_id != 3  ? (
+          hasCookie("channel") && userInfo?.role_id != null && userInfo?.role_id != 3  ? (
             <CP_Navbar_User  />
           ) : (
     

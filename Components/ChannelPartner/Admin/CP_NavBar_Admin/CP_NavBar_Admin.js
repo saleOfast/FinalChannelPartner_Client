@@ -137,7 +137,7 @@ const CP_NavBar_Admin = () => {
                           deleteCookie("channel")
                           dispatch(clearValue())
                           router.push("/")
-                        }}><img src='/switch.svg' style={{width:"20px"}}/></li>
+                        }}><img src='/switch.svg' style={{width:"15px",marginTop:"4px"}}/></li>
                       )
                     }
         <li className="nav-item">
@@ -156,6 +156,7 @@ const CP_NavBar_Admin = () => {
                   }}
                 >Channel Partners</Link>
         </li>
+        
         <li className="nav-item">
         <Link className={`nav-link ${isActive('/partner/PendingRequests')}`} 
                   onClick={()=>{
@@ -163,6 +164,62 @@ const CP_NavBar_Admin = () => {
                     setCookie("activeLink","/partner/PendingRequests")
                   }}
                 href="/partner/PendingRequests">Pending Requests</Link>
+        </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/partner/Leads"
+                    )}`}
+                    href="/partner/Leads"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/partner/Leads"))
+                      setCookie("activeLink","/partner/Leads")
+                    }}
+                  >
+                    Leads
+                  </Link>
+        </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/partner/Bookings"
+                    )}`}
+                    href="/partner/Bookings"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/partner/Bookings"))
+                      setCookie("activeLink","/partner/Bookings")
+                    }}
+                  >
+                    Bookings
+                  </Link>
+        </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/partner/Visits"
+                    )}`}
+                    href="/partner/Visits"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/partner/Visits"))
+                      setCookie("activeLink","/partner/Visits")
+                    }}
+                  >
+                    Visits
+                  </Link>
+        </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/partner/Brokerage"
+                    )}`}
+                    href="/partner/Brokerage"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/partner/Brokerage"))
+                      setCookie("activeLink","/partner/Brokerage")
+                    }}
+                  >
+                    Brokerage
+                  </Link>
         </li>
         <li className="nav-item">
                 <Link className={`nav-link ${isActive('/partner/CampaignAdmin')}`} 

@@ -330,35 +330,44 @@ const DashboardAdmin = () => {
                     <div className="cards_Box ">
                         
                     <div className="row leads_row">
-                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/Leads"}>
                                 <DashLeadsCard
                                     head='TOTAL LEADS'
                                     price={dataList.leads}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/groupicon.png' />  
+                        </Link>
                             </div>
                             <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                            <Link href={"/partner/Visits"}>
                                 <DashLeadsCard
                                     head='VISITS COMPLETED'
                                     price={dataList.visits}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/groupicon.png' />
+                            </Link>
                             </div>
                             <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                            <Link href={"/partner/Bookings"}>
                                 <DashLeadsCard
                                     head='BOOKINGS COMPLETED'
                                     price={dataList.booking}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/usericon.png' />
+                            </Link>
                             </div>
                             <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                            <Link href={"/partner/Brokerage"}>
                                 <DashLeadsCard
                                     head='TAT FOR BROKERS'
                                     price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/usericon.png' 
                                     />
+                            </Link>
                             </div>
+                            
                         </div>
                         
 

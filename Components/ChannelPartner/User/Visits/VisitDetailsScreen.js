@@ -122,7 +122,7 @@ const VisitDetailsScreen = () => {
               </div>
               <div className="col-6 col-md-6">
                 <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-right">{visitData?.leadData?.projectData?.project || "------"}
+                  <span className="list-right">{visitData?.leadData?.sales_project_name || "------"}
                   </span>
                 </div>
               </div>

@@ -281,7 +281,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       leadDataName:list?.leadData?.lead_name,
       leadDataEmail:list?.leadData?.email_id,
       leadDataContact:list?.leadData?.p_contact_no,
-      leadDataProject:list?.leadData?.projectData?.project,
+      leadDataProject:list?.leadData?.sales_project_name,
       p_visit_date:list?.p_visit_date,
       p_visit_time:list?.p_visit_time,
       status:list?.status

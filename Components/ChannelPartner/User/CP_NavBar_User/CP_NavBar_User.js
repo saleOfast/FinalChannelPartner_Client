@@ -146,7 +146,7 @@ const CP_NavBar = () => {
                           deleteCookie("channel")
                           dispatch(clearValue()) //for clearing the value (initial state in permission mode)
                           router.push("/")
-                        }}><img src='/switch.svg' style={{width:"19px"}}/></li>
+                        }}><img src='/switch.svg' style={{width:"15px",marginTop:"4px"}}/></li>
                       )
                     }
                 <li className="nav-item">

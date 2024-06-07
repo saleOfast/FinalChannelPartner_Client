@@ -45,7 +45,8 @@ const ActivePartnersScreen = () => {
         action: ''
     })
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
-
+  const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+  
 
     function disableConfirm(value, type) {
         if (type == 1) {
@@ -284,10 +285,15 @@ const ActivePartnersScreen = () => {
                     <div className="table_screen">
                         <div className="top_btn_sec mb-3" style={{paddingRight:"0px"}} >
                             <div className="d-flex">
-                                <button className="btn ms-auto Add_btn  mb-2" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/partner/ChannelPartnersDetails')}>
+                                {
+                                    userInfo?.role_id==null && (
+                                        <button className="btn ms-auto Add_btn  mb-2" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/partner/ChannelPartnersDetails')}>
                                     <PlusIcon />
                                     ADD USER
                                 </button>
+                                    )
+                                }
+                                
                             </div>
                         </div>
                         <DynamicTable

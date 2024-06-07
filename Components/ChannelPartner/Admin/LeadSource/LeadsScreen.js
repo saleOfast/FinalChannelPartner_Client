@@ -45,7 +45,7 @@ const LeadsScreen = () => {
         action: ''
     })
     const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
-    const userInfo=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")):null
+    const userInfo=hasCookie("userInfo")? getCookie("userInfo"):null;
 
     const [lead,setLead]=useState({
       lead_id:null,
@@ -217,15 +217,8 @@ const LeadsScreen = () => {
         catch (error) {
           console.log(error)
           if (error?.response?.data?.status === 422) {
-                // toast.error(error?.response?.data?.message)
-                const taskObject = {}
-             const array = error?.response?.data?.data;
-             for (let i = 0; i < array.length; i++) {
-              const key = Object.keys(array[i])[0];
-              const value = Object.values(array[i])[0];
-              taskObject[key] = value;
-          }
-          setErrorData(taskObject);
+                toast.error(error?.response?.data?.message)
+                
           }
           if (error?.response?.data?.message) {
             toast.error(error.response.data.message);
@@ -255,19 +248,14 @@ const LeadsScreen = () => {
             <div className="table_screen">
               <div className="top_btn_sec mb-3 " style={{paddingRight:"0px"}}>
                 <div className="d-flex">
-                  {
-                    userInfo?.role_id==1 &&(
-                      <button
-                      className="btn ms-auto  Add_btn  "
-                      style={{ background: `${clientBtnColor}` }}
-                      onClick={()=>{setShowAssignTo(true)}}
-                    >
-                      <PlusIcon />
-                      Create Lead
-                    </button>
-                    )
-                  }
-               
+                {/* <button
+                    className="btn ms-auto  Add_btn  "
+                    style={{ background: `${clientBtnColor}` }}
+                    onClick={()=>{setShowAssignTo(true)}}
+                  >
+                    <PlusIcon />
+                    Create Lead
+                  </button> */}
                   
                 </div>
               </div>
@@ -361,12 +349,25 @@ const LeadsScreen = () => {
                                         setLead({...lead,lead_name:e.target.value})
                                       }} 
                                       type="text" name="name" className="input-field" placeholder required />
-                                      <span className='errorText text-danger'>
+                                      <span className='errorText'>
                                           {errorData?.lead_name ? errorData.lead_name:""}
                                       </span>
                                     </div>
                                 </div>
                               </div>
+
+                              {/* <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                                <div className='row '>
+                                  <div className="col-3">
+                                      <label htmlFor="name" className="pb-1">Location<span className="star text-danger">*</span></label>
+                                    </div>
+                                    <div className="col-9">
+                                      <input autofocus value={lead?.address} onChange={(e)=>{
+                                        setLead({...lead,address:e.target.value})
+                                      }} type="text" name="name" className="input-field" placeholder required />
+                                    </div>
+                                </div>
+                              </div> */}
 
                               <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
                                 <div className='row '>
@@ -393,7 +394,7 @@ const LeadsScreen = () => {
                                         ))
                                       }
                                     </select>
-                                    <span className='errorText text-danger'>
+                                    <span className='errorText'>
                                           {errorData?.address ? errorData.address:""}
                                       </span>
                                     </div>
@@ -409,7 +410,7 @@ const LeadsScreen = () => {
                                       <input autofocus value={lead?.email_id} onChange={(e)=>{
                                         setLead({...lead,email_id:e.target.value})
                                       }} type="text" name="name" className="input-field" placeholder required />
-                                      <span className='errorText text-danger'>
+                                      <span className='errorText'>
                                           {errorData?.email_id ? errorData.email_id:""}
                                       </span>
                                     </div>
@@ -425,7 +426,7 @@ const LeadsScreen = () => {
                                       <input autofocus  value={lead?.pincode} onChange={(e)=>{
                                         setLead({...lead,pincode:e.target.value})
                                       }}  type="number" name="name" className="input-field" placeholder required />
-                                      <span className='errorText text-danger'>
+                                      <span className='errorText'>
                                           {errorData?.pincode ? errorData.pincode:""}
                                       </span>
                                     </div>
@@ -441,7 +442,7 @@ const LeadsScreen = () => {
                                       <input autofocus  value={lead?.p_contact_no} onChange={(e)=>{
                                         setLead({...lead,p_contact_no:e.target.value})
                                       }} type="number" name="name" className="input-field" placeholder required />
-                                      <span className='errorText text-danger'>
+                                      <span className='errorText'>
                                           {errorData?.p_contact_no ? errorData.p_contact_no:""}
                                       </span>
                                     </div>
@@ -457,7 +458,7 @@ const LeadsScreen = () => {
                                       <input autofocus  value={lead?.p_visit_date} onChange={(e)=>{
                                         setLead({...lead,p_visit_date:e.target.value})
                                       }} type="Date" name="name" className="input-field"  min={moment().format("YYYY-MM-DD")} placeholder required />
-                                      <span className='errorText text-danger'>
+                                      <span className='errorText'>
                                           {errorData?.p_visit_date ? errorData.p_visit_date:""}
                                       </span>
                                     </div>
@@ -490,7 +491,7 @@ const LeadsScreen = () => {
                                         ))
                                       }
                                     </select>
-                                    <span className='errorText text-danger'>
+                                    <span className='errorText'>
                                           {errorData?.project_id ? errorData.project_id:""}
                                       </span>
                                     </div>
@@ -506,7 +507,7 @@ const LeadsScreen = () => {
                                       <input autofocus  value={lead?.p_visit_time} onChange={(e)=>{
                                         setLead({...lead,p_visit_time:e.target.value})
                                       }} type="time" name="name" className="input-field" placeholder required />
-                                      <span className='errorText text-danger'>
+                                      <span className='errorText'>
                                           {errorData?.p_visit_time ? errorData.p_visit_time:""}
                                       </span>
                                     </div>

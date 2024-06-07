@@ -139,7 +139,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'reportToUser',
+            name: 'reportToUser.user',
             label: "Assigned to",
             options: {
                 filter: true,
@@ -255,7 +255,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         selectableRows: 'multiple',
         responsive: "simple",
         onRowSelectionChange : handleRowClick,
-        downloadOptions:{filename:"ChannelPartnerList"}
+        downloadOptions:{filename:"ChannelPartnerList"},
+        enableNestedDataAccess:"."
     };
 
    
@@ -332,8 +333,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
-                    // data={dataList}
-                    data={mappedDataList}
+                    data={dataList}
+                    // data={mappedDataList}
                     columns={columns}
                     options={options}
                 />

@@ -3,7 +3,7 @@ import DashBoardScreenCHANNEL from '../../Components/ChannelPartner/Reports&Dash
 import ChannelSignInScreen from '../../Components/ChannelPartner/SignIn/ChannelSignInScreen';
 import { useSelector } from 'react-redux';
 
-const index = () => {
+const Index = () => {
 const userInfo=hasCookie("userInfo") ? true:false;
   return (
     <>
@@ -15,4 +15,4 @@ const userInfo=hasCookie("userInfo") ? true:false;
   )
 }
 
-export default index
+export default Index

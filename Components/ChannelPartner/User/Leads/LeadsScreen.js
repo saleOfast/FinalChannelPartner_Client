@@ -64,7 +64,7 @@ const LeadsScreen = () => {
     const [projectList,setProjectList]=useState([])
     const [locationList,setLocationList]=useState([])
     const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
-
+    const [errorData, setErrorData] = useState({})
 
 
     function disableConfirm(value, type) {
@@ -347,6 +347,9 @@ const LeadsScreen = () => {
                                         setLead({...lead,lead_name:e.target.value})
                                       }} 
                                       type="text" name="name" className="input-field" placeholder required />
+                                      <span className='errorText'>
+                                          {errorData?.lead_name ? errorData.lead_name:""}
+                                      </span>
                                     </div>
                                 </div>
                               </div>
@@ -389,6 +392,9 @@ const LeadsScreen = () => {
                                         ))
                                       }
                                     </select>
+                                    <span className='errorText'>
+                                          {errorData?.lead_name ? errorData.lead_name:""}
+                                      </span>
                                     </div>
                                 </div>
                               </div>
@@ -414,7 +420,10 @@ const LeadsScreen = () => {
                                     <div className="col-9">
                                       <input autofocus  value={lead?.pincode} onChange={(e)=>{
                                         setLead({...lead,pincode:e.target.value})
-                                      }}  type="text" name="name" className="input-field" placeholder required />
+                                      }}  type="number" name="name" className="input-field" placeholder required />
+                                      <span className='errorText'>
+                                        
+                                      </span>
                                     </div>
                                 </div>
                               </div>
@@ -427,7 +436,7 @@ const LeadsScreen = () => {
                                     <div className="col-9">
                                       <input autofocus  value={lead?.p_contact_no} onChange={(e)=>{
                                         setLead({...lead,p_contact_no:e.target.value})
-                                      }} type="text" name="name" className="input-field" placeholder required />
+                                      }} type="number" name="name" className="input-field" placeholder required />
                                     </div>
                                 </div>
                               </div>

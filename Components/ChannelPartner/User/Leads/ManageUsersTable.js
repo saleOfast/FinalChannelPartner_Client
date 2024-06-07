@@ -143,7 +143,7 @@ const getVisitInfo=async(visitId)=>{
             download:false,
             viewColumns:false,
             customHeadRender: (columnMeta, updateDirection) => (
-                <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                   {columnMeta.label}
                 </th>
               ),
@@ -163,7 +163,7 @@ const getVisitInfo=async(visitId)=>{
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -183,7 +183,7 @@ const getVisitInfo=async(visitId)=>{
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -204,7 +204,7 @@ const getVisitInfo=async(visitId)=>{
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -225,7 +225,7 @@ const getVisitInfo=async(visitId)=>{
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -244,7 +244,7 @@ const getVisitInfo=async(visitId)=>{
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -264,7 +264,7 @@ const getVisitInfo=async(visitId)=>{
           options: {
               filter: true,
               customHeadRender: (columnMeta, updateDirection) => (
-                  <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                  <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                     {columnMeta.label}
                   </th>
                 ),
@@ -284,7 +284,7 @@ const getVisitInfo=async(visitId)=>{
                 filter: false,
                 download:false,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -349,9 +349,9 @@ const getVisitInfo=async(visitId)=>{
 
     
     const options = {
-        selectableRows: 'multiple',
+        selectableRows: 'none',
         responsive: "simple",
-        onRowSelectionChange : handleRowClick,
+        // onRowSelectionChange : handleRowClick,
         downloadOptions:{filename:"ChannelLeads"}
     };
 

@@ -166,7 +166,7 @@ const updateBrokerageBill =  async() => {
                 download:false,
                 viewColumns:false,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -186,7 +186,7 @@ const updateBrokerageBill =  async() => {
           options: {
               filter: true,
               customHeadRender: (columnMeta, updateDirection) => (
-                  <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                  <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                     {columnMeta.label}
                   </th>
                 ),
@@ -206,7 +206,7 @@ const updateBrokerageBill =  async() => {
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -227,7 +227,7 @@ const updateBrokerageBill =  async() => {
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -249,7 +249,7 @@ const updateBrokerageBill =  async() => {
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -269,7 +269,7 @@ const updateBrokerageBill =  async() => {
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -289,7 +289,7 @@ const updateBrokerageBill =  async() => {
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -309,7 +309,7 @@ const updateBrokerageBill =  async() => {
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -332,7 +332,7 @@ const updateBrokerageBill =  async() => {
                 filter: false,
                 download:false,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -380,7 +380,7 @@ const updateBrokerageBill =  async() => {
     };
 
     const options = {
-        selectableRows: 'multiple',
+        selectableRows: 'none',
         responsive: "simple",
         onRowSelectionChange : handleRowClick,
         downloadOptions:{filename:"ChannelBrokerage"}

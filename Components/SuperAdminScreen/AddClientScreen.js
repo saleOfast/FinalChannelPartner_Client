@@ -36,14 +36,14 @@ const AddClientScreen = () => {
         db_name: '',
         password: '',
         conPassword: '',
-        subscription_start_date: '',
-        subscription_end_date: '',
-        subscription_start_date_channel: '',
-        subscription_end_date_channel: '',
-        subscription_start_date_dms: '',
-        subscription_end_date_dms: '',
-        subscription_start_date_sales: '',
-        subscription_end_date_sales: '',
+        subscription_start_date: null,
+        subscription_end_date: null,
+        subscription_start_date_channel: null,
+        subscription_end_date_channel: null,
+        subscription_start_date_dms: null,
+        subscription_end_date_dms: null,
+        subscription_start_date_sales: null,
+        subscription_end_date_sales: null,
         no_of_license: '',
         no_of_channel_license: 0,
         no_of_dms_license: 0,
@@ -196,6 +196,7 @@ const AddClientScreen = () => {
     }
 
     async function addClientHandler() {
+      // console.log(userInfo)
         if (hasCookie('saLsTkn')) {
             setisLoading(true);
             if (userInfo.password) {
@@ -253,7 +254,7 @@ const AddClientScreen = () => {
     };
 
     async function updateHandler() {
-
+      console.log(userInfo)
         if (hasCookie('saLsTkn')) {
             setisLoading(true);
             let token = (getCookie('saLsTkn'));

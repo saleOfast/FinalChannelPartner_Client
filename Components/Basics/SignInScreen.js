@@ -95,6 +95,7 @@ export default function SignInScreen({ setLoggedIn }) {
           setCookie("sideUser", "true");
           setCookie("token", res.data.token);
           setCookie("userInfo", res.data.userData);
+          setCookie("subscriptionInfo", res.data.userAdminSubscriptionData);
           setCookie("clientLogo", res.data.Logo[0]);
           setCookie("db_name", res.data.userData.db_name);
 

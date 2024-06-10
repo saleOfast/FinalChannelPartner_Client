@@ -14,6 +14,9 @@ import Loader from "../Components/Loader/Loader";
 import Link from "next/link";
 import { crm, dms, sales, channel, clearValue } from "../store/permissionSlice";
 import { Baseurl, filesUrl } from "../Utils/Constants";
+import { toast } from "react-toastify";
+import axios from "axios";
+import moment from "moment";
 
 export default function Home() {
   const router = useRouter();
@@ -38,6 +41,8 @@ export default function Home() {
       dispatch(UserLogIN());
     }
   }, []);
+  const subscriptionInfo=hasCookie("subscriptionInfo") ? JSON.parse(getCookie("subscriptionInfo")) : null;
+
 
   const checkDashboard = () => {
     if (hasCookie("crm")) {
@@ -89,17 +94,45 @@ export default function Home() {
 
   const handleClick = (permission) => {
     if (permission === "crm") {
-      router.push("/crm");
+      
+      if(subscriptionInfo?.subscription_end_date< moment(Date.now()).format( 'YYYY-MM-DD' )){
+
+        return toast("Your CRM Subscription Has Ended")
+      }
+      else{
+        router.push("/crm");
       dispatch(crm());
+      }
+      
     } else if (permission === "channel") {
-      dispatch(channel());
+      if(subscriptionInfo?.subscription_end_date_channel< moment(Date.now()).format( 'YYYY-MM-DD' )){
+
+        return toast("Your Channel Partner Subscription Has Ended")
+      }
+      else{
+        dispatch(channel());
       router.push("/partner");
+      }
+      
     } else if (permission === "dms") {
-      // dispatch(dms())
+      if(subscriptionInfo?.subscription_end_date_dms< moment(Date.now()).format( 'YYYY-MM-DD' )){
+
+        return toast("Your DMS Subscription Has Ended")
+      }
+      else{
+        // dispatch(dms())
       // router.push("/dms")
+      }
+      
     } else if (permission === "sales") {
-      // dispatch(sales())
+      if(subscriptionInfo?.subscription_end_date_sales< moment(Date.now()).format( 'YYYY-MM-DD' )){
+        return toast("Your Sales App Subscription Has Ended")
+      }
+      else{
+        // dispatch(sales())
       // router.push("/sales")
+      }
+      
     }
   };
 
@@ -146,11 +179,6 @@ export default function Home() {
                       className="logo mx-auto"
                     />
                     <img
-                      src="/images/sale-o-fast-logo.png"
-                      alt
-                      className="logo mx-auto"
-                    />
-                    <img
                       src="/images/Ellipse27.png"
                       alt
                       className="image-two d-none d-lg-block"
@@ -159,7 +187,7 @@ export default function Home() {
                 </div>
                 <div className=" col-12 col-lg-6 d-flex align-items-center justify-content-center">
                   {allowedpermission?.map((permission, i) => (
-                    <div
+                    <button
                       key={i}
                       className=" h-25 p-3 "
                       onClick={() => {
@@ -170,7 +198,7 @@ export default function Home() {
                         {permission.toUpperCase()}
                         
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>

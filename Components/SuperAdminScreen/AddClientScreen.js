@@ -105,28 +105,28 @@ const AddClientScreen = () => {
                   contact_number: tempDate.contact_number,
                   user_id: tempDate.user_id,
                   user_code: tempDate.user_code,
-                  subscription_start_date: moment(
+                  subscription_start_date: tempDate.subscription_start_date===null ? null :  moment(
                     tempDate.subscription_start_date
                   ).format("YYYY-MM-DD"),
-                  subscription_end_date: moment(
+                  subscription_end_date:tempDate.subscription_end_date===null ? null : moment(
                     tempDate.subscription_end_date
                   ).format("YYYY-MM-DD"),
-                  subscription_start_date_channel: moment(
+                  subscription_start_date_channel: tempDate.subscription_start_date_channel===null ? null : moment(
                     tempDate.subscription_start_date_channel
                   ).format("YYYY-MM-DD"),
-                  subscription_end_date_channel: moment(
+                  subscription_end_date_channel:tempDate.subscription_end_date_channel===null ? null : moment(
                     tempDate.subscription_end_date_channel
                   ).format("YYYY-MM-DD"),
-                  subscription_start_date_sales: moment(
+                  subscription_start_date_sales:tempDate.subscription_start_date_sales===null ? null : moment(
                     tempDate.subscription_start_date_sales
                   ).format("YYYY-MM-DD"),
-                  subscription_end_date_sales: moment(
+                  subscription_end_date_sales:tempDate.subscription_end_date_sales===null ? null : moment(
                     tempDate.subscription_end_date_sales
                   ).format("YYYY-MM-DD"),
-                  subscription_start_date_dms: moment(
+                  subscription_start_date_dms:tempDate.subscription_start_date_dms===null ? null : moment(
                     tempDate.subscription_start_date_dms
                   ).format("YYYY-MM-DD"),
-                  subscription_end_date_dms: moment(
+                  subscription_end_date_dms:tempDate.subscription_end_date_dms===null ? null : moment(
                     tempDate.subscription_end_date_dms
                   ).format("YYYY-MM-DD"),
                   no_of_license: tempDate.no_of_license,

@@ -71,6 +71,7 @@ export default function SignInScreen({ setLoggedIn }) {
   const submitHandler = async (e) => {
     e.preventDefault();
     dispatch(startLoading());
+    const type=router.pathname==="/crm" ? "crm": router.pathname==="/dms" ? "dms": router.pathname==="/sales"? "sales": router.pathname==="/partner" ? "partner": "common"
     if (userForm.email === "" || userForm.email.length < 1) {
       toast.error("Email is Empty");
     } else if (!validEmail.test(userForm.email.toLowerCase().trim())) {
@@ -82,6 +83,7 @@ export default function SignInScreen({ setLoggedIn }) {
         const res = await axios.post(Baseurl + "/db/login", {
           email: userForm.email.toLowerCase(),
           password: userForm.password,
+          type:type
         });
 
         if (res.status === 200) {

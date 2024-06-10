@@ -38,6 +38,12 @@ const AddClientScreen = () => {
         conPassword: '',
         subscription_start_date: '',
         subscription_end_date: '',
+        subscription_start_date_channel: '',
+        subscription_end_date_channel: '',
+        subscription_start_date_dms: '',
+        subscription_end_date_dms: '',
+        subscription_start_date_sales: '',
+        subscription_end_date_sales: '',
         no_of_license: '',
         no_of_channel_license: 0,
         no_of_dms_license: 0,
@@ -104,6 +110,24 @@ const AddClientScreen = () => {
                   ).format("YYYY-MM-DD"),
                   subscription_end_date: moment(
                     tempDate.subscription_end_date
+                  ).format("YYYY-MM-DD"),
+                  subscription_start_date_channel: moment(
+                    tempDate.subscription_start_date_channel
+                  ).format("YYYY-MM-DD"),
+                  subscription_end_date_channel: moment(
+                    tempDate.subscription_end_date_channel
+                  ).format("YYYY-MM-DD"),
+                  subscription_start_date_sales: moment(
+                    tempDate.subscription_start_date_sales
+                  ).format("YYYY-MM-DD"),
+                  subscription_end_date_sales: moment(
+                    tempDate.subscription_end_date_sales
+                  ).format("YYYY-MM-DD"),
+                  subscription_start_date_dms: moment(
+                    tempDate.subscription_start_date_dms
+                  ).format("YYYY-MM-DD"),
+                  subscription_end_date_dms: moment(
+                    tempDate.subscription_end_date_dms
                   ).format("YYYY-MM-DD"),
                   no_of_license: tempDate.no_of_license,
                   gst: tempDate.gst,
@@ -557,7 +581,7 @@ const AddClientScreen = () => {
                 </div>
                
 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div
                     className={
                       errorData?.subscription_start_date
@@ -603,9 +627,9 @@ const AddClientScreen = () => {
                         : ""}
                     </span>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div
                     className={
                       errorData?.no_of_months
@@ -632,9 +656,9 @@ const AddClientScreen = () => {
                       {errorData?.no_of_months ? errorData.no_of_months : ""}
                     </span>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div className="input_box">
                     <label htmlFor="subscription_start_date">
                       Subscription End Date *
@@ -656,7 +680,7 @@ const AddClientScreen = () => {
                       }
                     />
                   </div>
-                </div>
+                </div> */}
 
                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div
@@ -844,14 +868,15 @@ const AddClientScreen = () => {
                    <div className="other_details_info" style={{ borderTop: '1px dashed #dfdfff'}}>
                       <div className="other_details">
                         <label className=" text_bold " htmlFor="opt_dtls">
-                          Permission mode 
+                          Product Details
                         </label>
                       </div>
                   </div>
 
-                    <div className="row">
-                    <div className="col-xl-3 col-md-6 col-sm-12 mb-3">
-                      <div className='d-flex gap-2 align-items-center justify-content-start'>
+                    <div className="">
+
+                    <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
+                      <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
                         <div className="form-check">
                                 <input
                                   className="form-check-input"
@@ -875,7 +900,9 @@ const AddClientScreen = () => {
                                 </label>
                         </div>
                         {userInfo.isCRM ?
-                        <div className="input_box m-0">
+                        <>
+                              <div className="input_box m-0 col-xl-3 col-md-3 col-sm-12 col-12">
+                          <label>Number of Licenses*</label>
                           <input
                           type="number"
                           placeholder="Enter Licence"
@@ -901,14 +928,95 @@ const AddClientScreen = () => {
                           {" "}
                           {errorData?.no_of_license ? errorData.no_of_license : ""}
                         </span>
-                        </div>
+                              </div>
+                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.subscription_start_date
+                        ? "input_box errorBox"
+                        : "input_box"
+                    }
+                  >
+                    <label htmlFor="subscription_start_date">
+                      Subscription Start Date *
+                    </label>
+                    <input
+                      type="date"
+                      name="subscription_start_date"
+                      id="subscription_start_date"
+                      min={moment()
+                        .subtract(7, "days")
+                        .format("YYYY-MM-DD[T]HH:mm:ss")}
+                      className={
+                        errorData?.subscription_start_date
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({
+                          ...userInfo,
+                          subscription_start_date: e.target.value,
+                        });
+                        setErrorData({
+                          ...errorData,
+                          subscription_start_date: "",
+                        });
+                      }}
+                      value={
+                        userInfo.subscription_start_date
+                          ? userInfo.subscription_start_date
+                          : ""
+                      }
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.subscription_start_date
+                        ? errorData.subscription_start_date
+                        : ""}
+                    </span>
+                  </div>
+                              </div>
+                              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                              <div className="input_box">
+                                <label htmlFor="subscription_start_date">
+                                  Subscription End Date *
+                                </label>
+                                <input
+                                  type="date"
+                                  name="subscription_start_date"
+                                  id="subscription_start_date"
+                                  className={
+                                    errorData?.subscription_end_date
+                                      ? "form-control is-invalid"
+                                      : "form-control"
+                                  }
+                                  onChange={(e) => {
+                                    setUserInfo({
+                                      ...userInfo,
+                                      subscription_end_date: e.target.value,
+                                    });
+                                    setErrorData({
+                                      ...errorData,
+                                      subscription_end_date: "",
+                                    });
+                                  }}
+                                  value={
+                                    userInfo.subscription_end_date
+                                      ? userInfo.subscription_end_date
+                                      : ""
+                                  }
+                                />
+                              </div>
+                            </div>   
+                        </>
+                        
                         : <></> }
                       </div>
                       
                     </div>
 
-                    <div className="col-xl-3 col-md-6 col-sm-12 mb-3">
-                      <div className='d-flex gap-2 align-items-center justify-content-start'>
+                    <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
+                    <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
                         <div className="form-check">
                                 <input
                                   className="form-check-input text-nowrap"
@@ -932,7 +1040,9 @@ const AddClientScreen = () => {
                                 </label>
                         </div>
                         {userInfo.isCHANNEL ?
-                        <div className="input_box m-0">
+                        <>
+                            <div className="input_box m-0 col-xl-3 col-md-3 col-sm-12 col-12">
+                          <label>Number of Licenses*</label>
                           <input
                           type="number"
                           placeholder="Enter Licence"
@@ -958,14 +1068,95 @@ const AddClientScreen = () => {
                           {" "}
                           {errorData?.no_of_channel_license ? errorData.no_of_channel_license : ""}
                         </span>
-                        </div>
+                            </div>
+                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.subscription_start_date
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="subscription_start_date">
+                                Subscription Start Date *
+                              </label>
+                              <input
+                                type="date"
+                                name="subscription_start_date"
+                                id="subscription_start_date"
+                                min={moment()
+                                  .subtract(7, "days")
+                                  .format("YYYY-MM-DD[T]HH:mm:ss")}
+                                className={
+                                  errorData?.subscription_start_date_channel
+                                    ? "form-control is-invalid"
+                                    : "form-control"
+                                }
+                                onChange={(e) => {
+                                  setUserInfo({
+                                    ...userInfo,
+                                    subscription_start_date_channel: e.target.value,
+                                  });
+                                  setErrorData({
+                                    ...errorData,
+                                    subscription_start_date_channel: "",
+                                  });
+                                }}
+                                value={
+                                  userInfo.subscription_start_date_channel
+                                    ? userInfo.subscription_start_date_channel
+                                    : ""
+                                }
+                              />
+                              <span className="errorText">
+                                {" "}
+                                {errorData?.subscription_start_date_channel
+                                  ? errorData.subscription_start_date_channel
+                                  : ""}
+                              </span>
+                            </div>
+                            </div>
+                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                              <div className="input_box">
+                                <label htmlFor="subscription_start_date">
+                                  Subscription End Date *
+                                </label>
+                                <input
+                                  type="date"
+                                  name="subscription_start_date"
+                                  id="subscription_start_date"
+                                  className={
+                                    errorData?.subscription_end_date_channel
+                                      ? "form-control is-invalid"
+                                      : "form-control"
+                                  }
+                                  onChange={(e) => {
+                                    setUserInfo({
+                                      ...userInfo,
+                                      subscription_end_date_channel: e.target.value,
+                                    });
+                                    setErrorData({
+                                      ...errorData,
+                                      subscription_end_date_channel: "",
+                                    });
+                                  }}
+                                  value={
+                                    userInfo.subscription_end_date_channel
+                                      ? userInfo.subscription_end_date_channel
+                                      : ""
+                                  }
+                                />
+                              </div>
+                            </div> 
+                        </>
+                          
                         : <></> }
                       </div>
                       
                     </div>
 
-                    <div className="col-xl-3 col-md-6 col-sm-12 mb-3">
-                      <div className='d-flex gap-2 align-items-center justify-content-start'>
+                    <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
+                    <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
                         <div className="form-check">
                                 <input
                                   className="form-check-input"
@@ -989,7 +1180,9 @@ const AddClientScreen = () => {
                                 </label>
                         </div>
                         {userInfo.isDMS ?
-                        <div className="input_box m-0">
+                        <>
+                        <div className="input_box m-0 col-xl-3 col-md-3 col-sm-12 col-12">
+                          <label>Number of Licenses*</label>
                           <input
                           type="number"
                           placeholder="Enter Licence"
@@ -1016,12 +1209,94 @@ const AddClientScreen = () => {
                           {errorData?.no_of_dms_license ? errorData.no_of_dms_license : ""}
                         </span>
                         </div>
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.subscription_start_date_dms
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="subscription_start_date">
+                                Subscription Start Date *
+                              </label>
+                              <input
+                                type="date"
+                                name="subscription_start_date"
+                                id="subscription_start_date"
+                                min={moment()
+                                  .subtract(7, "days")
+                                  .format("YYYY-MM-DD[T]HH:mm:ss")}
+                                className={
+                                  errorData?.subscription_start_date_dms
+                                    ? "form-control is-invalid"
+                                    : "form-control"
+                                }
+                                onChange={(e) => {
+                                  setUserInfo({
+                                    ...userInfo,
+                                    subscription_start_date_dms: e.target.value,
+                                  });
+                                  setErrorData({
+                                    ...errorData,
+                                    subscription_start_date_dms: "",
+                                  });
+                                }}
+                                value={
+                                  userInfo.subscription_start_date_dms
+                                    ? userInfo.subscription_start_date_dms
+                                    : ""
+                                }
+                              />
+                              <span className="errorText">
+                                {" "}
+                                {errorData?.subscription_start_date_dms
+                                  ? errorData.subscription_start_date_dms
+                                  : ""}
+                              </span>
+                            </div>
+                        </div>
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                              <div className="input_box">
+                                <label htmlFor="subscription_start_date">
+                                  Subscription End Date *
+                                </label>
+                                <input
+                                  type="date"
+                                  name="subscription_start_date"
+                                  id="subscription_start_date"
+                                  className={
+                                    errorData?.subscription_end_date_dms
+                                      ? "form-control is-invalid"
+                                      : "form-control"
+                                  }
+                                  onChange={(e) => {
+                                    setUserInfo({
+                                      ...userInfo,
+                                      subscription_end_date_dms: e.target.value,
+                                    });
+                                    setErrorData({
+                                      ...errorData,
+                                      subscription_end_date_dms: "",
+                                    });
+                                  }}
+                                  value={
+                                    userInfo.subscription_end_date_dms
+                                      ? userInfo.subscription_end_date_dms
+                                      : ""
+                                  }
+                                />
+                              </div>
+                        </div> 
+                        </>
+
                         : <></> }
                       </div>
                       
                     </div>
-                    <div className="col-xl-3 col-md-6 col-sm-12 mb-3">
-                      <div className='d-flex gap-2 align-items-center justify-content-start'>
+                    
+                    <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
+                    <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
                         <div className="form-check">
                                 <input
                                   className="form-check-input"
@@ -1041,11 +1316,13 @@ const AddClientScreen = () => {
                                   className="form-check-label"
                                   htmlFor="option1"
                                 >
-                                  Sales
+                                  Sales App
                                 </label>
                         </div>
                         {userInfo.isSALES ?
-                          <div className="input_box m-0">
+                        <>
+                          <div className="input_box m-0 col-xl-3 col-md-3 col-sm-12 col-12">
+                          <label>Number of Licenses*</label>
                             <input
                             type="number"
                             placeholder="Enter Licence"
@@ -1072,15 +1349,97 @@ const AddClientScreen = () => {
                             {errorData?.no_of_sales_license ? errorData.no_of_sales_license : ""}
                           </span>
                           </div>
+                          <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.subscription_start_date_sales
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="subscription_start_date">
+                                Subscription Start Date *
+                              </label>
+                              <input
+                                type="date"
+                                name="subscription_start_date"
+                                id="subscription_start_date"
+                                min={moment()
+                                  .subtract(7, "days")
+                                  .format("YYYY-MM-DD[T]HH:mm:ss")}
+                                className={
+                                  errorData?.subscription_start_date_sales
+                                    ? "form-control is-invalid"
+                                    : "form-control"
+                                }
+                                onChange={(e) => {
+                                  setUserInfo({
+                                    ...userInfo,
+                                    subscription_start_date_sales: e.target.value,
+                                  });
+                                  setErrorData({
+                                    ...errorData,
+                                    subscription_start_date_sales: "",
+                                  });
+                                }}
+                                value={
+                                  userInfo.subscription_start_date_sales
+                                    ? userInfo.subscription_start_date_sales
+                                    : ""
+                                }
+                              />
+                              <span className="errorText">
+                                {" "}
+                                {errorData?.subscription_start_date_sales
+                                  ? errorData.subscription_start_date_sales
+                                  : ""}
+                              </span>
+                            </div>
+                        </div>
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                              <div className="input_box">
+                                <label htmlFor="subscription_start_date">
+                                  Subscription End Date *
+                                </label>
+                                <input
+                                  type="date"
+                                  name="subscription_start_date"
+                                  id="subscription_start_date"
+                                  className={
+                                    errorData?.subscription_end_date_sales
+                                      ? "form-control is-invalid"
+                                      : "form-control"
+                                  }
+                                  onChange={(e) => {
+                                    setUserInfo({
+                                      ...userInfo,
+                                      subscription_end_date_sales: e.target.value,
+                                    });
+                                    setErrorData({
+                                      ...errorData,
+                                      subscription_end_date_sales: "",
+                                    });
+                                  }}
+                                  value={
+                                    userInfo.subscription_end_date_sales
+                                      ? userInfo.subscription_end_date_sales
+                                      : ""
+                                  }
+                                />
+                              </div>
+                        </div>
+                        </>
+                          
                         : <></> }
                       </div>
                       
                     </div>
 
-
-                  
-                    
                     </div>
+
+
+                    
+
 
 
                    <div className="mb-3">

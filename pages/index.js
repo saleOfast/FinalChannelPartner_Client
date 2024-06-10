@@ -89,8 +89,8 @@ export default function Home() {
 
   const handleClick = (permission) => {
     if (permission === "crm") {
-      dispatch(crm());
       router.push("/crm");
+      dispatch(crm());
     } else if (permission === "channel") {
       dispatch(channel());
       router.push("/partner");
@@ -137,14 +137,14 @@ export default function Home() {
                       alt
                       className="image-one"
                     />
-                    {/* <img
+                    <img
                       src={
                         clientData?.logo &&
                         `${filesUrl}` + `/logo/images${clientData?.logo}`
                       }
                       alt
                       className="logo mx-auto"
-                    /> */}
+                    />
                     <img
                       src="/images/sale-o-fast-logo.png"
                       alt

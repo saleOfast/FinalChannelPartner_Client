@@ -41,7 +41,7 @@ export default function Home() {
       dispatch(UserLogIN());
     }
   }, []);
-  const subscriptionInfo=hasCookie("subscriptionInfo") ? JSON.parse(getCookie("subscriptionInfo")) : null;
+  const subscriptionInfo=hasCookie("subscriptionInfo") ? getCookie("subscriptionInfo") : null;
 
 
   const checkDashboard = () => {
@@ -94,7 +94,8 @@ export default function Home() {
 
   const handleClick = (permission) => {
     if (permission === "crm") {
-      
+      console.log(subscriptionInfo?.subscription_end_date)
+      console.log(Date.now())
       if(subscriptionInfo?.subscription_end_date< moment(Date.now()).format( 'YYYY-MM-DD' )){
 
         return toast("Your CRM Subscription Has Ended")

@@ -64,49 +64,84 @@ const ResetPassword = () => {
       },[])
 
     return (
-        <div className="login_wrapper">
-            <div className="login_box">
-                <div className="img_logo">
-                     {/* <LeadShyneIcon />  */}
-                     <img
-                      src={
-                        clientData?.logo
-                          &&( `${filesUrl}` +
-                            `/logo/images${clientData?.logo}`)
-                      }
-                      alt=""
-                    />
-                     </div>
-                <div className="header"> Please Enter Your mail </div>
-                <div className="content_box">
-                    <div className="login_form">
-                        <div className="field_box">
-                            <label htmlFor="username">Email</label>
-                            <input
-                                type="text"
-                                name="username"
-                                id="username"
-                                placeholder='please enter your email'
-                                className='form-control'
-                                onChange={(e) =>
-                                    setUserInfo({
-                                        ...userInfo,
-                                        email: e.target.value,
-                                    })
-                                }
-                                value={
-                                    userInfo.email ? userInfo.email : ""
-                                }
-                            />
-                        </div>
-                        <div className="reset_btn">
-                            <button className="btn btn-primary" onClick={() => { submitHandler() }} >Submit</button>
-                            <Link href='/Signin'> <button className="btn btn-light">Cancel</button></Link>
-                        </div>
-                    </div>
-                </div>
+        <div className="NewLoginScreen bg-white">
+        <div className="row m-0  login">
+          <div className="col-12 col-lg-6 m-0 p-0">
+            <div className="form-left d-flex flex-column justify-content-between">
+              <img src="/images/Ellipse26.png" alt="normal"className="image-one" />
+              <img
+                src={
+                  clientData?.logo
+                    &&( `${filesUrl}` +
+                      `/logo/images${clientData?.logo}`)
+                }
+                alt
+                className="logo mx-auto"
+              />
+              <img
+                src="/images/Ellipse27.png"
+                alt
+                className="image-two d-none d-lg-block"
+              />
             </div>
+            
+          </div>
+          <div className=" col-12 col-lg-6 d-flex align-items-center bg-white justify-content-center pt-5">
+            <div className="form-right  d-flex justify-content-center align-items-center ">
+              <form action className="row g-4" onSubmit={(e)=>{
+                e.preventDefault()
+                 submitHandler()}}>
+                <div className="col-12">
+                  <div className="d-flex flex-column">
+                    <b className="fs-3 mb-2 text-center text-md-start">Please Enter Your Mail</b>
+                    
+                  </div>
+                </div>
+                <div className="col-12">
+                  <label className="fs-5 pb-2" style={{ color: "#A7A7A7" }}>
+                    Email
+                  </label>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      required
+                      className="form-control position-relative"
+                      placeholder="Please Enter Your E-mail"
+                      onChange={(e) => {
+                        setUserInfo({
+                          ...userInfo,
+                          email: e.target.value,
+                        });
+                      }}
+                      value={
+                        userInfo.email ? userInfo.email : ""
+                    }
+                    />
+                    
+                  </div>
+                </div>
+                
+                <div className="col-12 d-flex gap-4">
+                  <button
+                    type="submit"
+                    style={{background:clientData?.button_color}}
+                    className="btn text-white fs-4 fw-semibold px-4 float-end w-100 rounded-4"
+                  >
+                    Submit
+                  </button> 
+                  <Link
+                    type="submit"
+                    href={"/"}
+                    className="btn btn-danger text-white fs-4 fw-semibold px-4 float-end w-100 rounded-4"
+                  >
+                    Cancel
+                  </Link> 
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
+      </div>
     )
 }
 

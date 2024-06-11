@@ -322,45 +322,14 @@ export default function AdminDashboard() {
           <Modal.Title>Renew Subscription </Modal.Title>
         </Modal.Header>
 
-        {/* <Modal.Body>
-          <div className="add_user_form">
-            <div className="row">
-              <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                <div className="input_box">
-                  <label htmlFor="months">Month</label>
-                  <input
-                    type="number"
-                    name="months"
-                    placeholder='Enter No. of Months'
-                    id="months"
-                    onChange={(e) => changeSubsHandler(e)}
-                    className="form-control"
-                    value={renewSubsValue.months ? renewSubsValue.months : ''}
-                  />
-                </div>
-                <div className="input_box">
-                  <label htmlFor="days"> Days</label>
-                  <input
-                    type="number"
-                    name="days"
-                    id="days"
-                    placeholder='Enter no of days'
-                    onChange={(e) => changeSubsHandler(e)}
-                    className="form-control"
-                    value={renewSubsValue.days ? renewSubsValue.days : ''}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Modal.Body> */}
+        
         
         <Modal.Body>
         
 
 <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
   <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-  <div className="form-check col-xl-1 col-md-2 col-sm-12 col-12">
+  <div className="form-check col-xl-2 col-md-2 col-sm-12 col-12">
             <input
               className="form-check-input"
               type="checkbox"
@@ -384,7 +353,7 @@ export default function AdminDashboard() {
     </div>
     {userInfo.isCRM ?
     <>
-          <div className="input_box m-0 col-xl-3 col-md-3 col-sm-12 col-12">
+          <div className="input_box m-0 col-xl-2 col-md-3 col-sm-12 col-12">
       <label>Number of Licenses*</label>
       <input
       type="number"
@@ -478,7 +447,7 @@ className={
 
 <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
 <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-<div className="form-check col-xl-1 col-md-2 col-sm-12 col-12">
+<div className="form-check col-xl-2 col-md-2 col-sm-12 col-12">
             <input
               className="form-check-input text-nowrap"
               type="checkbox"
@@ -502,7 +471,7 @@ className={
     </div>
     {userInfo.isCHANNEL ?
     <>
-        <div className="input_box m-0 col-xl-3 col-md-3 col-sm-12 col-12">
+        <div className="input_box m-0 col-xl-2 col-md-3 col-sm-12 col-12">
       <label>Number of Licenses*</label>
       <input
       type="number"
@@ -596,7 +565,7 @@ className={
 
 <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
 <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-<div className="form-check col-xl-1 col-md-2 col-sm-12 col-12">
+<div className="form-check col-xl-2 col-md-2 col-sm-12 col-12">
             <input
               className="form-check-input"
               type="checkbox"
@@ -620,7 +589,7 @@ className={
     </div>
     {userInfo.isDMS ?
     <>
-    <div className="input_box m-0 col-xl-3 col-md-3 col-sm-12 col-12">
+    <div className="input_box m-0 col-xl-2 col-md-3 col-sm-12 col-12">
       <label>Number of Licenses*</label>
       <input
       type="number"
@@ -714,7 +683,7 @@ className={
 
 <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
 <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-<div className="form-check col-xl-1 col-md-2 col-sm-12 col-12">
+<div className="form-check col-xl-2 col-md-2 col-sm-12 col-12">
             <input
               className="form-check-input"
               type="checkbox"
@@ -738,7 +707,7 @@ className={
     </div>
     {userInfo.isSALES ?
     <>
-      <div className="input_box m-0 col-xl-3 col-md-3 col-sm-12 col-12">
+      <div className="input_box m-0 col-xl-2 col-md-3 col-sm-12 col-12">
       <label>Number of Licenses*</label>
         <input
         type="number"

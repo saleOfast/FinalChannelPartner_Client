@@ -36,6 +36,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   
 
     const columns = [
+
+       
         {
             name: 'user_code',
             label: "Account ID",
@@ -139,7 +141,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'reportToUser',
+            name: 'reportToUser.user',
             label: "Assigned to",
             options: {
                 filter: true,
@@ -189,25 +191,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                       {columnMeta.label}
                     </th>
                   ),
-                // customBodyRender: (value, tableMeta, updateValue) => {
-                //     return (
-                //         <div className="table_btns">
-                //             <button
-                //                 onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[5]?.user_id) }}
-                //                 style={{background:`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
-                //                 className='pe-3 ps-3'
-                //                 title='Assign - To'>
-                //                     Assign to
-                //             </button>
-                          
-                //         </div>
-                //     )
-                // }
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
                             <button
-                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[8]?.user_id) }}
+                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[5]?.user_id) }}
                                 style={{background:`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
                                 title='Assign - To'>
@@ -217,6 +205,20 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                         </div>
                     )
                 }
+                // customBodyRender: (value, tableMeta, updateValue) => {
+                //     return (
+                //         <div className="table_btns">
+                //             <button
+                //                 onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[8]?.user_id) }}
+                //                 style={{background:`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
+                //                 className='pe-3 ps-3'
+                //                 title='Assign - To'>
+                //                     Assign to
+                //             </button>
+                          
+                //         </div>
+                //     )
+                // }
             }
         },
         {
@@ -244,6 +246,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     }
 
     const handleRowClick = (rowData, rowMeta) => {
+        console.log(rowData,"rowMeta",rowMeta)
         const data = rowMeta?.reduce((accu, value) => {
             accu.push(dataList[value.dataIndex].user_code);
             return accu; // Return the accumulator
@@ -251,7 +254,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         setUserData([...data]);
     };
 
+
+    console.log(userData, "userData")
     const options = {
+        enableNestedDataAccess: ".",
         selectableRows: 'multiple',
         responsive: "simple",
         onRowSelectionChange : handleRowClick,
@@ -332,8 +338,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
-                    // data={dataList}
-                    data={mappedDataList}
+                    data={dataList}
+        
+                    // data={mappedDataList}
                     columns={columns}
                     options={options}
                 />

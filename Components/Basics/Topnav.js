@@ -218,7 +218,8 @@ const Topnav = ({  topnavPermission }) => {
             }}
           >
             <div className="top_nav">
-              <div className="brand_icon">
+              {/* <div className="brand_icon"> */}
+              <div className="">
                 {!hasCookie("Admin") &&
                 
                 <img

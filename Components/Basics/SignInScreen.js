@@ -196,7 +196,7 @@ export default function SignInScreen({ setLoggedIn }) {
               />
             </div>
           </div>
-          <div className=" col-12 col-lg-6 d-flex align-items-center justify-content-center pt-5">
+          <div className=" col-12 col-lg-6 d-flex align-items-center bg-white justify-content-center pt-5">
             <div className="form-right  d-flex justify-content-center align-items-center ">
               <form action className="row g-4" onSubmit={submitHandler}>
                 <div className="col-12">
@@ -279,7 +279,7 @@ export default function SignInScreen({ setLoggedIn }) {
                   <button
                     type="submit"
                     style={{background:clientData?.button_color}}
-                    className="btn btn-primary fs-4 fw-semibold px-4 float-end w-100 rounded-4"
+                    className="btn text-white fs-4 fw-semibold px-4 float-end w-100 rounded-4"
                   >
                     Login
                   </button>

@@ -41,7 +41,7 @@ export default function Home() {
       dispatch(UserLogIN());
     }
   }, []);
-  const subscriptionInfo=hasCookie("subscriptionInfo") ? getCookie("subscriptionInfo") : null;
+  const subscriptionInfo=hasCookie("subscriptionInfo") ? JSON.parse(getCookie("subscriptionInfo")) : null;
 
 
   const checkDashboard = () => {

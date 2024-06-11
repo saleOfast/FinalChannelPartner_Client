@@ -187,18 +187,18 @@ export default function Home() {
                 </div>
                 <div className=" col-12 col-lg-6 d-flex align-items-center justify-content-center">
                   {allowedpermission?.map((permission, i) => (
-                    <button
+                    <div
                       key={i}
                       className=" h-25 p-3 "
                       onClick={() => {
                         handleClick(permission);
                       }}
                     >
-                      <div className="text-center text-white fw-bold rounded-lg p-3 fs-5 cursor-pointer" style={{backgroundColor:"#0460E7"}}>
+                      <div className="text-center text-white fw-bold rounded-lg p-3 fs-5 cursor-pointer" style={{backgroundColor:clientData?.button_color ? clientData?.button_color:"#0460E7"}}>
                         {permission.toUpperCase()}
                         
                       </div>
-                    </button>
+                    </div>
                   ))}
                 </div>
               </div>

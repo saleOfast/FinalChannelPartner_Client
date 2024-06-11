@@ -356,11 +356,11 @@ export default function AdminDashboard() {
         </Modal.Body> */}
         
         <Modal.Body>
-        <div className="">
+        
 
 <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
   <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-    <div className="form-check">
+  <div className="form-check col-xl-1 col-md-2 col-sm-12 col-12">
             <input
               className="form-check-input"
               type="checkbox"
@@ -478,7 +478,7 @@ className={
 
 <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
 <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-    <div className="form-check">
+<div className="form-check col-xl-1 col-md-2 col-sm-12 col-12">
             <input
               className="form-check-input text-nowrap"
               type="checkbox"
@@ -596,7 +596,7 @@ className={
 
 <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
 <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-    <div className="form-check">
+<div className="form-check col-xl-1 col-md-2 col-sm-12 col-12">
             <input
               className="form-check-input"
               type="checkbox"
@@ -714,7 +714,7 @@ className={
 
 <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
 <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-    <div className="form-check">
+<div className="form-check col-xl-1 col-md-2 col-sm-12 col-12">
             <input
               className="form-check-input"
               type="checkbox"
@@ -830,7 +830,7 @@ className={
   
 </div>
 
-</div>
+
         </Modal.Body>
 
         <Modal.Footer>

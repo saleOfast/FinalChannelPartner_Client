@@ -173,7 +173,7 @@ export default function SignInScreen({ setLoggedIn }) {
                             />
                         </div>
                         <div className="btn_box">
-                            <button className="btn btn-primary" type='submit'>Submit</button>
+                            <button className="btn btn-primary" style={{background:clientData?.button_color}} type='submit'>Submit</button>
                         </div>
                         <div className="forget_links">
                             <Link href='/ResetPassword'> Forgot Password? </Link>

@@ -877,8 +877,8 @@ const AddClientScreen = () => {
                     <div className="">
 
                     <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
-                      <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-                        <div className="form-check">
+                      <div className='d-flex flex-column flex-md-row  justify-content-between'>
+                        <div className="form-check col-xl-2 col-md-2 col-sm-12 col-12">
                                 <input
                                   className="form-check-input"
                                   type="checkbox"
@@ -894,7 +894,7 @@ const AddClientScreen = () => {
                                   }}
                                 />
                                 <label
-                                  className="form-check-label"
+                                  className="form-check-label "
                                   htmlFor="option1"
                                 >
                                   CRM
@@ -1017,8 +1017,8 @@ const AddClientScreen = () => {
                     </div>
 
                     <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
-                    <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-                        <div className="form-check">
+                    <div className='d-flex flex-column flex-md-row   justify-content-between'>
+                        <div className="form-check col-xl-2 col-md-2 col-sm-12 col-12">
                                 <input
                                   className="form-check-input text-nowrap"
                                   type="checkbox"
@@ -1157,8 +1157,8 @@ const AddClientScreen = () => {
                     </div>
 
                     <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
-                    <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-                        <div className="form-check">
+                    <div className='d-flex flex-column flex-md-row   justify-content-between'>
+                        <div className="form-check col-xl-2 col-md-2 col-sm-12 col-12">
                                 <input
                                   className="form-check-input"
                                   type="checkbox"
@@ -1297,8 +1297,8 @@ const AddClientScreen = () => {
                     </div>
                     
                     <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
-                    <div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
-                        <div className="form-check">
+                    <div className='d-flex flex-column flex-md-row   justify-content-between'>
+                        <div className="form-check col-xl-2 col-md-2 col-sm-12 col-12">
                                 <input
                                   className="form-check-input"
                                   type="checkbox"

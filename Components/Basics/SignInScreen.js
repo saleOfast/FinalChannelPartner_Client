@@ -278,6 +278,7 @@ export default function SignInScreen({ setLoggedIn }) {
                 <div className="col-12">
                   <button
                     type="submit"
+                    style={{background:clientData?.button_color}}
                     className="btn btn-primary fs-4 fw-semibold px-4 float-end w-100 rounded-4"
                   >
                     Login

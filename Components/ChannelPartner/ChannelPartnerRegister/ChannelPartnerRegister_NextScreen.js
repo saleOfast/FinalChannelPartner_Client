@@ -41,7 +41,7 @@ const ChannelPartnerRegister_NextScreen = () => {
                         type="button"
                         className="btn btn-outline-success btn-block font-weight-bold text-dark mt-3"
                         data-dismiss="modal"
-                        onClick={()=>{router.push("/partner/Signin")}}
+                        onClick={()=>{router.push("/partner")}}
                       >
                         Got it
                       </button>

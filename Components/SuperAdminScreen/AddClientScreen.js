@@ -105,28 +105,28 @@ const AddClientScreen = () => {
                   contact_number: tempDate.contact_number,
                   user_id: tempDate.user_id,
                   user_code: tempDate.user_code,
-                  subscription_start_date: tempDate.subscription_start_date===null ? null :  moment(
+                  subscription_start_date: (tempDate?.subscription_start_date==="0000-00-00" || tempDate?.subscription_start_date===null ) ? null :  moment(
                     tempDate.subscription_start_date
                   ).format("YYYY-MM-DD"),
-                  subscription_end_date:tempDate.subscription_end_date===null ? null : moment(
+                  subscription_end_date:(tempDate?.subscription_end_date==="0000-00-00" || tempDate?.subscription_end_date===null) ? null : moment(
                     tempDate.subscription_end_date
                   ).format("YYYY-MM-DD"),
-                  subscription_start_date_channel: tempDate.subscription_start_date_channel===null ? null : moment(
+                  subscription_start_date_channel: (tempDate?.subscription_start_date_channel===null || tempDate?.subscription_start_date_channel==="0000-00-00") ? null : moment(
                     tempDate.subscription_start_date_channel
                   ).format("YYYY-MM-DD"),
-                  subscription_end_date_channel:tempDate.subscription_end_date_channel===null ? null : moment(
+                  subscription_end_date_channel:(tempDate?.subscription_end_date_channel===null || tempDate?.subscription_end_date_channel==="0000-00-00") ? null : moment(
                     tempDate.subscription_end_date_channel
                   ).format("YYYY-MM-DD"),
-                  subscription_start_date_sales:tempDate.subscription_start_date_sales===null ? null : moment(
+                  subscription_start_date_sales:(tempDate?.subscription_start_date_sales===null || tempDate?.subscription_start_date_sales==="0000-00-00") ? null : moment(
                     tempDate.subscription_start_date_sales
                   ).format("YYYY-MM-DD"),
-                  subscription_end_date_sales:tempDate.subscription_end_date_sales===null ? null : moment(
+                  subscription_end_date_sales:(tempDate?.subscription_end_date_sales===null || tempDate?.subscription_end_date_sales==="0000-00-00") ? null : moment(
                     tempDate.subscription_end_date_sales
                   ).format("YYYY-MM-DD"),
-                  subscription_start_date_dms:tempDate.subscription_start_date_dms===null ? null : moment(
+                  subscription_start_date_dms:(tempDate?.subscription_start_date_dms===null || tempDate?.subscription_start_date_dms==="0000-00-00") ? null : moment(
                     tempDate.subscription_start_date_dms
                   ).format("YYYY-MM-DD"),
-                  subscription_end_date_dms:tempDate.subscription_end_date_dms===null ? null : moment(
+                  subscription_end_date_dms:(tempDate?.subscription_end_date_dms===null || tempDate?.subscription_end_date_dms==="0000-00-00") ? null : moment(
                     tempDate.subscription_end_date_dms
                   ).format("YYYY-MM-DD"),
                   no_of_license: tempDate.no_of_license,
@@ -207,7 +207,7 @@ const AddClientScreen = () => {
            setErrorData({ ...errorData, no_of_license: 'Please enter no of licenses ' })
         }
         if(userInfo?.subscription_start_date==null || userInfo?.subscription_end_date==null ||userInfo?.no_of_license==0){
-          return toast.error('Please fill the Mandatory fieldssss')
+          return toast.error('Please fill the Mandatory fields')
         }
       }
       if(userInfo?.isCHANNEL){
@@ -252,7 +252,7 @@ const AddClientScreen = () => {
           return toast.error('Please fill the Mandatory fields')
         }
       }
-      // console.log(userInfo)
+      console.log(userInfo)
         if (hasCookie('saLsTkn')) {
             setisLoading(true);
 
@@ -314,6 +314,62 @@ const AddClientScreen = () => {
 
     async function updateHandler() {
       console.log(userInfo)
+      if(userInfo?.isCRM){
+        if(userInfo?.subscription_start_date==null){
+           setErrorData({ ...errorData, subscription_start_date: 'Please enter subscription start date' })
+        }
+        if(userInfo?.subscription_end_date==null){
+           setErrorData({ ...errorData, subscription_end_date: 'Please enter subscription end date' })
+        }
+        if(userInfo?.no_of_license==0){
+           setErrorData({ ...errorData, no_of_license: 'Please enter no of licenses ' })
+        }
+        if(userInfo?.subscription_start_date==null || userInfo?.subscription_end_date==null ||userInfo?.no_of_license==0){
+          return toast.error('Please fill the Mandatory fields')
+        }
+      }
+      if(userInfo?.isCHANNEL){
+        if(userInfo?.subscription_start_date_channel==null){
+           setErrorData({ ...errorData, subscription_start_date_channel: 'Please enter subscription start date' })
+        }
+        if(userInfo?.subscription_end_date_channel==null){
+           setErrorData({ ...errorData, subscription_end_date_channel: 'Please enter subscription end date' })
+        }
+        if(userInfo?.no_of_channel_license==0){
+           setErrorData({ ...errorData, no_of_channel_license: 'Please enter no of licenses ' })
+        }
+        if(userInfo?.subscription_start_date_channel==null || userInfo?.subscription_end_date_channel==null ||userInfo?.no_of_channel_license==0){
+          return toast.error('Please fill the Mandatory fields')
+        }
+      }
+      if(userInfo?.isDMS){
+        if(userInfo?.subscription_start_date_dms==null){
+           setErrorData({ ...errorData, subscription_start_date_dms: 'Please enter subscription start date' })
+        }
+        if(userInfo?.subscription_end_date_dms==null){
+           setErrorData({ ...errorData, subscription_end_date_dms: 'Please enter subscription end date' })
+        }
+        if(userInfo?.no_of_dms_license==0){
+           setErrorData({ ...errorData, no_of_dms_license: 'Please enter no of licenses ' })
+        }
+        if(userInfo?.subscription_start_date_dms==null || userInfo?.subscription_end_date_dms==null ||userInfo?.no_of_dms_license==0){
+          return toast.error('Please fill the Mandatory fields')
+        }
+      }
+      if(userInfo?.isSALES){
+        if(userInfo?.subscription_start_date_sales==null){
+           setErrorData({ ...errorData, subscription_start_date_sales: 'Please enter subscription start date' })
+        }
+        if(userInfo?.subscription_end_date_sales==null){
+           setErrorData({ ...errorData, subscription_end_date_sales: 'Please enter subscription end date' })
+        }
+        if(userInfo?.no_of_sales_license==0){
+           setErrorData({ ...errorData, no_of_sales_license: 'Please enter no of licenses ' })
+        }
+        if(userInfo?.subscription_start_date_sales==null || userInfo?.subscription_end_date_sales==null ||userInfo?.no_of_sales_license==0){
+          return toast.error('Please fill the Mandatory fields')
+        }
+      }
         if (hasCookie('saLsTkn')) {
             setisLoading(true);
             let token = (getCookie('saLsTkn'));

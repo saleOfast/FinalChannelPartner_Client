@@ -231,6 +231,13 @@ const Topnav = ({  topnavPermission }) => {
                 alt
               />
                  }
+                 {hasCookie("Admin") &&
+                
+                <img
+                src="/ChannelPartner/sale-o-fast-logo.png"
+                alt
+              />
+                 }
                  
                 {hasCookie("dms") && (
                   <img src="/DMS_IMAGES/kloudmart.png" className />

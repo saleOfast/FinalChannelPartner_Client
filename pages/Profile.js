@@ -50,7 +50,7 @@ function Profile() {
   return (
     <>
       <Head>
-        <title>LeadShyne</title>
+        <title>Sale O Fast</title>
         <meta name="description" content="Leadshyne CMS" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

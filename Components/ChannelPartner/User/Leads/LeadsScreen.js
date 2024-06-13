@@ -5,7 +5,7 @@ import axios from 'axios';
 import { hasCookie, getCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Modal, Button, Form, Row, Col, Dropdown } from 'react-bootstrap';
 import dynamic from 'next/dynamic'
 import Papa from "papaparse";
@@ -16,6 +16,7 @@ import Select from 'react-select';
 import { fetchData } from '../../../../Utils/getReq';
 import Daterange from '../../../DateRangeCustom/Daterange';
 import moment from 'moment';
+import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -66,7 +67,16 @@ const LeadsScreen = () => {
     const [locationList,setLocationList]=useState([])
     const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
     const [errorData, setErrorData] = useState({})
+    const dispatch=useDispatch();
+    const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
 
+    const currentDate = moment().format("YYYY-MM-DD");
+  const currentTime = moment().format("HH:mm");
+
+  // Determine the min time based on the selected date
+  const minTime = lead.p_visit_date === currentDate ? currentTime : '00:00';
+
+    
 
     function disableConfirm(value, type) {
         if (type == 1) {
@@ -116,7 +126,14 @@ const LeadsScreen = () => {
 
 
     const getDataList = async (queryObjLeads) => {
-
+        if(queryObjLeads==undefined){
+          const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+          const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+          queryObjLeads={
+            "f_date": startDate,
+            "t_date": endDate
+          }  
+        }
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -135,11 +152,9 @@ const LeadsScreen = () => {
                   ...header,
                   params:queryObjLeads
                 });
-                const projects = await axios.get(Baseurl + `/db/channel/lead/projects`, header);
-                const locations = await axios.get(Baseurl + `/db/channel/lead/location`, header);
+                
                 setLeadList(leads?.data?.data);
-                setProjectList(projects?.data?.data?.records);
-                setLocationList(locations?.data?.data)
+                
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -149,6 +164,63 @@ const LeadsScreen = () => {
             }
         }
     }
+
+    const getProjectList = async (queryObjLeads) => {
+
+      if (hasCookie('token')) {
+          let token = (getCookie('token'));
+          let db_name = (getCookie('db_name'));
+
+          let header = {
+              headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer ".concat(token),
+                  db: db_name,
+                  m_id: 76,
+              }
+          }
+
+          try {
+              
+              const projects = await axios.get(Baseurl + `/db/channel/lead/projects`, header);
+              setProjectList(projects?.data?.data?.records);
+          } catch (error) {
+              if (error?.response?.data?.message) {
+                  toast.error(error.response.data.message);
+              } else {
+                  toast.error("Something went wrong!");
+              }
+          }
+      }
+  }
+
+  const getLocationList = async (queryObjLeads) => {
+
+    if (hasCookie('token')) {
+        let token = (getCookie('token'));
+        let db_name = (getCookie('db_name'));
+
+        let header = {
+            headers: {
+                Accept: "application/json",
+                Authorization: "Bearer ".concat(token),
+                db: db_name,
+                m_id: 76,
+            }
+        }
+
+        try {
+            const locations = await axios.get(Baseurl + `/db/channel/lead/location`, header);
+            setLocationList(locations?.data?.data)
+        } catch (error) {
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Something went wrong!");
+            }
+        }
+    }
+}
 
   
 
@@ -202,11 +274,13 @@ const LeadsScreen = () => {
             m_id: 79,
           },
         };
-    
+        
        
         try {
+          dispatch(startButtonLoading())
           const response = await axios.post(`${Baseurl}/db/channel/lead`,lead, header);
           if (response.status === 200 || response.status === 201) {
+            dispatch(stopButtonLoading())
             toast.success(response.data.message);
             setShowAssignTo(false)
             toast.success(response.message)
@@ -217,6 +291,7 @@ const LeadsScreen = () => {
         catch (error) {
           console.log(error)
           if (error?.response?.data?.status === 422) {
+            dispatch(stopButtonLoading())
                 // toast.error(error?.response?.data?.message)
                 const taskObject = {}
              const array = error?.response?.data?.data;
@@ -228,23 +303,24 @@ const LeadsScreen = () => {
           setErrorData(taskObject);
           }
           if (error?.response?.data?.message) {
+            dispatch(stopButtonLoading())
             toast.error(error.response.data.message);
           } else {
+            dispatch(stopButtonLoading())
             toast.error("Something went wrong!");
           }
         }
     };
 
-    const createLead2=()=>{
-      console.log(lead)
-    }
-   
-
-
     useEffect(() => {
         getDataList();
-        
     }, [])
+    useEffect(() => {
+      getLocationList();
+  }, [])
+  useEffect(() => {
+    getProjectList();
+}, [])
 
     return (
       <>
@@ -280,7 +356,7 @@ const LeadsScreen = () => {
                 setoldAssignTo={setoldAssignTo}
                 oldAssignTo={oldAssignTo}
                 setShowDateFilter={setShowDateFilter}
-                
+                minTime={minTime}
                 getDataList={getDataList}
               />
             </div>
@@ -332,7 +408,12 @@ const LeadsScreen = () => {
         <Modal
           className="w-100"
           show={!showAssignTo ? false : true}
-          onHide={() => setShowAssignTo("")}
+          onHide={() => {
+           if(isButtonLoading==false){
+            setShowAssignTo("") 
+            setLead("")
+           }
+          }}
           size='xl'
           centered
         >
@@ -503,8 +584,14 @@ const LeadsScreen = () => {
                                       <label htmlFor="name" className="pb-1">Visit Time<span className="star text-danger">*</span></label>
                                     </div>
                                     <div className="col-9">
-                                      <input autofocus  value={lead?.p_visit_time} onChange={(e)=>{
-                                        setLead({...lead,p_visit_time:e.target.value})
+                                      <input autofocus  value={lead?.p_visit_time}
+                                      disabled={!lead?.p_visit_date}
+                                      min={minTime}     
+                                      onChange={(e)=>{
+                                        setLead(
+                                          {...lead,
+                                            p_visit_time: e.target.value  }
+                                        )
                                       }} type="time" name="name" className="input-field" placeholder required />
                                       <span className='errorText text-danger'>
                                           {errorData?.p_visit_time ? errorData.p_visit_time:""}
@@ -516,6 +603,8 @@ const LeadsScreen = () => {
                             </div>
                             <div className="new-leades-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
                               <button 
+                              type='button'
+                              disabled={isButtonLoading}
                               className='btn btn-danger rounded-5' 
                               onClick={() => {setShowAssignTo("")
                               setLead("")
@@ -523,9 +612,20 @@ const LeadsScreen = () => {
                               
                               >Cancel</button>
                               <button 
+                              disabled={isButtonLoading}
                               className="btn rounded-5 text-white"
                               style={{background:clientBtnColor}}
-                              >Submit</button>
+                              >
+                                {isButtonLoading ? (
+                                  <>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Creating
+                                  </>
+                                ) : (
+                                  'Submit'
+                                )}
+                                
+                                </button>
                             </div>
                           </form>
                         </div>

@@ -8,6 +8,8 @@ import { Baseurl, filesUrl } from '../../../../Utils/Constants';
 import { Modal } from 'react-bootstrap';
 import { Delete } from '@mui/icons-material';
 import generatePDF, { Options } from 'react-to-pdf';
+import { useDispatch, useSelector } from 'react-redux';
+import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
 
 
 const CampaignDetailsScreen = () => {
@@ -35,6 +37,8 @@ const CampaignDetailsScreen = () => {
     });
 
     const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
+    const dispatch=useDispatch()
+    const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
 
     const targetRef=useRef();
     const options = {
@@ -132,21 +136,26 @@ const CampaignDetailsScreen = () => {
       }
     
         try {
+          dispatch(startButtonLoading())
           const response = await axios.post(`${Baseurl}/db/channel/project/usertemplate`,formData, header);
           if (response.status === 200 || response.status === 201) {
             toast.success(response.data.message);
+            dispatch(stopButtonLoading())
             setShowModal(false)
             getCampaignById();
           }
         } catch (error) {
           console.log(error)
           if (error?.response?.data?.status === 422) {
+            dispatch(stopButtonLoading())
                 toast.error(error?.response?.data?.message)
                 
           }
           if (error?.response?.data?.message) {
+            dispatch(stopButtonLoading())
             toast.error(error.response.data.message);
           } else {
+            dispatch(stopButtonLoading())
             toast.error("Something went wrong!");
           }
         }
@@ -276,7 +285,9 @@ const CampaignDetailsScreen = () => {
      <Modal
         show={showModal}
         onHide={() => {
-          setShowModal(false);
+          if(isButtonLoading==false){
+            setShowModal(false);
+          }
         }}
         size="lg"
         centered
@@ -419,37 +430,7 @@ const CampaignDetailsScreen = () => {
 
 
               <div className="d-flex justify-content-between gap-5 align-items-center">
-                {/* <div className="w-50  d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Cover
-                  </label>
-                  <input
-                    type="file"
-                    onChange={(e)=>{
-                      handleFileChange(e,"file","file_preview")
-                    }}
-                    id="fileInput"
-                    style={{ display: "none" }}
-                  />
-                  {projectData?.file_preview ?
-                    <div className="relative">
-                        <img src={projectData?.file_preview} />
-                        <span className="absolute top-0 right-0" onClick={()=>{
-                          setProjectData({...projectData, file: null,file_preview:null})
-                        }}>
-                            <Delete style={{color: 'red'}}/>
-                        </span>
-                    </div>
-                    : 
-                  <label
-                      htmlFor="fileInput"
-                      className="w-73 border p-2 ps-1 rounded-md text-black"
-                      style={{ outline: "none", cursor: "pointer" }}
-                    >
-                      Click here to choose file
-                    </label>
-                    }
-                </div> */}
+                
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Property Logo
@@ -487,48 +468,14 @@ const CampaignDetailsScreen = () => {
                     }
                 </div>
               </div>
-{/* 
-              <div className="d-flex justify-content-between gap-5 align-items-center">
-                <div className="w-50  d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Template File
-                  </label>
-                  <input
-                    type="file"
-                    onChange={(e)=>{
-                      handleFileChange(e,"template","template_name")
-                    }}
-                    id="templateInput"
-                    style={{ display: "none" }}
-                  />
-                  {projectData?.template_name ? 
-                    <div className="relative w-73">
-                        <div  >{projectData?.template_name}</div>
-                        <span className="absolute top-0 right-0" onClick={()=>{
-                          setProjectData({...projectData, template_name: null, template_file: null})
-                        }}>
-                            <Delete style={{color: 'red'}}/>
-                        </span>
-                    </div>
-                    : 
-                  <label
-                      htmlFor="templateInput"
-                      className="w-73 border p-2 ps-1 rounded-md text-black"
-                      style={{ outline: "none", cursor: "pointer" }}
-                    >
-                      Click here to choose file
-                    </label>
-                    }
-                </div>
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                 
-                </div>
-              </div> */}
+
 
             </div>
 
             <div className="d-flex justify-content-center align-items-center gap-3 ">
-              <div
+              <button
+              type='button'
+              disabled={isButtonLoading}
                 className="btn btn-danger rounded-5"
                 onClick={() => {
                   setShowModal(false);
@@ -536,12 +483,20 @@ const CampaignDetailsScreen = () => {
                 } }
               >
                 Cancel
-              </div>
+              </button>
               <button
+              disabled={isButtonLoading}
                 className="btn text-white rounded-5"
                 style={{ background: clientBtnColor }}
               >
-                Update
+                {isButtonLoading ? (
+                    <>
+                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    &nbsp;Update
+                  </>
+                ) : (
+                  'Update'
+                )} 
               </button>
 
             </div>

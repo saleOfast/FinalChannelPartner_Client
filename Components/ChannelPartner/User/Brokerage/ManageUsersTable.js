@@ -29,11 +29,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   })
     const [roleId,setRoleId]=useState()
 
-  const [value, setValue] = useState({
-    startDate: new Date(),
-    endDate: new Date().setMonth(11)
-
-  });
+    const getCurrentWeekDates = () => {
+      const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+        const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+      return { startDate, endDate };
+    };
+  
+  const [value, setValue] = useState(getCurrentWeekDates());
+  
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   const[brokerageId,setBrokerageId]=useState("")
   const[rejectRemark,setRejectRemark]=useState(false)
@@ -414,7 +417,7 @@ const updateBrokerageBill =  async() => {
       BrokerageBookingtDataName:list?.BrokerageBookingtData?.booking_name,
       BrokerageBookingtDataEmail:list?.BrokerageBookingtData?.email,
       BrokerageBookingtDataContact:list?.BrokerageBookingtData?.contact_no,
-      BrokerageBookingtDataProject:list?.BrokerageBookingtData?.BookingprojectData?.project,
+      BrokerageBookingtDataProject:list?.BrokerageLeadData?.sales_project_name,
       BrokerageBookingtDataLocation:list?.BrokerageBookingtData?.Location,
       status:list?.status
     }))

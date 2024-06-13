@@ -7,6 +7,8 @@ import { Modal } from 'react-bootstrap'
 import { Baseurl } from '../../../../Utils/Constants';
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import { useDispatch, useSelector } from 'react-redux';
+import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
 
 const LeadDetailsScreen = () => {
   const [showAssignTo, setShowAssignTo] = useState("");
@@ -15,6 +17,8 @@ const LeadDetailsScreen = () => {
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
   const [errorData, setErrorData] = useState({})
   const userInfo=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")):null
+  const dispatch=useDispatch();
+    const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
 
   const [lead,setLead]=useState({
     lead_code:"",
@@ -105,9 +109,11 @@ const LeadDetailsScreen = () => {
      let updatedLeads={...lead,updated_on:DateNow}
     
      try {
+      dispatch(startButtonLoading())
        const response = await axios.put(`${Baseurl}/db/channel/lead`,updatedLeads, header);
        if (response.status === 200 || response.status === 201) {
          toast.success(response.data.message);
+        dispatch(stopButtonLoading())
          setShowAssignTo(false)
          toast.success(response.message)
          getDataListById();
@@ -123,11 +129,14 @@ const LeadDetailsScreen = () => {
               const value = Object.values(array[i])[0];
               taskObject[key] = value;
           }
+          dispatch(stopButtonLoading())
           setErrorData(taskObject);
        }
        if (error?.response?.data?.message) {
+        dispatch(stopButtonLoading())
          toast.error(error.response.data.message);
        } else {
+        dispatch(stopButtonLoading())
          toast.error("Something went wrong!");
        }
      }
@@ -321,7 +330,10 @@ function formatDate(date) {
       <Modal
         className="w-100"
         show={!showAssignTo ? false : true}
-        onHide={() => setShowAssignTo("")}
+        onHide={() =>{ 
+            if(isButtonLoading==false){
+              setShowAssignTo("")}}
+            }
         size="xl"
         centered
       >
@@ -628,7 +640,9 @@ function formatDate(date) {
                               </div>
                             </div>
                             <div className="new-leades-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
-                              <div
+                              <button 
+                              type='button'
+                              disabled={isButtonLoading}
                                 className="btn btn-danger text-white rounded-5"
                                 onClick={() => {
                                   setShowAssignTo("");
@@ -641,9 +655,16 @@ function formatDate(date) {
                                 }}
                               >
                                 Cancel
-                              </div>
+                              </button>
                               <button className="btn rounded-5 text-white" style={{background:clientBtnColor}}>
-                                Submit
+                              {isButtonLoading ? (
+                                  <>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Submit
+                                  </>
+                                ) : (
+                                  'Submit'
+                                )}
                               </button>
                             </div>
                           </form>

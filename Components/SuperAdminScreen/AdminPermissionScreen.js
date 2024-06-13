@@ -195,7 +195,7 @@ const AdminPermissionScreen = () => {
     return (
         <div className={`main_Box  ${sideView}`}>
             <div className="bread_head">
-                <h3 className="content_head">CLIENT PERMISSIONS(CRM)</h3>
+                <h3 className="content_head">CLIENT PERMISSIONS</h3>
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item"> <Link href='/Admin'> All Clients </Link></li>

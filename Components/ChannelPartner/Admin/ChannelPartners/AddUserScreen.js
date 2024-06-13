@@ -612,6 +612,7 @@ const AddUserScreen = () => {
                         name="address"
                         id="address"
                         rows="3"
+                        placeholder="Enter Address"
                         className="form-control"
                         disabled={viewMode}
                         onChange={(e) =>

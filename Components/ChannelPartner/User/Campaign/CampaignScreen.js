@@ -8,6 +8,8 @@ import { toast, useToast } from "react-toastify";
 import { Modal } from "react-bootstrap";
 import { Delete } from "@mui/icons-material";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { startButtonLoading, stopButtonLoading } from "../../../../store/buttonLoaderSlice";
 
 const CampaignScreen = () => {
   const [showModal, setShowModal] = useState(false);
@@ -32,6 +34,8 @@ const CampaignScreen = () => {
   });
   const[editMode,setEditMode]=useState(false)
   const[projects,setProjects]=useState([]);
+  const dispatch=useDispatch()
+  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
   
 
   const getDataList = async () => {
@@ -201,9 +205,11 @@ const CampaignScreen = () => {
   }
 
     try {
+      dispatch(startButtonLoading())
       const response = await axios.post(`${Baseurl}/db/channel/project/usertemplate`,formData, header);
       if (response.status === 200 || response.status === 201) {
         toast.success(response.data.message);
+        dispatch(stopButtonLoading())
         setEditMode(false)
         setShowModal(false)
         setProjectData("")
@@ -212,12 +218,15 @@ const CampaignScreen = () => {
     } catch (error) {
       console.log(error)
       if (error?.response?.data?.status === 422) {
+        dispatch(stopButtonLoading())
             toast.error(error?.response?.data?.message)
             
       }
       if (error?.response?.data?.message) {
+        dispatch(stopButtonLoading())
         toast.error(error.response.data.message);
       } else {
+        dispatch(stopButtonLoading())
         toast.error("Something went wrong!");
       }
     }
@@ -291,9 +300,12 @@ const CampaignScreen = () => {
       <Modal
         show={showModal}
         onHide={() => {
-            setEditMode(false)
-          setProjectData("")
-          setShowModal(false);
+          if(isButtonLoading==true)
+            {
+              setEditMode(false)
+              setProjectData("")
+              setShowModal(false);
+            }
         }}
         size="lg"
         centered
@@ -480,20 +492,30 @@ const CampaignScreen = () => {
             </div>
 
             <div className="d-flex justify-content-center align-items-center gap-3 ">
-              <div
+              <button
+              type="button"
+              disabled={isButtonLoading}
                 className="btn btn-danger rounded-5"
                 onClick={() => {setShowModal(false); setProjectData(""); setEditMode(false); } }
               >
                 Cancel
-              </div>
+              </button>
               {
                 editMode ?
                 (
                     <button
+                    disabled={isButtonLoading}
                 className="btn text-white rounded-5"
                 style={{ background: clientBtnColor }}
               >
-                Update
+                {isButtonLoading ? (
+                    <>
+                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    &nbsp;Update
+                  </>
+                ) : (
+                  'Update'
+                )}                 
               </button>
                 ) 
                 :

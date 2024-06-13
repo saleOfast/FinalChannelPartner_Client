@@ -11,6 +11,8 @@ import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import { ForkLeft } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
+import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
 
 
 
@@ -22,11 +24,16 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   const [userData, setUserData] = useState([])
   const [actionMode, setActionMode] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const dispatch=useDispatch();
+  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
   
-  const [value, setValue] = useState({
-    startDate: new Date(),
-    endDate: new Date().setMonth(11)
-  });
+  const getCurrentWeekDates = () => {
+    const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+      const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+    return { startDate, endDate };
+  };
+
+const [value, setValue] = useState(getCurrentWeekDates());
   const[brokerageBill,setBrokerageBill]=useState({
     booking_id:'',
     file:null,
@@ -35,8 +42,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     status:""
   })
   const userInfo=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")):null
-  
- 
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
  
   const columns = [
@@ -302,9 +307,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         formData.append(key, value);
       }
       try {
+        dispatch(startButtonLoading())
         const response = await axios.post(`${Baseurl}/db/channel/brokerage`,formData, header);
         if (response.status === 200 || response.status === 201) {
           toast.success(response.data.message);
+          dispatch(stopButtonLoading())
           setBrokerageBill("")
           setShowModal(false)
           getDataList()
@@ -312,12 +319,15 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       } catch (error) {
         console.log(error)
         if (error?.response?.data?.status === 422) {
+          dispatch(stopButtonLoading())
               toast.error(error?.response?.data?.message)
               
         }
         if (error?.response?.data?.message) {
+          dispatch(stopButtonLoading())
           toast.error(error.response.data.message);
         } else {
+          dispatch(stopButtonLoading())
           toast.error("Something went wrong!");
         }
       }
@@ -375,8 +385,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         centered
         show={showModal}
         onHide={() => {
-          setShowModal(false);
+          if(isButtonLoading==false){
+            setShowModal(false);
           setBrokerageBill("")
+          }
         }}
         size="lg"
       >
@@ -530,19 +542,27 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                               </div>
                             </div>
                             <div className="new-leades-btn d-flex justify-content-center gap-4">
-                              <div
+                              <button
                                 type="button"
+                                disabled={isButtonLoading}
                                 className="btn btn-danger rounded-5 text-white"
                                 onClick={() =>{ setShowModal(false); setBrokerageBill("");}}
                               >
                                 Cancel
-                              </div>
+                              </button>
                               <button
                                 type="submit"
                                 className="btn text-white rounded-5"
                                 style={{ background: clientBtnColor }}
                               >
-                                Submit
+                               {isButtonLoading ? (
+                                  <>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Submit
+                                  </>
+                                ) : (
+                                  'Submit'
+                                )}
                               </button>
                             </div>
                           </form>

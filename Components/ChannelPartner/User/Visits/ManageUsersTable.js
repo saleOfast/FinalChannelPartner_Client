@@ -27,12 +27,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   })
 
 
-  const [value, setValue] = useState({
+  const getCurrentWeekDates = () => {
+    const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+      const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+    return { startDate, endDate };
+  };
 
-    startDate: new Date(),
-    endDate: new Date().setMonth(11)
+const [value, setValue] = useState(getCurrentWeekDates());
 
-  });
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   
   function formatTime(timeString) {

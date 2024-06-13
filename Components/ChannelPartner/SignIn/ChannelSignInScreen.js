@@ -68,10 +68,13 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
     dispatch(startLoading())
     if (userForm.email === "" || userForm.email.length < 1) {
       toast.error("Email is Empty");
+        dispatch(stopLoading())
     } else if (!validEmail.test(userForm.email.toLowerCase().trim())) {
       toast.error("Email is not Valid");
+      dispatch(stopLoading())
     } else if (userForm.password === "" || userForm.password.length < 1) {
       toast.error("password is Empty");
+      dispatch(stopLoading())
     } else {
       try {
         const res = await axios.post(Baseurl + "/db/login", {

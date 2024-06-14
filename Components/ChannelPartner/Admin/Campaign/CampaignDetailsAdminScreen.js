@@ -11,6 +11,7 @@ import { useReactToPrint } from "react-to-print";
 import generatePDF, { Options } from 'react-to-pdf';
 import { useDispatch, useSelector } from 'react-redux';
 import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
+import Loader from '../../../Loader/Loader';
 
 
 const CampaignDetailsAdminScreen = () => {
@@ -39,6 +40,7 @@ const CampaignDetailsAdminScreen = () => {
     const dispatch=useDispatch()
     const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
     const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
+    const[loader,setLoader]=useState(false)
 
     const targetRef=useRef();
     const options = {
@@ -71,6 +73,7 @@ const CampaignDetailsAdminScreen = () => {
     },[id])
 
     const getCampaignById = async () => {
+      setLoader(true)
         if (hasCookie("token")) {
           let token = getCookie("token");
           let db_name = getCookie("db_name");
@@ -85,12 +88,14 @@ const CampaignDetailsAdminScreen = () => {
           };
     
           try {
-            const { data } = await axios.get(
+            const response = await axios.get(
               Baseurl + `/db/channel/project?project_id=${id}`,
               header
             );
-            const campaign=data?.data?.projectData
-            setProjectData({
+            const campaign=response?.data?.data?.projectData
+            if(response?.status === 200 || response?.status === 201){
+              setLoader(false)
+              setProjectData({
                 ...projectData,
                 project: campaign?.project,
                 project_id: campaign?.project_id,
@@ -105,12 +110,17 @@ const CampaignDetailsAdminScreen = () => {
                 logo_preview: `${filesUrl}/projectLogo/images${campaign?.logo_image}`,
                 template:campaign?.html_file,
                 template_name:campaign?.html_file,
-                htmlString:data?.data?.htmlTemplate
+                htmlString:response?.data?.data?.htmlTemplate
             })
+            }
+            
           } catch (error) {
+            console.log(error)
             if (error?.response?.data?.message) {
-              toast.error(error.response.data.message);
+              setLoader(false)
+              toast.error(error?.response?.data?.message);
             } else {
+              setLoader(false)
               toast.error("Something went wrong!");
             }
           }
@@ -189,7 +199,11 @@ const CampaignDetailsAdminScreen = () => {
    
   return (
     <>
-      <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}>
+    {
+      loader ?  <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}><Loader/></div>
+      :
+      (
+        <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}>
 
       {/* Edit and Download Start */}
       <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"11px"}}>
@@ -281,6 +295,9 @@ const CampaignDetailsAdminScreen = () => {
       {/* Back to campaign button end */}
 
       </div>
+      )
+    }
+      
 
       <Modal
         show={showModal}

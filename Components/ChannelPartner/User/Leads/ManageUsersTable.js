@@ -14,8 +14,9 @@ import { useRef } from 'react';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
+import Loader from '../../../Loader/Loader';
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -433,7 +434,11 @@ const getVisitInfo=async(visitId)=>{
 
     return (
       <>
-        <div className="miuiTable channelTable">
+      {
+        loader ? <div className="miuiTable channelTable"><Loader/></div>
+        :
+        (
+          <div className="miuiTable channelTable">
           <MUIDataTable
             title={<CustomToolbar />}
             // data={leadList}
@@ -443,6 +448,9 @@ const getVisitInfo=async(visitId)=>{
           />
          
         </div>
+        )
+      }
+        
 
         <Modal
           show={showModal}
@@ -583,7 +591,10 @@ const getVisitInfo=async(visitId)=>{
                       <div className="perfect-home-form pt-1">
                         <section className="Details_Form">
                           <div className="pt-3">
-                            <form id="survey-form" >
+                            <form id="survey-form" method='POST' onSubmit={(e)=>{
+                              e.preventDefault(); 
+                              setShowModal2(false)
+                            }} >
                               <div className="d-lg-flex justify-content-lg-between">
                                 <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
                                   <div className="rowTab">
@@ -652,10 +663,10 @@ const getVisitInfo=async(visitId)=>{
                                 type='submit'
                                 className="btn rounded-5 text-white"
                                 style={{background:clientBtnColor}}
-                                onClick={(e)=>{
-                                  e.preventDefault()
-                                    setShowModal2(false)
-                                }}
+                                // onClick={(e)=>{
+                                //   e.preventDefault()
+                                //     setShowModal2(false)
+                                // }}
                                 >
                                   Update
                                 </button>

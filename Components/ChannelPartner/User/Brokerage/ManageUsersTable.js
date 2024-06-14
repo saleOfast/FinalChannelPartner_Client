@@ -11,12 +11,13 @@ import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import { saveAs } from 'file-saver';
+import Loader from '../../../Loader/Loader';
 
 
 
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -424,6 +425,10 @@ const updateBrokerageBill =  async() => {
 
     return (
         <>
+        {
+          loader ?  <div className="miuiTable channelTable"><Loader/></div>
+          :
+          (
             <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
@@ -434,22 +439,12 @@ const updateBrokerageBill =  async() => {
 
                 />
                 <div>
-          {/* {userData.length ?
-          <div className="table_btns d-flex align-items-center justify-content-center gap-3 mt-4">
-              
-
-              <button onClick={()=>{setActionMode('Cancel'); setShowModal(false);setUserData([])}} className=" btn btn-danger rounded-5">
-                Cancel
-              </button>
-              <button onClick={()=>{setActionMode('Assignto'); setShowModal(true)}} style={{backgroundColor: '#293790'}} className="btn  rounded-5 text-white" >
-                Assign to
-              </button>
-            
-          </div>
-          : <></>
-        } */}
+          
         </div>
             </div>
+          )
+        }
+            
         
       
       {/* Brokerage Bill Modal */}

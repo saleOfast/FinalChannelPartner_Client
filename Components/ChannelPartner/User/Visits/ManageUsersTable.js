@@ -10,12 +10,13 @@ import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
 import DateRange from '../../../DateRangeCustom/Daterange';
+import Loader from '../../../Loader/Loader';
 
 
 
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getVisitList }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getVisitList,loader }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -292,7 +293,11 @@ const [value, setValue] = useState(getCurrentWeekDates());
  
     return (
         <>
-            <div className="miuiTable channelTable">
+        {
+        loader ? <div className="miuiTable channelTable"><Loader/></div>
+        :
+        (
+          <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
                     data={mappedDataList}
@@ -318,6 +323,9 @@ const [value, setValue] = useState(getCurrentWeekDates());
         }
         </div>
             </div>
+        )
+      }
+            
         
             <Modal className="commonModal"  show={showModal}   onHide={()=>{setShowModal(false)}} size="lg">
                 
@@ -406,7 +414,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
 </section>
 
                 </Modal.Body>
-            </Modal>
+            </Modal>  
           
         </>
 

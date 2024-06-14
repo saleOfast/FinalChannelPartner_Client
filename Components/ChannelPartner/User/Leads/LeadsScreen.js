@@ -17,6 +17,7 @@ import { fetchData } from '../../../../Utils/getReq';
 import Daterange from '../../../DateRangeCustom/Daterange';
 import moment from 'moment';
 import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
+import Loader from '../../../Loader/Loader';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -69,12 +70,12 @@ const LeadsScreen = () => {
     const [errorData, setErrorData] = useState({})
     const dispatch=useDispatch();
     const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
-
+    const [loader,setLoader]=useState(false);
     const currentDate = moment().format("YYYY-MM-DD");
-  const currentTime = moment().format("HH:mm");
+    const currentTime = moment().format("HH:mm");
 
-  // Determine the min time based on the selected date
-  const minTime = lead.p_visit_date === currentDate ? currentTime : '00:00';
+    // Determine the min time based on the selected date
+    const minTime = lead.p_visit_date === currentDate ? currentTime : '00:00';
 
     
 
@@ -126,6 +127,7 @@ const LeadsScreen = () => {
 
 
     const getDataList = async (queryObjLeads) => {
+      setLoader(true)
         if(queryObjLeads==undefined){
           const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
           const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
@@ -152,13 +154,17 @@ const LeadsScreen = () => {
                   ...header,
                   params:queryObjLeads
                 });
-                
+                if(leads?.status === 200 || leads?.status === 201){
+                  setLoader(false)
                 setLeadList(leads?.data?.data);
+                }
                 
             } catch (error) {
                 if (error?.response?.data?.message) {
+                  setLoader(false)
                     toast.error(error.response.data.message);
                 } else {
+                  setLoader(false)
                     toast.error("Something went wrong!");
                 }
             }
@@ -325,7 +331,6 @@ const LeadsScreen = () => {
     return (
       <>
         
-
         <div className="w-100 ps-4 pe-4 overflow-auto ">
           <div className="main_content">
             <div className="table_screen">
@@ -349,6 +354,7 @@ const LeadsScreen = () => {
               </div>
               <DynamicTable
                 title="Leads"
+                loader={loader}
                 leadList={leadList}
                 disableConfirm={disableConfirm}
                 deleteConfirm={deleteConfirm}
@@ -362,6 +368,7 @@ const LeadsScreen = () => {
             </div>
           </div>
         </div>
+
 
         <Modal className="commonModal" show={show} onHide={handleClose}>
           <Modal.Header closeButton>

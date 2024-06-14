@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import Select from 'react-select';
 import { fetchData } from '../../../../Utils/getReq';
 import Daterange from '../../../DateRangeCustom/Daterange';
+import Loader from '../../../Loader/Loader';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -23,9 +24,8 @@ const DynamicTable = dynamic(
 const VisitsScreen = () => {
     const router = useRouter()
     const [dataList, setDataList] = useState([])
-
     const [show, setShow] = useState(false);
-    
+    const[loader,setLoader]=useState(false)
     const [oldAssignTo, setoldAssignTo] = useState("");
     const [showDateFilter, setShowDateFilter] = useState(false);
     const [excelData, setexcelData] = useState([]);
@@ -60,11 +60,6 @@ const VisitsScreen = () => {
         setdeleteshowConfirm(true)
     }
 
-   
-
-   
-
-
     const importHandler = (event, type) => {
         // Passing file data (event.target.files[0]) to parse using Papa.parse
         Papa.parse(event.target.files[0], {
@@ -81,6 +76,7 @@ const VisitsScreen = () => {
 
 
     const getVisitList = async (queryObjLeads) => {
+      setLoader(true)
       if(queryObjLeads==undefined){
         const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
         const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
@@ -104,12 +100,16 @@ const VisitsScreen = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/channel/visit`, {...header,params:queryObjLeads});
-                    console.log(response.data.data)
+                if(response?.status === 200 || response?.status === 201){
+                  setLoader(false)
                 setDataList(response.data.data);
+                }
             } catch (error) {
                 if (error?.response?.data?.message) {
+                  setLoader(false)
                     toast.error(error.response.data.message);
                 } else {
+                  setLoader(false)
                     toast.error("Something went wrong!");
                 }
             }
@@ -164,7 +164,8 @@ const VisitsScreen = () => {
 
     return (
       <>
-        <div className="w-100 ps-4 pe-4 overflow-auto">
+      
+      <div className="w-100 ps-4 pe-4 overflow-auto">
           <div className="main_content">
             <div className="table_screen">
               <DynamicTable
@@ -172,7 +173,7 @@ const VisitsScreen = () => {
                 dataList={dataList}
                 disableConfirm={disableConfirm}
                 deleteConfirm={deleteConfirm}
-             
+                loader={loader}
                 setoldAssignTo={setoldAssignTo}
                 oldAssignTo={oldAssignTo}
                 setShowDateFilter={setShowDateFilter}
@@ -181,6 +182,7 @@ const VisitsScreen = () => {
             </div>
           </div>
         </div>
+        
 
         <Modal className="commonModal" show={show} onHide={handleClose}>
           <Modal.Header closeButton>

@@ -17,7 +17,7 @@ import {
   sales,
   channel,
 } from "../../store/permissionSlice";
-import { startLoading, stopLoading } from "../../store/loaderSlice";
+import { startLoading, stopLoading } from "../../store/loaderSlice";  
 import {
   clearTheme,
   setSidebarColor,

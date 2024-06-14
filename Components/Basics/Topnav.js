@@ -244,7 +244,8 @@ const Topnav = ({  topnavPermission }) => {
                 )}
               </div>
               <div className="profile_sec">
-                {dbMode !== "admin" && !isCHannel ? (
+                {dbMode !== "admin" && !isCHannel ?
+                 (
                   <div className="quick_add_sec d-flex gap-2 ">
                     {/* {allowedPermissions?.length > 1 && (
                       <Dropdown>

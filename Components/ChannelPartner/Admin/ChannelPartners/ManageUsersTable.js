@@ -9,12 +9,13 @@ import { Baseurl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
+import Loader from '../../../Loader/Loader';
 
 
 
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -215,7 +216,6 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                 title='Assign - To'>
                                     Assign to
                             </button>
-                          
                         </div>
                     )
                 }
@@ -332,7 +332,11 @@ const [value, setValue] = useState(getCurrentWeekDates());
 
     return (
         <>
-            <div className="miuiTable channelTable">
+        {
+            loader ? <div className="miuiTable channelTable"><Loader/></div>
+            :
+            (
+                <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
                     data={dataList}
@@ -357,6 +361,9 @@ const [value, setValue] = useState(getCurrentWeekDates());
         }
         </div>
             </div>
+            )
+        }
+            
         
             <Modal className="commonModal"  show={showModal}   onHide={()=>{setShowModal(false)}} style={{}}>
                 <Modal.Header closeButton>

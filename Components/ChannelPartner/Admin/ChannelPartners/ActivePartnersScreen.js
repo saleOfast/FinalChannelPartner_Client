@@ -5,7 +5,7 @@ import axios from 'axios';
 import { hasCookie, getCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from "react-bootstrap/Modal";
 import { Button } from 'react-bootstrap';
 import dynamic from 'next/dynamic'
@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import Select from 'react-select';
 import { fetchData } from '../../../../Utils/getReq';
 import Daterange from '../../../DateRangeCustom/Daterange';
+import Loader from "../../../Loader/Loader";
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -46,6 +47,9 @@ const ActivePartnersScreen = () => {
     })
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+  const [loader,setLoader]=useState(false);
+ 
+
   
 
     function disableConfirm(value, type) {
@@ -102,14 +106,15 @@ const ActivePartnersScreen = () => {
 
 
     const getDataList = async (queryObjLeads) => {
-        if(queryObjLeads==undefined){
-            const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
-            const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
-            queryObjLeads={
-              "f_date": startDate,
-              "t_date": endDate
-            }  
-          }
+        setLoader(true)
+        // if(queryObjLeads==undefined){
+        //     const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+        //     const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+        //     queryObjLeads={
+        //       "f_date": startDate,
+        //       "t_date": endDate
+        //     }  
+        //   }
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -125,11 +130,16 @@ const ActivePartnersScreen = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, {...header,params:queryObjLeads});
+                if(response?.status === 200 || response?.status === 201){
+                    setLoader(false)
                 setDataList(response.data.data);
+                }
             } catch (error) {
                 if (error?.response?.data?.message) {
+                    setLoader(false)
                     toast.error(error.response.data.message);
                 } else {
+                    setLoader(false)
                     toast.error("Something went wrong!");
                 }
             }
@@ -286,38 +296,40 @@ const ActivePartnersScreen = () => {
 
     return (
         <>
-            <div className="w-100 ps-4 pe-4 overflow-scroll" >
+        <div className="w-100 ps-4 pe-4 overflow-scroll" >
               
-                <div className="main_content">
-                    <div className="table_screen">
-                        <div className="top_btn_sec mb-3" style={{paddingRight:"0px"}} >
-                            <div className="d-flex">
-                                {
-                                    userInfo?.role_id==null && (
-                                        <button className="btn ms-auto Add_btn  mb-2" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/partner/ChannelPartnersDetails')}>
-                                    <PlusIcon />
-                                    ADD USER
-                                </button>
-                                    )
-                                }
-                                
-                            </div>
-                        </div>
-                        <DynamicTable
-                            title='Channel Partners'
-                            dataList={dataList}
-                            disableConfirm={disableConfirm}
-                            deleteConfirm={deleteConfirm}
-                            setShowAssignTo={setShowAssignTo}
-                            setoldAssignTo={setoldAssignTo}
-                            oldAssignTo={oldAssignTo}
-                            setShowDateFilter={setShowDateFilter}
-                            usersList={usersList}
-                            getDataList={getDataList}
-                        />
-                    </div>
-                </div>
-            </div>
+              <div className="main_content">
+                  <div className="table_screen">
+                      <div className="top_btn_sec mb-3" style={{paddingRight:"0px"}} >
+                          <div className="d-flex">
+                              {
+                                  userInfo?.role_id==null && (
+                                      <button className="btn ms-auto Add_btn  mb-2" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/partner/ChannelPartnersDetails')}>
+                                  <PlusIcon />
+                                  ADD USER
+                              </button>
+                                  )
+                              }
+                              
+                          </div>
+                      </div>
+                      <DynamicTable
+                          title='Channel Partners'
+                          dataList={dataList}
+                          loader={loader}
+                          disableConfirm={disableConfirm}
+                          deleteConfirm={deleteConfirm}
+                          setShowAssignTo={setShowAssignTo}
+                          setoldAssignTo={setoldAssignTo}
+                          oldAssignTo={oldAssignTo}
+                          setShowDateFilter={setShowDateFilter}
+                          usersList={usersList}
+                          getDataList={getDataList}
+                      />
+                  </div>
+              </div>
+          </div>
+            
 
             <Modal className="commonModal" show={show} onHide={handleClose} >
                 <Modal.Header closeButton>

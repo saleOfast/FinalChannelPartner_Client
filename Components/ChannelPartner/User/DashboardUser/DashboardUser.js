@@ -38,6 +38,7 @@ const DashboardUser = () => {
     const [checkInState, setCheckInState] = useState('')
     const [userDetails, setUserDetails] = useState({})
     const[value,setValue]=useState()
+    const [loader,setLoader]=useState(false)
     
 
 
@@ -246,6 +247,7 @@ const DashboardUser = () => {
     }
 
     const getDataList = async (start, end, type) => {
+        setLoader(true)
         if (hasCookie("token")) {
             let token = getCookie("token");
             let db_name = getCookie("db_name");
@@ -259,9 +261,14 @@ const DashboardUser = () => {
             };
             try {
                 const response = await axios.get(Baseurl + `/db/channel/dashboard?endDate=${end}&&startDate=${start}`, header);
-                setDataList(response.data.data);
+                if(response?.status === 200 || response?.status === 201){
+                    setLoader(false)
+                setDataList(response?.data?.data);
+                }
             } catch (error) {
+                setLoader(false)
                 console.log(error);
+                toast.error("Something went wrong!");
             }
         }
     };
@@ -293,8 +300,9 @@ const DashboardUser = () => {
     }, [])
 
     return (
+       
       <div className='d-block w-100'>
-      <div>
+       <div>
       <div className=' d-flex justify-content-end pe-4  pt-3'>
       <img src="/ChannelPartner/download-file-blue.svg" alt="normal"style={{height: 17,cursor:"pointer"}} onClick={()=>{
          setShowLogo(true)

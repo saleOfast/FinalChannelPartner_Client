@@ -13,12 +13,13 @@ import DateRange from '../../../DateRangeCustom/Daterange';
 import { ForkLeft } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
+import Loader from '../../../Loader/Loader';
 
 
 
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo, setoldAssignTo, setShowDateFilter, usersList, getDataList }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo, setoldAssignTo, setShowDateFilter, usersList, getDataList,loader }) => {
   const router = useRouter()
   const [data, setData] = useState([])
   const [userData, setUserData] = useState([])
@@ -354,31 +355,22 @@ const [value, setValue] = useState(getCurrentWeekDates());
 
   return (
     <>
-      <div className="miuiTable channelTable">
-        <MUIDataTable
-          title={<CustomToolbar />}
-          // data={dataList}
-          data={mappedDataList}
-          columns={columns}
-          options={options}
-        />
-        <div>
-          {/* {userData.length ?
-            <div className="table_btns d-flex align-items-center justify-content-center gap-3 mt-4">
-
-
-              <button onClick={() => { setActionMode('Cancel'); setShowModal(false); setUserData([]) }} className=" btn btn-danger rounded-5">
-                Cancel
-              </button>
-              <button onClick={() => { setActionMode('Assignto'); setShowModal(true) }} style={{ backgroundColor: '#293790' }} className="btn  rounded-5 text-white" >
-                Assign to
-              </button>
-
-            </div>
-            : <></>
-          } */}
+     {
+        loader ? <div className="miuiTable channelTable"><Loader/></div>
+        :
+        (
+          <div className="miuiTable channelTable">
+          <MUIDataTable
+            title={<CustomToolbar />}
+            // data={dataList}
+            data={mappedDataList}
+            columns={columns}
+            options={options}
+          />
         </div>
-      </div>
+        )
+      }
+      
 
       <Modal
         className="commonModal"

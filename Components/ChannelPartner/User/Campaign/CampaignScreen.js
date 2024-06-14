@@ -10,6 +10,7 @@ import { Delete } from "@mui/icons-material";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { startButtonLoading, stopButtonLoading } from "../../../../store/buttonLoaderSlice";
+import Loader from "../../../Loader/Loader";
 
 const CampaignScreen = () => {
   const [showModal, setShowModal] = useState(false);
@@ -36,9 +37,11 @@ const CampaignScreen = () => {
   const[projects,setProjects]=useState([]);
   const dispatch=useDispatch()
   const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+  const [loader,setLoader]=useState();
   
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -53,15 +56,20 @@ const CampaignScreen = () => {
       };
 
       try {
-        const { data } = await axios.get(
+        const response = await axios.get(
           Baseurl + `/db/channel/project`,
           header
         );
-        setProjects(data?.data)
+        if(response.status === 200 || response.status === 201){
+          setLoader(false)
+        setProjects(response?.data?.data)
+        }
       } catch (error) {
         if (error?.response?.data?.message) {
+          setLoader(false)
           toast.error(error.response.data.message);
         } else {
+          setLoader(false)
           toast.error("Something went wrong!");
         }
       }
@@ -236,7 +244,11 @@ const CampaignScreen = () => {
 
   return (
     <>
-      <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
+    {
+      loader ? <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto"><Loader/></div>
+      :
+      (
+        <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
         
         <section className="Channel-profile Booking-Detail Visit-Details Campaigns  pb-2 bg-white">
           <div className="container mt-3 mb-4">
@@ -296,6 +308,9 @@ const CampaignScreen = () => {
           </div>
         </section>
       </div>
+      )
+    }
+      
 
       <Modal
         show={showModal}

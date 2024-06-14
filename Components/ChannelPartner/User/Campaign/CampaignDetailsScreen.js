@@ -231,7 +231,11 @@ const CampaignDetailsScreen = () => {
         {/* company logo and client logo start*/}
         <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
             <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="Client Logo" style={{maxHeight: "3rem"}} />
-            <img src={projectData?.logo_preview} alt="Project Logo" style={{maxHeight: "3rem"}} />
+            {
+              projectData?.logo!==null ? <img src={projectData?.logo_preview} alt="Project Logo" style={{maxHeight: "3rem"}} />
+              :
+              <div></div>
+            }
         </div>
         {/* company logo and client logo end*/}
   

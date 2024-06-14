@@ -22,6 +22,7 @@ import { setDate } from 'date-fns';
 import Top5Bookings from './Top5Bookings';
 import Top5Leads from './Top5Leads';
 import Top5Visits from './Top5Visits';
+import Loader from '../../../Loader/Loader';
 
 
 const DashboardAdmin = () => {
@@ -30,7 +31,7 @@ const DashboardAdmin = () => {
     const[showLogo,setShowLogo]=useState(false)
     const router = useRouter();
     const { id } = router.query;
-
+    const[loader,setLoader]=useState(false)
     const [timeFilter, settimeFilter] = useState('weekly');
     const [dataList, setDataList] = useState({})
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -244,6 +245,7 @@ const DashboardAdmin = () => {
     }
 
     const getDataList = async (start, end, type) => {
+        setLoader(true)
         if (hasCookie("token")) {
             let token = getCookie("token");
             let db_name = getCookie("db_name");
@@ -257,9 +259,14 @@ const DashboardAdmin = () => {
             };
             try {
                 const response = await axios.get(Baseurl + `/db/channel/dashboard/admin?endDate=${end}&&startDate=${start}`, header);
-                setDataList(response.data.data);
+                if(response?.status === 200 || response?.status === 201){
+                    setLoader(false)
+                    setDataList(response.data.data);
+                }
             } catch (error) {
+                setLoader(false)
                 console.log(error);
+                toast.error("Something went wrong!");
             }
         }
     };
@@ -291,7 +298,12 @@ const DashboardAdmin = () => {
     }, [])
 
     return (
-      <div className='d-block w-100 '>
+        <>
+        {
+            loader ? <div className='d-block w-100 '><Loader/></div>
+            :
+            (
+                <div className='d-block w-100 '>
       <div>
       <div className=' d-flex justify-content-end pe-4 pb-1 pt-3'>
       <img src="/ChannelPartner/download-file-blue.svg" alt="normal"style={{height: 17,cursor:"pointer"}} onClick={()=>{
@@ -369,72 +381,6 @@ const DashboardAdmin = () => {
                             </div>
                             
                         </div>
-                        
-
-                        
-                        {/* <div className='row'>
-                        {dataList?.EnrolVsAcceptChart?.length ?
-                        <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
-                               <div className="">
-                                   <div className="dash_card chartSec">
-                                       <ReChart
-                                           head='Brokers Enrolled Vs Accepted'
-                                           keyX='enrolled'
-                                           keyY='approved'
-                                           dataList={dataList?.EnrolVsAcceptChart}
-                                       />
-                                   </div>
-                               </div> 
-                       </div>: 
-                        null}
-                            {dataList?.RequestedVsCompleteChart?.length ?
-                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
-                                <div className="">
-                                    <div className="dash_card chartSec">
-                                        <ReChart
-                                            head='Site visit requested Vs Site Visit completed'
-                                            keyX='Requested'
-                                            keyY='Completed'
-                                            dataList={dataList?.RequestedVsCompleteChart}
-                                        />
-                                    </div>
-                        </div>
-                                </div> : 
-                            null}
-                        </div> */}
-
-                         {/* <div className='row'>
-                        <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
-                           {dataList?.rangewiseBrokergaeVsBookingChart?.length ?
-                               <div className="">
-                                   <div className="dash_card chartSec">
-                                       <ReChart
-                                           head='Bookings created Vs Brokerage bills created'
-                                           keyX='brokerage'
-                                           keyY='booking'
-                                           dataList={dataList?.rangewiseBrokergaeVsBookingChart}
-                                       />
-                                   </div>
-                               </div> : 
-                           null}
-                       </div>
-                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
-                            {dataList?.rangewiseVisitVsBookingsCharts?.length ?
-                                <div className="">
-                                    <div className="dash_card chartSec">
-                                        <ReChart
-                                            head='Visits vs Bookings'
-                                            keyX='visit'
-                                            keyY='booking'
-                                            dataList={dataList?.rangewiseVisitVsBookingsCharts}
-                                        />
-                                    </div>
-                                </div> : 
-                            null}
-                        </div>
-                        </div> */}
-
-
                         <div className='row'>
                         {dataList?.EnrolVsAcceptChart?.length ?
                         <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
@@ -522,6 +468,11 @@ const DashboardAdmin = () => {
 
         </div>
       </div>
+            )
+        }
+        
+        </>
+      
         
     )
 }

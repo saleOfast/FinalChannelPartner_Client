@@ -1,24 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import Link from "next/link";
 import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/router";
-import DashboardRevnueCard from './DashboardRevnueCard'
 import DashLeadsCard from './DashLeadsCard'
-import TopOpportunityCard from './TopOpportunityCard';
-import TasksCard from './TasksCard';
-import OpportunityCard from './OpportunityCard';
 import { Baseurl, filesUrl } from '../../../../Utils/Constants';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-import Charts from '../../../../pages/Charts';
-import RevenueChart from '../../../../pages/RevenueChart';
 import ReChart from './ReChart';
-import DateRange from '../../../DateRangeCustom/Daterange';
 import Datepicker from 'react-tailwindcss-datepicker';
 import generatePDF from 'react-to-pdf';
-import { setDate } from 'date-fns';
+import Loader from '../../../Loader/Loader';
+
 
 
 const DashboardUser = () => {
@@ -300,96 +293,103 @@ const DashboardUser = () => {
     }, [])
 
     return (
+        <>
+            {
+        loader ? <div className='d-block w-100'><Loader/></div> :
+        (
+            <div className='d-block w-100'>
+            <div>
+           <div className=' d-flex justify-content-end pe-4  pt-3'>
+           <img src="/ChannelPartner/download-file-blue.svg" alt="normal"style={{height: 17,cursor:"pointer"}} onClick={()=>{
+              setShowLogo(true)
+                 downloadPdf() 
+             }} />
+           </div>
+           </div>
+               <div className={`main_Box w-100 `} >
+                 <div className="main_content dashboard indxx"id='to-be-printed' >
+                     <div className="Cards_side w-100">
+                         <div className="dashboard_head">
+                             <div className="time_filter" style={{marginTop:"-40px",marginBottom:"-10px"}}>
+                             {
+                                     showLogo ? 
+                                      (
+                                         <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="normal" className='pt-3 pb-3'  />
+                                         
+                                      )
+                                         :
+                                      (
+                                         <Datepicker
+                                         value={value}
+                                         showFooter={true}
+                                         displayFormat={"DD-MM-YYYY"}
+                                         onChange={handleValueChange}
+                                         showShortcuts={true}
+                                         popoverDirection="down"
+                                         primaryColor={"blue"}
+                                         containerClassName="relative w-64 mt-8  border rounded-md mb-4 border-black  text-black inline-block" 
+                                         />
+                                      )
+                                 } 
+                             </div>
+                         </div>
+                         <div className="cards_Box">
+                             
+                             <div className="row leads_row">
+                                 <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                                     <DashLeadsCard
+                                         head='TOTAL LEADS'
+                                         price={dataList.leads}
+                                         date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                         img='/images/groupicon.png' />  
+                                 </div>
+                                 <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                                     <DashLeadsCard
+                                         head='VISITS COMPLETED'
+                                         price={dataList.visits}
+                                         date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                         img='/images/groupicon.png' />
+                                 </div>
+                                 <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                                     <DashLeadsCard
+                                         head='BOOKINGS COMPLETED'
+                                         price={dataList.booking}
+                                         date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                         img='/images/usericon.png' />
+                                 </div>
+                                 <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                                     <DashLeadsCard
+                                         head='TAT FOR LEADS'
+                                         price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
+                                         date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                         img='/images/usericon.png' />
+                                 </div>
+                             </div>
+                             
+     
+                             <div className="row "> 
+                            
+                                 {dataList?.barchart?.length ?
+                                     <div className="col-xl-12 col-md-6 col-12 col-sm-12 mt-2">
+                                         <div className="dash_card chartSec">
+                                             <ReChart
+                                                 head='Leads Generated V/s Leads Booked'
+                                                 dataList={dataList?.barchart}
+                                             />
+                                         </div>
+                                     </div> : null}
+                             </div>
+                             
+                         </div>
+                     </div>
+                 </div>
+     
+             </div>
+           </div>
+        )
+       }
+        </>
        
-      <div className='d-block w-100'>
-       <div>
-      <div className=' d-flex justify-content-end pe-4  pt-3'>
-      <img src="/ChannelPartner/download-file-blue.svg" alt="normal"style={{height: 17,cursor:"pointer"}} onClick={()=>{
-         setShowLogo(true)
-            downloadPdf() 
-        }} />
-      </div>
-      </div>
-          <div className={`main_Box w-100 `} >
-            <div className="main_content dashboard indxx"id='to-be-printed' >
-                <div className="Cards_side w-100">
-                    <div className="dashboard_head">
-                        <div className="time_filter" style={{marginTop:"-40px",marginBottom:"-10px"}}>
-                        {
-                                showLogo ? 
-                                 (
-                                    <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="normal" className='pt-3 pb-3'  />
-                                    
-                                 )
-                                    :
-                                 (
-                                    <Datepicker
-                                    value={value}
-                                    showFooter={true}
-                                    displayFormat={"DD-MM-YYYY"}
-                                    onChange={handleValueChange}
-                                    showShortcuts={true}
-                                    popoverDirection="down"
-                                    primaryColor={"blue"}
-                                    containerClassName="relative w-64 mt-8  border rounded-md mb-4 border-black  text-black inline-block" 
-                                    />
-                                 )
-                            } 
-                        </div>
-                    </div>
-                    <div className="cards_Box">
-                        
-                        <div className="row leads_row">
-                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                                <DashLeadsCard
-                                    head='TOTAL LEADS'
-                                    price={dataList.leads}
-                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/groupicon.png' />  
-                            </div>
-                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                                <DashLeadsCard
-                                    head='VISITS COMPLETED'
-                                    price={dataList.visits}
-                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/groupicon.png' />
-                            </div>
-                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                                <DashLeadsCard
-                                    head='BOOKINGS COMPLETED'
-                                    price={dataList.booking}
-                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/usericon.png' />
-                            </div>
-                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                                <DashLeadsCard
-                                    head='TAT FOR LEADS'
-                                    price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
-                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/usericon.png' />
-                            </div>
-                        </div>
-                        
-
-                        <div className="row "> 
-                       
-                            {dataList?.barchart?.length ?
-                                <div className="col-xl-12 col-md-6 col-12 col-sm-12 mt-2">
-                                    <div className="dash_card chartSec">
-                                        <ReChart
-                                            head='Leads Generated V/s Leads Booked'
-                                            dataList={dataList?.barchart}
-                                        />
-                                    </div>
-                                </div> : null}
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-
-        </div>
-      </div>
         
     )
 }

@@ -323,7 +323,10 @@ const updateBrokerageBill =  async() => {
                         style={{background:"violet",width:"fit-content", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                         className='pe-3 ps-3'
                         title='Assign - To'>
-                            {value}
+                            
+                           {
+                            value=="Bill sent" ? "Bill Received" : value
+                           }
                     </div>
                     )
                 }
@@ -453,7 +456,8 @@ const updateBrokerageBill =  async() => {
           <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
           <div className='d-flex justify-content-end align-items-center pb-2'>
                   {
-                    roleId===2 && (updateBill?.status==="Bill Received" || updateBill?.status==="Bill sent") &&  (
+                    roleId===2 && 
+                      (
                       <img
                       className=' cursor-pointer'
                         src="/ChannelPartner/profile-edit.svg"
@@ -636,16 +640,6 @@ const updateBrokerageBill =  async() => {
                                     onChange={(e)=>setUpdateBill({...updateBill,amount:e.target.value})} name="name" className="" placeholder required style={{background:"#E9ECEF"}} /> 
                                   </div>
                                 </div>
-                                {/* <div className="rowTab">
-                                  <div className="labels" >
-                                    <label htmlFor="name" className="pb-1">Current Status</label>
-                                    <span className="star">*</span>
-                                  </div>
-                                  <div className="rightTab">
-                                    <input autofocus disabled type="text" value={updateBill?.status==="Bill sent" ? "Bill Received" :updateBill?.status} 
-                                    onChange={(e)=>setUpdateBill({...updateBill,amount:e.target.value})} name="name" className="" placeholder required style={{background:"#E9ECEF"}} /> 
-                                  </div>
-                                </div> */}
                                 <div className="rowTab">
                                   <div className="labels">
                                     <label htmlFor="project" className="pb-1">Status</label>
@@ -663,10 +657,13 @@ const updateBrokerageBill =  async() => {
                                     >
                                       <option  className="dropdown-item" >Bill Received
                                       </option>
+                                      <option className="dropdown-item" >Payment Initiated
+                                      </option>
                                       <option className="dropdown-item" >Payment Received
                                       </option>
                                       <option className="dropdown-item" >Payment Rejected
                                       </option>
+
                                     </select>
                                   </div>
                                 </div>

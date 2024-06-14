@@ -21,10 +21,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     const [userData, setUserData] =  useState([])
     const [actionMode, setActionMode] =  useState('')
     const [showModal, setShowModal] =  useState(false)
-    const [userInfo, setUserInfo ] =  useState({
-    user_code: '',
-    reject_reason: ''
-  })
+    const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+
 
   const getCurrentWeekDates = () => {
     const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
@@ -187,6 +185,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             options: {
                 filter: false,
                 download:false,
+                display:userInfo?.role_id==null? true:false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}

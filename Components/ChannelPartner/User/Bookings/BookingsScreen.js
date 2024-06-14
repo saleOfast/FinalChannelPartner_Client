@@ -105,14 +105,7 @@ const BookingsScreen = () => {
 
     const getDataList = async (queryObjLeads) => {
       setLoader(true)
-      if(queryObjLeads==undefined){
-        const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
-        const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
-        queryObjLeads={
-          "f_date": startDate,
-          "t_date": endDate
-        }  
-      }
+      
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));

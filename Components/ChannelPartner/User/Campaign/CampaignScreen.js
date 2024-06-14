@@ -38,6 +38,8 @@ const CampaignScreen = () => {
   const dispatch=useDispatch()
   const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
   const [loader,setLoader]=useState();
+  const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+
   
 
   const getDataList = async () => {
@@ -274,7 +276,9 @@ const CampaignScreen = () => {
                       </div>
                       <div className="col-4 d-flex justify-content-end">
                         <div className="d-flex gap-2">
-                          <img
+                        {
+                          userInfo?.role_id==1 && (
+                            <img
                             src="/ChannelPartner/profile-edit-white.svg"
                             onClick={()=>{
                                 setEditMode(true)
@@ -285,6 +289,9 @@ const CampaignScreen = () => {
                             
                             style={{ height: 17,cursor:"pointer" }}
                           />
+                          )
+                        }
+                          
                           <Link
                             href={`/partner/CampaignDetails?id=${project?.project_id}`}
                           >

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import MUIDataTable from "mui-datatables";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -14,9 +14,7 @@ import { ForkLeft } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
 import Loader from '../../../Loader/Loader';
-
-
-
+import { Delete } from "@mui/icons-material";
 
 
 const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo, setoldAssignTo, setShowDateFilter, usersList, getDataList,loader }) => {
@@ -27,7 +25,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   const [showModal, setShowModal] = useState(false)
   const dispatch=useDispatch();
   const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
-  
+  const fileRef = useRef()
   const getCurrentWeekDates = () => {
     const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
       const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
@@ -38,6 +36,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
   const[brokerageBill,setBrokerageBill]=useState({
     booking_id:'',
     file:null,
+    file_name:null,
     amount:"",
     date:"",
     status:""
@@ -202,7 +201,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
           return (
             <div
               style={{ 
-                background:value==="Payment Initiated" ? "#FFA825" : value==="Payment Received" ?"#84CA4D" : value==="Aggrement Done" ? "#17B4E7" : value==="Eligible for brokerage bill" ? "#186EBC" : value==="bill Received" ? "#FCCC37" :"violet"
+                background:value==="Payment Initiated" ? "#FFA825" : value==="Payment Received" ?"#84CA4D" : value==="Booking Done" ? "#17B4E7" : value==="Eligible for brokerage bill" ? "#186EBC" : value==="Bill Received" ? "#FCCC37" :"violet"
                 , color: "white", padding: "6px", borderRadius: "20px", border: "white", width: "fit-content"}}
               className='pe-3 ps-3'>
               {value}
@@ -235,14 +234,14 @@ const [value, setValue] = useState(getCurrentWeekDates());
                   })
                 }}
                 style={{
-                  background:value?.length>0 ? "#9C9AA5" :clientBtnColor,
+                  background:value?.length === 0 && tableMeta?.rowData[7] == "Eligible for brokerage bill" ? clientBtnColor :"#9C9AA5",
                   color: "white",
                   padding: "6px",
                   borderRadius: "20px",
                   border: "white",
                   cursor: "pointer",
                 }}
-                disabled={value?.length>0 ? true:false }
+                disabled={value?.length == 0 && tableMeta?.rowData[7] == "Eligible for brokerage bill" ? false:true }
                 className="pe-3 ps-3 "
               >
                 + Create
@@ -253,7 +252,6 @@ const [value, setValue] = useState(getCurrentWeekDates());
       }
     },
   ];
-
 
 
   const CustomToolbar = () => {
@@ -274,17 +272,30 @@ const [value, setValue] = useState(getCurrentWeekDates());
   };
 
   const handleFileChange = (e) => {
+    console.log("e.target.value",e.target.value);
     if (e.target.files[0]) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setBrokerageBill({
           ...brokerageBill,
           file:e.target.files[0],
+          file_name:e.target.files[0].name
         });
       };
       reader.readAsDataURL(e.target.files[0]);
     }
   }; 
+
+  const handleDeleteClick = () => {
+    console.log(fileRef,'Before update:', brokerageBill);
+    const data = {
+      ...brokerageBill, 
+      file: null, file_name: null 
+    }
+    setBrokerageBill(data);
+    fileRef.current.value = ''
+  };
+  console.log(fileRef,'After update:', brokerageBill);
 
   const createBrokerageBill =  async() => {
 
@@ -505,7 +516,19 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab">
-                                    <label
+                                    {
+                                      brokerageBill?.file!==null ?
+                                      (
+                                        <div className="relative w-73">
+                                        <div  >{brokerageBill?.file_name}</div>
+                                        <span className="absolute top-0 right-0" onClick={handleDeleteClick}>
+                                            <Delete style={{color: 'red',cursor:"pointer"}}/>
+                                        </span>
+                                    </div>
+                                      ) 
+                                      :
+                                      (
+                                        <label
                                       htmlFor="adh"
                                       className="form-control d-flex flex-row-reverse justify-content-between align-items-center"
                                       style={{
@@ -521,9 +544,13 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                         style={{ height: 16 }}
                                       />
                                     </label>
+                                      ) 
+                                    }
+                                    
                                     <input
                                       type="file"
                                       id="adh"
+                                      ref={fileRef}
                                       onChange={(e)=>handleFileChange(e)}
                                       className="input-field"
                                       style={{ display: "none" }}

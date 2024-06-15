@@ -41,7 +41,7 @@ const CampaignDetailsAdminScreen = () => {
     const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
     const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
     const[loader,setLoader]=useState(false)
-
+    const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
     const targetRef=useRef();
     const options = {
       filename: `${projectData?.project}-Template.pdf`,
@@ -207,12 +207,18 @@ const CampaignDetailsAdminScreen = () => {
 
       {/* Edit and Download Start */}
       <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"11px"}}>
-          <img src="/ChannelPartner/profile-edit.svg" alt="Profile Edit" style={{ fontWeight: "bold", cursor: "pointer"}} 
-              onClick={() => {
-                  setShowModal(true);
-                  getCampaignById(id);
-              }}
-          />
+        {
+           hasCookie("channel") && userInfo?.role_id==null && (
+            <img src="/ChannelPartner/profile-edit.svg" alt="Profile Edit" style={{ fontWeight: "bold", cursor: "pointer"}} 
+            onClick={() => {
+                setShowModal(true);
+                getCampaignById(id);
+            }}
+        />
+           )
+
+        }
+          
           {/* <img 
           src="/ChannelPartner/download-file-blue.svg" 
           alt="Download File" 

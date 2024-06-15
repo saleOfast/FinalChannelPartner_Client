@@ -49,6 +49,8 @@ const CampaignDetailsScreen = () => {
         margin: 20
       }
     };
+   const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+
 
     const getTargetElement = () => document.getElementById("content2");
     const downloadPdf = () => generatePDF(getTargetElement, options);
@@ -203,7 +205,9 @@ const CampaignDetailsScreen = () => {
         <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}>
 
         {/* Edit and Download Start */}
-        <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"15px"}}>
+        {
+           hasCookie("channel") && userInfo?.role_id==1 && (
+            <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"15px"}}>
             <img src="/ChannelPartner/profile-edit.svg" alt="Profile Edit" style={{ fontWeight: "bold", cursor: "pointer"}} 
                 onClick={() => {
                     setShowModal(true);
@@ -215,11 +219,13 @@ const CampaignDetailsScreen = () => {
             alt="Download File" 
             style={{height: "1.2rem", cursor: "pointer"}} 
             onClick={()=>{
-              downloadHtml()
-              // downloadPdf()
+              downloadHtml()              
             }}
             />
         </div>
+           )
+        }
+        
         {/* Edit and Download End */}
   
           
@@ -291,7 +297,7 @@ const CampaignDetailsScreen = () => {
   
         {/* Back to campaign button start */}
         <div style={{display:"flex", justifyContent:"center",alignItems:"center"}}>
-            <Link href={`/partner/CampaignAdmin`} style={{background:clientBtnColor,color:"white",padding:"5px 10px",borderRadius:"20px"}}>Back to Campaigns</Link>
+            <Link href={`/partner/Campaign`} style={{background:clientBtnColor,color:"white",padding:"5px 10px",borderRadius:"20px"}}>Back to Campaigns</Link>
         </div>
         {/* Back to campaign button end */}
   

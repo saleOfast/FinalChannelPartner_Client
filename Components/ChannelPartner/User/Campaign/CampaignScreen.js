@@ -277,7 +277,7 @@ const CampaignScreen = () => {
                       <div className="col-4 d-flex justify-content-end">
                         <div className="d-flex gap-2">
                         {
-                          userInfo?.role_id==1 && (
+                          hasCookie("channel") && userInfo?.role_id==1 && (
                             <img
                             src="/ChannelPartner/profile-edit-white.svg"
                             onClick={()=>{

@@ -39,6 +39,7 @@ const CampaignAdminScreen = () => {
   const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
   const[loader,setLoader]=useState(false)
 
+
   const getDataList = async () => {
     setLoader(true);
     if (hasCookie("token")) {
@@ -256,7 +257,7 @@ const CampaignAdminScreen = () => {
         <div className="top_btn_sec mb-4" >
           <div className="d-flex ">
             {
-              userInfo?.role_id==null && (
+              hasCookie("channel") && userInfo?.role_id==null && (
                 <button
                 className="btn ms-auto  Add_btn "
                 style={{ background: `${clientBtnColor}`}}
@@ -296,16 +297,21 @@ const CampaignAdminScreen = () => {
                       </div>
                       <div className="col-4 d-flex justify-content-end">
                         <div className="d-flex gap-2">
-                          <img
-                            src="/ChannelPartner/profile-edit-white.svg"
-                            onClick={()=>{
-                                setEditMode(true)
-                                getDataListById(project?.project_id)
-                                setShowModal(true)
-                            }}
-                            alt
-                            style={{ height: 17,cursor:"pointer" }}
-                          />
+                          {
+                            hasCookie("channel") && userInfo?.role_id==null && (
+                              <img
+                              src="/ChannelPartner/profile-edit-white.svg"
+                              onClick={()=>{
+                                  setEditMode(true)
+                                  getDataListById(project?.project_id)
+                                  setShowModal(true)
+                              }}
+                              alt
+                              style={{ height: 17,cursor:"pointer" }}
+                            />
+                            )
+                          }
+                          
                           <Link
                             href={`/partner/CampaignDetailsAdmin?id=${project?.project_id}`}
                           >

@@ -15,8 +15,6 @@ const userInfo=hasCookie("userInfo") ? true:false;
     <>
           {
             userInfo ? dbMode==="user" ?  <DashBoardScreen/> : <Admindashboard/>   :  <SignInScreen />
-          
-
           }
     </>
     

@@ -20,7 +20,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
     const [actionMode, setActionMode] =  useState('')
     const [showModal, setShowModal] =  useState(false)
     const [showModal2, setShowModal2] =  useState(false)
-    const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+    const userInfo=hasCookie("userInfo")?getCookie("userInfo"):"";
   
   const [value, setValue] = useState({
     startDate: new Date(),
@@ -187,7 +187,7 @@ const getVisitInfo=async(visitId)=>{
                   customBodyRender: (value, tableMeta, updateValue) => {
                     
                     return (
-                        <Link href={`/partner/LeadDetails?id=${tableMeta?.rowData[0]}`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
+                        <Link href={`/partner/LeadSourceDetails?id=${tableMeta?.rowData[0]}`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
                             {value}
                         </Link>
                     )
@@ -274,56 +274,7 @@ const getVisitInfo=async(visitId)=>{
               }
           }
       },
-        {
-            name: 'visitList',
-            label: "Action",
-            options: {
-                filter: false,
-                download:false,
-                display:userInfo?.role_id==1? true:false,
-                customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
-                      {columnMeta.label}
-                    </th>
-                  ),
-                customBodyRender: (value, tableMeta, updateValue) => {
-                  const isDisabled=permitVisit(value[0]?.status, value[0]?.createdAt);
-                   
-                    return (
-                        <div className="table_btns">
-                            <button
-                                onClick={()=>{getVisitInfo(tableMeta?.rowData[0]); setVisitId(tableMeta?.rowData[0]); setShowModal(true);}}
-                                style={{background:isDisabled ? "#9C9AA5":`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
-                                className={`pe-3 ps-3 ${isDisabled && value[0]?.status==="Requested" ? "requested_hover" : isDisabled && value[0]?.status==="Scheduled" ? "scheduled_hover": isDisabled && value[0]?.status==="Completed" ?"completed_hover" :"" }` }
-                                
-                                
-                                disabled={isDisabled}
-                                >
-                                    Request Visit
-                            </button>
-                            <div className=' hide_div1' >
-                                <div className='d-flex justify-content-center fw-bold'>
-                                <img style={{width:"20px",paddingRight:"2px"}} src='/ChannelPartner/error.png'/>
-                                Cannot request visit.Last visit completed within 90 days
-                                </div>
-                            </div>
-                            <div className=' hide_div2'>
-                                <div className='d-flex justify-content-center fw-bold'>
-                                <img style={{width:"20px",paddingRight:"2px"}} src='/ChannelPartner/error.png'/>
-                                {
-                                  value[0]?.status==="Scheduled" ? "Cannot request visit.Visit already scheduled" : "Cannot request visit.Last visit created within 24 hours"
-                                }
-                                
-                                
-                                </div>
-                            </div>
-                            
-                            
-                        </div>
-                    )
-                }
-            }
-        },
+       
     ];
 
     

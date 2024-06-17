@@ -71,6 +71,7 @@ export default function SignInScreen({ setLoggedIn }) {
   const submitHandler = async (e) => {
     e.preventDefault();
     dispatch(startLoading());
+    const type=router.pathname==="/crm" ? "crm": router.pathname==="/dms" ? "dms": router.pathname==="/sales"? "sales": router.pathname==="/partner" ? "partner": "common"
     if (userForm.email === "" || userForm.email.length < 1) {
       toast.error("Email is Empty");
     } else if (!validEmail.test(userForm.email.toLowerCase().trim())) {
@@ -82,6 +83,7 @@ export default function SignInScreen({ setLoggedIn }) {
         const res = await axios.post(Baseurl + "/db/login", {
           email: userForm.email.toLowerCase(),
           password: userForm.password,
+          type:type
         });
 
         if (res.status === 200) {
@@ -93,6 +95,7 @@ export default function SignInScreen({ setLoggedIn }) {
           setCookie("sideUser", "true");
           setCookie("token", res.data.token);
           setCookie("userInfo", res.data.userData);
+          setCookie("subscriptionInfo", res.data.userAdminSubscriptionData);
           setCookie("clientLogo", res.data.Logo[0]);
           setCookie("db_name", res.data.userData.db_name);
 
@@ -193,7 +196,7 @@ export default function SignInScreen({ setLoggedIn }) {
               />
             </div>
           </div>
-          <div className=" col-12 col-lg-6 d-flex align-items-center justify-content-center pt-5">
+          <div className=" col-12 col-lg-6 d-flex align-items-center bg-white justify-content-center pt-5">
             <div className="form-right  d-flex justify-content-center align-items-center ">
               <form action className="row g-4" onSubmit={submitHandler}>
                 <div className="col-12">
@@ -275,7 +278,8 @@ export default function SignInScreen({ setLoggedIn }) {
                 <div className="col-12">
                   <button
                     type="submit"
-                    className="btn btn-primary fs-4 fw-semibold px-4 float-end w-100 rounded-4"
+                    style={{background:clientData?.button_color}}
+                    className="btn text-white fs-4 fw-semibold px-4 float-end w-100 rounded-4"
                   >
                     Login
                   </button>

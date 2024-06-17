@@ -32,7 +32,7 @@ const CampaignAdminScreen = () => {
   });
   const[editMode,setEditMode]=useState(false)
   const[projects,setProjects]=useState([]);
-  
+  const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
 
   const getDataList = async () => {
     if (hasCookie("token")) {
@@ -232,16 +232,21 @@ const CampaignAdminScreen = () => {
       <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
         <div className="top_btn_sec mb-4" >
           <div className="d-flex ">
-            <button
-              className="btn ms-auto  Add_btn "
-              style={{ background: `${clientBtnColor}`}}
-              onClick={() => {
-                setShowModal(true);
-              }}
-            >
-              <PlusIcon />
-              Create Campaign
-            </button>
+            {
+              userInfo?.role_id==null && (
+                <button
+                className="btn ms-auto  Add_btn "
+                style={{ background: `${clientBtnColor}`}}
+                onClick={() => {
+                  setShowModal(true);
+                }}
+              >
+                <PlusIcon />
+                Create Campaign
+              </button>
+              )
+            }
+           
           </div>
         </div>
         <section className="Channel-profile Booking-Detail Visit-Details Campaigns pt-4 pb-2 bg-white">

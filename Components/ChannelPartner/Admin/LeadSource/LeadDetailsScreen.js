@@ -13,8 +13,7 @@ const LeadDetailsScreen = () => {
   const router=useRouter();
   const {id}=router.query;
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
-  const [errorData, setErrorData] = useState({})
-  const userInfo=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")):null
+  const userInfo=hasCookie("userInfo")?getCookie("userInfo"):"";
 
   const [lead,setLead]=useState({
     lead_code:"",
@@ -115,15 +114,8 @@ const LeadDetailsScreen = () => {
      } catch (error) {
       console.log(error)
        if (error?.response?.data?.status === 422) {
-            //  toast.error(error?.response?.data?.message)
-             const taskObject = {}
-             const array = error?.response?.data?.data;
-             for (let i = 0; i < array.length; i++) {
-              const key = Object.keys(array[i])[0];
-              const value = Object.values(array[i])[0];
-              taskObject[key] = value;
-          }
-          setErrorData(taskObject);
+             toast.error(error?.response?.data?.message)
+             
        }
        if (error?.response?.data?.message) {
          toast.error(error.response.data.message);
@@ -168,16 +160,13 @@ function formatDate(date) {
                     aria-current="true"
                   >
                     <span className="lead-id text-white">{lead?.lead_code}</span>
-                    {
-                      userInfo?.role_id==1 && (
-                        <img
-                        className=' cursor-pointer'
-                        src="/ChannelPartner/profile-edit-white.svg"
-                        onClick={() => setShowAssignTo(true)}
-                        alt
-                      />
-                      )
-                    }
+                    {/* <img
+                      className=' cursor-pointer'
+                      src="/ChannelPartner/profile-edit-white.svg"
+                      onClick={() => setShowAssignTo(true)}
+                      alt
+                    /> */}
+                    
                   </li>
                 </ul>
                 <div className="row bg-white">
@@ -306,7 +295,7 @@ function formatDate(date) {
             </div>
           </div>
           <Link
-            href={"/partner/Leads"}
+            href={"/partner/LeadSource"}
             className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5"
           >
             <button
@@ -374,9 +363,6 @@ function formatDate(date) {
                                       placeholder
                                       required
                                     />
-                                    <span className='errorText text-danger'>
-                                          {errorData?.lead_name ? errorData.lead_name:""}
-                                      </span>
                                   </div>
                                 </div>
                               </div>
@@ -407,9 +393,6 @@ function formatDate(date) {
                                         ))
                                       }
                                     </select>
-                                    <span className='errorText text-danger'>
-                                          {errorData?.address ? errorData.address:""}
-                                      </span>
                                     </div>
                                 </div>
                               </div>
@@ -440,9 +423,6 @@ function formatDate(date) {
                                       placeholder
                                       required
                                     />
-                                    <span className='errorText text-danger'>
-                                          {errorData?.email_id ? errorData.email_id:""}
-                                      </span>
                                   </div>
                                 </div>
                               </div>
@@ -473,9 +453,6 @@ function formatDate(date) {
                                       placeholder
                                       required
                                     />
-                                    <span className='errorText text-danger'>
-                                          {errorData?.pincode ? errorData.pincode:""}
-                                      </span>
                                   </div>
                                 </div>
                               </div>
@@ -506,9 +483,6 @@ function formatDate(date) {
                                       placeholder
                                       required
                                     />
-                                    <span className='errorText text-danger'>
-                                          {errorData?.p_contact_no ? errorData.p_contact_no:""}
-                                      </span>
                                   </div>
                                 </div>
                               </div>
@@ -540,9 +514,6 @@ function formatDate(date) {
                                       placeholder
                                       required
                                     />
-                                    <span className='errorText text-danger'>
-                                          {errorData?.p_visit_date ? errorData.p_visit_date:""}
-                                      </span>
                                   </div>
                                 </div>
                               </div>
@@ -587,9 +558,6 @@ function formatDate(date) {
                                         </option>
                                       ))}
                                     </select>
-                                    <span className='errorText text-danger'>
-                                          {errorData?.project_id ? errorData.project_id:""}
-                                      </span>
                                   </div>
                                 </div>
                               </div>
@@ -620,9 +588,6 @@ function formatDate(date) {
                                       placeholder
                                       required
                                     />
-                                    <span className='errorText text-danger'>
-                                          {errorData?.p_visit_time ? errorData.p_visit_time:""}
-                                      </span>
                                   </div>
                                 </div>
                               </div>

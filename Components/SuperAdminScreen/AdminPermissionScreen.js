@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import CaretDownIcon from '../Svg/CaretDownIcon';
+import { Form } from 'react-bootstrap';
 
 const AdminPermissionScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
@@ -24,6 +25,7 @@ const AdminPermissionScreen = () => {
             const hasChildren = menu.children && menu.children.length > 0;
 
             return (
+                <>
                 <div className={hasChildren ? 'parent-divs' : 'col-xl-3 col-md-3 col-sm-12 col-12 mrgn-Btn'} key={menu.menu_id} >
                      <div
                         className={hasChildren ? 'first-parent' : 'child-box'} >
@@ -52,6 +54,8 @@ const AdminPermissionScreen = () => {
                         </Collapse>
                     )}
                 </div>
+                </>
+                
             );
         });
     }
@@ -171,6 +175,14 @@ const AdminPermissionScreen = () => {
             }
         }
     }
+    const [selectedOption, setSelectedOption] = useState('CRM');
+
+  const handleChange = (event) => {
+    const value = event.target.value;
+    setSelectedOption(value);
+    console.log(`Selected option: ${value}`);
+    // Add any additional logic you want to handle on selection change
+  };
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -180,7 +192,7 @@ const AdminPermissionScreen = () => {
     return (
         <div className={`main_Box  ${sideView}`}>
             <div className="bread_head">
-                <h3 className="content_head">CLIENT PERMISSIONS</h3>
+                <h3 className="content_head">CLIENT PERMISSIONS(CRM)</h3>
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item"> <Link href='/Admin'> All Clients </Link></li>
@@ -190,6 +202,24 @@ const AdminPermissionScreen = () => {
             </div>
             <div className="main_content ">
                 <div className="permission-view">
+                    <div className='w-25'>
+                    <Form.Group controlId="dropdownMenu">
+        <Form.Label>Select an option:</Form.Label>
+        <Form.Control 
+          as="select" 
+          value={selectedOption} 
+          onChange={handleChange} 
+          className="form-control-sm"
+        >
+          <option>CRM</option>
+          <option>ChannelPartner</option>
+          <option>DMS</option>
+          <option>Sales App</option>
+        </Form.Control>
+      </Form.Group>
+                    </div>
+                
+
 
                     {permissionView ? <> {renderMenu(permissionView)}</> : ''}
 

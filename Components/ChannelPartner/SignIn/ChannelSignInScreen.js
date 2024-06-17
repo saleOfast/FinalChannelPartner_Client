@@ -77,6 +77,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
         const res = await axios.post(Baseurl + "/db/login", {
           email: userForm.email.toLowerCase(),
           password: userForm.password,
+          type:"partner"
         });
 
         if (res.status === 200) {

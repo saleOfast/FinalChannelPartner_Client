@@ -47,6 +47,11 @@ const Admindashboard = () => {
                                     <DashAdminSetCard name='Email Configuration' />
                                 </Link>
                             </div>
+                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <Link href='/LicenseDetails'>
+                                    <DashAdminSetCard name='License Details' />
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>

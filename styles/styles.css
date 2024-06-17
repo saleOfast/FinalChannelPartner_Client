@@ -1423,7 +1423,7 @@ select.form-control::after {
   position: relative;
   left: -2em;
   margin-left: 7px;
-  top: 0px;
+  top: -10px;
   width: auto;
   padding-left: 25px;
 }

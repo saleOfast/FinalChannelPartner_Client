@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MUIDataTable from "mui-datatables";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -22,10 +22,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   const [userData, setUserData] = useState([])
   const [actionMode, setActionMode] = useState('')
   const [showModal, setShowModal] = useState(false)
-  const [userInfo, setUserInfo] = useState({
-    user_code: '',
-    reject_reason: ''
-  })
   
   const [value, setValue] = useState({
     startDate: new Date(),
@@ -38,6 +34,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     date:"",
     status:""
   })
+  const userInfo=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")):null
+  
  
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
  
@@ -51,7 +49,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         download:false,
         viewColumns:false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
           </th>
         ),
@@ -71,7 +69,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
           </th>
         ),
@@ -91,7 +89,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
           </th>
         ),
@@ -111,7 +109,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
           </th>
         ),
@@ -132,7 +130,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
           </th>
         ),
@@ -151,7 +149,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
           </th>
         ),
@@ -171,7 +169,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
           </th>
         ),
@@ -190,7 +188,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
           </th>
         ),
@@ -213,8 +211,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       options: {
         filter: false,
         download:false,
+        display:userInfo?.role_id==1 ? true:false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft: "15px" }}   >
+          <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
           </th>
         ),
@@ -325,7 +324,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   };
 
   const options = {
-    selectableRows: 'multiple',
+    selectableRows: 'none',
     responsive: "simple",
     onRowSelectionChange: handleRowClick,
     downloadOptions:{filename:"ChannelBookings"}
@@ -337,7 +336,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       booking_name:list?.booking_name,
       email:list?.email,
       contact_no:list?.contact_no,
-      BookingprojectData:list?.BookingprojectData?.project,
+      BookingprojectData:list?.BookingleadData?.sales_project_name,
       Location:list?.Location,
       status:list?.status,
       BrokerageBookingList:list?.BrokerageBookingList

@@ -185,7 +185,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             options: {
                 filter: false,
                 download:false,
-                display:userInfo?.role_id==null? true:false,
+                display:(userInfo?.role_id==null || userInfo?.role_id==3)? true:false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -378,6 +378,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                             id="select"
                                             defaultValue={""}
                                             options={usersList?.map((data, index) => {
+                                                
                                             return {
                                                 value: data?.user_id,
                                                 label: data?.user,

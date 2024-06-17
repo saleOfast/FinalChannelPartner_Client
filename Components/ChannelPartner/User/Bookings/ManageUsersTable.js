@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import MUIDataTable from "mui-datatables";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -11,32 +11,37 @@ import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import { ForkLeft } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
+import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
+import Loader from '../../../Loader/Loader';
+import { Delete } from "@mui/icons-material";
 
 
-
-
-
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo, setoldAssignTo, setShowDateFilter, usersList, getDataList }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo, setoldAssignTo, setShowDateFilter, usersList, getDataList,loader }) => {
   const router = useRouter()
   const [data, setData] = useState([])
   const [userData, setUserData] = useState([])
   const [actionMode, setActionMode] = useState('')
   const [showModal, setShowModal] = useState(false)
-  
-  const [value, setValue] = useState({
-    startDate: new Date(),
-    endDate: new Date().setMonth(11)
-  });
+  const dispatch=useDispatch();
+  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+  const fileRef = useRef()
+  const getCurrentWeekDates = () => {
+    const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+      const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+    return { startDate, endDate };
+  };
+
+const [value, setValue] = useState(getCurrentWeekDates());
   const[brokerageBill,setBrokerageBill]=useState({
     booking_id:'',
     file:null,
+    file_name:null,
     amount:"",
     date:"",
     status:""
   })
   const userInfo=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")):null
-  
- 
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
  
   const columns = [
@@ -196,7 +201,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
           return (
             <div
               style={{ 
-                background:value==="Payment Initiated" ? "#FFA825" : value==="Payment Received" ?"#84CA4D" : value==="Aggrement Done" ? "#17B4E7" : value==="Eligible for brokerage bill" ? "#186EBC" : value==="bill Received" ? "#FCCC37" :"violet"
+                background:value==="Payment Initiated" ? "#FFA825" : value==="Payment Received" ?"#84CA4D" : value==="Booking Done" ? "#17B4E7" : value==="Eligible for brokerage bill" ? "#186EBC" : value==="Bill Received" ? "#FCCC37" :"violet"
                 , color: "white", padding: "6px", borderRadius: "20px", border: "white", width: "fit-content"}}
               className='pe-3 ps-3'>
               {value}
@@ -229,14 +234,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   })
                 }}
                 style={{
-                  background:value?.length>0 ? "#9C9AA5" :clientBtnColor,
+                  background:value?.length === 0 && tableMeta?.rowData[7] == "Eligible for brokerage bill" ? clientBtnColor :"#9C9AA5",
                   color: "white",
                   padding: "6px",
                   borderRadius: "20px",
                   border: "white",
                   cursor: "pointer",
                 }}
-                disabled={value?.length>0 ? true:false }
+                disabled={value?.length == 0 && tableMeta?.rowData[7] == "Eligible for brokerage bill" ? false:true }
                 className="pe-3 ps-3 "
               >
                 + Create
@@ -247,7 +252,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       }
     },
   ];
-
 
 
   const CustomToolbar = () => {
@@ -268,17 +272,30 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   };
 
   const handleFileChange = (e) => {
+    console.log("e.target.value",e.target.value);
     if (e.target.files[0]) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setBrokerageBill({
           ...brokerageBill,
           file:e.target.files[0],
+          file_name:e.target.files[0].name
         });
       };
       reader.readAsDataURL(e.target.files[0]);
     }
   }; 
+
+  const handleDeleteClick = () => {
+    console.log(fileRef,'Before update:', brokerageBill);
+    const data = {
+      ...brokerageBill, 
+      file: null, file_name: null 
+    }
+    setBrokerageBill(data);
+    fileRef.current.value = ''
+  };
+  console.log(fileRef,'After update:', brokerageBill);
 
   const createBrokerageBill =  async() => {
 
@@ -302,9 +319,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         formData.append(key, value);
       }
       try {
+        dispatch(startButtonLoading())
         const response = await axios.post(`${Baseurl}/db/channel/brokerage`,formData, header);
         if (response.status === 200 || response.status === 201) {
           toast.success(response.data.message);
+          dispatch(stopButtonLoading())
           setBrokerageBill("")
           setShowModal(false)
           getDataList()
@@ -312,12 +331,15 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       } catch (error) {
         console.log(error)
         if (error?.response?.data?.status === 422) {
+          dispatch(stopButtonLoading())
               toast.error(error?.response?.data?.message)
               
         }
         if (error?.response?.data?.message) {
+          dispatch(stopButtonLoading())
           toast.error(error.response.data.message);
         } else {
+          dispatch(stopButtonLoading())
           toast.error("Something went wrong!");
         }
       }
@@ -344,39 +366,32 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
   return (
     <>
-      <div className="miuiTable channelTable">
-        <MUIDataTable
-          title={<CustomToolbar />}
-          // data={dataList}
-          data={mappedDataList}
-          columns={columns}
-          options={options}
-        />
-        <div>
-          {/* {userData.length ?
-            <div className="table_btns d-flex align-items-center justify-content-center gap-3 mt-4">
-
-
-              <button onClick={() => { setActionMode('Cancel'); setShowModal(false); setUserData([]) }} className=" btn btn-danger rounded-5">
-                Cancel
-              </button>
-              <button onClick={() => { setActionMode('Assignto'); setShowModal(true) }} style={{ backgroundColor: '#293790' }} className="btn  rounded-5 text-white" >
-                Assign to
-              </button>
-
-            </div>
-            : <></>
-          } */}
+     {
+        loader ? <div className="miuiTable channelTable"><Loader/></div>
+        :
+        (
+          <div className="miuiTable channelTable">
+          <MUIDataTable
+            title={<CustomToolbar />}
+            // data={dataList}
+            data={mappedDataList}
+            columns={columns}
+            options={options}
+          />
         </div>
-      </div>
+        )
+      }
+      
 
       <Modal
         className="commonModal"
         centered
         show={showModal}
         onHide={() => {
-          setShowModal(false);
+          if(isButtonLoading==false){
+            setShowModal(false);
           setBrokerageBill("")
+          }
         }}
         size="lg"
       >
@@ -501,7 +516,19 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab">
-                                    <label
+                                    {
+                                      brokerageBill?.file!==null ?
+                                      (
+                                        <div className="relative w-73">
+                                        <div  >{brokerageBill?.file_name}</div>
+                                        <span className="absolute top-0 right-0" onClick={handleDeleteClick}>
+                                            <Delete style={{color: 'red',cursor:"pointer"}}/>
+                                        </span>
+                                    </div>
+                                      ) 
+                                      :
+                                      (
+                                        <label
                                       htmlFor="adh"
                                       className="form-control d-flex flex-row-reverse justify-content-between align-items-center"
                                       style={{
@@ -517,9 +544,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                         style={{ height: 16 }}
                                       />
                                     </label>
+                                      ) 
+                                    }
+                                    
                                     <input
                                       type="file"
                                       id="adh"
+                                      ref={fileRef}
                                       onChange={(e)=>handleFileChange(e)}
                                       className="input-field"
                                       style={{ display: "none" }}
@@ -530,19 +561,27 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                               </div>
                             </div>
                             <div className="new-leades-btn d-flex justify-content-center gap-4">
-                              <div
+                              <button
                                 type="button"
+                                disabled={isButtonLoading}
                                 className="btn btn-danger rounded-5 text-white"
                                 onClick={() =>{ setShowModal(false); setBrokerageBill("");}}
                               >
                                 Cancel
-                              </div>
+                              </button>
                               <button
                                 type="submit"
                                 className="btn text-white rounded-5"
                                 style={{ background: clientBtnColor }}
                               >
-                                Submit
+                               {isButtonLoading ? (
+                                  <>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Submit
+                                  </>
+                                ) : (
+                                  'Submit'
+                                )}
                               </button>
                             </div>
                           </form>

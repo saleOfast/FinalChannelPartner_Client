@@ -6,6 +6,7 @@ import { Button, Modal } from "react-bootstrap";
 import { getCookie, hasCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Loader from "../../../Loader/Loader";
 
 const ManageUsersTable = ({
   deleteConfirm,
@@ -13,7 +14,8 @@ const ManageUsersTable = ({
   dataList,
   openEdtMdl,
   title,
-  getDataList
+  getDataList,
+  loader
 }) => {
 
   const [userData, setUserData] =  useState([])
@@ -404,7 +406,11 @@ const ManageUsersTable = ({
 
   return (
     <>
-      <div className="miuiTable channelTable">
+    {
+      loader ?  <div className="miuiTable channelTable"><Loader/></div>
+      :
+      (
+        <div className="miuiTable channelTable">
         <MUIDataTable
           title={<span style={{ color: "black", fontWeight:"bold", fontSize:"17px" }}>{title}</span>}
           data={dataList}
@@ -430,6 +436,9 @@ const ManageUsersTable = ({
         }
         </div>
       </div>
+      )
+    }
+      
 
       <Modal
         className="commonModal"

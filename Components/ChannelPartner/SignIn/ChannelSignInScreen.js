@@ -68,10 +68,13 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
     dispatch(startLoading())
     if (userForm.email === "" || userForm.email.length < 1) {
       toast.error("Email is Empty");
+        dispatch(stopLoading())
     } else if (!validEmail.test(userForm.email.toLowerCase().trim())) {
       toast.error("Email is not Valid");
+      dispatch(stopLoading())
     } else if (userForm.password === "" || userForm.password.length < 1) {
       toast.error("password is Empty");
+      dispatch(stopLoading())
     } else {
       try {
         const res = await axios.post(Baseurl + "/db/login", {
@@ -87,6 +90,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
           setCookie("sideUser", "true");
           setCookie("token", res.data.token);
           setCookie("userInfo", res.data.userData);
+          setCookie("subscriptionInfo", res.data.userAdminSubscriptionData);
           setCookie('clientLogo', res.data.Logo[0]);
           setCookie("db_name", res.data.userData.db_name);
           setCookie('sidecolor', res.data.userData.sidebar_color || '#405189');
@@ -101,8 +105,8 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
           dispatch(stopLoading())
           // router.push("/");
           if(res?.data?.userData?.role_id===2){
-            router.push("/partner/Brokerage")
-            setCookie("activeLink","/partner/Brokerage")
+            router.push("/partner/ActivePartners")
+            setCookie("activeLink","/partner/ActivePartners")
           }
           else{
             router.push("/partner");

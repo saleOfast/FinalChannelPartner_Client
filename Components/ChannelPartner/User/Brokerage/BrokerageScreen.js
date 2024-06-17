@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import Select from 'react-select';
 import { fetchData } from '../../../../Utils/getReq';
 import Daterange from '../../../DateRangeCustom/Daterange';
+import Loader from '../../../Loader/Loader';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -45,6 +46,7 @@ const BookingsScreen = () => {
         id: '',
         action: ''
     })
+    const[loader,setLoader]=useState(false)
 
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
 
@@ -95,6 +97,8 @@ const BookingsScreen = () => {
 
 
     const getDataList = async (queryObjLeads) => {
+      setLoader(true)
+      
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -110,11 +114,16 @@ const BookingsScreen = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/channel/brokerage`, {...header,params:queryObjLeads});
+                if(response?.status === 200 || response?.status === 201){
+                  setLoader(false)
                 setDataList(response?.data?.data);
+                }
             } catch (error) {
                 if (error?.response?.data?.message) {
+                  setLoader(false)
                     toast.error(error.response.data.message);
                 } else {
+                  setLoader(false)
                     toast.error("Something went wrong!");
                 }
             }
@@ -203,26 +212,29 @@ const BookingsScreen = () => {
 
     return (
       <>
-       
 
+        
         <div className="w-100 ps-4 pe-4 overflow-auto">
-          <div className="main_content">
-            <div className="table_screen">
-              <DynamicTable
-                title="Brokerage"
-                dataList={dataList}
-                disableConfirm={disableConfirm}
-                deleteConfirm={deleteConfirm}
-                setShowAssignTo={setShowAssignTo}
-                setoldAssignTo={setoldAssignTo}
-                oldAssignTo={oldAssignTo}
-                setShowDateFilter={setShowDateFilter}
-                usersList={usersList}
-                getDataList={getDataList}
-              />
+            <div className="main_content">
+              <div className="table_screen">
+                <DynamicTable
+                  title="Brokerage"
+                  dataList={dataList}
+                  loader={loader}
+                  disableConfirm={disableConfirm}
+                  deleteConfirm={deleteConfirm}
+                  setShowAssignTo={setShowAssignTo}
+                  setoldAssignTo={setoldAssignTo}
+                  oldAssignTo={oldAssignTo}
+                  setShowDateFilter={setShowDateFilter}
+                  usersList={usersList}
+                  getDataList={getDataList}
+                />
+              </div>
             </div>
           </div>
-        </div>
+
+       
 
         <Modal className="commonModal" show={show} onHide={handleClose}>
           <Modal.Header closeButton>

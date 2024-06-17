@@ -11,12 +11,13 @@ import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import { saveAs } from 'file-saver';
+import Loader from '../../../Loader/Loader';
 
 
 
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -29,11 +30,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   })
     const [roleId,setRoleId]=useState()
 
-  const [value, setValue] = useState({
-    startDate: new Date(),
-    endDate: new Date().setMonth(11)
-
-  });
+    const getCurrentWeekDates = () => {
+      const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+        const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+      return { startDate, endDate };
+    };
+  
+  const [value, setValue] = useState(getCurrentWeekDates());
+  
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   const[brokerageId,setBrokerageId]=useState("")
   const[rejectRemark,setRejectRemark]=useState(false)
@@ -319,7 +323,10 @@ const updateBrokerageBill =  async() => {
                         style={{background:"violet",width:"fit-content", color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                         className='pe-3 ps-3'
                         title='Assign - To'>
-                            {value}
+                            
+                           {
+                            value=="Bill sent" ? "Bill Received" : value
+                           }
                     </div>
                     )
                 }
@@ -414,13 +421,17 @@ const updateBrokerageBill =  async() => {
       BrokerageBookingtDataName:list?.BrokerageBookingtData?.booking_name,
       BrokerageBookingtDataEmail:list?.BrokerageBookingtData?.email,
       BrokerageBookingtDataContact:list?.BrokerageBookingtData?.contact_no,
-      BrokerageBookingtDataProject:list?.BrokerageBookingtData?.BookingprojectData?.project,
+      BrokerageBookingtDataProject:list?.BrokerageLeadData?.sales_project_name,
       BrokerageBookingtDataLocation:list?.BrokerageBookingtData?.Location,
       status:list?.status
     }))
 
     return (
         <>
+        {
+          loader ?  <div className="miuiTable channelTable"><Loader/></div>
+          :
+          (
             <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
@@ -431,22 +442,12 @@ const updateBrokerageBill =  async() => {
 
                 />
                 <div>
-          {/* {userData.length ?
-          <div className="table_btns d-flex align-items-center justify-content-center gap-3 mt-4">
-              
-
-              <button onClick={()=>{setActionMode('Cancel'); setShowModal(false);setUserData([])}} className=" btn btn-danger rounded-5">
-                Cancel
-              </button>
-              <button onClick={()=>{setActionMode('Assignto'); setShowModal(true)}} style={{backgroundColor: '#293790'}} className="btn  rounded-5 text-white" >
-                Assign to
-              </button>
-            
-          </div>
-          : <></>
-        } */}
+          
         </div>
             </div>
+          )
+        }
+            
         
       
       {/* Brokerage Bill Modal */}
@@ -455,7 +456,8 @@ const updateBrokerageBill =  async() => {
           <section className="Sign-In pt-4 Create-New-Lead Create-Brokerage-Bill" style={{ padding: '0 16px' }}>
           <div className='d-flex justify-content-end align-items-center pb-2'>
                   {
-                    roleId===2 && (updateBill?.status==="Bill Received" || updateBill?.status==="Bill sent") &&  (
+                    roleId===2 && 
+                      (
                       <img
                       className=' cursor-pointer'
                         src="/ChannelPartner/profile-edit.svg"
@@ -638,16 +640,6 @@ const updateBrokerageBill =  async() => {
                                     onChange={(e)=>setUpdateBill({...updateBill,amount:e.target.value})} name="name" className="" placeholder required style={{background:"#E9ECEF"}} /> 
                                   </div>
                                 </div>
-                                {/* <div className="rowTab">
-                                  <div className="labels" >
-                                    <label htmlFor="name" className="pb-1">Current Status</label>
-                                    <span className="star">*</span>
-                                  </div>
-                                  <div className="rightTab">
-                                    <input autofocus disabled type="text" value={updateBill?.status==="Bill sent" ? "Bill Received" :updateBill?.status} 
-                                    onChange={(e)=>setUpdateBill({...updateBill,amount:e.target.value})} name="name" className="" placeholder required style={{background:"#E9ECEF"}} /> 
-                                  </div>
-                                </div> */}
                                 <div className="rowTab">
                                   <div className="labels">
                                     <label htmlFor="project" className="pb-1">Status</label>
@@ -665,10 +657,13 @@ const updateBrokerageBill =  async() => {
                                     >
                                       <option  className="dropdown-item" >Bill Received
                                       </option>
+                                      <option className="dropdown-item" >Payment Initiated
+                                      </option>
                                       <option className="dropdown-item" >Payment Received
                                       </option>
                                       <option className="dropdown-item" >Payment Rejected
                                       </option>
+
                                     </select>
                                   </div>
                                 </div>

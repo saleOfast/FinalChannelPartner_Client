@@ -134,6 +134,33 @@ export default function AdminDashboard() {
     // const newDate = oldDate.add(renewSubsValue.days, 'days').add(renewSubsValue.months, 'months').format('YYYY-MM-DD');
     // const myObj = { ...userInfo, subscription_end_date: newDate };
 
+
+    if(userInfo?.isCRM){
+      
+      if(userInfo?.subscription_start_date==null || userInfo?.subscription_end_date==null ||userInfo?.no_of_license==0){
+        return toast.error('Please fill the Mandatory fieldssss')
+      }
+    }
+    if(userInfo?.isCHANNEL){
+      
+      if(userInfo?.subscription_start_date_channel==null || userInfo?.subscription_end_date_channel==null ||userInfo?.no_of_channel_license==0){
+        return toast.error('Please fill the Mandatory fields')
+      }
+    }
+    if(userInfo?.isDMS){
+     
+      if(userInfo?.subscription_start_date_dms==null || userInfo?.subscription_end_date_dms==null ||userInfo?.no_of_dms_license==0){
+        return toast.error('Please fill the Mandatory fields')
+      }
+    }
+    if(userInfo?.isSALES){
+      
+      if(userInfo?.subscription_start_date_sales==null || userInfo?.subscription_end_date_sales==null ||userInfo?.no_of_sales_license==0){
+        return toast.error('Please fill the Mandatory fields')
+      }
+    }
+
+
     try {
       const res = await axios.put(Baseurl + `/db/admin`, userInfo, header);
       if (res.status === 200 || res.status === 204) {
@@ -267,8 +294,8 @@ export default function AdminDashboard() {
         actionType={enablehandler}
         title={"Are you sure to Enable?"} />
       <Head>
-        <title>LeadShyne</title>
-        <meta name="description" content="Leadshyne CMS" />
+        <title>Sale O Fast</title>
+        <meta name="description" content="Sale O Fast" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

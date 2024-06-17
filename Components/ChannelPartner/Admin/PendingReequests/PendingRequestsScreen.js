@@ -10,6 +10,7 @@ import Modal from "react-bootstrap/Modal";
 import { Button } from 'react-bootstrap';
 import dynamic from 'next/dynamic'
 import Papa from "papaparse";
+import Loader from '../../../Loader/Loader';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -28,6 +29,7 @@ const PendingRequestsScreen = () => {
         id: '',
         action: ''
     })
+  const [loader,setLoader]=useState(false);
 
 
     function disableConfirm(value, type) {
@@ -76,7 +78,7 @@ const PendingRequestsScreen = () => {
 
 
     const getDataList = async () => {
-
+        setLoader(true);
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -92,11 +94,16 @@ const PendingRequestsScreen = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/users/cp/getPendingVerificationUser`, header);
-                setDataList(response.data.data);
+                if(response?.status === 200 || response?.status === 201){
+                    setLoader(false);
+                    setDataList(response.data.data);
+                }
             } catch (error) {
                 if (error?.response?.data?.message) {
+                    setLoader(false);
                     toast.error(error.response.data.message);
                 } else {
+                    setLoader(false);
                     toast.error("Something went wrong!");
                 }
             }
@@ -215,7 +222,8 @@ const PendingRequestsScreen = () => {
 
     return (
         <>
-            <div className="w-100 ps-4 pe-4 pb-4 overflow-scroll" >
+        
+        <div className="w-100 ps-4 pe-4 pb-4 overflow-scroll" >
                 
                 <div className="main_content">
                     <div className="table_screen">
@@ -236,6 +244,7 @@ const PendingRequestsScreen = () => {
                         <DynamicTable
                             title='Pending Sign Up Requests'
                             dataList={dataList}
+                            loader={loader}
                             disableConfirm={disableConfirm}
                             deleteConfirm={deleteConfirm}
                             getDataList={getDataList}
@@ -243,6 +252,7 @@ const PendingRequestsScreen = () => {
                     </div>
                 </div>
             </div>
+            
 
             <Modal className="commonModal" show={show} onHide={handleClose}>
                 <Modal.Header closeButton>

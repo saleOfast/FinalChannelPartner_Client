@@ -162,7 +162,7 @@ const LoginScreen = ({ isLoggedIn, setisLoggedIn }) => {
                     </div>
                   </div>
                 </div>
-                <div className>
+                {/* <div className>
                   <Link
                     href="/ResetPassword"
                     className="float-end fw-semibold text-decoration-none"
@@ -170,7 +170,7 @@ const LoginScreen = ({ isLoggedIn, setisLoggedIn }) => {
                   >
                     Forgot Password?
                   </Link>
-                </div>
+                </div> */}
                 <div className="col-12">
                   <button
                     type="submit"

@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import CameraIcon from "../../../Svg/CameraIcon";
+import CameraIcon from "../Svg/CameraIcon";
 import { toast } from "react-toastify";
 import { hasCookie, getCookie } from "cookies-next";
 import axios from "axios";
+import { Baseurl, filesUrl } from "../../Utils/Constants";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-import { fetchData } from "../../../../Utils/getReq";
+import { fetchData } from "../../Utils/getReq";
 import Select from "react-select";
-import { Baseurl, filesUrl } from "../../../../Utils/Constants";
 
 const AddUserScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
+
   const router = useRouter();
   const { id } = router.query;
+
   const [editMode, setEditMode] = useState(false);
   const [viewMode, setViewMode] = useState(false);
   const [additionalFields, setAdditionalFields] = useState(false);
@@ -49,8 +51,6 @@ const AddUserScreen = () => {
     reraPreview:null,
     chequePreview:null,
   });
-  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#405189"
-
 
   async function getRolesList() {
     await fetchData("/db/role", setUserroles, errorToast, setErrorToast);
@@ -183,15 +183,16 @@ const AddUserScreen = () => {
 
   const addUserHandler = async () => {
     if (!hasCookie("token")) return;
-    const db_name = getCookie("db_name");
     setisLoading(true);
     const token = getCookie("token");
+    const db_name = getCookie("db_name");
     const reqOptions = { ...userInfo, db_name };
 
     const header = {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
+        db: db_name,
         m_id: 77,
       },
     };
@@ -206,16 +207,14 @@ const AddUserScreen = () => {
       if (response.status === 200 || response.status === 201) {
         toast.success(response.data.message);
         if (uploadDocs.aadhar_card)
-          AddUploadPicture(userId, "adh", uploadDocs.aadhar[0], 0);
+          AddUploadPicture(userId, "adh", uploadDocs.aadhar_card[0], 0);
         if (uploadDocs.pan_card)
-          AddUploadPicture(userId, "pan", uploadDocs.pan[0], 0);
-        if (uploadDocs.rera)
-          AddUploadPicture(userId, "rera", uploadDocs.rera[0], 0);
-        if (uploadDocs.cheque)
-        AddUploadPicture(userId, "cheque", uploadDocs.cheque[0], 0);
+          AddUploadPicture(userId, "pan", uploadDocs.aadhar_card[0], 0);
+        if (uploadDocs.driving_license)
+          AddUploadPicture(userId, "dl", uploadDocs.aadhar_card[0], 0);
         if (userImage) AddUploadPicture(userId, "lsUser", userImage[0], 0);
         setisLoading(false);
-        router.push("/partner/ActivePartners");
+        router.push("/ManageUsers");
       }
     } catch (error) {
       if (error?.response?.data?.status === 422) {
@@ -285,7 +284,7 @@ const AddUserScreen = () => {
             userInfo.user_image_file
           );
         setisLoading(false);
-        router.push("/partner/ActivePartners");
+        router.push("/ManageUsers");
       }
     } catch (error) {
       if (error?.response?.data?.status === 422) {
@@ -418,9 +417,29 @@ const AddUserScreen = () => {
   }, [router.isReady, id]);
 
   return (
-    <div className={`main_Box w-100 pe-5 mt-3 `} style={{marginTop:"-50px"}}>
+    <div className={`main_Box  ${sideView}`}>
+      <div className="bread_head">
+        <h3 className="content_head">
+          {" "}
+          {editMode ? "EDIT" : viewMode ? "VIEW" : "ADD"} USER
+        </h3>
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb">
+            <li className="breadcrumb-item">
+              {" "}
+              <Link href="/crm">Dashboard </Link>
+            </li>
+            <li className="breadcrumb-item">
+              <Link href="/ManageUsers"> Manage User</Link>
+            </li>
+            <li className="breadcrumb-item active" aria-current="page">
+              {editMode ? "EDIT" : viewMode ? "View" : "Add"} User
+            </li>
+          </ol>
+        </nav>
+      </div>
 
-      <div className="main_content w-100">
+      <div className="main_content">
         <div className="Add_user_screen">
           {viewMode ? null : (
             <div className="add_screen_head">
@@ -473,6 +492,114 @@ const AddUserScreen = () => {
                     </div>
                   </div>
 
+                  <div className="col-xl-6 col-md-6 col-sm-12 col-12 ">
+                    <div className="input_box">
+                      <label htmlFor="task_name"> Apps Permission *</label>
+                      <br />
+                      <div className="d-flex flex-wrap justify-content-start gap-5 py-2 ">
+                        {userInfo.role_id !== 1 ? (
+                          <>
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value="option1"
+                                id="option1"
+                                checked={userInfo.isCRM}
+                                onChange={(e) => {
+                                  setUserinfo({
+                                    ...userInfo,
+                                    isCRM: e.target.checked,
+                                  });
+                                  setErrorData({ ...errorData, isCRM: "" });
+                                }}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="option1"
+                              >
+                                CRM
+                              </label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value="option2"
+                                id="option2"
+                                checked={
+                                  userInfo.isDMS ? userInfo.isDMS : false
+                                }
+                                onChange={(e) => {
+                                  setUserinfo({
+                                    ...userInfo,
+                                    isDMS: e.target.checked,
+                                  });
+                                  setErrorData({ ...errorData, isDMS: "" });
+                                }}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="option2"
+                              >
+                                DMS
+                              </label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value="option3"
+                                id="option3"
+                                checked={
+                                  userInfo.isSALES ? userInfo.isSALES : false
+                                }
+                                onChange={(e) => {
+                                  setUserinfo({
+                                    ...userInfo,
+                                    isSALES: e.target.checked,
+                                  });
+                                  setErrorData({ ...errorData, isSALES: "" });
+                                }}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="option3"
+                              >
+                                SALES
+                              </label>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              value="option4"
+                              id="option4"
+                              checked={
+                                userInfo.isCHANNEL ? userInfo.isCHANNEL  : false
+                              }
+                              onChange={(e) => {
+                                setUserinfo({
+                                  ...userInfo,
+                                  isCHANNEL: e.target.checked,
+                                });
+                                setErrorData({ ...errorData, isCHANNEL: "" });
+                              }}
+                              disabled={viewMode}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="option4"
+                            >
+                              CHANNEL PARTNER
+                            </label>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div className="row">
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
@@ -604,104 +731,6 @@ const AddUserScreen = () => {
                       </span>
                     </div>
                   </div>
-
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                    <div className="input_box">
-                      <label htmlFor="address">Address </label>
-                      <input
-                        name="address"
-                        id="address"
-                        rows="3"
-                        placeholder="Enter Address"
-                        className="form-control"
-                        disabled={viewMode}
-                        onChange={(e) =>
-                          setUserinfo({ ...userInfo, address: e.target.value })
-                        }
-                        value={userInfo.address ? userInfo.address : ""}
-                      ></input>
-                    </div>
-                  </div>
-
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className="input_box">
-                    <label htmlFor="pan_card">Organisation </label>
-                    <input
-                      type="text"
-                      placeholder="Enter Organisation Name."
-                      name="organisation"
-                      id="organisation"
-                      disabled={viewMode}
-                      className="form-control"
-                      onChange={(e) =>
-                        setUserinfo({
-                          ...userInfo,
-                          organisation: e.target.value,
-                        })
-                      }
-                      value={userInfo.organisation ? userInfo.organisation : ""}
-                    />
-                  </div>
-                </div>
-
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className="input_box">
-                    <label htmlFor="pan_card">GST Number </label>
-                    <input
-                      type="text"
-                      placeholder="Enter GST No."
-                      name="gst"
-                      id="gst"
-                      disabled={viewMode}
-                      className="form-control"
-                      onChange={(e) =>
-                        setUserinfo({
-                          ...userInfo,
-                          gst: e.target.value,
-                        })
-                      }
-                      value={userInfo.gst ? userInfo.gst : ""}
-                    />
-                  </div>
-                </div>
-
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div
-                  className={
-                    errorData?.report_to ? "input_box errorBox" : "input_box"
-                  }
-                >
-                  <label htmlFor="task_name">Report/Assign To  </label>
-                  <Select
-                    id={userInfo.des_id}
-                    defaultValue={""}
-                    isDisabled={viewMode}
-                    options={usersList?.map((data, index) => {
-                      return {
-                        value: data?.user_id,
-                        label: data?.user,
-                      };
-                    })}
-                    value={usersList?.map((data, index) => {
-                      if (userInfo.report_to === data.user_id) {
-                        return {
-                          value: data?.user_id,
-                          label: data?.user,
-                        };
-                      }
-                    })}
-                    onChange={(e) => {
-                      setUserinfo({ ...userInfo, report_to: e.value });
-                      setErrorData({ ...errorData, report_to: "" });
-                    }}
-                  />
-                  <span className="errorText">
-                    {" "}
-                    {errorData?.report_to ? errorData.report_to : ""}
-                  </span>
-                </div>
-              </div>
-
                 </div>
               </div>
               <div className="col-xl-2 col-md-2 col-sm-12 col-12">
@@ -743,9 +772,141 @@ const AddUserScreen = () => {
               </div>
             </div>
             <div className="row">
-              
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div
+                  className={
+                    errorData?.lead_id ? "input_box errorBox" : "input_box"
+                  }
+                >
+                  <label htmlFor="task_name"> Division</label>
+                  <Select
+                    // id={contactInfo.lead_id}
+                    defaultValue={""}
+                    isDisabled={viewMode}
+                    options={divisionList?.map((data, index) => {
+                      return {
+                        value: data?.div_id,
+                        label: data?.divison,
+                      };
+                    })}
+                    value={divisionList?.map((data, index) => {
+                      if (userInfo.div_id === data.div_id) {
+                        return {
+                          value: data?.div_id,
+                          label: data?.divison,
+                        };
+                      }
+                    })}
+                    onChange={(e) =>
+                      setUserinfo({ ...userInfo, div_id: e.value })
+                    }
+                  />
+                  <span className="errorText">
+                    {" "}
+                    {errorData?.div_id ? errorData.div_id : ""}
+                  </span>
+                </div>
+              </div>
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div
+                  className={
+                    errorData?.lead_id ? "input_box errorBox" : "input_box"
+                  }
+                >
+                  <label htmlFor="task_name">Department</label>
+                  <Select
+                    id={userInfo.dep_id}
+                    defaultValue={""}
+                    isDisabled={viewMode}
+                    options={departMentList?.map((data, index) => {
+                      return {
+                        value: data?.dep_id,
+                        label: data?.department,
+                      };
+                    })}
+                    value={departMentList?.map((data, index) => {
+                      if (userInfo.dep_id === data.dep_id) {
+                        return {
+                          value: data?.dep_id,
+                          label: data?.department,
+                        };
+                      }
+                    })}
+                    onChange={(e) =>
+                      setUserinfo({ ...userInfo, dep_id: e.value })
+                    }
+                  />
+                </div>
+              </div>
 
-              
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div
+                  className={
+                    errorData?.des_id ? "input_box errorBox" : "input_box"
+                  }
+                >
+                  <label htmlFor="task_name">Designation</label>
+                  <Select
+                    id={userInfo.des_id}
+                    defaultValue={""}
+                    isDisabled={viewMode}
+                    options={designationList?.map((data, index) => {
+                      return {
+                        value: data?.des_id,
+                        label: data?.designation,
+                      };
+                    })}
+                    value={designationList?.map((data, index) => {
+                      if (userInfo.des_id === data.des_id) {
+                        return {
+                          value: data?.des_id,
+                          label: data?.designation,
+                        };
+                      }
+                    })}
+                    onChange={(e) =>
+                      setUserinfo({ ...userInfo, des_id: e.value })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div
+                  className={
+                    errorData?.report_to ? "input_box errorBox" : "input_box"
+                  }
+                >
+                  <label htmlFor="task_name">Report/Assign To *</label>
+                  <Select
+                    id={userInfo.des_id}
+                    defaultValue={""}
+                    isDisabled={viewMode}
+                    options={usersList?.map((data, index) => {
+                      return {
+                        value: data?.user_id,
+                        label: data?.user,
+                      };
+                    })}
+                    value={usersList?.map((data, index) => {
+                      if (userInfo.report_to === data.user_id) {
+                        return {
+                          value: data?.user_id,
+                          label: data?.user,
+                        };
+                      }
+                    })}
+                    onChange={(e) => {
+                      setUserinfo({ ...userInfo, report_to: e.value });
+                      setErrorData({ ...errorData, report_to: "" });
+                    }}
+                  />
+                  <span className="errorText">
+                    {" "}
+                    {errorData?.report_to ? errorData.report_to : ""}
+                  </span>
+                </div>
+              </div>
 
               <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                 <div className="d-flex flex-column gap-1">
@@ -759,17 +920,14 @@ const AddUserScreen = () => {
                     disabled={viewMode}
                   />
                   {oldFiles?.aadhar && (
-                    <Link href={`${filesUrl}/adh/images${oldFiles.aadhar}`} target="_blank">
                     <img
                       src={`${filesUrl}/adh/images${oldFiles.aadhar}`}
                       alt={`Aadhar Card Preview`}
                       style={{
                         maxWidth: "100px",
                         maxHeight: "100px",
-                        
                       }}
                     />
-                    </Link>
                   )}
                   {uploadDocs?.aadharPreview && (
                     <img
@@ -796,7 +954,6 @@ const AddUserScreen = () => {
                     disabled={viewMode}
                   />
                   {oldFiles?.pan && (
-                    <Link target="_blank" href={`${filesUrl}/pan/images${oldFiles.pan}`}>
                     <img
                       src={`${filesUrl}/pan/images${oldFiles.pan}`}
                       alt={`PAN CARD Preview`}
@@ -805,7 +962,6 @@ const AddUserScreen = () => {
                         maxHeight: "100px",
                       }}
                     />
-                    </Link>
                   )}
                   {uploadDocs?.panPreview && (
                     <img
@@ -832,16 +988,14 @@ const AddUserScreen = () => {
                     disabled={viewMode}
                   />
                   {oldFiles?.rera && (
-                    <Link target="_blank" href={`${filesUrl}/rera/images${oldFiles.rera}`}>
-                      <img
-                        src={`${filesUrl}/rera/images${oldFiles.rera}`}
-                        alt={`RERA License Preview`}
-                        style={{
-                          maxWidth: "100px",
-                          maxHeight: "100px",
-                        }}
-                      />
-                    </Link>
+                    <img
+                      src={`${filesUrl}/rera/images${oldFiles.rera}`}
+                      alt={`RERA License Preview`}
+                      style={{
+                        maxWidth: "100px",
+                        maxHeight: "100px",
+                      }}
+                    />
                   )}
                    {uploadDocs?.reraPreview && (
                     <img
@@ -868,16 +1022,14 @@ const AddUserScreen = () => {
                     disabled={viewMode}
                   />
                   {oldFiles?.cheque && (
-                    <Link target="_blank" href={`${filesUrl}/cheque/images${oldFiles.cheque}`}>
-                      <img
-                        src={`${filesUrl}/cheque/images${oldFiles.cheque}`}
-                        alt={`Bank Cancelled Cheque Preview`}
-                        style={{
-                          maxWidth: "100px",
-                          maxHeight: "100px",
-                        }}
-                      />
-                    </Link>
+                    <img
+                      src={`${filesUrl}/cheque/images${oldFiles.cheque}`}
+                      alt={`Bank Cancelled Cheque Preview`}
+                      style={{
+                        maxWidth: "100px",
+                        maxHeight: "100px",
+                      }}
+                    />
                   )}
                   {uploadDocs?.chequePreview && (
                     <img
@@ -891,7 +1043,42 @@ const AddUserScreen = () => {
                   )}
                 </div>
               </div>
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+            </div>
+            <div className="other_details_info">
+              <div className="other_details">
+                <input
+                  type="checkbox"
+                  name="opt_dtls"
+                  id="opt_dtls"
+                  onChange={(e) => setAdditionalFields(e.target.checked)}
+                />
+                <label className="text-blue head" htmlFor="opt_dtls">
+                  Optional Detail
+                </label>
+              </div>
+            </div>
+            {additionalFields ? (
+              <div className="row">
+                <div>
+                  <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                    <div className="input_box">
+                      <label htmlFor="address">Address </label>
+                      <textarea
+                        name="address"
+                        id="address"
+                        rows="3"
+                        className="form-control"
+                        disabled={viewMode}
+                        onChange={(e) =>
+                          setUserinfo({ ...userInfo, address: e.target.value })
+                        }
+                        value={userInfo.address ? userInfo.address : ""}
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div
                     className={
                       errorData?.mailing_cont
@@ -992,36 +1179,313 @@ const AddUserScreen = () => {
                     />
                   </div>
                 </div>
-            </div>
-            
-            
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="offc_no">Zip / Postal Code</label>
+                    <input
+                      type="number"
+                      placeholder="Zip / Postal Code"
+                      name="pin-code"
+                      disabled={viewMode}
+                      id="offc_no"
+                      className="form-control"
+                      onChange={(e) =>
+                        setUserinfo({
+                          ...userInfo,
+                          pincode: e.target.value,
+                        })
+                      }
+                      value={userInfo.pincode ? userInfo.pincode : ""}
+                    />
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="aadhar_card">Aadhar Card </label>
+                    <input
+                      type="number"
+                      placeholder="Enter Aadhar No."
+                      name="aadhar_card"
+                      disabled={viewMode}
+                      id="aadhar_card"
+                      className="form-control"
+                      onChange={(e) =>
+                        setUserinfo({
+                          ...userInfo,
+                          aadhar_no: e.target.value,
+                        })
+                      }
+                      value={userInfo.aadhar_no ? userInfo.aadhar_no : ""}
+                    />
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="aadhar_upload">Upload Aadhar Card </label>
+                    <input
+                      type="file"
+                      placeholder="Enter Aadhar No."
+                      name="aadhar_upload"
+                      disabled={viewMode}
+                      id="aadhar_upload"
+                      className="form-control"
+                      onChange={(e) =>
+                        setuploadDocs({
+                          ...uploadDocs,
+                          aadhar_card: e.target.files,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="pan_card">Pan Card </label>
+                    <input
+                      type="text"
+                      placeholder="Enter Pan No."
+                      name="pan_card"
+                      id="pan_card"
+                      disabled={viewMode}
+                      className="form-control"
+                      onChange={(e) =>
+                        setUserinfo({
+                          ...userInfo,
+                          pan_no: e.target.value,
+                        })
+                      }
+                      value={userInfo.pan_no ? userInfo.pan_no : ""}
+                    />
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="pan_card">GST Number </label>
+                    <input
+                      type="text"
+                      placeholder="Enter GST No."
+                      name="gst"
+                      id="gst"
+                      disabled={viewMode}
+                      className="form-control"
+                      onChange={(e) =>
+                        setUserinfo({
+                          ...userInfo,
+                          gst: e.target.value,
+                        })
+                      }
+                      value={userInfo.gst ? userInfo.gst : ""}
+                    />
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="pan_card">Organisation </label>
+                    <input
+                      type="text"
+                      placeholder="Enter Organisation Name."
+                      name="organisation"
+                      id="organisation"
+                      disabled={viewMode}
+                      className="form-control"
+                      onChange={(e) =>
+                        setUserinfo({
+                          ...userInfo,
+                          organisation: e.target.value,
+                        })
+                      }
+                      value={userInfo.organisation ? userInfo.organisation : ""}
+                    />
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="pan_uploads">Upload Pan Card </label>
+                    <input
+                      type="file"
+                      name="pan_uploads"
+                      disabled={viewMode}
+                      id="pan_uploads"
+                      className="form-control"
+                      onChange={(e) =>
+                        setuploadDocs({
+                          ...uploadDocs,
+                          pan_card: e.target.files,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="driving_license">Driving License *</label>
+                    <input
+                      type="text"
+                      placeholder="Enter License No."
+                      name="driving_license"
+                      disabled={viewMode}
+                      id="driving_license"
+                      className="form-control"
+                      onChange={(e) =>
+                        setUserinfo({
+                          ...userInfo,
+                          dl_no: e.target.value,
+                        })
+                      }
+                      value={userInfo.dl_no ? userInfo.dl_no : ""}
+                    />
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="pan_uploads">Upload Driving License </label>
+                    <input
+                      type="file"
+                      name="pan_uploads"
+                      id="pan_uploads"
+                      disabled={viewMode}
+                      className="form-control"
+                      onChange={(e) =>
+                        setuploadDocs({
+                          ...uploadDocs,
+                          driving_license: e.target.files,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div className="input_box">
+                      <label htmlFor="bank_name">Bank Name </label>
+                      <input
+                        type="text"
+                        placeholder="Enter Bank Name"
+                        name="bank_name"
+                        id="bank_name"
+                        disabled={viewMode}
+                        className="form-control"
+                        onChange={(e) =>
+                          setUserinfo({
+                            ...userInfo,
+                            bank_name: e.target.value,
+                          })
+                        }
+                        value={userInfo.bank_name ? userInfo.bank_name : ""}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div className="input_box">
+                      <label htmlFor="account_holder_name">
+                        Account Holder Name{" "}
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter Account Holder Name"
+                        name="account_holder_name"
+                        id="account_holder_name"
+                        disabled={viewMode}
+                        className="form-control"
+                        onChange={(e) =>
+                          setUserinfo({
+                            ...userInfo,
+                            account_holder_name: e.target.value,
+                          })
+                        }
+                        value={
+                          userInfo.account_holder_name
+                            ? userInfo.account_holder_name
+                            : ""
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div className="input_box">
+                      <label htmlFor="account_no">Account Number </label>
+                      <input
+                        type="number"
+                        placeholder="Enter Account Number"
+                        name="account_no"
+                        id="account_no"
+                        disabled={viewMode}
+                        className="form-control"
+                        onChange={(e) =>
+                          setUserinfo({
+                            ...userInfo,
+                            account_no: e.target.value,
+                          })
+                        }
+                        value={userInfo.account_no ? userInfo.account_no : ""}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div className="input_box">
+                      <label htmlFor="bank_ifsc_code">Bank IFSC Code </label>
+                      <input
+                        type="text"
+                        placeholder="Enter IFSC Code"
+                        name="bank_ifsc_code"
+                        id="bank_ifsc_code"
+                        disabled={viewMode}
+                        className="form-control"
+                        onChange={(e) =>
+                          setUserinfo({
+                            ...userInfo,
+                            bank_ifsc_code: e.target.value,
+                          })
+                        }
+                        value={
+                          userInfo.bank_ifsc_code ? userInfo.bank_ifsc_code : ""
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div className="input_box">
+                      <label htmlFor="branch">Branch </label>
+                      <input
+                        type="text"
+                        placeholder="Enter Branch Name"
+                        name="branch"
+                        id="branch"
+                        className="form-control"
+                        disabled={viewMode}
+                        onChange={(e) =>
+                          setUserinfo({
+                            ...userInfo,
+                            branch: e.target.value,
+                          })
+                        }
+                        value={userInfo.branch ? userInfo.branch : ""}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
 
             <div className="text-end">
               <div className="submit_btn">
-                <Link href="/partner/ActivePartners">
-                  <button className=" btn btn-danger rounded-2 me-2">Cancel</button>
+                <Link href="/ManageUsers">
+                  <button className="btn btn-cancel me-2 ">Cancel</button>
                 </Link>
-                {
-                  editMode ?  null: viewMode ?(<Link href={`/partner/EditActiveUsers?id=${userInfo.user_code}&mode=edit`}>
-                  <button className="btn btn-cancel text-white me-2 " style={{background:`${clientBtnColor}` }}>Edit</button>
-                </Link>) : null
-                }
                 {editMode ? (
                   <button
                     disabled={isLoading}
-                    className="btn text-white"
+                    className="btn btn-primary"
                     onClick={updateUserhandler}
-                    style={{background:`${clientBtnColor}` }}
                   >
                     {isLoading ? "Loading..." : "Update"}
                   </button>
                 ) : viewMode ? null : (
                   <button
                     disabled={isLoading}
-                    className="btn text-white"
+                    className="btn btn-primary"
                     onClick={addUserHandler}
-                    style={{background:`${clientBtnColor}` }}
-
                   >
                     {isLoading ? "Loading..." : "Save & Submit"}
                   </button>

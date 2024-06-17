@@ -8,10 +8,12 @@ import { toast, useToast } from "react-toastify";
 import { Modal } from "react-bootstrap";
 import { Delete } from "@mui/icons-material";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { startButtonLoading, stopButtonLoading } from "../../../../store/buttonLoaderSlice";
+import Loader from "../../../Loader/Loader";
 
 const CampaignAdminScreen = () => {
   const [showModal, setShowModal] = useState(false);
-  const [imgFile, setImgFile] = useState("");
   const clientBtnColor = hasCookie("clientBtnColor")
     ? getCookie("clientBtnColor")
     : "#293790";
@@ -33,8 +35,13 @@ const CampaignAdminScreen = () => {
   const[editMode,setEditMode]=useState(false)
   const[projects,setProjects]=useState([]);
   const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+  const dispatch=useDispatch()
+  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+  const[loader,setLoader]=useState(false)
+
 
   const getDataList = async () => {
+    setLoader(true);
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -49,15 +56,20 @@ const CampaignAdminScreen = () => {
       };
 
       try {
-        const { data } = await axios.get(
+        const response = await axios.get(
           Baseurl + `/db/channel/project`,
           header
         );
-        setProjects(data?.data)
+        if(response?.status === 200 || response?.status === 201){
+          setLoader(false)
+          setProjects(response?.data?.data)
+        }
       } catch (error) {
         if (error?.response?.data?.message) {
+          setLoader(false)
           toast.error(error.response.data.message);
         } else {
+          setLoader(false)
           toast.error("Something went wrong!");
         }
       }
@@ -163,21 +175,25 @@ const CampaignAdminScreen = () => {
     }
 
       try {
+        dispatch(startButtonLoading())
         const response = await axios.post(`${Baseurl}/db/channel/project`,formData, header);
         if (response.status === 200 || response.status === 201) {
           toast.success(response.data.message);
+          dispatch(stopButtonLoading())
           setShowModal(false)
           getDataList();
         }
       } catch (error) {
         console.log(error)
         if (error?.response?.data?.status === 422) {
+          dispatch(stopButtonLoading())
               toast.error(error?.response?.data?.message)
-              
         }
         if (error?.response?.data?.message) {
+          dispatch(stopButtonLoading())
           toast.error(error.response.data.message);
         } else {
+          dispatch(stopButtonLoading())
           toast.error("Something went wrong!");
         }
       }
@@ -203,9 +219,11 @@ const CampaignAdminScreen = () => {
   }
 
     try {
+      dispatch(startButtonLoading())
       const response = await axios.put(`${Baseurl}/db/channel/project`,formData, header);
       if (response.status === 200 || response.status === 201) {
         toast.success(response.data.message);
+        dispatch(stopButtonLoading())
         setEditMode(false)
         setShowModal(false)
         setProjectData("")
@@ -215,11 +233,13 @@ const CampaignAdminScreen = () => {
       console.log(error)
       if (error?.response?.data?.status === 422) {
             toast.error(error?.response?.data?.message)
-            
+            dispatch(stopButtonLoading())
       }
       if (error?.response?.data?.message) {
+        dispatch(stopButtonLoading())
         toast.error(error.response.data.message);
       } else {
+        dispatch(stopButtonLoading())
         toast.error("Something went wrong!");
       }
     }
@@ -229,11 +249,15 @@ const CampaignAdminScreen = () => {
 
   return (
     <>
-      <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
+    {
+      loader ? <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto"><Loader/></div>
+      :
+      (
+        <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
         <div className="top_btn_sec mb-4" >
           <div className="d-flex ">
             {
-              userInfo?.role_id==null && (
+              hasCookie("channel") && userInfo?.role_id==null && (
                 <button
                 className="btn ms-auto  Add_btn "
                 style={{ background: `${clientBtnColor}`}}
@@ -273,16 +297,21 @@ const CampaignAdminScreen = () => {
                       </div>
                       <div className="col-4 d-flex justify-content-end">
                         <div className="d-flex gap-2">
-                          <img
-                            src="/ChannelPartner/profile-edit-white.svg"
-                            onClick={()=>{
-                                setEditMode(true)
-                                getDataListById(project?.project_id)
-                                setShowModal(true)
-                            }}
-                            alt
-                            style={{ height: 17,cursor:"pointer" }}
-                          />
+                          {
+                            hasCookie("channel") && userInfo?.role_id==null && (
+                              <img
+                              src="/ChannelPartner/profile-edit-white.svg"
+                              onClick={()=>{
+                                  setEditMode(true)
+                                  getDataListById(project?.project_id)
+                                  setShowModal(true)
+                              }}
+                              alt
+                              style={{ height: 17,cursor:"pointer" }}
+                            />
+                            )
+                          }
+                          
                           <Link
                             href={`/partner/CampaignDetailsAdmin?id=${project?.project_id}`}
                           >
@@ -305,13 +334,19 @@ const CampaignAdminScreen = () => {
           </div>
         </section>
       </div>
+      )
+    }
+     
 
       <Modal
         show={showModal}
         onHide={() => {
+          if(isButtonLoading==false){
             setEditMode(false)
           setProjectData("")
           setShowModal(false);
+          }
+            
         }}
         size="lg"
         centered
@@ -558,29 +593,47 @@ const CampaignAdminScreen = () => {
             </div>
 
             <div className="d-flex justify-content-center align-items-center gap-3 ">
-              <div
+              <button
+                 type="button"
+                 disabled={isButtonLoading}
                 className="btn btn-danger rounded-5"
                 onClick={() => {setShowModal(false); setProjectData(""); setEditMode(false); } }
               >
                 Cancel
-              </div>
+              </button>
               {
                 editMode ?
                 (
                     <button
+                    disabled={isButtonLoading}
                 className="btn text-white rounded-5"
                 style={{ background: clientBtnColor }}
               >
-                Update
+                {isButtonLoading ? (
+                                  <>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Update
+                                  </>
+                                ) : (
+                                  'Update'
+                                )}
               </button>
                 ) 
                 :
                 (
                     <button
+                    disabled={isButtonLoading}
                 className="btn text-white rounded-5"
                 style={{ background: clientBtnColor }}
               >
-                Create
+                {isButtonLoading ? (
+                                  <>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Create
+                                  </>
+                                ) : (
+                                  'Create'
+                                )}
               </button>
                 )
               }

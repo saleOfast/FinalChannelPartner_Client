@@ -9,28 +9,29 @@ import { Baseurl } from '../../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
+import Loader from '../../../Loader/Loader';
 
 
 
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
     const [actionMode, setActionMode] =  useState('')
     const [showModal, setShowModal] =  useState(false)
-    const [userInfo, setUserInfo ] =  useState({
-    user_code: '',
-    reject_reason: ''
-  })
+    const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
 
-  const [value, setValue] = useState({
 
-    startDate: new Date(),
-    endDate: new Date().setMonth(11)
+  const getCurrentWeekDates = () => {
+    const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+      const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+    return { startDate, endDate };
+  };
 
-  });
+const [value, setValue] = useState(getCurrentWeekDates());
+
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
 
   
@@ -186,6 +187,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: false,
                 download:false,
+                display:(userInfo?.role_id==null || userInfo?.role_id==3)? true:false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -201,7 +203,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                 title='Assign - To'>
                                     Assign to
                             </button>
-                          
                         </div>
                     )
                 }
@@ -336,7 +337,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
     return (
         <>
-            <div className="miuiTable channelTable">
+        {
+            loader ? <div className="miuiTable channelTable"><Loader/></div>
+            :
+            (
+                <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
                     data={dataList}
@@ -365,6 +370,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         }
         </div>
             </div>
+            )
+        }
+            
         
             <Modal className="commonModal"  show={showModal}   onHide={()=>{setShowModal(false)}} style={{}}>
                 <Modal.Header closeButton>
@@ -380,6 +388,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                             id="select"
                                             defaultValue={""}
                                             options={usersList?.map((data, index) => {
+                                                
                                             return {
                                                 value: data?.user_id,
                                                 label: data?.user,

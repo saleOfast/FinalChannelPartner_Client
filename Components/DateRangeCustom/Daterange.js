@@ -19,7 +19,7 @@ const DateRange = ({value,setValue,getData}) => {
      showFooter={true}
       value={value}
       onChange={handleValueChange}
-      displayFormat={"DD/MM/YYYY"}
+      displayFormat={"DD-MM-YYYY"}
       showShortcuts={true} 
       primaryColor={"blue"}
       popoverDirection="down"

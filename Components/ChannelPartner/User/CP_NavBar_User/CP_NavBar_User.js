@@ -234,6 +234,56 @@ const CP_NavBar = () => {
         {
                   roleId===2 && (
                     <>
+                    <li className="nav-item">
+        <Link className={`nav-link ${isActive('/partner/ActivePartners')}`} href="/partner/ActivePartners"
+                  onClick={()=>{
+                    dispatch(setActiveLink("/partner/ActivePartners"))
+                    setCookie("activeLink","/partner/ActivePartners")
+                  }}
+                >Channel Partners</Link>
+        </li>
+                     <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/partner/Leads"
+                    )}`}
+                    href="/partner/Leads"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/partner/Leads"))
+                      setCookie("activeLink","/partner/Leads")
+                    }}
+                  >
+                    Leads
+                  </Link>
+        </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/partner/Bookings"
+                    )}`}
+                    href="/partner/Bookings"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/partner/Bookings"))
+                      setCookie("activeLink","/partner/Bookings")
+                    }}
+                  >
+                    Bookings
+                  </Link>
+        </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/partner/Visits"
+                    )}`}
+                    href="/partner/Visits"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/partner/Visits"))
+                      setCookie("activeLink","/partner/Visits")
+                    }}
+                  >
+                    Visits
+                  </Link>
+        </li>
                         <li className="nav-item">
                   <Link
                     className={`nav-link ${isActive(
@@ -248,6 +298,20 @@ const CP_NavBar = () => {
                     Brokerage
                   </Link>
                 </li>
+                <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/partner/Campaign"
+                    )}`}
+                    href="/partner/Campaign"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/partner/Campaign"))
+                      setCookie("activeLink","/partner/Campaign")
+                    }}
+                  >
+                    Campaign
+                  </Link>
+        </li>
                     </>
                   )
                 }

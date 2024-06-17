@@ -182,23 +182,7 @@ const Topnav = ({  topnavPermission }) => {
   return (
     <>
 
-        
-
-        {/* {
-          userInfo &&
-          hasCookie("channel") && (userInfo?.role_id==1 || userInfo?.role_id==2) && (
-            <CP_Navbar_User  />
-          )
-        }
-
         {
-          userInfo &&
-          hasCookie("channel") && (userInfo?.role_id==null || userInfo?.role_id==3) && (
-            <CP_Navbar_Admin  />
-          )
-        } */}
-        
-         {
           userInfo ?
           hasCookie("channel") && userInfo?.role_id != null && userInfo?.role_id != 3  ? (
             <CP_Navbar_User  />
@@ -210,7 +194,16 @@ const Topnav = ({  topnavPermission }) => {
         }
 
         
-      {userInfo &&  hasCookie("crm") && (
+        
+
+      {/* {hasCookie("channel") && userInfo?.db_role != null && userInfo?.db_role?.role_id != 3  ? (
+        <CP_Navbar_User  />
+      ) : (
+
+        <CP_Navbar_Admin  />
+      )} */}
+
+      {!hasCookie("channel") && (
         <>
           <ConfirmBox
             showConfirm={showConfirm}
@@ -341,106 +334,6 @@ const Topnav = ({  topnavPermission }) => {
                   </div>
                 ) : null}
 
-                <div className="user_profile p-2">
-                  <Dropdown>
-                    <Dropdown.Toggle variant="none" id="profileBtn">
-                      <div className="btn_wrapper">
-                        <div className="img_sec w-35 h-35">
-                          {dbMode == "admin" ? (
-                            <img
-                              src={
-                                userInfo?.profile_img
-                                  ? `${filesUrl}/adminProfile/images${userInfo?.profile_img}`
-                                  : `/images/profile_picture.png`
-                              }
-                              alt="normal"
-                            />
-                          ) : (
-                            <img
-                              src={
-                                userInfo?.db_user_profile?.user_image_file
-                                  ? `${filesUrl}/lsUser/images${userInfo?.db_user_profile?.user_image_file}`
-                                  : `/images/profile_picture.png`
-                              }
-                              alt="normal"
-                            />
-                          )}
-                        </div>
-                        <div className="name_sec">
-                          <div className="name">
-                            {" "}
-                            {userInfo?.user ? userInfo.user : "user"}{" "}
-                          </div>
-                          <div className="role"> {} </div>
-                        </div>
-                      </div>
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      <ul className="profile_list">
-                        <Link
-                          href={dbMode == "admin" ? "/Profile" : "/UserProfile"}
-                        >
-                          <li className="list-item">
-                            <div className="icon">
-                              <AvatarIcon />
-                            </div>
-                            <div className="text"> Profile </div>
-                          </li>
-                        </Link>
-
-                        <li className="list-item">
-                          <div className="icon">
-                            {" "}
-                            <LogoutIcon />{" "}
-                          </div>
-                          <div
-                            className="text"
-                            onClick={() => setshowConfirm(!showConfirm)}
-                          >
-                            {" "}
-                            logout{" "}
-                          </div>
-                        </li>
-                      </ul>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-
-
-      {userInfo && router.pathname=="/" && !hasCookie("crm") && !hasCookie("dms") && !hasCookie("sales") && !hasCookie("channel") && (
-          <>
-          <ConfirmBox
-            showConfirm={showConfirm}
-            setshowConfirm={setshowConfirm}
-            actionType={logouthandler}
-            title={"Are You Sure you want to Logout ?"}
-          />
-          <div
-            className="topNav_Wrapper"
-            style={{
-              height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
-            }}
-          >
-            <div className="top_nav">
-              {/* <div className="brand_icon"> */}
-              <div className="">
-
-                <img
-                src={
-                  clientData?.logo
-                    &&( `${filesUrl}` +
-                      `/logo/images${clientData?.logo}`)
-                }
-                alt
-              />
-              </div>
-              <div className="profile_sec">
                 <div className="user_profile p-2">
                   <Dropdown>
                     <Dropdown.Toggle variant="none" id="profileBtn">

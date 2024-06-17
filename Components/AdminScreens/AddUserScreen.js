@@ -182,6 +182,7 @@ const AddUserScreen = () => {
   }
 
   const addUserHandler = async () => {
+    
     if (!hasCookie("token")) return;
     setisLoading(true);
     const token = getCookie("token");
@@ -376,6 +377,62 @@ const AddUserScreen = () => {
       reader.readAsDataURL(e.target.files[0]);
     }
   };
+
+
+  const checkLicense = async (e,type,perm_type) => {
+    if (!hasCookie("token")) return;
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+
+    const header = {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        db: db_name,
+        m_id: 77,
+      },
+    };
+
+    try {
+      const response = await axios.post(
+        `${Baseurl}/db/users/checkplatform`,
+        {type:type},
+        header
+      );
+
+      if (response?.status === 200 || response?.status === 201) {
+        if(response?.data?.data==false){
+          setUserinfo({
+            ...userInfo,
+            [perm_type]: false,
+            });
+          toast.error("No CRM license available")
+        }
+        else{
+          setUserinfo({
+            ...userInfo,
+            [perm_type]: true,
+            });
+        }
+        
+      }
+    } catch (error) {
+      if (error?.response?.data?.status === 422) {
+        const taskObject = error.response.data.data.reduce((obj, item) => {
+          const [key, value] = Object.entries(item)[0];
+          obj[key] = value;
+          return obj;
+        }, {});
+        setErrorData(taskObject);
+      }
+      if (error?.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong!");
+      }
+      setisLoading(false);
+    }
+  };
   
 
   useEffect(() => {
@@ -427,7 +484,7 @@ const AddUserScreen = () => {
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               {" "}
-              <Link href="/">Dashboard </Link>
+              <Link href="/crm">Dashboard </Link>
             </li>
             <li className="breadcrumb-item">
               <Link href="/ManageUsers"> Manage User</Link>
@@ -505,12 +562,18 @@ const AddUserScreen = () => {
                                 type="checkbox"
                                 value="option1"
                                 id="option1"
-                                checked={userInfo.isCRM}
+                                checked={userInfo?.isCRM}
                                 onChange={(e) => {
-                                  setUserinfo({
-                                    ...userInfo,
-                                    isCRM: e.target.checked,
-                                  });
+                                  if(userInfo.isCRM){
+                                    setUserinfo({
+                                      ...userInfo,
+                                      isCRM: e.target.checked,
+                                    });
+                                  }
+                                  if(!userInfo?.isCRM){
+                                    checkLicense(e,"crm","isCRM");
+                                  }
+                                  
                                   setErrorData({ ...errorData, isCRM: "" });
                                 }}
                               />
@@ -531,10 +594,15 @@ const AddUserScreen = () => {
                                   userInfo.isDMS ? userInfo.isDMS : false
                                 }
                                 onChange={(e) => {
-                                  setUserinfo({
-                                    ...userInfo,
-                                    isDMS: e.target.checked,
-                                  });
+                                  if(userInfo.isDMS){
+                                    setUserinfo({
+                                      ...userInfo,
+                                      isDMS: e.target.checked,
+                                    });
+                                  }
+                                  if(!userInfo?.isDMS){
+                                    checkLicense(e,"dms","isDMS");
+                                  }
                                   setErrorData({ ...errorData, isDMS: "" });
                                 }}
                               />
@@ -555,10 +623,15 @@ const AddUserScreen = () => {
                                   userInfo.isSALES ? userInfo.isSALES : false
                                 }
                                 onChange={(e) => {
-                                  setUserinfo({
-                                    ...userInfo,
-                                    isSALES: e.target.checked,
-                                  });
+                                  if(userInfo.isSALES){
+                                    setUserinfo({
+                                      ...userInfo,
+                                      isSALES: e.target.checked,
+                                    });
+                                  }
+                                  if(!userInfo?.isSALES){
+                                    checkLicense(e,"sales","isSALES");
+                                  }
                                   setErrorData({ ...errorData, isSALES: "" });
                                 }}
                               />
@@ -581,10 +654,15 @@ const AddUserScreen = () => {
                                 userInfo.isCHANNEL ? userInfo.isCHANNEL  : false
                               }
                               onChange={(e) => {
-                                setUserinfo({
-                                  ...userInfo,
-                                  isCHANNEL: e.target.checked,
-                                });
+                                if(userInfo.isCHANNEL){
+                                  setUserinfo({
+                                    ...userInfo,
+                                    isCHANNEL: e.target.checked,
+                                  });
+                                }
+                                if(!userInfo?.isCHANNEL){
+                                  checkLicense(e,"partner","isCHANNEL");
+                                }
                                 setErrorData({ ...errorData, isCHANNEL: "" });
                               }}
                               disabled={viewMode}

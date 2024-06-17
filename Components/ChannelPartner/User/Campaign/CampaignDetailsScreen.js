@@ -8,6 +8,9 @@ import { Baseurl, filesUrl } from '../../../../Utils/Constants';
 import { Modal } from 'react-bootstrap';
 import { Delete } from '@mui/icons-material';
 import generatePDF, { Options } from 'react-to-pdf';
+import { useDispatch, useSelector } from 'react-redux';
+import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
+import Loader from '../../../Loader/Loader';
 
 
 const CampaignDetailsScreen = () => {
@@ -35,6 +38,9 @@ const CampaignDetailsScreen = () => {
     });
 
     const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
+    const dispatch=useDispatch()
+    const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+    const [loader,setLoader]=useState(false)
 
     const targetRef=useRef();
     const options = {
@@ -43,6 +49,8 @@ const CampaignDetailsScreen = () => {
         margin: 20
       }
     };
+   const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+
 
     const getTargetElement = () => document.getElementById("content2");
     const downloadPdf = () => generatePDF(getTargetElement, options);
@@ -80,12 +88,14 @@ const CampaignDetailsScreen = () => {
           };
     
           try {
-            const { data } = await axios.get(
+            const response = await axios.get(
               Baseurl + `/db/channel/project?project_id=${id}`,
               header
             );
-            const campaign=data?.data?.projectData
-            setProjectData({
+            const campaign=response?.data?.data?.projectData
+            if(response?.status === 200 || response?.status === 201){
+              setLoader(false)
+              setProjectData({
                 ...projectData,
                 project: campaign?.project,
                 project_id: campaign?.project_id,
@@ -100,12 +110,16 @@ const CampaignDetailsScreen = () => {
                 logo_preview: `${filesUrl}/projectLogo/images${campaign?.logo_image}`,
                 template:campaign?.html_file,
                 template_name:campaign?.html_file,
-                htmlString:data?.data?.htmlTemplate
+                htmlString:response?.data?.data?.htmlTemplate
             })
+            }
+            
           } catch (error) {
             if (error?.response?.data?.message) {
+              setLoader(false)
               toast.error(error.response.data.message);
             } else {
+              setLoader(false)
               toast.error("Something went wrong!");
             }
           }
@@ -132,21 +146,26 @@ const CampaignDetailsScreen = () => {
       }
     
         try {
+          dispatch(startButtonLoading())
           const response = await axios.post(`${Baseurl}/db/channel/project/usertemplate`,formData, header);
           if (response.status === 200 || response.status === 201) {
-            toast.success(response.data.message);
+            toast.success(response?.data?.message);
+            dispatch(stopButtonLoading())
             setShowModal(false)
             getCampaignById();
           }
         } catch (error) {
           console.log(error)
           if (error?.response?.data?.status === 422) {
+            dispatch(stopButtonLoading())
                 toast.error(error?.response?.data?.message)
                 
           }
           if (error?.response?.data?.message) {
+            dispatch(stopButtonLoading())
             toast.error(error.response.data.message);
           } else {
+            dispatch(stopButtonLoading())
             toast.error("Something went wrong!");
           }
         }
@@ -179,104 +198,121 @@ const CampaignDetailsScreen = () => {
    
   return (
     <>
-      
-      <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}>
+    {
+      loader ? <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}><Loader/></div>
+      :
+      (
+        <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}>
 
-      {/* Edit and Download Start */}
-      <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"15px"}}>
-          <img src="/ChannelPartner/profile-edit.svg" alt="Profile Edit" style={{ fontWeight: "bold", cursor: "pointer"}} 
-              onClick={() => {
-                  setShowModal(true);
-                  getCampaignById(id);
-              }}
-          />
-          <img 
-          src="/ChannelPartner/download-file-blue.svg" 
-          alt="Download File" 
-          style={{height: "1.2rem", cursor: "pointer"}} 
-          onClick={()=>{
-            downloadHtml()
-            // downloadPdf()
-          }}
-          />
-      </div>
-      {/* Edit and Download End */}
-
+        {/* Edit and Download Start */}
+        {
+           hasCookie("channel") && userInfo?.role_id==1 && (
+            <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"15px"}}>
+            <img src="/ChannelPartner/profile-edit.svg" alt="Profile Edit" style={{ fontWeight: "bold", cursor: "pointer"}} 
+                onClick={() => {
+                    setShowModal(true);
+                    getCampaignById(id);
+                }}
+            />
+            <img 
+            src="/ChannelPartner/download-file-blue.svg" 
+            alt="Download File" 
+            style={{height: "1.2rem", cursor: "pointer"}} 
+            onClick={()=>{
+              downloadHtml()              
+            }}
+            />
+        </div>
+           )
+        }
         
-      {/* To be downloaded as html start */}
-      <div style={{padding:"10px"}} id="content2">
-      <div style={{padding: "1rem", display: "flex", flexDirection: "column", gap: "1rem"}} >
-
-
-      {/* company logo and client logo start*/}
-      <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-          <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="Client Logo" style={{maxHeight: "3rem"}} />
-          <img src={projectData?.logo_preview} alt="Project Logo" style={{maxHeight: "3rem"}} />
-      </div>
-      {/* company logo and client logo end*/}
-
-      {/* uploaded html by admin start*/}
-      <div dangerouslySetInnerHTML={{__html: projectData?.htmlString  || ``}}></div>
-      {/* uploaded html by admin end*/}
-
-      {/* Project Detail Start  */}
-      <div style={{gap: "1rem", display: "flex", flexDirection: "column"}} >
-          <div style={{fontWeight: "bold", fontSize: "1.25rem"}}>Project Details</div>
-
-          <div style={{border: "2px solid", borderRadius: "0.5rem", background: "#EBECEE", padding: "2rem"}}>
-              <div style={{display: "flex", flexDirection: "column",gap:"20px"}}>
-                  <div style={{display: "flex", justifyContent: "space-between"}}>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Name</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.project}</div>
-                      </div>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Size</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.property_size}</div>
-                      </div>
-                  </div>
-                  <div style={{display: "flex", justifyContent: "space-between"}}>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Location</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.location}</div>
-                      </div>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Unit Area</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.unit_area}</div>
-                      </div>
-                  </div>
-                  <div style={{display: "flex", justifyContent: "space-between"}}>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Contact No.</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>+91-{projectData?.contact_no}</div>
-                      </div>
-                      <div style={{width: "50%",display:"flex"}}>
-                          <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Price</label>
-                          <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.price}</div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-      {/* Project Detail End  */}
-
-      </div>
-      </div>
-      {/* To be downloaded as html end */}
-
-
-      {/* Back to campaign button start */}
-      <div style={{display:"flex", justifyContent:"center",alignItems:"center"}}>
-          <Link href={`/partner/CampaignAdmin`} style={{background:clientBtnColor,color:"white",padding:"5px 10px",borderRadius:"20px"}}>Back to Campaigns</Link>
-      </div>
-      {/* Back to campaign button end */}
-
-      </div>
+        {/* Edit and Download End */}
+  
+          
+        {/* To be downloaded as html start */}
+        <div style={{padding:"10px"}} id="content2">
+        <div style={{padding: "1rem", display: "flex", flexDirection: "column", gap: "1rem"}} >
+  
+  
+        {/* company logo and client logo start*/}
+        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+            <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="Client Logo" style={{maxHeight: "3rem"}} />
+            {
+              projectData?.logo!==null ? <img src={projectData?.logo_preview} alt="Project Logo" style={{maxHeight: "3rem"}} />
+              :
+              <div></div>
+            }
+        </div>
+        {/* company logo and client logo end*/}
+  
+        {/* uploaded html by admin start*/}
+        <div dangerouslySetInnerHTML={{__html: projectData?.htmlString  || ``}}></div>
+        {/* uploaded html by admin end*/}
+  
+        {/* Project Detail Start  */}
+        <div style={{gap: "1rem", display: "flex", flexDirection: "column"}} >
+            <div style={{fontWeight: "bold", fontSize: "1.25rem"}}>Project Details</div>
+  
+            <div style={{border: "2px solid", borderRadius: "0.5rem", background: "#EBECEE", padding: "2rem"}}>
+                <div style={{display: "flex", flexDirection: "column",gap:"20px"}}>
+                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                        <div style={{width: "50%",display:"flex"}}>
+                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Name</label>
+                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.project}</div>
+                        </div>
+                        <div style={{width: "50%",display:"flex"}}>
+                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Size</label>
+                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.property_size}</div>
+                        </div>
+                    </div>
+                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                        <div style={{width: "50%",display:"flex"}}>
+                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Location</label>
+                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.location}</div>
+                        </div>
+                        <div style={{width: "50%",display:"flex"}}>
+                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Unit Area</label>
+                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.unit_area}</div>
+                        </div>
+                    </div>
+                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                        <div style={{width: "50%",display:"flex"}}>
+                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Contact No.</label>
+                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>+91-{projectData?.contact_no}</div>
+                        </div>
+                        <div style={{width: "50%",display:"flex"}}>
+                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Price</label>
+                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.price}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {/* Project Detail End  */}
+  
+        </div>
+        </div>
+        {/* To be downloaded as html end */}
+  
+  
+        {/* Back to campaign button start */}
+        <div style={{display:"flex", justifyContent:"center",alignItems:"center"}}>
+            <Link href={`/partner/Campaign`} style={{background:clientBtnColor,color:"white",padding:"5px 10px",borderRadius:"20px"}}>Back to Campaigns</Link>
+        </div>
+        {/* Back to campaign button end */}
+  
+        </div>
+      )
+    }
+      
+      
 
      <Modal
         show={showModal}
         onHide={() => {
-          setShowModal(false);
+          if(isButtonLoading==false){
+            setShowModal(false);
+          }
         }}
         size="lg"
         centered
@@ -419,37 +455,7 @@ const CampaignDetailsScreen = () => {
 
 
               <div className="d-flex justify-content-between gap-5 align-items-center">
-                {/* <div className="w-50  d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Cover
-                  </label>
-                  <input
-                    type="file"
-                    onChange={(e)=>{
-                      handleFileChange(e,"file","file_preview")
-                    }}
-                    id="fileInput"
-                    style={{ display: "none" }}
-                  />
-                  {projectData?.file_preview ?
-                    <div className="relative">
-                        <img src={projectData?.file_preview} />
-                        <span className="absolute top-0 right-0" onClick={()=>{
-                          setProjectData({...projectData, file: null,file_preview:null})
-                        }}>
-                            <Delete style={{color: 'red'}}/>
-                        </span>
-                    </div>
-                    : 
-                  <label
-                      htmlFor="fileInput"
-                      className="w-73 border p-2 ps-1 rounded-md text-black"
-                      style={{ outline: "none", cursor: "pointer" }}
-                    >
-                      Click here to choose file
-                    </label>
-                    }
-                </div> */}
+                
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Property Logo
@@ -487,48 +493,14 @@ const CampaignDetailsScreen = () => {
                     }
                 </div>
               </div>
-{/* 
-              <div className="d-flex justify-content-between gap-5 align-items-center">
-                <div className="w-50  d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Template File
-                  </label>
-                  <input
-                    type="file"
-                    onChange={(e)=>{
-                      handleFileChange(e,"template","template_name")
-                    }}
-                    id="templateInput"
-                    style={{ display: "none" }}
-                  />
-                  {projectData?.template_name ? 
-                    <div className="relative w-73">
-                        <div  >{projectData?.template_name}</div>
-                        <span className="absolute top-0 right-0" onClick={()=>{
-                          setProjectData({...projectData, template_name: null, template_file: null})
-                        }}>
-                            <Delete style={{color: 'red'}}/>
-                        </span>
-                    </div>
-                    : 
-                  <label
-                      htmlFor="templateInput"
-                      className="w-73 border p-2 ps-1 rounded-md text-black"
-                      style={{ outline: "none", cursor: "pointer" }}
-                    >
-                      Click here to choose file
-                    </label>
-                    }
-                </div>
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                 
-                </div>
-              </div> */}
+
 
             </div>
 
             <div className="d-flex justify-content-center align-items-center gap-3 ">
-              <div
+              <button
+              type='button'
+              disabled={isButtonLoading}
                 className="btn btn-danger rounded-5"
                 onClick={() => {
                   setShowModal(false);
@@ -536,12 +508,20 @@ const CampaignDetailsScreen = () => {
                 } }
               >
                 Cancel
-              </div>
+              </button>
               <button
+              disabled={isButtonLoading}
                 className="btn text-white rounded-5"
                 style={{ background: clientBtnColor }}
               >
-                Update
+                {isButtonLoading ? (
+                    <>
+                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    &nbsp;Update
+                  </>
+                ) : (
+                  'Update'
+                )} 
               </button>
 
             </div>

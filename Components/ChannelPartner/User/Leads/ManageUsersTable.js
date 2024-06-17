@@ -12,8 +12,11 @@ import DateRange from '../../../DateRangeCustom/Daterange';
 import { ViewColumn, Visibility } from '@mui/icons-material';
 import { useRef } from 'react';
 import moment from 'moment';
+import { useDispatch, useSelector } from 'react-redux';
+import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
+import Loader from '../../../Loader/Loader';
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -21,16 +24,27 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
     const [showModal, setShowModal] =  useState(false)
     const [showModal2, setShowModal2] =  useState(false)
     const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+
+    const getCurrentWeekDates = () => {
+      const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+        const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+      return { startDate, endDate };
+    };
   
-  const [value, setValue] = useState({
-    startDate: new Date(),
-    endDate: new Date().setMonth(11)
-  });
+  const [value, setValue] = useState(getCurrentWeekDates());
   const[visitId,setVisitId]=useState("");
   // const [p_visit_date, setVisitDate] = useState(moment().format("YYYY-MM-DD"));
   const[p_visit_date,setVisitDate]=useState("");
   const[p_visit_time,setVisitTime]=useState("");
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+  const dispatch=useDispatch();
+  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+
+  const currentDate = moment().format("YYYY-MM-DD");
+  const currentTime = moment().format("HH:mm");
+
+  // Determine the min time based on the selected date
+  const minTime = p_visit_date === currentDate ? currentTime : '00:00';
 
 const getVisitInfo=async(visitId)=>{
     if (hasCookie('token')) {
@@ -372,6 +386,7 @@ const getVisitInfo=async(visitId)=>{
           };
 
           try {
+            dispatch(startButtonLoading())
             const response = await axios.post(`${Baseurl}/db/channel/visit`, {
                 lead_id:visitId,
                 p_visit_date,
@@ -380,18 +395,22 @@ const getVisitInfo=async(visitId)=>{
               }, header);
             if (response.status === 200 || response.status === 201) {
               toast.success(response.data.message);
+              dispatch(stopButtonLoading())
               setShowModal(false)
               toast.success(response.message)
               getDataList()
             }
           } catch (error) {
             if (error?.response?.data?.status === 422) {
+              dispatch(stopButtonLoading())
                   toast.error(error?.response?.data?.message)
                   
             }
             if (error?.response?.data?.message) {
+              dispatch(stopButtonLoading())
               toast.error(error.response.data.message);
             } else {
+              dispatch(stopButtonLoading())
               toast.error("Something went wrong!");
             }
           }
@@ -415,7 +434,11 @@ const getVisitInfo=async(visitId)=>{
 
     return (
       <>
-        <div className="miuiTable channelTable">
+      {
+        loader ? <div className="miuiTable channelTable"><Loader/></div>
+        :
+        (
+          <div className="miuiTable channelTable">
           <MUIDataTable
             title={<CustomToolbar />}
             // data={leadList}
@@ -425,14 +448,19 @@ const getVisitInfo=async(visitId)=>{
           />
          
         </div>
+        )
+      }
+        
 
         <Modal
           show={showModal}
           onHide={() => {
-            setShowModal(false);
-            setVisitDate("")
-            setVisitTime("")
-          }}
+            if (!isButtonLoading) {
+              setShowModal(false);
+              setVisitDate("");
+              setVisitTime("");
+            }
+          }}          
           size="lg"
           centered
         >
@@ -507,17 +535,27 @@ const getVisitInfo=async(visitId)=>{
                                 </div>
                               </div>
                               <div className="new-leades-btn d-flex justify-content-center gap-4 mt-2">
-                                <div
+                                <div 
+
                                   className="btn rounded-5"
                                   style={{borderColor:clientBtnColor,color:clientBtnColor ? clientBtnColor:"white"}}
                                   onClick={() => {
-                                    setShowModal2(true);
+                                    if(isButtonLoading==false){
+                                      setShowModal2(true);
+                                    }
                                   }}
                                 >
                                   Change
                                 </div>
-                                <button className="btn text-white rounded-5" style={{background:clientBtnColor}}>
-                                  Confirm
+                                <button disabled={isButtonLoading} className="btn text-white rounded-5" style={{background:clientBtnColor}}>
+                                  {isButtonLoading ? (
+                                  <>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Confirm
+                                  </>
+                                ) : (
+                                  'Confirm'
+                                )}
                                 </button>
                               </div>
                             </form>
@@ -553,7 +591,10 @@ const getVisitInfo=async(visitId)=>{
                       <div className="perfect-home-form pt-1">
                         <section className="Details_Form">
                           <div className="pt-3">
-                            <form id="survey-form" method="GET" action>
+                            <form id="survey-form" method='POST' onSubmit={(e)=>{
+                              e.preventDefault(); 
+                              setShowModal2(false)
+                            }} >
                               <div className="d-lg-flex justify-content-lg-between">
                                 <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">
                                   <div className="rowTab">
@@ -594,6 +635,7 @@ const getVisitInfo=async(visitId)=>{
                                       <input
                                         autofocus
                                         type="time"
+                                        min={minTime}
                                         value={p_visit_time}
                                         onChange={(e)=>{
                                             setVisitTime(e.target.value)
@@ -607,7 +649,8 @@ const getVisitInfo=async(visitId)=>{
                                 </div>
                               </div>
                               <div className="new-leades-btn d-flex justify-content-center gap-4 mt-5">
-                                <div
+                                <button 
+                                type='button'
                                   className='btn btn-danger rounded-5 text-white'
                                   onClick={() =>{ 
                                     setShowModal2(false);
@@ -615,16 +658,18 @@ const getVisitInfo=async(visitId)=>{
                                     }}
                                 >
                                   Cancel
-                                </div>
-                                <div 
+                                </button>
+                                <button
+                                type='submit'
                                 className="btn rounded-5 text-white"
                                 style={{background:clientBtnColor}}
-                                onClick={()=>{
-                                    setShowModal2(false)
-                                }}
+                                // onClick={(e)=>{
+                                //   e.preventDefault()
+                                //     setShowModal2(false)
+                                // }}
                                 >
                                   Update
-                                </div>
+                                </button>
                               </div>
                             </form>
                           </div>

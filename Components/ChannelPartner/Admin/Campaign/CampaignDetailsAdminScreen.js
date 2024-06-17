@@ -9,6 +9,9 @@ import { Modal } from 'react-bootstrap';
 import { Delete } from '@mui/icons-material';
 import { useReactToPrint } from "react-to-print";
 import generatePDF, { Options } from 'react-to-pdf';
+import { useDispatch, useSelector } from 'react-redux';
+import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
+import Loader from '../../../Loader/Loader';
 
 
 const CampaignDetailsAdminScreen = () => {
@@ -34,9 +37,11 @@ const CampaignDetailsAdminScreen = () => {
         template_name:null,
         htmlString:""
     });
-
+    const dispatch=useDispatch()
+    const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
     const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
-
+    const[loader,setLoader]=useState(false)
+    const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
     const targetRef=useRef();
     const options = {
       filename: `${projectData?.project}-Template.pdf`,
@@ -68,6 +73,7 @@ const CampaignDetailsAdminScreen = () => {
     },[id])
 
     const getCampaignById = async () => {
+      setLoader(true)
         if (hasCookie("token")) {
           let token = getCookie("token");
           let db_name = getCookie("db_name");
@@ -82,12 +88,14 @@ const CampaignDetailsAdminScreen = () => {
           };
     
           try {
-            const { data } = await axios.get(
+            const response = await axios.get(
               Baseurl + `/db/channel/project?project_id=${id}`,
               header
             );
-            const campaign=data?.data?.projectData
-            setProjectData({
+            const campaign=response?.data?.data?.projectData
+            if(response?.status === 200 || response?.status === 201){
+              setLoader(false)
+              setProjectData({
                 ...projectData,
                 project: campaign?.project,
                 project_id: campaign?.project_id,
@@ -102,12 +110,17 @@ const CampaignDetailsAdminScreen = () => {
                 logo_preview: `${filesUrl}/projectLogo/images${campaign?.logo_image}`,
                 template:campaign?.html_file,
                 template_name:campaign?.html_file,
-                htmlString:data?.data?.htmlTemplate
+                htmlString:response?.data?.data?.htmlTemplate
             })
+            }
+            
           } catch (error) {
+            console.log(error)
             if (error?.response?.data?.message) {
-              toast.error(error.response.data.message);
+              setLoader(false)
+              toast.error(error?.response?.data?.message);
             } else {
+              setLoader(false)
               toast.error("Something went wrong!");
             }
           }
@@ -134,21 +147,26 @@ const CampaignDetailsAdminScreen = () => {
       }
     
         try {
+          dispatch(startButtonLoading())
           const response = await axios.put(`${Baseurl}/db/channel/project`,formData, header);
           if (response.status === 200 || response.status === 201) {
             toast.success(response.data.message);
+            dispatch(stopButtonLoading())
             setShowModal(false)
             getCampaignById();
           }
         } catch (error) {
           console.log(error)
           if (error?.response?.data?.status === 422) {
+            dispatch(stopButtonLoading())
                 toast.error(error?.response?.data?.message)
                 
           }
           if (error?.response?.data?.message) {
+            dispatch(stopButtonLoading())
             toast.error(error.response.data.message);
           } else {
+            dispatch(stopButtonLoading())
             toast.error("Something went wrong!");
           }
         }
@@ -181,16 +199,26 @@ const CampaignDetailsAdminScreen = () => {
    
   return (
     <>
-      <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}>
+    {
+      loader ?  <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}><Loader/></div>
+      :
+      (
+        <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}>
 
       {/* Edit and Download Start */}
       <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"11px"}}>
-          <img src="/ChannelPartner/profile-edit.svg" alt="Profile Edit" style={{ fontWeight: "bold", cursor: "pointer"}} 
-              onClick={() => {
-                  setShowModal(true);
-                  getCampaignById(id);
-              }}
-          />
+        {
+           hasCookie("channel") && userInfo?.role_id==null && (
+            <img src="/ChannelPartner/profile-edit.svg" alt="Profile Edit" style={{ fontWeight: "bold", cursor: "pointer"}} 
+            onClick={() => {
+                setShowModal(true);
+                getCampaignById(id);
+            }}
+        />
+           )
+
+        }
+          
           {/* <img 
           src="/ChannelPartner/download-file-blue.svg" 
           alt="Download File" 
@@ -212,7 +240,11 @@ const CampaignDetailsAdminScreen = () => {
       {/* company logo and client logo start*/}
       <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
           <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="Client Logo" style={{maxHeight: "3rem"}} />
-          <img src={projectData?.logo_preview} alt="Project Logo" style={{maxHeight: "3rem"}} />
+          {
+              projectData?.logo!==null ? <img src={projectData?.logo_preview} alt="Project Logo" style={{maxHeight: "3rem"}} />
+              :
+              <div></div>
+            }
       </div>
       {/* company logo and client logo end*/}
 
@@ -273,11 +305,16 @@ const CampaignDetailsAdminScreen = () => {
       {/* Back to campaign button end */}
 
       </div>
+      )
+    }
+      
 
       <Modal
         show={showModal}
         onHide={() => {
-          setShowModal(false);
+          if(isButtonLoading==false){
+            setShowModal(false);
+          }
         }}
         size="lg"
         centered
@@ -523,7 +560,9 @@ const CampaignDetailsAdminScreen = () => {
             </div>
 
             <div className="d-flex justify-content-center align-items-center gap-3 ">
-              <div
+              <button
+              type="button"
+              disabled={isButtonLoading}
                 className="btn btn-danger rounded-5"
                 onClick={() => {
                   setShowModal(false);
@@ -531,12 +570,20 @@ const CampaignDetailsAdminScreen = () => {
                 } }
               >
                 Cancel
-              </div>
+              </button>
               <button
+              disabled={isButtonLoading}
                 className="btn text-white rounded-5"
                 style={{ background: clientBtnColor }}
               >
-                Update
+                {isButtonLoading ? (
+                                  <>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Update
+                                  </>
+                                ) : (
+                                  'Update'
+                                )}
               </button>
 
             </div>

@@ -19,6 +19,7 @@ const AdminPermissionScreen = () => {
     const [open, setOpen] = useState({});
     const [reqData, setreqData] = useState([]);
     const [permissionView, setpermissionView] = useState([]);
+    const [selectedOption, setSelectedOption] = useState('CRM');
 
     function renderMenu(menus) {
         return menus?.map((menu) => {
@@ -133,8 +134,11 @@ const AdminPermissionScreen = () => {
                     Authorization: "Bearer ".concat(token),
                 }
             }
+                const query={
+                    pf:selectedOption
+                }
             try {
-                const response = await axios.get(Baseurl + `/db/admin/permission?id=${id} `, header);
+                const response = await axios.get(Baseurl + `/db/admin/permission?id=${id} `,{ ...header,params:query});
                 setpermissionView(response.data.data);
             } catch (error) {
                 if (error?.response?.data?.message) {
@@ -175,7 +179,6 @@ const AdminPermissionScreen = () => {
             }
         }
     }
-    const [selectedOption, setSelectedOption] = useState('CRM');
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -187,12 +190,12 @@ const AdminPermissionScreen = () => {
     useEffect(() => {
         if (!router.isReady) return;
         getPermissionList(id)
-    }, [router.isReady, id]);
+    }, [router.isReady, id,selectedOption]);
 
     return (
         <div className={`main_Box  ${sideView}`}>
             <div className="bread_head">
-                <h3 className="content_head">CLIENT PERMISSIONS(CRM)</h3>
+                <h3 className="content_head">CLIENT PERMISSIONS</h3>
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item"> <Link href='/Admin'> All Clients </Link></li>
@@ -212,21 +215,28 @@ const AdminPermissionScreen = () => {
           className="form-control-sm"
         >
           <option>CRM</option>
-          <option>ChannelPartner</option>
+          <option>CHANNEL</option>
           <option>DMS</option>
-          <option>Sales App</option>
+          <option>SALES</option>
         </Form.Control>
       </Form.Group>
                     </div>
                 
 
 
-                    {permissionView ? <> {renderMenu(permissionView)}</> : ''}
-
-                    <div className="submit-btn-box">
+                    {permissionView ? <>
+                     {renderMenu(permissionView)}
+                     
+                     </> : ''}
+                    {
+                        permissionView?.length > 0 && (
+                            <div className="submit-btn-box">
                         <Link href='/admin'><button className="btn btn-cancel">Go Back</button></Link>
                         <button onClick={submitFunc} className="btn btn-primary">Submit</button>
                     </div>
+                        )
+                    }
+                    
                 </div>
 
             </div>

@@ -123,7 +123,7 @@ const CP_NavBar_Admin = () => {
 
 
 
-    <nav className="navbar navbar-expand-lg navbar-light bg-white">
+    <nav className="navbar navbar-expand-xl navbar-light bg-white">
   <div className="container-fluid">
       <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="normal"  />
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">

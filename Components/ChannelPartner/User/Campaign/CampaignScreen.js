@@ -8,6 +8,9 @@ import { toast, useToast } from "react-toastify";
 import { Modal } from "react-bootstrap";
 import { Delete } from "@mui/icons-material";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { startButtonLoading, stopButtonLoading } from "../../../../store/buttonLoaderSlice";
+import Loader from "../../../Loader/Loader";
 
 const CampaignScreen = () => {
   const [showModal, setShowModal] = useState(false);
@@ -32,9 +35,15 @@ const CampaignScreen = () => {
   });
   const[editMode,setEditMode]=useState(false)
   const[projects,setProjects]=useState([]);
+  const dispatch=useDispatch()
+  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+  const [loader,setLoader]=useState();
+  const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+
   
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -49,15 +58,20 @@ const CampaignScreen = () => {
       };
 
       try {
-        const { data } = await axios.get(
+        const response = await axios.get(
           Baseurl + `/db/channel/project`,
           header
         );
-        setProjects(data?.data)
+        if(response.status === 200 || response.status === 201){
+          setLoader(false)
+        setProjects(response?.data?.data)
+        }
       } catch (error) {
         if (error?.response?.data?.message) {
+          setLoader(false)
           toast.error(error.response.data.message);
         } else {
+          setLoader(false)
           toast.error("Something went wrong!");
         }
       }
@@ -201,9 +215,11 @@ const CampaignScreen = () => {
   }
 
     try {
+      dispatch(startButtonLoading())
       const response = await axios.post(`${Baseurl}/db/channel/project/usertemplate`,formData, header);
       if (response.status === 200 || response.status === 201) {
         toast.success(response.data.message);
+        dispatch(stopButtonLoading())
         setEditMode(false)
         setShowModal(false)
         setProjectData("")
@@ -212,12 +228,15 @@ const CampaignScreen = () => {
     } catch (error) {
       console.log(error)
       if (error?.response?.data?.status === 422) {
+        dispatch(stopButtonLoading())
             toast.error(error?.response?.data?.message)
             
       }
       if (error?.response?.data?.message) {
+        dispatch(stopButtonLoading())
         toast.error(error.response.data.message);
       } else {
+        dispatch(stopButtonLoading())
         toast.error("Something went wrong!");
       }
     }
@@ -227,7 +246,11 @@ const CampaignScreen = () => {
 
   return (
     <>
-      <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
+    {
+      loader ? <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto"><Loader/></div>
+      :
+      (
+        <div className="ps-4 pe-4 pb-4 w-100 mt-4 overflow-auto">
         
         <section className="Channel-profile Booking-Detail Visit-Details Campaigns  pb-2 bg-white">
           <div className="container mt-3 mb-4">
@@ -253,7 +276,9 @@ const CampaignScreen = () => {
                       </div>
                       <div className="col-4 d-flex justify-content-end">
                         <div className="d-flex gap-2">
-                          <img
+                        {
+                          hasCookie("channel") && userInfo?.role_id==1 && (
+                            <img
                             src="/ChannelPartner/profile-edit-white.svg"
                             onClick={()=>{
                                 setEditMode(true)
@@ -264,6 +289,9 @@ const CampaignScreen = () => {
                             
                             style={{ height: 17,cursor:"pointer" }}
                           />
+                          )
+                        }
+                          
                           <Link
                             href={`/partner/CampaignDetails?id=${project?.project_id}`}
                           >
@@ -287,13 +315,19 @@ const CampaignScreen = () => {
           </div>
         </section>
       </div>
+      )
+    }
+      
 
       <Modal
         show={showModal}
         onHide={() => {
-            setEditMode(false)
-          setProjectData("")
-          setShowModal(false);
+          if(isButtonLoading==true)
+            {
+              setEditMode(false)
+              setProjectData("")
+              setShowModal(false);
+            }
         }}
         size="lg"
         centered
@@ -480,20 +514,30 @@ const CampaignScreen = () => {
             </div>
 
             <div className="d-flex justify-content-center align-items-center gap-3 ">
-              <div
+              <button
+              type="button"
+              disabled={isButtonLoading}
                 className="btn btn-danger rounded-5"
                 onClick={() => {setShowModal(false); setProjectData(""); setEditMode(false); } }
               >
                 Cancel
-              </div>
+              </button>
               {
                 editMode ?
                 (
                     <button
+                    disabled={isButtonLoading}
                 className="btn text-white rounded-5"
                 style={{ background: clientBtnColor }}
               >
-                Update
+                {isButtonLoading ? (
+                    <>
+                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    &nbsp;Update
+                  </>
+                ) : (
+                  'Update'
+                )}                 
               </button>
                 ) 
                 :

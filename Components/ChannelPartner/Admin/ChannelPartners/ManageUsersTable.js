@@ -377,12 +377,11 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                         <Select
                                             id="select"
                                             defaultValue={""}
-                                            options={usersList?.map((data, index) => {
-                                                
-                                            return {
-                                                value: data?.user_id,
-                                                label: data?.user,
-                                            };
+                                            options={usersList?.filter(user => user.role_id === 2).map((data) => {
+                                                return {
+                                                    value: data?.user_id,
+                                                    label: data?.user,
+                                                };
                                             })}
                                             value={usersList?.map((data, index) => {
                                             if (oldAssignTo === data.user_id) {

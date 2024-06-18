@@ -184,7 +184,7 @@ const Topnav = ({  topnavPermission }) => {
 
         {
           userInfo ?
-          hasCookie("channel") && userInfo?.role_id != null && userInfo?.role_id != 3  ? (
+          hasCookie("channel") &&  userInfo?.role_id != null && userInfo?.role_id != 3  ? (
             <CP_Navbar_User  />
           ) : (
     
@@ -196,12 +196,7 @@ const Topnav = ({  topnavPermission }) => {
         
         
 
-      {/* {hasCookie("channel") && userInfo?.db_role != null && userInfo?.db_role?.role_id != 3  ? (
-        <CP_Navbar_User  />
-      ) : (
-
-        <CP_Navbar_Admin  />
-      )} */}
+      
 
       {!hasCookie("channel") && (
         <>

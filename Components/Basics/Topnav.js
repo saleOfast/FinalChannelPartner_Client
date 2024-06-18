@@ -41,8 +41,10 @@ const Topnav = ({  topnavPermission }) => {
     dispatch(clearTheme());
     if (hasCookie("channel")) {
       router.push(isAdminMode ? "/admin" : "/partner")
+      router.reload()
     } else {
       router.push(isAdminMode ? "/admin" : "/")
+      router.reload()
     }
     dispatch(clearValue())
     dispatch(isAdminMode ? LoggedOut()  : userLogOut()); 
@@ -182,36 +184,223 @@ const Topnav = ({  topnavPermission }) => {
   return (
     <>
 
-        
-
-        {/* {
-          userInfo &&
-          hasCookie("channel") && (userInfo?.role_id==1 || userInfo?.role_id==2) && (
-            <CP_Navbar_User  />
-          )
-        }
-
         {
-          userInfo &&
-          hasCookie("channel") && (userInfo?.role_id==null || userInfo?.role_id==3) && (
-            <CP_Navbar_Admin  />
-          )
-        } */}
-        
-         {
           userInfo ?
-          hasCookie("channel") && userInfo?.role_id != null && userInfo?.role_id != 3  ? (
-            <CP_Navbar_User  />
-          ) : (
-    
+          hasCookie("channel") && (userInfo?.role_id == null || userInfo?.role_id == 3)  ? (
             <CP_Navbar_Admin  />
-          )
+          ) : hasCookie("channel") && (userInfo?.role_id == 1 || userInfo?.role_id == 2) ? (
+    
+            <CP_Navbar_User  />
+          ): null
           : null
         }
-
+        
         
       {userInfo &&  hasCookie("crm") && (
-        <>
+       <div className="mb-5 pb-4">
+       <ConfirmBox
+         showConfirm={showConfirm}
+         setshowConfirm={setshowConfirm}
+         actionType={logouthandler}
+         title={"Are You Sure you want to Logout ?"}
+       />
+       <div
+         className="topNav_Wrapper"
+         style={{
+           height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
+         }}
+       >
+         <div className="top_nav">
+           {/* <div className="brand_icon"> */}
+           <div className="">
+             {!hasCookie("Admin") &&
+             
+             <img
+             src={
+               clientData?.logo
+                 &&( `${filesUrl}` +
+                   `/logo/images${clientData?.logo}`)
+             }
+             alt
+           />
+              }
+              {hasCookie("Admin") &&
+             
+             <img
+             src="/ChannelPartner/sale-o-fast-logo.png"
+             alt
+           />
+              }
+              
+             {hasCookie("dms") && (
+               <img src="/DMS_IMAGES/kloudmart.png" className />
+             )}
+           </div>
+           <div className="profile_sec">
+             {dbMode !== "admin" && !isCHannel ?
+              (
+               <div className="quick_add_sec d-flex gap-2 ">
+                 {
+                   hasCookie("crm") && allowedpermission?.length>1 && (
+                     <img
+                     style={{width:"20px"}} 
+                     src="/switch.svg"
+                     onClick={()=>{
+                       deleteCookie("crm")
+                       dispatch(clearValue())
+                       router.push("/")
+                     }}/>
+                   )
+                 }
+                 {hasCookie("crm") && (
+                   <Dropdown>
+                     <Dropdown.Toggle variant="primary" id="quickAdd">
+                       <div className="plusicon">
+                         <PlusIcon />{" "}
+                       </div>
+                       <div className="btn_text"> Quick Add </div>
+                       <div className="chevrolet">
+                         <ChevroletLeftIcon />{" "}
+                       </div>
+                     </Dropdown.Toggle>
+
+                     <Dropdown.Menu>
+                       <ul className="quickaddlist">
+                         <Link href="/AddLeads">
+                           <li className="list-item">
+                             <div className="plus_icon">
+                               {" "}
+                               <PlusIcon />{" "}
+                             </div>
+                             <div className="text"> Lead </div>
+                           </li>
+                         </Link>
+                         <Link href="/AddAccount">
+                           <li className="list-item">
+                             <div className="plus_icon">
+                               {" "}
+                               <PlusIcon />{" "}
+                             </div>
+                             <div className="text"> Account </div>
+                           </li>
+                         </Link>
+                         <Link href="/AddContact">
+                           <li className="list-item">
+                             <div className="plus_icon">
+                               {" "}
+                               <PlusIcon />{" "}
+                             </div>
+                             <div className="text"> Contact </div>
+                           </li>
+                         </Link>
+                         <Link href="/AddOpportunity">
+                           <li className="list-item">
+                             <div className="plus_icon">
+                               {" "}
+                               <PlusIcon />{" "}
+                             </div>
+                             <div className="text"> Opportunity </div>
+                           </li>
+                         </Link>
+                         <Link href="/AddQuotations">
+                           <li className="list-item">
+                             <div className="plus_icon">
+                               {" "}
+                               <PlusIcon />{" "}
+                             </div>
+                             <div className="text"> Quotation </div>
+                           </li>
+                         </Link>
+                         <Link href="/AddTask">
+                           <li className="list-item">
+                             <div className="plus_icon">
+                               {" "}
+                               <PlusIcon />{" "}
+                             </div>
+                             <div className="text"> Task </div>
+                           </li>
+                         </Link>
+                       </ul>
+                     </Dropdown.Menu>
+                   </Dropdown>
+                 )}
+               </div>
+             ) : null}
+
+             <div className="user_profile p-2">
+               <Dropdown>
+                 <Dropdown.Toggle variant="none" id="profileBtn">
+                   <div className="btn_wrapper">
+                     <div className="img_sec w-35 h-35">
+                       {dbMode == "admin" ? (
+                         <img
+                           src={
+                             userInfo?.profile_img
+                               ? `${filesUrl}/adminProfile/images${userInfo?.profile_img}`
+                               : `/images/profile_picture.png`
+                           }
+                           alt="normal"
+                         />
+                       ) : (
+                         <img
+                           src={
+                             userInfo?.db_user_profile?.user_image_file
+                               ? `${filesUrl}/lsUser/images${userInfo?.db_user_profile?.user_image_file}`
+                               : `/images/profile_picture.png`
+                           }
+                           alt="normal"
+                         />
+                       )}
+                     </div>
+                     <div className="name_sec">
+                       <div className="name">
+                         {" "}
+                         {userInfo?.user ? userInfo.user : "user"}{" "}
+                       </div>
+                       <div className="role"> {} </div>
+                     </div>
+                   </div>
+                 </Dropdown.Toggle>
+
+                 <Dropdown.Menu>
+                   <ul className="profile_list">
+                     <Link
+                       href={dbMode == "admin" ? "/Profile" : "/UserProfile"}
+                     >
+                       <li className="list-item">
+                         <div className="icon">
+                           <AvatarIcon />
+                         </div>
+                         <div className="text"> Profile </div>
+                       </li>
+                     </Link>
+
+                     <li className="list-item">
+                       <div className="icon">
+                         {" "}
+                         <LogoutIcon />{" "}
+                       </div>
+                       <div
+                         className="text"
+                         onClick={() => setshowConfirm(!showConfirm)}
+                       >
+                         {" "}
+                         logout{" "}
+                       </div>
+                     </li>
+                   </ul>
+                 </Dropdown.Menu>
+               </Dropdown>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+      )}
+
+      {
+        hasCookie("Admin") && (
+          <div className="mb-5 pb-4">
           <ConfirmBox
             showConfirm={showConfirm}
             setshowConfirm={setshowConfirm}
@@ -409,12 +598,13 @@ const Topnav = ({  topnavPermission }) => {
               </div>
             </div>
           </div>
-        </>
-      )}
+        </div>
+        )
+      }
 
 
       {userInfo && router.pathname=="/" && !hasCookie("crm") && !hasCookie("dms") && !hasCookie("sales") && !hasCookie("channel") && (
-          <>
+          <div className="mb-5 pb-4">
           <ConfirmBox
             showConfirm={showConfirm}
             setshowConfirm={setshowConfirm}
@@ -509,7 +699,7 @@ const Topnav = ({  topnavPermission }) => {
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
 
       

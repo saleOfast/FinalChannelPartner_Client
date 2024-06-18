@@ -114,11 +114,11 @@ const AssignLeadScreen = () => {
                     },
                 };
 
-                let myoj = {...dataList[0], "assigned_lead": currObj.assigned_lead}
+                let myoj = { "assigned_lead": currObj.assigned_lead,"lead_id":currObj.lead_id,}
                
 
                 try {
-                    const response = await axios.put(Baseurl + `/db/leads?as=1`, myoj ,header);
+                    const response = await axios.put(Baseurl + `/db/leads/assign_lead?as=1`, myoj ,header);
                     if (response.status === 204 || response.status === 200) {
                         toast.success(response.data.message);
                         setasgnConHandler(false)
@@ -138,10 +138,13 @@ const AssignLeadScreen = () => {
     }
 
     const changeHandler = (value, id, row) => {
+        
+        console.log(value,id,"row",row)
         let arr = reqData
         if (arr[row.rowIndex]?.assigned_lead) {
             arr[row.rowIndex].assigned_lead = value,
                 arr[row.rowIndex].lead_id = id
+                console.log(arr)
             setReqData(arr)
         } else {
             const Data = { assigned_lead: value, lead_id:id }

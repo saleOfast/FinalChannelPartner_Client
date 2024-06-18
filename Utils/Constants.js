@@ -1,8 +1,8 @@
 
 /*  -----------------uat links------------- */
 
-// export const Baseurl = 'https://crm.saleofast.com:8050/api/v1';
-// export const filesUrl = 'https://crm.saleofast.com:8050/images'; 
+// export const Baseurl = 'http://crm.saleofast.com:8050/api/v1';
+// export const filesUrl = 'http://crm.saleofast.com:8050/images'; 
 
 /*  -----------------iis links------------- */
 

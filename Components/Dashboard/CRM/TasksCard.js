@@ -17,7 +17,7 @@ const TasksCard = ({ dataList }) => {
 
                 <div className="tasks_details">
                     <div className="btn-box">
-                        <Link href={`/CRM/AddTask`}>
+                        <Link href={`/crm/AddTask`}>
                             <button className='btn btn-primary'> <PlusIcon /> Add task </button>
                         </Link>
                     </div>
@@ -37,7 +37,7 @@ const TasksCard = ({ dataList }) => {
                     </ol>
                 </div>
                 <div className="card_footer">
-                    <Link href='/CRM/TaskScreen'>  <div className="text_more">view more</div></Link>
+                    <Link href='/crm/TaskScreen'>  <div className="text_more">view more</div></Link>
                 </div>
             </div>
         </>

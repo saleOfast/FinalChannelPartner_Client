@@ -165,6 +165,7 @@ export default function SignInScreen({ setLoggedIn }) {
         const { data } = await axios.post(Baseurl + "/db/admin/url", {
           client_url: `${baseUrl}`,
         });
+        setCookie("clientBtnColor",data?.data?.button_color)
         setClientData(data?.data);
       } catch (error) {
         console.log(error);

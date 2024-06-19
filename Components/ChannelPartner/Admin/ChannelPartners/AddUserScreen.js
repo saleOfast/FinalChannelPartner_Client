@@ -998,7 +998,7 @@ const AddUserScreen = () => {
             
             
             {
-              userInfoCheck?.role_id==null && (
+              hasCookie("channel") && userInfoCheck?.role_id==null && (
                 <div className="text-end">
                 <div className="submit_btn">
                   <Link href="/partner/ActivePartners">

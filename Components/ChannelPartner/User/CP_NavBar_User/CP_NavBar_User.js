@@ -44,11 +44,9 @@ const CP_NavBar = () => {
     dispatch(clearMode());
     if (hasCookie("channel")) {
       router.push(isAdminMode ? "/Admin" : "/partner");
-      router.reload()
 
     } else {
       router.push(isAdminMode ? "/Admin" : "/");
-      router.reload()
 
     }
     dispatch(isAdminMode ? LoggedOut() : userLogOut());

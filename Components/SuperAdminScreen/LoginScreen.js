@@ -16,7 +16,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const LoginScreen = ({ isLoggedIn, setisLoggedIn }) => {
     const dispatch = useDispatch()
-    const[clientData,setClientData]=useState();
     const [userForm, setUserForm] = useState({
         email: "",
         password: ""
@@ -59,23 +58,7 @@ const LoginScreen = ({ isLoggedIn, setisLoggedIn }) => {
         }
     }
 
-    useEffect(()=>{
-        const getSignInData=async()=>{
-          try {
-            let baseUrl = window.location.origin;
-            if(baseUrl==="http://localhost:3000"){
-              baseUrl="http://crm.cybermatrixsolutions.com"
-            }
-            const {data}=await axios.post(Baseurl+"/db/admin/url",{
-              client_url:`${baseUrl}`,
-            })
-            setClientData(data?.data)
-          } catch (error) {
-            console.log(error)
-          }
-        }
-        getSignInData()
-      },[])
+    
 
     return (
         <div className="NewLoginScreen bg-white">

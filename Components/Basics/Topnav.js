@@ -42,10 +42,10 @@ const Topnav = ({  topnavPermission }) => {
     
     if (hasCookie("channel")) {
       router.push(isAdminMode ? "/admin" : "/partner")
-      // router.reload()
+
     } else {
       router.push(isAdminMode ? "/admin" : "/")
-      // router.reload()
+
     }
     dispatch(clearValue())
     dispatch(isAdminMode ? LoggedOut()  : userLogOut()); 

@@ -74,7 +74,7 @@ export default function UserEditProfile({ setEditMode, userData }) {
                     if (userImage) {
                         AddUploadPicture(userInfo.user_id, 'lsUser', userImage[0], userInfo.db_user_profile?.user_image_file)
                     }
-                    setEditMode(false)
+
                 }
 
             } catch (error) {

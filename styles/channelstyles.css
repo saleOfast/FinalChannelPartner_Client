@@ -650,6 +650,11 @@
   overflow: hidden;
   height: 477px;
 }
+@media screen and (max-width: 768px){
+  .Channel-profile .channel-profile-logout{
+    height: 437px !important;
+  } 
+}
 
 .Channel-profile .General-list li:hover > span {
   background-color: transparent;

@@ -128,10 +128,12 @@ const CP_NavBar_Admin = () => {
 
     <nav className="navbar navbar-expand-xl navbar-light bg-white">
   <div className="container-fluid">
-      <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="normal"  />
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="normal"  style={{maxHeight:"8vh"}}/>
+    
+      <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon" />
         </button>
+        
      <div className="collapse navbar-collapse " id="navbarNavDropdown">
       <ul className="navbar-nav ms-auto">
                     {

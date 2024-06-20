@@ -9,6 +9,7 @@ import { userLogOut } from "../../../../store/ClientLoginSlice";
 import { toast } from "react-toastify";
 import { Baseurl, filesUrl } from '../../../../Utils/Constants';
 import axios from 'axios';
+import Link from 'next/link';
 
 
 const ChannelProfileScreen = () => {
@@ -18,7 +19,6 @@ const ChannelProfileScreen = () => {
     const [showConfirm, setshowConfirm] = useState(false);
     const dbMode = useSelector((state) => state.dbMode.value);
     const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
-
 
 
     const logouthandler = () => {
@@ -102,15 +102,17 @@ const ChannelProfileScreen = () => {
                 actionType={logouthandler}
                 title={"Are You Sure you want to Logout ?"}
             />
-            <div className="w-100 ps-4 pe-4" >
+            <div className="w-100 ps-4 pe-4" style={{overflowY:"auto"}} >
                 <div className="main_content">
                     <section className="Channel-profile pb-2">
                         <div className="container mb-4">
-                            <div className="row gx-4">
-                                <div className="profile-text mb-4">Profile</div>
+                            <div className="row gx-4 ">
+                            <div className="profile-text mb-3">Profile</div>
+                            
                                 <div className="col-12 col-lg-4">
                                     <div className="position-relative profile-details image d-flex flex-column justify-content-center">
                                         <div className="text-center d-flex justify-content-center align-items-center"> 
+                                        <Link href="/partner/UserEdit">
                                         <img style={{height:"120px", width:"120px"}}
                           src={
                             userInfo?.db_user_profile?.user_image_file
@@ -119,6 +121,8 @@ const ChannelProfileScreen = () => {
                           }
                           alt="normal"
                         />
+                                        </Link>
+                                        
                                         </div>
                                         <div className="profile-edit">
                                             {/* <img src="/ChannelPartner/profile-edit.svg" alt="normal" className="position-absolute" style={{ cursor: "pointer"  }}/> */}
@@ -133,6 +137,7 @@ const ChannelProfileScreen = () => {
                                                         <span className="edit-email">
                                                             Email
                                                         </span>
+                                                        
                                                         {/* <img src="/ChannelPartner/profile-edit.svg" alt="normal" style={{ height: "17px", cursor: "pointer"  }} /> */}
                                                        
                                                     </div>
@@ -145,7 +150,9 @@ const ChannelProfileScreen = () => {
                                                         <span className="edit-phone">
                                                             Phone
                                                         </span>
-                                                        {/* <img src="/ChannelPartner/profile-edit.svg" alt="normal" style={{ height: "17px", cursor: "pointer" }} /> */}
+                                                        <Link href="/partner/UserEdit" >
+                                                        <img src="/ChannelPartner/profile-edit.svg" alt="normal" style={{ height: "17px", cursor: "pointer" }} />
+                                                        </Link>
                                                     </div>
                                                     <div>
                                                         <span className="edit-phone text-black">+91-{userInfo.contact_number}</span>
@@ -155,13 +162,13 @@ const ChannelProfileScreen = () => {
                                         </div>
                                     </div>
 
-                                    <div className="profile-logout d-flex justify-content-between align-items-center mt-4" onClick={() => setshowConfirm(!showConfirm)}>
+                                    <div className="profile-logout d-flex justify-content-between align-items-center mt-4  d-none d-lg-flex" onClick={() => setshowConfirm(!showConfirm)}>
                                         <span>Logout</span>
                                         <img src="/ChannelPartner/profile-logout.svg" alt="normal" />
                                     </div>
                                 </div>
                                 <div className="col-12 col-lg-8">
-                                    <ul className="list-group General-list">
+                                    <ul className="list-group General-list channel-profile-logout" >
                                         <li href="#" className="list-group-item list-group-item-action  text-white"
                                             aria-current="true" 
                                                 style={{background:clientBtnColor}}                                                
@@ -201,6 +208,10 @@ const ChannelProfileScreen = () => {
                                             <span className="list-right" style={{ fontSize: "60px", lineHeight: "0" }}>......</span>
                                         </li>
                                     </ul>
+                                    <div className="profile-logout d-flex justify-content-between align-items-center d-lg-none mt-lg-4  " onClick={() => setshowConfirm(!showConfirm)}>
+                                        <span>Logout</span>
+                                        <img src="/ChannelPartner/profile-logout.svg" alt="normal" />
+                                    </div>
                                 </div>
                             </div>
                         </div>

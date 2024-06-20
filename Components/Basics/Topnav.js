@@ -39,12 +39,13 @@ const Topnav = ({  topnavPermission }) => {
     const isMasterOrUserMode = dbMode === "master" || dbMode === "user";
     setshowConfirm(!showConfirm);
     dispatch(clearTheme());
+    
     if (hasCookie("channel")) {
       router.push(isAdminMode ? "/admin" : "/partner")
-      router.reload()
+      // router.reload()
     } else {
       router.push(isAdminMode ? "/admin" : "/")
-      router.reload()
+      // router.reload()
     }
     dispatch(clearValue())
     dispatch(isAdminMode ? LoggedOut()  : userLogOut()); 
@@ -168,7 +169,7 @@ const Topnav = ({  topnavPermission }) => {
       try {
         let baseUrl = window.location.origin;
         if(baseUrl==="http://localhost:3000"){
-          baseUrl="http://crm.cybermatrixsolutions.com"
+          baseUrl="https://crm.saleofast.com"
         }
         const {data}=await axios.post(Baseurl+"/db/admin/url",{
           client_url:`${baseUrl}`,
@@ -210,9 +211,9 @@ const Topnav = ({  topnavPermission }) => {
            height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
          }}
        >
-         <div className="top_nav">
+         <div className="top_nav" style={{height:"8vh"}}>
            {/* <div className="brand_icon"> */}
-           <div className="">
+           <div className="h-100">
              {!hasCookie("Admin") &&
              
              <img
@@ -221,6 +222,7 @@ const Topnav = ({  topnavPermission }) => {
                  &&( `${filesUrl}` +
                    `/logo/images${clientData?.logo}`)
              }
+             className="h-100"
              alt
            />
               }
@@ -617,9 +619,9 @@ const Topnav = ({  topnavPermission }) => {
               height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
             }}
           >
-            <div className="top_nav">
+            <div className="top_nav" style={{height:"8vh"}}>
               {/* <div className="brand_icon"> */}
-              <div className="">
+              <div className="h-100">
 
                 <img
                 src={
@@ -627,6 +629,7 @@ const Topnav = ({  topnavPermission }) => {
                     &&( `${filesUrl}` +
                       `/logo/images${clientData?.logo}`)
                 }
+                className="h-100"
                 alt
               />
               </div>

@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Baseurl, filesUrl } from "../../Utils/Constants";
+import { useDispatch, useSelector } from "react-redux";
+import { startButtonLoading, stopButtonLoading } from "../../store/buttonLoaderSlice";
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -13,6 +15,8 @@ const ForgotPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [token, setToken] = useState('')
   const[clientData,setClientData]=useState()
+  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+  const dispatch=useDispatch();
 
   const handleSubmit = async () => {
 
@@ -38,11 +42,13 @@ const ForgotPassword = () => {
     }
 
     try {
+      dispatch(startButtonLoading())
       const response = await axios.put(Baseurl + `/db/users/forget`, {
           token,
           password: newPassword
       });
       if (response.status === 204 || response.status === 200) {
+        dispatch(stopButtonLoading())
           toast.success(response.data.message)
           router.push('/partner')
       }
@@ -50,9 +56,11 @@ const ForgotPassword = () => {
       console.log(error);
       if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
+          dispatch(stopButtonLoading())
       }
       else {
           toast.error('Something went wrong!')
+          dispatch(stopButtonLoading())
       }
   }
   };
@@ -68,7 +76,7 @@ useEffect(()=>{
     try {
       let baseUrl = window.location.origin;
       if(baseUrl==="http://localhost:3000"){
-        baseUrl="http://crm.cybermatrixsolutions.com"
+        baseUrl="https://crm.saleofast.com"
       }
       const {data}=await axios.post(Baseurl+"/db/admin/url",{
         client_url:`${baseUrl}`,
@@ -152,11 +160,20 @@ useEffect(()=>{
                       </form>
                       <button
                         type="button"
+                        disabled={isButtonLoading}
                         style={{background:clientData?.button_color}}
                         className="login_btn mt-3"
                         onClick={() => handleSubmit()}
                       >
-                        Update Password
+                        {isButtonLoading ? (
+                                  <>
+                                     <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp; Update Password
+                                  </>
+                                ) : (
+                                  'Update Password'
+                                )} 
+                        
                       </button>
                     </div>
                   </div>

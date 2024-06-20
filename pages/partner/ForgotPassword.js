@@ -5,6 +5,8 @@ import axios from "axios";
 import { Baseurl, filesUrl } from "../../Utils/Constants";
 import { setCookie } from "cookies-next";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { startButtonLoading, stopButtonLoading } from "../../store/buttonLoaderSlice";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -15,6 +17,8 @@ const ForgotPassword = () => {
   const [timer, setTimer] = useState(30);
   const[clientData,setClientData]=useState()
   const router = useRouter();
+  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+  const dispatch=useDispatch();
 
   const resendCode = async () => {
     setCode("");
@@ -32,6 +36,7 @@ const ForgotPassword = () => {
       return;
     }
     try {
+      dispatch(startButtonLoading())
       // Make the API request using Axios
       const response = await axios.post(`${Baseurl}/db/users/cp/verify`, {
         email: email.trim(),
@@ -39,14 +44,17 @@ const ForgotPassword = () => {
       });
       if (response.data.status == 200) {
         toast.success(response.data.message);
+        dispatch(stopButtonLoading())
         setCookie('resetPasswordEmail',email);
         router.push("/partner/ResetPassword/");
       } else {
         toast.error(response.data.message);
+        dispatch(stopButtonLoading())
       }
     } catch (error) {
       console.log("error", error);
       toast.error("Something went wrong.");
+      dispatch(stopButtonLoading())
     }
   };
 
@@ -56,20 +64,24 @@ const ForgotPassword = () => {
       return;
     }
     try {
+      dispatch(startButtonLoading())
       // Make the API request using Axios
       const response = await axios.post(`${Baseurl}/db/users/cp/send`, {
         email: email.trim(),
       });
       if (response.data.status == 200) {
         toast.success(response.data.message);
+        dispatch(stopButtonLoading())
         setIsShowVerification(true);
         startTimer();
       } else {
         toast.error(response.data.message);
+        dispatch(stopButtonLoading())
       }
     } catch (error) {
       console.log("error", error);
       toast.error("Something went wrong.");
+      dispatch(stopButtonLoading())
     }
   };
 
@@ -91,7 +103,7 @@ const ForgotPassword = () => {
       try {
         let baseUrl = window.location.origin;
         if(baseUrl==="http://localhost:3000"){
-          baseUrl="http://crm.cybermatrixsolutions.com"
+          baseUrl="https://crm.saleofast.com"
         }
         const {data}=await axios.post(Baseurl+"/db/admin/url",{
           client_url:`${baseUrl}`,
@@ -201,7 +213,8 @@ const ForgotPassword = () => {
                       <div className="d-block gap-1">
                       <button
                         type="button"
-                        className="login_btn mt-5"
+                        className="login_btn btn mt-5"
+                        disabled={isButtonLoading}
                         style={{background:clientData?.button_color}}
                         onClick={() =>
                           isShowVerification
@@ -210,12 +223,15 @@ const ForgotPassword = () => {
                         }
                       >
                         {isShowVerification
-                          ? "Verify"
-                          : "Send Verification Code"}
+                          ? isButtonLoading ?(<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Verify</>) :"Verify"
+                          : isButtonLoading ?(<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Send Verification Code</>) :"Send Verification Code"}
                       </button>
-                      <Link href="/partner" className="login_btn btn  mt-2">
+
+                      <button disabled={isButtonLoading} onClick={()=>{
+                        router.push("/partner")
+                      }} className="login_btn btn  mt-2">
                           Login
-                      </Link>
+                      </button>
                       </div>
                       
                     </div>

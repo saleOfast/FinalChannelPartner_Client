@@ -48,6 +48,8 @@ const ActivePartnersScreen = () => {
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
   const [loader,setLoader]=useState(false);
+  const [selectedOption, setSelectedOption] = useState('Channel Partner');
+
  
 
   
@@ -122,7 +124,12 @@ const ActivePartnersScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, {...header,params:queryObjLeads});
+                
+                const response = selectedOption=="Channel Partner" ? 
+                await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, {...header,params:queryObjLeads})
+                :
+                await axios.get(Baseurl + `/db/users/rolewise?role_id=2`, {...header,params:queryObjLeads})
+
                 if(response?.status === 200 || response?.status === 201){
                     setLoader(false)
                 setDataList(response.data.data);
@@ -285,7 +292,7 @@ const ActivePartnersScreen = () => {
     useEffect(() => {
         getDataList();
         getUsersList();
-    }, [])
+    }, [selectedOption])
 
     return (
         <>
@@ -318,6 +325,8 @@ const ActivePartnersScreen = () => {
                           setShowDateFilter={setShowDateFilter}
                           usersList={usersList}
                           getDataList={getDataList}
+                          selectedOption={selectedOption}
+                          setSelectedOption={setSelectedOption}
                       />
                   </div>
               </div>

@@ -50,6 +50,8 @@ const AddUserScreen = () => {
     chequePreview:null,
   });
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#405189"
+  const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+
 
 
   async function getRolesList() {
@@ -995,39 +997,43 @@ const AddUserScreen = () => {
             </div>
             
             
-
-            <div className="text-end">
-              <div className="submit_btn">
-                <Link href="/partner/ActivePartners">
-                  <button className=" btn btn-danger rounded-2 me-2">Cancel</button>
-                </Link>
-                {
-                  editMode ?  null: viewMode ?(<Link href={`/partner/EditActiveUsers?id=${userInfo.user_code}&mode=edit`}>
-                  <button className="btn btn-cancel text-white me-2 " style={{background:`${clientBtnColor}` }}>Edit</button>
-                </Link>) : null
-                }
-                {editMode ? (
-                  <button
-                    disabled={isLoading}
-                    className="btn text-white"
-                    onClick={updateUserhandler}
-                    style={{background:`${clientBtnColor}` }}
-                  >
-                    {isLoading ? "Loading..." : "Update"}
-                  </button>
-                ) : viewMode ? null : (
-                  <button
-                    disabled={isLoading}
-                    className="btn text-white"
-                    onClick={addUserHandler}
-                    style={{background:`${clientBtnColor}` }}
-
-                  >
-                    {isLoading ? "Loading..." : "Save & Submit"}
-                  </button>
-                )}
+            {
+              hasCookie("channel") && userInfoCheck?.role_id==null && (
+                <div className="text-end">
+                <div className="submit_btn">
+                  <Link href="/partner/ActivePartners">
+                    <button className=" btn btn-danger rounded-2 me-2">Cancel</button>
+                  </Link>
+                  {
+                    editMode ?  null: viewMode ?(<Link href={`/partner/EditActiveUsers?id=${userInfo.user_code}&mode=edit`}>
+                    <button className="btn btn-cancel text-white me-2 " style={{background:`${clientBtnColor}` }}>Edit</button>
+                  </Link>) : null
+                  }
+                  {editMode ? (
+                    <button
+                      disabled={isLoading}
+                      className="btn text-white"
+                      onClick={updateUserhandler}
+                      style={{background:`${clientBtnColor}` }}
+                    >
+                      {isLoading ? "Loading..." : "Update"}
+                    </button>
+                  ) : viewMode ? null : (
+                    <button
+                      disabled={isLoading}
+                      className="btn text-white"
+                      onClick={addUserHandler}
+                      style={{background:`${clientBtnColor}` }}
+  
+                    >
+                      {isLoading ? "Loading..." : "Save & Submit"}
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
+              )
+            }
+            
           </div>
         </div>
       </div>

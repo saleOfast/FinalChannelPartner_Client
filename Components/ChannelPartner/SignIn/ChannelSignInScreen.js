@@ -128,7 +128,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
       try {
         let baseUrl = window.location.origin;
         if(baseUrl==="http://localhost:3000"){
-          baseUrl="http://crm.cybermatrixsolutions.com"
+          baseUrl="https://crm.saleofast.com"
         }
         const {data}=await axios.post(Baseurl+"/db/admin/url",{
           client_url:`${baseUrl}`,

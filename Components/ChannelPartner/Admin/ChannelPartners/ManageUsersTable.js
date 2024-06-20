@@ -10,12 +10,12 @@ import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import Loader from '../../../Loader/Loader';
+import { Form } from 'react-bootstrap';
 
 
 
 
-
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader,selectedOption,setSelectedOption }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -23,15 +23,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     const [showModal, setShowModal] =  useState(false)
     const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
 
-
   const getCurrentWeekDates = () => {
     const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
       const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
     return { startDate, endDate };
   };
 
-const [value, setValue] = useState(getCurrentWeekDates());
-
+  const [value, setValue] = useState(getCurrentWeekDates());
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
 
   
@@ -187,7 +185,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             options: {
                 filter: false,
                 download:false,
-                display:(userInfo?.role_id==null || userInfo?.role_id==3)? true:false,
+                display:(userInfo?.role_id==null || userInfo?.role_id==3 ) && selectedOption=="Channel Partner" ? true:false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -240,11 +238,45 @@ const [value, setValue] = useState(getCurrentWeekDates());
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                {/* <button className='btn btn-secondary' onClick={()=>setShowDateFilter(true)}> Custom </button> */}
                 <DateRange value={value} setValue={setValue} getData={getDataList} />
+               {
+                hasCookie("channel") &&(userInfo?.role_id==null || userInfo?.role_id==3) &&(
+                    <div style={{ marginBottom: '0' }}>
+        <select 
+          value={selectedOption} 
+          onChange={handleChange} 
+          style={{
+            display: 'block',
+            width: '100%',
+            padding: '10px 10px',
+            fontSize: '1rem',
+            fontWeight: '400',
+            lineHeight: '1.5',
+            color: '#495057',
+            backgroundColor: '#fff',
+            backgroundClip: 'padding-box',
+            border: '1px solid #ced4da',
+            borderRadius: '.25rem',
+            transition: 'border-color .15s ease-in-out,box-shadow .15s ease-in-out',
+            marginTop: '8px'
+          }}
+        >
+          <option value="Channel Partner">Channel Partner</option>
+          <option value="BST">BST</option>
+        </select>
+      </div>
+                )
+               }
+      
             </div>
         );
     }
+    const handleChange = (event) => {
+        const value = event.target.value;
+        setSelectedOption(value);
+        console.log(`Selected option: ${value}`);
+        // Add any additional logic you want to handle on selection change
+      };
 
     const handleRowClick = (rowData, rowMeta) => {
         console.log(rowData,"rowMeta",rowMeta)

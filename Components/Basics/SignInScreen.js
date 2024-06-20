@@ -160,11 +160,12 @@ export default function SignInScreen({ setLoggedIn }) {
       try {
         let baseUrl = window.location.origin;
         if (baseUrl === "http://localhost:3000") {
-          baseUrl = "http://crm.cybermatrixsolutions.com";
+          baseUrl = "https://crm.saleofast.com";
         }
         const { data } = await axios.post(Baseurl + "/db/admin/url", {
           client_url: `${baseUrl}`,
         });
+        setCookie("clientBtnColor",data?.data?.button_color)
         setClientData(data?.data);
       } catch (error) {
         console.log(error);
@@ -181,13 +182,14 @@ export default function SignInScreen({ setLoggedIn }) {
             <div className="form-left d-flex flex-column justify-content-between">
               <img src="/images/Ellipse26.png" alt="normal"className="image-one" />
               <img
-                src={
+                src={ router.pathname=="/crm" ? 
                   clientData?.logo
                     &&( `${filesUrl}` +
-                      `/logo/images${clientData?.logo}`)
+                      `/logo/images${clientData?.logo}`) :
+                      "/ChannelPartner/sale-o-fast-logo.png"
                 }
                 alt
-                className="logo mx-auto"
+                className=" mx-auto w-auto"
               />
               <img
                 src="/images/Ellipse27.png"

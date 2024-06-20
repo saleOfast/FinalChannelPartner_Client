@@ -1570,7 +1570,7 @@ const AddClientScreen = () => {
                     <div className="row">
                     <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                     <div className="d-flex flex-column gap-1">
-                      <label className="form-label">Logo</label>
+                    <label className="form-label">Logo (Best Size: 150x100)</label>
                       <input
                         type="file"
                         onChange={(e) => handleImageChange(e)}
@@ -1649,7 +1649,7 @@ const AddClientScreen = () => {
                         <div className="row">
                         <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                         <div className="d-flex flex-column gap-1">
-                          <label className="form-label"> Image 1 </label>
+                          <label className="form-label"> Image 1  </label>
                           <input
                             type="file"
                             onChange={(e) => handleClientImageChange(e,"client_image_1","client_image_1_preview")}

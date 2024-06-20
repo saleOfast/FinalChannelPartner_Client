@@ -237,18 +237,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
                 <DateRange value={value} setValue={setValue} getData={getDataList} />
-                {/* <Form.Group controlId="dropdownMenu">
-        <Form.Control 
-          as="select" 
-          value={selectedOption} 
-          onChange={handleChange} 
-          className="form-control-md mt-2"
-        >
-          <option>Channel Partner</option>
-          <option>BST</option>
-        </Form.Control>
-      </Form.Group> */}
-      <div style={{ marginBottom: '0' }}>
+               {
+                hasCookie("channel") &&(userInfo?.role_id==null || userInfo?.role_id==3) &&(
+                    <div style={{ marginBottom: '0' }}>
         <select 
           value={selectedOption} 
           onChange={handleChange} 
@@ -272,6 +263,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
           <option value="BST">BST</option>
         </select>
       </div>
+                )
+               }
+      
             </div>
         );
     }

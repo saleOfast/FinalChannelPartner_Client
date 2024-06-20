@@ -168,6 +168,7 @@ const ForgotPassword = () => {
                           </label>
                           <input
                             type="email"
+                            disabled={isShowVerification}
                             placeholder="Enter email"
                             className="email mb-0"
                             id="email"

@@ -9,7 +9,7 @@ export default function ProfileScreen({ setEditMode, userData }) {
 
     return (
         <>
-            <div className={`main_Box  ${sideView}`}>
+            <div className={`main_Box  w-100`}>
                 <div className="bread_head">
                     <h1 className="content_head">PROFILE</h1>
                     <nav aria-label="breadcrumb">

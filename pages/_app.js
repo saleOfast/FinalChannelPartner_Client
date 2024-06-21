@@ -13,9 +13,7 @@ import Layout from '../Components/layout/layout';
 import Tabs from '../Components/DMS/Tabs/Tabs';
 import { hasCookie } from 'cookies-next';
 import { Fragment } from 'react';
-// import CP_NavBar from '../Components/ChannelPartner/CP_NavBar/CP_NavBar';
 import dynamic from "next/dynamic";
-import Head from 'next/head';
 
 
 

@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Baseurl, filesUrl } from "../../Utils/Constants";
+import { useDispatch, useSelector } from "react-redux";
+import { startButtonLoading, stopButtonLoading } from "../../store/buttonLoaderSlice";
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -12,6 +14,8 @@ const ForgotPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const[clientData,setClientData]=useState()
+  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+  const dispatch=useDispatch();
 
   const handleSubmit = async () => {
     if (!newPassword.trim()) {
@@ -34,19 +38,23 @@ const ForgotPassword = () => {
 
     try {
       // Make the API request using Axios
+      dispatch(startButtonLoading())
       const response = await axios.put(`${Baseurl}/db/users/cp/verify`, {
         email: email.trim(),
         password: newPassword,
       });
       if (response.data.status == 200) {
+        dispatch(stopButtonLoading())
         toast.success(response.data.message);
         router.push("/partner");
       } else {
+        dispatch(stopButtonLoading())
         toast.error(response.data.message);
       }
     } catch (error) {
       console.log("error", error);
       toast.error("Something went wrong.");
+      dispatch(stopButtonLoading())
     }
   };
 
@@ -62,7 +70,7 @@ const ForgotPassword = () => {
       try {
         let baseUrl = window.location.origin;
         if(baseUrl==="http://localhost:3000"){
-          baseUrl="http://crm.cybermatrixsolutions.com"
+          baseUrl="https://crm.saleofast.com"
         }
         const {data}=await axios.post(Baseurl+"/db/admin/url",{
           client_url:`${baseUrl}`,
@@ -125,6 +133,7 @@ const ForgotPassword = () => {
                           </label>
                           <input
                             type="email"
+                            disabled={true}
                             placeholder="Enter email"
                             className="email mb-0"
                             id="email"
@@ -158,11 +167,19 @@ const ForgotPassword = () => {
                       </form>
                       <button
                         type="button"
-                        className="login_btn mt-3"
+                        disabled={isButtonLoading}
+                        className="login_btn btn mt-3"
                         style={{background:clientData?.button_color}}
                         onClick={() => handleSubmit()}
                       >
-                        Update Password
+                        {isButtonLoading ? (
+                                  <>
+                                     <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp; Update Password
+                                  </>
+                                ) : (
+                                  'Update Password'
+                                )} 
                       </button>
                     </div>
                   </div>

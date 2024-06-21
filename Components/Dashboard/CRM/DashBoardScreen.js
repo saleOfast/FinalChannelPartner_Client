@@ -22,7 +22,7 @@ const DashBoardScreen = () => {
 
     const router = useRouter();
     const { id } = router.query;
-
+    
     const [timeFilter, settimeFilter] = useState('weekly');
     const [dataList, setDataList] = useState({})
     const [currentDate, setCurrentDate] = useState(new Date());

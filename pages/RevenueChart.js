@@ -12,7 +12,6 @@ const colors = [
     '#0088FE', // Blue color for Group A
     '#413ea0', // Yellow color for Group B
     '#8dd1e1', // Default color for other groups
-
 ];
 
 const RevenueChart = ({ dataList }) => {
@@ -21,7 +20,7 @@ const RevenueChart = ({ dataList }) => {
         <>
         {dataList && dataList.length > 0 ? 
         <ResponsiveContainer width='100%' height={200}>
-            <PieChart width={100} height={100}>
+            <PieChart width={100} height={200}>
                 <Pie
                     data={dataList}
                     cx="50%"

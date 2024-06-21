@@ -292,21 +292,21 @@ const DashBoardScreenCHANNEL = () => {
                         <div className="row leads_row">
                             <div className="col-xl-4 col-md-4 col-12 col-sm-12">
                                 <DashLeadsCard
-                                    head='TOTAL LEADS'
+                                    head='Total Leads'
                                     price={dataList.leads}
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/groupicon.png' />
                             </div>
                             <div className="col-xl-4 col-md-4 col-12 col-sm-12">
                                 <DashLeadsCard
-                                    head='NEW LEADS'
+                                    head='New Leads'
                                     price={dataList.openLead}
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/groupicon.png' />
                             </div>
                             <div className="col-xl-4 col-md-4 col-12 col-sm-12">
                                 <DashLeadsCard
-                                    head='ACCOUNTS'
+                                    head='Accounts'
                                     price={dataList.accounts}
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/usericon.png' />
@@ -315,21 +315,21 @@ const DashBoardScreenCHANNEL = () => {
                         <div className="row leads_row">
                             <div className="col-xl-4 col-md-4 col-12 col-sm-12">
                                 <DashLeadsCard
-                                    head='OPPORTUNITY'
+                                    head='Opportunity'
                                     price={dataList.opportunities}
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/opportunity.png' />
                             </div>
                             <div className="col-xl-4 col-md-4 col-12 col-sm-12">
                                 <DashLeadsCard
-                                    head='NEW OPPORTUNITY'
+                                    head='New Opportunity'
                                     price={dataList.opportunities}
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/opportunity.png' />
                             </div>
                             <div className="col-xl-4 col-md-4 col-12 col-sm-12">
                                 <DashLeadsCard
-                                    head='OPEN TASK'
+                                    head='Open Task'
                                     price={dataList.task}
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/clipboard.png' />

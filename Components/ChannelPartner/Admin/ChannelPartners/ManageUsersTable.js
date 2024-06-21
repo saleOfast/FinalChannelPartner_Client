@@ -377,10 +377,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 <MUIDataTable
                     title={<CustomToolbar/>}
                     data={dataList}
-<<<<<<< HEAD
-        
-=======
->>>>>>> 0c6474e20bac464f8de932a09c631801ce78a8f9
                     // data={mappedDataList}
                     columns={columns}
                     options={options}

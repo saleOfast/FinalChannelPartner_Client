@@ -338,28 +338,28 @@ const DashboardUser = () => {
                              <div className="row leads_row">
                                  <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                                      <DashLeadsCard
-                                         head='TOTAL LEADS'
+                                         head='Total Leads'
                                          price={dataList.leads}
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                          img='/images/groupicon.png' />  
                                  </div>
                                  <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                                      <DashLeadsCard
-                                         head='VISITS COMPLETED'
+                                         head='Visits Completed'
                                          price={dataList.visits}
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                          img='/images/groupicon.png' />
                                  </div>
                                  <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                                      <DashLeadsCard
-                                         head='BOOKINGS COMPLETED'
+                                         head='Bookings Completed'
                                          price={dataList.booking}
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                          img='/images/usericon.png' />
                                  </div>
                                  <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                                      <DashLeadsCard
-                                         head='TAT FOR LEADS'
+                                         head='Tat For Leads'
                                          price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                          img='/images/usericon.png' />
@@ -370,7 +370,7 @@ const DashboardUser = () => {
                              <div className="row "> 
                             
                                  {dataList?.barchart?.length ?
-                                     <div className="col-xl-12 col-md-6 col-12 col-sm-12 mt-2">
+                                     <div className="col-xl-10 col-md-6 col-12 col-sm-12 mt-2">
                                          <div className="dash_card chartSec">
                                              <ReChart
                                                  head='Leads Generated V/s Leads Booked'

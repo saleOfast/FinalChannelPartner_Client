@@ -6,7 +6,7 @@ const OpportunityCard = ({ head, price, date, img , dataList}) => {
         <>
             <div className="dash_card opportunity">
                 <div className="row pb-0">
-                    <div className="col-xl-6 col-md-6 col-sm-6 col-6">
+                    <div className="col-xl-10 col-md-10 col-sm-6 col-6">
                         <div className="pieChart">
                             <RevenueChart 
                              dataList={dataList}

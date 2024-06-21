@@ -1502,13 +1502,13 @@ select.form-control::after {
   box-shadow: var(--shadow-color) 0px 8px 24px;
   border-radius: 5px;
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   justify-content: space-between;
 }
 .dash_card .detail_sec .head_text {
   font-style: normal;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 18px !important;
 }
 .dash_card .detail_sec .price {
   font-style: normal;
@@ -1520,11 +1520,23 @@ select.form-control::after {
   font-weight: 400;
   font-size: 14px;
 }
+.dash_card  .price {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 26px;
+}
+
+.dash_card  .date {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+}
+
 .dash_card .image_sec {
   background-color: var(--card-bg);
   border-radius: 50%;
-  width: 85px;
-  height: 85px;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;

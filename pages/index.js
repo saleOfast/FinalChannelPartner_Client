@@ -119,6 +119,8 @@ export default mainIndexHOC(
       };
       getSignInData();
     }, []);
+    
+    const user=hasCookie("user") ? true :false;
 
     const platformImage = [
       '/images/platform/CRM.png',
@@ -157,7 +159,7 @@ export default mainIndexHOC(
           <Loader />
         ) : (
           <>
-            {loggedIn ? (
+            {user ? (
               <div className="NewLoginScreen bg-white w-100 overflow-auto">
                 <div className="row m-0 login">
                   <div className="col-12 col-lg-6 m-0 p-0">

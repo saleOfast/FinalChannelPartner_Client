@@ -24,11 +24,11 @@ const mainIndexHOC  = (WrappedComponent) => {
           hasCookie("channel") ||
           hasCookie("sales"))
       ) {
-        // dispatch(clearTheme());
-        // dispatch(clearValue());
-        // dispatch(userLogOut());
-        // toast.warning("Illegal Route Access");
-        router.back()
+        dispatch(clearTheme());
+        dispatch(clearValue());
+        dispatch(userLogOut());
+        toast.warning("Illegal Route Access");
+        router.reload()
       } else {
         setRendercomponent(true);
       }

@@ -573,7 +573,7 @@ const AddClientScreen = () => {
     
 
     return (
-      <div className={`main_Box  ${sideView}`}>
+      <div className={`main_Box  w-100`}>
         <div className="bread_head">
           <h3 className="content_head">{editMode ? "EDIT" : "ADD"} Client</h3>
           <nav aria-label="breadcrumb">
@@ -697,106 +697,7 @@ const AddClientScreen = () => {
                 </div>
                
 
-                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div
-                    className={
-                      errorData?.subscription_start_date
-                        ? "input_box errorBox"
-                        : "input_box"
-                    }
-                  >
-                    <label htmlFor="subscription_start_date">
-                      Subscription Start Date *
-                    </label>
-                    <input
-                      type="date"
-                      name="subscription_start_date"
-                      id="subscription_start_date"
-                      min={moment()
-                        .subtract(7, "days")
-                        .format("YYYY-MM-DD[T]HH:mm:ss")}
-                      className={
-                        errorData?.subscription_start_date
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      onChange={(e) => {
-                        setUserInfo({
-                          ...userInfo,
-                          subscription_start_date: e.target.value,
-                        });
-                        setErrorData({
-                          ...errorData,
-                          subscription_start_date: "",
-                        });
-                      }}
-                      value={
-                        userInfo.subscription_start_date
-                          ? userInfo.subscription_start_date
-                          : ""
-                      }
-                    />
-                    <span className="errorText">
-                      {" "}
-                      {errorData?.subscription_start_date
-                        ? errorData.subscription_start_date
-                        : ""}
-                    </span>
-                  </div>
-                </div> */}
-
-                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div
-                    className={
-                      errorData?.no_of_months
-                        ? "input_box errorBox"
-                        : "input_box"
-                    }
-                  >
-                    <label htmlFor="no_of_months">No of Month *</label>
-                    <input
-                      type="number"
-                      placeholder="Enter Month"
-                      name="no_of_months"
-                      id="no_of_months"
-                      className={
-                        errorData?.no_of_months
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      value={userInfo.no_of_months ? userInfo.no_of_months : ""}
-                      onChange={(e) => monthSet(e)}
-                    />
-                    <span className="errorText">
-                      {" "}
-                      {errorData?.no_of_months ? errorData.no_of_months : ""}
-                    </span>
-                  </div>
-                </div> */}
-
-                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className="input_box">
-                    <label htmlFor="subscription_start_date">
-                      Subscription End Date *
-                    </label>
-                    <input
-                      type="date"
-                      name="subscription_start_date"
-                      id="subscription_start_date"
-                      disabled
-                      className={
-                        errorData?.subscription_end_date
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      value={
-                        userInfo.subscription_end_date
-                          ? userInfo.subscription_end_date
-                          : ""
-                      }
-                    />
-                  </div>
-                </div> */}
+                
 
                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div

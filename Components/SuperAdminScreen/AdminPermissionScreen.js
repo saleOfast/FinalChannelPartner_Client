@@ -193,12 +193,12 @@ const AdminPermissionScreen = () => {
     }, [router.isReady, id,selectedOption]);
 
     return (
-        <div className={`main_Box  ${sideView}`}>
+        <div className={`main_Box  w-100`}>
             <div className="bread_head">
                 <h3 className="content_head">CLIENT PERMISSIONS</h3>
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
-                        <li className="breadcrumb-item"> <Link href='/Admin'> All Clients </Link></li>
+                        <li className="breadcrumb-item"> <Link href='/admin'> All Clients </Link></li>
                         <li className="breadcrumb-item active" aria-current="page"> Client Permissions</li>
                     </ol>
                 </nav>

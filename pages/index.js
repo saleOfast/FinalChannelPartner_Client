@@ -34,7 +34,7 @@ export default function Home() {
 
   useEffect(() => {
     if (hasCookie("Admin")) {
-      router.push("/Admin");
+      router.push("/admin");
     }
     if (!hasCookie("token")) {
       dispatch(userLogOut());
@@ -62,37 +62,37 @@ export default function Home() {
     checkDashboard();
   }, [permission]);
 
-  const assignDashboard = (dashbarMode) => {
-    switch (dashbarMode) {
-      case "crm":
-        return dbMode === "user" ? <DashBoardScreen /> : <Admindashboard />;
-        break;
+  // const assignDashboard = (dashbarMode) => {
+  //   switch (dashbarMode) {
+  //     case "crm":
+  //       return dbMode === "user" ? <DashBoardScreen /> : <Admindashboard />;
+  //       break;
 
-      case "dms":
-        return dbMode === "user" ? <LandingPageDMS /> : <Admindashboard />;
+  //     case "dms":
+  //       return dbMode === "user" ? <LandingPageDMS /> : <Admindashboard />;
 
-      case "channel":
-        return dbMode === "user" ? (
-          <>
-            <DashBoardScreenCHANNEL />
-          </>
-        ) : (
-          <>
-            <DashBoardScreenCHANNEL />
-          </>
-        );
+  //     case "channel":
+  //       return dbMode === "user" ? (
+  //         <>
+  //           <DashBoardScreenCHANNEL />
+  //         </>
+  //       ) : (
+  //         <>
+  //           <DashBoardScreenCHANNEL />
+  //         </>
+  //       );
 
-      case "sales":
-        return dbMode === "user" ? (
-          <DashBoardScreenSALES />
-        ) : (
-          <Admindashboard />
-        );
+  //     case "sales":
+  //       return dbMode === "user" ? (
+  //         <DashBoardScreenSALES />
+  //       ) : (
+  //         <Admindashboard />
+  //       );
 
-      default:
-        break;
-    }
-  };
+  //     default:
+  //       break;
+  //   }
+  // };
 
   const handleClick = (permission) => {
     if (permission === "crm") {

@@ -58,7 +58,7 @@ function Profile() {
       <main className="main_wrapper">
         <Topnav />
         <div className="content_wrapper">
-          <SideBar isactive='profile' />
+          {/* <SideBar isactive='profile' /> */}
           {!editMode ? <ProfileScreen
             setEditMode={setEditMode}
             userData={userData}

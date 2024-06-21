@@ -60,6 +60,8 @@ export default function SignInScreen({ setLoggedIn }) {
     }
   };
 
+
+
   const assignPermission = (permissionsArray) => {
     const arr = permissionsArray.reduce((ac, permission) => {
       const platformName = permission.platform_name.toLowerCase();

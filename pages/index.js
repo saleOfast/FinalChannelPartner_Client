@@ -119,7 +119,38 @@ export default mainIndexHOC(
       };
       getSignInData();
     }, []);
-  
+
+    const platformImage = [
+      '/images/platform/CRM.png',
+      '/images/platform/COMMON.png',
+      '/images/platform/CHANNEL.png',
+      '/images/platform/DMS.png',
+    ]
+
+    const getPlatformFunc = (key = 'crm') => {
+      let fileSRc = platformImage[0]
+      switch (key) {
+        case 'crm':
+          fileSRc = platformImage[0]
+          break;
+        case 'channel':
+          fileSRc = platformImage[2]
+          break;
+
+        case 'dms':
+          fileSRc = platformImage[3]
+          break;
+
+        case 'sales':
+          fileSRc = platformImage[1]
+          break;
+        default:
+          break;
+      }
+      return fileSRc;
+    }
+
+
     return (
       <>
         {isLoading ? (
@@ -156,12 +187,18 @@ export default mainIndexHOC(
                       {allowedpermission?.map((permission, i) => (
                         <div
                           key={i}
-                          className="col-6 col-md-6 p-3 d-flex justify-content-center"
+                          className="col-3 col-md-3 p-3 d-flex flex-column gap-2 align-items-center justify-content-end"
                           onClick={() => {
                             handleClick(permission);
                           }}
                         >
-                          <div
+                              <img
+                                src={getPlatformFunc(permission)}
+                                alt="Background Two"
+                                className="w-50 h-50"
+                              />
+                              <b className="fw-3 text-center">  {permission.toUpperCase()} </b>
+                          {/* <div
                             className="text-center text-white fw-bold rounded-lg p-3 fs-5 cursor-pointer"
                             style={{
                               backgroundColor: clientData?.button_color
@@ -170,7 +207,7 @@ export default mainIndexHOC(
                             }}
                           >
                             {permission.toUpperCase()}
-                          </div>
+                          </div> */}
                         </div>
                       ))}
                     </div>

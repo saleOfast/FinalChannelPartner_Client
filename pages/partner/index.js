@@ -5,6 +5,7 @@ import { hasCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import { UserLogIN, userLogOut } from '../../store/ClientLoginSlice';
+import partnerIndexHOC from '../../HOC/partnerIndexHOC';
 
 const Index = () => {
 const userInfo=hasCookie("userInfo") ? true:false;
@@ -30,4 +31,4 @@ useEffect(() => {
   )
 }
 
-export default  Index
+export default partnerIndexHOC(Index)

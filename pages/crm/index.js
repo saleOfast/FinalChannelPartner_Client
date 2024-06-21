@@ -9,6 +9,7 @@ import { hasCookie } from 'cookies-next';
 import { stopLoading } from '../../store/loaderSlice';
 import { useRouter } from 'next/router';
 import { UserLogIN, userLogOut } from '../../store/ClientLoginSlice';
+import crmIndexHOC from '../../HOC/crmIndexHOC';
 
 const Index = () => {
   const dispatch=useDispatch();
@@ -26,9 +27,7 @@ useEffect(() => {
   }
 }, []);
 
-useEffect(()=>{
-    
-},[])
+
  
   return (
     <>
@@ -40,4 +39,4 @@ useEffect(()=>{
   )
 }
 
-export default Index
+export default crmIndexHOC(Index)

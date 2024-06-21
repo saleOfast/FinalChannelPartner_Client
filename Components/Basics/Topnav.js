@@ -367,7 +367,7 @@ const Topnav = ({  topnavPermission }) => {
                  <Dropdown.Menu>
                    <ul className="profile_list">
                      <Link
-                       href={dbMode == "admin" ? "/Profile" : "/UserProfile"}
+                       href={dbMode == "admin" ? "/Profile" : "/crm/UserProfile"}
                      >
                        <li className="list-item">
                          <div className="icon">
@@ -671,7 +671,7 @@ const Topnav = ({  topnavPermission }) => {
 
                     <Dropdown.Menu>
                       <ul className="profile_list">
-                        <Link
+                        {/* <Link
                           href={dbMode == "admin" ? "/Profile" : "/UserProfile"}
                         >
                           <li className="list-item">
@@ -680,7 +680,7 @@ const Topnav = ({  topnavPermission }) => {
                             </div>
                             <div className="text"> Profile </div>
                           </li>
-                        </Link>
+                        </Link> */}
 
                         <li className="list-item">
                           <div className="icon">

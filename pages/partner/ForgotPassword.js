@@ -7,6 +7,8 @@ import { setCookie } from "cookies-next";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { startButtonLoading, stopButtonLoading } from "../../store/buttonLoaderSlice";
+import ChannelPartnerHOC from "../../HOC/ChannelPartnerHOC";
+
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -247,4 +249,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ChannelPartnerHOC(ForgotPassword);

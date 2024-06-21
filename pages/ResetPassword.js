@@ -6,6 +6,7 @@ import axios from "axios";
 import { Baseurl, filesUrl } from "../Utils/Constants";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import ChannelPartnerHOC from "../HOC/ChannelPartnerHOC";
 
 const ResetPassword = () => {
 
@@ -145,4 +146,4 @@ const ResetPassword = () => {
     )
 }
 
-export default ResetPassword
+export default ChannelPartnerHOC (ResetPassword)

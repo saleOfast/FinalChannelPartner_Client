@@ -8,8 +8,10 @@ import { Baseurl, filesUrl } from "../Utils/Constants";
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import { startButtonLoading, stopButtonLoading } from '../store/buttonLoaderSlice';
+import ChannelPartnerHOC from '../HOC/ChannelPartnerHOC';
 
-export default function ChangePassword() {
+export default ChannelPartnerHOC(
+  function  ChangePassword() {
     const router = useRouter()
     const { tkn } = router.query
     const [token, setToken] = useState('')
@@ -206,3 +208,5 @@ export default function ChangePassword() {
     )
 }
 
+
+)

@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import { Baseurl, filesUrl } from "../../Utils/Constants";
 import { useDispatch, useSelector } from "react-redux";
 import { startButtonLoading, stopButtonLoading } from "../../store/buttonLoaderSlice";
+import ChannelPartnerHOC from "../../HOC/ChannelPartnerHOC";
+
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -187,4 +189,4 @@ useEffect(()=>{
   );
 };
 
-export default ForgotPassword;
+export default ChannelPartnerHOC(ForgotPassword);

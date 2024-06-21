@@ -379,7 +379,7 @@ const AddProductScreen = () => {
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               {" "}
-              <Link href="/">Home</Link>
+              <Link href="/crm">Home</Link>
             </li>
             <li className="breadcrumb-item">
               <Link href="/Products"> Product </Link>

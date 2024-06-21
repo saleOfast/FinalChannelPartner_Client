@@ -230,7 +230,7 @@ const ManageUserChannelScreens = () => {
                     <h3 className="content_head">CHANNEL PARTNER </h3>
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"> <Link href='/'>Home</Link></li>
+                            <li className="breadcrumb-item"> <Link href='/crm'>Home</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">User Master</li>
                         </ol>
                     </nav>

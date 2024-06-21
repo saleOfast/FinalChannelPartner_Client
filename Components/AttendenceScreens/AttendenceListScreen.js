@@ -265,7 +265,7 @@ export default function AttendenceListScreen() {
                     <h3 className="content_head">ATTENDENCE</h3>
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"> <Link href='/'>Home </Link></li>
+                            <li className="breadcrumb-item"> <Link href='/crm'>Home </Link></li>
                             <li className="breadcrumb-item active" aria-current="page">Attendence List</li>
                         </ol>
                     </nav>

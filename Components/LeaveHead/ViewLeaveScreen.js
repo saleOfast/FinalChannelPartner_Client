@@ -164,7 +164,7 @@ const ViewLeaveScreen = () => {
                     <h3 className="content_head">LEAVE LIST</h3>
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"> <Link href='/'>Home </Link></li>
+                            <li className="breadcrumb-item"> <Link href='/crm'>Home </Link></li>
                             <li className="breadcrumb-item"> <Link href='/ManageLeaveHeadScreen'>Leaves Head </Link></li>
                             <li className="breadcrumb-item active" aria-current="page">Leave List </li>
                         </ol>

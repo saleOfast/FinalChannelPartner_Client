@@ -302,7 +302,7 @@ const DashBoardScreen = () => {
                         <div className="row">
                             <div className="col-xl-6 col-md-6 col-12 col-sm-12">
                                 <DashboardRevnueCard
-                                    head='Total Revenue Generate'
+                                    head='TOTAL REVENUE GENERATE'
                                     price={dataList?.quotationCost ? formatAmount(dataList?.quotationCost) :0 }
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     img='/images/business-card-trading.png' />
@@ -376,7 +376,7 @@ const DashBoardScreen = () => {
                                 <div className="col-xl-6 col-md-6 col-12 col-sm-12 mt-2">
                                     <div className="dash_card chartSec">
                                         <ReChart
-                                            head='Lead Opportunity Statistics '
+                                            head='LEAD OPPORTUNITY STATISTICS '
                                             dataList={dataList?.barchart}
                                         />
                                     </div>
@@ -412,7 +412,7 @@ const DashBoardScreen = () => {
                 </div>
                 <div className="Task_side">
                     <div className="checkInBtns">
-                        <div className="Box_head">Attendence</div>
+                        <div className="Box_head">ATTENDANCE</div>
 
                         {isLoading ? <div className='loading'>Loading...</div> : <div className="checkinBtn btnBox">
                             <div className="btn-box">

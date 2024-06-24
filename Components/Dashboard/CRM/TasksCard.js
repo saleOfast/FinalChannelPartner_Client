@@ -13,7 +13,7 @@ const TasksCard = ({ dataList }) => {
     return (
         <>
             <div className="task_card">
-                <div className="task_head">Tasks</div>
+                <div className="task_head">TASKS</div>
 
                 <div className="tasks_details">
                     <div className="btn-box">

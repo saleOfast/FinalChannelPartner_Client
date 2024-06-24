@@ -8,7 +8,7 @@ import Link from "next/link";
 const TopOpportunityCard = ({ dataList }) => {
     return (
         <div className="task_card">
-            <div className="task_head">Top 5 Opportunities</div>
+            <div className="task_head">TOP 5 OPPORTUNITIES</div>
 
             <div className="tasks_details">
                 <ul className="tasks_list">

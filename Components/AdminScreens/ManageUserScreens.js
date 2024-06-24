@@ -25,6 +25,7 @@ const ManageUserScreens = () => {
     const [confirmText, setconfirmText] = useState('')
     const [show, setShow] = useState(false);
     const [excelData, setexcelData] = useState([]);
+    const [loader, setLoader] = useState(false);
     const [currObj, setcurrObj] = useState({
         id: '',
         action: ''
@@ -76,7 +77,7 @@ const ManageUserScreens = () => {
 
 
     const getDataList = async () => {
-
+        setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -92,9 +93,13 @@ const ManageUserScreens = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/users?mode=ul`, header);
+                if (response?.status == 200 || response?.status == 201) {
+                    setLoader(false)
                     console.log(response.data.data)
-                setDataList(response.data.data);
+                    setDataList(response.data.data);
+                }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 } else {
@@ -240,19 +245,20 @@ const ManageUserScreens = () => {
                     <div className="table_screen">
                         <div className="top_btn_sec ">
                             <div className="d-flex">
-                            <Link href='/AddUsers'>
-                                <button className="btn ms-auto btn-primary Add_btn me-3">
+                                <Link href='/AddUsers'>
+                                    <button className="btn ms-auto btn-primary Add_btn me-3">
+                                        <PlusIcon />
+                                        ADD USER
+                                    </button>
+                                </Link>
+                                <button className="btn btn-primary Add_btn" onClick={handleShow}>
                                     <PlusIcon />
-                                    ADD USER
+                                    Import CSV
                                 </button>
-                            </Link>
-                            <button className="btn btn-primary Add_btn" onClick={handleShow}>
-                                <PlusIcon />
-                                Import CSV
-                            </button>
                             </div>
                         </div>
                         <DynamicTable
+                            loader={loader}
                             title='Users List'
                             dataList={dataList}
                             disableConfirm={disableConfirm}

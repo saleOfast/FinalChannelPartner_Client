@@ -26,8 +26,7 @@ const ManageLeadSourceScreen = () => {
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState({ lead_src_id: "", action: "" });
   const [confirmText, setconfirmText] = useState("");
-
-
+  const [loader, setLoader] = useState(false);
 
   const handleClose = () => {
     setShow(false);
@@ -67,6 +66,7 @@ const ManageLeadSourceScreen = () => {
   }
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -76,14 +76,18 @@ const ManageLeadSourceScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:114
+          m_id: 114
         },
       };
 
       try {
         const response = await axios.get(Baseurl + `/db/leadsrc`, header);
-        setDataList(response.data.data);
+        if (response?.status == 200 || response?.status == 201) {
+          setLoader(false)
+          setDataList(response.data.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
@@ -110,7 +114,7 @@ const ManageLeadSourceScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:117
+          m_id: 117
         },
       };
 
@@ -146,7 +150,7 @@ const ManageLeadSourceScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:118
+          m_id: 118
         },
       };
 
@@ -184,7 +188,7 @@ const ManageLeadSourceScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:115
+            m_id: 115
           },
         };
 
@@ -223,7 +227,7 @@ const ManageLeadSourceScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:117
+            m_id: 117
           },
         };
 
@@ -295,6 +299,7 @@ const ManageLeadSourceScreen = () => {
               </button>
             </div>
             <DynamicTable
+              loader={loader}
               title="Lead Source List"
               openEdtMdl={openEdtMdl}
               dataList={dataList}

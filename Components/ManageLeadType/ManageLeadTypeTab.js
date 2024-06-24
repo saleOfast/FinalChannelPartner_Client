@@ -5,6 +5,7 @@ import DisableIcon from "../Svg/DisableIcon";
 import EditIcon from "../Svg/EditIcon";
 import DeleteIcon from "../Svg/DeleteIcon";
 import CheckIcon from "../Svg/CheckIcon";
+import Loader from "../Loader/Loader";
 
 const ManageLeadTypeTab = ({
   deleteConfirm,
@@ -12,6 +13,7 @@ const ManageLeadTypeTab = ({
   dataList,
   openEdtMdl,
   title,
+  loader
 }) => {
   const columns = [
     {
@@ -101,18 +103,20 @@ const ManageLeadTypeTab = ({
         downloadOptions:{filename:"LeadTypeList.csv"}
     };
 
-  return (
-    <>
-      <div className="miuiTable">
-        <MUIDataTable
-          title={title}
-          data={dataList}
-          columns={columns}
-          options={options}
-        />
-      </div>
-    </>
-  );
+    return (
+      <>
+        {loader ? <><Loader /> </> : (
+          <div className="miuiTable">
+            <MUIDataTable
+              title={title}
+              data={dataList}
+              columns={columns}
+              options={options}
+            />
+          </div>
+        )}
+      </>
+    );
 };
 
 export default ManageLeadTypeTab;

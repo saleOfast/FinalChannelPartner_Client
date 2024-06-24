@@ -29,6 +29,7 @@ const ManageDepartmentScreen = () => {
   const [currObj, setcurrObj] = useState({ dep_id: "", action: "" });
   const [confirmText, setconfirmText] = useState("");
   const [excelData, setexcelData] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   const handleClose = () => {
     setShow(false);
@@ -40,6 +41,7 @@ const ManageDepartmentScreen = () => {
 
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -55,8 +57,12 @@ const ManageDepartmentScreen = () => {
 
       try {
         const response = await axios.get(Baseurl + `/db/department`, header);
-        setDataList(response.data.data);
+        if(response?.status == 200 || response?.status == 201){
+          setLoader(false)
+          setDataList(response.data.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         }
@@ -369,6 +375,7 @@ const ManageDepartmentScreen = () => {
               </div>
             </div>
             <DynamicTable
+              loader={loader}
               title="Department List"
               openEdtMdl={openEdtMdl}
               dataList={dataList}

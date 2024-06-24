@@ -11,8 +11,8 @@ import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from 'next/dynamic'
 const DynamicTable = dynamic(
-    () => import('./AccountTypeScreenTab'),
-    { ssr: false }
+  () => import('./AccountTypeScreenTab'),
+  { ssr: false }
 )
 const AccountTypeScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
@@ -25,6 +25,7 @@ const AccountTypeScreen = () => {
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [confirmText, setconfirmText] = useState("");
   const [currObj, setcurrObj] = useState({ account_type_id: "", action: "" });
+  const [loader, setLoader] = useState(false);
 
   const handleClose = () => {
     setShow(false);
@@ -65,6 +66,7 @@ const AccountTypeScreen = () => {
   }
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -74,14 +76,18 @@ const AccountTypeScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:145
+          m_id: 145
         },
       };
 
       try {
         const response = await axios.get(Baseurl + `/db/account/type`, header);
-        setDataList(response.data.data);
+        if (response?.status == 200 || response?.status == 201) {
+          setLoader(false)
+          setDataList(response.data.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
@@ -105,7 +111,7 @@ const AccountTypeScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:148
+          m_id: 148
         },
       };
 
@@ -140,7 +146,7 @@ const AccountTypeScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:149
+          m_id: 149
         },
       };
 
@@ -178,7 +184,7 @@ const AccountTypeScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:146
+            m_id: 146
           },
         };
 
@@ -217,7 +223,7 @@ const AccountTypeScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:148
+            m_id: 148
           },
         };
 
@@ -263,7 +269,7 @@ const AccountTypeScreen = () => {
         title={"Are You Sure you want to Delete ?"}
       />
 
-       <div className={`main_Box  ${sideView}`}>
+      <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
           <h3 className="content_head">ACCOUNT TYPE MASTER </h3>
           <nav aria-label="breadcrumb">
@@ -289,6 +295,7 @@ const AccountTypeScreen = () => {
               </button>
             </div>
             <DynamicTable
+              loader={loader}
               title="Account Type List"
               openEdtMdl={openEdtMdl}
               dataList={dataList}

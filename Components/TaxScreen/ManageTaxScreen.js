@@ -11,8 +11,8 @@ import ConfirmBox from '../Basics/ConfirmBox';
 import { useSelector } from 'react-redux';
 import dynamic from 'next/dynamic'
 const DynamicTable = dynamic(
-  () => import('./TaxMuiTab'),
-  { ssr: false }
+    () => import('./TaxMuiTab'),
+    { ssr: false }
 )
 
 const ManageTaxScreen = () => {
@@ -21,10 +21,10 @@ const ManageTaxScreen = () => {
     const [taxList, setTaxList] = useState([]);
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
     const [currObj, setcurrObj] = useState('')
-
+    const [loader, setLoader] = useState(false);
 
     const gettaxList = async () => {
-
+        setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -34,13 +34,17 @@ const ManageTaxScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id:152
+                    m_id: 152
                 }
             }
             try {
                 const response = await axios.get(Baseurl + `/db/tax`, header);
-                setTaxList(response.data.data);
+                if (response?.status == 200 || response?.status == 201) {
+                    setLoader(false)
+                    setTaxList(response.data.data);
+                }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 }
@@ -66,7 +70,7 @@ const ManageTaxScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id:156
+                    m_id: 156
                 }
             }
 
@@ -100,7 +104,7 @@ const ManageTaxScreen = () => {
                 setshowConfirm={setdeleteshowConfirm}
                 actionType={deleteHandler}
                 title={"Are You Sure you want to Delete ?"} />
-             <div className={`main_Box  ${sideView}`}>
+            <div className={`main_Box  ${sideView}`}>
                 <div className="bread_head">
                     <h3 className="content_head">TAXES MASTER</h3>
                     <nav aria-label="breadcrumb">
@@ -121,6 +125,7 @@ const ManageTaxScreen = () => {
                             </Link>
                         </div>
                         <DynamicTable
+                            loader={loader}
                             title='Tax List'
                             taxList={taxList}
                             opnCnfrmBox={opnCnfrmBox} />

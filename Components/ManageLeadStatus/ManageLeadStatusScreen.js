@@ -11,8 +11,8 @@ import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from 'next/dynamic'
 const DynamicTable = dynamic(
-    () => import('./ManageLeadStatusTab'),
-    { ssr: false }
+  () => import('./ManageLeadStatusTab'),
+  { ssr: false }
 )
 
 const ManageLeadStatusScreen = () => {
@@ -25,7 +25,8 @@ const ManageLeadStatusScreen = () => {
   const [disableShowConfirm, setdisableShowConfirm] = useState(false);
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState({ lead_status_id: "", action: "" });
-    const [confirmText, setconfirmText] = useState("");
+  const [confirmText, setconfirmText] = useState("");
+  const [loader, setLoader] = useState(false);
 
 
   const handleClose = () => {
@@ -53,13 +54,13 @@ const ManageLeadStatusScreen = () => {
 
   function disableConfirm(value, type) {
     if (type == 1) {
-        setconfirmText("enable");
+      setconfirmText("enable");
     } else {
-        setconfirmText("Disable");
+      setconfirmText("Disable");
     }
     setcurrObj({ lead_status_id: value, action: type });
     setdisableShowConfirm(true);
-}
+  }
 
   function deleteConfirm(value) {
     setcurrObj(value);
@@ -67,6 +68,7 @@ const ManageLeadStatusScreen = () => {
   }
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -76,14 +78,18 @@ const ManageLeadStatusScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:126
+          m_id: 126
         },
       };
 
       try {
         const response = await axios.get(Baseurl + `/db/leadstatus`, header);
-        setDataList(response.data.data);
+        if (response?.status == 200 || response?.status == 201) {
+          setLoader(false)
+          setDataList(response.data.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
@@ -97,9 +103,9 @@ const ManageLeadStatusScreen = () => {
     const reqInfo = {
       lead_status_id: currObj.lead_status_id,
       status: currObj.action == 1 ? true : false,
-  };
-    
-    
+    };
+
+
 
     setdisableShowConfirm(false);
     if (hasCookie("token")) {
@@ -111,7 +117,7 @@ const ManageLeadStatusScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:129
+          m_id: 129
         },
       };
 
@@ -147,7 +153,7 @@ const ManageLeadStatusScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:130
+          m_id: 130
         },
       };
 
@@ -185,7 +191,7 @@ const ManageLeadStatusScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:127
+            m_id: 127
           },
         };
 
@@ -224,7 +230,7 @@ const ManageLeadStatusScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:129
+            m_id: 129
           },
         };
 
@@ -260,7 +266,7 @@ const ManageLeadStatusScreen = () => {
         showConfirm={disableShowConfirm}
         setshowConfirm={setdisableShowConfirm}
         actionType={disableHandler}
-        title={`Are You Sure you want to ${confirmText} ?`} 
+        title={`Are You Sure you want to ${confirmText} ?`}
       />
 
       <ConfirmBox
@@ -270,7 +276,7 @@ const ManageLeadStatusScreen = () => {
         title={"Are You Sure you want to Delete ?"}
       />
 
-       <div className={`main_Box  ${sideView}`}>
+      <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
           <h3 className="content_head">LEAD STATUS MASTER</h3>
           <nav aria-label="breadcrumb">
@@ -296,6 +302,7 @@ const ManageLeadStatusScreen = () => {
               </button>
             </div>
             <DynamicTable
+              loader={loader}
               title="Lead Status List"
               openEdtMdl={openEdtMdl}
               dataList={dataList}

@@ -26,6 +26,7 @@ const OpportunityTypeMasterScreen = () => {
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [confirmText, setconfirmText] = useState("");
   const [currObj, setcurrObj] = useState({ opportunity_type_id: "", action: "" })
+  const [loader, setLoader] = useState(false);
 
   const handleClose = () => {
     setShow(false);
@@ -65,6 +66,7 @@ const OpportunityTypeMasterScreen = () => {
   }
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -74,14 +76,18 @@ const OpportunityTypeMasterScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:177
+          m_id: 177
         },
       };
 
       try {
         const response = await axios.get(Baseurl + `/db/opprtype`, header);
-        setDataList(response.data.data);
+        if (response?.status == 200 || response?.status == 201) {
+          setLoader(false)
+          setDataList(response.data.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         }
@@ -297,6 +303,7 @@ const OpportunityTypeMasterScreen = () => {
               </button>
             </div>
             <DynamicTable
+              loader={loader}
               title="Opportunity Type List"
               openEdtMdl={openEdtMdl}
               dataList={dataList}

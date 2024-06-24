@@ -29,6 +29,7 @@ const ManageTaskPriorityScreen = () => {
   const [currObj, setcurrObj] = useState({ task_priority_id: '', action: '' })
   const [cvg, setCvg] = useState(false);
   const [excelData, setexcelData] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   const handleClose = () => {
     setShow(false);
@@ -127,6 +128,7 @@ const ManageTaskPriorityScreen = () => {
   }
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -142,8 +144,12 @@ const ManageTaskPriorityScreen = () => {
 
       try {
         const response = await axios.get(Baseurl + `/db/subtask/priority`, header);
-        setDataList(response.data.data);
+        if (response?.status == 200 || response?.status == 201) {
+          setLoader(false)
+          setDataList(response.data.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
@@ -357,6 +363,7 @@ const ManageTaskPriorityScreen = () => {
               </div>
             </div>
             <DynamicTable
+              loader={loader}
               title="Task Priority List"
               openEdtMdl={openEdtMdl}
               dataList={dataList}
@@ -414,7 +421,7 @@ const ManageTaskPriorityScreen = () => {
               </div>
             </div>
           </Modal.Body>}
-        {cvg ? 
+        {cvg ?
           <Modal.Footer>
             {editMode ? (
               <Button variant="primary" onClick={updateHandler}>

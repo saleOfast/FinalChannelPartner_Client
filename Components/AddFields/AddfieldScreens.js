@@ -28,6 +28,7 @@ export default function AddfieldScreens() {
     const [currObj, setcurrObj] = useState(null);
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
     const [show, setShow] = useState(false);
+    const [loader,setLoader]=useState(false)
     const [newFields, setNewFields] = useState({
         field_lable: null,
         input_type: null,
@@ -49,6 +50,7 @@ export default function AddfieldScreens() {
 
 
     const getDataList = async (val) => {
+        setLoader(true)
         if (hasCookie("token")) {
           let token = getCookie("token");
           let db_name = getCookie("db_name");
@@ -64,8 +66,12 @@ export default function AddfieldScreens() {
     
           try {
             const response = await axios.get(Baseurl + `/db/field?nav_type=${val}`, header);
-            setDataList(response.data.data);
+            if(response?.status==200 || response?.status==201 ){
+                setLoader(false)
+                setDataList(response?.data?.data);
+            }
           } catch (error) {
+            setLoader(false)
             if (error?.response?.data?.message) {
               toast.error(error.response.data.message);
             } else {
@@ -347,6 +353,7 @@ export default function AddfieldScreens() {
                             <DynamicTable
                                 title="Dynamic Fields"
                                 dataList={dataList}
+                                loader={loader}
                                 deleteConfirm={deleteConfirm}
                             /> : <p className="text-center p-5">No Leads Found..!</p>}
                     </div>

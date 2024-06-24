@@ -6,12 +6,14 @@ import EditIcon from "../Svg/EditIcon";
 import DeleteIcon from "../Svg/DeleteIcon";
 import CheckIcon from "../Svg/CheckIcon";
 import { filesUrl } from "../../Utils/Constants";
+import Loader from "../Loader/Loader";
 
 const ManageCouponScreenTab = ({
   deleteConfirm,
   couponList,
   openEdtMdl,
   title,
+  loader
 }) => {
   const columns = [
     {
@@ -83,7 +85,9 @@ const ManageCouponScreenTab = ({
 
   return (
     <>
-      <div className="miuiTable">
+    {
+      loader ? <Loader/> :(
+        <div className="miuiTable">
         <MUIDataTable
           title={title}
           data={couponList}
@@ -91,6 +95,9 @@ const ManageCouponScreenTab = ({
           options={options}
         />
       </div>
+      )
+    }
+      
     </>
   );
 };

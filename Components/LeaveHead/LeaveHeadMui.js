@@ -5,8 +5,9 @@ import DisableIcon from '../Svg/DisableIcon';
 import EditIcon from '../Svg/EditIcon';
 import DeleteIcon from '../Svg/DeleteIcon';
 import CheckIcon from '../Svg/CheckIcon';
+import Loader from "../Loader/Loader"
 
-const LeaveHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title}) => {
+const LeaveHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title,loader}) => {
 
     const columns = [
         {
@@ -95,7 +96,9 @@ const LeaveHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, tit
 
     return (
         <>
-            <div className="miuiTable">
+        {
+            loader ?<Loader/> :(
+                <div className="miuiTable">
                 <MUIDataTable
                     title={title}
                     data={dataList}
@@ -103,6 +106,9 @@ const LeaveHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, tit
                     options={options}
                 />
             </div>
+            )
+        }
+            
         </>
 
     )

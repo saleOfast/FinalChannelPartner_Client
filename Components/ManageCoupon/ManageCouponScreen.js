@@ -28,6 +28,7 @@ const ManageCouponScreen = () => {
   const [editMode, setEditMode] = useState(false);
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState({ coupon_id: "", action: "" });
+  const [loader,setLoader]=useState(false)
 
   const handleClose = () => {
     setShow(false);
@@ -66,6 +67,7 @@ const ManageCouponScreen = () => {
   }
 
   const getCouponList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -81,10 +83,14 @@ const ManageCouponScreen = () => {
 
       try {
         const response = await axios.get(Baseurl + `/db/coupon`, header);
-        setCouponList(response.data.data);
+        if(response?.status==200 || response?.status==201){
+          setLoader(false)
+          setCouponList(response?.data?.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message);
         } else {
           toast.error("Something went wrong!");
         }
@@ -273,6 +279,7 @@ const ManageCouponScreen = () => {
             <DynamicTable
               title="Coupon List"
               openEdtMdl={openEdtMdl}
+              loader={loader}
               couponList={couponList}
               deleteConfirm={deleteConfirm}
             />

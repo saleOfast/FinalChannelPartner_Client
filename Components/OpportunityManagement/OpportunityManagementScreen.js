@@ -26,7 +26,7 @@ const OpportuntyManagementScreen = () => {
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
     const [currObj, setcurrObj] = useState({ opportunity_stg_id: "", action: "" });
     const [confirmText, setconfirmText] = useState("");
-
+    const [loader,setLoader]=useState(false)
     const handleClose = () => {
         setShow(false);
         setUserInfo({ opportunity_stg_name: '' })
@@ -61,7 +61,7 @@ const OpportuntyManagementScreen = () => {
     }
 
     const getDataList = async () => {
-
+        setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -77,8 +77,12 @@ const OpportuntyManagementScreen = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/oppr`, header);
-                setDataList(response.data.data);
+                if(response?.status==200 || response?.status==201 ){
+                    setLoader(false)
+                    setDataList(response?.data?.data);
+                }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 }
@@ -278,6 +282,7 @@ const OpportuntyManagementScreen = () => {
                             dataList={dataList}
                             disableConfirm={disableConfirm}
                             deleteConfirm={deleteConfirm}
+                            loader={loader}
                         />
                     </div>
                 </div>

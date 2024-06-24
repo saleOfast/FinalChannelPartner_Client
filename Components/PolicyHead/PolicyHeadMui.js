@@ -7,8 +7,9 @@ import DeleteIcon from '../Svg/DeleteIcon';
 import CheckIcon from '../Svg/CheckIcon';
 import { Policy } from '@mui/icons-material';
 import Link from 'next/link';
+import Loader from '../Loader/Loader';
 
-const PolicyHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
+const PolicyHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title,loader }) => {
 
     const columns = [
 
@@ -116,7 +117,9 @@ const PolicyHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, ti
 
     return (
         <>
-            <div className="miuiTable">
+        {
+            loader ? <Loader/> :(
+                <div className="miuiTable">
                 <MUIDataTable
                     title={title}
                     data={dataList}
@@ -124,6 +127,9 @@ const PolicyHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, ti
                     options={options}
                 />
             </div>
+            )
+        }
+            
         </>
 
     )

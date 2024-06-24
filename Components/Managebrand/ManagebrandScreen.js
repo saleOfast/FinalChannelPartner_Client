@@ -30,6 +30,7 @@ const ManagebrandScreen = () => {
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [confirmText, setconfirmText] = useState("");
   const [currObj, setcurrObj] = useState({ brand_id: "", action: "" });
+  const [loader,setLoader]=useState(false)
 
   const handleClose = () => {
     setShow(false);
@@ -62,6 +63,7 @@ const ManagebrandScreen = () => {
   }
 
   const getBrandList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -77,8 +79,12 @@ const ManagebrandScreen = () => {
 
       try {
         const response = await axios.get(Baseurl + `/db/brand`, header);
-        setBrandList(response.data.data);
+        if(response?.status==200 || response?.status==201){
+          setLoader(false)
+          setBrandList(response?.data?.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
@@ -276,6 +282,7 @@ const ManagebrandScreen = () => {
               title="Brand List"
               openEdtMdl={openEdtMdl}
               brandList={brandList}
+              loader={loader}
               deleteConfirm={deleteConfirm}
             />
           </div>

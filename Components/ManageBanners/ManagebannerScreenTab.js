@@ -1,17 +1,16 @@
 import React from "react";
 import MUIDataTable from "mui-datatables";
-import ViewIcon from "../Svg/ViewIcon";
-import DisableIcon from "../Svg/DisableIcon";
 import EditIcon from "../Svg/EditIcon";
 import DeleteIcon from "../Svg/DeleteIcon";
-import CheckIcon from "../Svg/CheckIcon";
 import { filesUrl } from "../../Utils/Constants";
+import Loader from "../Loader/Loader"
 
 const Managebannerscreentab = ({
   deleteConfirm,
   bannerList,
   openEdtMdl,
   title,
+  loader
 }) => {
   const columns = [
     {
@@ -111,14 +110,19 @@ const Managebannerscreentab = ({
 
   return (
     <>
-      <div className="miuiTable">
+    {
+      loader ?<Loader/> :(
+        <div className="miuiTable">
         <MUIDataTable
           title={title}
           data={bannerList}
           columns={columns}
           options={options}
         />
-      </div>  
+      </div> 
+      )
+    }
+
     </>
   );
 };

@@ -26,6 +26,7 @@ export default function ManageProductCategoryScreen() {
   const [currObj, setcurrObj] = useState({ p_cat_id: "", action: "" })
   const [show, setShow] = useState(false);
   const [excelData, setexcelData] = useState([]);
+  const [loader,setLoader]=useState(false)
 
   function disableConfirm(value, type) {
     if (type == 1) {
@@ -45,7 +46,7 @@ export default function ManageProductCategoryScreen() {
   }
 
   const   getDataList = async () => {
-
+    setLoader(true)
     if (hasCookie('token')) {
       let token = (getCookie('token'));
       let db_name = (getCookie('db_name'));
@@ -60,8 +61,12 @@ export default function ManageProductCategoryScreen() {
       }
       try {
         const response = await axios.get(Baseurl + `/db/productCat`, header);
-        setDataList(response.data.data);
+        if(response?.status==200 || response?.status==201 ){
+          setLoader(false)
+          setDataList(response?.data?.data);
+      }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         }
@@ -252,6 +257,7 @@ async function csvSubmitHandler() {
             <DynamicTable
               title='Product Category List'
               dataList={dataList}
+              loader={loader}
               disableConfirm={disableConfirm}
               deleteConfirm={deleteConfirm} />
           </div>

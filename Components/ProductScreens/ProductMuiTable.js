@@ -8,6 +8,7 @@ import moment from "moment";
 import Link from "next/link";
 import DeleteIcon from "../Svg/DeleteIcon";
 import { filesUrl } from '../../Utils/Constants';
+import Loader from '../Loader/Loader';
 
 
 const ProductMuiTable = ({
@@ -15,6 +16,7 @@ const ProductMuiTable = ({
   openTaxMapModel,
   title,
   disableConfirm,
+  loader
 }) => {
   const columns = [
     {
@@ -194,7 +196,9 @@ const ProductMuiTable = ({
 
   return (
     <>
-      <div className="miuiTable">
+    {
+      loader ? <Loader/> :(
+        <div className="miuiTable">
         <MUIDataTable
           title={title}
           // data={dataList}
@@ -203,6 +207,9 @@ const ProductMuiTable = ({
           options={options}
         />
       </div>
+      )
+    }
+      
     </>
   );
 };

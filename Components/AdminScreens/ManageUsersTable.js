@@ -6,8 +6,9 @@ import EditIcon from '../Svg/EditIcon';
 import DeleteIcon from '../Svg/DeleteIcon';
 import CheckIcon from '../Svg/CheckIcon';
 import Link from 'next/link';
+import Loader from "../Loader/Loader"
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, loader }) => {
 
     const columns = [
         {
@@ -75,7 +76,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             label: "Status",
             options: {
                 filter: false,
-                download:false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -91,8 +92,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             label: "Action",
             options: {
                 filter: false,
-                download:false,
-                
+                download: false,
+
                 customBodyRender: (value, tableMeta, updateValue) => {
                     console.log(tableMeta)
                     return (
@@ -142,32 +143,35 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions:{filename:"UsersList.csv"},
-        enableNestedDataAccess:"."
+        downloadOptions: { filename: "UsersList.csv" },
+        enableNestedDataAccess: "."
     };
 
-    const mappedDataList=dataList?.map(list=>({
-        user:list?.user,
-        email:list?.email,
-        contact_number:list?.contact_number,
-        user_code:list?.user_code,
-        db_role:list?.db_role?.role_name,
-        reportToUser:list?.reportToUser?.user,
-        user_status:list?.user_status,
-        
+    const mappedDataList = dataList?.map(list => ({
+        user: list?.user,
+        email: list?.email,
+        contact_number: list?.contact_number,
+        user_code: list?.user_code,
+        db_role: list?.db_role?.role_name,
+        reportToUser: list?.reportToUser?.user,
+        user_status: list?.user_status,
+
     }))
 
     return (
         <>
-            <div className="miuiTable">
-                <MUIDataTable
-                    title={title}
-                    // data={mappedDataList}
-                    data={dataList}
-                    columns={columns}
-                    options={options}
-                />
-            </div>
+            {loader ? <><Loader /> </> : (
+                <div className="miuiTable">
+                    <MUIDataTable
+                        title={title}
+                        // data={mappedDataList}
+                        data={dataList}
+                        columns={columns}
+                        options={options}
+                    />
+                </div>)}
+
+
         </>
 
     )

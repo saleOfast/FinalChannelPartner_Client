@@ -6,19 +6,19 @@ import EditIcon from '../../Svg/EditIcon';
 import DeleteIcon from '../../Svg/DeleteIcon';
 import CheckIcon from '../../Svg/CheckIcon';
 import Link from 'next/link';
+import Loader from '../../Loader/Loader';
 
-
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
-    const channelUserStatus=(key)=>{
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, loader }) => {
+    const channelUserStatus = (key) => {
         switch (key) {
             case 0:
                 return <span>Pending</span>
                 break;
-                case 1:
-                    return <span>Under Process</span>
+            case 1:
+                return <span>Under Process</span>
                 break;
-                case 3:
-                    return <span>Rejected</span>
+            case 3:
+                return <span>Rejected</span>
                 break;
             default:
                 return <span>Completed</span>
@@ -60,13 +60,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             label: "Status",
             options: {
                 filter: false,
-                download:false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
-                           {
-                            channelUserStatus(value)
-                           }
+                            {
+                                channelUserStatus(value)
+                            }
                         </div>
                     )
                 }
@@ -77,7 +77,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             label: "Action",
             options: {
                 filter: false,
-                download:false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
 
                     return (
@@ -127,19 +127,21 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions:{filename:"ChannelPartnerList.csv"}
+        downloadOptions: { filename: "ChannelPartnerList.csv" }
     };
 
     return (
         <>
-            <div className="miuiTable">
-                <MUIDataTable
-                    title={title}
-                    data={dataList}
-                    columns={columns}
-                    options={options}
-                />
-            </div>
+            {loader ? <><Loader /> </> : (
+                <div className="miuiTable">
+                    <MUIDataTable
+                        title={title}
+                        data={dataList}
+                        columns={columns}
+                        options={options}
+                    />
+                </div>
+            )}
         </>
 
     )

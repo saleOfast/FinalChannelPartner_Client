@@ -25,6 +25,7 @@ const ManageUserChannelScreens = () => {
     const [confirmText, setconfirmText] = useState('')
     const [show, setShow] = useState(false);
     const [excelData, setexcelData] = useState([]);
+    const [loader, setLoader] = useState([]);
     const [currObj, setcurrObj] = useState({
         id: '',
         action: ''
@@ -76,7 +77,7 @@ const ManageUserChannelScreens = () => {
 
 
     const getDataList = async () => {
-
+        setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -92,8 +93,13 @@ const ManageUserChannelScreens = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/users/cp/getPendingVerificationUser`, header);
-                setDataList(response.data.data);
+                if (response?.status == 200 || response?.status == 201) {
+                    setLoader(false)
+                    setDataList(response.data.data);
+                }
+
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 } else {
@@ -239,19 +245,20 @@ const ManageUserChannelScreens = () => {
                     <div className="table_screen">
                         <div className="top_btn_sec ">
                             <div className="d-flex">
-                            <Link href='/ChannelAddUsers'>
-                                {/* <button className="btn ms-auto btn-primary Add_btn me-3">
+                                <Link href='/ChannelAddUsers'>
+                                    {/* <button className="btn ms-auto btn-primary Add_btn me-3">
                                     <PlusIcon />
                                     ADD USER
                                 </button> */}
-                            </Link>
-                            {/* <button className="btn btn-primary Add_btn" onClick={handleShow}>
+                                </Link>
+                                {/* <button className="btn btn-primary Add_btn" onClick={handleShow}>
                                 <PlusIcon />
                                 Import CSV
                             </button> */}
                             </div>
                         </div>
                         <DynamicTable
+                            loader={loader}
                             title='Channel Partner List'
                             dataList={dataList}
                             disableConfirm={disableConfirm}

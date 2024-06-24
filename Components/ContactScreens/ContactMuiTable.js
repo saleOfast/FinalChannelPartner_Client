@@ -7,9 +7,10 @@ import EditIcon from "../Svg/EditIcon";
 import Link from "next/link";
 import moment from "moment";
 import DeleteIcon from "../Svg/DeleteIcon";
+import Loader from "../Loader/Loader";
 
 
-const ContactMuiTable = ({ accountsList, openConfirmBox , title }) => {
+const ContactMuiTable = ({ accountsList, openConfirmBox , title, loader }) => {
 
     const columns = [
         {
@@ -94,7 +95,9 @@ const ContactMuiTable = ({ accountsList, openConfirmBox , title }) => {
 
     return (
         <>
-            <div className="miuiTable">
+        {
+            loader ?<Loader/> :(
+                <div className="miuiTable">
                 <MUIDataTable
                     title={title}
                     // data={accountsList}
@@ -103,6 +106,9 @@ const ContactMuiTable = ({ accountsList, openConfirmBox , title }) => {
                     options={options}
                 />
             </div>
+            )
+        }
+            
         </>
 
     )

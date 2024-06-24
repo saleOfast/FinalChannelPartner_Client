@@ -20,8 +20,10 @@ export default function EventScreens() {
   const [dataList, setDataList] = useState([]);
   const [disableShowConfirm, setdisableShowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState("");
+  const[loader,setLoader]=useState(false)
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -38,8 +40,12 @@ export default function EventScreens() {
 
       try {
         const response = await axios.get(Baseurl + `/db/leads/calls`, header);
-        setDataList(response.data.data);
+        if(response?.status==200|| response?.status==201){
+          setLoader(false)
+          setDataList(response?.data?.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
@@ -162,6 +168,7 @@ export default function EventScreens() {
               title="Events List"
               dataList={dataList}
               disableConfirm={disableConfirm}
+              loader={loader}
             />
           </div>
         </div>

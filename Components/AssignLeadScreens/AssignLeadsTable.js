@@ -1,167 +1,9 @@
-// import React from "react";
-// import MUIDataTable from "mui-datatables";
-// import moment from "moment";
-
-// const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignConfirm, }) => {
-
-//     let colorArr = ["red ,blue, yellow, green"]
-//     const columns = [
-
-
-//         {
-//             name: "lead_name",
-//             label: "Lead Name",
-//             options: {
-//                 filter: true,
-//             },
-//         },
-//         {
-//             name: "company_name",
-//             label: "Company Name",
-//             options: {
-//                 filter: true,
-//             },
-//         },
-//         {
-//             name: "p_contact_no",
-//             label: "Mobile",
-//             options: {
-//                 filter: true,
-//             },
-//         },
-//         {
-//             name: "createdAt",
-//             label: "Creation Date",
-//             options: {
-//                 filter: true,
-//                 customBodyRender: (value, tableMeta, updateValue) => {
-//                     return (
-//                         <>{moment(value).format("DD-MM-YYYY LT")}</>
-//                     );
-//                 },
-//             },
-//         },
-//         {
-//             name: "db_lead_status",
-//             label: "Status",
-//             options: {
-//                 filter: true,
-//                 customBodyRender: (value, tableMeta, updateValue) => {
-//                     return (
-//                         <div className="status_box">
-//                             {/* <span  className={`status${value?.lead_status_id} status_btn`}>{value?.lead_status_id ? value.status_name : ""}</span> */}
-//                             <span  className={`status${tableMeta?.rowData[8]} status_btn`}>{tableMeta?.rowData[8] ? value : ""}</span>
-//                         </div>
-//                     );
-//                 },
-//             },
-//         }, {
-//             name: "lead_id",
-//             label: "Assign Lead",
-//             options: {
-//                 filter: false,
-//                 download:false,
-//                 viewColumns:false,
-//                 customBodyRender: (value, tableMeta, updateValue) => {
-//                     return (
-//                         <div className="table_btns">
-//                             <select
-//                                 name="assign_lead" id="assign_lead"
-//                                 onChange={(e) => changeHandler(e.target.value, value, tableMeta)}
-//                                 defaultValue={tableMeta?.rowData[7]}
-//                                 className="form-control">
-//                                 <option value="">Select User</option>
-//                                 {usersList?.map((data) => {
-//                                     return <option value={data.user_id} key={data.user_id}>
-//                                         {data.user}
-//                                     </option>
-//                                 })}
-//                             </select>
-//                         </div>
-//                     );
-//                 },
-//             },
-//         },
-//         {
-//             name: "lead_id",
-//             label: " ",
-//             options: {
-//                 filter: false,
-//                 download:false,
-//                 viewColumns:false,
-//                 customBodyRender: (value, tableMeta, updateValue) => {
-//                     return (
-//                         <div className="table_btns">
-//                             <button
-//                                 className="btn btn-primary"
-//                                 onClick={() => assignConfirm(value)}>
-//                                 Submit
-//                             </button>
-//                         </div>
-//                     );
-//                 },
-//             },
-//         },
-//         {
-//             name: "assigned_lead",
-//             label: "Creation Date",
-//             options: {
-//                 filter: false,
-//                 display: false,
-//                 download:false,
-//                 viewColumns:false,
-//             },
-//         },
-//         {
-//             name: "lead_status_id",
-//             label: "Creation Date",
-//             options: {
-//                 filter: false,
-//                 display: false,
-//                 download:false,
-//                 viewColumns:false,
-//             },
-//         },
-//     ];
-//     const options = {
-//         selectableRows: 'none',
-//         responsive: "standard",
-//         downloadOptions:{filename:"AssignLeadsList.csv"}
-//     };
-
-//     const mappedDataList=dataList?.map(list=>({
-//         lead_name:list?.lead_name,
-//         company_name:list?.company_name,
-//         p_contact_no:list?.p_contact_no,
-//         createdAt:list?.createdAt,
-//         db_lead_status:list?.db_lead_status?.status_name,
-//         lead_id:list?.lead_id,
-//         assigned_lead:list?.assigned_lead,
-//         lead_status_id:list?.db_lead_status?.lead_status_id
-//     }))
-
-//     return (
-//         <>
-//             <div className="miuiTable">
-//                 <MUIDataTable
-//                     title={title}
-//                     // data={dataList}
-//                     data={mappedDataList}
-//                     columns={columns}
-//                     options={options}
-//                 />
-//             </div>
-//         </>
-//     );
-// };
-
-// export default AssignLeadsTable;
-
 import React from "react";
 import MUIDataTable from "mui-datatables";
 import moment from "moment";
+import Loader from "../Loader/Loader";
 
-const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignConfirm, }) => {
+const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignConfirm,loader }) => {
 
     let colorArr = ["red ,blue, yellow, green"]
     const columns = [
@@ -271,8 +113,11 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
     };
 
     return (
+        
         <>
-            <div className="miuiTable">
+        {
+            loader ? <><Loader/></> :(
+                <div className="miuiTable">
                 <MUIDataTable
                     title={title}
                     data={dataList}
@@ -280,6 +125,9 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
                     options={options}
                 />
             </div>
+            )
+        }
+            
         </>
     );
 };

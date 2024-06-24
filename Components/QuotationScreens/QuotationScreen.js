@@ -16,12 +16,10 @@ const DynamicTable = dynamic(
 
 export default function QuotationScreen() {
   const sideView = useSelector((state) => state.sideView.value);
-
-
   const [dataList, setDataList] = useState([]);
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
   const [currObj, setcurrObj] = useState('')
-
+  const [loader,setLoader]=useState(false)
 
   function openConfirmBox(value) {
     setcurrObj(value)
@@ -30,6 +28,7 @@ export default function QuotationScreen() {
 
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -45,8 +44,12 @@ export default function QuotationScreen() {
 
       try {
         const response = await axios.get(Baseurl + `/db/quatMaster`, header);
-        setDataList(response.data.data?.quatMasterData);
+        if(response?.status==200 || response?.status==201){
+          setLoader(false)
+          setDataList(response?.data?.data?.quatMasterData);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
@@ -172,6 +175,7 @@ export default function QuotationScreen() {
               <DynamicTable
                 title='Quotation List'
                 dataList={dataList}
+                loader={loader}
                 openConfirmBox={openConfirmBox}
               />
             </>

@@ -27,6 +27,7 @@ const ManageLeadScreen = () => {
   const [accountsList, setAccountsList] = useState([]);
   const [ContactList, setContactList] = useState([]);
   const [oppurtunityList, setOppurtunityList] = useState([]);
+  const[loader,setLoader]=useState(false);
 
   const handleClose = () => {
     setUserInfo({});
@@ -38,6 +39,7 @@ const ManageLeadScreen = () => {
   const handleShow = () => setShow(true);
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -53,10 +55,14 @@ const ManageLeadScreen = () => {
 
       try {
         const response = await axios.get(Baseurl + `/db/leads`, header);
-        setDataList(response.data.data);
+        if(response?.status==200|| response?.status==201){
+          setLoader(false)
+          setDataList(response?.data?.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message);
         } else {
           toast.error("Something went wrong!");
         }
@@ -485,6 +491,7 @@ const ManageLeadScreen = () => {
               title="Leads List"
               dataList={dataList}
               disableConfirm={disableConfirm}
+              loader={loader}
               openCloseConvert={openCloseConvert}
             />
           </div>

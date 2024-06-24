@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import Charts from '../../../pages/Charts';
 import RevenueChart from '../../../pages/RevenueChart';
 import ReChart from './ReChart';
+import Loader from '../../Loader/Loader';
 
 
 const DashBoardScreen = () => {
@@ -32,7 +33,7 @@ const DashBoardScreen = () => {
     const [checkInInfo, setCheckInInfo] = useState({})
     const [checkInState, setCheckInState] = useState('')
     const [userDetails, setUserDetails] = useState({})
-
+    const [loader,setLoader]=useState(false)
 
 
 
@@ -200,6 +201,7 @@ const DashBoardScreen = () => {
     }
 
     const getDataList = async (start, end, type) => {
+        setLoader(true)
         if (hasCookie("token")) {
             let token = getCookie("token");
             let db_name = getCookie("db_name");
@@ -213,8 +215,12 @@ const DashBoardScreen = () => {
             };
             try {
                 const response = await axios.get(Baseurl + `/db/dashboard?endDate=${end}&&startDate=${start}&&type=${timeFilter}`, header);
-                setDataList(response.data.data);
+                if(response?.status==200 || response?.status==201){
+                    setLoader(false)
+                    setDataList(response.data.data);
+                }
             } catch (error) {
+                setLoader(false)
                 console.log(error);
             }
         }
@@ -263,7 +269,11 @@ const DashBoardScreen = () => {
     }
 
     return (
-        <div className={`main_Box  ${sideView}`}>
+        
+       <>
+                 {
+            loader ?<div className={`main_Box  ${sideView}`}><Loader/></div>  :(
+                <div className={`main_Box  ${sideView}`}>
             <div className="bread_head">
                 <h3 className="content_head">DASHBOARD CRM</h3>
             </div>
@@ -442,6 +452,9 @@ const DashBoardScreen = () => {
             </div>
 
         </div>
+            )
+        }
+       </>
     )
 }
 

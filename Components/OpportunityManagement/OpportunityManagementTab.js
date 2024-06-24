@@ -5,8 +5,9 @@ import DisableIcon from '../Svg/DisableIcon';
 import EditIcon from '../Svg/EditIcon';
 import DeleteIcon from '../Svg/DeleteIcon';
 import CheckIcon from '../Svg/CheckIcon';
+import Loader from '../Loader/Loader';
 
-const OpportunityManagementTab = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
+const OpportunityManagementTab = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title,loader }) => {
 
     const columns = [
         {
@@ -90,7 +91,9 @@ const OpportunityManagementTab = ({ deleteConfirm, disableConfirm, dataList, ope
 
     return (
         <>
-            <div className="miuiTable">
+        {
+            loader ? <Loader/> :(
+                <div className="miuiTable">
                 <MUIDataTable
                     id='opportunityTable'
                     title={title}
@@ -99,6 +102,9 @@ const OpportunityManagementTab = ({ deleteConfirm, disableConfirm, dataList, ope
                     options={options}
                 />
             </div>
+            )
+        }
+            
         </>
 
     )

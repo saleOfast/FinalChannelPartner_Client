@@ -43,6 +43,7 @@ const Managebannercreen = () => {
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [confirmText, setconfirmText] = useState("");
   const [currObj, setcurrObj] = useState({ banner_id: "", action: "" });
+  const [loader,setLoader]=useState(false)
 
   const handleClose = () => {
     setShow(false);
@@ -89,6 +90,7 @@ const Managebannercreen = () => {
   }
 
   const getbannerList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -104,11 +106,14 @@ const Managebannercreen = () => {
 
       try {
         const response = await axios.get(Baseurl + `/db/banner`, header);
-        console.log(response.data.data);
-        setBannerList(response.data.data);
+        if(response?.status==200 || response?.status==201){
+          setLoader(false)
+          setBannerList(response?.data?.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message);
         } else {
           toast.error("Something went wrong!");
         }
@@ -314,6 +319,7 @@ const Managebannercreen = () => {
               title="Banner List"
               openEdtMdl={openEdtMdl}
               bannerList={bannerList}
+              loader={loader}
               deleteConfirm={deleteConfirm}
             />
           </div>

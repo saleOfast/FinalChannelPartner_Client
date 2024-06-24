@@ -6,12 +6,14 @@ import EditIcon from "../Svg/EditIcon";
 import DeleteIcon from "../Svg/DeleteIcon";
 import CheckIcon from "../Svg/CheckIcon";
 import { filesUrl } from "../../Utils/Constants";
+import Loader from "../Loader/Loader";
 
 const ManagebrandScreenTab = ({
   deleteConfirm,
   brandList,
   openEdtMdl,
   title,
+  loader
 }) => {
   const columns = [
     {
@@ -84,7 +86,9 @@ const ManagebrandScreenTab = ({
 
   return (
     <>
-      <div className="miuiTable">
+    {
+      loader ? <Loader/> :(
+        <div className="miuiTable">
         <MUIDataTable
           title={title}
           data={brandList}
@@ -92,6 +96,9 @@ const ManagebrandScreenTab = ({
           options={options}
         />
       </div>
+      )
+    }
+      
     </>
   );
 };

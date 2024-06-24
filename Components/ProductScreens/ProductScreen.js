@@ -27,7 +27,7 @@ const ProductScreen = () => {
     const [currObj, setcurrObj] = useState("");
     const [show, setShow] = useState(false);
     const [excelData, setexcelData] = useState([]);
-
+    const [loader,setLoader]=useState(false)
 
     function disableConfirm(value) {
         setcurrObj(value);
@@ -44,6 +44,7 @@ const ProductScreen = () => {
 
 
     const getData = async () => {
+        setLoader(true)
         if (hasCookie("token")) {
             let token = getCookie("token");
             let db_name = getCookie("db_name");
@@ -59,8 +60,12 @@ const ProductScreen = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/product`, header);
-                setDataList(response.data.data);
+                if(response?.status==200 || response?.status==201 ){
+                    setLoader(false)
+                    setDataList(response?.data?.data);
+                }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 } else {
@@ -243,6 +248,7 @@ const ProductScreen = () => {
                             dataList={dataList}
                             openTaxMapModel={openTaxMapModel}
                             disableConfirm={disableConfirm}
+                            loader={loader}
                         />
                     </div>
                 </div>

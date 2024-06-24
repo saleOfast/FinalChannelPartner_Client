@@ -26,6 +26,7 @@ const ManageQuotationStatusScreen = () => {
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [confirmText, setconfirmText] = useState("");
   const [currObj, setcurrObj] = useState({ quat_status_id: "", action: "" })
+  const [loader,setLoader]=useState(false)
 
   const handleClose = () => {
     setShow(false);
@@ -65,6 +66,7 @@ const ManageQuotationStatusScreen = () => {
   }
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -80,8 +82,12 @@ const ManageQuotationStatusScreen = () => {
 
       try {
         const response = await axios.get(Baseurl + `/db/quatstatus`, header);
-        setDataList(response.data.data);
+        if(response?.status==200 || response?.status==201 ){
+          setLoader(false)
+          setDataList(response?.data?.data);
+      }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         }
@@ -302,6 +308,7 @@ const ManageQuotationStatusScreen = () => {
               dataList={dataList}
               disableConfirm={disableConfirm}
               deleteConfirm={deleteConfirm}
+              loader={loader}
             />
 
           </div>

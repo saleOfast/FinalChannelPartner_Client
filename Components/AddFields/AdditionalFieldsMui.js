@@ -4,8 +4,9 @@ import ViewIcon from "../Svg/ViewIcon";
 import EditIcon from "../Svg/EditIcon";
 import DeleteIcon from "../Svg/DeleteIcon";
 import Link from "next/link";
+import Loader from "../Loader/Loader";
 
-const AdditionalFieldsMui = ({ dataList, changeHandler, usersList, title, deleteConfirm, }) => {
+const AdditionalFieldsMui = ({ dataList, changeHandler, usersList, title, deleteConfirm,loader }) => {
 
     const columns = [
         {
@@ -85,7 +86,9 @@ const AdditionalFieldsMui = ({ dataList, changeHandler, usersList, title, delete
 
     return (
         <>
-            <div className="miuiTable">
+        {
+            loader ? <Loader/> :(
+                <div className="miuiTable">
                 <MUIDataTable
                     title={title}
                     data={dataList}
@@ -93,6 +96,9 @@ const AdditionalFieldsMui = ({ dataList, changeHandler, usersList, title, delete
                     options={options}
                 />
             </div>
+            )
+        }
+            
         </>
     );
 };

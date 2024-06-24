@@ -5,8 +5,9 @@ import DisableIcon from '../Svg/DisableIcon';
 import EditIcon from '../Svg/EditIcon';
 import DeleteIcon from '../Svg/DeleteIcon';
 import CheckIcon from '../Svg/CheckIcon';
+import Loader from '../Loader/Loader';
 
-const ManageQuotationStatusTab  = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
+const ManageQuotationStatusTab  = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title,loader }) => {
 
     const columns = [
         {
@@ -88,7 +89,9 @@ const ManageQuotationStatusTab  = ({ deleteConfirm, disableConfirm, dataList, op
 
     return (
         <>
-            <div className="miuiTable">
+        {
+            loader ? <Loader/> :(
+                <div className="miuiTable">
                 <MUIDataTable
                     title={title}
                     data={dataList}
@@ -96,6 +99,9 @@ const ManageQuotationStatusTab  = ({ deleteConfirm, disableConfirm, dataList, op
                     options={options}
                 />
             </div>
+            )
+        }
+            
         </>
 
     )

@@ -6,8 +6,9 @@ import DisableIcon from "../Svg/DisableIcon";
 import ListVicn from "../Svg/ListVicn";
 import EditIcon from "../Svg/EditIcon";
 import DeleteIcon from "../Svg/DeleteIcon";
+import Loader from "../Loader/Loader";
 
-const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
+const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disableConfirm, dataList, openEdtMdl, title,loader }) => {
 
     const columns = [
         {
@@ -83,7 +84,10 @@ const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disable
 
     return (
         <>
-            <div className="miuiTable">
+        {
+            loader ? <><Loader/></> :
+            (
+                <div className="miuiTable">
                 <MUIDataTable
                     title={title}
                     data={dataList}
@@ -91,6 +95,9 @@ const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disable
                     options={options}
                 />
             </div>
+            )
+        }
+            
         </>
 
     )

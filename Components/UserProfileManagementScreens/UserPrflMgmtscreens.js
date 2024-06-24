@@ -20,6 +20,8 @@ const UserPrflMgmtscreens = () => {
     const [disableShowConfirm, setdisableShowConfirm] = useState(false)
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
     const [currObj, setcurrObj] = useState('')
+    const[loader,setLoader]=useState(false)
+
 
     function disableConfirm(value) {
         setcurrObj(value)
@@ -32,7 +34,7 @@ const UserPrflMgmtscreens = () => {
     }
 
     const getDataList = async () => {
-
+        setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -47,8 +49,12 @@ const UserPrflMgmtscreens = () => {
             }
             try {
                 const response = await axios.get(Baseurl + `/db/role`, header);
-                setDataList(response.data.data);
+                if(response?.status === 200 || response?.status === 201){
+                    setLoader(false)
+                    setDataList(response.data.data);
+                }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
                   toast.error(error.response.data.message);
                 }
@@ -172,6 +178,7 @@ const UserPrflMgmtscreens = () => {
                             title='Users Profile List'
                             dataList={dataList}
                             disableConfirm={disableConfirm}
+                            loader={loader}
                             deleteConfirm={deleteConfirm} />
                     </div>
                 </div>

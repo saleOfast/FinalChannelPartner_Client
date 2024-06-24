@@ -31,6 +31,7 @@ const ManageDesignationScreen = () => {
     const [confirmText, setconfirmText] = useState("");
     const [cvg, setCvg] = useState(false);
     const [excelData, setexcelData] = useState([]);
+    const [loader, setLoader] = useState(false);
 
     const handleClose = () => {
         setShow(false);
@@ -109,7 +110,7 @@ const ManageDesignationScreen = () => {
     }
 
     const getDataList = async () => {
-
+        setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -125,8 +126,12 @@ const ManageDesignationScreen = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/designation`, header);
-                setDataList(response.data.data);
+                if (response?.status == 200 || response?.status == 201) {
+                    setLoader(false)
+                    setDataList(response.data.data);
+                }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 }
@@ -343,6 +348,7 @@ const ManageDesignationScreen = () => {
                             </div>
                         </div>
                         <DynamicTable
+                            loader={loader}
                             title='Designation List'
                             openEdtMdl={openEdtMdl}
                             dataList={dataList}

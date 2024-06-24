@@ -29,6 +29,7 @@ const ManageDivisionScreen = () => {
     const [confirmText, setconfirmText] = useState("");
     const [cvg, setCvg] = useState(false);
     const [excelData, setexcelData] = useState([]);
+    const [loader, setLoader] = useState(false);
 
 
     const handleClose = () => {
@@ -107,7 +108,7 @@ const ManageDivisionScreen = () => {
 
 
     const getDataList = async () => {
-
+        setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -123,8 +124,12 @@ const ManageDivisionScreen = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/divison`, header);
-                setDataList(response.data.data);
+                if (response?.status == 200 || response?.status == 201) {
+                    setLoader(false)
+                    setDataList(response.data.data);
+                }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 }
@@ -342,6 +347,7 @@ const ManageDivisionScreen = () => {
                             </div>
                         </div>
                         <DynamicTable
+                            loader={loader}
                             openEdtMdl={openEdtMdl}
                             dataList={dataList}
                             title='Division List'

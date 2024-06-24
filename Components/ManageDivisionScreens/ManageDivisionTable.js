@@ -6,8 +6,9 @@ import DisableIcon from '../Svg/DisableIcon';
 import DeleteIcon from '../Svg/DeleteIcon';
 import EditIcon from '../Svg/EditIcon';
 import CheckIcon from '../Svg/CheckIcon';
+import Loader from '../Loader/Loader';
 
-const ManageDivisionTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
+const ManageDivisionTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, loader }) => {
 
     const columns = [
         {
@@ -29,7 +30,7 @@ const ManageDivisionTable = ({ deleteConfirm, disableConfirm, dataList, openEdtM
             label: "Status",
             options: {
                 filter: false,
-                download:false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -45,7 +46,7 @@ const ManageDivisionTable = ({ deleteConfirm, disableConfirm, dataList, openEdtM
             label: "Action",
             options: {
                 filter: false,
-                download:false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -86,19 +87,21 @@ const ManageDivisionTable = ({ deleteConfirm, disableConfirm, dataList, openEdtM
     const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions:{filename:"DivisionList.csv"}
+        downloadOptions: { filename: "DivisionList.csv" }
     };
 
     return (
         <>
-            <div className="miuiTable">
-                <MUIDataTable
-                    title={title}
-                    data={dataList}
-                    columns={columns}
-                    options={options}
-                />
-            </div>
+            {loader ? <><Loader /> </> : (
+                <div className="miuiTable">
+                    <MUIDataTable
+                        title={title}
+                        data={dataList}
+                        columns={columns}
+                        options={options}
+                    />
+                </div>
+            )}
         </>
 
     )

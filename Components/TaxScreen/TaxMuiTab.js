@@ -4,8 +4,9 @@ import ViewIcon from '../Svg/ViewIcon';
 import DisableIcon from '../Svg/DisableIcon';
 import EditIcon from '../Svg/EditIcon';
 import Link from 'next/link';
+import Loader from '../Loader/Loader';
 
-const TaxMuiTab = ({ opnCnfrmBox, taxList, openEdtMdl, title }) => {
+const TaxMuiTab = ({ opnCnfrmBox, taxList, openEdtMdl, title, loader }) => {
 
     const columns = [
 
@@ -77,17 +78,18 @@ const TaxMuiTab = ({ opnCnfrmBox, taxList, openEdtMdl, title }) => {
 
     return (
         <>
+          {loader ? <><Loader /> </> : (
             <div className="miuiTable">
-                <MUIDataTable
-                    title={title}
-                    data={taxList}
-                    columns={columns}
-                    options={options}
-                />
+              <MUIDataTable
+                title={title}
+                data={taxList}
+                columns={columns}
+                options={options}
+              />
             </div>
+          )}  
         </>
-
-    )
+      );
 }
 
 export default TaxMuiTab

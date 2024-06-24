@@ -304,7 +304,7 @@ const ManageLeadStageScreen = () => {
               </button>
             </div>
             <DynamicTable
-            loader={loader}
+              loader={loader}
               title="Lead Stage List"
               openEdtMdl={openEdtMdl}
               dataList={dataList}

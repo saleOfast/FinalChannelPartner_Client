@@ -5,8 +5,9 @@ import DisableIcon from '../Svg/DisableIcon';
 import EditIcon from '../Svg/EditIcon';
 import DeleteIcon from '../Svg/DeleteIcon';
 import CheckIcon from '../Svg/CheckIcon';
+import Loader from '../Loader/Loader';
 
-const OpportunityTypeMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
+const OpportunityTypeMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, loader }) => {
 
     const columns = [
         {
@@ -28,7 +29,7 @@ const OpportunityTypeMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMd
             label: "Status",
             options: {
                 filter: false,
-                download:false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -44,7 +45,7 @@ const OpportunityTypeMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMd
             label: "Action",
             options: {
                 filter: false,
-                download:false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -83,22 +84,23 @@ const OpportunityTypeMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMd
     const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions:{filename:"OpportunityTypeList.csv"}
+        downloadOptions: { filename: "OpportunityTypeList.csv" }
     };
 
     return (
         <>
-            <div className="miuiTable">
-                <MUIDataTable
-                    title={title}
-                    data={dataList}
-                    columns={columns}
-                    options={options}
-                />
-            </div>
+            {loader ? <><Loader /> </> : (
+                <div className="miuiTable">
+                    <MUIDataTable
+                        title={title}
+                        data={dataList}
+                        columns={columns}
+                        options={options}
+                    />
+                </div>
+            )}
         </>
-
-    )
+    );
 }
 
 export default OpportunityTypeMui 

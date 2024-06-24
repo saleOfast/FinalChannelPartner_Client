@@ -114,7 +114,7 @@ const ManageLeadStageTab = ({
             options={options}
           />
         </div>
-      )}
+      )}  
     </>
   );
 };

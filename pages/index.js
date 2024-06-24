@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCookie, hasCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie, hasCookie, setCookie } from "cookies-next";
 import { useSelector, useDispatch } from "react-redux";
 import SignInScreen from "../Components/Basics/SignInScreen";
 import { UserLogIN, userLogOut } from "../store/ClientLoginSlice";
@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import moment from "moment";
 import mainIndexHOC from "../HOC/mainIndexHOC ";
+import { masterMode, userMode } from "../store/dbModeSlice";
 
 export default mainIndexHOC(
   function Home() {
@@ -37,6 +38,18 @@ export default mainIndexHOC(
     //     dispatch(UserLogIN());
     //   }
     // }, []);
+
+    const onClickCommon = () => {
+      dispatch(crm())
+      const isAdmin = hasCookie("sideUser");
+      const mode = isAdmin ? "Admin" : "User";
+      setCookie(`side${mode}`, "true");
+      deleteCookie(`side${isAdmin ? "User" : "Admin"}`);
+      dispatch(isAdmin ? masterMode() : userMode());
+      // toast.info(`Switched to ${mode} Mode`);
+      router.push("/crm");  
+    };
+
     const subscriptionInfo = hasCookie("subscriptionInfo")
       ? JSON.parse(getCookie("subscriptionInfo"))
       : null;
@@ -160,7 +173,7 @@ export default mainIndexHOC(
         ) : (
           <>
             {user ? (
-              <div className="NewLoginScreen bg-white w-100 overflow-auto">
+              <div className="NewLoginScreen bg-white w-100  overflow-auto">
                 <div className="row m-0 login">
                   <div className="col-12 col-lg-6 m-0 p-0">
                     <div className="form-left d-flex flex-column justify-content-between">
@@ -175,7 +188,7 @@ export default mainIndexHOC(
                           `${filesUrl}` + `/logo/images${clientData?.logo}`
                         }
                         alt="Logo"
-                        className="logo mx-auto"
+                        className=" mx-auto"
                       />
                       <img
                         src="/images/Ellipse27.png"
@@ -184,36 +197,50 @@ export default mainIndexHOC(
                       />
                     </div>
                   </div>
-                  <div className="col-12 col-lg-6 d-flex align-items-center justify-content-center">
-                    <div className="row">
-                      {allowedpermission?.map((permission, i) => (
-                        <div
-                          key={i}
-                          className="col-3 col-md-3 p-3 d-flex flex-column gap-2 align-items-center justify-content-end"
-                          onClick={() => {
-                            handleClick(permission);
-                          }}
-                        >
-                              <img
-                                src={getPlatformFunc(permission)}
-                                alt="Background Two"
-                                className="w-50 h-50"
-                              />
-                              <b className="fw-3 text-center">  {permission.toUpperCase()} </b>
-                          {/* <div
-                            className="text-center text-white fw-bold rounded-lg p-3 fs-5 cursor-pointer"
-                            style={{
-                              backgroundColor: clientData?.button_color
-                                ? clientData?.button_color
-                                : "#0460E7",
-                            }}
-                          >
-                            {permission.toUpperCase()}
-                          </div> */}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <div className="col-12 col-lg-6 d-flex align-items-center mt-5 mt-md-0 justify-content-center" style={{ marginTop: '0%' }}>
+  <div className="row w-100">
+    {allowedpermission?.map((permission, i) => (
+      <div
+        key={i}
+        className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end"
+        onClick={() => {
+          handleClick(permission);
+        }}
+      >
+        <img
+          src={getPlatformFunc(permission)}
+          alt={permission}
+          style={{ width: '30%' }}
+        />
+        <b className="fw-3 text-center">{permission.toUpperCase()}</b>
+      </div>
+    ))}
+    <div
+      className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end"
+      onClick={() => {
+        onClickCommon();
+      }}
+    >
+      <img
+        src="/images/platform/COMMON.png"
+        alt="COMMON"
+        style={{ width: '30%' }}
+      />
+      <b className="fw-3 text-center">COMMON</b>
+    </div>
+    {/* If the number of icons is odd, add an empty div to balance the last row */}
+    {((allowedpermission.length + 1) % 2 !== 0) && (
+      <div
+        className="col-12 col-md-6 p-3"
+        style={{ visibility: 'hidden' }}
+      />
+    )}
+  </div>
+</div>
+
+
+
+
                 </div>
               </div>
             ) : (

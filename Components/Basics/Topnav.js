@@ -250,6 +250,13 @@ const Topnav = ({  topnavPermission }) => {
                      onClick={()=>{
                        deleteCookie("crm")
                        dispatch(clearValue())
+                      if(hasCookie("sideAdmin")){
+                        const isAdmin = hasCookie("sideUser");
+                        const mode = isAdmin ? "Admin" : "User";
+                        setCookie(`side${mode}`, "true");
+                        deleteCookie(`side${isAdmin ? "User" : "Admin"}`);
+                        dispatch(isAdmin ? masterMode() : userMode());
+                      }
                        router.push("/")
                      }}/>
                    )

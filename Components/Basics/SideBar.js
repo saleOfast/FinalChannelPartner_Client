@@ -44,7 +44,7 @@ const SideBar = ({}) => {
     deleteCookie(`side${isAdmin ? "User" : "Admin"}`);
     dispatch(isAdmin ? masterMode() : userMode());
     toast.info(`Switched to ${mode} Mode`);
-    router.push("/crm");
+    router.push("/crm");  
   };
 
   const handleClick = debounce(sideToggle, 500);
@@ -257,13 +257,13 @@ const SideBar = ({}) => {
         </ul>
       )}
 
-      {dbMode !== "admin" && userData?.hasMaster && (
+      {/* {dbMode !== "admin" && userData?.hasMaster && (
         <div className="setting_btn">
           <div className="icon" onClick={handleClick}>
             <SettingsIcon />
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

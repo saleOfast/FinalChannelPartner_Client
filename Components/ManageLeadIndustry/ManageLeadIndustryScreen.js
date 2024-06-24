@@ -11,8 +11,8 @@ import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from 'next/dynamic'
 const DynamicTable = dynamic(
-    () => import('./ManageLeadIndustryTab'),
-    { ssr: false }
+  () => import('./ManageLeadIndustryTab'),
+  { ssr: false }
 )
 
 const ManageLeadIndustryScreen = () => {
@@ -26,6 +26,7 @@ const ManageLeadIndustryScreen = () => {
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
   const [currObj, setcurrObj] = useState({ ind_id: "", action: "" });
   const [confirmText, setconfirmText] = useState("");
+  const [loader, setLoader] = useState(false);
 
 
   const handleClose = () => {
@@ -62,7 +63,7 @@ const ManageLeadIndustryScreen = () => {
   }
 
   const getDataList = async () => {
-
+    setLoader(true)
     if (hasCookie('token')) {
       let token = (getCookie('token'));
       let db_name = (getCookie('db_name'));
@@ -72,14 +73,18 @@ const ManageLeadIndustryScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:103
+          m_id: 103
         }
       }
 
       try {
         const response = await axios.get(Baseurl + `/db/industry`, header);
-        setDataList(response.data.data);
+        if (response?.status == 200 || response?.status == 201) {
+          setLoader(false)
+          setDataList(response.data.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         }
@@ -107,7 +112,7 @@ const ManageLeadIndustryScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:105
+          m_id: 105
         }
       }
 
@@ -140,7 +145,7 @@ const ManageLeadIndustryScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:106
+          m_id: 106
         }
       }
 
@@ -177,7 +182,7 @@ const ManageLeadIndustryScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:103
+            m_id: 103
 
           }
         }
@@ -215,7 +220,7 @@ const ManageLeadIndustryScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:105
+            m_id: 105
           }
         }
 
@@ -257,7 +262,7 @@ const ManageLeadIndustryScreen = () => {
         actionType={deleteHandler}
         title={"Are You Sure you want to Delete ?"} />
 
-       <div className={`main_Box  ${sideView}`}>
+      <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
           <h3 className="content_head">LEAD INDUSTRY MASTER</h3>
           <nav aria-label="breadcrumb">
@@ -278,6 +283,7 @@ const ManageLeadIndustryScreen = () => {
               </button>
             </div>
             <DynamicTable
+              loader={loader}
               title='Industry List'
               openEdtMdl={openEdtMdl}
               dataList={dataList}

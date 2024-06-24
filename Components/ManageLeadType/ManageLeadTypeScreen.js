@@ -26,6 +26,7 @@ const ManageLeadTypeScreen = () => {
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState({ lead_type_id: "", action: "" });
   const [confirmText, setconfirmText] = useState("");
+  const [loader, setLoader] = useState(false);
 
   const handleClose = () => {
     setShow(false);
@@ -66,6 +67,7 @@ const ManageLeadTypeScreen = () => {
   }
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -75,14 +77,18 @@ const ManageLeadTypeScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:132
+          m_id: 132
         },
       };
 
       try {
         const response = await axios.get(Baseurl + `/db/leadtype`, header);
-        setDataList(response.data.data);
+        if (response?.status == 200 || response?.status == 201) {
+          setLoader(false)
+          setDataList(response.data.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         }
@@ -109,7 +115,7 @@ const ManageLeadTypeScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:135
+          m_id: 135
         },
       };
 
@@ -146,7 +152,7 @@ const ManageLeadTypeScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:136
+          m_id: 136
         },
       };
 
@@ -185,7 +191,7 @@ const ManageLeadTypeScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:133
+            m_id: 133
           },
         };
 
@@ -225,7 +231,7 @@ const ManageLeadTypeScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:135
+            m_id: 135
           },
         };
 
@@ -279,7 +285,7 @@ const ManageLeadTypeScreen = () => {
               <li className="breadcrumb-item">
                 <Link href="/crm">Home</Link>
               </li>
-              
+
               <li className="breadcrumb-item active" aria-current="page">
                 Lead Type Master
               </li>
@@ -298,6 +304,7 @@ const ManageLeadTypeScreen = () => {
               </button>
             </div>
             <DynamicTable
+            loader={loader}
               title="Lead Type List"
               openEdtMdl={openEdtMdl}
               dataList={dataList}

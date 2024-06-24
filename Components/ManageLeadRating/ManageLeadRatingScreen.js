@@ -26,7 +26,8 @@ const ManageLeadRatingScreen = () => {
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
     const [currObj, setcurrObj] = useState({ lead_rate_id: "", action: "" });
     const [confirmText, setconfirmText] = useState("");
-  
+    const [loader, setLoader] = useState(false);
+
 
     const handleClose = () => {
         setShow(false);
@@ -47,14 +48,14 @@ const ManageLeadRatingScreen = () => {
 
     function disableConfirm(value, type) {
         if (type == 1) {
-          setconfirmText("enable");
+            setconfirmText("enable");
         } else {
-          setconfirmText("Disable");
+            setconfirmText("Disable");
         }
         setcurrObj({ lead_rate_id: value, action: type });
         setdisableShowConfirm(true);
-      }
-    
+    }
+
 
     function deleteConfirm(value) {
         setcurrObj(value)
@@ -62,7 +63,7 @@ const ManageLeadRatingScreen = () => {
     }
 
     const getDataList = async () => {
-
+        setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -72,21 +73,25 @@ const ManageLeadRatingScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id:109
+                    m_id: 109
                 }
             }
 
             try {
                 const response = await axios.get(Baseurl + `/db/leadrate`, header);
-                setDataList(response.data.data);
+                if (response?.status == 200 || response?.status == 201) {
+                    setLoader(false)
+                    setDataList(response.data.data);
+                }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
-                  toast.error(error.response.data.message);
+                    toast.error(error.response.data.message);
                 }
                 else {
-                  toast.error('Something went wrong!')
+                    toast.error('Something went wrong!')
                 }
-              }
+            }
         }
     }
 
@@ -95,7 +100,7 @@ const ManageLeadRatingScreen = () => {
         const reqInfo = {
             lead_rate_id: currObj.lead_rate_id,
             status: currObj.action == 1 ? true : false,
-          };
+        };
 
         setdisableShowConfirm(false)
         if (hasCookie('token')) {
@@ -107,7 +112,7 @@ const ManageLeadRatingScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id:111
+                    m_id: 111
                 }
             }
 
@@ -121,12 +126,12 @@ const ManageLeadRatingScreen = () => {
                 }
             } catch (error) {
                 if (error?.response?.data?.message) {
-                  toast.error(error.response.data.message);
+                    toast.error(error.response.data.message);
                 }
                 else {
-                  toast.error('Something went wrong!')
+                    toast.error('Something went wrong!')
                 }
-              }
+            }
         }
     }
 
@@ -140,7 +145,7 @@ const ManageLeadRatingScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id:112
+                    m_id: 112
                 }
             }
 
@@ -154,12 +159,12 @@ const ManageLeadRatingScreen = () => {
                 }
             } catch (error) {
                 if (error?.response?.data?.message) {
-                  toast.error(error.response.data.message);
+                    toast.error(error.response.data.message);
                 }
                 else {
-                  toast.error('Something went wrong!')
+                    toast.error('Something went wrong!')
                 }
-              }
+            }
         }
 
     }
@@ -177,7 +182,7 @@ const ManageLeadRatingScreen = () => {
                         Accept: "application/json",
                         Authorization: "Bearer ".concat(token),
                         db: db_name,
-                        m_id:109
+                        m_id: 109
                     }
                 }
 
@@ -190,12 +195,12 @@ const ManageLeadRatingScreen = () => {
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                      toast.error(error.response.data.message);
+                        toast.error(error.response.data.message);
                     }
                     else {
-                      toast.error('Something went wrong!')
+                        toast.error('Something went wrong!')
                     }
-                  }
+                }
             }
         }
 
@@ -214,7 +219,7 @@ const ManageLeadRatingScreen = () => {
                         Accept: "application/json",
                         Authorization: "Bearer ".concat(token),
                         db: db_name,
-                        m_id:111
+                        m_id: 111
                     }
                 }
 
@@ -227,12 +232,12 @@ const ManageLeadRatingScreen = () => {
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                      toast.error(error.response.data.message);
+                        toast.error(error.response.data.message);
                     }
                     else {
-                      toast.error('Something went wrong!')
+                        toast.error('Something went wrong!')
                     }
-                  }
+                }
             }
         }
 
@@ -248,14 +253,14 @@ const ManageLeadRatingScreen = () => {
                 showConfirm={disableShowConfirm}
                 setshowConfirm={setdisableShowConfirm}
                 actionType={disableHandler}
-                title={`Are You Sure you want to ${confirmText} ?`}  />
+                title={`Are You Sure you want to ${confirmText} ?`} />
 
             <ConfirmBox
                 showConfirm={deleteshowConfirm}
                 setshowConfirm={setdeleteshowConfirm}
                 actionType={deleteHandler}
                 title={"Are You Sure you want to Delete ?"} />
-             <div className={`main_Box  ${sideView}`}>
+            <div className={`main_Box  ${sideView}`}>
                 <div className="bread_head">
                     <h3 className="content_head">LEAD RATING MASTER</h3>
                     <nav aria-label="breadcrumb">
@@ -274,6 +279,7 @@ const ManageLeadRatingScreen = () => {
                             </button>
                         </div>
                         <DynamicTable
+                            loader={loader}
                             title='Lead Rating List'
                             openEdtMdl={openEdtMdl}
                             dataList={dataList}

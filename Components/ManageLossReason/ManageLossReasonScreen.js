@@ -26,6 +26,7 @@ const ManageLossReasonScreen = () => {
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
     const [currObj, setcurrObj] = useState({ loss_id: "", action: "" });
     const [confirmText, setconfirmText] = useState("");
+    const [loader, setLoader] = useState(false);
 
     const handleClose = () => {
         setShow(false);
@@ -47,14 +48,14 @@ const ManageLossReasonScreen = () => {
 
     function disableConfirm(value, type) {
         if (type == 1) {
-          setconfirmText("enable");
+            setconfirmText("enable");
         } else {
-          setconfirmText("Disable");
+            setconfirmText("Disable");
         }
         setcurrObj({ loss_id: value, action: type });
         setdisableShowConfirm(true);
-      }
-    
+    }
+
 
     function deleteConfirm(value) {
         setcurrObj(value)
@@ -62,7 +63,7 @@ const ManageLossReasonScreen = () => {
     }
 
     const getDataList = async () => {
-
+        setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -72,21 +73,25 @@ const ManageLossReasonScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id:138
+                    m_id: 138
                 }
             }
 
             try {
                 const response = await axios.get(Baseurl + `/db/loss`, header);
-                setDataList(response.data.data);
+                if (response?.status == 200 || response?.status == 201) {
+                    setLoader(false)
+                    setDataList(response.data.data);
+                }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
-                  toast.error(error.response.data.message);
+                    toast.error(error.response.data.message);
                 }
                 else {
-                  toast.error('Something went wrong!')
+                    toast.error('Something went wrong!')
                 }
-              }
+            }
         }
     }
 
@@ -95,7 +100,7 @@ const ManageLossReasonScreen = () => {
         const reqInfo = {
             loss_id: currObj.loss_id,
             status: currObj.action == 1 ? true : false,
-          };
+        };
 
         setdisableShowConfirm(false)
         if (hasCookie('token')) {
@@ -107,7 +112,7 @@ const ManageLossReasonScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id:141
+                    m_id: 141
                 }
             }
 
@@ -121,12 +126,12 @@ const ManageLossReasonScreen = () => {
                 }
             } catch (error) {
                 if (error?.response?.data?.message) {
-                  toast.error(error.response.data.message);
+                    toast.error(error.response.data.message);
                 }
                 else {
-                  toast.error('Something went wrong!')
+                    toast.error('Something went wrong!')
                 }
-              }
+            }
         }
     }
 
@@ -140,7 +145,7 @@ const ManageLossReasonScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id:142
+                    m_id: 142
                 }
             }
 
@@ -154,12 +159,12 @@ const ManageLossReasonScreen = () => {
                 }
             } catch (error) {
                 if (error?.response?.data?.message) {
-                  toast.error(error.response.data.message);
+                    toast.error(error.response.data.message);
                 }
                 else {
-                  toast.error('Something went wrong!')
+                    toast.error('Something went wrong!')
                 }
-              }
+            }
         }
 
     }
@@ -177,7 +182,7 @@ const ManageLossReasonScreen = () => {
                         Accept: "application/json",
                         Authorization: "Bearer ".concat(token),
                         db: db_name,
-                        m_id:139
+                        m_id: 139
                     }
                 }
 
@@ -190,12 +195,12 @@ const ManageLossReasonScreen = () => {
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                      toast.error(error.response.data.message);
+                        toast.error(error.response.data.message);
                     }
                     else {
-                      toast.error('Something went wrong!')
+                        toast.error('Something went wrong!')
                     }
-                  }
+                }
             }
         }
 
@@ -214,7 +219,7 @@ const ManageLossReasonScreen = () => {
                         Accept: "application/json",
                         Authorization: "Bearer ".concat(token),
                         db: db_name,
-                        m_id:141
+                        m_id: 141
                     }
                 }
 
@@ -227,12 +232,12 @@ const ManageLossReasonScreen = () => {
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                      toast.error(error.response.data.message);
+                        toast.error(error.response.data.message);
                     }
                     else {
-                      toast.error('Something went wrong!')
+                        toast.error('Something went wrong!')
                     }
-                  }
+                }
             }
         }
 
@@ -256,7 +261,7 @@ const ManageLossReasonScreen = () => {
                 actionType={deleteHandler}
                 title={"Are You Sure you want to Delete ?"} />
 
-             <div className={`main_Box  ${sideView}`}>
+            <div className={`main_Box  ${sideView}`}>
                 <div className="bread_head">
                     <h3 className="content_head">LOSS REASON MASTER</h3>
                     <nav aria-label="breadcrumb">
@@ -275,6 +280,7 @@ const ManageLossReasonScreen = () => {
                             </button>
                         </div>
                         <DynamicTable
+                            loader= {loader}
                             title='Loss Reason List'
                             openEdtMdl={openEdtMdl}
                             dataList={dataList}

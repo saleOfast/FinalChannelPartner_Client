@@ -5,8 +5,9 @@ import DisableIcon from '../Svg/DisableIcon';
 import EditIcon from '../Svg/EditIcon';
 import DeleteIcon from '../Svg/DeleteIcon';
 import CheckIcon from '../Svg/CheckIcon';
+import Loader from '../Loader/Loader';
 
-const ManageLeadRatingTab = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title }) => {
+const ManageLeadRatingTab = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, loader }) => {
 
     const columns = [
         {
@@ -28,7 +29,7 @@ const ManageLeadRatingTab = ({ deleteConfirm, disableConfirm, dataList, openEdtM
             label: "Status",
             options: {
                 filter: false,
-                download:false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box'>
@@ -44,7 +45,7 @@ const ManageLeadRatingTab = ({ deleteConfirm, disableConfirm, dataList, openEdtM
             label: "Action",
             options: {
                 filter: false,
-                download:false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -84,22 +85,23 @@ const ManageLeadRatingTab = ({ deleteConfirm, disableConfirm, dataList, openEdtM
     const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions:{filename:"LeadRatingList.csv"}
+        downloadOptions: { filename: "LeadRatingList.csv" }
     };
 
     return (
         <>
-            <div className="miuiTable">
-                <MUIDataTable
-                    title={title}
-                    data={dataList}
-                    columns={columns}
-                    options={options}
-                />
-            </div>
+            {loader ? <><Loader /> </> : (
+                <div className="miuiTable">
+                    <MUIDataTable
+                        title={title}
+                        data={dataList}
+                        columns={columns}
+                        options={options}
+                    />
+                </div>
+            )}
         </>
-
-    )
+    );
 }
 
 export default ManageLeadRatingTab 

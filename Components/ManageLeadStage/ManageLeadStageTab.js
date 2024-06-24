@@ -5,6 +5,7 @@ import DisableIcon from "../Svg/DisableIcon";
 import EditIcon from "../Svg/EditIcon";
 import DeleteIcon from "../Svg/DeleteIcon";
 import CheckIcon from "../Svg/CheckIcon";
+import Loader from "../Loader/Loader";
 
 const ManageLeadStageTab = ({
   deleteConfirm,
@@ -12,6 +13,7 @@ const ManageLeadStageTab = ({
   dataList,
   openEdtMdl,
   title,
+  loader
 }) => {
   const columns = [
     {
@@ -33,7 +35,7 @@ const ManageLeadStageTab = ({
       label: "Lead Status",
       options: {
         filter: false,
-                download:false,
+        download: false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="status_box">
@@ -52,7 +54,7 @@ const ManageLeadStageTab = ({
       label: "Action",
       options: {
         filter: false,
-                download:false,
+        download: false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className="table_btns">
@@ -95,24 +97,26 @@ const ManageLeadStageTab = ({
     },
   ];
 
- const options = {
-        selectableRows: 'none',
-        responsive: "standard",
-        downloadOptions:{filename:"LeadStageList.csv"}
-    };
+  const options = {
+    selectableRows: 'none',
+    responsive: "standard",
+    downloadOptions: { filename: "LeadStageList.csv" }
+  };
 
   return (
     <>
-      <div className="miuiTable">
-        <MUIDataTable
-          title={title}
-          data={dataList}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loader ? <><Loader /> </> : (
+        <div className="miuiTable">
+          <MUIDataTable
+            title={title}
+            data={dataList}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </>
   );
 };
 
-export default ManageLeadStageTab;
+      export default ManageLeadStageTab;

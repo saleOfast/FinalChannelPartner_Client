@@ -11,8 +11,8 @@ import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from 'next/dynamic'
 const DynamicTable = dynamic(
-    () => import('./ManageLeadStageTab'),
-    { ssr: false }
+  () => import('./ManageLeadStageTab'),
+  { ssr: false }
 )
 
 const ManageLeadStageScreen = () => {
@@ -26,6 +26,7 @@ const ManageLeadStageScreen = () => {
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState({ lead_stg_id: "", action: "" });
   const [confirmText, setconfirmText] = useState("");
+  const [loader, setLoader] = useState(false);
 
   const handleClose = () => {
     setShow(false);
@@ -66,6 +67,7 @@ const ManageLeadStageScreen = () => {
   }
 
   const getDataList = async () => {
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -75,14 +77,18 @@ const ManageLeadStageScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:120
+          m_id: 120
         },
       };
 
       try {
         const response = await axios.get(Baseurl + `/db/leadstg`, header);
-        setDataList(response.data.data);
+        if (response?.status == 200 || response?.status == 201) {
+          setLoader(false)
+          setDataList(response.data.data);
+        }
       } catch (error) {
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         }
@@ -109,7 +115,7 @@ const ManageLeadStageScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:123
+          m_id: 123
         },
       };
 
@@ -146,7 +152,7 @@ const ManageLeadStageScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:124
+          m_id: 124
         },
       };
 
@@ -185,7 +191,7 @@ const ManageLeadStageScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:121
+            m_id: 121
           },
         };
 
@@ -225,7 +231,7 @@ const ManageLeadStageScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:123
+            m_id: 123
           },
         };
 
@@ -262,7 +268,7 @@ const ManageLeadStageScreen = () => {
         showConfirm={disableShowConfirm}
         setshowConfirm={setdisableShowConfirm}
         actionType={disableHandler}
-        title={`Are You Sure you want to ${confirmText} ?`} 
+        title={`Are You Sure you want to ${confirmText} ?`}
       />
 
       <ConfirmBox
@@ -272,7 +278,7 @@ const ManageLeadStageScreen = () => {
         title={"Are You Sure you want to Delete ?"}
       />
 
-       <div className={`main_Box  ${sideView}`}>
+      <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
           <h3 className="content_head">LEAD STAGE MASTER</h3>
           <nav aria-label="breadcrumb">
@@ -298,6 +304,7 @@ const ManageLeadStageScreen = () => {
               </button>
             </div>
             <DynamicTable
+            loader={loader}
               title="Lead Stage List"
               openEdtMdl={openEdtMdl}
               dataList={dataList}

@@ -7,12 +7,14 @@ import EditIcon from '../Svg/EditIcon';
 import Link from "next/link";
 import moment from 'moment';
 import DeleteIcon from '../Svg/DeleteIcon';
+import Loader from '../Loader/Loader';
 
 const TasksMuiTable = ({
   dataList,
   disableConfirm,
   openEdtMdl,
   title,
+  loader
 
 }) => {
   const columns = [
@@ -236,7 +238,9 @@ const TasksMuiTable = ({
 
   return (
     <>
-      <div className="miuiTable">
+    {
+      loader ? <><Loader/></> :(
+        <div className="miuiTable">
         <MUIDataTable
           title={title}
           // data={dataList}
@@ -245,6 +249,10 @@ const TasksMuiTable = ({
           options={options}
         />
       </div>
+      ) 
+
+    }
+     
     </>
   );
 };

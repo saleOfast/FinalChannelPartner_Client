@@ -18,10 +18,10 @@ const AccountScreen = () => {
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
     const [currObj, setcurrObj] = useState('')
     const sideView = useSelector((state) => state.sideView.value);
-
+    const [loader,setLoader]=useState(false)
 
     const getAccountsList = async () => {
-
+        setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -36,8 +36,12 @@ const AccountScreen = () => {
             }
             try {
                 const response = await axios.get(Baseurl + `/db/account`, header);
-                setAccountsList(response.data.data);
+                if(response?.status==200|| response?.status==201){
+                    setLoader(false)
+                    setAccountsList(response?.data?.data);
+                  }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 }
@@ -157,6 +161,7 @@ const AccountScreen = () => {
                         </div>
                         <DynamicTable
                             accountsList={accountsList}
+                            loader={loader}
                             openConfirmBox={openConfirmBox} />
                     </div>
                 </div>

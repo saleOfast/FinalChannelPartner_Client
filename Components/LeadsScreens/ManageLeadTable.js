@@ -7,11 +7,13 @@ import Link from "next/link";
 import moment from "moment";
 import DeleteIcon from "../Svg/DeleteIcon";
 import ClosedConverted from "../Svg/ClosedConverted";
+import Loader from "../Loader/Loader"
 
 const ManageLeadTable = ({
   dataList,
   openCloseConvert,
   title,
+  loader,
   disableConfirm,
 }) => {
   
@@ -173,7 +175,9 @@ const ManageLeadTable = ({
 
   return (
     <>
-      <div className="miuiTable">
+    {
+      loader ? <><Loader/></> :(
+        <div className="miuiTable">
         <MUIDataTable
           title={title}
           // data={dataList}
@@ -182,6 +186,9 @@ const ManageLeadTable = ({
           options={options}
         />
       </div>
+      )
+    }
+      
     </>
   );
 };

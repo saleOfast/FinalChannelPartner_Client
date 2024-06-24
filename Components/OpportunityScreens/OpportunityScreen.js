@@ -16,10 +16,10 @@ const DynamicTable = dynamic(
 
 const OpportunityScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
-
     const [dataList, setDataList] = useState([]);
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
     const [currObj, setcurrObj] = useState('')
+    const[loader,setLoader]=useState(false)
 
     function openConfirmBox(value) {
         setcurrObj(value)
@@ -27,6 +27,7 @@ const OpportunityScreen = () => {
     }
 
     const getDataList = async () => {
+        setLoader(true)
         if (hasCookie("token")) {
             let token = getCookie("token");
             let db_name = getCookie("db_name");
@@ -42,8 +43,12 @@ const OpportunityScreen = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/opportunity`, header);
-                setDataList(response.data.data);
+                if(response?.status==200|| response?.status==201){
+                    setLoader(false)
+                    setDataList(response.data.data);
+                }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 } else {
@@ -165,6 +170,7 @@ const OpportunityScreen = () => {
                         <DynamicTable
                             title='Opportunity List'
                             dataList={dataList}
+                            loader={loader}
                             openConfirmBox={openConfirmBox}
                         />
                     </div>

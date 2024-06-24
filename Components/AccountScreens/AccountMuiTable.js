@@ -4,8 +4,9 @@ import ViewIcon from '../Svg/ViewIcon';
 import EditIcon from '../Svg/EditIcon';
 import Link from 'next/link';
 import DeleteIcon from '../Svg/DeleteIcon';
+import Loader from '../Loader/Loader';
 
-const AccountMuiTable = ({ accountsList, openConfirmBox }) => {
+const AccountMuiTable = ({ accountsList, openConfirmBox,loader }) => {
 
     const columns = [
         {
@@ -107,15 +108,21 @@ const AccountMuiTable = ({ accountsList, openConfirmBox }) => {
 
     return (
         <>
-            <div className="miuiTable">
+        {
+            loader ?<><Loader/></> :(
+                <div className="miuiTable">
                 <MUIDataTable
-                    title={"Accounts List"}
-                    // data={accountsList}
-                    data={mappedDataList}
-                    columns={columns}
-                    options={options}
-                />
-            </div>
+                title={"Accounts List"}
+                // data={accountsList}
+                data={mappedDataList}
+                columns={columns}
+                options={options}
+            />
+        </div>
+            )
+        }
+            
+           
         </>
 
     )

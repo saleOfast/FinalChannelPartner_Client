@@ -6,8 +6,9 @@ import DisableIcon from '../Svg/DisableIcon';
 import EditIcon from '../Svg/EditIcon';
 import Link from "next/link";
 import DeleteIcon from '../Svg/DeleteIcon';
+import Loader from '../Loader/Loader';
 
-const OpportunityMuiTable = ({ dataList, title, openConfirmBox }) => {
+const OpportunityMuiTable = ({ dataList, title, openConfirmBox, loader }) => {
 
     const columns = [
         {
@@ -130,7 +131,9 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox }) => {
 
     return (
         <>
-            <div className="miuiTable">
+        {
+            loader ? <Loader/> :(
+                <div className="miuiTable">
                 <MUIDataTable
                     title={title}
                     // data={dataList}
@@ -139,6 +142,9 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox }) => {
                     options={options}
                 />
             </div>
+            )
+        }
+            
         </>
 
     )

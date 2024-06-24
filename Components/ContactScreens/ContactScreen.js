@@ -16,15 +16,13 @@ const DynamicTable = dynamic(
 
 const ContactScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
-
-
     const [accountList, setAccountsList] = useState([]);
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
     const [currObj, setcurrObj] = useState('')
-
+    const[loader,setLoader]=useState(false)
 
     const getContactList = async () => {
-
+        setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -39,7 +37,10 @@ const ContactScreen = () => {
             }
             try {
                 const response = await axios.get(Baseurl + `/db/contacts`, header);
-                setAccountsList(response.data.data);
+                if(response?.status==200 || response?.status==201){
+                    setLoader(false)
+                    setAccountsList(response?.data?.data);
+                }
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -161,6 +162,7 @@ const ContactScreen = () => {
                         </div>
                         <DynamicTable title='Contact List'
                             accountsList={accountList}
+                            loader={loader}
                             openConfirmBox={openConfirmBox}
                         />
                     </div>

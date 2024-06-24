@@ -5,10 +5,11 @@ import DisableIcon from '../Svg/DisableIcon';
 import EditIcon from '../Svg/EditIcon';
 import Link from "next/link";
 import DeleteIcon from '../Svg/DeleteIcon';
+import Loader from '../Loader/Loader';
 
 
 
-const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmBox, title }) => {
+const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmBox, title,loader }) => {
 
     const columns = [
         {
@@ -134,7 +135,9 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
 
     return (
         <>
-            <div className="miuiTable">
+        {
+            loader ? <Loader/> :(
+                <div className="miuiTable">
                 <MUIDataTable
                     title={title}
                     // data={dataList}
@@ -143,6 +146,9 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
                     options={options}
                 />
             </div>
+            )
+        }
+            
         </>
 
     )

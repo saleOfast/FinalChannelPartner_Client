@@ -7,13 +7,14 @@ import EditIcon from '../Svg/EditIcon';
 import Link from "next/link";
 import moment from 'moment';
 import DeleteIcon from '../Svg/DeleteIcon';
+import Loader from '../Loader/Loader';
 
 const EventMuiTable = ({
   dataList,
   disableConfirm,
   openEdtMdl,
   title,
-
+  loader
 }) => {
   const columns = [
     {
@@ -232,7 +233,9 @@ const EventMuiTable = ({
 
   return (
     <>
-      <div className="miuiTable">
+    {
+      loader ?<><Loader/></> :(
+        <div className="miuiTable">
         <MUIDataTable
           title={title}
           data={mappedDataList}
@@ -241,6 +244,9 @@ const EventMuiTable = ({
           options={options}
         />
       </div>
+      )
+    }
+      
     </>
   );
 };

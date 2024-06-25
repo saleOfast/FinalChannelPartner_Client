@@ -123,28 +123,7 @@ const Topnav = ({  topnavPermission }) => {
     }
   };
 
-  // const switchPermission = (permission) => {
-  //   switch (permission) {
-  //     case "crm":
-  //       dispatch(crm());
-  //       break;
-
-  //     case "sales":
-  //       dispatch(sales());
-  //       break;
-
-  //     case "channel":
-  //       dispatch(channel());
-  //       break;
-
-  //     case "dms":
-  //       dispatch(dms());
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-  // };
+ 
 
   useEffect(()=>{
     if(!router.isReady) return
@@ -262,76 +241,84 @@ const Topnav = ({  topnavPermission }) => {
                    )
                  }
                  {hasCookie("crm") && (
-                   <Dropdown>
-                     <Dropdown.Toggle variant="primary" id="quickAdd">
-                       <div className="plusicon">
-                         <PlusIcon />{" "}
-                       </div>
-                       <div className="btn_text"> Quick Add </div>
-                       <div className="chevrolet">
-                         <ChevroletLeftIcon />{" "}
-                       </div>
-                     </Dropdown.Toggle>
-
-                     <Dropdown.Menu>
-                       <ul className="quickaddlist">
-                         <Link href="/AddLeads">
-                           <li className="list-item">
-                             <div className="plus_icon">
-                               {" "}
-                               <PlusIcon />{" "}
-                             </div>
-                             <div className="text"> Lead </div>
-                           </li>
-                         </Link>
-                         <Link href="/AddAccount">
-                           <li className="list-item">
-                             <div className="plus_icon">
-                               {" "}
-                               <PlusIcon />{" "}
-                             </div>
-                             <div className="text"> Account </div>
-                           </li>
-                         </Link>
-                         <Link href="/AddContact">
-                           <li className="list-item">
-                             <div className="plus_icon">
-                               {" "}
-                               <PlusIcon />{" "}
-                             </div>
-                             <div className="text"> Contact </div>
-                           </li>
-                         </Link>
-                         <Link href="/AddOpportunity">
-                           <li className="list-item">
-                             <div className="plus_icon">
-                               {" "}
-                               <PlusIcon />{" "}
-                             </div>
-                             <div className="text"> Opportunity </div>
-                           </li>
-                         </Link>
-                         <Link href="/AddQuotations">
-                           <li className="list-item">
-                             <div className="plus_icon">
-                               {" "}
-                               <PlusIcon />{" "}
-                             </div>
-                             <div className="text"> Quotation </div>
-                           </li>
-                         </Link>
-                         <Link href="/AddTask">
-                           <li className="list-item">
-                             <div className="plus_icon">
-                               {" "}
-                               <PlusIcon />{" "}
-                             </div>
-                             <div className="text"> Task </div>
-                           </li>
-                         </Link>
-                       </ul>
-                     </Dropdown.Menu>
-                   </Dropdown>
+                  <>
+                  {
+                    hasCookie("sideUser") && (
+                      <Dropdown>
+                      <Dropdown.Toggle variant="primary" id="quickAdd">
+                        <div className="plusicon">
+                          <PlusIcon />{" "}
+                        </div>
+                        <div className="btn_text"> Quick Add </div>
+                        <div className="chevrolet">
+                          <ChevroletLeftIcon />{" "}
+                        </div>
+                      </Dropdown.Toggle>
+ 
+                      <Dropdown.Menu>
+                        <ul className="quickaddlist">
+                          <Link href="/AddLeads">
+                            <li className="list-item">
+                              <div className="plus_icon">
+                                {" "}
+                                <PlusIcon />{" "}
+                              </div>
+                              <div className="text"> Lead </div>
+                            </li>
+                          </Link>
+                          <Link href="/AddAccount">
+                            <li className="list-item">
+                              <div className="plus_icon">
+                                {" "}
+                                <PlusIcon />{" "}
+                              </div>
+                              <div className="text"> Account </div>
+                            </li>
+                          </Link>
+                          <Link href="/AddContact">
+                            <li className="list-item">
+                              <div className="plus_icon">
+                                {" "}
+                                <PlusIcon />{" "}
+                              </div>
+                              <div className="text"> Contact </div>
+                            </li>
+                          </Link>
+                          <Link href="/AddOpportunity">
+                            <li className="list-item">
+                              <div className="plus_icon">
+                                {" "}
+                                <PlusIcon />{" "}
+                              </div>
+                              <div className="text"> Opportunity </div>
+                            </li>
+                          </Link>
+                          <Link href="/AddQuotations">
+                            <li className="list-item">
+                              <div className="plus_icon">
+                                {" "}
+                                <PlusIcon />{" "}
+                              </div>
+                              <div className="text"> Quotation </div>
+                            </li>
+                          </Link>
+                          <Link href="/AddTask">
+                            <li className="list-item">
+                              <div className="plus_icon">
+                                {" "}
+                                <PlusIcon />{" "}
+                              </div>
+                              <div className="text"> Task </div>
+                            </li>
+                          </Link>
+                        </ul>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                    )
+                  }
+                      
+                  </>
+                   
                  )}
                </div>
              ) : null}

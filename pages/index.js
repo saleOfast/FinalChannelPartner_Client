@@ -437,15 +437,16 @@ export default mainIndexHOC(
                         src="/images/Ellipse26.png"
                         alt="Background One"
                         className="image-one"
-                      />
-                      <img
+                      />{
+                      clientData?.logo ? <img
                         src={
                           clientData?.logo &&
                           `${filesUrl}` + `/logo/images${clientData?.logo}`
                         }
                         alt="Logo"
                         className=" mx-auto"
-                      />
+                      /> : ""
+                      }
                       <img
                         src="/images/Ellipse27.png"
                         alt="Background Two"

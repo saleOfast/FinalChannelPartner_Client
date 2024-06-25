@@ -366,7 +366,7 @@ const DashBoardScreen = () => {
                             <div className="col-xl-6 col-md-6 col-12 col-sm-12">
 
                                 <OpportunityCard
-                                    head='Lead Statistics '
+                                    head='LEAD STATISTICS '
                                     price='0'
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     dataList={dataList?.piechart}>
@@ -378,6 +378,7 @@ const DashBoardScreen = () => {
                                         <ReChart
                                             head='LEAD OPPORTUNITY STATISTICS '
                                             dataList={dataList?.barchart}
+                                            date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                         />
                                     </div>
                                 </div> : null}

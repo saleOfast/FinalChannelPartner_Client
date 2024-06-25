@@ -5,7 +5,7 @@ const Charts = ({dataList}) => {
         <>
 
        {dataList && dataList.length > 0 ? 
-        <ResponsiveContainer width='100%' height={190}>
+        <ResponsiveContainer style={{width:"fit-content"}} height={194}>
             <BarChart data={dataList} width={100} height={90} isAnimationActive={true} >
                 <XAxis dataKey="date"/>
                 <YAxis />

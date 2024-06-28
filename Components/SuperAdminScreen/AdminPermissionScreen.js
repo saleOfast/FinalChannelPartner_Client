@@ -6,13 +6,15 @@ import axios from 'axios';
 import { getCookie, hasCookie } from 'cookies-next';
 import { useRouter } from 'next/router'
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CaretDownIcon from '../Svg/CaretDownIcon';
 import { Form } from 'react-bootstrap';
+import { startButtonLoading, stopButtonLoading } from '../../store/buttonLoaderSlice';
 
 const AdminPermissionScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
-
+    const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+    const dispatch=useDispatch()
     const router = useRouter()
     const { id } = router.query
 
@@ -152,6 +154,7 @@ const AdminPermissionScreen = () => {
     }
 
     async function submitFunc() {
+        dispatch(startButtonLoading())
         if (hasCookie('saLsTkn')) {
             const token = getCookie('saLsTkn');
             let header = {
@@ -166,9 +169,11 @@ const AdminPermissionScreen = () => {
                 try {
                     const response = await axios.post(Baseurl + `/db/admin/permission`, reqOptions, header);
                     if (response.status === 200 || response.status === 201) {
+                        dispatch(stopButtonLoading())
                         toast.success(response.data.message)
                     }
                 } catch (error) {
+                    dispatch(stopButtonLoading())
                     if (error?.response?.data?.message) {
                         toast.error(error.response.data.message);
                     }
@@ -231,8 +236,17 @@ const AdminPermissionScreen = () => {
                     {
                         permissionView?.length > 0 && (
                             <div className="submit-btn-box">
-                        <Link href='/admin'><button className="btn btn-cancel">Go Back</button></Link>
-                        <button onClick={submitFunc} className="btn btn-primary">Submit</button>
+                        <button className="btn btn-cancel" disabled={isButtonLoading} onClick={()=>router.push("/admin")}>Go Back</button>
+                        <button onClick={submitFunc} disabled={isButtonLoading} className="btn btn-primary">
+                            {isButtonLoading ? (
+                                  <>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Submit
+                                  </>
+                                ) : (
+                                  'Submit'
+                                )}
+                        </button>
                     </div>
                         )
                     }

@@ -279,7 +279,7 @@ const Admindashboard = () => {
                     </div>
                     <div className="settings_super_admin">
                         <div className="settings_heads">
-                            Settings Super Admin
+                            Settings Admin
                         </div>
                         <div className="settings_cards">
                             <div className="row">

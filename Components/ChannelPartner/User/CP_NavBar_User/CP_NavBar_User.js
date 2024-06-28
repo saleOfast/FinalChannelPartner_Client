@@ -143,7 +143,8 @@ const CP_NavBar = () => {
           roleId===1 && (
             <>
                     {
-                      hasCookie("channel") && allowedpermission?.length>1 && (
+                      // hasCookie("channel") && allowedpermission?.length>1 && (
+                      hasCookie("channel") &&  (
                         <li className='nav-item cursor-pointer pt-2' onClick={()=>{
                           deleteCookie("channel")
                           dispatch(clearValue()) //for clearing the value (initial state in permission mode)

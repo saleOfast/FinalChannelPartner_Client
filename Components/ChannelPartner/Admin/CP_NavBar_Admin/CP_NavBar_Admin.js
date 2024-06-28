@@ -134,7 +134,8 @@ const CP_NavBar_Admin = () => {
      <div className="collapse navbar-collapse " id="navbarNavDropdown">
       <ul className="navbar-nav ms-auto">
                     {
-                      hasCookie("channel") && allowedpermission?.length>1 && (
+                      hasCookie("channel") &&  (
+                      // hasCookie("channel") && allowedpermission?.length>1 && (
                         <li className='nav-item cursor-pointer pt-2' onClick={()=>{
                           deleteCookie("channel")
                           dispatch(clearValue())

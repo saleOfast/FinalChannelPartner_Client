@@ -222,7 +222,8 @@ const Topnav = ({  topnavPermission }) => {
               (
                <div className="quick_add_sec d-flex gap-2 ">
                  {
-                   hasCookie("crm") && allowedpermission?.length>1 && (
+                  //  hasCookie("crm") && allowedpermission?.length>1 && (
+                   hasCookie("crm") &&  (
                      <img
                      style={{width:"20px"}} 
                      src="/switch.svg"

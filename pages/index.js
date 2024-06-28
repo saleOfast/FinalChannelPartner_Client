@@ -459,7 +459,7 @@ export default mainIndexHOC(
     {allowedpermission?.map((permission, i) => (
       <div
         key={i}
-        className="col-12 col-md-6 p-3  d-flex flex-column gap-2 align-items-center justify-content-end"
+        className="col-12 col-md-6 p-3  d-flex flex-column gap-2 align-items-center justify-content-end "
         onClick={() => {
           handleClick(permission);
         }}
@@ -468,12 +468,13 @@ export default mainIndexHOC(
           src={getPlatformFunc(permission)}
           alt={permission}
           style={{ width: '30%' }}
+          className=" cursor-pointer"
         />
-        <b className="fw-3 text-center">{permission.toUpperCase()}</b>
+        <b className="fw-3 text-center cursor-pointer ">{permission.toUpperCase()}</b>
       </div>
     ))}
     <div
-      className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end"
+      className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end "
       onClick={() => {
         onClickCommon();
       }}
@@ -482,8 +483,9 @@ export default mainIndexHOC(
         src="/images/platform/COMMON.png"
         alt="COMMON"
         style={{ width: '30%' }}
+         className=" cursor-pointer"
       />
-      <b className="fw-3 text-center">COMMON</b>
+      <b className="fw-3 text-center cursor-pointer">COMMON</b>
     </div>
     {/* If the number of icons is odd, add an empty div to balance the last row */}
     {((allowedpermission.length + 1) % 2 !== 0) && (

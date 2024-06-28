@@ -71,6 +71,7 @@ export default function SignInScreen({ setLoggedIn }) {
   };
 
   const submitHandler = async (e) => {
+    
     e.preventDefault();
     dispatch(startLoading());
     const type=router.pathname==="/crm" ? "crm": router.pathname==="/dms" ? "dms": router.pathname==="/sales"? "sales": router.pathname==="/partner" ? "partner": "common"
@@ -107,38 +108,57 @@ export default function SignInScreen({ setLoggedIn }) {
           dispatch(setbuttonColor(res.data.Logo[0].button_color || "#405189"));
           dispatch(setTopNavColor(res.data.Logo[0].top_nav_color || "#405189"));
           assignPermission(res?.data?.platformData);
-          if(res?.data?.platformData?.length===1){
-            initialPermission(res?.data?.platformData[0]?.platform_name)
-            if(res?.data?.platformData[0]?.platform_name==="CHANNEL"){
-              router.push("/partner")
-            }
-            else{
-              const route=res?.data?.platformData[0]?.platform_name.toLowerCase()
-              router.push(`/${route}`)
-            }
+          // if(res?.data?.platformData?.length===1){
+          //   initialPermission(res?.data?.platformData[0]?.platform_name)
+          //   if(res?.data?.platformData[0]?.platform_name==="CHANNEL"){
+          //     router.push("/partner")
+          //   }
+          //   else{
+          //     const route=res?.data?.platformData[0]?.platform_name.toLowerCase()
+          //     router.push(`/${route}`)
+          //   }
+          // }
+          // else{
+          //   if(router.pathname==="/crm"){
+          //     dispatch(crm())
+          //     router.push("/crm")
+          //   }
+          //   else if(router.pathname==="/partner"){
+          //     dispatch(channel())
+          //     router.push("/partner")
+          //   }
+          //   else if(router.pathname==="/dms"){
+          //     dispatch(dms())
+          //     router.push("/dms")
+          //   }
+          //   else if(router.pathname==="/sales"){
+          //     dispatch(sales())
+          //     router.push("/sales")
+          //   }
+          //   else{
+          //     router.push("/")
+          //   }
+          // }
+          
+          if(router.pathname==="/crm"){
+            dispatch(crm())
+            router.push("/crm")
+          }
+          else if(router.pathname==="/partner"){
+            dispatch(channel())
+            router.push("/partner")
+          }
+          else if(router.pathname==="/dms"){
+            dispatch(dms())
+            router.push("/dms")
+          }
+          else if(router.pathname==="/sales"){
+            dispatch(sales())
+            router.push("/sales")
           }
           else{
-            if(router.pathname==="/crm"){
-              dispatch(crm())
-              router.push("/crm")
-            }
-            else if(router.pathname==="/partner"){
-              dispatch(channel())
-              router.push("/partner")
-            }
-            else if(router.pathname==="/dms"){
-              dispatch(dms())
-              router.push("/dms")
-            }
-            else if(router.pathname==="/sales"){
-              dispatch(sales())
-              router.push("/sales")
-            }
-            else{
-              router.push("/")
-            }
+            router.push("/")
           }
-
 
           // make this comment below code and we will choose this on platform select page
           // initialPermission(res.data.platformData[0].platform_name)
@@ -184,12 +204,9 @@ export default function SignInScreen({ setLoggedIn }) {
             <div className="form-left d-flex flex-column justify-content-between">
               <img src="/images/Ellipse26.png" alt="normal"className="image-one" />
               <img
-                src={ router.pathname=="/crm" ? 
-                  clientData?.logo
-                    &&( `${filesUrl}` +
-                      `/logo/images${clientData?.logo}`) :
-                      "/ChannelPartner/sale-o-fast-logo.png"
-                }
+                src={ clientData?.logo
+                  &&( `${filesUrl}` +
+                    `/logo/images${clientData?.logo}`)}
                 alt
                 className=" mx-auto w-auto"
               />

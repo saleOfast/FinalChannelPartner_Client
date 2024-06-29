@@ -51,7 +51,7 @@ const ResetPassword = () => {
           try {
             let baseUrl = window.location.origin;
             if(baseUrl==="http://localhost:3000"){
-              baseUrl="http://crm.cybermatrixsolutions.com"
+              baseUrl="https://crm.saleofast.com/"
             }
             const {data}=await axios.post(Baseurl+"/db/admin/url",{
               client_url:`${baseUrl}`,
@@ -77,7 +77,7 @@ const ResetPassword = () => {
                       `/logo/images${clientData?.logo}`)
                 }
                 alt
-                className="logo mx-auto"
+                className=" mx-auto"
               />
               <img
                 src="/images/Ellipse27.png"

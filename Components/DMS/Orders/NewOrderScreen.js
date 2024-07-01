@@ -33,7 +33,7 @@ const NewOrderScreen = () => {
               <span className="input-group-text border-0"><i className="fa fa-search" /></span>
             </div>
           </div>
-          <div className="cart position-relative" onClick={()=>router.push("/DMS/Cart")}>
+          <div className="cart position-relative" onClick={()=>router.push("/dms/Cart")}>
             <img src="/DMS_IMAGES/ICONS/shopping-cart.svg" alt="normal"/>
             <div className="circle d-flex justify-content-center align-items-center position-absolute">
               <span>0</span>

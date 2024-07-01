@@ -9,6 +9,7 @@ import axios from 'axios';
 const OrdersScreen = () => {
   const router=useRouter();
   const [orderList,setOrderList]=useState([]);
+  const clientLogo=hasCookie("clientLogo") ? JSON.parse( getCookie("clientLogo")) : null;
 
   const fetchOrders = async () => {
     if (hasCookie("token")) {
@@ -25,11 +26,12 @@ const OrdersScreen = () => {
 
       try {
         const { data } = await axios.get(Baseurl + `/db/order`, header);
-        setOrderList(data.data.data);
+        setOrderList(data?.data?.data);
       } catch (error) {
         console.log(error)
         if (error?.response?.data?.message) {
-          toast.success(error.response.data.message);
+          toast.success(error?._response?.data?.message);
+
         } else {
           toast.error("Something went wrong!");
         }
@@ -57,6 +59,8 @@ const OrdersScreen = () => {
     return Math.round(totalPrice)
   }
 
+
+
   
   return (
     <section className="nav_tab order_tab bg-white">
@@ -67,9 +71,18 @@ const OrdersScreen = () => {
         <span>Orders</span>
       </div>
       <div className="logo">
-        <a href="#">
-          <img src="/DMS_IMAGES/kloudmart.png" alt="normal"/>
-        </a>
+        <div >
+        {
+                      clientLogo?.logo ? <img
+                        src={
+                          clientLogo?.logo &&
+                          `${filesUrl}` + `/logo/images${clientLogo?.logo}`
+                        }
+                        alt="Logo"
+                        className=" mx-auto"
+                      /> : ""
+                      }
+        </div>
       </div>
     </div>
     <div className="card">
@@ -95,7 +108,7 @@ const OrdersScreen = () => {
                     <div className="biscuits">
                       <div className="d-flex justify-content-between align-items-center">
                         <div className="com_name">
-                        {formatDate(new Date(order.createdAt))}
+                        {formatDate(new Date(order?.createdAt))}
                         </div>
                         <div className="biscuit_name">
                           <a href="#" className="text-decoration-none"><svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 16 16" fill="none">
@@ -109,22 +122,22 @@ const OrdersScreen = () => {
                   <div className="body shop_by_category pt-3">
                     
                       <div className="d-flex  align-items-center pb-2">
-                        <div className="items_img text-center"> <img src={`${filesUrl}/product/images${order.OrderProductData.image}`} style={{width:"150px"}} alt="normal"className="shadow-none" />
+                        <div className="items_img text-center"> <img src={`${filesUrl}/product/images${order?.OrderProductData?.image}`} style={{width:"150px"}} alt="normal"className="shadow-none" />
                         </div>
                         <div className="d-flex flex-column ms-4">
                           <div className="d-flex flex-column gap-2">
                             
-                              <div className="order_id">Order ID: {orderList[0].order_id}</div>
-                              <span className="Britannia">{order.OrderProductData.p_name}</span>
+                              <div className="order_id">Order ID: {orderList[0]?.order_id}</div>
+                              <span className="Britannia">{order?.OrderProductData?.p_name}</span>
                             
                             <div className="prices d-flex align-items-center">
                               <div className="price">
-                                <div className="rupees">{calculatePrice(order.cases,order.piece,order.product_unit,order.product_discount,order.price)}</div>
-                                <div className='rupees'>Cases:{order.cases}</div>
-                                <div className='rupees'>Piece:{order.piece}</div>
+                                <div className="rupees">{calculatePrice(order?.cases,order?.piece,order?.product_unit,order?.product_discount,order?.price)}</div>
+                                <div className='rupees'>Cases:{order?.cases}</div>
+                                <div className='rupees'>Piece:{order?.piece}</div>
                               </div>
                               <button type="button" className="btn btn_red d-flex flex-row align-items-center gap-1 border-0"><i className="fa-solid fa-rotate-right" />
-                                {orderList[0].p_status}</button>
+                                {orderList[0]?.p_status}</button>
                             </div>
                           </div>
                         </div>
@@ -144,7 +157,7 @@ const OrdersScreen = () => {
              
             </div>
           </div>
-          {/* <div className="deatils_form position-relative" onClick={()=>{router.push("/DMS/NewOrders")}}>
+          {/* <div className="deatils_form position-relative" onClick={()=>{router.push("/dms/NewOrders")}}>
             <div className="edit_page d-flex align-items-center justify-content-center position-fixed" style={{marginTop: '73%', width: 48, height: 48, flexShrink: 0, fill: 'var(--Primary-Color, #00498B)'}}>
               <svg xmlns="http://www.w3.org/2000/svg" width={44} height={44} viewBox="0 0 44 44" fill="none">
                 <path d="M33.0001 23.8297H23.8334V32.9963C23.8334 33.4826 23.6403 33.9489 23.2964 34.2927C22.9526 34.6365 22.4863 34.8297 22.0001 34.8297C21.5139 34.8297 21.0475 34.6365 20.7037 34.2927C20.3599 33.9489 20.1667 33.4826 20.1667 32.9963V23.8297H11.0001C10.5139 23.8297 10.0475 23.6365 9.70372 23.2927C9.3599 22.9489 9.16675 22.4826 9.16675 21.9963C9.16675 21.5101 9.3599 21.0438 9.70372 20.7C10.0475 20.3561 10.5139 20.163 11.0001 20.163H20.1667V10.9963C20.1667 10.5101 20.3599 10.0438 20.7037 9.69996C21.0475 9.35615 21.5139 9.16299 22.0001 9.16299C22.4863 9.16299 22.9526 9.35615 23.2964 9.69996C23.6403 10.0438 23.8334 10.5101 23.8334 10.9963V20.163H33.0001C33.4863 20.163 33.9526 20.3561 34.2964 20.7C34.6403 21.0438 34.8334 21.5101 34.8334 21.9963C34.8334 22.4826 34.6403 22.9489 34.2964 23.2927C33.9526 23.6365 33.4863 23.8297 33.0001 23.8297Z" fill="white" />

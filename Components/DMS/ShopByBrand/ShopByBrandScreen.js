@@ -35,10 +35,11 @@ const ShopByBrandScreen = () => {
 
       try {
         const { data } = await axios.get(Baseurl + url, header);
-        setData(data.data);
+        setData(data?.data);
       } catch (error) {
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?._response?.data?.message);
+
         } else {
           toast.error("Something went wrong!");
         }
@@ -85,7 +86,7 @@ const ShopByBrandScreen = () => {
   };
 
   return (
-    <div className="d-block bg-white w-100">
+    <div className="d-block bg-white ">
       <section className="NEW-ORDER pt-1">
         <div className="container">
           <div className="row">
@@ -259,12 +260,12 @@ const ShopByBrandScreen = () => {
                   p_desc={product.p_desc}
                   product_id={product.p_id}
                   cases={
-                    product.productCartList[0]
+                    product?.productCartList
                       ? product.productCartList[0].cases
                       : 0
                   }
                   piece={
-                    product.productCartList[0]
+                    product.productCartList
                       ? product.productCartList[0].piece
                       : 0
                   }

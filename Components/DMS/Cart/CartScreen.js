@@ -15,32 +15,8 @@ const CartScreen = () => {
   const [cartTotal, setCartTotal] = useState();
   const [total, setTotal] = useState();
   const router=useRouter()
-
-  // const fetchCart = async () => { 
-  //   if (hasCookie("token")) {
-  //     let token = getCookie("token");
-  //     let db_name = getCookie("db_name");
-  //     let header = {
-  //       headers: {
-  //         Accept: "application/json",
-  //         Authorization: "Bearer ".concat(token),
-  //         db: db_name,
-  //         pass: "pass",
-  //       },
-  //     };
-
-  //     try {
-  //       const { data } = await axios.get(Baseurl + `/db/cart`, header);
-  //       setCartItems(data.data);
-  //     } catch (error) {
-  //       if (error?.response?.data?.message) {
-  //         toast.success(error.response.data.message);
-  //       } else {
-  //         toast.error("Something went wrong!");
-  //       }
-  //     }
-  //   }
-  // };
+  const clientLogo=hasCookie("clientLogo") ? JSON.parse( getCookie("clientLogo")) : null;
+ 
 
   const increaseCases_Piece = async (item, type) => {
     if (hasCookie("token")) {
@@ -127,7 +103,7 @@ const CartScreen = () => {
 
   useEffect(() => {
     let totalCartPrice = cart.reduce((total, item) => {
-      return total + calculateItemPrice(item.productData.p_price, item.cases, item.productData.unit_in_case, item.piece, item.productData.discount);
+      return total + calculateItemPrice(item?.productData?.p_price, item?.cases, item?.productData?.unit_in_case, item?.piece, item?.productData?.discount);
     }, 0);
     setCartTotal(totalCartPrice);
     setTotal(totalCartPrice-105);
@@ -144,9 +120,19 @@ const CartScreen = () => {
                 <span>Cart</span>
               </div>
               <div className="logo">
-                <a href="#">
-                  <img src="/DMS_IMAGES/kloudmart.png" alt="normal"/>
-                </a>
+                <div>
+                  {/* <img src="/DMS_IMAGES/kloudmart.png" alt="normal"/> */}
+                  {
+                      clientLogo?.logo ? <img
+                        src={
+                          clientLogo?.logo &&
+                          `${filesUrl}` + `/logo/images${clientLogo?.logo}`
+                        }
+                        alt="Logo"
+                        className=" mx-auto"
+                      /> : ""
+                      }
+                </div>
               </div>
             </div>
             {/* end col */}
@@ -165,7 +151,7 @@ const CartScreen = () => {
               <div className="col-3 d-flex align-items-center">
                 <div className="items_img text-center">
                   <img
-                    src={`${filesUrl}/product/images${item.productData.image}`}
+                    src={`${filesUrl}/product/images${item?.productData?.image}`}
                     alt
                     className="shadow-none "
                     style={{ width: "95px" }}
@@ -177,7 +163,7 @@ const CartScreen = () => {
                   <div className>
                     <div className="biscuits p-0">
                       <div className="com_name">
-                        <p>{item.productData.p_name}</p>
+                        <p>{item?.productData?.p_name}</p>
                       </div>
                       <div className="biscuit_name">
                         <span>100 gms </span>
@@ -199,7 +185,7 @@ const CartScreen = () => {
                           >
                             -
                           </div>
-                          <input type="number" id="number" value={item.cases} />
+                          <input type="number" id="number" value={item?.cases} />
                           <div
                             className="value-button"
                             id="increase"
@@ -245,7 +231,7 @@ const CartScreen = () => {
               <div className="col-3 d-flex align-items-center">
                 <span className="threefifty">
                   {/* ₹ {item.productData.p_price}.00 */}
-                  ₹ { calculateItemPrice(item.productData.p_price,item.cases,item.productData.unit_in_case,item.piece,item.productData.discount)}
+                  ₹ { calculateItemPrice(item?.productData?.p_price,item?.cases,item?.productData?.unit_in_case,item?.piece,item?.productData?.discount)}
                 </span>
               </div>
             </div>
@@ -374,7 +360,7 @@ const CartScreen = () => {
                 </div>
                 <button className="btn-checkout d-inline-flex align-items-center"
                   onClick={()=>{router.push({
-                    pathname: `/DMS/PaymentMethod`,
+                    pathname: `/dms/PaymentMethod`,
                     query: { payment: total} 
                   })}}
                 > 

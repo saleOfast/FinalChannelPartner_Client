@@ -16,7 +16,7 @@ const Tabs = ({children}) => {
         <nav>
           <div className="nav nav-tabs d-flex justify-content-between" style={{right:'0px'}}  id="nav-tab" role="tablist">
             <button className="nav-link active d-flex flex-column gap-2 align-items-center" onClick={()=>{
-              router.push("/")
+              router.push("/dms")
             }} id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">
               <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.5 7.49996L10 1.66663L17.5 7.49996V16.6666C17.5 17.1087 17.3244 17.5326 17.0118 17.8451C16.6993 18.1577 16.2754 18.3333 15.8333 18.3333H4.16667C3.72464 18.3333 3.30072 18.1577 2.98816 17.8451C2.67559 17.5326 2.5 17.1087 2.5 16.6666V7.49996Z" stroke="#00498B" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -24,7 +24,7 @@ const Tabs = ({children}) => {
               </svg>
               Home</button>
             <button className="nav-link d-flex flex-column gap-2 align-items-center" onClick={()=>{
-              router.push("/DMS/Orders")
+              router.push("/dms/Orders")
             }} id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-Orders" type="button" role="tab" aria-controls="nav-orders" aria-selected="false">
               <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g id="shopping-bag">
@@ -42,7 +42,7 @@ const Tabs = ({children}) => {
                 </g>
               </svg>
               Inventory</button>
-            <button className="nav-link d-flex flex-column gap-2 align-items-center return" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-Payment" type="button" role="tab" aria-controls="nav-Payment" aria-selected="false"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* <button className="nav-link d-flex flex-column gap-2 align-items-center return" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-Payment" type="button" role="tab" aria-controls="nav-Payment" aria-selected="false"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g id="credit-card" clipPath="url(#clip0_1153_9057)">
                   <path id="Vector" d="M17.5 3.33337H2.49998C1.57951 3.33337 0.833313 4.07957 0.833313 5.00004V15C0.833313 15.9205 1.57951 16.6667 2.49998 16.6667H17.5C18.4205 16.6667 19.1666 15.9205 19.1666 15V5.00004C19.1666 4.07957 18.4205 3.33337 17.5 3.33337Z" stroke="#939393" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
                   <path id="Vector_2" d="M0.833313 8.33337H19.1666" stroke="#939393" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -53,7 +53,7 @@ const Tabs = ({children}) => {
                   </clipPath>
                 </defs>
               </svg>
-              Payment</button>
+              Payment</button> */}
             <button className="nav-link d-flex flex-column gap-2 justify-content-center align-items-center" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-Claim/Returnt" type="button" role="tab" aria-controls="nav-Claim/Returnt" aria-selected="false"> <svg width={22} height={16} viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g id="Frame 18">
                   <rect x={1} y={1} width={20} height={14} rx={2} stroke="#939393" strokeWidth={2} />
@@ -62,7 +62,7 @@ const Tabs = ({children}) => {
               </svg>
               Claim/Returnt</button>
             <button className="nav-link d-flex flex-column gap-2 justify-content-center align-items-center" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-Claim/Returnt" type="button" role="tab" aria-controls="nav-Claim/Returnt" aria-selected="false" onClick={()=>{
-              router.push("/DMS/Cart")
+              router.push("/dms/Cart")
             }}>
             <svg
   xmlns="http://www.w3.org/2000/svg"

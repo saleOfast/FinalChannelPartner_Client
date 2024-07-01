@@ -1,6 +1,6 @@
 import React from 'react'
 import PaymentMethodScreen from '../../Components/DMS/PaymentMethodScreen/PaymentMethodScreen'
-import withUser from '../../HOC/WithUserhoc'
+import WithUserhoc_DMS from '../../HOC/WithUserhoc_DMS'
 
 const PaymentMethod = () => {
   return (
@@ -9,5 +9,5 @@ const PaymentMethod = () => {
     </>
   )
 }
-export default withUser(PaymentMethod) 
+export default WithUserhoc_DMS(PaymentMethod) 
 

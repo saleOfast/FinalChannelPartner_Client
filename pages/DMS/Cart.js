@@ -1,10 +1,10 @@
 import React from 'react'
 import CartScreen from '../../Components/DMS/Cart/CartScreen'
-import withUser from '../../HOC/WithUserhoc'
+import WithUserhoc_DMS from '../../HOC/WithUserhoc_DMS'
 
 const Cart = () => {
   return (
     <><CartScreen/></>
   )
 }
-export default withUser(Cart) 
+export default WithUserhoc_DMS(Cart) 

@@ -355,8 +355,8 @@ export default mainIndexHOC(
         ) {
           return toast("Your DMS Subscription Has Ended");
         } else {
-          // dispatch(dms())
-          // router.push("/dms")
+          dispatch(dms())
+          router.push("/dms")
         }
       } else if (permission === "sales") {
         if (
@@ -376,7 +376,7 @@ export default mainIndexHOC(
         try {
           let baseUrl = window.location.origin;
           if (baseUrl === "http://localhost:3000") {
-            baseUrl = "https://crm.saleofast.com";
+            baseUrl = "http://crm.cybermatrixsolutions.com";
           }
           const { data } = await axios.post(Baseurl + "/db/admin/url", {
             client_url: `${baseUrl}`,
@@ -455,51 +455,47 @@ export default mainIndexHOC(
                     </div>
                   </div>
                   <div className="col-12 col-lg-6 d-flex align-items-center mt-5 mt-md-0 justify-content-center" style={{ marginTop: '0%' }}>
-  <div className="row w-100">
-    {allowedpermission?.map((permission, i) => (
-      <div
-        key={i}
-        className="col-12 col-md-6 p-3  d-flex flex-column gap-2 align-items-center justify-content-end "
-        onClick={() => {
-          handleClick(permission);
-        }}
-      >
-        <img
-          src={getPlatformFunc(permission)}
-          alt={permission}
-          style={{ width: '30%' }}
-          className=" cursor-pointer"
-        />
-        <b className="fw-3 text-center cursor-pointer ">{permission.toUpperCase()}</b>
-      </div>
-    ))}
-    <div
-      className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end "
-      onClick={() => {
-        onClickCommon();
-      }}
-    >
-      <img
-        src="/images/platform/COMMON.png"
-        alt="COMMON"
-        style={{ width: '30%' }}
-         className=" cursor-pointer"
-      />
-      <b className="fw-3 text-center cursor-pointer">COMMON</b>
-    </div>
-    {/* If the number of icons is odd, add an empty div to balance the last row */}
-    {((allowedpermission.length + 1) % 2 !== 0) && (
-      <div
-        className="col-12 col-md-6 p-3"
-        style={{ visibility: 'hidden' }}
-      />
-    )}
-  </div>
-</div>
-
-
-
-
+                  <div className="row w-100 pb-5">
+                    {allowedpermission?.map((permission, i) => (
+                      <div
+                        key={i}
+                        className="col-12 col-md-6 p-3  d-flex flex-column gap-2 align-items-center justify-content-end "
+                        onClick={() => {
+                          handleClick(permission);
+                        }}
+                      >
+                        <img
+                          src={getPlatformFunc(permission)}
+                          alt={permission}
+                          style={{ width: '30%' }}
+                          className=" cursor-pointer"
+                        />
+                        <b className="fw-3 text-center cursor-pointer ">{permission.toUpperCase()}</b>
+                      </div>
+                    ))}
+                    <div
+                      className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end "
+                      onClick={() => {
+                        onClickCommon();
+                      }}
+                    >
+                      <img
+                        src="/images/platform/COMMON.png"
+                        alt="COMMON"
+                        style={{ width: '30%' }}
+                        className=" cursor-pointer"
+                      />
+                      <b className="fw-3 text-center cursor-pointer">COMMON</b>
+                    </div>
+                    {/* If the number of icons is odd, add an empty div to balance the last row */}
+                    {((allowedpermission.length + 1) % 2 !== 0) && (
+                      <div
+                        className="col-12 col-md-6 p-3"
+                        style={{ visibility: 'hidden' }}
+                      />
+                    )}
+                  </div>
+                </div>
                 </div>
               </div>
             ) : (

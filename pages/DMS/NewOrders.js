@@ -1,6 +1,6 @@
 import React from 'react'
 import NewOrderScreen from '../../Components/DMS/Orders/NewOrderScreen'
-import withUser from '../../HOC/WithUserhoc'
+import WithUserhoc_DMS from '../../HOC/WithUserhoc_DMS'
 
 const NewOrders = () => {
   return (
@@ -9,4 +9,4 @@ const NewOrders = () => {
     </>
   )
 }
-export default withUser(NewOrders) 
+export default WithUserhoc_DMS(NewOrders) 

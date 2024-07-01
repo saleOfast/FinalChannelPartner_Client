@@ -1,10 +1,10 @@
 import React from 'react'
 import OrdersScreen from '../../Components/DMS/Orders/OrdersScreen'
-import withUser from '../../HOC/WithUserhoc'
+import WithUserhoc_DMS from '../../HOC/WithUserhoc_DMS'
 
 const Orders = () => {
   return (
     <><OrdersScreen /></>
   )
 }
-export default withUser(Orders) 
+export default WithUserhoc_DMS(Orders) 

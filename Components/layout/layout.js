@@ -99,7 +99,7 @@ const Layout = ({Component, pageProps}) => {
          
               <main className="main_wrapper" 
                 style={{
-                  marginTop:hasCookie("channel") ? "0px":"-70px"
+                  marginTop:(hasCookie("channel") || hasCookie("dms")) ? "0px":"-70px"
                 }}
               >
                 
@@ -107,7 +107,7 @@ const Layout = ({Component, pageProps}) => {
             
                   <div className="content_wrapper">
                       {sidebarMode==="crm" && <SideBar />}
-                      {sidebarMode==="dms" && <SidebarDMS/> }
+                      {/* {sidebarMode==="dms" && <SidebarDMS/> } */}
                       {/* {sidebarMode==="channel" && <SideBarChannel    />} */}
                       {sidebarMode==="sales" && <SideBarSales    />}
                       <Component {...pageProps} />

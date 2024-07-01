@@ -33,7 +33,7 @@ const PaymentMethodScreen = () => {
             cartData:cart?cart:[]
          } ,header);
          toast.success(data.message);
-         router.push("/DMS/Orders")
+         router.push("/dms/Orders")
       } catch (error) {
         console.log(error)
         if (error?.response?.data?.message) {

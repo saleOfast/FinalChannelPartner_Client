@@ -15,12 +15,12 @@ const ShopByProduct = () => {
 
     const settings = {
       centerMode: true,
-      centerPadding: '10px',
+      centerPadding: '5px',
       slidesToShow: 5,
       speed: 500,
       slidesToScroll: 1,
       arrows: true,
-      dots: false,
+      dots: true,
 
       responsive: [
         {
@@ -90,12 +90,13 @@ const ShopByProduct = () => {
       unit_in_case={product.unit_in_case}
       p_desc={product.p_desc}
       product_id={product.p_id}
-      cases={ product.productCartList[0] ? product.productCartList[0].cases :0}
-      piece={product.productCartList[0] ? product.productCartList[0].piece:0}
+      cases={ product?.productCartList[0] ? product.productCartList[0].cases :0}
+      piece={product?.productCartList[0] ? product.productCartList[0].piece:0}
       getProducts={getProducts}
     />
   </div>
 ))}
+
 </Slider>
     </div>
   </section>

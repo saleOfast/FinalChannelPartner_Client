@@ -41,33 +41,91 @@ const ByCategory = () => {
 
     fetchData();
   }, []);
+
+  const clientLogo=hasCookie("clientLogo") ? JSON.parse( getCookie("clientLogo")) : null;
+
   return (
     <>
-      <section className="shop_by_category">
-        <div className="container">
-          <div className="shop_by">
-            <div className="text-wrapper-12">Shop By Category</div>
-            <div className="text-wrapper-13">See All</div>
-          </div>
-          <div className="row pt-3">
-            {categories?.map((_v, _x) => (
-              <div key={_x} className="col-3 mt-2">
-                <div 
-                className="product d-flex flex-column gap-2"
-                onClick={()=>{
-                  router.push(`/DMS/ShopByBrand?category_id=${_v.p_cat_id}`)
+      <section className="shop_by_category px-1">
+      <div className="container">
+    <div className="shop_by">
+      <div className="text-wrapper-12">Shop By Category</div>
+      <div className="text-wrapper-13">See All</div>
+    </div>
+    <div className="row pt-3">
+      {categories?.map((_v, _x) => (
+        <div key={_x} className="col-3 mt-2">
+          <div 
+            className="product d-flex flex-column gap-2"
+            onClick={()=>{
+              router.push(`/dms/ShopByBrand?category_id=${_v.p_cat_id}`)
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem'
+            }}
+          >
+            <div
+              className="image-container"
+              style={{
+                width: '100%',
+                height: '80px',
+                overflow: 'hidden'
+              }}
+            >
+              <img
+                src={`${filesUrl}/category/images${_v.image}`}
+                alt={``}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
                 }}
-                >
-                  <img
-                    src={`${filesUrl}/category/images${_v.image}`}
-                    alt={``}
-                  />
-                  <span className="item">{_v.p_cat_name}</span>
-                </div>
-              </div>
-            ))}
+              />
+            </div>
+            <span className="item">{_v.p_cat_name}</span>
           </div>
         </div>
+      ))}
+      
+       {categories?.map((_v, _x) => (
+        <div key={_x} className="col-3 mt-2">
+          <div 
+            className="product d-flex flex-column gap-2"
+            onClick={()=>{
+              router.push(`/dms/ShopByBrand?category_id=${_v.p_cat_id}`)
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem'
+            }}
+          >
+            <div
+              className="image-container"
+              style={{
+                width: '100%',
+                height: '80px',
+                overflow: 'hidden'
+              }}
+            >
+              <img
+                src={`${filesUrl}/category/images${_v.image}`}
+                alt={``}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
+              />
+            </div>
+            <span className="item">{_v.p_cat_name}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
       </section>
     </>
   );

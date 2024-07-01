@@ -63,7 +63,7 @@ const OrdersScreen = () => {
 
   
   return (
-    <section className="nav_tab order_tab bg-white">
+    <section className="nav_tab order_tab ">
   
     <div className="d-flex justify-content-between align-items-center" style={{padding: '0 16px'}}>
       <div className="my_profile d-flex align-items-center gap-3 ">
@@ -217,12 +217,12 @@ const OrdersScreen = () => {
               </div>
             </div>
           </div> */}
-          <div className="tab-pane fade" id="order-delivered" role="tabpanel" aria-labelledby="delivered">
+          {/* <div className="tab-pane fade" id="order-delivered" role="tabpanel" aria-labelledby="delivered">
             <img className="img-fluid" src="https://fakeimg.pl/800x300/?text=about" />
           </div>
           <div className="tab-pane fade" id="order-canceled" role="tabpanel" aria-labelledby="canceled">
             <img className="img-fluid" src="https://fakeimg.pl/800x300/?text=home" />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

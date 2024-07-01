@@ -4,7 +4,7 @@ import WithUserhoc_DMS from '../../HOC/WithUserhoc_DMS'
 
 const Orders = () => {
   return (
-    <><OrdersScreen /></>
+    <div style={{overflowX:"auto"}} className=' bg-white'><OrdersScreen /></div>
   )
 }
 export default WithUserhoc_DMS(Orders) 

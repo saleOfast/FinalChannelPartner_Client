@@ -3,7 +3,7 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { Baseurl } from "../../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../../Utils/Constants";
 import { toast } from "react-toastify";
 import { hasCookie, getCookie } from "cookies-next";
 import ProductCard from "../ProductCard/ProductCard";
@@ -18,6 +18,7 @@ const ShopByBrandScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
+  const clientLogo=hasCookie("clientLogo") ? JSON.parse( getCookie("clientLogo")) : null;
 
   const fetchData = async (url, setData) => {
     if (hasCookie("token")) {
@@ -98,9 +99,18 @@ const ShopByBrandScreen = () => {
                 <span>Shop By Brand</span>
               </div>
               <div className="logo">
-                <a href="#">
-                  <img src="/DMS_IMAGES/kloudmart.png" alt="normal"/>
-                </a>
+                <div >
+                {
+                clientLogo?.logo ? <img
+                  src={
+                    clientLogo?.logo &&
+                    `${filesUrl}` + `/logo/images${clientLogo?.logo}`
+                  }
+                  alt="Logo"
+                  className=" mx-auto"
+                /> : ""
+                }
+                </div>
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchCart } from '../../../store/dmsCartSlice'
 import { getCookie, hasCookie } from 'cookies-next'
-import { Baseurl } from '../../../Utils/Constants'
+import { Baseurl, filesUrl } from '../../../Utils/Constants'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 
@@ -12,7 +12,8 @@ const PaymentMethodScreen = () => {
     const {payment}=router.query
     const dispatch=useDispatch()
     const {cart}=useSelector(state=>state.dmsCart)
-
+    const clientLogo=hasCookie("clientLogo") ? JSON.parse( getCookie("clientLogo")) : null;
+  
     
 
     const createOrder=async()=>{
@@ -59,9 +60,18 @@ const PaymentMethodScreen = () => {
           <span>Payment Method</span>
         </div>
         <div className="logo">
-          <a href="#">
-            <img src="/DMS_IMAGES/kloudmart.png" alt="normal"/>
-          </a>
+          <div div>
+          {
+            clientLogo?.logo ? <img
+              src={
+                clientLogo?.logo &&
+                `${filesUrl}` + `/logo/images${clientLogo?.logo}`
+              }
+              alt="Logo"
+              className=" mx-auto"
+            /> : ""
+            }
+          </div>
         </div>
       </div>
     </div>

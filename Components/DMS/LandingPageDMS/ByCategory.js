@@ -71,7 +71,8 @@ const ByCategory = () => {
               style={{
                 width: '100%',
                 height: '80px',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                padding:"5px"
               }}
             >
               <img
@@ -80,16 +81,17 @@ const ByCategory = () => {
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover'
+                  objectFit: 'fill',
+                                    
                 }}
               />
             </div>
-            <span className="item">{_v.p_cat_name}</span>
+            <span className="item fw-bold">{_v.p_cat_name}</span>
           </div>
         </div>
       ))}
       
-       {categories?.map((_v, _x) => (
+      {categories?.map((_v, _x) => (
         <div key={_x} className="col-3 mt-2">
           <div 
             className="product d-flex flex-column gap-2"
@@ -107,7 +109,8 @@ const ByCategory = () => {
               style={{
                 width: '100%',
                 height: '80px',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                padding:"5px"
               }}
             >
               <img
@@ -116,11 +119,12 @@ const ByCategory = () => {
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover'
+                  objectFit: 'fill',
+                                    
                 }}
               />
             </div>
-            <span className="item">{_v.p_cat_name}</span>
+            <span className="item fw-bold">{_v.p_cat_name}</span>
           </div>
         </div>
       ))}

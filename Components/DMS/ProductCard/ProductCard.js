@@ -282,8 +282,8 @@ const ProductCard = ({
           </div>
         </div>
         <div className="amount_increase">
-          <div className="case_increase">
-            <span>Case </span>
+          <div className="case_increase ">
+            <span className='me-3'>Case </span>
             <form>
               <div
                 className="value-button"
@@ -308,8 +308,8 @@ const ProductCard = ({
               </div>
             </form>
           </div>
-          <div className="Piece_increase">
-            <span>Piece </span>
+          <div className="Piece_increase ">
+            <span className='me-3'>Piece </span>
             <form>
               <div
                 className="value-button"

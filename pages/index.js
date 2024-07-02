@@ -284,16 +284,7 @@ export default mainIndexHOC(
       ? JSON.parse(getCookie("allowedpermissions"))
       : "";
   
-    // useEffect(() => {
-    //   if (hasCookie("Admin")) {
-    //     router.push("/admin");
-    //   }
-    //   if (!hasCookie("token")) {
-    //     dispatch(userLogOut());
-    //   } else {
-    //     dispatch(UserLogIN());
-    //   }
-    // }, []);
+    
 
     const onClickCommon = () => {
       dispatch(crm())
@@ -390,6 +381,7 @@ export default mainIndexHOC(
     }, []);
     
     const user=hasCookie("user") ? true :false;
+    const userInfo=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) :null
 
     const platformImage = [
       '/images/platform/CRM.png',
@@ -423,7 +415,7 @@ export default mainIndexHOC(
 
 
     return (
-      <div className="h-100" >
+      <div className="h-100 w-100" >
         {isLoading ? (
           <Loader />
         ) : (
@@ -473,20 +465,27 @@ export default mainIndexHOC(
                         <b className="fw-3 text-center cursor-pointer ">{permission.toUpperCase()}</b>
                       </div>
                     ))}
-                    <div
-                      className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end "
-                      onClick={() => {
-                        onClickCommon();
-                      }}
-                    >
-                      <img
-                        src="/images/platform/COMMON.png"
-                        alt="COMMON"
-                        style={{ width: '30%' }}
-                        className=" cursor-pointer"
-                      />
-                      <b className="fw-3 text-center cursor-pointer">COMMON</b>
-                    </div>
+
+                    {
+                      userInfo && userInfo?.role_id ==null && (
+                        <div
+                        className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end "
+                        onClick={() => {
+                          onClickCommon();
+                        }}
+                      >
+                        <img
+                          src="/images/platform/COMMON.png"
+                          alt="COMMON"
+                          style={{ width: '30%' }}
+                          className=" cursor-pointer"
+                        />
+                        <b className="fw-3 text-center cursor-pointer">COMMON</b>
+                      </div>
+                      )
+                    }
+
+                    
                     {/* If the number of icons is odd, add an empty div to balance the last row */}
                     {((allowedpermission.length + 1) % 2 !== 0) && (
                       <div

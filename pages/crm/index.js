@@ -10,6 +10,7 @@ import { stopLoading } from '../../store/loaderSlice';
 import { useRouter } from 'next/router';
 import { UserLogIN, userLogOut } from '../../store/ClientLoginSlice';
 import crmIndexHOC from '../../HOC/crmIndexHOC';
+import commonIndexHOC from '../../HOC/commonIndexHOC';
 
 const Index = () => {
   const dispatch=useDispatch();
@@ -33,10 +34,12 @@ useEffect(() => {
     <>
           {
             userInfo ? dbMode==="user" ?  <DashBoardScreen/> : <Admindashboard/>   :  <SignInScreen />
+            // userInfo ? dbMode==="user" ?  crmIndexHOC(<DashBoardScreen/>) : commonIndexHOC(<Admindashboard/>)   :  <SignInScreen />
           }
     </>
     
   )
 }
 
+// export default Index
 export default crmIndexHOC(Index)

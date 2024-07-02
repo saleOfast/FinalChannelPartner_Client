@@ -148,7 +148,7 @@ const Topnav = ({  topnavPermission }) => {
       try {
         let baseUrl = window.location.origin;
         if(baseUrl==="http://localhost:3000"){
-          baseUrl="https://crm.saleofast.com"
+          baseUrl="http://crm.cybermatrixsolutions.com"
         }
         const {data}=await axios.post(Baseurl+"/db/admin/url",{
           client_url:`${baseUrl}`,
@@ -190,9 +190,9 @@ const Topnav = ({  topnavPermission }) => {
            height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
          }}
        >
-         <div className="top_nav" style={{height:"8vh"}}>
+         <div className="top_nav" style={{height:"10vh"}}>
            {/* <div className="brand_icon"> */}
-           <div className="h-100">
+           <div className="">
              {!hasCookie("Admin") &&
              
              <img
@@ -201,7 +201,7 @@ const Topnav = ({  topnavPermission }) => {
                  &&( `${filesUrl}` +
                    `/logo/images${clientData?.logo}`)
              }
-             className="h-100"
+             className=""
              alt
            />
               }
@@ -225,7 +225,7 @@ const Topnav = ({  topnavPermission }) => {
                   //  hasCookie("crm") && allowedpermission?.length>1 && (
                    hasCookie("crm") &&  (
                      <img
-                     style={{width:"20px"}} 
+                     style={{width:"20px",cursor:"pointer"}} 
                      src="/switch.svg"
                      onClick={()=>{
                        deleteCookie("crm")
@@ -614,9 +614,9 @@ const Topnav = ({  topnavPermission }) => {
               height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
             }}
           >
-            <div className="top_nav" style={{height:"8vh"}}>
+            <div className="top_nav" style={{height:"10vh"}}>
               {/* <div className="brand_icon"> */}
-              <div className="h-100">
+              <div className="">
 
                 <img
                 src={
@@ -624,7 +624,7 @@ const Topnav = ({  topnavPermission }) => {
                     &&( `${filesUrl}` +
                       `/logo/images${clientData?.logo}`)
                 }
-                className="h-100"
+                className=""
                 alt
               />
               </div>

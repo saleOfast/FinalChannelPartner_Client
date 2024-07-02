@@ -1,9 +1,9 @@
-import AddExpenseScreen from '../Components/ExpenseScreens/AddExpenseScreen'
+import AddExpenseScreen from '../../Components/ExpenseScreens/AddExpenseScreen'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setCookie } from 'cookies-next'
-import withUser from '../HOC/WithUserhoc'
-import { setIsActive } from '../store/isActiveSidebarSlice'
+import withUser from '../../HOC/WithUserhoc'
+import { setIsActive } from '../../store/isActiveSidebarSlice'
 
  function ApplyExpense() {
     const dispatch = useDispatch()

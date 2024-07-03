@@ -1,5 +1,5 @@
 
-import ManageLeadRatingScreen from '../Components/ManageLeadRating/ManageLeadRatingScreen'
+import PartnerTypeScreen from '../Components/ChannelPartnerType/PartnerTypeScreen'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setCookie } from 'cookies-next'
@@ -7,19 +7,15 @@ import withUser from '../HOC/WithUserhoc'
 import { setIsActive } from '../store/isActiveSidebarSlice'
 import WithUserhoc_COMMON from "../HOC/WithUserhoc_COMMON"
 
-
-export default WithUserhoc_COMMON (function ManageRating() {
+export default WithUserhoc_COMMON (function PartnerType() {
   const dispatch = useDispatch()
   useEffect(() => {
-      setCookie('isActive', 'leadManage')
-      dispatch(setIsActive('leadManage'))
+      setCookie('isActive', 'taskManage')
+      dispatch(setIsActive('taskManage'))
   }, [dispatch]);
   return (
     <>
-      
-          <ManageLeadRatingScreen/>
-      
+          <PartnerTypeScreen/>
     </>
   )
-}
-)
+})

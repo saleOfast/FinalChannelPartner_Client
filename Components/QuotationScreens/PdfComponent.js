@@ -7,7 +7,9 @@ import { filesUrl } from '../../Utils/Constants';
 const PdfComponent = ({ dataList, loginDetails }) => {
 
     const clientLogo=hasCookie("clientLogo") ? JSON.parse(getCookie("clientLogo")) : "";
-
+    const calculateDiscount = (price, discount) => {
+        return (price * discount) / 100;
+      };
     return (
         <div className='pdfWrapper'>
             {dataList ? <div className='quotation_view'>
@@ -23,23 +25,33 @@ const PdfComponent = ({ dataList, loginDetails }) => {
                       alt
                     />
                     </div>
-                    <div className="info_sec">
-                        <div className="info_line">
+                    <div className="info_sec d-flex justify-content-between gap-3">
+                        <div className='d-flex flex-column info_line align-items-start'>
+                        <div className="head w-100">Registration No</div>
+                        <div className="head w-100">Email Id</div>
+                        <div className="head w-100">Contact No</div>
+                        </div>
+                        <div className='d-flex flex-column info_line align-items-start'>
+                        <div className="value">: {loginDetails?.user_code}</div>
+                        <div className="value">: {loginDetails?.email}</div>
+                        <div className="value">: {loginDetails?.contact_number}</div>
+                        </div>
+                        {/* <div className="info_line">
                             <div className="head">Registration No</div>
                             <div className="value">: {loginDetails?.user_code}</div>
                         </div>
                         <div className="info_line">
                             <div className="head">Email Id</div>
                             <div className="value">: {loginDetails?.email}</div>
-                        </div>
-                        <div className="info_line">
+                        </div> */}
+                        {/* <div className="info_line">
                             <div className="head">Website</div>
                             <div className="value">: www.leadshyne.com</div>
-                        </div>
-                        <div className="info_line">
+                        </div> */}
+                        {/* <div className="info_line">
                             <div className="head">Contact No</div>
                             <div className="value">: {loginDetails?.contact_number}</div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className="quatDtlLine">
@@ -111,7 +123,7 @@ const PdfComponent = ({ dataList, loginDetails }) => {
                             <div className="column col-xl-2 col-md-2 col-sm-2 col-2">{data?.qautProduct?.p_name}</div>
                             <div className="column col-xl-2 col-md-2 col-sm-2 col-2">{data?.qty}</div>
                             <div className="column col-xl-2 col-md-2 col-sm-2 col-2">{data?.price}</div>
-                            <div className="column col-xl-2 col-md-2 col-sm-2 col-2">{data?.product_discount}%</div>
+                            <div className="column col-xl-2 col-md-2 col-sm-2 col-2">{calculateDiscount(data?.price,data?.product_discount)} ({data?.product_discount}%)</div>
                         </div>
                     </div>
                 })}
@@ -125,7 +137,8 @@ const PdfComponent = ({ dataList, loginDetails }) => {
                             <div className="head">{data?.tax_name}
                                <span className='texts'> {data?.tax_percentage}% :  </span>
                             </div>
-                            <div className="value">{data?.total_amt} </div>
+                            {/* <div className="value">{data?.total_amt} </div> */}
+                            <div className="value">{calculateDiscount()} </div>
                         </div>
                     })}
                     <div className="taxesLine gtotal">

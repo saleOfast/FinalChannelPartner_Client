@@ -39,6 +39,9 @@ const LeadDetailsScreen = () => {
   const [projectList,setProjectList]=useState([])
   const [locationList,setLocationList]=useState([])
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+  const daysToAdd = 10;
+  const maxDate = moment().add(daysToAdd, 'days').format('YYYY-MM-DD');
+
 
   useEffect(()=>{
     if(id){
@@ -538,7 +541,8 @@ function formatDate(date) {
                                   <div className="col-9">
                                     <input
                                       autofocus
-                                      
+                                      min={moment().format("YYYY-MM-DD")}
+                                      // max={maxDate}
                                       value={lead?.p_visit_date}
                                       onChange={(e) => {
                                         setLead({

@@ -16,6 +16,7 @@ import Charts from '../../../pages/Charts';
 import RevenueChart from '../../../pages/RevenueChart';
 import ReChart from './ReChart';
 import Loader from '../../Loader/Loader';
+import crmIndexHOC from '../../../HOC/crmIndexHOC';
 
 
 const DashBoardScreen = () => {

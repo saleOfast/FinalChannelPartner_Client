@@ -4,8 +4,10 @@ import withUser from '../HOC/WithUserhoc';
 import { useEffect } from 'react';
 import { setCookie } from 'cookies-next';
 import { setIsActive } from '../store/isActiveSidebarSlice';
+import WithUserhoc_COMMON from "../HOC/WithUserhoc_COMMON"
 
-export default withUser (function ManageLeadSource() {
+
+export default WithUserhoc_COMMON (function ManageLeadSource() {
   const dispatch = useDispatch()
   useEffect(() => {
       setCookie('isActive', 'leadManage')

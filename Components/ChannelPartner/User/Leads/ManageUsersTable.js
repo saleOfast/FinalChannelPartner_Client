@@ -25,6 +25,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
     const [showModal2, setShowModal2] =  useState(false)
     const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
 
+    const daysToAdd = 10;
+    const minDate = moment().format("YYYY-MM-DD");
+    const maxDate = moment().add(daysToAdd, 'days').format('YYYY-MM-DD');
+
     const getCurrentWeekDates = () => {
       const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
         const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
@@ -608,7 +612,8 @@ const getVisitInfo=async(visitId)=>{
                                       <input
                                         autofocus
                                         type="Date"
-                                        min={moment().format("YYYY-MM-DD")} 
+                                        min={minDate}
+                                        // max={maxDate}
                                         value={p_visit_date}
                                         onChange={(e)=>{
                                             setVisitDate(e.target.value)

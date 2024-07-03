@@ -434,7 +434,6 @@ const AddUserScreen = () => {
             <div className="row profilePic">
               <div className="col-xl-10 col-md-10 col-sm-12 col-12">
                 <div className="row">
-
                   <div className="col-xl-5 col-md-5 col-sm-12 col-12">
                     <div
                       className={
@@ -475,47 +474,6 @@ const AddUserScreen = () => {
                       </span>
                     </div>
                   </div>
-
-                  {/* <div className="col-xl-5 col-md-5 col-sm-12 col-12">
-                    <div
-                      className={
-                        errorData?.role_id ? "input_box errorBox" : "input_box"
-                      }
-                    >
-                      <label htmlFor="profilelevel">Partner Type *</label>
-                      <select
-                        className={
-                          errorData?.role_id
-                            ? "form-control is-invalid"
-                            : "form-control"
-                        }
-                        name="profilelevel"
-                        id="profilelevel"
-                        disabled={viewMode}
-                        onChange={(e) => {
-                          setUserinfo({
-                            ...userInfo,
-                            role_id: parseInt(e.target.value),
-                          });
-                          setErrorData({ ...errorData, role_id: "" });
-                        }}
-                        value={userInfo.role_id ? userInfo.role_id : ""}
-                      >
-                        <option value="">Select Partner Type </option>
-                        {userroles?.map(({ role_id, role_name }) => {
-                          return (
-                            <option key={role_id} value={role_id}>
-                              {role_name}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <span className="errorText">
-                        {" "}
-                        {errorData?.role_id ? errorData.role_id : ""}
-                      </span>
-                    </div>
-                  </div> */}
 
                 </div>
                 <div className="row">

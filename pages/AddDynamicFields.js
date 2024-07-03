@@ -5,6 +5,7 @@ import { setCookie } from 'cookies-next'
 import { useDispatch } from 'react-redux'
 import withUser from '../HOC/WithUserhoc'
 import { setIsActive } from '../store/isActiveSidebarSlice'
+import WithUserhoc_COMMON from "../HOC/WithUserhoc_COMMON"
 
  function AddDynamicFields() {
 
@@ -22,4 +23,4 @@ import { setIsActive } from '../store/isActiveSidebarSlice'
     )
 }
 
-export default withUser(AddDynamicFields)
+export default WithUserhoc_COMMON(AddDynamicFields)

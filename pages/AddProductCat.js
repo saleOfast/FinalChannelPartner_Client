@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { setCookie } from 'cookies-next'
 import withUser from '../HOC/WithUserhoc'
 import { setIsActive } from '../store/isActiveSidebarSlice'
+import WithUserhoc_COMMON from "../HOC/WithUserhoc_COMMON"
 
 
 function AddProductCat() {
@@ -19,4 +20,4 @@ function AddProductCat() {
     )
 }
 
-export default withUser(AddProductCat)
+export default WithUserhoc_COMMON(AddProductCat)

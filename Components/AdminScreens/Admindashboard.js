@@ -182,6 +182,7 @@ import { useSelector } from 'react-redux';
 import { Baseurl } from '../../Utils/Constants';
 import axios from 'axios';
 import Loader from "../Loader/Loader"
+import commonIndexHOC from '../../HOC/commonIndexHOC';
 
 const Admindashboard = () => {
     const sideView = useSelector((state) => state.sideView.value);

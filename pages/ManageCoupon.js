@@ -4,8 +4,9 @@ import { useEffect } from "react";
 import { setCookie } from "cookies-next";
 import { setIsActive } from "../store/isActiveSidebarSlice";
 import ManageCouponScreen from "../Components/ManageCoupon/ManageCouponScreen";
+import WithUserhoc_COMMON from "../HOC/WithUserhoc_COMMON"
 
-export default withUser (function ManageCoupon() {
+export default WithUserhoc_COMMON (function ManageCoupon() {
   const dispatch = useDispatch()
   useEffect(() => {
       setCookie('isActive', 'managebrand')

@@ -8,6 +8,7 @@ import UserProfileScreen from '../Components/ProfileScreens.js/UserProfileScreen
 import UserEditProfile from '../Components/ProfileScreens.js/UserEditProfile';
 import { setIsActive } from '../store/isActiveSidebarSlice';
 import withUser from '../HOC/WithUserhoc';
+import WithUserhoc_COMMON from "../HOC/WithUserhoc_COMMON"
 
 
  function UserProfile() {
@@ -62,4 +63,4 @@ import withUser from '../HOC/WithUserhoc';
     )
 }
 
-export default withUser(UserProfile)
+export default WithUserhoc_COMMON(UserProfile)

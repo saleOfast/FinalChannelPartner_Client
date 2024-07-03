@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { setCookie } from 'cookies-next'
 import withUser from '../HOC/WithUserhoc'
 import { setIsActive } from '../store/isActiveSidebarSlice'
+import WithUserhoc_COMMON from "../HOC/WithUserhoc_COMMON"
 
  function AddProfileManage() {
     const dispatch = useDispatch()
@@ -18,4 +19,4 @@ import { setIsActive } from '../store/isActiveSidebarSlice'
     )
 }
 
-export default withUser(AddProfileManage)
+export default WithUserhoc_COMMON(AddProfileManage)

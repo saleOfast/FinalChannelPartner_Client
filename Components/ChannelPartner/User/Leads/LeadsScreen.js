@@ -73,6 +73,9 @@ const LeadsScreen = () => {
     const [loader,setLoader]=useState(false);
     const currentDate = moment().format("YYYY-MM-DD");
     const currentTime = moment().format("HH:mm");
+    
+    const daysToAdd = 10;
+    const maxDate = moment().add(daysToAdd, 'days').format('YYYY-MM-DD');
 
     // Determine the min time based on the selected date
     const minTime = lead.p_visit_date === currentDate ? currentTime : '00:00';
@@ -537,7 +540,10 @@ const LeadsScreen = () => {
                                     <div className="col-9">
                                       <input autofocus  value={lead?.p_visit_date} onChange={(e)=>{
                                         setLead({...lead,p_visit_date:e.target.value})
-                                      }} type="Date" name="name" className="input-field"  min={moment().format("YYYY-MM-DD")} placeholder required />
+                                      }} 
+                                      // max={maxDate}      
+                                      type="Date" name="name" className="input-field"  min={moment().format("YYYY-MM-DD")}
+                                       placeholder required />
                                       <span className='errorText text-danger'>
                                           {errorData?.p_visit_date ? errorData.p_visit_date:""}
                                       </span>

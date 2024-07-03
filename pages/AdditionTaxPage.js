@@ -4,6 +4,8 @@ import withUser from '../HOC/WithUserhoc'
 import { useEffect } from 'react';
 import { setCookie } from 'cookies-next';
 import { setIsActive } from '../store/isActiveSidebarSlice';
+import WithUserhoc_COMMON from "../HOC/WithUserhoc_COMMON"
+
 
  function AdditionTaxPage() {
     const dispatch = useDispatch()
@@ -18,4 +20,4 @@ import { setIsActive } from '../store/isActiveSidebarSlice';
     )
 }
 
-export default withUser(AdditionTaxPage)
+export default WithUserhoc_COMMON(AdditionTaxPage)

@@ -467,7 +467,7 @@ export default mainIndexHOC(
                     ))}
 
                     {
-                      userInfo && userInfo?.role_id ==null && (
+                      userInfo && userInfo?.role_id ==null && userInfo?.isDB==true && (
                         <div
                         className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end "
                         onClick={() => {

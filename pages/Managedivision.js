@@ -4,8 +4,10 @@ import { useDispatch } from 'react-redux'
 import { setCookie } from 'cookies-next'
 import withUser from '../HOC/WithUserhoc'
 import { setIsActive } from '../store/isActiveSidebarSlice'
+import WithUserhoc_COMMON from "../HOC/WithUserhoc_COMMON"
 
-export default withUser (function Managedivision() {
+
+export default WithUserhoc_COMMON (function Managedivision() {
   const dispatch = useDispatch()
   useEffect(() => {
       setCookie('isActive', 'organization')

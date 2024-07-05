@@ -8,7 +8,7 @@ const PdfComponent = ({ dataList, loginDetails }) => {
 
     const clientLogo=hasCookie("clientLogo") ? JSON.parse(getCookie("clientLogo")) : "";
     const calculateDiscount = (price, discount) => {
-        return (price * discount) / 100;
+        return ((price * discount) / 100).toFixed(2);
       };
     return (
         <div className='pdfWrapper'>
@@ -138,12 +138,12 @@ const PdfComponent = ({ dataList, loginDetails }) => {
                                <span className='texts'> {data?.tax_percentage}% :  </span>
                             </div>
                             {/* <div className="value">{data?.total_amt} </div> */}
-                            <div className="value">{calculateDiscount()} </div>
+                            <div className="value">{calculateDiscount(dataList?.quatMasterData[0]?.sub_total,data?.tax_percentage)} </div>
                         </div>
                     })}
                     <div className="taxesLine gtotal">
                         <div className="head">Grand Total</div>
-                        <div className="value">{dataList?.quatMasterData[0]?.grand_total}</div>
+                        <div className="value">{(dataList?.quatMasterData[0]?.grand_total).toFixed(2)}</div>
                     </div>
                 </div>
             </div> : null}

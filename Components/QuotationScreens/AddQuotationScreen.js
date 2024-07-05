@@ -1310,8 +1310,8 @@ const AddQuotationScreen = () => {
                             name="product_amount"
                             id="product_amount"
                             className="form-control"
-                            value={data?.total_amt}
-                            // value={((userInfo?.sub_total*data?.tax_percentage)/100).toFixed(2)}
+                            // value={data?.total_amt}
+                            value={((userInfo?.sub_total*data?.tax_percentage)/100).toFixed(2)}
 
                           />
                         </div>
@@ -1329,7 +1329,7 @@ const AddQuotationScreen = () => {
                           name="product_amount"
                           id="product_amount"
                           className="form-control"
-                          value={userInfo?.grand_total ? userInfo?.grand_total : ''}
+                          value={userInfo?.grand_total ? (userInfo?.grand_total).toFixed(2) : ''}
                         />
 
                       </div>

@@ -1,176 +1,3 @@
-// import React, { useEffect, useState } from 'react'
-// import DashAdminSetCard from './DashAdminSetCard';
-// import CubesIcon from '../Svg/CubesIcon';
-// import GroupIcon from '../Svg/GroupIcon';
-// import Hierarchy from '../Svg/Hierarchy';
-// import Link from 'next/link';
-// import { hasCookie, getCookie } from "cookies-next";
-// import { useSelector } from 'react-redux';
-// import { Baseurl } from '../../Utils/Constants';
-// import axios from 'axios';
-
-// const Admindashboard = () => {
-//     const sideView = useSelector((state) => state.sideView.value);
-//     const [dynamicFields, setDynamicFields] = useState([]);
-
-//     useEffect(()=>{
-//         getSidebarInfo('admin-nav')
-//     },[])
-
-//     const getSidebarInfo = async (navLink) => {
-//         if (!hasCookie('token')) {
-//           return;
-//         }
-    
-//         const token = getCookie('token');
-//         const db_name = getCookie('db_name');
-//         const header = {
-//           headers: {
-//             Accept: "application/json",
-//             Authorization: `Bearer ${token}`,
-//             db: db_name,
-//             pass: 'pass'
-//           }
-//         };
-    
-//         try {
-//           const { data } = await axios.get(`${Baseurl}/db/permission/${navLink}`, header);
-//           setDynamicFields(data?.data[0]?.children);
-//         } catch (error) {
-//           console.log(error);
-//         }
-//       };
-    
-//     return (
-//          <div className={`main_Box  ${sideView}`}>
-//             <div className="bread_head">
-//                 <h3 className="content_head">ADMIN DASHBOARD</h3>
-//             </div>
-//             <div className="main_content admin_dashboard">
-//                 <div className="top_search_bar">
-//                     <div className="col-md-5 col-xl-5 col-sm-12 col-12">
-//                         <input type="text"
-//                             name="search"
-//                             id="search"
-//                             placeholder='Search by Keywords'
-//                             className='form-control'
-//                         />
-//                     </div>
-//                 </div>
-//                 <div className="settings_super_admin">
-//                     <div className="settings_heads">
-//                         Settings Super Admin
-//                     </div>
-//                     <div className="settings_cards">
-//                         <div className="row">
-
-//                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-//                                 <Link href='/UserProfileManagement'>
-//                                     <DashAdminSetCard name='User Profiles Master' />
-//                                 </Link>
-//                             </div>
-//                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-//                                 <Link href='/UserProfileManagement'>
-//                                     <DashAdminSetCard name='Profile Permission Master' />
-//                                 </Link>
-//                             </div>
-//                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-//                                 <Link href='/EmailConfiguration'>
-//                                     <DashAdminSetCard name='Email Configuration' />
-//                                 </Link>
-//                             </div>
-//                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-//                                 <Link href='/LicenseDetails'>
-//                                     <DashAdminSetCard name='License Details' />
-//                                 </Link>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-
-//                 <div className="admin_setings_lists">
-//                     <div className="row">
-//                         <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-
-
-//                             {
-//                                 dynamicFields?.map((item,index) => (
-//                                     index % 2 == 0 ? (
-//                                         // Your JSX or component here
-//                                         <div key={index} className="card_wrapper">
-//                                             <div className="card_lists">
-//                                                 <div className="card_head"> {item?.allais_menu}: </div>
-//                                                 <ul className="settings_list" >
-//                                                 {
-//                                                     item?.children?.map((i)=>(
-//                                                             <Link href={`/${i.link}`} key={i?.menu_id}>
-//                                                                 <li className="list_item"  >{i?.allais_menu}</li>
-//                                                             </Link>
-//                                                     ))
-//                                                 }
-//                                                 </ul>
-                                                
-//                                             </div>
-//                                             <div className="icons">
-//                                                 <Hierarchy />
-//                                             </div>
-//                                         </div>
-//                                     ) : null
-//                                 ))
-//                             }
-
-
-                            
-                            
-//                         </div>
-//                         <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                            
-
-//                             {
-//                                 dynamicFields?.map((item,index) => (
-//                                     index % 2 !== 0 ? (
-//                                         // Your JSX or component here
-//                                         <div key={index} className="card_wrapper">
-//                                             <div className="card_lists">
-//                                                 <div className="card_head"> {item?.allais_menu}: </div>
-//                                                 <ul className="settings_list" >
-//                                                 {
-//                                                     item?.children?.map((i)=>(
-//                                                             <Link href={`/${i.link}`} key={i?.menu_id}>
-//                                                                 <li className="list_item"  >{i?.allais_menu}</li>
-//                                                             </Link>
-//                                                     ))
-//                                                 }
-//                                                 </ul>
-                                                
-                                                
-//                                             </div>
-//                                             <div className="icons">
-//                                                 <Hierarchy />
-//                                             </div>
-//                                         </div>
-//                                     ) : null
-//                                 ))
-//                             }
-
-                            
-
-
- 
-                            
-
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-
-//         </div>
-//     )
-// }
-
-// export default Admindashboard
-
-
 import React, { useEffect, useState } from 'react';
 import DashAdminSetCard from './DashAdminSetCard';
 import CubesIcon from '../Svg/CubesIcon';
@@ -182,7 +9,6 @@ import { useSelector } from 'react-redux';
 import { Baseurl } from '../../Utils/Constants';
 import axios from 'axios';
 import Loader from "../Loader/Loader"
-import commonIndexHOC from '../../HOC/commonIndexHOC';
 
 const Admindashboard = () => {
     const sideView = useSelector((state) => state.sideView.value);
@@ -289,11 +115,11 @@ const Admindashboard = () => {
                                         <DashAdminSetCard name='User Profiles Master' />
                                     </Link>
                                 </div>
-                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                     <Link href='/UserProfileManagement'>
                                         <DashAdminSetCard name='Profile Permission Master' />
                                     </Link>
-                                </div>
+                                </div> */}
                                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                     <Link href='/EmailConfiguration'>
                                         <DashAdminSetCard name='Email Configuration' />
@@ -302,6 +128,11 @@ const Admindashboard = () => {
                                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                     <Link href='/LicenseDetails'>
                                         <DashAdminSetCard name='License Details' />
+                                    </Link>
+                                </div>
+                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                    <Link href='/CommonSettings'>
+                                        <DashAdminSetCard name='Settings' />
                                     </Link>
                                 </div>
                             </div>

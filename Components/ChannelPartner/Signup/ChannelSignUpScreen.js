@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { Baseurl, filesUrl } from "../../../Utils/Constants";
 import { setCookie } from "cookies-next";
+import { useDispatch, useSelector } from "react-redux";
+import { startButtonLoading, stopButtonLoading } from "../../../store/buttonLoaderSlice";
 
 
 const ChannelSignUpScreen = () => {
@@ -34,7 +36,8 @@ const ChannelSignUpScreen = () => {
   const [citylist, setCitylist] = useState([]);
   const [errorToast, setErrorToast] = useState(false);
   const[clientData,setClientData]=useState();
-
+  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+  const dispatch=useDispatch()
 
   const router = useRouter();
 
@@ -145,8 +148,10 @@ const ChannelSignUpScreen = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      dispatch(startButtonLoading())
       if (!formFields.aadhar || !formFields.pan || !formFields.rera) {
         toast.error("Aadhar, PAN, and RERA are required.");
+        dispatch(stopButtonLoading())
         return;
       }
       const formData = new FormData();
@@ -176,12 +181,14 @@ const ChannelSignUpScreen = () => {
         formData
       );
       if (data.status === 200) {
+        dispatch(stopButtonLoading())
         toast.success(data.message);
         setFormFields({ ...formFields, isSubmitted: true });
         router.push("/ChannelPartnerRegister_Next");
       }
     } catch (error) {
-      console.log(error.response.data);
+      dispatch(stopButtonLoading())
+      console.log(error?.response?.data);
       const errorMessage =
         error?.response?.data?.message || "Something went wrong!";
       toast.error(errorMessage);

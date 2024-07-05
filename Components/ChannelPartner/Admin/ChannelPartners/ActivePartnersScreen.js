@@ -132,12 +132,12 @@ const ActivePartnersScreen = () => {
 
                 if(response?.status === 200 || response?.status === 201){
                     setLoader(false)
-                setDataList(response.data.data);
+                setDataList(response?.data?.data);
                 }
             } catch (error) {
                 if (error?.response?.data?.message) {
                     setLoader(false)
-                    toast.error(error.response.data.message);
+                    toast.error(error?.response?.data?.message);
                 } else {
                     setLoader(false)
                     toast.error("Something went wrong!");

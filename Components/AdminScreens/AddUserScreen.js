@@ -188,7 +188,7 @@ const AddUserScreen = () => {
     const token = getCookie("token");
     const db_name = getCookie("db_name");
     const reqOptions = { ...userInfo, db_name };
-
+    
     const header = {
       headers: {
         Accept: "application/json",

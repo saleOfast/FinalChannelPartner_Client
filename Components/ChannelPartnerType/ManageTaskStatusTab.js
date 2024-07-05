@@ -22,33 +22,33 @@ const ManageTaskStatusTab = ({
         filter: true,
       },
     },
+    // {
+    //   name: "task_status_code",
+    //   label: "Task Code",
+    //   options: {
+    //     filter: true,
+    //   },
+    // },
+    // {
+    //   name: "status",
+    //   label: "Status",
+    //   options: {
+    //     filter: true,
+    //     customBodyRender: (value, tableMeta, updateValue) => {
+    //       return (
+    //         <div className="status_box">
+    //           {value ? (
+    //             <span className="active status_btn">active</span>
+    //           ) : (
+    //             <span className="inactive status_btn">inactive</span>
+    //           )}
+    //         </div>
+    //       );
+    //     },
+    //   },
+    // },
     {
-      name: "task_status_code",
-      label: "Task Code",
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: "status",
-      label: "Status",
-      options: {
-        filter: true,
-        customBodyRender: (value, tableMeta, updateValue) => {
-          return (
-            <div className="status_box">
-              {value ? (
-                <span className="active status_btn">active</span>
-              ) : (
-                <span className="inactive status_btn">inactive</span>
-              )}
-            </div>
-          );
-        },
-      },
-    },
-    {
-      name: "task_status_id",
+      name: "cpt_id",
       label: "Action",
       options: {
         filter: false,
@@ -65,7 +65,7 @@ const ManageTaskStatusTab = ({
                 <EditIcon />
               </button>
 
-              {tableMeta.rowData[2] ?
+              {/* {tableMeta.rowData[2] ?
                 <button
                   onClick={() => disableConfirm(value, 0)}
                   className="action_btn"
@@ -77,7 +77,7 @@ const ManageTaskStatusTab = ({
                   className="action_btn x2"
                   title="Disable" >
                   <CheckIcon />
-                </button>}
+                </button>} */}
 
               <button
                 onClick={() => deleteConfirm(value, 0)}

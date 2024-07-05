@@ -38,14 +38,45 @@ const LeadDetailsScreen = () => {
  
   const [projectList,setProjectList]=useState([])
   const [locationList,setLocationList]=useState([])
+  const [maxDate,setMaxDate]=useState()
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   const daysToAdd = 10;
-  const maxDate = moment().add(daysToAdd, 'days').format('YYYY-MM-DD');
+  // const maxDate = moment().add(daysToAdd, 'days').format('YYYY-MM-DD');
 
+  // const getMaxDate = async () => {
+    //   if (hasCookie("token")) {
+    //     let token = getCookie("token");
+    //     let db_name = getCookie("db_name");
+  
+    //     let header = {
+    //       headers: {
+    //         Accept: "application/json",
+    //         Authorization: `Bearer ${token}`,
+    //         db: db_name,
+    //         m_id: 76,
+    //       },
+    //     };
+  
+    //     try {
+    //       const { data } = await axios.get(
+    //         Baseurl + `/db/settings/generalSettings`,
+    //         header
+    //       );
+    //       setMaxDate(moment().add(Number(data?.data[0]?.setting_value), 'days').format('YYYY-MM-DD')); 
+    //     } catch (error) {
+    //       if (error?.response?.data?.message) {
+    //         toast.error(error?.response?.data?.message);
+    //       } else {
+    //         toast.error("Something went wrong!");
+    //       }
+    //     }
+    //   }
+    // };
 
   useEffect(()=>{
     if(id){
       getDataListById();
+      // getMaxDate()
     }
   },[id])
 

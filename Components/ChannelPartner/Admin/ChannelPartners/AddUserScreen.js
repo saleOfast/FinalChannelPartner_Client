@@ -18,6 +18,7 @@ const AddUserScreen = () => {
   const [viewMode, setViewMode] = useState(false);
   const [additionalFields, setAdditionalFields] = useState(false);
   const [userroles, setUserroles] = useState([]);
+  const [partnerTypes, setPartnerTypes] = useState([]);
   const [divisionList, setDivisionList] = useState([]);
   const [departMentList, setDepartMentList] = useState([]);
   const [designationList, setDesignationList] = useState([]);
@@ -56,6 +57,10 @@ const AddUserScreen = () => {
 
   async function getRolesList() {
     await fetchData("/db/role", setUserroles, errorToast, setErrorToast);
+  }
+
+  async function getPartnerTypes() {
+    await fetchData("/db/users/channelPartnerType", setPartnerTypes, errorToast, setErrorToast);
   }
 
   async function getDivisionList() {
@@ -138,6 +143,7 @@ const AddUserScreen = () => {
         user: data1?.user,
         user_l_name: data1?.user_l_name,
         email: data1?.email,
+        cpt_id:data1?.cpt_id,
         contact_number: data1?.contact_number,
         db_name: data1?.db_name,
         isDB: data1?.isDB,
@@ -204,9 +210,9 @@ const AddUserScreen = () => {
         reqOptions,
         header
       );
-      const userId = response.data.data.userProfileData.user_id;
+      const userId = response?.data?.data?.userProfileData?.user_id;
       if (response.status === 200 || response.status === 201) {
-        toast.success(response.data.message);
+        toast.success(response?.data?.message);
         if (uploadDocs.aadhar_card)
           AddUploadPicture(userId, "adh", uploadDocs.aadhar[0], 0);
         if (uploadDocs.pan_card)
@@ -252,7 +258,7 @@ const AddUserScreen = () => {
       },
     };
 
-    if (userInfo.user === "") {
+    if (userInfo?.user === "") {
       toast.error("Please Enter the Name");
       return;
     }
@@ -260,7 +266,7 @@ const AddUserScreen = () => {
     try {
       const response = await axios.put(`${Baseurl}/db/users`, userInfo, header);
       if (response.status === 200 || response.status === 201) {
-        toast.success(response.data.message);
+        toast.success(response?.data?.message);
         if (uploadDocs.aadhar)
           AddUploadPicture(
             updtUId,
@@ -392,6 +398,7 @@ const AddUserScreen = () => {
     getDepartments();
     getDesignation();
     getCountryList();
+    getPartnerTypes()
   }, []);
 
   useEffect(() => {
@@ -476,16 +483,16 @@ const AddUserScreen = () => {
                     </div>
                   </div>
 
-                  {/* <div className="col-xl-5 col-md-5 col-sm-12 col-12">
+                  <div className="col-xl-5 col-md-5 col-sm-12 col-12">
                     <div
                       className={
-                        errorData?.role_id ? "input_box errorBox" : "input_box"
+                        errorData?.cpt_id ? "input_box errorBox" : "input_box"
                       }
                     >
                       <label htmlFor="profilelevel">Partner Type *</label>
                       <select
                         className={
-                          errorData?.role_id
+                          errorData?.cpt_id
                             ? "form-control is-invalid"
                             : "form-control"
                         }
@@ -495,27 +502,27 @@ const AddUserScreen = () => {
                         onChange={(e) => {
                           setUserinfo({
                             ...userInfo,
-                            role_id: parseInt(e.target.value),
+                            cpt_id: parseInt(e.target.value),
                           });
-                          setErrorData({ ...errorData, role_id: "" });
+                          setErrorData({ ...errorData, cpt_id: "" });
                         }}
-                        value={userInfo.role_id ? userInfo.role_id : ""}
+                        value={userInfo.cpt_id ? userInfo.cpt_id : ""}
                       >
                         <option value="">Select Partner Type </option>
-                        {userroles?.map(({ role_id, role_name }) => {
+                        {partnerTypes?.map(({ cpt_id, name }) => {
                           return (
-                            <option key={role_id} value={role_id}>
-                              {role_name}
+                            <option key={cpt_id} value={cpt_id}>
+                              {name}
                             </option>
                           );
                         })}
                       </select>
                       <span className="errorText">
                         {" "}
-                        {errorData?.role_id ? errorData.role_id : ""}
+                        {errorData?.cpt_id ? errorData.cpt_id : ""}
                       </span>
                     </div>
-                  </div> */}
+                  </div>
 
                 </div>
                 <div className="row">

@@ -5,8 +5,10 @@ import { setCookie } from 'cookies-next'
 import withUser from '../HOC/WithUserhoc'
 import { setIsActive } from '../store/isActiveSidebarSlice'
 import EmailConfigScreen from '../Components/EmailConfiguration/EmailConfigScreen'
+import WithUserhoc_COMMON from "../HOC/WithUserhoc_COMMON"
 
-export default withUser( function EmailConfiguration() {
+
+export default WithUserhoc_COMMON( function EmailConfiguration() {
   const dispatch = useDispatch()
   useEffect(() => {
       setCookie('isActive', 'emailConfig')

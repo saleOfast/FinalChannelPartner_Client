@@ -4,7 +4,6 @@ import PlusIcon from '../../../Svg/PlusIcon';
 import axios from 'axios';
 import { hasCookie, getCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, Button, Form, Row, Col, Dropdown } from 'react-bootstrap';
 import dynamic from 'next/dynamic'
@@ -73,13 +72,42 @@ const LeadsScreen = () => {
     const [loader,setLoader]=useState(false);
     const currentDate = moment().format("YYYY-MM-DD");
     const currentTime = moment().format("HH:mm");
-    
+    const [maxDate,setMaxDate]=useState()
     const daysToAdd = 10;
-    const maxDate = moment().add(daysToAdd, 'days').format('YYYY-MM-DD');
+    // const maxDate = moment().add(daysToAdd, 'days').format('YYYY-MM-DD');
 
     // Determine the min time based on the selected date
     const minTime = lead.p_visit_date === currentDate ? currentTime : '00:00';
 
+    // const getMaxDate = async () => {
+    //   if (hasCookie("token")) {
+    //     let token = getCookie("token");
+    //     let db_name = getCookie("db_name");
+  
+    //     let header = {
+    //       headers: {
+    //         Accept: "application/json",
+    //         Authorization: `Bearer ${token}`,
+    //         db: db_name,
+    //         m_id: 76,
+    //       },
+    //     };
+  
+    //     try {
+    //       const { data } = await axios.get(
+    //         Baseurl + `/db/settings/generalSettings`,
+    //         header
+    //       );
+    //       setMaxDate(moment().add(Number(data?.data[0]?.setting_value), 'days').format('YYYY-MM-DD')); 
+    //     } catch (error) {
+    //       if (error?.response?.data?.message) {
+    //         toast.error(error?.response?.data?.message);
+    //       } else {
+    //         toast.error("Something went wrong!");
+    //       }
+    //     }
+    //   }
+    // };
     
 
     function disableConfirm(value, type) {
@@ -316,6 +344,7 @@ const LeadsScreen = () => {
 
     useEffect(() => {
         getDataList();
+        // getMaxDate()
     }, [])
     useEffect(() => {
       getLocationList();
@@ -359,6 +388,7 @@ const LeadsScreen = () => {
                 oldAssignTo={oldAssignTo}
                 setShowDateFilter={setShowDateFilter}
                 minTime={minTime}
+                maxDate={maxDate}
                 getDataList={getDataList}
               />
             </div>

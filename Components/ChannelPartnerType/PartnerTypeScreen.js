@@ -8,7 +8,7 @@ import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import Button from "react-bootstrap/Button";
 import ConfirmBox from "../Basics/ConfirmBox";
-import ManageTaskStatusTab from "./ManageTaskstatusTab";
+import ManageTaskStatusTab from "./ManageTaskStatusTab";
 import Papa from "papaparse";
 import { useSelector } from "react-redux";
 
@@ -22,7 +22,7 @@ const PartnerTypeScreen = () => {
   const [disableShowConfirm, setdisableShowConfirm] = useState(false);
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [confirmText, setconfirmText] = useState('')
-  const [currObj, setcurrObj] = useState({ task_status_id: '', action: '' })
+  const [currObj, setcurrObj] = useState({ cpt_id: '', action: '' })
   const [cvg, setCvg] = useState(false);
   const [excelData, setexcelData] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -40,8 +40,8 @@ const PartnerTypeScreen = () => {
     setUserInfo({
       ...userInfo,
       name: value[0],
-      lead_priority_code: value[1],
-      task_status_id: value[3],
+      cpt_id: value[1],
+      
     });
     handleShow();
   };
@@ -120,7 +120,7 @@ const PartnerTypeScreen = () => {
   }
 
   function deleteConfirm(value) {
-    setcurrObj({ task_status_id: value, action: 'delete' })
+    setcurrObj({ cpt_id: value, action: 'delete' })
     setdeleteshowConfirm(true)
   }
 
@@ -210,13 +210,13 @@ const PartnerTypeScreen = () => {
 
       try {
         const response = await axios.delete(
-          Baseurl + `/db/subtask/status?st_id=${currObj.task_status_id}`,
+          Baseurl + `/db/users/channelPartnerType?cpt_id=${currObj.cpt_id}`,
           header
         );
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message);
           setdeleteshowConfirm(false);
-          setcurrObj({ task_status_id: '', action: '' })
+          setcurrObj({ cpt_id: '', action: '' })
           getDataList();
         }
       } catch (error) {
@@ -253,13 +253,13 @@ const PartnerTypeScreen = () => {
             header
           );
           if (response.status === 204 || response.status === 200) {
-            toast.success(response.data.message);
+            toast.success(response?.data?.message);
             handleClose();
             getDataList();
           }
         } catch (error) {
           if (error?.response?.data?.message) {
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message);
           } else {
             toast.error("Something went wrong!");
           }
@@ -270,7 +270,7 @@ const PartnerTypeScreen = () => {
 
   const updatePartnerTypeHandler = async () => {
     if (userInfo.name == "") {
-      toast.error("Please enter Task Status Name");
+      toast.error("Please enter Partner Type Name");
     } else {
       if (hasCookie("token")) {
         let token = getCookie("token");
@@ -287,18 +287,18 @@ const PartnerTypeScreen = () => {
 
         try {
           const response = await axios.put(
-            Baseurl + `/db/subtask/status`,
+            Baseurl + `/db/users/channelPartnerType`,
             userInfo,
             header
           );
-          if (response.status === 204 || response.status === 200) {
-            toast.success(response.data.message);
+          if (response?.status === 204 || response?.status === 200) {
+            toast.success(response?.data?.message);
             handleClose();
             getDataList();
           }
         } catch (error) {
           if (error?.response?.data?.message) {
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message);
           } else {
             toast.error("Something went wrong!");
           }

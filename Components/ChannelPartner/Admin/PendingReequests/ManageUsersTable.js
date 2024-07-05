@@ -333,18 +333,19 @@ const ManageUsersTable = ({
         `${Baseurl}/db/users`,
         {
           doc_verification: actionMode === 'Accept' ? 2 : 3,
-          reject_reason: userInfo.reject_reason,
-          user_code: userInfo.user_code,
+          reject_reason: userInfo?.reject_reason,
+          user_code: userInfo?.user_code,
+          isCHANNEL:userInfo?.reject_reason ? false : true
         },
         header
       );
       if (response.status === 200 || response.status === 201) {
-        toast.success(response.data.message);
+        toast.success(response?.data?.message);
         getDataList()
       }
     } catch (error) {
       if (error?.response?.data?.message) {
-        toast.error(error.response.data.message);
+        toast.error(error?.response?.data?.message);
       } else {
         toast.error("Something went wrong!");
       }
@@ -377,6 +378,7 @@ const ManageUsersTable = ({
           doc_verification: actionMode === 'Accept' ? 2 : 3,
           reject_reason: userInfo.reject_reason,
           user_code: element,
+          isCHANNEL:userInfo?.reject_reason ? false : true
         },
         header
       );

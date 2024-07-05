@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
 import Loader from '../../../Loader/Loader';
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader,maxDate }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -27,7 +27,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
 
     const daysToAdd = 10;
     const minDate = moment().format("YYYY-MM-DD");
-    const maxDate = moment().add(daysToAdd, 'days').format('YYYY-MM-DD');
+    // const maxDate = moment().add(daysToAdd, 'days').format('YYYY-MM-DD');
 
     const getCurrentWeekDates = () => {
       const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));

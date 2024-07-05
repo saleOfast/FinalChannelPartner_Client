@@ -373,7 +373,8 @@ const DashboardAdmin = () => {
                             <Link href={"/partner/Brokerage"}>
                                 <DashLeadsCard
                                     head='Tat For Brokers'
-                                    price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
+                                    // price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
+                                    price={dataList?.averageHours!="NaN" ?`${dataList?.averageHours || '0'} ʰʳˢ `  :`${'0'} ʰʳˢ `} 
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/usericon.png' 
                                     />

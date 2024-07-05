@@ -33,7 +33,8 @@ const AddOpportunityScreen = () => {
         lead_src_id: "",
         opp_owner: null,
         created_at: "",
-        assigned_to: null
+        assigned_to: null,
+        close_lost_reason:""
     });
     const [prdSer, setPrdSer] = useState(false);
     const [accountsList, setAccountsList] = useState([]);
@@ -177,7 +178,11 @@ const AddOpportunityScreen = () => {
     };
     
     const submitHandler = async () => {
-
+        if(userInfo?.opportunity_stg_id===4 && (userInfo?.close_lost_reason===undefined  || userInfo?.close_lost_reason==="" || userInfo?.close_lost_reason===null)){
+            setErrorData({...errorData,close_lost_reason:"Enter Close Lost Reason"})
+            toast.error("Please Fill Mandatory Fields")
+            return
+        }
         if (hasCookie("token")) {
             setisLoading(true)
             let token = getCookie("token");
@@ -254,6 +259,12 @@ const AddOpportunityScreen = () => {
     }
 
     const UpdateHandler = async () => {
+        
+        if(userInfo?.opportunity_stg_id===4 && (userInfo?.close_lost_reason===undefined  || userInfo?.close_lost_reason==="" || userInfo?.close_lost_reason===null)){
+            setErrorData({...errorData,close_lost_reason:"Enter Close Lost Reason"})
+            toast.error("Please Fill Mandatory Fields")
+            return
+        }
 
         if (hasCookie("token")) {
             setisLoading(true)
@@ -702,6 +713,31 @@ const AddOpportunityScreen = () => {
                                 </div>
                               </div>
                               : null}
+                            
+                            {
+                                userInfo?.opportunity_stg_id===4 && (
+                                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className={errorData?.close_lost_reason ? 'input_box errorBox' : 'input_box'}>
+                                    <label htmlFor="task_name">Close Lost Reason *</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Close Reason"
+                                        name="task_name"
+                                        id="task_name"
+                                        className={`form-control ${errorData?.close_lost_reason ? ' is-invalid' : ''}`}
+                                        onChange={(e) => {
+                                            setUserInfo({ ...userInfo, close_lost_reason: e.target.value })
+                                            setErrorData({ ...errorData, close_lost_reason: '' })
+                                        }}
+                                        value={userInfo.close_lost_reason ? userInfo.close_lost_reason : ""}
+                                    />
+                                    <span className="errorText"> {errorData?.close_lost_reason ? errorData.close_lost_reason : ''}</span>
+                                </div>
+                            </div>
+                                )
+                            }
+                              
+
                         </div>
                     </div>
 

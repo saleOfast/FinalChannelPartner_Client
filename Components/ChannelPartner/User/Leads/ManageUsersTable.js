@@ -613,7 +613,7 @@ const getVisitInfo=async(visitId)=>{
                                         autofocus
                                         type="Date"
                                         min={minDate}
-                                        // max={maxDate}
+                                        max={maxDate}
                                         value={p_visit_date}
                                         onChange={(e)=>{
                                             setVisitDate(e.target.value)

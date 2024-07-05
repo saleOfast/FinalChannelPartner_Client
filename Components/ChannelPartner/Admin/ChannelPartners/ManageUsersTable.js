@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MUIDataTable from "mui-datatables";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import Loader from '../../../Loader/Loader';
 import { Form } from 'react-bootstrap';
+import { fetchData } from '../../../../Utils/getReq';
 
 
 
@@ -31,7 +32,17 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
 
   const [value, setValue] = useState(getCurrentWeekDates());
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+  const [partnerTypes,setPartnerTypes]=useState([])
+  const [errorToast, setErrorToast] = useState(false);
 
+
+  async function getPartnerTypes() {
+    await fetchData("/db/users/channelPartnerType", setPartnerTypes, errorToast, setErrorToast);
+  }
+
+  useEffect(()=>{
+    getPartnerTypes()
+  },[])
   
 
     const columns = [
@@ -174,6 +185,26 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                         <div className='status_box'>
                             {value ? <span className='active status_btn'>active</span> :
                                  <span className='inactive status_btn'>inactive</span>}
+                        </div>
+                    )
+                }
+            }
+        },
+        {
+            name: 'cpt_id',
+            label: "Partner Type",
+            options: {
+                filter: true,
+                customHeadRender: (columnMeta, updateDirection) => (
+                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                      {columnMeta.label}
+                    </th>
+                  ),
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    const partnerType = partnerTypes.find(data => data.cpt_id === value);
+                    return (
+                        <div  className='status_box fw-bold' style={{color:"#293790"}} >
+                           {partnerType ? partnerType.name : ''}
                         </div>
                     )
                 }

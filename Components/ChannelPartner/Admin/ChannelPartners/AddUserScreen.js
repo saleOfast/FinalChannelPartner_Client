@@ -39,7 +39,13 @@ const AddUserScreen = () => {
     cheque: null,
   });
   const [updtUId, setUpdtUId] = useState("");
-  const [userInfo, setUserinfo] = useState({});
+  const [userInfo, setUserinfo] = useState({
+    role_id:"",
+    cpt_id:"",
+    user:"",
+    user_l_name:"",
+    email:""
+  });
   const [uploadDocs, setuploadDocs] = useState({
     aadhar: null,
     pan: null,
@@ -190,7 +196,16 @@ const AddUserScreen = () => {
   }
 
   const addUserHandler = async () => {
+    
     if (!hasCookie("token")) return;
+    if(userInfo?.cpt_id===""){
+      setErrorData({...errorData,cpt_id:"Please Enter a Valid Partner Type"})
+      return
+    }
+    if(userInfo?.user_l_name===""){
+      setErrorData({...errorData,user_l_name:"Please Enter Last Name"})
+      return
+    }
     const db_name = getCookie("db_name");
     setisLoading(true);
     const token = getCookie("token");

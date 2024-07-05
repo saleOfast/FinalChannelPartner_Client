@@ -116,6 +116,7 @@ const AddQuotationScreen = () => {
 
 
   async function getQuatationData(id) {
+    
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -458,7 +459,8 @@ const AddQuotationScreen = () => {
     let arr = []
     let storeValue = []
     actualFiltData.map((item, i) => {
-      if (!arr.includes(item.tax_id)) {
+      if (!arr.includes(item.quat_tax_id)) {
+        console.log('in',item);
         storeValue.push(item)
         arr.push(item.tax_id)
       } else {
@@ -1309,6 +1311,8 @@ const AddQuotationScreen = () => {
                             id="product_amount"
                             className="form-control"
                             value={data?.total_amt}
+                            // value={((userInfo?.sub_total*data?.tax_percentage)/100).toFixed(2)}
+
                           />
                         </div>
                       </div>

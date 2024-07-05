@@ -79,35 +79,35 @@ const LeadsScreen = () => {
     // Determine the min time based on the selected date
     const minTime = lead.p_visit_date === currentDate ? currentTime : '00:00';
 
-    // const getMaxDate = async () => {
-    //   if (hasCookie("token")) {
-    //     let token = getCookie("token");
-    //     let db_name = getCookie("db_name");
+    const getMaxDate = async () => {
+      if (hasCookie("token")) {
+        let token = getCookie("token");
+        let db_name = getCookie("db_name");
   
-    //     let header = {
-    //       headers: {
-    //         Accept: "application/json",
-    //         Authorization: `Bearer ${token}`,
-    //         db: db_name,
-    //         m_id: 76,
-    //       },
-    //     };
+        let header = {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            db: db_name,
+            m_id: 76,
+          },
+        };
   
-    //     try {
-    //       const { data } = await axios.get(
-    //         Baseurl + `/db/settings/generalSettings`,
-    //         header
-    //       );
-    //       setMaxDate(moment().add(Number(data?.data[0]?.setting_value), 'days').format('YYYY-MM-DD')); 
-    //     } catch (error) {
-    //       if (error?.response?.data?.message) {
-    //         toast.error(error?.response?.data?.message);
-    //       } else {
-    //         toast.error("Something went wrong!");
-    //       }
-    //     }
-    //   }
-    // };
+        try {
+          const { data } = await axios.get(
+            Baseurl + `/db/settings/generalSettings`,
+            header
+          );
+          setMaxDate(moment().add(Number(data?.data[0]?.setting_value), 'days').format('YYYY-MM-DD')); 
+        } catch (error) {
+          if (error?.response?.data?.message) {
+            toast.error(error?.response?.data?.message);
+          } else {
+            toast.error("Something went wrong!");
+          }
+        }
+      }
+    };
     
 
     function disableConfirm(value, type) {
@@ -344,7 +344,7 @@ const LeadsScreen = () => {
 
     useEffect(() => {
         getDataList();
-        // getMaxDate()
+        getMaxDate()
     }, [])
     useEffect(() => {
       getLocationList();
@@ -571,7 +571,7 @@ const LeadsScreen = () => {
                                       <input autofocus  value={lead?.p_visit_date} onChange={(e)=>{
                                         setLead({...lead,p_visit_date:e.target.value})
                                       }} 
-                                      // max={maxDate}      
+                                      max={maxDate}      
                                       type="Date" name="name" className="input-field"  min={moment().format("YYYY-MM-DD")}
                                        placeholder required />
                                       <span className='errorText text-danger'>

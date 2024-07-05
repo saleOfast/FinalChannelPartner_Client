@@ -280,7 +280,7 @@ const AddTaxPage = () => {
                     >
                       <option value="">Select </option>
                       <option value="CGST">CGST </option>
-                      <option value="UT/SGST">UT/SGST</option>
+                      <option value="UT/SGST">SGST</option>
                       <option value="IGST">IGST</option>
                       <option value="SPCESS">SPCESS</option>
                       <option value="SCCESS">SCCESS</option>

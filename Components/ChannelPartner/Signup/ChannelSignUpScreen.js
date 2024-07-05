@@ -689,7 +689,14 @@ const ChannelSignUpScreen = () => {
                           className="border-0 mb-4"
                           disabled={formFields.isUploadVerified}
                         >
-                          Create Account
+                          {isButtonLoading ? (
+                                  <>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Create Account
+                                  </>
+                                ) : (
+                                  'Create Account'
+                                )}
                         </button>
                       </form>
                     </div>

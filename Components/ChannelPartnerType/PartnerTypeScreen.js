@@ -350,10 +350,10 @@ const PartnerTypeScreen = () => {
                 <PlusIcon />
                 ADD PARTNER TYPE
               </button>
-              <button className="btn btn-primary Add_btn " onClick={Opencsv}>
+              {/* <button className="btn btn-primary Add_btn " onClick={Opencsv}>
                   <PlusIcon />
                   IMPORT CSV
-                </button>
+                </button> */}
             </div>
             </div>
 

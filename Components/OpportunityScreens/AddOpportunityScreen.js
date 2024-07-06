@@ -136,7 +136,7 @@ const AddOpportunityScreen = () => {
                     Baseurl + `/db/opportunity?o_id=${id}`,
                     header
                 );
-                setUserInfo(response.data.data);
+                setUserInfo(response?.data?.data);
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -718,7 +718,7 @@ const AddOpportunityScreen = () => {
                                 userInfo?.opportunity_stg_id===4 && (
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className={errorData?.close_lost_reason ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="task_name">Close Lost Reason *</label>
+                                    <label htmlFor="task_name">Closed Lost Reason *</label>
                                     <input
                                         type="text"
                                         placeholder="Enter Close Reason"

@@ -417,6 +417,21 @@ const getProductList = async () => {
                             </div>
                           </div>
 
+                          {
+                                dataList?.close_lost_reason && dataList?.db_opportunity_stg?.opportunity_stg_name==="Closed Lost" && (
+                                  <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                                  <div className='input_box'>
+                                    <label htmlFor="profilelevel">Closed Lost Reason </label>
+                                    <input
+                                      className='form-control'
+                                      value={dataList?.close_lost_reason}
+                                      disabled
+                                    />
+                                  </div>
+                                </div>
+                                )
+                            }
+
                           <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                             <div className='input_box'>
                               <label htmlFor="profilelevel">Type</label>
@@ -491,6 +506,8 @@ const getProductList = async () => {
                                 disabled
                               />
                             </div>
+                            
+                           
                           </div>
                           
                           {

@@ -65,6 +65,15 @@ const AddQuotationScreen = () => {
   })
   const[relatedOpportunityId,setRelatedOpportunityId]=useState("");
   const[relatedAccountId,setRelatedAccountId]=useState("");
+  const [taxPerSum,setTaxPerSum]=useState()
+  useEffect(()=>{
+    
+    const taxSum=taxListView?.reduce((sum,tax)=>{
+      const taxAmount = (userInfo?.sub_total*tax.tax_percentage)/100
+      return sum + taxAmount
+    },0)
+    setTaxPerSum(taxSum)
+  },[userInfo?.sub_total])
 
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DD")
 
@@ -607,6 +616,7 @@ const AddQuotationScreen = () => {
 // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.opp_id]);
 
+  
 
 
   return (
@@ -1329,7 +1339,8 @@ const AddQuotationScreen = () => {
                           name="product_amount"
                           id="product_amount"
                           className="form-control"
-                          value={userInfo?.grand_total ? (userInfo?.grand_total).toFixed(2) : ''}
+                          // value={userInfo?.grand_total ? (userInfo?.grand_total).toFixed(2) : ''}
+                          value={(userInfo?.sub_total+taxPerSum).toFixed(2)}
                         />
 
                       </div>

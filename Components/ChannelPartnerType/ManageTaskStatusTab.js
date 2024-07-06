@@ -17,7 +17,7 @@ const ManageTaskStatusTab = ({
   const columns = [
     {
       name: "name",
-      label: "Task Status",
+      label: "Partner Type",
       options: {
         filter: true,
       },
@@ -95,7 +95,7 @@ const ManageTaskStatusTab = ({
   const options = {
     selectableRows: 'none',
     responsive: "standard",
-    downloadOptions: { filename: "TaskStatusList.csv" }
+    downloadOptions: { filename: "PartnerTypeList.csv" }
   };
 
   return (

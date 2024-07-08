@@ -246,11 +246,11 @@ const AddTaskScreen = () => {
         <h3 className="content_head"> {viewMode ? 'VIEW' : <>{editMode ? "EDIT" : "ADD"}</>} TASK</h3>
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
-            <li className="breadcrumb-item">
+            <li className="breadcrumb-item fw-bolder">
               {" "}
               <Link href="/crm">Home</Link>
             </li>
-            <li className="breadcrumb-item">
+            <li className="breadcrumb-item fw-bolder">
               <Link href="/crm/TaskScreen"> Tasks List </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">

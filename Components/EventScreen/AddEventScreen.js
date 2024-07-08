@@ -210,11 +210,11 @@ const AddEventScreen = () => {
           </>} EVENT</h3>
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
-            <li className="breadcrumb-item">
+            <li className="breadcrumb-item fw-bolder">
               {" "}
               <Link href="/crm">Home</Link>
             </li>
-            <li className="breadcrumb-item">
+            <li className="breadcrumb-item fw-bolder">
               <Link href="/crm/EventScreen"> Event List </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">

@@ -554,10 +554,10 @@ const AddContactScreen = () => {
                 </>} CONTACT</h3>
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
-                        <li className="breadcrumb-item">
+                        <li className="breadcrumb-item fw-bolder ">
                             <Link href="/crm">Home</Link>
                         </li>
-                        <li className="breadcrumb-item">
+                        <li className="breadcrumb-item fw-bolder">
                             <Link href="/crm/Contacts"> Contact List </Link>
                         </li>
                         <li className="breadcrumb-item active" aria-current="page">

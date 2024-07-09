@@ -982,10 +982,10 @@ const AddLeadsScreen = () => {
             {editMode ? "EDIT" : "ADD"} </>} LEAD</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
-              <li className="breadcrumb-item">
+              <li className="breadcrumb-item fw-bolder">
                 <Link href="/crm">Home</Link>
               </li>
-              <li className="breadcrumb-item">
+              <li className="breadcrumb-item fw-bolder">
                 <Link href="/crm/ManageLeads"> Manage Leads </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">

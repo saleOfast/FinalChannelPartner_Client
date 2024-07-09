@@ -23,7 +23,7 @@ const ManageLeadScreen = () => {
   const [show, setShow] = useState(false);
   const [disableShowConfirm, setdisableShowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState("");
-  const [userInfo, setUserInfo] = useState({});
+  const [userInfo, setUserInfo] = useState({acc_id:"",contact_id:""});
   const [accountsList, setAccountsList] = useState([]);
   const [ContactList, setContactList] = useState([]);
   const [oppurtunityList, setOppurtunityList] = useState([]);
@@ -98,7 +98,7 @@ const ManageLeadScreen = () => {
     }
   }
 
-  const getSingleData = async (id) => {
+  const getSingleData = async (id,name) => {
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -117,6 +117,8 @@ const ManageLeadScreen = () => {
           header
         );
         setUserInfo(response.data.data);
+        checkAccountMatch(name)
+        
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -201,7 +203,11 @@ const ManageLeadScreen = () => {
       await OpportunityHandler();
     }
 
-    const data = { ...userInfo, lead_status_id: "4" }
+    // const data = { ...userInfo, lead_status_id: "4" }
+    const updatedUserInfo = { ...userInfo, contact_id: ContactList?.find((item)=>(item?.accountName?.acc_id===userInfo?.contact_id))?.contact_id  };
+
+  // Create data object with lead_status_id
+  const data = { ...updatedUserInfo, lead_status_id: "4" };
 
     if (userInfo.acc_id && userInfo.contact_id && userInfo.opp_id) {
       submitHandler(data);
@@ -370,9 +376,10 @@ const ManageLeadScreen = () => {
     }
   }
 
-  function openCloseConvert(value) {
+  function openCloseConvert(value,name) {
     handleShow();
-    getSingleData(value);
+    getSingleData(value,name);
+    // checkAccountMatch(name)
   }
 
   function disableConfirm(value) {
@@ -444,6 +451,33 @@ const ManageLeadScreen = () => {
     }
   };
 
+  const checkAccountMatch = (lead_name) => {
+    // debugger
+    let account_name = accountsList?.filter(
+      (account) => account?.acc_name === lead_name
+    );
+    let selectedId = null;
+    if (account_name.length) {
+      selectedId = account_name[0].acc_id;
+      
+    }
+    
+    // setUserInfo({ ...userInfo, acc_id: selectedId,contact_id:selectedId });
+    setUserInfo((prev)=>(
+      {...prev,acc_id:selectedId,contact_id:selectedId}
+    ))
+    
+    // return selectedId;  
+    
+  };
+
+  
+
+  // useEffect(() => {
+    
+  //   checkAccountMatch();
+  // }, []);
+
   useEffect(() => {
     getDataList();
     getAccountsList();
@@ -493,6 +527,7 @@ const ManageLeadScreen = () => {
               disableConfirm={disableConfirm}
               loader={loader}
               openCloseConvert={openCloseConvert}
+              checkAccountMatch={checkAccountMatch}
             />
           </div>
         </div>
@@ -557,7 +592,7 @@ const ManageLeadScreen = () => {
                       Create New Contact
                     </option>
                     {ContactList?.map((data, index) => {
-                      return <option key={index} value={data.contact_id}>{data.first_name}</option>
+                      return <option key={index} value={data.accountName?.acc_id}>{data.first_name}</option>
                     })}
                   </select>
                 </div>

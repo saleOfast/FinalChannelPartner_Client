@@ -60,35 +60,134 @@ const AddTaxPage = () => {
     }
   };
 
+  // const submitHandler = async () => {
+  //   if (userInfo.tax_name == "") {
+  //     toast.error("Please enter the tax name");
+  //   } else if (
+  //     userInfo.tax_type == ""
+  //   ) {
+  //     toast.error("Please enter the tax type");
+  //   } else if (userInfo.tax_percentage == "") {
+  //     toast.error("Please enter the tax percentage");
+  //   } else if (userInfo.gts_type == "") {
+  //     toast.error("Please choose gst type");
+  //   } else if (userInfo.state_type == "") {
+  //     toast.error("Please choose the state");
+  //   } else if (userInfo.description == "") {
+  //     toast.error("Please enter the description");
+  //   } else {
+  //     if (hasCookie("token")) {
+  //       let token = getCookie("token");
+  //       let db_name = getCookie("db_name");
+
+  //       let header = {
+  //         headers: {
+  //           Accept: "application/json",
+  //           Authorization: "Bearer ".concat(token),
+  //           db: db_name,
+  //           m_id:153
+  //         },
+  //       };
+
+  //       try {
+  //         const response = await axios.post(
+  //           Baseurl + `/db/tax`,
+  //           userInfo,
+  //           header
+  //         );
+  //         if (response.status === 204 || response.status === 200) {
+  //           toast.success(response.data.message);
+  //           router.push("/TaxScreen");
+  //         }
+  //       } catch (error) {
+  //         if (error?.response?.data?.message) {
+  //           toast.error(error.response.data.message);
+  //         } else {
+  //           toast.error("Something went wrong!");
+  //         }
+  //       }
+  //     }
+  //   }
+  // };
+
+
+  // async function updateHandler() {
+  //   if (userInfo.tax_name == "") {
+  //     toast.error("Please enter the tax name");
+  //   } else if (
+  //     userInfo.tax_type == ""
+  //   ) {
+  //     toast.error("Please enter the tax type");
+  //   } else if (userInfo.tax_percentage == "") {
+  //     toast.error("Please enter the tax percentage");
+  //   } else if (userInfo.gts_type == "") {
+  //     toast.error("Please choose gst type");
+  //   } else if (userInfo.state_type == "") {
+  //     toast.error("Please choose the state");
+  //   } else if (userInfo.description == "") {
+  //     toast.error("Please enter the description");
+  //   } else {
+  //     if (hasCookie("token")) {
+  //       let token = getCookie("token");
+  //       let db_name = getCookie("db_name");
+
+  //       let header = {
+  //         headers: {
+  //           Accept: "application/json",
+  //           Authorization: "Bearer ".concat(token),
+  //           db: db_name,
+  //           m_id:155
+  //         },
+  //       };
+
+  //       try {
+  //         const response = await axios.put(
+  //           Baseurl + `/db/tax`,
+  //           userInfo,
+  //           header
+  //         );
+  //         if (response.status === 200 || response.status === 204) {
+  //           toast.success(response.data.message);
+  //           router.push("/TaxScreen");
+  //         }
+  //       } catch (error) {
+  //         if (error?.response?.data?.message) {
+  //           toast.error(error.response.data.message);
+  //         } else {
+  //           toast.error("Something went wrong!");
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
   const submitHandler = async () => {
-    if (userInfo.tax_name == "") {
+    if (userInfo.tax_name === "") {
       toast.error("Please enter the tax name");
-    } else if (
-      userInfo.tax_type == ""
-    ) {
+    } else if (userInfo.tax_type === "") {
       toast.error("Please enter the tax type");
-    } else if (userInfo.tax_percentage == "") {
+    } else if (userInfo.tax_percentage === "") {
       toast.error("Please enter the tax percentage");
-    } else if (userInfo.gts_type == "") {
+    } else if (userInfo.tax_type === "GST" && userInfo.gts_type === "") {
       toast.error("Please choose gst type");
-    } else if (userInfo.state_type == "") {
+    } else if (userInfo.state_type === "") {
       toast.error("Please choose the state");
-    } else if (userInfo.description == "") {
+    } else if (userInfo.description === "") {
       toast.error("Please enter the description");
     } else {
       if (hasCookie("token")) {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
-
+  
         let header = {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:153
+            m_id: 153
           },
         };
-
+  
         try {
           const response = await axios.post(
             Baseurl + `/db/tax`,
@@ -109,37 +208,34 @@ const AddTaxPage = () => {
       }
     }
   };
-
-
-  async function updateHandler() {
-    if (userInfo.tax_name == "") {
+  
+  const updateHandler = async () => {
+    if (userInfo.tax_name === "") {
       toast.error("Please enter the tax name");
-    } else if (
-      userInfo.tax_type == ""
-    ) {
+    } else if (userInfo.tax_type === "") {
       toast.error("Please enter the tax type");
-    } else if (userInfo.tax_percentage == "") {
+    } else if (userInfo.tax_percentage === "") {
       toast.error("Please enter the tax percentage");
-    } else if (userInfo.gts_type == "") {
+    } else if (userInfo.tax_type === "GST" && userInfo.gts_type === "") {
       toast.error("Please choose gst type");
-    } else if (userInfo.state_type == "") {
+    } else if (userInfo.state_type === "") {
       toast.error("Please choose the state");
-    } else if (userInfo.description == "") {
+    } else if (userInfo.description === "") {
       toast.error("Please enter the description");
     } else {
       if (hasCookie("token")) {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
-
+  
         let header = {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id:155
+            m_id: 155
           },
         };
-
+  
         try {
           const response = await axios.put(
             Baseurl + `/db/tax`,
@@ -159,7 +255,8 @@ const AddTaxPage = () => {
         }
       }
     }
-  }
+  };
+  
 
 
   useEffect(() => {

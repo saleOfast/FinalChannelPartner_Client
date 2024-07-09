@@ -277,13 +277,14 @@ const ChannelAddUserScreen = () => {
           doc_verification: doc_verify,
           reject_reason: updateInfo.reject_reason,
           user_code: id,
+          isCHANNEL:updateInfo?.reject_reason ? false : true
         },
         header
       );
       if (response.status === 200 || response.status === 201) {
         toast.success(response.data.message);
         setisLoading(false);
-        router.push("/CHANNEL/ActivePartners/");
+        router.push("/partner/ActivePartners/");
       }
     } catch (error) {
       if (error?.response?.data?.status === 422) {

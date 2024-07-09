@@ -77,10 +77,13 @@ export default function SignInScreen({ setLoggedIn }) {
     const type=router.pathname==="/crm" ? "crm": router.pathname==="/dms" ? "dms": router.pathname==="/sales"? "sales": router.pathname==="/partner" ? "partner": "common"
     if (userForm.email === "" || userForm.email.length < 1) {
       toast.error("Email is Empty");
+      dispatch(stopLoading())
     } else if (!validEmail.test(userForm.email.toLowerCase().trim())) {
       toast.error("Email is not Valid");
+      dispatch(stopLoading())
     } else if (userForm.password === "" || userForm.password.length < 1) {
       toast.error("password is Empty");
+      dispatch(stopLoading())
     } else {
       try {
         const res = await axios.post(Baseurl + "/db/login", {

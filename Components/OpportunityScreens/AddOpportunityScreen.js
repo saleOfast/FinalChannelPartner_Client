@@ -50,6 +50,8 @@ const AddOpportunityScreen = () => {
     const [errorToast, setErrorToast] = useState(false)
     const [productList, setProductList] = useState([])
     const [isLoading, setisLoading] = useState(false)
+    const [lossLists, setlossLists] = useState([])
+  
 
     const Datenow =  moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
 
@@ -72,6 +74,10 @@ const AddOpportunityScreen = () => {
     const getStageList = async () => {
         await fetchData(`/db/oppr`, setStageList, errorToast, setErrorToast)
     }
+
+    const getLossLists = async () => {
+        await fetchData(`/db/loss`, setlossLists, errorToast, setErrorToast);
+      }
 
     const addRowHandler = (i) => {
         const ArrLength = formValues.length - 1;
@@ -358,6 +364,7 @@ const AddOpportunityScreen = () => {
 
 
     const handleChange = (e, index, v) => {
+        
         const isIdExists = formValues.find(obj => obj.p_id === e.value) !== undefined;
 
         let newFormValues = [...formValues];
@@ -438,6 +445,7 @@ const AddOpportunityScreen = () => {
     useEffect(() => {
         getAccountsList();
         getStageList();
+        getLossLists();
         getSourceList();
         getusersList();
         checkLogin();
@@ -716,26 +724,30 @@ const AddOpportunityScreen = () => {
                             
                             {
                                 userInfo?.opportunity_stg_id===4 && (
-                                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                <div className={errorData?.close_lost_reason ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="task_name">Closed Lost Reason *</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter Close Reason"
-                                        name="task_name"
-                                        id="task_name"
-                                        className={`form-control ${errorData?.close_lost_reason ? ' is-invalid' : ''}`}
-                                        onChange={(e) => {
-                                            setUserInfo({ ...userInfo, close_lost_reason: e.target.value })
-                                            setErrorData({ ...errorData, close_lost_reason: '' })
-                                        }}
-                                        value={userInfo.close_lost_reason ? userInfo.close_lost_reason : ""}
-                                    />
-                                    <span className="errorText"> {errorData?.close_lost_reason ? errorData.close_lost_reason : ''}</span>
-                                </div>
-                            </div>
+                                    
+                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="loss_reson">Select Loss Reason*</label>
+                    <select
+                      className="form-control"
+                      name="loss_reson" id="loss_reson"
+                      value={userInfo?.close_lost_reason}
+                      onChange={(e) =>{ 
+                        setUserInfo({ ...userInfo, close_lost_reason: e.target.value })
+                        setErrorData({ ...errorData, close_lost_reason: '' })
+                        }} >
+                      <option value="">Select Reason</option>
+                      {lossLists?.map((data, i) => {
+                        return <option key={i} value={data.close_lost_reason}>{data.loss_reason}</option>
+                      })}
+                    </select>
+                    <span className="errorText"> {errorData?.close_lost_reason ? errorData.close_lost_reason : ''}</span>
+                  </div>
+                </div>
+                            
                                 )
                             }
+                            
                               
 
                         </div>
@@ -886,7 +898,9 @@ const AddOpportunityScreen = () => {
                                                 id="price"
                                                 className="form-control"
                                                 onChange={e => handleChange(e, index,"price")}
-                                                value={data?.price ? data.price : ''}
+                                                // value={data?.price ? data.price : ''}
+                                                value={productList?.find((item)=>(item.p_id == data?.p_id)) ? productList?.find((item)=>(item.p_id == data?.p_id))?.p_price:"" }
+
                                             />
                                         </div>
                                     </div>

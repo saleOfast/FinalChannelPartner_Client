@@ -715,7 +715,8 @@ const updateBrokerageBill =  async() => {
                                     </div>
                                 </div>
                                 {
-                                    rejectRemark && (
+                                    // rejectRemark && (
+                                      updateBill?.status==='Payment Rejected' && (
                                       <div className="rowTab mt-3 mt-md-4 mt-lg-0">
                                       <div className="labels">
                                         <label htmlFor="Location" className="pb-1">Remark</label>

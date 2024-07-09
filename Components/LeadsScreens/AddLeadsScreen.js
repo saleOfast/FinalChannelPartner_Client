@@ -466,7 +466,9 @@ const AddLeadsScreen = () => {
     }
   }
 
+
   const StatusChangeHandler = (value) => {
+    
     if (value && value === '3') {
       handleShow();
       setUserInfo({ ...userInfo, lead_status_id: value })
@@ -892,6 +894,45 @@ const AddLeadsScreen = () => {
 
   };
 
+  const checkAccountMatch=()=>{
+    
+    let account_name=accountsList?.filter((account)=>(account?.acc_name===userInfo?.lead_name))
+    let selectedId = null;
+    if(account_name.length){
+      selectedId = account_name[0].acc_id;      
+    }
+    
+    // if(account_name?.acc_name===userInfo?.lead_name){
+      setUserInfo({...userInfo,acc_id:selectedId})
+      return userInfo?.acc_id;
+    // }
+    // else{
+      // return userInfo?.acc_id
+    // }
+  }
+
+  const checkContactMatch=()=>{
+    // debugger
+    let contact_name=ContactList?.filter((contact)=>(contact?.name===userInfo?.lead_name))
+    let selectedId = null;
+    if(contact_name.length){
+      selectedId = contact_name[0].contact_id;      
+    }
+    
+    // if(account_name?.acc_name===userInfo?.lead_name){
+      setUserInfo({...userInfo,contact_id:selectedId})
+      return userInfo?.contact_id;
+    // }
+    // else{
+      // return userInfo?.acc_id
+    // }
+  }
+
+  useEffect(()=>{
+    checkContactMatch()
+    checkAccountMatch()
+  },[userInfo?.lead_status_id==4])
+
   useEffect(() => {
     if (!userInfo.state_id) {
       return;
@@ -1046,8 +1087,10 @@ const AddLeadsScreen = () => {
                             id="profilelevel"
                             disabled={viewMode}
                             onChange={(e) => {
+                              
                               StatusChangeHandler(e.target.value)
                               setErrorData({ ...errorData, lead_status_id: '' })
+                              // checkValue()
                             }}
                             value={userInfo.lead_status_id ? userInfo.lead_status_id : ""} >
                             {editMode ? (

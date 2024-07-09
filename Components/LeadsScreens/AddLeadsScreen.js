@@ -175,7 +175,7 @@ const AddLeadsScreen = () => {
         const response = await axios.post(Baseurl + `/db/leads`, oppBody, header);
         if (response.status === 204 || response.status === 200) {
           //make function 
-          await postFieldsFunc(response.data.data.lead_id, oppBody.db_lead_fields)
+          await postFieldsFunc(response.data.data.lead_id, oppBody.db_lead_fields);
           toast.success(response.data.message);
           setisLoading(false)
           router.push('/crm/ManageLeads')
@@ -532,6 +532,7 @@ const AddLeadsScreen = () => {
           router.push("/crm/ManageLeads");
         }
       } catch (error) {
+        console.log(error)
         if (error?.response?.data?.status === 422) {
           const taskObject = {}
           const array = error?.response?.data?.data;
@@ -958,7 +959,7 @@ const AddLeadsScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { 
     if (!router.isReady) return;
     if (router.query.id) {
       setEditMode(true);
@@ -1243,7 +1244,7 @@ const AddLeadsScreen = () => {
                                 ...userInfo,
                                 email_id: e.target.value,
                               })
-                            }
+                            } 
                             value={userInfo.email_id ? userInfo.email_id : ""}
                           />
                           <span className="errorText"> {contError?.email_id ? contError.email_id : ''}</span>

@@ -14,27 +14,27 @@ import { fetchData } from "../../Utils/getReq";
 import Collapse from "react-bootstrap/Collapse";
 import TasksIcon from "../Svg/TasksIcon";
 import CrossIcon from "../Svg/CrossIcon";
-import Select from 'react-select'
+import Select from "react-select";
 
 const AddLeadsScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
 
   const router = useRouter();
   const { id } = router.query;
+  const { ac_id } = router.query;
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
-  
 
   const [show, setShow] = useState(false);
   const [countrylist, setcountrylist] = useState([]);
   const [statelist, setStatelist] = useState([]);
   const [citylist, setCitylist] = useState([]);
   const [dataList, setDataList] = useState([]);
-  const [lossLists, setlossLists] = useState([])
+  const [lossLists, setlossLists] = useState([]);
   const [taskOpen, setTaskOpen] = useState(false);
   const [accountsList, setAccountsList] = useState([]);
   const [ContactList, setContactList] = useState([]);
   const [oppurtunityList, setOppurtunityList] = useState([]);
-  const [errorToast, setErrorToast] = useState(false)
+  const [errorToast, setErrorToast] = useState(false);
   const [iscollapse, setiscollapse] = useState(false);
   const [viewMode, setViewMode] = useState(false);
   const [userList, setUsersList] = useState([]);
@@ -79,8 +79,8 @@ const AddLeadsScreen = () => {
     acc_id: null,
     db_lead_fields: [],
     related_to: "",
-    loss_reason:"",
-    lead_code:""
+    loss_reason: "",
+    lead_code: "",
   });
   const [newFields, setNewFields] = useState({
     field_lable: null,
@@ -98,27 +98,41 @@ const AddLeadsScreen = () => {
   });
 
   const handleClose = () => {
-    if (!userInfo.loss_reason || userInfo.loss_reason == '') {
-      setUserInfo({ ...userInfo, lead_status_id: '3' })
+    if (!userInfo.loss_reason || userInfo.loss_reason == "") {
+      setUserInfo({ ...userInfo, lead_status_id: "3" });
     }
-    setShow(false)
+    setShow(false);
   };
 
-  
   const minDate = new Date().toISOString().slice(0, 16);
 
   const handleShow = () => setShow(true);
 
   const getCountryList = async () => {
-    await fetchData(`/db/area/country?country_id=1`, setcountrylist, errorToast, setErrorToast);
+    await fetchData(
+      `/db/area/country?country_id=1`,
+      setcountrylist,
+      errorToast,
+      setErrorToast
+    );
   };
 
   const getState = async (id) => {
-    await fetchData(`/db/area/states?cnt_id=${id}`, setStatelist, errorToast, setErrorToast);
+    await fetchData(
+      `/db/area/states?cnt_id=${id}`,
+      setStatelist,
+      errorToast,
+      setErrorToast
+    );
   };
 
   const getcity = async (id) => {
-    await fetchData(`/db/area/city?st_id=${id}`, (data) => setCitylist(data.cityData), errorToast, setErrorToast);
+    await fetchData(
+      `/db/area/city?st_id=${id}`,
+      (data) => setCitylist(data.cityData),
+      errorToast,
+      setErrorToast
+    );
   };
 
   const getusersList = async () => {
@@ -134,7 +148,12 @@ const AddLeadsScreen = () => {
   };
 
   const getSingleData = async (id) => {
-    await fetchData(`/db/leads?l_id=${id}`, setUserInfo, errorToast, setErrorToast);
+    await fetchData(
+      `/db/leads?l_id=${id}`,
+      setUserInfo,
+      errorToast,
+      setErrorToast
+    );
   };
 
   const getsource = async () => {
@@ -143,21 +162,99 @@ const AddLeadsScreen = () => {
 
   const getAccountsList = async () => {
     await fetchData(`/db/account`, setAccountsList, errorToast, setErrorToast);
-  }
+  };
 
   const getContactList = async () => {
     await fetchData(`/db/contacts`, setContactList, errorToast, setErrorToast);
-  }
+  };
 
   const getOppurtunityList = async () => {
-    await fetchData(`/db/opportunity`, setOppurtunityList, errorToast, setErrorToast);
+    await fetchData(
+      `/db/opportunity`,
+      setOppurtunityList,
+      errorToast,
+      setErrorToast
+    );
   };
+
+  const [fetchedAccInfo,setFetchedAccInfo]=useState({
+    p_contact_no:null,
+    country_id: null,
+    country_name: "",
+    state_id: null,
+    state_name: "",
+    city_id: null,
+    city_name: "",
+    address:"",
+    pincode: null,
+  })
+  const getSingleAccountsList = async (acc_id) => {
+    if (hasCookie('token')) {
+        let token = (getCookie('token'));
+        let db_name = (getCookie('db_name'));
+
+        let header = {
+            headers: {
+                Accept: "application/json",
+                Authorization: "Bearer ".concat(token),
+                db: db_name,
+                pass: 'pass'
+            }
+        }
+        try {
+            const response = await axios.get(Baseurl + `/db/account?acc_id=${acc_id}`, header);
+            // setSingleAccount(response?.data?.data)
+            // setUserInfo({
+            //     ...userInfo,
+            //     mailing_cont: response?.data?.data?.ship_cont,
+            //     mailing_state: response? .data?.data?.ship_state,
+            //     mailing_city: response? .data?.data?.ship_city,
+            //     mailing_address: response? .data?.data?.ship_address,
+            //     mailing_pincode: response? .data?.data?.ship_pincode,
+            // })
+
+            console.log('first',{
+
+              p_contact_no:response?.data?.data?.contact_no,
+              country_id: response?.data?.data?.ship_cont,
+              state_id: response?.data?.data?.ship_state,
+              city_id: response?.data?.data?.ship_city,
+              address: response?.data?.data?.ship_address,
+              pincode: response?.data?.data?.ship_pincode,
+          })
+            setFetchedAccInfo((prevUserInfo) => ({
+                ...prevUserInfo,
+                p_contact_no:response?.data?.data?.contact_no,
+                country_id: response?.data?.data?.ship_cont,
+                country_name: response?.data?.data?.billCountry?.country_name,
+                state_id: response?.data?.data?.ship_state,
+                state_name: response?.data?.data?.billState?.state_name,
+                city_id: response?.data?.data?.ship_city,
+                city_name: response?.data?.data?.billCity?.city_name,
+                address: response?.data?.data?.ship_address,
+                pincode: response?.data?.data?.ship_pincode,
+            }));
+            
+        } catch (error) {
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            }
+            else {
+                toast.error('Something went wrong!')
+            }
+        }
+    }
+}
+useEffect(()=>{
+  if(ac_id){
+      getSingleAccountsList(ac_id)
+  }
+},[ac_id])
 
 
   const submitHandler = async () => {
-      
     if (hasCookie("token")) {
-      setisLoading(true)
+      setisLoading(true);
       let token = getCookie("token");
       let db_name = getCookie("db_name");
       let header = {
@@ -167,22 +264,29 @@ const AddLeadsScreen = () => {
           db: db_name,
           m_id: 3,
         },
-
       };
-      let oppBody = { ...userInfo }
-      oppBody.lead_owner = loginDetails.user_id
+      let oppBody = { ...userInfo };
+      oppBody.lead_owner = loginDetails.user_id;
       try {
-        const response = await axios.post(Baseurl + `/db/leads`, oppBody, header);
+        const response = await axios.post(
+          Baseurl + `/db/leads`,
+          oppBody,
+          header
+        );
         if (response.status === 204 || response.status === 200) {
-          //make function 
-          await postFieldsFunc(response.data.data.lead_id, oppBody.db_lead_fields);
+
+          //make function
+          await postFieldsFunc(
+            response.data.data.lead_id,
+            oppBody.db_lead_fields
+          );
           toast.success(response.data.message);
-          setisLoading(false)
-          router.push('/crm/ManageLeads')
+          setisLoading(false);
+          router.push("/crm/ManageLeads");
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
-          const taskObject = {}
+          const taskObject = {};
           const array = error?.response?.data?.data;
 
           for (let i = 0; i < array.length; i++) {
@@ -197,10 +301,8 @@ const AddLeadsScreen = () => {
           toast.error(error.response?.data?.message);
         } else {
           toast.error("Something went wrong!");
-
         }
-        setisLoading(false)
-
+        setisLoading(false);
       }
     }
   };
@@ -215,7 +317,7 @@ const AddLeadsScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass: 'pass'
+          pass: "pass",
         },
       };
 
@@ -236,7 +338,6 @@ const AddLeadsScreen = () => {
   };
 
   const addLeadHandler = async () => {
-
     let allEmpty = true;
     for (let key in errorData) {
       if (errorData[key] !== "") {
@@ -248,13 +349,13 @@ const AddLeadsScreen = () => {
       if (hasCookie("token")) {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
-        let reqOptions = { ...userInfo, lead_id: router.query.id }
+        let reqOptions = { ...userInfo, lead_id: router.query.id };
         let header = {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id: 13
+            m_id: 13,
           },
         };
 
@@ -272,12 +373,12 @@ const AddLeadsScreen = () => {
               due_date: "",
               lead_id: "",
               contact_person_name: "",
-              related_to: ""
-            })
+              related_to: "",
+            });
           }
         } catch (error) {
           if (error?.response?.data?.status === 422) {
-            const taskObject = {}
+            const taskObject = {};
             const array = error?.response?.data?.data;
 
             for (let i = 0; i < array.length; i++) {
@@ -295,65 +396,23 @@ const AddLeadsScreen = () => {
           }
         }
       }
+    } else {
+      toast.error("Please fill the Mandatory fields");
     }
-    else {
-      toast.error('Please fill the Mandatory fields')
-    }
-
-  }
+  };
 
   const AccountHandlers = async () => {
-
     if (userInfo.acc_name == "" || userInfo.acc_name == undefined) {
-      if (userInfo.acc_id !== undefined && userInfo.acc_id !== null && userInfo.acc_id !== 0) {
+      if (
+        userInfo.acc_id !== undefined &&
+        userInfo.acc_id !== null &&
+        userInfo.acc_id !== 0
+      ) {
         return toast.error("Account is not selected");
-
       }
       return toast.error("Please enter the Account Name");
-    }
-
-    else {
-      if (hasCookie('token') && userInfo.acc_name !== "") {
-        let token = (getCookie('token'));
-        let db_name = (getCookie('db_name'));
-
-        let header = {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer ".concat(token),
-            db: db_name,
-            pass: 'pass'
-          }
-        }
-
-        try {
-          const response = await axios.post(Baseurl + `/db/account?l_id=${id}`, {
-            acc_name: userInfo.acc_name,
-          }, header);
-          if (response.status === 204 || response.status === 200) {
-            setUserInfo({ ...userInfo, acc_id: response.data.data.acc_id, acc_name: "" })
-            seteditAccId(response.data.data.acc_id)
-            return response.data.data.acc_id
-          }
-        } catch (error) {
-
-
-
-        }
-      }
-    }
-  }
-
-  const ContactHandler = async (ac_ID) => {
-    if (userInfo.first_name == '' || userInfo.first_name == undefined) {
-      if (userInfo.contact_id !== undefined && userInfo.contact_id !== null && userInfo.contact_id !== 0) {
-        return
-      }
-      toast.error('please enter the first name')
-      return
-    }
-    else {
-      if (hasCookie("token") && userInfo.first_name !== '') {
+    } else {
+      if (hasCookie("token") && userInfo.acc_name !== "") {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
 
@@ -362,36 +421,90 @@ const AddLeadsScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            pass: 'pass'
+            pass: "pass",
           },
         };
 
         try {
-          const response = await axios.post(Baseurl + `/db/contacts?l_id=${id}`, {
-            first_name: userInfo.first_name,
-            account_name: ac_ID
-          }, header);
+          const response = await axios.post(
+            Baseurl + `/db/account?l_id=${id}`,
+            {
+              acc_name: userInfo.acc_name,
+            },
+            header
+          );
           if (response.status === 204 || response.status === 200) {
-            setUserInfo({ ...userInfo, contact_id: response.data.data.contact_id, first_name: "" })
-            seteditConId(response.data.data.contact_id)
+            setUserInfo({
+              ...userInfo,
+              acc_id: response.data.data.acc_id,
+              acc_name: "",
+            });
+            seteditAccId(response.data.data.acc_id);
+            return response.data.data.acc_id;
           }
-        } catch (error) {
-
-        }
+        } catch (error) {}
       }
     }
+  };
 
-  }
+  const ContactHandler = async (ac_ID) => {
+    if (userInfo.first_name == "" || userInfo.first_name == undefined) {
+      if (
+        userInfo.contact_id !== undefined &&
+        userInfo.contact_id !== null &&
+        userInfo.contact_id !== 0
+      ) {
+        return;
+      }
+      toast.error("please enter the first name");
+      return;
+    } else {
+      if (hasCookie("token") && userInfo.first_name !== "") {
+        let token = getCookie("token");
+        let db_name = getCookie("db_name");
+
+        let header = {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer ".concat(token),
+            db: db_name,
+            pass: "pass",
+          },
+        };
+
+        try {
+          const response = await axios.post(
+            Baseurl + `/db/contacts?l_id=${id}`,
+            {
+              first_name: userInfo.first_name,
+              account_name: ac_ID,
+            },
+            header
+          );
+          if (response.status === 204 || response.status === 200) {
+            setUserInfo({
+              ...userInfo,
+              contact_id: response.data.data.contact_id,
+              first_name: "",
+            });
+            seteditConId(response.data.data.contact_id);
+          }
+        } catch (error) {}
+      }
+    }
+  };
 
   const OpportunityHandler = async (ac_ID) => {
-    if (userInfo.opp_name === '' || userInfo.opp_name == undefined) {
-      if (userInfo.opp_id !== undefined && userInfo.opp_id !== null && userInfo.opp_id !== 0) {
-        return
+    if (userInfo.opp_name === "" || userInfo.opp_name == undefined) {
+      if (
+        userInfo.opp_id !== undefined &&
+        userInfo.opp_id !== null &&
+        userInfo.opp_id !== 0
+      ) {
+        return;
       }
-      toast.error('please enter the opportunity name')
-    }
-
-    else {
+      toast.error("please enter the opportunity name");
+    } else {
       if (hasCookie("token") && userInfo.opp_name !== "") {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
@@ -401,50 +514,65 @@ const AddLeadsScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            pass: 'pass'
+            pass: "pass",
           },
         };
         try {
-          const response = await axios.post(Baseurl + `/db//opportunity?l_id=${id}`, { opp_name: userInfo.opp_name, account_name: ac_ID }, header);
+          const response = await axios.post(
+            Baseurl + `/db//opportunity?l_id=${id}`,
+            { opp_name: userInfo.opp_name, account_name: ac_ID },
+            header
+          );
           if (response.status === 204 || response.status === 200) {
-            setUserInfo({ ...userInfo, opp_id: response.data.data.opp_id, opp_name: "" })
-            seteditOppId(response.data.data.opp_id)
+            setUserInfo({
+              ...userInfo,
+              opp_id: response.data.data.opp_id,
+              opp_name: "",
+            });
+            seteditOppId(response.data.data.opp_id);
           }
-        } catch (error) {
-
-        }
+        } catch (error) {}
       }
     }
-  }
+  };
 
   const lossReasonSubmit = () => {
-    if (!userInfo.loss_reason || userInfo.loss_reason == '') {
-      toast.error('Please Select a Reason')
+    if (!userInfo.loss_reason || userInfo.loss_reason == "") {
+      toast.error("Please Select a Reason");
     } else {
       handleClose();
     }
-  }
+  };
 
   const ConvertedLead = async () => {
     if (userInfo.lead_status_id == 4) {
-      if (userInfo.acc_name == "" || userInfo.acc_name == undefined && userInfo.acc_id == 0 || userInfo.acc_id == null) {
-        toast.error('please select acc name')
-        return
+      if (
+        userInfo.acc_name == "" ||
+        (userInfo.acc_name == undefined && userInfo.acc_id == 0) ||
+        userInfo.acc_id == null
+      ) {
+        toast.error("please select acc name");
+        return;
       }
 
-      if ((userInfo.first_name == "" || userInfo.first_name == undefined) && (userInfo.contact_id == 0 || userInfo.contact_id == null)) {
-        toast.error('please select contact name')
-        return
+      if (
+        (userInfo.first_name == "" || userInfo.first_name == undefined) &&
+        (userInfo.contact_id == 0 || userInfo.contact_id == null)
+      ) {
+        toast.error("please select contact name");
+        return;
       }
 
-      if ((userInfo.opp_name == "" || userInfo.opp_name == undefined) && (userInfo.opp_id == 0 || userInfo.opp_id == null)) {
-        toast.error('please select opportunity name')
-        return
+      if (
+        (userInfo.opp_name == "" || userInfo.opp_name == undefined) &&
+        (userInfo.opp_id == 0 || userInfo.opp_id == null)
+      ) {
+        toast.error("please select opportunity name");
+        return;
       }
 
       if (userInfo.acc_id == 0) {
         var ac_ID = await AccountHandlers();
-
       }
 
       setTimeout(() => {
@@ -457,35 +585,32 @@ const AddLeadsScreen = () => {
         }
       }, 1000);
 
-
-
-      setUserInfo({ ...userInfo, lead_status_id: "4" })
-      setShow(false)
+      setUserInfo({ ...userInfo, lead_status_id: "4" });
+      setShow(false);
     } else {
       return handleClose();
     }
-  }
-
-
-  const StatusChangeHandler = (value) => {
+    };
     
-    if (value && value === '3') {
+  const StatusChangeHandler = (value) => {
+    if (value && value === "3") {
       handleShow();
-      setUserInfo({ ...userInfo, lead_status_id: value })
-    } else if (value && value === '4') {
+      setUserInfo({ ...userInfo, lead_status_id: value });
+    } else if (value && value === "4") {
       handleShow();
-      setUserInfo({ ...userInfo, lead_status_id: value })
+      setUserInfo({ ...userInfo, lead_status_id: value });
+      
+    } else {
+      setUserInfo({ ...userInfo, lead_status_id: value });
     }
-    else {
-      setUserInfo({ ...userInfo, lead_status_id: value })
-    }
-  }
+    
+  };
+
+  
 
   async function updateHandler() {
-
-
     if (hasCookie("token")) {
-      setisLoading(true)
+      setisLoading(true);
       let token = getCookie("token");
       let db_name = getCookie("db_name");
 
@@ -494,29 +619,27 @@ const AddLeadsScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 5
+          m_id: 5,
         },
       };
 
-      let userInfoBody = { ...userInfo,updated_on:DateNow }
+      let userInfoBody = { ...userInfo, updated_on: DateNow };
 
       if (editAccId !== null) {
-        userInfoBody.acc_id = editAccId
+        userInfoBody.acc_id = editAccId;
       }
 
       if (editConId !== null) {
-        userInfoBody.contact_id = editConId
+        userInfoBody.contact_id = editConId;
       }
 
       if (editOppId !== null) {
-        userInfoBody.opp_id = editOppId
+        userInfoBody.opp_id = editOppId;
       }
-
 
       // if(editConId !== null && editOppId !== null && editAccId !== null){
       //     userInfoBody = {...userInfo, contact_id: editConId, opp_id: editOppId, acc_id: editAccId}
       // }
-
 
       try {
         const response = await axios.put(
@@ -526,15 +649,18 @@ const AddLeadsScreen = () => {
         );
 
         if (response.status === 200 || response.status === 204) {
-          await postFieldsFunc(userInfoBody.lead_id, userInfoBody.db_lead_fields)
+          await postFieldsFunc(
+            userInfoBody.lead_id,
+            userInfoBody.db_lead_fields
+          );
           toast.success(response.data.message);
-          setisLoading(false)
+          setisLoading(false);
           router.push("/crm/ManageLeads");
         }
       } catch (error) {
         console.log(error)
         if (error?.response?.data?.status === 422) {
-          const taskObject = {}
+          const taskObject = {};
           const array = error?.response?.data?.data;
           for (let i = 0; i < array.length; i++) {
             const key = Object.keys(array[i])[0];
@@ -549,14 +675,12 @@ const AddLeadsScreen = () => {
         } else {
           toast.error("Something went wrong!");
         }
-        setisLoading(false)
+        setisLoading(false);
       }
+    } else {
+      toast.error("Please fill the Mandatory fields");
     }
-    else {
-      toast.error('Please fill the Mandatory fields')
-    }
-  };
-
+  }
 
   const getCallsInLead = async (id) => {
     if (hasCookie("token")) {
@@ -568,7 +692,7 @@ const AddLeadsScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass: 'pass'
+          pass: "pass",
         },
       };
 
@@ -589,36 +713,40 @@ const AddLeadsScreen = () => {
   };
 
   const getLeadFieldList = async () => {
-    if (hasCookie('token')) {
-      let token = (getCookie('token'));
-      let db_name = (getCookie('db_name'));
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
 
       let header = {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass: "pass"
-
-        }
-      }
+          pass: "pass",
+        },
+      };
       try {
-        const response = await axios.get(Baseurl + `/db/field?nav_type=lead`, header);
-        setUserInfo({ ...userInfo, db_lead_fields: response.data.data, updated_on: DateNow, created_on: DateNow });
+        const response = await axios.get(
+          Baseurl + `/db/field?nav_type=lead`,
+          header
+        );
+        setUserInfo({
+          ...userInfo,
+          db_lead_fields: response.data.data,
+          updated_on: DateNow,
+          created_on: DateNow,
+        });
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
-        }
-        else {
-          toast.error('Something went wrong!')
+        } else {
+          toast.error("Something went wrong!");
         }
       }
     }
-  }
-
+  };
 
   function useDebounce(value, delay) {
-
     const [debouncedValue, setDebouncedValue] = useState(value);
 
     useEffect(() => {
@@ -632,22 +760,21 @@ const AddLeadsScreen = () => {
     }, [value, delay]);
 
     return debouncedValue;
-
   }
 
   function checkLogin() {
     if (hasCookie("userInfo")) {
       let token = getCookie("userInfo");
-      let data = JSON.parse(token)
-      setloginDetails(data)
-      setUserInfo({ ...userInfo, opp_owner: data.user_id })
-
+      let data = JSON.parse(token);
+      setloginDetails(data);
+      setUserInfo({ ...userInfo, opp_owner: data.user_id });
     }
   }
 
   const createInputField = (e) => {
     e.preventDefault();
-    const { field_lable, input_type, field_type,field_size, option } = newFields;
+    const { field_lable, input_type, field_type, field_size, option } =
+      newFields;
 
     const showError = (errorMessage) => {
       toast.error(errorMessage);
@@ -655,22 +782,21 @@ const AddLeadsScreen = () => {
 
     const validateField = () => {
       if (!field_lable) {
-        showError('Please enter the Field Name');
+        showError("Please enter the Field Name");
         return false;
       } else if (!input_type) {
-        showError('Please select the Input Type');
+        showError("Please select the Input Type");
         return false;
-      }
-      else if (input_type === 'input' && !field_type ) {
-        showError('Please select the Field Type');
+      } else if (input_type === "input" && !field_type) {
+        showError("Please select the Field Type");
         return false;
       }
       // else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
       //   showError('Please Enter Field Size');
       //   return false;
       // }
-      else if (input_type === 'select' && !option) {
-        showError('Please select input Options');
+      else if (input_type === "select" && !option) {
+        showError("Please select input Options");
         return false;
       }
       return true;
@@ -679,13 +805,13 @@ const AddLeadsScreen = () => {
     if (validateField()) {
       const inputReq = {
         ...newFields,
-        field_name: field_lable.replaceAll(' ', '_'),
+        field_name: field_lable.replaceAll(" ", "_"),
         navigate_type: userInfo.navigate_type,
         // field_order: inputsData.length + 1
       };
-      let arr = userInfo
-      arr.db_lead_fields.push(newFields)
-      setUserInfo(arr)
+      let arr = userInfo;
+      arr.db_lead_fields.push(newFields);
+      setUserInfo(arr);
       setiscollapse(!iscollapse);
       setNewFields({
         field_lable: null,
@@ -693,13 +819,13 @@ const AddLeadsScreen = () => {
         field_type: null,
         option: null,
         field_size: null,
-      })
+      });
     }
   };
 
   async function postFieldsFunc(id, data) {
     if (hasCookie("token")) {
-      setisLoading(true)
+      setisLoading(true);
       let token = getCookie("token");
       let db_name = getCookie("db_name");
       let header = {
@@ -708,20 +834,23 @@ const AddLeadsScreen = () => {
           Authorization: "Bearer ".concat(token),
           db: db_name,
         },
-
       };
-      data?.map(item => {
-        item.lead = id
-      })
+      data?.map((item) => {
+        item.lead = id;
+      });
 
       try {
-        const response = await axios.post(Baseurl + `/db/leads/field`, data, header);
+        const response = await axios.post(
+          Baseurl + `/db/leads/field`,
+          data,
+          header
+        );
         if (response.status === 204 || response.status === 200) {
-          setisLoading(false)
+          setisLoading(false);
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
-          const taskObject = {}
+          const taskObject = {};
           const array = error?.response?.data?.data;
           for (let i = 0; i < array.length; i++) {
             const key = Object.keys(array[i])[0];
@@ -735,19 +864,17 @@ const AddLeadsScreen = () => {
         } else {
           toast.error("Something went wrong!");
         }
-        setisLoading(false)
+        setisLoading(false);
       }
     }
   }
 
   const AddFieldsFunc = (e) => {
     e.preventDefault();
-    setiscollapse(true)
+    setiscollapse(true);
   };
 
-
   const callLogSubmit = async () => {
-
     let allEmpty = true;
     for (let key in errorData) {
       if (errorData[key] !== "") {
@@ -759,13 +886,13 @@ const AddLeadsScreen = () => {
       if (hasCookie("token")) {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
-        let reqOptions = { ...contactInfo, lead_id: router.query.id }
+        let reqOptions = { ...contactInfo, lead_id: router.query.id };
         let header = {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id: 13
+            m_id: 13,
           },
         };
 
@@ -783,11 +910,11 @@ const AddLeadsScreen = () => {
               comments: "",
               relate_to: "",
               contact_person_name: "",
-            })
+            });
           }
         } catch (error) {
           if (error?.response?.data?.status === 422) {
-            const taskObject = {}
+            const taskObject = {};
             const array = error?.response?.data?.data;
             for (let i = 0; i < array.length; i++) {
               const key = Object.keys(array[i])[0];
@@ -804,45 +931,39 @@ const AddLeadsScreen = () => {
         }
       }
     } else {
-      toast.error('Please fill the Mandatory fileds')
+      toast.error("Please fill the Mandatory fileds");
     }
-
-  }
+  };
 
   useEffect(() => {
     if (userInfo.p_contact_no && !validPhone.test(userInfo.p_contact_no)) {
-      setContError({ ...contError, p_contact_no: 'invalid contact no.' });
+      setContError({ ...contError, p_contact_no: "invalid contact no." });
     } else {
-      setContError({ ...contError, p_contact_no: '' });
+      setContError({ ...contError, p_contact_no: "" });
     }
-
   }, [useDebounce(userInfo.p_contact_no, 1000)]);
 
   useEffect(() => {
     if (userInfo.whatsapp_no && !validPhone.test(userInfo.whatsapp_no)) {
-      setContError({ ...contError, whatsapp_no: 'invalid contact no.' });
+      setContError({ ...contError, whatsapp_no: "invalid contact no." });
     } else {
-      setContError({ ...contError, whatsapp_no: '' });
-
+      setContError({ ...contError, whatsapp_no: "" });
     }
-
   }, [useDebounce(userInfo.whatsapp_no, 1000)]);
 
   useEffect(() => {
     if (userInfo.official_no && !validPhone.test(userInfo.official_no)) {
-      setContError({ ...contError, official_no: 'invalid contact no.' });
+      setContError({ ...contError, official_no: "invalid contact no." });
     } else {
-      setContError({ ...contError, official_no: '' });
-
+      setContError({ ...contError, official_no: "" });
     }
-
   }, [useDebounce(userInfo.official_no, 1000)]);
 
   useEffect(() => {
     if (userInfo.email_id && !validEmail.test(userInfo.email_id)) {
-      setContError({ ...contError, email_id: 'invalid Email' });
+      setContError({ ...contError, email_id: "invalid Email" });
     } else {
-      setContError({ ...contError, email_id: '' });
+      setContError({ ...contError, email_id: "" });
     }
   }, [useDebounce(userInfo.email_id, 1000)]);
 
@@ -863,76 +984,58 @@ const AddLeadsScreen = () => {
     if (router.query.id) {
       setUserInfo({ ...userInfo, lead_id: router.query.id });
       getTaskInLead(id);
-      getCallsInLead(id)
+      getCallsInLead(id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id]);
 
-
   const inputClass = (value) => {
     const inputClasses = {
-      text: 'form-control',
-      date: 'form-control',
-      email: 'form-control',
-      number: 'form-control',
-      checkbox: 'form-check-input ms-3',
+      text: "form-control",
+      date: "form-control",
+      email: "form-control",
+      number: "form-control",
+      checkbox: "form-check-input ms-3",
     };
-    return inputClasses[value] || '';
+    return inputClasses[value] || "";
   };
 
   const updateFieldInfo = (e, ind) => {
-    let newData = JSON.parse(JSON.stringify(userInfo))
+    let newData = JSON.parse(JSON.stringify(userInfo));
 
-    if( newData.db_lead_fields[ind].field_type === 'checkbox'){
-      newData.db_lead_fields[ind].input_value = e.target.checked
-
-    }else{
-
-      newData.db_lead_fields[ind].input_value = e.target.value
+    if (newData.db_lead_fields[ind].field_type === "checkbox") {
+      newData.db_lead_fields[ind].input_value = e.target.checked;
+    } else {
+      newData.db_lead_fields[ind].input_value = e.target.value;
     }
-   
-    setUserInfo(newData)
 
+    setUserInfo(newData);
   };
 
-  const checkAccountMatch=()=>{
+  const checkAccountMatch = () => {
     
-    let account_name=accountsList?.filter((account)=>(account?.acc_name===userInfo?.lead_name))
+    let account_name = accountsList?.filter(
+      (account) => account?.acc_name === userInfo?.lead_name
+    );
     let selectedId = null;
-    if(account_name.length){
-      selectedId = account_name[0].acc_id;      
+    if (account_name.length) {
+      selectedId = account_name[0].acc_id;
+      
     }
     
-    // if(account_name?.acc_name===userInfo?.lead_name){
-      setUserInfo({...userInfo,acc_id:selectedId})
-      return userInfo?.acc_id;
-    // }
-    // else{
-      // return userInfo?.acc_id
-    // }
-  }
-
-  const checkContactMatch=()=>{
-    // debugger
-    let contact_name=ContactList?.filter((contact)=>(contact?.name===userInfo?.lead_name))
-    let selectedId = null;
-    if(contact_name.length){
-      selectedId = contact_name[0].contact_id;      
-    }
+    setUserInfo((prev)=>(
+      {...prev,acc_id:selectedId,contact_id:selectedId}
+    ))
     
-    // if(account_name?.acc_name===userInfo?.lead_name){
-      setUserInfo({...userInfo,contact_id:selectedId})
-      return userInfo?.contact_id;
-    // }
-    // else{
-      // return userInfo?.acc_id
-    // }
-  }
+    // return selectedId;  
+    
+  };
 
-  useEffect(()=>{
-    checkContactMatch()
-    checkAccountMatch()
-  },[userInfo?.lead_status_id==4])
+  
+
+  useEffect(() => {
+    checkAccountMatch();
+  }, [userInfo?.lead_status_id == 4]);
 
   useEffect(() => {
     if (!userInfo.state_id) {
@@ -966,21 +1069,22 @@ const AddLeadsScreen = () => {
       getSingleData(id);
     } else {
       if (userInfo !== undefined) {
-        getLeadFieldList()
+        getLeadFieldList();
       }
     }
     if (router.query.vw) {
-      setViewMode(true)
+      setViewMode(true);
     }
-// eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id]);
 
   return (
     <>
       <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
-          <h3 className="content_head">{viewMode ? 'VIEW' : <>
-            {editMode ? "EDIT" : "ADD"} </>} LEAD</h3>
+          <h3 className="content_head">
+            {viewMode ? "VIEW" : <>{editMode ? "EDIT" : "ADD"} </>} LEAD
+          </h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item fw-bolder">
@@ -990,8 +1094,7 @@ const AddLeadsScreen = () => {
                 <Link href="/crm/ManageLeads"> Manage Leads </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                {viewMode ? 'View' : <>
-                  {editMode ? "Edit" : "ADD"} </>} Lead
+                {viewMode ? "View" : <>{editMode ? "Edit" : "ADD"} </>} Lead
               </li>
             </ol>
           </nav>
@@ -999,16 +1102,29 @@ const AddLeadsScreen = () => {
         <div className="main_content">
           <div className="Add_user_screen">
             <div className="row">
-              <div className={sidetaskToggle && viewMode ? `col-xl-11 col-md-11 col-sm-12 col-12` : viewMode ? `col-xl-8 col-md-8 col-sm-12 col-12` : `col-xl-12 col-md-12 col-sm-12 col-12`}>
+              <div
+                className={
+                  sidetaskToggle && viewMode
+                    ? `col-xl-11 col-md-11 col-sm-12 col-12`
+                    : viewMode
+                    ? `col-xl-8 col-md-8 col-sm-12 col-12`
+                    : `col-xl-12 col-md-12 col-sm-12 col-12`
+                }
+              >
                 <div className="add_screen_head">
-                  <span className="text_bold">Fill Details</span> ( * Fields are mandatory)
+                  <span className="text_bold">Fill Details</span> ( * Fields are
+                  mandatory)
                   <div className="add_user_form">
                     <div className="row">
-
-                    {
-                        userInfo?.lead_code && (
-                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
-                          <div className={errorData?.lead_code ? 'input_box errorBox' : 'input_box'}>
+                      {userInfo?.lead_code && (
+                        <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                          <div
+                            className={
+                              errorData?.lead_code
+                                ? "input_box errorBox"
+                                : "input_box"
+                            }
+                          >
                             <label htmlFor="profilelevel">Lead ID </label>
                             <input
                               type="text"
@@ -1016,18 +1132,31 @@ const AddLeadsScreen = () => {
                               disabled={viewMode || editMode}
                               name=""
                               id=""
-                              className={errorData?.lead_code ? 'form-control is-invalid' : 'form-control'}
-                             
-                              value={userInfo.lead_code ? userInfo.lead_code : ""}
+                              className={
+                                errorData?.lead_code
+                                  ? "form-control is-invalid"
+                                  : "form-control"
+                              }
+                              value={
+                                userInfo.lead_code ? userInfo.lead_code : ""
+                              }
                             />
-                            <span className="errorText"> {errorData?.lead_code ? errorData.lead_code : ''}</span>
+                            <span className="errorText">
+                              {" "}
+                              {errorData?.lead_code ? errorData.lead_code : ""}
+                            </span>
                           </div>
                         </div>
-                        )
-                      }
+                      )}
 
                       <div className="col-xl-4 col-md-4 col-sm-12 col-12">
-                        <div className={errorData?.lead_owner ? 'input_box errorBox' : 'input_box'}>
+                        <div
+                          className={
+                            errorData?.lead_owner
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
                           <label htmlFor="lead_owner">Owner</label>
 
                           {loginDetails?.isDB == true ? (
@@ -1050,15 +1179,22 @@ const AddLeadsScreen = () => {
                               className="form-control"
                               value={loginDetails.user ? loginDetails.user : ""}
                             />
-
                           )}
-                          <span className="errorText"> {errorData?.lead_owner ? errorData.lead_owner : ''}</span>
+                          <span className="errorText">
+                            {" "}
+                            {errorData?.lead_owner ? errorData.lead_owner : ""}
+                          </span>
                         </div>
                       </div>
 
-
                       <div className="col-xl-4 col-md-4 col-sm-12 col-12">
-                        <div className={errorData?.lead_name ? 'input_box errorBox' : 'input_box'}>
+                        <div
+                          className={
+                            errorData?.lead_name
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
                           <label htmlFor="profilelevel">Name *</label>
                           <input
                             type="text"
@@ -1066,21 +1202,34 @@ const AddLeadsScreen = () => {
                             name=""
                             id=""
                             disabled={viewMode}
-                            className={errorData?.lead_name ? 'form-control is-invalid' : 'form-control'}
+                            className={
+                              errorData?.lead_name
+                                ? "form-control is-invalid"
+                                : "form-control"
+                            }
                             onChange={(e) => {
                               setUserInfo({
                                 ...userInfo,
                                 lead_name: e.target.value,
-                              })
-                              setErrorData({ ...errorData, lead_name: '' })
+                              });
+                              setErrorData({ ...errorData, lead_name: "" });
                             }}
                             value={userInfo.lead_name ? userInfo.lead_name : ""}
                           />
-                          <span className="errorText"> {errorData?.lead_name ? errorData.lead_name : ''}</span>
+                          <span className="errorText">
+                            {" "}
+                            {errorData?.lead_name ? errorData.lead_name : ""}
+                          </span>
                         </div>
                       </div>
                       <div className="col-xl-4 col-md-4 col-sm-12 col-12">
-                        <div className={errorData?.lead_status_id ? 'input_box errorBox' : 'input_box'}>
+                        <div
+                          className={
+                            errorData?.lead_status_id
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
                           <label htmlFor="profilelevel">Status </label>
                           <select
                             className="form-control"
@@ -1088,20 +1237,25 @@ const AddLeadsScreen = () => {
                             id="profilelevel"
                             disabled={viewMode}
                             onChange={(e) => {
+                              StatusChangeHandler(e.target.value);
                               
-                              StatusChangeHandler(e.target.value)
-                              setErrorData({ ...errorData, lead_status_id: '' })
+                              setErrorData({
+                                ...errorData,
+                                lead_status_id: "",
+                              });
                               // checkValue()
                             }}
-                            value={userInfo.lead_status_id ? userInfo.lead_status_id : ""} >
+                            value={
+                              userInfo.lead_status_id
+                                ? userInfo.lead_status_id
+                                : ""
+                            }
+                          >
                             {editMode ? (
                               <>
                                 {sourcelist?.map((data, i) => {
                                   return (
-                                    <option
-                                      key={i}
-                                      value={data.lead_status_id}
-                                    >
+                                    <option key={i} value={data.lead_status_id}>
                                       {data.status_name}
                                     </option>
                                   );
@@ -1111,13 +1265,16 @@ const AddLeadsScreen = () => {
                               <option value="1"> open </option>
                             )}
                           </select>
-
-
-
                         </div>
                       </div>
                       <div className="col-xl-4 col-md-4 col-sm-12 col-12">
-                        <div className={errorData?.lead_src_id ? 'input_box errorBox' : 'input_box'}>
+                        <div
+                          className={
+                            errorData?.lead_src_id
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
                           <label htmlFor="profilelevel">Source </label>
 
                           <Select
@@ -1128,56 +1285,83 @@ const AddLeadsScreen = () => {
                               return {
                                 value: data?.lead_src_id,
                                 label: data?.source,
-
-                              }
+                              };
                             })}
                             value={dataList?.map((data, index) => {
                               if (userInfo.lead_src_id === data.lead_src_id) {
                                 return {
                                   value: data?.lead_src_id,
                                   label: data?.source,
-
-                                }
+                                };
                               }
                             })}
                             onChange={(e) => {
-                              setUserInfo({ ...userInfo, lead_src_id: e.value })
-                              setErrorData({ ...errorData, lead_src_id: '' })
+                              setUserInfo({
+                                ...userInfo,
+                                lead_src_id: e.value,
+                              });
+                              setErrorData({ ...errorData, lead_src_id: "" });
                             }}
                           />
-                          <span className="errorText"> {errorData?.lead_src_id ? errorData.lead_src_id : ''}</span>
+                          <span className="errorText">
+                            {" "}
+                            {errorData?.lead_src_id
+                              ? errorData.lead_src_id
+                              : ""}
+                          </span>
                         </div>
                       </div>
                       <div className="col-xl-4 col-md-4 col-sm-12 col-12">
-                        <div className={errorData?.company_name ? 'input_box errorBox' : 'input_box'}>
-                          <label htmlFor="profilelevel">Organization Name *</label>
+                        <div
+                          className={
+                            errorData?.company_name
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
+                          <label htmlFor="profilelevel">
+                            Organization Name *
+                          </label>
                           <input
                             type="text"
                             placeholder="Enter Organization Name"
                             disabled={viewMode}
                             name=""
                             id=""
-                            className={errorData?.company_name ? 'form-control is-invalid' : 'form-control'}
+                            className={
+                              errorData?.company_name
+                                ? "form-control is-invalid"
+                                : "form-control"
+                            }
                             onChange={(e) => {
                               setUserInfo({
                                 ...userInfo,
                                 company_name: e.target.value,
-                              })
-                              setErrorData({ ...errorData, company_name: '' })
+                              });
+                              setErrorData({ ...errorData, company_name: "" });
                             }}
-                            value={userInfo.company_name ? userInfo.company_name : ""}
+                            value={
+                              userInfo.company_name ? userInfo.company_name : ""
+                            }
                           />
-                          <span className="errorText"> {errorData?.company_name ? errorData.company_name : ''}</span>
+                          <span className="errorText">
+                            {" "}
+                            {errorData?.company_name
+                              ? errorData.company_name
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
-                      
-                      
-
-                      {
-                        userInfo?.lead_status_id === 3 ?(
-                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
-                          <div className={errorData?.loss_reason ? 'input_box errorBox' : 'input_box'}>
+                      {userInfo?.lead_status_id === 3 ? (
+                        <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                          <div
+                            className={
+                              errorData?.loss_reason
+                                ? "input_box errorBox"
+                                : "input_box"
+                            }
+                          >
                             <label htmlFor="profilelevel">Loss Reason </label>
                             <input
                               type="text"
@@ -1185,21 +1369,31 @@ const AddLeadsScreen = () => {
                               disabled={viewMode}
                               name=""
                               id=""
-                              className={errorData?.loss_reason ? 'form-control is-invalid' : 'form-control'}
+                              className={
+                                errorData?.loss_reason
+                                  ? "form-control is-invalid"
+                                  : "form-control"
+                              }
                               onChange={(e) => {
                                 setUserInfo({
                                   ...userInfo,
                                   loss_reason: e.target.value,
-                                })
-                                setErrorData({ ...errorData, loss_reason: '' })
+                                });
+                                setErrorData({ ...errorData, loss_reason: "" });
                               }}
-                              value={userInfo.loss_reason ? userInfo.loss_reason : ""}
+                              value={
+                                userInfo.loss_reason ? userInfo.loss_reason : ""
+                              }
                             />
-                            <span className="errorText"> {errorData?.loss_reason ? errorData.loss_reason : ''}</span>
+                            <span className="errorText">
+                              {" "}
+                              {errorData?.loss_reason
+                                ? errorData.loss_reason
+                                : ""}
+                            </span>
                           </div>
                         </div>
-                        ) :null
-                      }
+                      ) : null}
                     </div>
                     <div className="row">
                       <div className="col-xl-6 col-md-6 col-sm-12 col-12">
@@ -1218,7 +1412,9 @@ const AddLeadsScreen = () => {
                                 lead_detail: e.target.value,
                               })
                             }
-                            value={userInfo.lead_detail ? userInfo.lead_detail : ""}
+                            value={
+                              userInfo.lead_detail ? userInfo.lead_detail : ""
+                            }
                           ></textarea>
                         </div>
                       </div>
@@ -1230,7 +1426,13 @@ const AddLeadsScreen = () => {
                   <div className="add_user_form">
                     <div className="row">
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={contError?.email_id ? 'input_box errorBox' : 'input_box'}>
+                        <div
+                          className={
+                            contError?.email_id
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
                           <label htmlFor="email">Email Id </label>
                           <input
                             type="text"
@@ -1238,7 +1440,11 @@ const AddLeadsScreen = () => {
                             name="email"
                             id="email"
                             disabled={viewMode}
-                            className={contError?.email_id ? 'form-control is-invalid' : 'form-control'}
+                            className={
+                              contError?.email_id
+                                ? "form-control is-invalid"
+                                : "form-control"
+                            }
                             onChange={(e) =>
                               setUserInfo({
                                 ...userInfo,
@@ -1247,33 +1453,61 @@ const AddLeadsScreen = () => {
                             } 
                             value={userInfo.email_id ? userInfo.email_id : ""}
                           />
-                          <span className="errorText"> {contError?.email_id ? contError.email_id : ''}</span>
+                          <span className="errorText">
+                            {" "}
+                            {contError?.email_id ? contError.email_id : ""}
+                          </span>
                         </div>
                       </div>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={contError?.p_contact_no ? 'input_box errorBox' : 'input_box'}>
-                          <label htmlFor="per_cont">Personal Contact No. </label>
+                        <div
+                          className={
+                            contError?.p_contact_no
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
+                          <label htmlFor="per_cont">
+                            Personal Contact No.{" "}
+                          </label>
                           <input
                             type="text"
                             placeholder="Enter Contact no."
                             name="per_cont"
                             id="per_cont"
                             disabled={viewMode}
-                            className={contError?.p_contact_no ? 'form-control is-invalid' : 'form-control'}
+                            className={
+                              contError?.p_contact_no
+                                ? "form-control is-invalid"
+                                : "form-control"
+                            }
                             onChange={(e) =>
                               setUserInfo({
                                 ...userInfo,
                                 p_contact_no: e.target.value,
                               })
+                            }
+                            value={
+                              userInfo?.p_contact_no ? userInfo.p_contact_no : fetchedAccInfo?.p_contact_no ? fetchedAccInfo?.p_contact_no :""
 
                             }
-                            value={userInfo.p_contact_no ? userInfo.p_contact_no : ""}
                           />
-                          <span className="errorText"> {contError?.p_contact_no ? contError.p_contact_no : ''}</span>
+                          <span className="errorText">
+                            {" "}
+                            {contError?.p_contact_no
+                              ? contError.p_contact_no
+                              : ""}
+                          </span>
                         </div>
                       </div>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={contError?.whatsapp_no ? 'input_box errorBox' : 'input_box'}>
+                        <div
+                          className={
+                            contError?.whatsapp_no
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
                           <label htmlFor="wts_no">Whatsapp No.</label>
                           <input
                             type="text"
@@ -1281,21 +1515,37 @@ const AddLeadsScreen = () => {
                             name="wts_no"
                             id="wts_no"
                             disabled={viewMode}
-                            className={contError?.whatsapp_no ? 'form-control is-invalid' : 'form-control'}
+                            className={
+                              contError?.whatsapp_no
+                                ? "form-control is-invalid"
+                                : "form-control"
+                            }
                             onChange={(e) =>
                               setUserInfo({
                                 ...userInfo,
                                 whatsapp_no: e.target.value,
                               })
                             }
-                            value={userInfo.whatsapp_no ? userInfo.whatsapp_no : ""}
+                            value={
+                              userInfo.whatsapp_no ? userInfo.whatsapp_no : ""
+                            }
                           />
-                          <span className="errorText"> {contError?.whatsapp_no ? contError.whatsapp_no : ''}</span>
-
+                          <span className="errorText">
+                            {" "}
+                            {contError?.whatsapp_no
+                              ? contError.whatsapp_no
+                              : ""}
+                          </span>
                         </div>
                       </div>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={contError?.official_no ? 'input_box errorBox' : 'input_box'}>
+                        <div
+                          className={
+                            contError?.official_no
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
                           <label htmlFor="offc_no">Official No.</label>
                           <input
                             type="text"
@@ -1303,16 +1553,27 @@ const AddLeadsScreen = () => {
                             name="offc_no"
                             disabled={viewMode}
                             id="offc_no"
-                            className={contError?.official_no ? 'form-control is-invalid' : 'form-control'}
+                            className={
+                              contError?.official_no
+                                ? "form-control is-invalid"
+                                : "form-control"
+                            }
                             onChange={(e) =>
                               setUserInfo({
                                 ...userInfo,
                                 official_no: e.target.value,
                               })
                             }
-                            value={userInfo.official_no ? userInfo.official_no : ""}
+                            value={
+                              userInfo.official_no ? userInfo.official_no : ""
+                            }
                           />
-                          <span className="errorText"> {contError?.official_no ? contError.official_no : ''}</span>
+                          <span className="errorText">
+                            {" "}
+                            {contError?.official_no
+                              ? contError.official_no
+                              : ""}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -1320,8 +1581,6 @@ const AddLeadsScreen = () => {
                   <div className="add_screen_head">
                     <span className="text_bold">System Information </span>
                   </div>
-
-
                   <div className="add_user_form">
                     <div className="row">
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
@@ -1339,8 +1598,10 @@ const AddLeadsScreen = () => {
                                 created_on: e.target.value,
                               })
                             }
-                            value={moment(userInfo?.created_on).format("YYYY-MM-DDTHH:mm")}
-                            />
+                            value={moment(userInfo?.created_on).format(
+                              "YYYY-MM-DDTHH:mm"
+                            )}
+                          />
                         </div>
                       </div>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
@@ -1360,7 +1621,9 @@ const AddLeadsScreen = () => {
                               })
                             }
                             // value={userInfo.updated_on ? userInfo.updated_on : ""}
-                            value={moment(userInfo?.updated_on).format("YYYY-MM-DDTHH:mm")}
+                            value={moment(userInfo?.updated_on).format(
+                              "YYYY-MM-DDTHH:mm"
+                            )}
                           />
                         </div>
                       </div>
@@ -1372,7 +1635,13 @@ const AddLeadsScreen = () => {
                   <div className="add_user_form">
                     <div className="row">
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={errorData?.country_id ? 'input_box errorBox' : 'input_box'}>
+                        <div
+                          className={
+                            errorData?.country_id
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
                           <label htmlFor="email">Country </label>
                           <Select
                             id={userInfo.country_id}
@@ -1382,26 +1651,43 @@ const AddLeadsScreen = () => {
                               return {
                                 value: data?.country_id,
                                 label: data?.country_name,
-                              }
+                              };
                             })}
-                            value={countrylist?.map((data, index) => {
-                              if (userInfo.country_id === data.country_id) {
-                                return {
-                                  value: data?.country_id,
-                                  label: data?.country_name,
-                                }
-                              }
-                            })}
+                            // value={countrylist?.map((data, index) => {
+                            //   if (userInfo.country_id === data.country_id) {
+                            //     return {
+                            //       value: data?.country_id,
+                            //       label: data?.country_name,
+                            //     };
+                            //   }
+                            // })}
+                            value={
+                              fetchedAccInfo?.country_id 
+                                ? { value: fetchedAccInfo.country_id, label: fetchedAccInfo.country_name } 
+                                : countrylist?.find(data => userInfo.country_id === data.country_id) 
+                                  ? { value: userInfo.country_id, label: countrylist.find(data => userInfo.country_id === data.country_id).country_name } 
+                                  : null
+                            }
+                            
                             onChange={(e) => {
-                              setUserInfo({ ...userInfo, country_id: e.value })
-                              setErrorData({ ...errorData, country_id: '' })
+                              setUserInfo({ ...userInfo, country_id: e.value });
+                              setErrorData({ ...errorData, country_id: "" });
                             }}
                           />
-                          <span className="errorText"> {errorData?.country_id ? errorData.country_id : ''}</span>
+                          <span className="errorText">
+                            {" "}
+                            {errorData?.country_id ? errorData.country_id : ""}
+                          </span>
                         </div>
                       </div>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={errorData?.state_id ? 'input_box errorBox' : 'input_box'}>
+                        <div
+                          className={
+                            errorData?.state_id
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
                           <label htmlFor="per_cont">State </label>
                           <Select
                             id={userInfo.country_id}
@@ -1411,26 +1697,42 @@ const AddLeadsScreen = () => {
                               return {
                                 value: data?.state_id,
                                 label: data?.state_name,
-                              }
+                              };
                             })}
-                            value={statelist?.map((data, index) => {
-                              if (userInfo.state_id === data.state_id) {
-                                return {
-                                  value: data?.state_id,
-                                  label: data?.state_name,
-                                }
-                              }
-                            })}
+                            // value={statelist?.map((data, index) => {
+                            //   if (userInfo.state_id === data.state_id) {
+                            //     return {
+                            //       value: data?.state_id,
+                            //       label: data?.state_name,
+                            //     };
+                            //   }
+                            // })}
+                            value={
+                              fetchedAccInfo?.state_id 
+                                ? { value: fetchedAccInfo.state_id, label: fetchedAccInfo.state_name } 
+                                : statelist?.find(data => userInfo.state_id === data.state_id) 
+                                  ? { value: userInfo.state_id, label: statelist.find(data => userInfo.state_id === data.state_id).state_name } 
+                                  : null
+                            }
                             onChange={(e) => {
-                              setUserInfo({ ...userInfo, state_id: e.value })
-                              setErrorData({ ...errorData, state_id: '' })
+                              setUserInfo({ ...userInfo, state_id: e.value });
+                              setErrorData({ ...errorData, state_id: "" });
                             }}
                           />
-                          <span className="errorText"> {errorData?.state_id ? errorData.state_id : ''}</span>
+                          <span className="errorText">
+                            {" "}
+                            {errorData?.state_id ? errorData.state_id : ""}
+                          </span>
                         </div>
                       </div>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={errorData?.city_id ? 'input_box errorBox' : 'input_box'}>
+                        <div
+                          className={
+                            errorData?.city_id
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
                           <label htmlFor="wts_no">City </label>
                           <Select
                             id={userInfo.city_id}
@@ -1440,26 +1742,42 @@ const AddLeadsScreen = () => {
                               return {
                                 value: data?.city_id,
                                 label: data?.city_name,
-                              }
+                              };
                             })}
-                            value={citylist?.map((data, index) => {
-                              if (userInfo.city_id === data.city_id) {
-                                return {
-                                  value: data?.city_id,
-                                  label: data?.city_name,
-                                }
-                              }
-                            })}
+                            // value={citylist?.map((data, index) => {
+                            //   if (userInfo.city_id === data.city_id) {
+                            //     return {
+                            //       value: data?.city_id,
+                            //       label: data?.city_name,
+                            //     };
+                            //   }
+                            // })}
+                            value={
+                              fetchedAccInfo?.city_id 
+                                ? { value: fetchedAccInfo.city_id, label: fetchedAccInfo.city_name } 
+                                : citylist?.find(data => userInfo.city_id === data.city_id) 
+                                  ? { value: userInfo.city_id, label: citylist.find(data => userInfo.city_id === data.city_id).city_name } 
+                                  : null
+                            }
                             onChange={(e) => {
-                              setUserInfo({ ...userInfo, city_id: e.value })
-                              setErrorData({ ...errorData, city_id: '' })
+                              setUserInfo({ ...userInfo, city_id: e.value });
+                              setErrorData({ ...errorData, city_id: "" });
                             }}
                           />
-                          <span className="errorText"> {errorData?.city_id ? errorData.city_id : ''}</span>
+                          <span className="errorText">
+                            {" "}
+                            {errorData?.city_id ? errorData.city_id : ""}
+                          </span>
                         </div>
                       </div>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={errorData?.pincode ? 'input_box errorBox' : 'input_box'}>
+                        <div
+                          className={
+                            errorData?.pincode
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
                           <label htmlFor="offc_no">Zip / Postal Code </label>
                           <input
                             type="number"
@@ -1467,17 +1785,24 @@ const AddLeadsScreen = () => {
                             name="offc_no"
                             id="offc_no"
                             disabled={viewMode}
-                            className={errorData?.pincode ? 'form-control is-invalid' : 'form-control'}
+                            className={
+                              errorData?.pincode
+                                ? "form-control is-invalid"
+                                : "form-control"
+                            }
                             onChange={(e) => {
                               setUserInfo({
                                 ...userInfo,
                                 pincode: e.target.value,
-                              })
-                              setErrorData({ ...errorData, pincode: '' })
+                              });
+                              setErrorData({ ...errorData, pincode: "" });
                             }}
-                            value={userInfo.pincode ? userInfo.pincode : ""}
+                            value={userInfo.pincode ? userInfo.pincode :fetchedAccInfo?.pincode ? fetchedAccInfo?.pincode : ""}
                           />
-                          <span className="errorText"> {errorData?.pincode ? errorData.pincode : ''}</span>
+                          <span className="errorText">
+                            {" "}
+                            {errorData?.pincode ? errorData.pincode : ""}
+                          </span>
                         </div>
                       </div>
                       <div className="col-xl-6 col-md-6 col-sm-12 col-12">
@@ -1496,49 +1821,68 @@ const AddLeadsScreen = () => {
                                 address: e.target.value,
                               })
                             }
-                            value={userInfo.address ? userInfo.address : ""}
+                            value={userInfo.address ? userInfo.address :fetchedAccInfo?.address  ? fetchedAccInfo?.address : ""}
                           ></textarea>
                         </div>
                       </div>
                     </div>
                     <div className="row">
-                      {userInfo.db_lead_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
-                        <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>
-                          <div className="input_box">
-                            <label htmlFor={field_name + ind}> {field_lable} </label>
-                            {input_type === 'input' ? (
-                              <input
-                                type={field_type}
-                                className={inputClass(field_type)}
-                                id={field_name + ind}
-                                name={field_name}
-                                placeholder={field_lable}
-                                disabled={viewMode}
-                                onChange={(e) => updateFieldInfo(e, ind)}
-                                //value={userInfo.field_name ? userInfo.field_name : ""}
-                                checked={input_value == "1" ? true: false}
-                                value={input_value}
-
-                              />
-                            ) : null}
-                            {input_type === 'select' ? (
-                              <select
-                                onChange={(e) => updateFieldInfo(e, ind)}
-                                name={field_name}
-                                id={field_name + ind}
-                                className="form-control"
-                                value={input_value}
-                                disabled={viewMode}
-                              >
-                                <option value="">Select {field_lable}</option>
-                                {option?.split(",").map((data, i) => (
-                                  <option value={data} key={i}>{data}</option>
-                                ))}
-                              </select>
-                            ) : null}
+                      {userInfo.db_lead_fields?.map(
+                        (
+                          {
+                            option,
+                            field_name,
+                            field_lable,
+                            field_type,
+                            input_type,
+                            input_value,
+                          },
+                          ind
+                        ) => (
+                          <div
+                            className="col-xl-3 col-md-3 col-sm-12 col-12"
+                            key={ind}
+                          >
+                            <div className="input_box">
+                              <label htmlFor={field_name + ind}>
+                                {" "}
+                                {field_lable}{" "}
+                              </label>
+                              {input_type === "input" ? (
+                                <input
+                                  type={field_type}
+                                  className={inputClass(field_type)}
+                                  id={field_name + ind}
+                                  name={field_name}
+                                  placeholder={field_lable}
+                                  disabled={viewMode}
+                                  onChange={(e) => updateFieldInfo(e, ind)}
+                                  //value={userInfo.field_name ? userInfo.field_name : ""}
+                                  checked={input_value == "1" ? true : false}
+                                  value={input_value}
+                                />
+                              ) : null}
+                              {input_type === "select" ? (
+                                <select
+                                  onChange={(e) => updateFieldInfo(e, ind)}
+                                  name={field_name}
+                                  id={field_name + ind}
+                                  className="form-control"
+                                  value={input_value}
+                                  disabled={viewMode}
+                                >
+                                  <option value="">Select {field_lable}</option>
+                                  {option?.split(",").map((data, i) => (
+                                    <option value={data} key={i}>
+                                      {data}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : null}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                     {/* <div className="btn-box">
                                 <button
@@ -1550,54 +1894,71 @@ const AddLeadsScreen = () => {
                                 </button>
                             </div> */}
 
-
                     {iscollapse && (
                       <div className="addFieldsForm py-5">
                         <div className="row">
                           <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                             <div className="input_box">
-                              <label htmlFor='newFieldName'>Field Name</label>
+                              <label htmlFor="newFieldName">Field Name</label>
                               <input
-                                type='text'
-                                className='form-control'
-                                id='newFieldName'
-                                placeholder='Field Name'
-                                onChange={(e) => setNewFields({ ...newFields, field_lable: e.target.value })}
+                                type="text"
+                                className="form-control"
+                                id="newFieldName"
+                                placeholder="Field Name"
+                                onChange={(e) =>
+                                  setNewFields({
+                                    ...newFields,
+                                    field_lable: e.target.value,
+                                  })
+                                }
                               />
                             </div>
                           </div>
                           <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                             <div className="input_box">
-                              <label htmlFor='newFieldType'>Field Type</label>
+                              <label htmlFor="newFieldType">Field Type</label>
                               <select
                                 name="newFieldType"
-                                className='form-control'
+                                className="form-control"
                                 id="newFieldType"
-                                onChange={(e) => setNewFields({ ...newFields, input_type: e.target.value })}
+                                onChange={(e) =>
+                                  setNewFields({
+                                    ...newFields,
+                                    input_type: e.target.value,
+                                  })
+                                }
                               >
                                 <option>Select Field Type</option>
-                                <option value='input'>Input Box</option>
-                                <option value='select'>Select Box</option>
+                                <option value="input">Input Box</option>
+                                <option value="select">Select Box</option>
                               </select>
                             </div>
                           </div>
 
-                          {newFields.input_type === 'input' && (
+                          {newFields.input_type === "input" && (
                             <>
                               <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                                 <div className="input_box">
-                                  <label htmlFor='newInputType'>Input Type</label>
+                                  <label htmlFor="newInputType">
+                                    Input Type
+                                  </label>
                                   <select
                                     name="newInputType"
-                                    className='form-control'
-                                    onChange={(e) => setNewFields({ ...newFields, field_type: e.target.value })}
-                                    id="newInputType">
+                                    className="form-control"
+                                    onChange={(e) =>
+                                      setNewFields({
+                                        ...newFields,
+                                        field_type: e.target.value,
+                                      })
+                                    }
+                                    id="newInputType"
+                                  >
                                     <option>Select Input Type</option>
-                                    <option value='text'>Text</option>
-                                    <option value='email'>Email</option>
-                                    <option value='checkbox'>Checkbox</option>
-                                    <option value='number'>Number</option>
-                                    <option value='date'>Date</option>
+                                    <option value="text">Text</option>
+                                    <option value="email">Email</option>
+                                    <option value="checkbox">Checkbox</option>
+                                    <option value="number">Number</option>
+                                    <option value="date">Date</option>
                                   </select>
                                 </div>
                               </div>
@@ -1614,7 +1975,6 @@ const AddLeadsScreen = () => {
                                   />
                                 </div>
                               </div> */}
-
                             </>
                           )}
 
@@ -1635,68 +1995,110 @@ const AddLeadsScreen = () => {
                             </div>
                             )
                           } */}
-                         
 
-                          {newFields.input_type === 'select' && (
+                          {newFields.input_type === "select" && (
                             <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                               <div className="input_box">
-                                <label htmlFor='newKeywords'>Select Keywords</label>
+                                <label htmlFor="newKeywords">
+                                  Select Keywords
+                                </label>
                                 <input
-                                  type='text'
+                                  type="text"
                                   name="newKeywords"
-                                  className='form-control'
-                                  placeholder='e.g. Name, age, gender'
+                                  className="form-control"
+                                  placeholder="e.g. Name, age, gender"
                                   id="newKeywords"
-                                  onChange={(e) => setNewFields({ ...newFields, option: e.target.value })}
+                                  onChange={(e) =>
+                                    setNewFields({
+                                      ...newFields,
+                                      option: e.target.value,
+                                    })
+                                  }
                                 />
                               </div>
                             </div>
                           )}
-
-
-
                         </div>
 
                         <div className="btn-row my-4">
                           {/* <button onClick={"AddFieldsFunc"} className="btn btn-light me-3">Cancel</button> */}
-                          <button onClick={createInputField} className="btn btn-success">Create Field</button>
+                          <button
+                            onClick={createInputField}
+                            className="btn btn-success"
+                          >
+                            Create Field
+                          </button>
                         </div>
                       </div>
                     )}
 
-
                     <div className="text-end">
                       <div className="submit_btn">
-                        {viewMode ? null : <>
-                          <div className="add_screen_head">
-                            <span className="text_bold"><button className='btn btn-primary ' onClick={AddFieldsFunc}> Add More Fields</button>  </span>
-                          </div> </>}
-                        {viewMode ? null : <>
-                          <Link href='/crm/ManageLeads'><button className="btn btn-cancel m-3 ">Cancel</button></Link>
-                          {editMode ? (
-                            <button disabled={isLoading} className="btn btn-primary" onClick={updateHandler}>
-                              {isLoading ? 'Loading...' : 'Update'}
-                            </button>
-                          ) : (
-                            <button
-                              disabled={isLoading}
-                              className="btn btn-primary"
-                              onClick={submitHandler}
-                            >
-                              {isLoading ? 'Loading...' : 'Save & Submit'}
-                            </button>
-                          )}
-                        </>}
+                        {viewMode ? null : (
+                          <>
+                            <div className="add_screen_head">
+                              <span className="text_bold">
+                                <button
+                                  className="btn btn-primary "
+                                  onClick={AddFieldsFunc}
+                                >
+                                  {" "}
+                                  Add More Fields
+                                </button>{" "}
+                              </span>
+                            </div>{" "}
+                          </>
+                        )}
+                        {viewMode ? null : (
+                          <>
+                            <Link href="/crm/ManageLeads">
+                              <button className="btn btn-cancel m-3 ">
+                                Cancel
+                              </button>
+                            </Link>
+                            {editMode ? (
+                              <button
+                                disabled={isLoading}
+                                className="btn btn-primary"
+                                onClick={updateHandler}
+                              >
+                                {isLoading ? "Loading..." : "Update"}
+                              </button>
+                            ) : (
+                              <button
+                                disabled={isLoading}
+                                className="btn btn-primary"
+                                onClick={submitHandler}
+                              >
+                                {isLoading ? "Loading..." : "Save & Submit"}
+                              </button>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              {viewMode ?
-                <div className={sidetaskToggle ? `col-xl-1 col-md-1 col-sm-12 col-12` : `col-xl-4 col-md-4 col-sm-12 col-12`}>
-                  <div className={`task_info${sidetaskToggle ? ' closed' : ' open'}`}>
+              {viewMode ? (
+                <div
+                  className={
+                    sidetaskToggle
+                      ? `col-xl-1 col-md-1 col-sm-12 col-12`
+                      : `col-xl-4 col-md-4 col-sm-12 col-12`
+                  }
+                >
+                  <div
+                    className={`task_info${
+                      sidetaskToggle ? " closed" : " open"
+                    }`}
+                  >
                     <div className="header dashboard_head">
-                      <div className="taskIcon" title={sidetaskToggle ? 'Tasks & Events' : 'Close Menu'} onClick={() => setSidetaskToggle(!sidetaskToggle)}>
+                      <div
+                        className="taskIcon"
+                        title={sidetaskToggle ? "Tasks & Events" : "Close Menu"}
+                        onClick={() => setSidetaskToggle(!sidetaskToggle)}
+                      >
                         {sidetaskToggle ? <TasksIcon /> : <CrossIcon />}
                       </div>
                       <span className="text-head">Activity</span>
@@ -1705,12 +2107,20 @@ const AddLeadsScreen = () => {
                       <ul className="tgs_btns">
                         <li
                           onClick={() => setSideTab("task")}
-                          className={sideTab === "task" ? "list-item active" : "list-item"} >
+                          className={
+                            sideTab === "task"
+                              ? "list-item active"
+                              : "list-item"
+                          }
+                        >
                           New Task
                         </li>
                         <li
                           onClick={() => setSideTab("log")}
-                          className={sideTab === "log" ? "list-item active" : "list-item"} >
+                          className={
+                            sideTab === "log" ? "list-item active" : "list-item"
+                          }
+                        >
                           Event Log
                         </li>
                       </ul>
@@ -1718,24 +2128,54 @@ const AddLeadsScreen = () => {
                         <div className="add_user_form">
                           <div className="row">
                             <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                              <div className={errorData?.task_name ? 'input_box errorBox' : 'input_box'}>
+                              <div
+                                className={
+                                  errorData?.task_name
+                                    ? "input_box errorBox"
+                                    : "input_box"
+                                }
+                              >
                                 <label htmlFor="task_sub">Subject</label>
                                 <input
                                   type="text"
                                   placeholder="Enter Subject"
                                   name="task_sub"
                                   id="task_sub"
-                                  className={errorData?.task_name ? 'form-control is-invalid' : 'form-control'}
+                                  className={
+                                    errorData?.task_name
+                                      ? "form-control is-invalid"
+                                      : "form-control"
+                                  }
                                   onChange={(e) => {
-                                    setUserInfo({ ...userInfo, task_name: e.target.value })
-                                    setErrorData({ ...errorData, task_name: '' })
+                                    setUserInfo({
+                                      ...userInfo,
+                                      task_name: e.target.value,
+                                    });
+                                    setErrorData({
+                                      ...errorData,
+                                      task_name: "",
+                                    });
                                   }}
-                                  value={userInfo.task_name ? userInfo.task_name : ""} />
-                                <span className="errorText"> {errorData?.task_name ? errorData.task_name : ''}</span>
+                                  value={
+                                    userInfo.task_name ? userInfo.task_name : ""
+                                  }
+                                />
+                                <span className="errorText">
+                                  {" "}
+                                  {errorData?.task_name
+                                    ? errorData.task_name
+                                    : ""}
+                                </span>
                               </div>
                             </div>
                             <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                              <div className={errorData?.due_date ? 'input_box errorBox' : 'input_box'}>
+                              <div
+                                className={
+                                  errorData?.due_date
+                                    ? "input_box errorBox"
+                                    : "input_box"
+                                }
+                              >
                                 <label htmlFor="due_date">Due Date</label>
                                 <input
                                   type="datetime-local"
@@ -1743,17 +2183,31 @@ const AddLeadsScreen = () => {
                                   name="due_date"
                                   min={minDate}
                                   id="due_date"
-                                  className={errorData?.due_date ? 'form-control is-invalid' : 'form-control'}
+                                  className={
+                                    errorData?.due_date
+                                      ? "form-control is-invalid"
+                                      : "form-control"
+                                  }
                                   onChange={(e) => {
                                     setUserInfo({
                                       ...userInfo,
                                       due_date: e.target.value,
-                                    })
-                                    setErrorData({ ...errorData, due_date: "" })
+                                    });
+                                    setErrorData({
+                                      ...errorData,
+                                      due_date: "",
+                                    });
                                   }}
                                   value={
-                                    userInfo.due_date ? userInfo.due_date : ""} />
-                                <span className="errorText"> {errorData?.due_date ? errorData.due_date : ''}</span>
+                                    userInfo.due_date ? userInfo.due_date : ""
+                                  }
+                                />
+                                <span className="errorText">
+                                  {" "}
+                                  {errorData?.due_date
+                                    ? errorData.due_date
+                                    : ""}
+                                </span>
                               </div>
                             </div>
                             <div className="col-xl-6 col-md-6 col-sm-12 col-12">
@@ -1762,13 +2216,20 @@ const AddLeadsScreen = () => {
                                 <select
                                   name="cont_person"
                                   id="cont_person"
-                                  className={errorData?.assigned_to ? 'form-control is-invalid' : 'form-control'}
+                                  className={
+                                    errorData?.assigned_to
+                                      ? "form-control is-invalid"
+                                      : "form-control"
+                                  }
                                   onChange={(e) => {
                                     setUserInfo({
                                       ...userInfo,
                                       assigned_to: e.target.value,
-                                    })
-                                    setErrorData({ ...errorData, assigned_to: "" })
+                                    });
+                                    setErrorData({
+                                      ...errorData,
+                                      assigned_to: "",
+                                    });
                                   }}
                                   value={
                                     userInfo.assigned_to
@@ -1785,7 +2246,12 @@ const AddLeadsScreen = () => {
                                     );
                                   })}
                                 </select>
-                                <span className="errorText"> {errorData?.assigned_to ? errorData.assigned_to : ''}</span>
+                                <span className="errorText">
+                                  {" "}
+                                  {errorData?.assigned_to
+                                    ? errorData.assigned_to
+                                    : ""}
+                                </span>
                               </div>
                             </div>
                             <div className="col-xl-6 col-md-6 col-sm-12 col-12">
@@ -1829,7 +2295,9 @@ const AddLeadsScreen = () => {
                                     })
                                   }
                                   value={
-                                    userInfo.related_to ? userInfo.related_to : ""
+                                    userInfo.related_to
+                                      ? userInfo.related_to
+                                      : ""
                                   }
                                 />
                               </div>
@@ -1849,24 +2317,46 @@ const AddLeadsScreen = () => {
                         <div className="add_user_form">
                           <div className="row">
                             <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                              <div className={errorData?.call_subject ? 'input_box errorBox' : 'input_box'}>
+                              <div
+                                className={
+                                  errorData?.call_subject
+                                    ? "input_box errorBox"
+                                    : "input_box"
+                                }
+                              >
                                 <label htmlFor="task_sub">Subject</label>
                                 <input
                                   type="text"
                                   placeholder="Enter Subject"
                                   name="task_sub"
                                   id="task_sub"
-                                  className={errorData?.call_subject ? 'form-control is-invalid' : 'form-control'}
+                                  className={
+                                    errorData?.call_subject
+                                      ? "form-control is-invalid"
+                                      : "form-control"
+                                  }
                                   onChange={(e) => {
                                     seContactInfo({
                                       ...contactInfo,
                                       call_subject: e.target.value,
-                                    })
-                                    setErrorData({ ...errorData, call_subject: "" })
+                                    });
+                                    setErrorData({
+                                      ...errorData,
+                                      call_subject: "",
+                                    });
                                   }}
-                                  value={contactInfo.call_subject ? contactInfo.call_subject : ''}
+                                  value={
+                                    contactInfo.call_subject
+                                      ? contactInfo.call_subject
+                                      : ""
+                                  }
                                 />
-                                <span className="errorText"> {errorData?.call_subject ? errorData.call_subject : ''}</span>
+                                <span className="errorText">
+                                  {" "}
+                                  {errorData?.call_subject
+                                    ? errorData.call_subject
+                                    : ""}
+                                </span>
                               </div>
                             </div>
                             <div className="col-xl-12 col-md-12 col-sm-12 col-12">
@@ -1884,7 +2374,11 @@ const AddLeadsScreen = () => {
                                       comments: e.target.value,
                                     })
                                   }
-                                  value={contactInfo.comments ? contactInfo.comments : ''}
+                                  value={
+                                    contactInfo.comments
+                                      ? contactInfo.comments
+                                      : ""
+                                  }
                                 ></textarea>
                               </div>
                             </div>
@@ -1905,7 +2399,11 @@ const AddLeadsScreen = () => {
                                       contact_person_name: e.target.value,
                                     })
                                   }
-                                  value={contactInfo.contact_person_name ? contactInfo.contact_person_name : ''}
+                                  value={
+                                    contactInfo.contact_person_name
+                                      ? contactInfo.contact_person_name
+                                      : ""
+                                  }
                                 />
                               </div>
                             </div>
@@ -1924,7 +2422,11 @@ const AddLeadsScreen = () => {
                                       relate_to: e.target.value,
                                     })
                                   }
-                                  value={contactInfo.relate_to ? contactInfo.relate_to : ''}
+                                  value={
+                                    contactInfo.relate_to
+                                      ? contactInfo.relate_to
+                                      : ""
+                                  }
                                 />
                               </div>
                             </div>
@@ -1938,17 +2440,33 @@ const AddLeadsScreen = () => {
                                   name="due_date"
                                   min={minDate}
                                   id="due_date"
-                                  className={errorData?.event_date ? 'form-control is-invalid' : 'form-control'}
+                                  className={
+                                    errorData?.event_date
+                                      ? "form-control is-invalid"
+                                      : "form-control"
+                                  }
                                   onChange={(e) => {
                                     seContactInfo({
                                       ...contactInfo,
                                       event_date: e.target.value,
-                                    })
-                                    setErrorData({ ...errorData, event_date: "" })
+                                    });
+                                    setErrorData({
+                                      ...errorData,
+                                      event_date: "",
+                                    });
                                   }}
                                   value={
-                                    contactInfo.event_date ? contactInfo.event_date : ""} />
-                                <span className="errorText"> {errorData?.event_date ? errorData.event_date : ''}</span>
+                                    contactInfo.event_date
+                                      ? contactInfo.event_date
+                                      : ""
+                                  }
+                                />
+                                <span className="errorText">
+                                  {" "}
+                                  {errorData?.event_date
+                                    ? errorData.event_date
+                                    : ""}
+                                </span>
                               </div>
                             </div>
 
@@ -1961,11 +2479,15 @@ const AddLeadsScreen = () => {
                                   disabled
                                   name="task_sub"
                                   id="task_sub"
-                                  className="form-control" />
+                                  className="form-control"
+                                />
                               </div>
                             </div>
                             <div className="btn-box text-end">
-                              <button className="btn btn-primary" onClick={callLogSubmit}>
+                              <button
+                                className="btn btn-primary"
+                                onClick={callLogSubmit}
+                              >
                                 Save & Submit
                               </button>
                             </div>
@@ -2003,7 +2525,9 @@ const AddLeadsScreen = () => {
                                       <div className="head">Assign to:</div>
                                     </div>
                                     <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                      <div className="value">{item?.assignedToUser?.user}</div>
+                                      <div className="value">
+                                        {item?.assignedToUser?.user}
+                                      </div>
                                     </div>
                                   </div>
                                   <div className="row">
@@ -2011,7 +2535,11 @@ const AddLeadsScreen = () => {
                                       <div className="head">Due Date:</div>
                                     </div>
                                     <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                      <div className="value">{moment(item?.due_date).format("DD-MM-YYYY LT")}</div>
+                                      <div className="value">
+                                        {moment(item?.due_date).format(
+                                          "DD-MM-YYYY LT"
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -2033,73 +2561,83 @@ const AddLeadsScreen = () => {
                         <Collapse in={logOpen}>
                           <div>
                             {callList?.map((item, i) => {
-                              return <div className="task-dtls box-disc" key={i}>
-                                <div className="row">
-                                  <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                    <div className="head">Subject:</div>
+                              return (
+                                <div className="task-dtls box-disc" key={i}>
+                                  <div className="row">
+                                    <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                                      <div className="head">Subject:</div>
+                                    </div>
+                                    <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                                      <div className="value">
+                                        {item.call_subject}
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                    <div className="value">
-                                      {item.call_subject}
+                                  <div className="row">
+                                    <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                                      <div className="head">Comments</div>
+                                    </div>
+                                    <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                                      <div className="value">
+                                        {item.comments}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="row">
+                                    <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                                      <div className="head">relate to</div>
+                                    </div>
+                                    <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                                      <div className="value">
+                                        {item.relate_to}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="row">
+                                    <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                                      <div className="head">Event Date:</div>
+                                    </div>
+                                    <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                                      <div className="value">
+                                        {moment(item?.event_date).format(
+                                          "DD-MM-YYYY LT"
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="row">
+                                    <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                                      <div className="head">CTS to</div>
+                                    </div>
+                                    <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                                      <div className="value">{item.cts_no}</div>
                                     </div>
                                   </div>
                                 </div>
-                                <div className="row">
-                                  <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                    <div className="head">Comments</div>
-                                  </div>
-                                  <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                    <div className="value">{item.comments}</div>
-                                  </div>
-                                </div>
-                                <div className="row">
-                                  <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                    <div className="head">relate to</div>
-                                  </div>
-                                  <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                    <div className="value">{item.relate_to}</div>
-                                  </div>
-                                </div>
-                                <div className="row">
-                                  <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                    <div className="head">Event Date:</div>
-                                  </div>
-                                  <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                    <div className="value">{moment(item?.event_date).format("DD-MM-YYYY LT")}</div>
-                                  </div>
-                                </div>
-                                <div className="row">
-                                  <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                    <div className="head">CTS to</div>
-                                  </div>
-                                  <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                                    <div className="value">{item.cts_no}</div>
-                                  </div>
-                                </div>
-                              </div>
+                              );
                             })}
                           </div>
                         </Collapse>
                       </div>
                     </div>
                   </div>
-
-                </div> : null}
+                </div>
+              ) : null}
             </div>
-
           </div>
         </div>
       </div>
       {/*   close not convertd  */}
-      <Modal className="commonModal" show={show} onHide={handleClose} >
+      <Modal className="commonModal" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          {userInfo.lead_status_id == 3 ?
-            <Modal.Title> Add Loss Reason </Modal.Title> :
-            <Modal.Title> converted Lead </Modal.Title>}
+          {userInfo.lead_status_id == 3 ? (
+            <Modal.Title> Add Loss Reason </Modal.Title>
+          ) : (
+            <Modal.Title> converted Lead </Modal.Title>
+          )}
         </Modal.Header>
-        {userInfo.lead_status_id == 3 ?
+        {userInfo.lead_status_id == 3 ? (
           <Modal.Body>
-
             <div className="add_user_form">
               <div className="row">
                 <div className="col-xl-12 col-md-12 col-sm-12 col-12">
@@ -2107,21 +2645,32 @@ const AddLeadsScreen = () => {
                     <label htmlFor="loss_reson">Select Loss Reason</label>
                     <select
                       className="form-control"
-                      name="loss_reson" id="loss_reson"
-                      onChange={(e) => setUserInfo({ ...userInfo, lead_status_id: 3, loss_reason: e.target.value })} >
+                      name="loss_reson"
+                      id="loss_reson"
+                      onChange={(e) =>
+                        setUserInfo({
+                          ...userInfo,
+                          lead_status_id: 3,
+                          loss_reason: e.target.value,
+                        })
+                      }
+                    >
                       <option value="">Select Reason</option>
                       {lossLists?.map((data, i) => {
-                        return <option key={i} value={data.loss_id}>{data.loss_reason}</option>
+                        return (
+                          <option key={i} value={data.loss_id}>
+                            {data.loss_reason}
+                          </option>
+                        );
                       })}
                     </select>
                   </div>
                 </div>
               </div>
             </div>
-
-          </Modal.Body> : 
+          </Modal.Body>
+        ) : (
           <Modal.Body>
-
             <div className="add_user_form">
               <div className="row">
                 <div className="col-xl-6 col-md-6 col-sm-12 col-12">
@@ -2129,25 +2678,29 @@ const AddLeadsScreen = () => {
                     <label htmlFor="loss_reson">Account</label>
                     <select
                       className="form-control"
-                      name="Account" id="Account"
-                      onChange={(e) => setUserInfo({ ...userInfo, acc_id: e.target.value })}
+                      name="Account"
+                      id="Account"
+                      onChange={(e) =>
+                        setUserInfo({ ...userInfo, acc_id: e.target.value })
+                      }
                       value={userInfo.acc_id ? userInfo.acc_id : ""}
                     >
                       <option value="">Select Account</option>
-                      <option value='0' >
-                        Create New Account
-                      </option>
+                      <option value="0">Create New Account</option>
                       {accountsList?.map((data, index) => {
-                        return <option key={index} value={data.acc_id}>{data.acc_name}</option>
+                        return (
+                          <option key={index} value={data.acc_id}>
+                            {data.acc_name}
+                          </option>
+                        );
                       })}
                     </select>
                   </div>
                 </div>
-                {userInfo.acc_id == 0 ?
+                {userInfo.acc_id == 0 ? (
                   <>
                     <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                       <div className="input_box">
-
                         <label htmlFor="loss_reson">Account Name</label>
 
                         <input
@@ -2156,33 +2709,43 @@ const AddLeadsScreen = () => {
                           name="account name"
                           id="account name"
                           className="form-control"
-                          onChange={(e) => setUserInfo({ ...userInfo, acc_name: e.target.value })}
+                          onChange={(e) =>
+                            setUserInfo({
+                              ...userInfo,
+                              acc_name: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     </div>
-
-                  </> : null}
+                  </>
+                ) : null}
 
                 <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                   <div className="input_box">
                     <label htmlFor="loss_reson">Contact</label>
                     <select
                       className="form-control"
-                      name="Account" id="Account"
-                      onChange={(e) => setUserInfo({ ...userInfo, contact_id: e.target.value })}
+                      name="Account"
+                      id="Account"
+                      onChange={(e) =>
+                        setUserInfo({ ...userInfo, contact_id: e.target.value })
+                      }
                       value={userInfo.contact_id ? userInfo.contact_id : ""}
                     >
                       <option value="">Select Contact</option>
-                      <option value='0' >
-                        Create New Contact
-                      </option>
+                      <option value="0">Create New Contact</option>
                       {ContactList?.map((data, index) => {
-                        return <option key={index} value={data.contact_id}>{data.first_name}</option>
+                        return (
+                          <option key={index} value={data.accountName?.acc_id}>
+                            {data.first_name}
+                          </option>
+                        );
                       })}
                     </select>
                   </div>
                 </div>
-                {userInfo.contact_id == 0 ?
+                {userInfo.contact_id == 0 ? (
                   <>
                     <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                       <div className="input_box">
@@ -2193,37 +2756,46 @@ const AddLeadsScreen = () => {
                           name="account name"
                           id="account name"
                           className="form-control"
-                          onChange={(e) => setUserInfo({ ...userInfo, first_name: e.target.value })}
-
+                          onChange={(e) =>
+                            setUserInfo({
+                              ...userInfo,
+                              first_name: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     </div>
-                  </> : null}
+                  </>
+                ) : null}
 
                 <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                   <div className="input_box">
                     <label htmlFor="loss_reson">Opportunity</label>
                     <select
                       className="form-control"
-                      name="Account" id="Account"
-                      onChange={(e) => setUserInfo({ ...userInfo, opp_id: e.target.value })}
+                      name="Account"
+                      id="Account"
+                      onChange={(e) =>
+                        setUserInfo({ ...userInfo, opp_id: e.target.value })
+                      }
                       value={userInfo.opp_id ? userInfo.opp_id : ""}
                     >
                       <option value="">Select Opportunity</option>
-                      <option value='0' >
-                        Create New Opportunity
-                      </option>
+                      <option value="0">Create New Opportunity</option>
                       {oppurtunityList?.map((data, i) => {
-                        return <option key={i} value={data.opp_id}>{data.opp_name}</option>
+                        return (
+                          <option key={i} value={data.opp_id}>
+                            {data.opp_name}
+                          </option>
+                        );
                       })}
                     </select>
                   </div>
                 </div>
-                {userInfo.opp_id == 0 ?
+                {userInfo.opp_id == 0 ? (
                   <>
                     <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                       <div className="input_box">
-
                         <label htmlFor="loss_reson">Opportunity Name</label>
 
                         <input
@@ -2232,30 +2804,34 @@ const AddLeadsScreen = () => {
                           name="opportunity name"
                           id="opportunity name"
                           className="form-control"
-                          onChange={(e) => setUserInfo({ ...userInfo, opp_name: e.target.value })}
+                          onChange={(e) =>
+                            setUserInfo({
+                              ...userInfo,
+                              opp_name: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     </div>
-                  </> : null}
+                  </>
+                ) : null}
               </div>
             </div>
-          </Modal.Body>}
+          </Modal.Body>
+        )}
         <Modal.Footer>
-
-          {userInfo.lead_status_id == 3 ?
-
-            <Button variant="primary" onClick={lossReasonSubmit} >
-              SUBMIT
-            </Button> :
-
-            <Button variant="primary" onClick={ConvertedLead} >
+          {userInfo.lead_status_id == 3 ? (
+            <Button variant="primary" onClick={lossReasonSubmit}>
               SUBMIT
             </Button>
-          }
+          ) : (
+            <Button variant="primary" onClick={ConvertedLead}>
+              SUBMIT
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
     </>
-
   );
 };
 

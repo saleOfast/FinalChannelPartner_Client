@@ -15,6 +15,7 @@ const ManageLeadTable = ({
   title,
   loader,
   disableConfirm,
+  checkAccountMatch
 }) => {
   
   const getUserName = (userObject) => {
@@ -78,7 +79,7 @@ const ManageLeadTable = ({
       options: {
         filter: true,
         customBodyRender: (value, tableMeta, updateValue) => {
-          console.log(tableMeta)
+          
           return (
             <div className="status_box">
               {/* <span className={`status${value?.lead_status_id} status_btn`}>{value?.lead_status_id ? value?.status_name : ""}</span> */}
@@ -131,7 +132,11 @@ const ManageLeadTable = ({
               tableMeta?.rowData[8] == 1 || tableMeta?.rowData[8] == 2 
               ?
                 <button
-                  onClick={() => openCloseConvert(value)}
+                  onClick={() =>{ 
+                    
+                    openCloseConvert(value,tableMeta?.rowData[1])
+                    
+                  }}
                   className="action_btn x2"
                   title="Close-converted">
                   <ClosedConverted />

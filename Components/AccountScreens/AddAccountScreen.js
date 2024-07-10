@@ -1454,7 +1454,10 @@ const AddAccountScreen = () => {
                       })}
                     </ul>
                   </div>
-                  <div className="card_footer">
+                  <div className="card_footer d-flex justify-content-between">
+                    <Link href={`/crm/AddOpportunity?ac_id=${id}`}>
+                      <div className="text_more">create</div>
+                    </Link>
                     <Link href='/crm/Opportunity'>
                       <div className="text_more">view more</div>
                     </Link>
@@ -1477,7 +1480,10 @@ const AddAccountScreen = () => {
                       })}
                     </ul>
                   </div>
-                  <div className="card_footer">
+                  <div className="card_footer d-flex justify-content-between">
+                  <Link href={`/crm/AddContact?ac_id=${id}`}>
+                      <div className="text_more">create</div>
+                    </Link>
                     <Link href='/crm/Contacts'>
                       <div className="text_more">view more</div>
                     </Link>
@@ -1501,7 +1507,11 @@ const AddAccountScreen = () => {
                       })}
                     </ul>
                   </div>
-                  <div className="card_footer">
+                  <div className="card_footer d-flex justify-content-between">
+                  <Link href={`/crm/AddLeads?ac_id=${id}`}>
+
+                      <div className="text_more">create</div>
+                    </Link>
                     <Link href='/crm/ManageLeads'>
                       <div className="text_more">view more</div>
                     </Link>

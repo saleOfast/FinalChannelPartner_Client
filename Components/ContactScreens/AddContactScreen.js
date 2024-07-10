@@ -16,6 +16,7 @@ const AddContactScreen = () => {
 
     const router = useRouter();
     const { id } = router.query;
+    const { ac_id } = router.query;
 
     const [countrylist, setcountrylist] = useState([]);
     const [statelist, setStatelist] = useState([]);
@@ -118,16 +119,26 @@ const AddContactScreen = () => {
             }
             try {
                 const response = await axios.get(Baseurl + `/db/account?acc_id=${acc_id}`, header);
-                setSingleAccount(response.data.data)
-                setUserInfo({
-                    ...userInfo,
-                    mailing_cont: response.data.data.ship_cont,
-                    mailing_state: response.data.data.ship_state,
-                    mailing_city: response.data.data.ship_city,
-                    mailing_address: response.data.data.ship_address,
-                    mailing_pincode: response.data.data.ship_pincode
-
-                })
+                setSingleAccount(response?.data?.data)
+                // setUserInfo({
+                //     ...userInfo,
+                //     mailing_cont: response?.data?.data?.ship_cont,
+                //     mailing_state: response? .data?.data?.ship_state,
+                //     mailing_city: response? .data?.data?.ship_city,
+                //     mailing_address: response? .data?.data?.ship_address,
+                //     mailing_pincode: response? .data?.data?.ship_pincode,
+                // })
+                setUserInfo((prevUserInfo) => ({
+                    ...prevUserInfo,
+                    account_name:response?.data?.data?.acc_id,
+                    contact_no:response?.data?.data?.contact_no,
+                    mailing_cont: response?.data?.data?.ship_cont,
+                    mailing_state: response?.data?.data?.ship_state,
+                    mailing_city: response?.data?.data?.ship_city,
+                    mailing_address: response?.data?.data?.ship_address,
+                    mailing_pincode: response?.data?.data?.ship_pincode,
+                }));
+                
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -139,6 +150,11 @@ const AddContactScreen = () => {
         }
     }
 
+    useEffect(()=>{
+        if(ac_id){
+            getSingleAccountsList(ac_id)
+        }
+    },[ac_id])
 
     const getSingleData = async (id) => {
         if (hasCookie("token")) {

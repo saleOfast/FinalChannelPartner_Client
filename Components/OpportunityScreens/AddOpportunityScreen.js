@@ -150,7 +150,7 @@ const AddOpportunityScreen = () => {
           let arr = userInfo
           arr.db_opportunity_fields.push(newFields)
           setUserInfo(arr)
-          console.log("arr",arr)
+          console.log("arr angg",arr)
           setiscollapse(!iscollapse);
           setNewFields({
             field_lable: null,
@@ -1198,8 +1198,9 @@ async function postFieldsFunc(id, data) {
 
 
 
-
-                        {userInfo.db_opportunity_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
+       <div className="row">
+    
+         {userInfo.db_opportunity_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
                         <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>
                           <div className="input_box">
                             <label htmlFor={field_name + ind}> {field_lable} </label>
@@ -1237,6 +1238,7 @@ async function postFieldsFunc(id, data) {
                         </div>
                       ))}
 
+</div>
                         {iscollapse && (
                       <div className="addFieldsForm py-5">
                         <div className="row">

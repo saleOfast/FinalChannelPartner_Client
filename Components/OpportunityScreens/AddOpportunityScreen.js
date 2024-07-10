@@ -34,8 +34,17 @@ const AddOpportunityScreen = () => {
         opp_owner: null,
         created_at: "",
         assigned_to: null,
-        close_lost_reason:""
+        close_lost_reason:"",
+        db_opportunity_fields: [],
+
     });
+    const [newFields, setNewFields] = useState({
+        field_lable: null,
+        input_type: null,
+        field_type: null,
+        field_size: null,
+        option: null,
+      });
     const [prdSer, setPrdSer] = useState(false);
     const [accountsList, setAccountsList] = useState([]);
     const [stageList, setStageList] = useState([]);
@@ -51,6 +60,8 @@ const AddOpportunityScreen = () => {
     const [productList, setProductList] = useState([])
     const [isLoading, setisLoading] = useState(false)
     const [lossLists, setlossLists] = useState([])
+    const [iscollapse, setiscollapse] = useState(false);
+
   
 
     const Datenow =  moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
@@ -79,6 +90,97 @@ const AddOpportunityScreen = () => {
         await fetchData(`/db/loss`, setlossLists, errorToast, setErrorToast);
       }
 
+
+
+
+
+      const inputClass = (value) => {
+        const inputClasses = {
+          text: 'form-control',
+          date: 'form-control',
+          email: 'form-control',
+          number: 'form-control',
+          checkbox: 'form-check-input ms-3',
+        };
+        return inputClasses[value] || '';
+      };
+
+      
+    const createInputField = (e) => {
+        console.log("creating field")
+
+        e.preventDefault();
+        const { field_lable, input_type, field_type,field_size, option } = newFields;
+    
+        const showError = (errorMessage) => {
+          toast.error(errorMessage);
+        };
+    
+        const validateField = () => {
+          if (!field_lable) {
+            showError('Please enter the Field Name');
+            return false;
+          } else if (!input_type) {
+            showError('Please select the Input Type');
+            return false;
+          }
+          else if (input_type === 'input' && !field_type ) {
+            showError('Please select the Field Type');
+            return false;
+          }
+          // else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
+          //   showError('Please Enter Field Size');
+          //   return false;
+          // }
+          else if (input_type === 'select' && !option) {
+            showError('Please select input Options');
+            return false;
+          }
+          return true;
+        };
+        console.log("test 1")
+    
+        if (validateField()) {
+          const inputReq = {
+            ...newFields,
+            field_name: field_lable.replaceAll(' ', '_'),
+            navigate_type: userInfo.navigate_type,
+            // field_order: inputsData.length + 1
+          };
+          let arr = userInfo
+          arr.db_opportunity_fields.push(newFields)
+          setUserInfo(arr)
+          console.log("arr",arr)
+          setiscollapse(!iscollapse);
+          setNewFields({
+            field_lable: null,
+            input_type: null,
+            field_type: null,
+            option: null,
+            field_size: null,
+          })
+          console.log("new file",newFields)
+        }
+      };
+
+
+
+      
+  const updateFieldInfo = (e, ind) => {
+    let newData = JSON.parse(JSON.stringify(userInfo))
+    console.log('newData',newData)
+
+    if( newData?.db_opportunity_fields[ind]?.field_type === 'checkbox'){
+      newData.db_opportunity_fields[ind].input_value = e.target.checked
+
+    }else{
+
+      newData.db_opportunity_fields[ind].input_value = e.target.value
+    }
+   
+    setUserInfo(newData)
+
+  };
     const addRowHandler = (i) => {
         const ArrLength = formValues.length - 1;
         if (formValues[ArrLength].p_id == '') {
@@ -153,6 +255,8 @@ const AddOpportunityScreen = () => {
         }
     };
 
+
+
     const getProductData = async (id) => {
         if (hasCookie("token")) {
             let token = getCookie("token");
@@ -183,6 +287,8 @@ const AddOpportunityScreen = () => {
         }
     };
     
+
+
     const submitHandler = async () => {
         if(userInfo?.opportunity_stg_id===4 && (userInfo?.close_lost_reason===undefined  || userInfo?.close_lost_reason==="" || userInfo?.close_lost_reason===null)){
             setErrorData({...errorData,close_lost_reason:"Enter Close Lost Reason"})
@@ -208,7 +314,8 @@ const AddOpportunityScreen = () => {
                 const response = await axios.post(Baseurl + `/db/opportunity`, oppBody, header);
                 if (response.status === 204 || response.status === 200) {
                     toast.success(response.data.message);
-                    await productSubmit(formValues, response.data.data.opp_id)
+                    await productSubmit(formValues, response.data.data.opp_id,oppBody.db_opportunity_fields)
+                    await postFieldsFunc(response.data.data.opp_id,oppBody.db_opportunity_fields);
                     setisLoading(false)
                     router.push("/crm/Opportunity");
                 }
@@ -264,6 +371,59 @@ const AddOpportunityScreen = () => {
         }
     }
 
+
+//postFieldFunc
+
+async function postFieldsFunc(id, data) {
+    if (hasCookie("token")) {
+      setisLoading(true)
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+        },
+
+      };
+    //   data?.map(item => {
+    //     item.opp_id = id
+    //   })
+
+
+    const updatedData = data.map(item => ({
+        ...item,
+        opportunity: id
+      }));
+      try {
+        const response = await axios.post(Baseurl + `/db/opportunity/field`,updatedData, header);
+        if (response.status === 204 || response.status === 200) {
+          setisLoading(false)
+        }
+      } catch (error) {
+        console.log(error)
+        if (error?.response?.data?.status === 422) {
+          const taskObject = {}
+          const array = error?.response?.data?.data;
+          for (let i = 0; i < array.length; i++) {
+            const key = Object.keys(array[i])[0];
+            const value = Object.values(array[i])[0];
+            taskObject[key] = value;
+          }
+          setErrorData(taskObject);
+        }
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false)
+      }
+    }
+  }
+
+
     const UpdateHandler = async () => {
         
         if(userInfo?.opportunity_stg_id===4 && (userInfo?.close_lost_reason===undefined  || userInfo?.close_lost_reason==="" || userInfo?.close_lost_reason===null)){
@@ -289,16 +449,21 @@ const AddOpportunityScreen = () => {
 
             try {
                 const response = await axios.put(
-                    Baseurl + `/db//opportunity`,
+                    Baseurl + `/db/opportunity`,
                     userInfoBody,
                     header
                 );
                 if (response.status === 204 || response.status === 200) {
+                    await postFieldsFunc(userInfoBody.opp_id,userInfoBody.db_opportunity_fields);
                     toast.success(response.data.message);
                     productUpdate(formValues, router.query.id)
                     setisLoading(false)
                     router.push("/crm/Opportunity");
                 }
+
+
+
+                
             } catch (error) {
                 if (error?.response?.data?.status === 422) {
                     const taskObject = {}
@@ -359,6 +524,13 @@ const AddOpportunityScreen = () => {
 
         }
     }
+
+
+    const AddFieldsFunc = (e) => {
+        e.preventDefault();
+        setiscollapse(true)
+      };
+    
 
     
 
@@ -1021,8 +1193,172 @@ const AddOpportunityScreen = () => {
                                 </div>
                             </div>
                         </div>
+
+
+
+
+
+
+                        {userInfo.db_opportunity_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>
+                          <div className="input_box">
+                            <label htmlFor={field_name + ind}> {field_lable} </label>
+                            {input_type === 'input' ? (
+                              <input
+                                type={field_type}
+                                className={inputClass(field_type)}
+                                id={field_name + ind}
+                                name={field_name}
+                                placeholder={field_lable}
+                                // disabled={viewMode}
+                                onChange={(e) => updateFieldInfo(e, ind)}
+                                //value={userInfo.field_name ? userInfo.field_name : ""}
+                                checked={input_value == "1" ? true: false}
+                                value={input_value}
+
+                              />
+                            ) : null}
+                            {input_type === 'select' ? (
+                              <select
+                                onChange={(e) => updateFieldInfo(e, ind)}
+                                name={field_name}
+                                id={field_name + ind}
+                                className="form-control"
+                                value={input_value}
+                                // disabled={viewMode}
+                              >
+                                <option value="">Select {field_lable}</option>
+                                {option?.split(",").map((data, i) => (
+                                  <option value={data} key={i}>{data}</option>
+                                ))}
+                              </select>
+                            ) : null}
+                          </div>
+                        </div>
+                      ))}
+
+                        {iscollapse && (
+                      <div className="addFieldsForm py-5">
+                        <div className="row">
+                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                            <div className="input_box">
+                              <label htmlFor='newFieldName'>Field Name</label>
+                              <input
+                                type='text'
+                                className='form-control'
+                                id='newFieldName'
+                                placeholder='Field Name'
+                                onChange={(e) => setNewFields({ ...newFields, field_lable: e.target.value })}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                            <div className="input_box">
+                              <label htmlFor='newFieldType'>Field Type</label>
+                              <select
+                                name="newFieldType"
+                                className='form-control'
+                                id="newFieldType"
+                                onChange={(e) => setNewFields({ ...newFields, input_type: e.target.value })}
+                              >
+                                <option>Select Field Type</option>
+                                <option value='input'>Input Box</option>
+                                <option value='select'>Select Box</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          {newFields.input_type === 'input' && (
+                            <>
+                              <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                                <div className="input_box">
+                                  <label htmlFor='newInputType'>Input Type</label>
+                                  <select
+                                    name="newInputType"
+                                    className='form-control'
+                                    onChange={(e) => setNewFields({ ...newFields, field_type: e.target.value })}
+                                    id="newInputType">
+                                    <option>Select Input Type</option>
+                                    <option value='text'>Text</option>
+                                    <option value='email'>Email</option>
+                                    <option value='checkbox'>Checkbox</option>
+                                    <option value='number'>Number</option>
+                                    <option value='date'>Date</option>
+                                  </select>
+                                </div>
+                              </div>
+                              {/* <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                                <div className="input_box">
+                                  <label htmlFor='field_size'>Field Size</label>
+                                  <input
+                                    type='number'
+                                    name="field_size"
+                                    className='form-control'
+                                    placeholder='Enter field size'
+                                    id="field_size"
+                                    onChange={(e) => setNewFields({ ...newFields, field_size: e.target.value })}
+                                  />
+                                </div>
+                              </div> */}
+
+                            </>
+                          )}
+
+                          {/* {
+                            newFields.input_type === 'input' && (newFields?.field_type==="text" ||  newFields?.field_type==="email" || newFields?.field_type==="number") && (
+                              <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                              <div className="input_box">
+                                <label htmlFor='field_size'>Field Size</label>
+                                <input
+                                  type='number'
+                                  name="field_size"
+                                  className='form-control'
+                                  placeholder='Enter field size'
+                                  id="field_size"
+                                  onChange={(e) => setNewFields({ ...newFields, field_size: e.target.value })}
+                                />
+                              </div>
+                            </div>
+                            )
+                          } */}
+                         
+
+                          {newFields.input_type === 'select' && (
+                            <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                              <div className="input_box">
+                                <label htmlFor='newKeywords'>Select Keywords</label>
+                                <input
+                                  type='text'
+                                  name="newKeywords"
+                                  className='form-control'
+                                  placeholder='e.g. Name, age, gender'
+                                  id="newKeywords"
+                                  onChange={(e) => setNewFields({ ...newFields, option: e.target.value })}
+                                />
+                              </div>
+                            </div>
+                          )}
+
+
+
+                        </div>
+
+                        <div className="btn-row my-4">
+                          {/* <button onClick={"AddFieldsFunc"} className="btn btn-light me-3">Cancel</button> */}
+                          <button onClick={createInputField} className="btn btn-success">Create Field</button>
+                        </div>
+                      </div>
+                    )}
+
+
+
+
                         <div className="text-end">
                             <div className="submit_btn">
+
+                            <div className="add_screen_head">
+                            <span className="text_bold"><button className='btn btn-primary ' onClick={AddFieldsFunc}> Add More Fields</button>  </span>
+                          </div>
                                 <Link href="/crm/Opportunity"><button className="btn btn-cancel m-3 " >Cancel</button></Link>
                                 {editMode ? (
                                     <button disabled={isLoading} className="btn btn-primary" onClick={UpdateHandler}>

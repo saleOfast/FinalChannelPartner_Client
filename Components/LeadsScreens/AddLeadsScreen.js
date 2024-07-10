@@ -657,6 +657,7 @@ useEffect(()=>{
           router.push("/crm/ManageLeads");
         }
       } catch (error) {
+        console.log(error)
         if (error?.response?.data?.status === 422) {
           const taskObject = {};
           const array = error?.response?.data?.data;
@@ -1060,7 +1061,7 @@ useEffect(()=>{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { 
     if (!router.isReady) return;
     if (router.query.id) {
       setEditMode(true);
@@ -1448,7 +1449,7 @@ useEffect(()=>{
                                 ...userInfo,
                                 email_id: e.target.value,
                               })
-                            }
+                            } 
                             value={userInfo.email_id ? userInfo.email_id : ""}
                           />
                           <span className="errorText">

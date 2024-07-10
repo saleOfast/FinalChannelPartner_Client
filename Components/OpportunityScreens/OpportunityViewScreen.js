@@ -109,6 +109,17 @@ const OpportunityViewScreen = () => {
     }
   };
 
+  const inputClass = (value) => {
+    const inputClasses = {
+      text: 'form-control',
+      date: 'form-control',
+      email: 'form-control',
+      number: 'form-control',
+      checkbox: 'form-check-input ms-3',
+    };
+    return inputClasses[value] || '';
+  };
+
   // ----------------- get task in lead page ---------------------//
 
   const getTaskInLead = async (id) => {
@@ -588,6 +599,52 @@ const getProductList = async () => {
                                     
                                 </div>
                             })}
+
+
+                            
+
+        {/* <div className="row"> */}
+                      {dataList?.db_opportunity_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>
+                          <div className="input_box">
+                            <label htmlFor={field_name + ind}> {field_lable} </label>
+                            {input_type === 'input' ? (
+                              <input
+                                type={field_type}
+                                className={inputClass(field_type)}
+                                id={field_name + ind}
+                                name={field_name}
+                                placeholder={field_lable}
+                                 disabled
+                                onChange={(e) => updateFieldInfo(e, ind)}
+                                //value={userInfo.field_name ? userInfo.field_name : ""}
+                                checked={input_value == "1" ? true: false}
+                                value={input_value}
+
+                              />
+                            ) : null}
+                            {input_type === 'select' ? (
+                              <select
+                                onChange={(e) => updateFieldInfo(e, ind)}
+                                name={field_name}
+                                id={field_name + ind}
+                                className="form-control"
+                                value={input_value}
+                                disabled
+                              >
+                                <option value="">Select {field_lable}</option>
+                                {option?.split(",").map((data, i) => (
+                                  <option value={data} key={i}>{data}</option>
+                                ))}
+                              </select>
+                            ) : null}
+                          </div>
+                        </div>
+                      ))}
+                    {/* </div> */}
+
+
+
                           
                         </div>
                       </div>

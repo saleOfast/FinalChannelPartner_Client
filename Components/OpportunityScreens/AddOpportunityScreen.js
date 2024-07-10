@@ -19,6 +19,8 @@ const AddOpportunityScreen = () => {
 
     const router = useRouter();
     const { id } = router.query;
+    const { ac_id } = router.query;
+
 
     const [userInfo, setUserInfo] = useState({
         opp_name: "",
@@ -547,10 +549,14 @@ async function postFieldsFunc(id, data) {
                 newFormValues[index].p_id = '';
                 return
             } else {
+                
                 newFormValues[index][e.name] = e.value;
+                newFormValues[index]["price"]=productList?.find((item)=>(item.p_id==e.value))?.p_price;
+
             }
 
         } else {
+            // debugger
             newFormValues[index][e.target.name] = e.target.value;
         }
         setFormValues(newFormValues);
@@ -572,6 +578,7 @@ async function postFieldsFunc(id, data) {
             const numericValue = parseFloat(array[i].product_amount);
             sum += numericValue;
         } */
+       debugger
         return sum;
     }
 
@@ -612,6 +619,47 @@ async function postFieldsFunc(id, data) {
             }
         }
     }
+
+
+    const getSingleAccountsList = async (acc_id) => {
+        if (hasCookie('token')) {
+            let token = (getCookie('token'));
+            let db_name = (getCookie('db_name'));
+
+            let header = {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: "Bearer ".concat(token),
+                    db: db_name,
+                    pass: 'pass'
+                }
+            }
+            try {
+                const response = await axios.get(Baseurl + `/db/account?acc_id=${acc_id}`, header);
+                
+                setUserInfo((prevUserInfo) => ({
+                    ...prevUserInfo,
+                    account_name:response?.data?.data?.acc_id,
+                    
+                }));
+                
+            } catch (error) {
+                if (error?.response?.data?.message) {
+                    toast.error(error.response.data.message);
+                }
+                else {
+                    toast.error('Something went wrong!')
+                }
+            }
+        }
+    }
+
+    useEffect(()=>{
+        if(ac_id){
+            getSingleAccountsList(ac_id)
+        }
+    },[ac_id])
+
 
    
     useEffect(() => {
@@ -1070,8 +1118,8 @@ async function postFieldsFunc(id, data) {
                                                 id="price"
                                                 className="form-control"
                                                 onChange={e => handleChange(e, index,"price")}
-                                                // value={data?.price ? data.price : ''}
-                                                value={productList?.find((item)=>(item.p_id == data?.p_id)) ? productList?.find((item)=>(item.p_id == data?.p_id))?.p_price:"" }
+                                                value={data?.price ? data.price : ''}
+                                                // value={productList?.find((item)=>(item.p_id == data?.p_id)) ? productList?.find((item)=>(item.p_id == data?.p_id))?.p_price:"" }
 
                                             />
                                         </div>

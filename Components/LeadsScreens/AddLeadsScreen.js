@@ -2545,6 +2545,7 @@ useEffect(()=>{
                               );
                             })}
                           </div>
+                          
                         </Collapse>
                       </div>
                       <div className="box-inside logs">
@@ -2619,6 +2620,85 @@ useEffect(()=>{
                         </Collapse>
                       </div>
                     </div>
+                    <div className="task_log_list w-100">
+                    <div className="opertunity_box">
+                <div className="task_card mb-4">
+                  <div className="task_head">Opportunities List</div>
+                  <div className="tasks_details">
+                    <ul className="tasks_list">
+
+                      {userInfo?.oppList?.map(({ opp_id, opp_name, amount }, i) => {
+                        return (
+                          <li key={opp_id}  className="list-item">
+                            <div className="opp_box">
+                              <Link href={`/crm/OpportunityView?id=${opp_id}`}>
+                                <div className="name">{opp_name} </div>
+                              </Link>
+                              <div className="price">&#8377; {amount}</div>
+                            </div>
+                          </li>
+                        );
+                      })} 
+                    </ul>
+                  </div>
+                  <div className="card_footer ">
+                    
+                    <Link href='/crm/Opportunity'>
+                      <div className="text_more">view more</div>
+                    </Link>
+                  </div>
+                </div>
+                <div className="task_card">
+                  <div className="task_head">Contact List</div>
+                  <div className="tasks_details">
+                    <ul className="tasks_list">
+                      {userInfo?.contactList?.map(({ contact_id, first_name }, i) => {
+                        return (
+                          <li key={contact_id} className="list-item">
+                            <div className="opp_box">
+                              <Link href={`/crm/AddContact?id=${contact_id}&vw=mds`}>
+                                <div className="name">{first_name}</div>
+                              </Link>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                  <div className="card_footer ">
+                  
+                    <Link href='/crm/Contacts'>
+                      <div className="text_more">view more</div>
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="task_card">
+                  <div className="task_head">Account List</div>
+                  <div className="tasks_details">
+                    <ul className="tasks_list">
+                      {userInfo?.accountlist?.map(({ acc_id, acc_name }, i) => {
+                        return (
+                          <li key={acc_id} className="list-item">
+                            <div className="opp_box">
+                              <Link href={`/crm/AddAccount?id=${acc_id}&vw=mds`}>
+                                <div className="name">{acc_name}</div>
+                              </Link>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                  <div className="card_footer ">
+                  
+                    <Link href='/crm/ManageLeads'>
+                      <div className="text_more">view more</div>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+                    </div>  
                   </div>
                 </div>
               ) : null}

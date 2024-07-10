@@ -27,7 +27,8 @@ const ManageLeadScreen = () => {
   const [accountsList, setAccountsList] = useState([]);
   const [ContactList, setContactList] = useState([]);
   const [oppurtunityList, setOppurtunityList] = useState([]);
-  const[loader,setLoader]=useState(false);
+  const [loader,setLoader]=useState(false);
+  const [l_id,setL_id]=useState("")
 
   const handleClose = () => {
     setUserInfo({});
@@ -195,8 +196,10 @@ const ManageLeadScreen = () => {
       await AccountHandlers();
     }
 
+    let checked=false
     if (userInfo.contact_id == 0) {
       await ContactHandler();
+      checked = true
     }
 
     if (userInfo.opp_id == 0) {
@@ -204,10 +207,30 @@ const ManageLeadScreen = () => {
     }
 
     // const data = { ...userInfo, lead_status_id: "4" }
-    const updatedUserInfo = { ...userInfo, contact_id: ContactList?.find((item)=>(item?.accountName?.acc_id===userInfo?.contact_id))?.contact_id  };
+    
+    // const updatedUserInfo = { ...userInfo, contact_id: ContactList?.find((item)=>(item?.accountName?.acc_id===userInfo?.contact_id))?.contact_id  };
 
+    let updatedUserInfo={...userInfo}
+
+    if(!checked){
+       updatedUserInfo = {
+        ...userInfo,
+        contact_id: ContactList?.find((item) => {
+          if (typeof userInfo?.contact_id === 'string') {
+            return item?.first_name === userInfo?.contact_id;
+          } else {
+            return item?.accountName?.acc_id === userInfo?.contact_id;
+          }
+        })?.contact_id
+      };
+    }
+    
+    
+    console.log("updatedUserInfo",updatedUserInfo)
+    
   // Create data object with lead_status_id
   const data = { ...updatedUserInfo, lead_status_id: "4" };
+  console.log(data)
 
     if (userInfo.acc_id && userInfo.contact_id && userInfo.opp_id) {
       submitHandler(data);
@@ -291,7 +314,7 @@ const ManageLeadScreen = () => {
         }
 
         try {
-          const response = await axios.post(Baseurl + `/db/account`, {
+          const response = await axios.post(Baseurl + `/db/account?l_id=${l_id}`, {
             acc_name: userInfo.acc_name,
           }, header);
           if (response.status === 204 || response.status === 200) {
@@ -328,7 +351,7 @@ const ManageLeadScreen = () => {
         };
 
         try {
-          const response = await axios.post(Baseurl + `/db/contacts`, { first_name: userInfo.first_name }, header);
+          const response = await axios.post(Baseurl + `/db/contacts?l_id=${l_id}`, { first_name: userInfo.first_name }, header);
           if (response.status === 204 || response.status === 200) {
             console.log(response, 'contact response');
             reqObj.contact_id = response.data.data.contact_id;
@@ -364,7 +387,7 @@ const ManageLeadScreen = () => {
           },
         };
         try {
-          const response = await axios.post(Baseurl + `/db/opportunity`, { opp_name: userInfo.opp_name }, header);
+          const response = await axios.post(Baseurl + `/db/opportunity?l_id=${l_id}`, { opp_name: userInfo.opp_name }, header);
           if (response.status === 204 || response.status === 200) {
             reqObj.opp_id = response.data.data.opp_id;
             setUserInfo({ ...userInfo, opp_id: response.data.data.opp_id, opp_name: "" })
@@ -378,6 +401,7 @@ const ManageLeadScreen = () => {
 
   function openCloseConvert(value,name) {
     handleShow();
+    setL_id(value)
     getSingleData(value,name);
     // checkAccountMatch(name)
   }
@@ -459,13 +483,20 @@ const ManageLeadScreen = () => {
     let selectedId = null;
     if (account_name.length) {
       selectedId = account_name[0].acc_id;
-      
+      setUserInfo((prev)=>(
+        {...prev,acc_id:selectedId,contact_id:selectedId}
+      ))
+    }
+    else{
+      setUserInfo((prev)=>(
+        {...prev,acc_id:null,contact_id:null}
+      ))
     }
     
     // setUserInfo({ ...userInfo, acc_id: selectedId,contact_id:selectedId });
-    setUserInfo((prev)=>(
-      {...prev,acc_id:selectedId,contact_id:selectedId}
-    ))
+    // setUserInfo((prev)=>(
+    //   {...prev,acc_id:selectedId,contact_id:selectedId}
+    // ))
     
     // return selectedId;  
     
@@ -584,7 +615,8 @@ const ManageLeadScreen = () => {
                   <select
                     className="form-control"
                     name="Account" id="Account"
-                    onChange={(e) => setUserInfo({ ...userInfo, contact_id: e.target.value })}
+                    onChange={(e) =>{
+                       setUserInfo({ ...userInfo, contact_id: e.target.value })}}
                     value={userInfo.contact_id ? userInfo.contact_id : ""}
                   >
                     <option value={null}>Select Contact</option>

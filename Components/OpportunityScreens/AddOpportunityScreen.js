@@ -35,7 +35,7 @@ const AddOpportunityScreen = () => {
         created_at: "",
         assigned_to: null,
         close_lost_reason:"",
-        db_lead_fields: [],
+        db_opportunity_fields: [],
 
     });
     const [newFields, setNewFields] = useState({
@@ -148,7 +148,7 @@ const AddOpportunityScreen = () => {
             // field_order: inputsData.length + 1
           };
           let arr = userInfo
-          arr.db_lead_fields.push(newFields)
+          arr.db_opportunity_fields.push(newFields)
           setUserInfo(arr)
           console.log("arr",arr)
           setiscollapse(!iscollapse);
@@ -168,7 +168,7 @@ const AddOpportunityScreen = () => {
       
   const updateFieldInfo = (e, ind) => {
     let newData = JSON.parse(JSON.stringify(userInfo))
-    console.log(newData)
+    console.log('newData',newData)
 
     if( newData?.db_opportunity_fields[ind]?.field_type === 'checkbox'){
       newData.db_opportunity_fields[ind].input_value = e.target.checked
@@ -314,8 +314,8 @@ const AddOpportunityScreen = () => {
                 const response = await axios.post(Baseurl + `/db/opportunity`, oppBody, header);
                 if (response.status === 204 || response.status === 200) {
                     toast.success(response.data.message);
-                    await productSubmit(formValues, response.data.data.opp_id,oppBody.db_lead_fields)
-                    await postFieldsFunc(response.data.data.opp_id,oppBody.db_lead_fields);
+                    await productSubmit(formValues, response.data.data.opp_id,oppBody.db_opportunity_fields)
+                    await postFieldsFunc(response.data.data.opp_id,oppBody.db_opportunity_fields);
                     setisLoading(false)
                     router.push("/crm/Opportunity");
                 }
@@ -454,7 +454,7 @@ async function postFieldsFunc(id, data) {
                     header
                 );
                 if (response.status === 204 || response.status === 200) {
-                    await postFieldsFunc(userInfoBody.opp_id,userInfoBody.db_lead_fields);
+                    await postFieldsFunc(userInfoBody.opp_id,userInfoBody.db_opportunity_fields);
                     toast.success(response.data.message);
                     productUpdate(formValues, router.query.id)
                     setisLoading(false)
@@ -1199,7 +1199,7 @@ async function postFieldsFunc(id, data) {
 
 
 
-                        {userInfo.db_lead_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
+                        {userInfo.db_opportunity_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
                         <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>
                           <div className="input_box">
                             <label htmlFor={field_name + ind}> {field_lable} </label>
@@ -1351,52 +1351,6 @@ async function postFieldsFunc(id, data) {
                     )}
 
 
-
-
-
-
-
-
-
-         <div className="row">
-                      {userInfo.db_opportunity_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
-                        <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>
-                          <div className="input_box">
-                            <label htmlFor={field_name + ind}> {field_lable} </label>
-                            {input_type === 'input' ? (
-                              <input
-                                type={field_type}
-                                className={inputClass(field_type)}
-                                id={field_name + ind}
-                                name={field_name}
-                                placeholder={field_lable}
-                                // disabled={viewMode}
-                                onChange={(e) => updateFieldInfo(e, ind)}
-                                //value={userInfo.field_name ? userInfo.field_name : ""}
-                                checked={input_value == "1" ? true: false}
-                                value={input_value}
-
-                              />
-                            ) : null}
-                            {input_type === 'select' ? (
-                              <select
-                                onChange={(e) => updateFieldInfo(e, ind)}
-                                name={field_name}
-                                id={field_name + ind}
-                                className="form-control"
-                                value={input_value}
-                                // disabled={viewMode}
-                              >
-                                <option value="">Select {field_lable}</option>
-                                {option?.split(",").map((data, i) => (
-                                  <option value={data} key={i}>{data}</option>
-                                ))}
-                              </select>
-                            ) : null}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
 
 
                         <div className="text-end">

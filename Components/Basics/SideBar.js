@@ -206,8 +206,8 @@ const SideBar = ({}) => {
               <div className={`sideMenuBox ${currActiveLink === allais_menu ? "open" : "closed"}`}>
                 <div className="header">
                   <div className="icon" title={allais_menu}>
-                    {/* <img src={`${filesUrl}/sidebarIcons/${icon_path ? icon_path : `shield.svg`}`} alt="logo" width="100%" /> */}
-                    <img src={`${filesUrl}/sidebarIcons/shield.svg`} alt="logo" width="100%" />
+                    <img src={`${filesUrl}/sidebarIcons/${icon_path ? icon_path : `shield.svg`}`} alt="logo" width="100%" />
+                    {/* <img src={`${filesUrl}/sidebarIcons/shield.svg`} alt="logo" width="100%" /> */}
                   </div>
                   <div className="name">
                     {allais_menu}

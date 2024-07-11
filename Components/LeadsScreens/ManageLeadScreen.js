@@ -3,18 +3,15 @@ import PlusIcon from "../Svg/PlusIcon";
 import Link from "next/link";
 import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
-import axios from 'axios'
+import axios from "axios";
 import { Baseurl } from "../../Utils/Constants";
 import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import DownloadIcon from "../Svg/DownloadIcon";
-const DynamicTable = dynamic(
-  () => import('./ManageLeadTable'),
-  { ssr: false }
-)
+const DynamicTable = dynamic(() => import("./ManageLeadTable"), { ssr: false });
 
 const ManageLeadScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
@@ -23,24 +20,24 @@ const ManageLeadScreen = () => {
   const [show, setShow] = useState(false);
   const [disableShowConfirm, setdisableShowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState("");
-  const [userInfo, setUserInfo] = useState({acc_id:"",contact_id:""});
+  const [userInfo, setUserInfo] = useState({ acc_id: "", contact_id: "" });
   const [accountsList, setAccountsList] = useState([]);
   const [ContactList, setContactList] = useState([]);
   const [oppurtunityList, setOppurtunityList] = useState([]);
-  const [loader,setLoader]=useState(false);
-  const [l_id,setL_id]=useState("")
+  const [loader, setLoader] = useState(false);
+  const [l_id, setL_id] = useState("");
 
   const handleClose = () => {
     setUserInfo({});
     setShow(false);
   };
 
-  const reqObj = {}
+  const reqObj = {};
 
   const handleShow = () => setShow(true);
 
   const getDataList = async () => {
-    setLoader(true)
+    setLoader(true);
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -56,12 +53,12 @@ const ManageLeadScreen = () => {
 
       try {
         const response = await axios.get(Baseurl + `/db/leads`, header);
-        if(response?.status==200|| response?.status==201){
-          setLoader(false)
+        if (response?.status == 200 || response?.status == 201) {
+          setLoader(false);
           setDataList(response?.data?.data);
         }
       } catch (error) {
-        setLoader(false)
+        setLoader(false);
         if (error?.response?.data?.message) {
           toast.error(error?.response?.data?.message);
         } else {
@@ -72,34 +69,6 @@ const ManageLeadScreen = () => {
   };
 
   const getAccountsList = async () => {
-
-    if (hasCookie('token')) {
-      let token = (getCookie('token'));
-      let db_name = (getCookie('db_name'));
-
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          pass: 'pass'
-        }
-      }
-      try {
-        const response = await axios.get(Baseurl + `/db/account`, header);
-        setAccountsList(response.data.data);
-      } catch (error) {
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        }
-        else {
-          toast.error('Something went wrong!')
-        }
-      }
-    }
-  }
-
-  const getSingleData = async (id,name) => {
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -109,7 +78,33 @@ const ManageLeadScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass: 'pass'
+          pass: "pass",
+        },
+      };
+      try {
+        const response = await axios.get(Baseurl + `/db/account`, header);
+        setAccountsList(response.data.data);
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+  const getSingleData = async (id, name) => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
         },
       };
       try {
@@ -118,8 +113,7 @@ const ManageLeadScreen = () => {
           header
         );
         setUserInfo(response.data.data);
-        checkAccountMatch(name)
-        
+        checkAccountMatch(name);
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -131,19 +125,18 @@ const ManageLeadScreen = () => {
   };
 
   const getContactList = async () => {
-
-    if (hasCookie('token')) {
-      let token = (getCookie('token'));
-      let db_name = (getCookie('db_name'));
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
 
       let header = {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass: 'pass'
-        }
-      }
+          pass: "pass",
+        },
+      };
       try {
         const response = await axios.get(Baseurl + `/db/contacts`, header);
         setContactList(response.data.data);
@@ -151,7 +144,7 @@ const ManageLeadScreen = () => {
         console.log(error);
       }
     }
-  }
+  };
 
   const getOppurtunityList = async () => {
     if (hasCookie("token")) {
@@ -163,7 +156,7 @@ const ManageLeadScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass: 'pass'
+          pass: "pass",
         },
       };
 
@@ -181,64 +174,73 @@ const ManageLeadScreen = () => {
   };
 
   const ConvertedLead = async () => {
-
-    if (userInfo.acc_name == "" || userInfo.acc_name == undefined && userInfo.acc_id == 0 || userInfo.acc_id == null) {
-      return toast.error('please select account name')
+    if (
+      userInfo.acc_name == "" ||
+      (userInfo.acc_name == undefined && userInfo.acc_id == 0) ||
+      userInfo.acc_id == null
+    ) {
+      return toast.error("please select account name");
     }
-    if ((userInfo.first_name == "" || userInfo.first_name == undefined) && (userInfo.contact_id == 0 || userInfo.contact_id == null)) {
-      return toast.error('please select contact name')
+    if (
+      (userInfo.first_name == "" || userInfo.first_name == undefined) &&
+      (userInfo.contact_id == 0 || userInfo.contact_id == null)
+    ) {
+      return toast.error("please select contact name");
     }
-    if ((userInfo.opp_name == "" || userInfo.opp_name == undefined) && (userInfo.opp_id == 0 || userInfo.opp_id == null)) {
-      return toast.error('please select opportunity name')
+    if (
+      (userInfo.opp_name == "" || userInfo.opp_name == undefined) &&
+      (userInfo.opp_id == 0 || userInfo.opp_id == null)
+    ) {
+      return toast.error("please select opportunity name");
     }
 
     if (userInfo.acc_id == 0) {
-      await AccountHandlers();
+      var ac_ID = await AccountHandlers();
     }
 
-    let checked=false
+    var checked = false;
+
     if (userInfo.contact_id == 0) {
-      await ContactHandler();
-      checked = true
+      await ContactHandler(ac_ID);
+      checked = true;
     }
 
     if (userInfo.opp_id == 0) {
-      await OpportunityHandler();
+      await OpportunityHandler(ac_ID);
     }
 
     // const data = { ...userInfo, lead_status_id: "4" }
-    
+
     // const updatedUserInfo = { ...userInfo, contact_id: ContactList?.find((item)=>(item?.accountName?.acc_id===userInfo?.contact_id))?.contact_id  };
 
-    let updatedUserInfo={...userInfo}
+    let updatedUserInfo = { ...userInfo };
 
-    if(!checked){
-       updatedUserInfo = {
+    const fetchContactId = async () => {
+      const selectBox = document.getElementById("Account_New");
+      console.log(selectBox);
+      const selectedOption = selectBox.options[selectBox.selectedIndex];
+      return selectedOption.getAttribute("contact_id");
+    };
+    if (!checked) {
+      updatedUserInfo = {
         ...userInfo,
-        contact_id: ContactList?.find((item) => {
-          if (typeof userInfo?.contact_id === 'string') {
-            return item?.first_name === userInfo?.contact_id;
-          } else {
-            return item?.accountName?.acc_id === userInfo?.contact_id;
-          }
-        })?.contact_id
+        contact_id: await fetchContactId()
       };
     }
     
-    
-    console.log("updatedUserInfo",updatedUserInfo)
-    
-  // Create data object with lead_status_id
-  const data = { ...updatedUserInfo, lead_status_id: "4" };
-  console.log(data)
+
+    console.log("updatedUserInfo", updatedUserInfo);
+
+    // Create data object with lead_status_id
+    const data = { ...updatedUserInfo, lead_status_id: "4" };
+    console.log(data);
 
     if (userInfo.acc_id && userInfo.contact_id && userInfo.opp_id) {
       submitHandler(data);
     }
-  }
+  };
 
   const submitHandler = async (object) => {
-
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -249,21 +251,20 @@ const ManageLeadScreen = () => {
           db: db_name,
           m_id: 3,
         },
-
       };
 
-      let userInfoBody = { ...object }
+      let userInfoBody = { ...object };
 
       if (reqObj.acc_id) {
-        userInfoBody.acc_id = reqObj.acc_id
+        userInfoBody.acc_id = reqObj.acc_id;
       }
 
       if (reqObj.contact_id) {
-        userInfoBody.contact_id = reqObj.contact_id
+        userInfoBody.contact_id = reqObj.contact_id;
       }
 
       if (reqObj.opp_id) {
-        userInfoBody.opp_id = reqObj.opp_id
+        userInfoBody.opp_id = reqObj.opp_id;
       }
 
       try {
@@ -289,55 +290,20 @@ const ManageLeadScreen = () => {
         }
       }
     }
-
   };
 
   const AccountHandlers = async () => {
     if (userInfo.acc_name == "" || userInfo.acc_name == undefined) {
-      if (userInfo.acc_id !== undefined && userInfo.acc_id !== null && userInfo.acc_id !== 0) {
+      if (
+        userInfo.acc_id !== undefined &&
+        userInfo.acc_id !== null &&
+        userInfo.acc_id !== 0
+      ) {
         return toast.error("Account is not selected");
       }
       return toast.error("Please enter the Account Name");
-    }
-    else {
-      if (hasCookie('token') && userInfo.acc_name !== "") {
-        let token = (getCookie('token'));
-        let db_name = (getCookie('db_name'));
-
-        let header = {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer ".concat(token),
-            db: db_name,
-            pass: 'pass'
-          }
-        }
-
-        try {
-          const response = await axios.post(Baseurl + `/db/account?l_id=${l_id}`, {
-            acc_name: userInfo.acc_name,
-          }, header);
-          if (response.status === 204 || response.status === 200) {
-            reqObj.acc_id = response.data.data.acc_id;
-            setUserInfo({ ...userInfo, acc_id: response.data.data.acc_id, acc_name: "" })
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-  }
-
-  const ContactHandler = async () => {
-    if (userInfo.first_name == '' || userInfo.first_name == undefined) {
-      if (userInfo.contact_id !== undefined && userInfo.contact_id !== null && userInfo.contact_id !== 0) {
-        return
-      }
-      toast.error('please enter the first name')
-      return
-    }
-    else {
-      if (hasCookie("token") && userInfo.first_name !== '') {
+    } else {
+      if (hasCookie("token") && userInfo.acc_name !== "") {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
 
@@ -346,34 +312,90 @@ const ManageLeadScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            pass: 'pass'
+            pass: "pass",
           },
         };
 
         try {
-          const response = await axios.post(Baseurl + `/db/contacts?l_id=${l_id}`, { first_name: userInfo.first_name }, header);
+          const response = await axios.post(
+            Baseurl + `/db/account?l_id=${l_id}`,
+            {
+              acc_name: userInfo.acc_name,
+            },
+            header
+          );
           if (response.status === 204 || response.status === 200) {
-            console.log(response, 'contact response');
-            reqObj.contact_id = response.data.data.contact_id;
-            setUserInfo({ ...userInfo, contact_id: response.data.data.contact_id, first_name: "" })
+            reqObj.acc_id = response.data.data.acc_id;
+            setUserInfo({
+              ...userInfo,
+              acc_id: response.data.data.acc_id,
+              acc_name: "",
+            });
+            return response.data?.data?.acc_id;
           }
         } catch (error) {
-
+          console.log(error);
         }
       }
     }
+  };
 
-  }
-
-  const OpportunityHandler = async () => {
-    if (userInfo.opp_name === '' || userInfo.opp_name == undefined) {
-      if (userInfo.opp_id !== undefined && userInfo.opp_id !== null && userInfo.opp_id !== 0) {
-        return
+  const ContactHandler = async (ac_ID) => {
+    if (userInfo.first_name == "" || userInfo.first_name == undefined) {
+      if (
+        userInfo.contact_id !== undefined &&
+        userInfo.contact_id !== null &&
+        userInfo.contact_id !== 0
+      ) {
+        return;
       }
-      toast.error('please enter the opportunity name')
-    }
+      toast.error("please enter the first name");
+      return;
+    } else {
+      if (hasCookie("token") && userInfo.first_name !== "") {
+        let token = getCookie("token");
+        let db_name = getCookie("db_name");
 
-    else {
+        let header = {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer ".concat(token),
+            db: db_name,
+            pass: "pass",
+          },
+        };
+
+        try {
+          const response = await axios.post(
+            Baseurl + `/db/contacts?l_id=${l_id}`,
+            { first_name: userInfo.first_name, account_name: ac_ID },
+            header
+          );
+          if (response.status === 204 || response.status === 200) {
+            console.log(response, "contact response");
+            reqObj.contact_id = response.data.data.contact_id;
+            setUserInfo({
+              ...userInfo,
+              contact_id: response.data.data.contact_id,
+              first_name: "",
+            });
+          }
+        } catch (error) {}
+      }
+    }
+  };
+
+  const OpportunityHandler = async (ac_ID) => {
+    if (userInfo.opp_name === "" || userInfo.opp_name == undefined) {
+      if (
+        userInfo.opp_id !== undefined &&
+        userInfo.opp_id !== null &&
+        userInfo.opp_id !== 0
+      ) {
+        return;
+      }
+      toast.error("please enter the opportunity name");
+    } else {
       if (hasCookie("token") && userInfo.opp_name !== "") {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
@@ -383,26 +405,34 @@ const ManageLeadScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            pass: 'pass'
+            pass: "pass",
           },
         };
         try {
-          const response = await axios.post(Baseurl + `/db/opportunity?l_id=${l_id}`, { opp_name: userInfo.opp_name }, header);
+          const response = await axios.post(
+            Baseurl + `/db/opportunity?l_id=${l_id}`,
+            { opp_name: userInfo.opp_name, account_name: ac_ID },
+            header
+          );
           if (response.status === 204 || response.status === 200) {
             reqObj.opp_id = response.data.data.opp_id;
-            setUserInfo({ ...userInfo, opp_id: response.data.data.opp_id, opp_name: "" })
+            setUserInfo({
+              ...userInfo,
+              opp_id: response.data.data.opp_id,
+              opp_name: "",
+            });
           }
         } catch (error) {
           console.log(error);
         }
       }
     }
-  }
+  };
 
-  function openCloseConvert(value,name) {
+  function openCloseConvert(value, name) {
     handleShow();
-    setL_id(value)
-    getSingleData(value,name);
+    setL_id(value);
+    getSingleData(value, name);
     // checkAccountMatch(name)
   }
 
@@ -421,16 +451,19 @@ const ManageLeadScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 6
+          m_id: 6,
         },
       };
 
       try {
-        const response = await axios.delete(Baseurl + `/db/leads?l_id=${currObj}`, header);
+        const response = await axios.delete(
+          Baseurl + `/db/leads?l_id=${currObj}`,
+          header
+        );
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message);
           setdisableShowConfirm(false);
-          setcurrObj('');
+          setcurrObj("");
           getDataList();
         }
       } catch (error) {
@@ -450,26 +483,31 @@ const ManageLeadScreen = () => {
 
       let header = {
         headers: {
-          Accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Change the Accept type to Excel
+          Accept:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Change the Accept type to Excel
           Authorization: "Bearer ".concat(token),
           db: db_name,
           pass: "pass",
         },
-        responseType: 'blob' // set the response type as blob
+        responseType: "blob", // set the response type as blob
       };
 
-      axios.get(Baseurl + `/db/leads/download`, header)
-        .then(response => {
-          const file = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }); // change the content type to Excel
+      axios
+        .get(Baseurl + `/db/leads/download`, header)
+        .then((response) => {
+          const file = new Blob([response.data], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          }); // change the content type to Excel
           const fileUrl = URL.createObjectURL(file);
           // programmatically create and trigger the download link
-          const downloadLink = document.createElement('a');
+          const downloadLink = document.createElement("a");
           downloadLink.href = fileUrl;
-          downloadLink.setAttribute('download', 'Leads.xlsx'); // specify the file name
+          downloadLink.setAttribute("download", "Leads.xlsx"); // specify the file name
           document.body.appendChild(downloadLink);
           downloadLink.click();
           document.body.removeChild(downloadLink);
-        }).catch(error => {
+        })
+        .catch((error) => {
           console.error(error);
         });
     }
@@ -483,29 +521,25 @@ const ManageLeadScreen = () => {
     let selectedId = null;
     if (account_name.length) {
       selectedId = account_name[0].acc_id;
-      setUserInfo((prev)=>(
-        {...prev,acc_id:selectedId,contact_id:selectedId}
-      ))
+      setUserInfo((prev) => ({
+        ...prev,
+        acc_id: selectedId,
+        contact_id: selectedId,
+      }));
+    } else {
+      setUserInfo((prev) => ({ ...prev, acc_id: null, contact_id: null }));
     }
-    else{
-      setUserInfo((prev)=>(
-        {...prev,acc_id:null,contact_id:null}
-      ))
-    }
-    
+
     // setUserInfo({ ...userInfo, acc_id: selectedId,contact_id:selectedId });
     // setUserInfo((prev)=>(
     //   {...prev,acc_id:selectedId,contact_id:selectedId}
     // ))
-    
-    // return selectedId;  
-    
+
+    // return selectedId;
   };
 
-  
-
   // useEffect(() => {
-    
+
   //   checkAccountMatch();
   // }, []);
 
@@ -521,7 +555,8 @@ const ManageLeadScreen = () => {
         showConfirm={disableShowConfirm}
         setshowConfirm={setdisableShowConfirm}
         actionType={deleteHandler}
-        title={"Are You Sure you want to Delete ?"} />
+        title={"Are You Sure you want to Delete ?"}
+      />
       <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
           <h3 className="content_head">Leads</h3>
@@ -546,7 +581,10 @@ const ManageLeadScreen = () => {
                     ADD LEADS
                   </button>
                 </Link>
-                <button className="btn btn-primary Add_btn " onClick={handleDownload}>
+                <button
+                  className="btn btn-primary Add_btn "
+                  onClick={handleDownload}
+                >
                   <DownloadIcon />
                   EXPORT
                 </button>
@@ -563,12 +601,11 @@ const ManageLeadScreen = () => {
           </div>
         </div>
       </div>
-      <Modal className="commonModal" show={show} onHide={handleClose} >
+      <Modal className="commonModal" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title> converted Lead </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-
           <div className="add_user_form">
             <div className="row">
               <div className="col-xl-6 col-md-6 col-sm-12 col-12">
@@ -576,24 +613,29 @@ const ManageLeadScreen = () => {
                   <label htmlFor="loss_reson">Account</label>
                   <select
                     className="form-control"
-                    name="Account" id="Account"
-                    onChange={(e) => setUserInfo({ ...userInfo, acc_id: e.target.value })}
-                    value={userInfo.acc_id ? userInfo.acc_id : ""} >
+                    name="Account"
+                    id="Account"
+                    onChange={(e) =>
+                      setUserInfo({ ...userInfo, acc_id: e.target.value })
+                    }
+                    value={userInfo.acc_id ? userInfo.acc_id : ""}
+                  >
                     <option value={null}>Select Account</option>
-                    <option value='0' >
-                      Create New Account
-                    </option>
+                    <option value="0">Create New Account</option>
                     {accountsList?.map((data, index) => {
-                      return <option key={index} value={data.acc_id}>{data.acc_name}</option>
+                      return (
+                        <option key={index} value={data.acc_id}>
+                          {data.acc_name}
+                        </option>
+                      );
                     })}
                   </select>
                 </div>
               </div>
-              {userInfo.acc_id == 0 ?
+              {userInfo.acc_id == 0 ? (
                 <>
                   <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                     <div className="input_box">
-
                       <label htmlFor="loss_reson">Account Name</label>
 
                       <input
@@ -602,34 +644,44 @@ const ManageLeadScreen = () => {
                         name="account name"
                         id="account name"
                         className="form-control"
-                        onChange={(e) => setUserInfo({ ...userInfo, acc_name: e.target.value })}
+                        onChange={(e) =>
+                          setUserInfo({ ...userInfo, acc_name: e.target.value })
+                        }
                       />
                     </div>
                   </div>
-
-                </> : null}
+                </>
+              ) : null}
 
               <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                 <div className="input_box">
                   <label htmlFor="loss_reson">Contact</label>
                   <select
                     className="form-control"
-                    name="Account" id="Account"
-                    onChange={(e) =>{
-                       setUserInfo({ ...userInfo, contact_id: e.target.value })}}
+                    name="Account"
+                    id="Account_New"
+                    onChange={(e) => {
+                      setUserInfo({ ...userInfo, contact_id: e.target.value });
+                    }}
                     value={userInfo.contact_id ? userInfo.contact_id : ""}
                   >
                     <option value={null}>Select Contact</option>
-                    <option value='0' >
-                      Create New Contact
-                    </option>
+                    <option value="0">Create New Contact</option>
                     {ContactList?.map((data, index) => {
-                      return <option key={index} value={data.accountName?.acc_id}>{data.first_name}</option>
+                      return (
+                        <option
+                          key={index}
+                          value={data.accountName?.acc_id}
+                          contact_id={data?.contact_id}
+                        >
+                          {data.first_name}
+                        </option>
+                      );
                     })}
                   </select>
                 </div>
               </div>
-              {userInfo.contact_id == 0 ?
+              {userInfo.contact_id == 0 ? (
                 <>
                   <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                     <div className="input_box">
@@ -640,37 +692,46 @@ const ManageLeadScreen = () => {
                         name="account name"
                         id="account name"
                         className="form-control"
-                        onChange={(e) => setUserInfo({ ...userInfo, first_name: e.target.value })}
-
+                        onChange={(e) =>
+                          setUserInfo({
+                            ...userInfo,
+                            first_name: e.target.value,
+                          })
+                        }
                       />
                     </div>
                   </div>
-                </> : null}
+                </>
+              ) : null}
 
               <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                 <div className="input_box">
                   <label htmlFor="loss_reson">Opportunity</label>
                   <select
                     className="form-control"
-                    name="Account" id="Account"
-                    onChange={(e) => setUserInfo({ ...userInfo, opp_id: e.target.value })}
+                    name="Account"
+                    id="Account"
+                    onChange={(e) =>
+                      setUserInfo({ ...userInfo, opp_id: e.target.value })
+                    }
                     value={userInfo.opp_id ? userInfo.opp_id : ""}
                   >
                     <option value={null}>Select Opportunity</option>
-                    <option value='0' >
-                      Create New Opportunity
-                    </option>
+                    <option value="0">Create New Opportunity</option>
                     {oppurtunityList?.map((data, i) => {
-                      return <option key={i} value={data.opp_id}>{data.opp_name}</option>
+                      return (
+                        <option key={i} value={data.opp_id}>
+                          {data.opp_name}
+                        </option>
+                      );
                     })}
                   </select>
                 </div>
               </div>
-              {userInfo.opp_id == 0 ?
+              {userInfo.opp_id == 0 ? (
                 <>
                   <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                     <div className="input_box">
-
                       <label htmlFor="loss_reson">Opportunity Name</label>
 
                       <input
@@ -679,22 +740,29 @@ const ManageLeadScreen = () => {
                         name="opportunity name"
                         id="opportunity name"
                         className="form-control"
-                        onChange={(e) => setUserInfo({ ...userInfo, opp_name: e.target.value })}
+                        onChange={(e) =>
+                          setUserInfo({ ...userInfo, opp_name: e.target.value })
+                        }
                       />
                     </div>
                   </div>
-                </> : null}
+                </>
+              ) : null}
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="cancel" onClick={handleClose} >
+          <Button variant="cancel" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={ConvertedLead} >
+          <Button
+            variant="primary"
+            onClick={() => {
+              ConvertedLead();
+            }}
+          >
             SUBMIT
           </Button>
-
         </Modal.Footer>
       </Modal>
     </>

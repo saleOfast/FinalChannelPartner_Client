@@ -258,7 +258,7 @@ const Topnav = ({  topnavPermission }) => {
  
                       <Dropdown.Menu>
                         <ul className="quickaddlist">
-                          <Link href="/AddLeads">
+                          <Link href="/crm/AddLeads">
                             <li className="list-item">
                               <div className="plus_icon">
                                 {" "}
@@ -267,7 +267,7 @@ const Topnav = ({  topnavPermission }) => {
                               <div className="text"> Lead </div>
                             </li>
                           </Link>
-                          <Link href="/AddAccount">
+                          <Link href="/crm/AddAccount">
                             <li className="list-item">
                               <div className="plus_icon">
                                 {" "}
@@ -276,7 +276,7 @@ const Topnav = ({  topnavPermission }) => {
                               <div className="text"> Account </div>
                             </li>
                           </Link>
-                          <Link href="/AddContact">
+                          <Link href="/crm/AddContact">
                             <li className="list-item">
                               <div className="plus_icon">
                                 {" "}
@@ -285,7 +285,7 @@ const Topnav = ({  topnavPermission }) => {
                               <div className="text"> Contact </div>
                             </li>
                           </Link>
-                          <Link href="/AddOpportunity">
+                          <Link href="/crm/AddOpportunity">
                             <li className="list-item">
                               <div className="plus_icon">
                                 {" "}
@@ -294,7 +294,7 @@ const Topnav = ({  topnavPermission }) => {
                               <div className="text"> Opportunity </div>
                             </li>
                           </Link>
-                          <Link href="/AddQuotations">
+                          <Link href="/crm/AddQuotations">
                             <li className="list-item">
                               <div className="plus_icon">
                                 {" "}
@@ -303,7 +303,7 @@ const Topnav = ({  topnavPermission }) => {
                               <div className="text"> Quotation </div>
                             </li>
                           </Link>
-                          <Link href="/AddTask">
+                          <Link href="/crm/AddTask">
                             <li className="list-item">
                               <div className="plus_icon">
                                 {" "}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Baseurl } from "../../Utils/Constants";
 import { hasCookie, getCookie } from "cookies-next";
@@ -177,80 +177,62 @@ const AddLeadsScreen = () => {
     );
   };
 
-  const [fetchedAccInfo,setFetchedAccInfo]=useState({
-    p_contact_no:null,
+  const [fetchedAccInfo, setFetchedAccInfo] = useState({
+    p_contact_no: null,
     country_id: null,
     country_name: "",
     state_id: null,
     state_name: "",
     city_id: null,
     city_name: "",
-    address:"",
+    address: "",
     pincode: null,
-  })
+  });
   const getSingleAccountsList = async (acc_id) => {
-    if (hasCookie('token')) {
-        let token = (getCookie('token'));
-        let db_name = (getCookie('db_name'));
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
 
-        let header = {
-            headers: {
-                Accept: "application/json",
-                Authorization: "Bearer ".concat(token),
-                db: db_name,
-                pass: 'pass'
-            }
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/account?acc_id=${acc_id}`,
+          header
+        );
+
+        setFetchedAccInfo((prevUserInfo) => ({
+          ...prevUserInfo,
+          p_contact_no: response?.data?.data?.contact_no,
+          country_id: response?.data?.data?.ship_cont,
+          country_name: response?.data?.data?.billCountry?.country_name,
+          state_id: response?.data?.data?.ship_state,
+          state_name: response?.data?.data?.billState?.state_name,
+          city_id: response?.data?.data?.ship_city,
+          city_name: response?.data?.data?.billCity?.city_name,
+          address: response?.data?.data?.ship_address,
+          pincode: response?.data?.data?.ship_pincode,
+        }));
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
         }
-        try {
-            const response = await axios.get(Baseurl + `/db/account?acc_id=${acc_id}`, header);
-            // setSingleAccount(response?.data?.data)
-            // setUserInfo({
-            //     ...userInfo,
-            //     mailing_cont: response?.data?.data?.ship_cont,
-            //     mailing_state: response? .data?.data?.ship_state,
-            //     mailing_city: response? .data?.data?.ship_city,
-            //     mailing_address: response? .data?.data?.ship_address,
-            //     mailing_pincode: response? .data?.data?.ship_pincode,
-            // })
-
-            console.log('first',{
-
-              p_contact_no:response?.data?.data?.contact_no,
-              country_id: response?.data?.data?.ship_cont,
-              state_id: response?.data?.data?.ship_state,
-              city_id: response?.data?.data?.ship_city,
-              address: response?.data?.data?.ship_address,
-              pincode: response?.data?.data?.ship_pincode,
-          })
-            setFetchedAccInfo((prevUserInfo) => ({
-                ...prevUserInfo,
-                p_contact_no:response?.data?.data?.contact_no,
-                country_id: response?.data?.data?.ship_cont,
-                country_name: response?.data?.data?.billCountry?.country_name,
-                state_id: response?.data?.data?.ship_state,
-                state_name: response?.data?.data?.billState?.state_name,
-                city_id: response?.data?.data?.ship_city,
-                city_name: response?.data?.data?.billCity?.city_name,
-                address: response?.data?.data?.ship_address,
-                pincode: response?.data?.data?.ship_pincode,
-            }));
-            
-        } catch (error) {
-            if (error?.response?.data?.message) {
-                toast.error(error.response.data.message);
-            }
-            else {
-                toast.error('Something went wrong!')
-            }
-        }
+      }
     }
-}
-useEffect(()=>{
-  if(ac_id){
-      getSingleAccountsList(ac_id)
-  }
-},[ac_id])
-
+  };
+  useEffect(() => {
+    if (ac_id) {
+      getSingleAccountsList(ac_id);
+    }
+  }, [ac_id]);
 
   const submitHandler = async () => {
     if (hasCookie("token")) {
@@ -518,7 +500,7 @@ useEffect(()=>{
         };
         try {
           const response = await axios.post(
-            Baseurl + `/db//opportunity?l_id=${id}`,
+            Baseurl + `/db/opportunity?l_id=${id}`,
             { opp_name: userInfo.opp_name, account_name: ac_ID },
             header
           );
@@ -584,13 +566,35 @@ useEffect(()=>{
         }
       }, 1000);
 
+      const fetchContactId = async () => {
+        const selectBox = document.getElementById("Account_New");
+        if (selectBox) {
+          console.log(selectBox);
+          const selectedOption = selectBox.options[selectBox.selectedIndex];
+          return selectedOption.getAttribute("contact_id");
+        } else {
+          return null;
+        }
+      };
+
+      // if (editConId == null && userInfo.lead_status_id == 4) {
+      //   userInfoBody = {
+      //     ...userInfoBody,
+      //     contact_id: await fetchContactId(),
+      //   };
+      // }
+
       setUserInfo({ ...userInfo, lead_status_id: "4" });
+      if (editConId == null && userInfo.lead_status_id == 4) {
+        const contact_id=await fetchContactId()
+        setUserInfo({ ...userInfo, contact_id: contact_id });
+      }
       setShow(false);
     } else {
       return handleClose();
     }
-    };
-    
+  };
+
   const StatusChangeHandler = (value) => {
     if (value && value === "3") {
       handleShow();
@@ -598,14 +602,10 @@ useEffect(()=>{
     } else if (value && value === "4") {
       handleShow();
       setUserInfo({ ...userInfo, lead_status_id: value });
-      
     } else {
       setUserInfo({ ...userInfo, lead_status_id: value });
     }
-    
   };
-
-  
 
   async function updateHandler() {
     if (hasCookie("token")) {
@@ -640,6 +640,9 @@ useEffect(()=>{
       //     userInfoBody = {...userInfo, contact_id: editConId, opp_id: editOppId, acc_id: editAccId}
       // }
 
+      
+     
+      console.log(userInfoBody)
       try {
         const response = await axios.put(
           Baseurl + `/db/leads`,
@@ -1012,25 +1015,22 @@ useEffect(()=>{
   };
 
   const checkAccountMatch = () => {
-    
     let account_name = accountsList?.filter(
       (account) => account?.acc_name === userInfo?.lead_name
     );
     let selectedId = null;
     if (account_name.length) {
       selectedId = account_name[0].acc_id;
-      
     }
-    
-    setUserInfo((prev)=>(
-      {...prev,acc_id:selectedId,contact_id:selectedId}
-    ))
-    
-    // return selectedId;  
-    
-  };
 
-  
+    setUserInfo((prev) => ({
+      ...prev,
+      acc_id: selectedId,
+      contact_id: selectedId,
+    }));
+
+    // return selectedId;
+  };
 
   useEffect(() => {
     checkAccountMatch();
@@ -1061,7 +1061,7 @@ useEffect(()=>{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (!router.isReady) return;
     if (router.query.id) {
       setEditMode(true);
@@ -1237,7 +1237,7 @@ useEffect(()=>{
                             disabled={viewMode}
                             onChange={(e) => {
                               StatusChangeHandler(e.target.value);
-                              
+
                               setErrorData({
                                 ...errorData,
                                 lead_status_id: "",
@@ -1449,7 +1449,7 @@ useEffect(()=>{
                                 ...userInfo,
                                 email_id: e.target.value,
                               })
-                            } 
+                            }
                             value={userInfo.email_id ? userInfo.email_id : ""}
                           />
                           <span className="errorText">
@@ -1487,8 +1487,11 @@ useEffect(()=>{
                               })
                             }
                             value={
-                              userInfo?.p_contact_no ? userInfo.p_contact_no : fetchedAccInfo?.p_contact_no ? fetchedAccInfo?.p_contact_no :""
-
+                              userInfo?.p_contact_no
+                                ? userInfo.p_contact_no
+                                : fetchedAccInfo?.p_contact_no
+                                ? fetchedAccInfo?.p_contact_no
+                                : ""
                             }
                           />
                           <span className="errorText">
@@ -1661,13 +1664,24 @@ useEffect(()=>{
                             //   }
                             // })}
                             value={
-                              fetchedAccInfo?.country_id 
-                                ? { value: fetchedAccInfo.country_id, label: fetchedAccInfo.country_name } 
-                                : countrylist?.find(data => userInfo.country_id === data.country_id) 
-                                  ? { value: userInfo.country_id, label: countrylist.find(data => userInfo.country_id === data.country_id).country_name } 
-                                  : null
+                              fetchedAccInfo?.country_id
+                                ? {
+                                    value: fetchedAccInfo.country_id,
+                                    label: fetchedAccInfo.country_name,
+                                  }
+                                : countrylist?.find(
+                                    (data) =>
+                                      userInfo.country_id === data.country_id
+                                  )
+                                ? {
+                                    value: userInfo.country_id,
+                                    label: countrylist.find(
+                                      (data) =>
+                                        userInfo.country_id === data.country_id
+                                    ).country_name,
+                                  }
+                                : null
                             }
-                            
                             onChange={(e) => {
                               setUserInfo({ ...userInfo, country_id: e.value });
                               setErrorData({ ...errorData, country_id: "" });
@@ -1707,11 +1721,23 @@ useEffect(()=>{
                             //   }
                             // })}
                             value={
-                              fetchedAccInfo?.state_id 
-                                ? { value: fetchedAccInfo.state_id, label: fetchedAccInfo.state_name } 
-                                : statelist?.find(data => userInfo.state_id === data.state_id) 
-                                  ? { value: userInfo.state_id, label: statelist.find(data => userInfo.state_id === data.state_id).state_name } 
-                                  : null
+                              fetchedAccInfo?.state_id
+                                ? {
+                                    value: fetchedAccInfo.state_id,
+                                    label: fetchedAccInfo.state_name,
+                                  }
+                                : statelist?.find(
+                                    (data) =>
+                                      userInfo.state_id === data.state_id
+                                  )
+                                ? {
+                                    value: userInfo.state_id,
+                                    label: statelist.find(
+                                      (data) =>
+                                        userInfo.state_id === data.state_id
+                                    ).state_name,
+                                  }
+                                : null
                             }
                             onChange={(e) => {
                               setUserInfo({ ...userInfo, state_id: e.value });
@@ -1752,11 +1778,22 @@ useEffect(()=>{
                             //   }
                             // })}
                             value={
-                              fetchedAccInfo?.city_id 
-                                ? { value: fetchedAccInfo.city_id, label: fetchedAccInfo.city_name } 
-                                : citylist?.find(data => userInfo.city_id === data.city_id) 
-                                  ? { value: userInfo.city_id, label: citylist.find(data => userInfo.city_id === data.city_id).city_name } 
-                                  : null
+                              fetchedAccInfo?.city_id
+                                ? {
+                                    value: fetchedAccInfo.city_id,
+                                    label: fetchedAccInfo.city_name,
+                                  }
+                                : citylist?.find(
+                                    (data) => userInfo.city_id === data.city_id
+                                  )
+                                ? {
+                                    value: userInfo.city_id,
+                                    label: citylist.find(
+                                      (data) =>
+                                        userInfo.city_id === data.city_id
+                                    ).city_name,
+                                  }
+                                : null
                             }
                             onChange={(e) => {
                               setUserInfo({ ...userInfo, city_id: e.value });
@@ -1796,7 +1833,13 @@ useEffect(()=>{
                               });
                               setErrorData({ ...errorData, pincode: "" });
                             }}
-                            value={userInfo.pincode ? userInfo.pincode :fetchedAccInfo?.pincode ? fetchedAccInfo?.pincode : ""}
+                            value={
+                              userInfo.pincode
+                                ? userInfo.pincode
+                                : fetchedAccInfo?.pincode
+                                ? fetchedAccInfo?.pincode
+                                : ""
+                            }
                           />
                           <span className="errorText">
                             {" "}
@@ -1820,7 +1863,13 @@ useEffect(()=>{
                                 address: e.target.value,
                               })
                             }
-                            value={userInfo.address ? userInfo.address :fetchedAccInfo?.address  ? fetchedAccInfo?.address : ""}
+                            value={
+                              userInfo.address
+                                ? userInfo.address
+                                : fetchedAccInfo?.address
+                                ? fetchedAccInfo?.address
+                                : ""
+                            }
                           ></textarea>
                         </div>
                       </div>
@@ -2545,7 +2594,6 @@ useEffect(()=>{
                               );
                             })}
                           </div>
-                          
                         </Collapse>
                       </div>
                       <div className="box-inside logs">
@@ -2621,84 +2669,98 @@ useEffect(()=>{
                       </div>
                     </div>
                     <div className="task_log_list w-100">
-                    <div className="opertunity_box">
-                <div className="task_card mb-4">
-                  <div className="task_head">Opportunities List</div>
-                  <div className="tasks_details">
-                    <ul className="tasks_list">
+                      <div className="opertunity_box">
+                        <div className="task_card mb-4">
+                          <div className="task_head">Opportunities List</div>
+                          <div className="tasks_details">
+                            <ul className="tasks_list">
+                              {userInfo?.oppList?.map(
+                                ({ opp_id, opp_name, amount }, i) => {
+                                  return (
+                                    <li key={opp_id} className="list-item">
+                                      <div className="opp_box">
+                                        <Link
+                                          href={`/crm/OpportunityView?id=${opp_id}`}
+                                        >
+                                          <div className="name">
+                                            {opp_name}{" "}
+                                          </div>
+                                        </Link>
+                                        <div className="price">
+                                          &#8377; {amount}
+                                        </div>
+                                      </div>
+                                    </li>
+                                  );
+                                }
+                              )}
+                            </ul>
+                          </div>
+                          <div className="card_footer ">
+                            <Link href="/crm/Opportunity">
+                              <div className="text_more">view more</div>
+                            </Link>
+                          </div>
+                        </div>
+                        <div className="task_card">
+                          <div className="task_head">Contact List</div>
+                          <div className="tasks_details">
+                            <ul className="tasks_list">
+                              {userInfo?.contactList?.map(
+                                ({ contact_id, first_name }, i) => {
+                                  return (
+                                    <li key={contact_id} className="list-item">
+                                      <div className="opp_box">
+                                        <Link
+                                          href={`/crm/AddContact?id=${contact_id}&vw=mds`}
+                                        >
+                                          <div className="name">
+                                            {first_name}
+                                          </div>
+                                        </Link>
+                                      </div>
+                                    </li>
+                                  );
+                                }
+                              )}
+                            </ul>
+                          </div>
+                          <div className="card_footer ">
+                            <Link href="/crm/Contacts">
+                              <div className="text_more">view more</div>
+                            </Link>
+                          </div>
+                        </div>
 
-                      {userInfo?.oppList?.map(({ opp_id, opp_name, amount }, i) => {
-                        return (
-                          <li key={opp_id}  className="list-item">
-                            <div className="opp_box">
-                              <Link href={`/crm/OpportunityView?id=${opp_id}`}>
-                                <div className="name">{opp_name} </div>
-                              </Link>
-                              <div className="price">&#8377; {amount}</div>
-                            </div>
-                          </li>
-                        );
-                      })} 
-                    </ul>
-                  </div>
-                  <div className="card_footer ">
-                    
-                    <Link href='/crm/Opportunity'>
-                      <div className="text_more">view more</div>
-                    </Link>
-                  </div>
-                </div>
-                <div className="task_card">
-                  <div className="task_head">Contact List</div>
-                  <div className="tasks_details">
-                    <ul className="tasks_list">
-                      {userInfo?.contactList?.map(({ contact_id, first_name }, i) => {
-                        return (
-                          <li key={contact_id} className="list-item">
-                            <div className="opp_box">
-                              <Link href={`/crm/AddContact?id=${contact_id}&vw=mds`}>
-                                <div className="name">{first_name}</div>
-                              </Link>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                  <div className="card_footer ">
-                  
-                    <Link href='/crm/Contacts'>
-                      <div className="text_more">view more</div>
-                    </Link>
-                  </div>
-                </div>
-
-                <div className="task_card">
-                  <div className="task_head">Account List</div>
-                  <div className="tasks_details">
-                    <ul className="tasks_list">
-                      {userInfo?.accountlist?.map(({ acc_id, acc_name }, i) => {
-                        return (
-                          <li key={acc_id} className="list-item">
-                            <div className="opp_box">
-                              <Link href={`/crm/AddAccount?id=${acc_id}&vw=mds`}>
-                                <div className="name">{acc_name}</div>
-                              </Link>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                  <div className="card_footer ">
-                  
-                    <Link href='/crm/ManageLeads'>
-                      <div className="text_more">view more</div>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-                    </div>  
+                        <div className="task_card">
+                          <div className="task_head">Account List</div>
+                          <div className="tasks_details">
+                            <ul className="tasks_list">
+                              {userInfo?.accountlist?.map(
+                                ({ acc_id, acc_name }, i) => {
+                                  return (
+                                    <li key={acc_id} className="list-item">
+                                      <div className="opp_box">
+                                        <Link
+                                          href={`/crm/AddAccount?id=${acc_id}&vw=mds`}
+                                        >
+                                          <div className="name">{acc_name}</div>
+                                        </Link>
+                                      </div>
+                                    </li>
+                                  );
+                                }
+                              )}
+                            </ul>
+                          </div>
+                          <div className="card_footer ">
+                            <Link href="/crm/ManageLeads">
+                              <div className="text_more">view more</div>
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : null}
@@ -2806,17 +2868,25 @@ useEffect(()=>{
                     <select
                       className="form-control"
                       name="Account"
-                      id="Account"
+                      id="Account_New"
                       onChange={(e) =>
                         setUserInfo({ ...userInfo, contact_id: e.target.value })
                       }
                       value={userInfo.contact_id ? userInfo.contact_id : ""}
                     >
-                      <option value="">Select Contact</option>
-                      <option value="0">Create New Contact</option>
+                      <option value={null} contact_id="">
+                        Select Contact
+                      </option>
+                      <option value="0" contact_id="">
+                        Create New Contact
+                      </option>
                       {ContactList?.map((data, index) => {
                         return (
-                          <option key={index} value={data.accountName?.acc_id}>
+                          <option
+                            key={index}
+                            value={data.accountName?.acc_id}
+                            contact_id={data?.contact_id}
+                          >
                             {data.first_name}
                           </option>
                         );

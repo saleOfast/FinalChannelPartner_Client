@@ -143,14 +143,14 @@ const CommonSettingScreen = () => {
   return (
     <div className={`main_Box ${sideView}`}>
       <div className="bread_head">
-        <h3 className="content_head">EMAIL CONFIGURATION</h3>
+        <h3 className="content_head">COMMON SETTINGS</h3>
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               <Link href="/crm">Home</Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
-              Email Configuration
+              Common Settings
             </li>
           </ol>
         </nav>

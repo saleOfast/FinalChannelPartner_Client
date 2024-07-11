@@ -19,6 +19,7 @@ const AddUserScreen = () => {
   const [editMode, setEditMode] = useState(false);
   const [viewMode, setViewMode] = useState(false);
   const [additionalFields, setAdditionalFields] = useState(false);
+  const [iscollapse, setiscollapse] = useState(false);
   const [userroles, setUserroles] = useState([]);
   const [divisionList, setDivisionList] = useState([]);
   const [departMentList, setDepartMentList] = useState([]);
@@ -40,7 +41,8 @@ const AddUserScreen = () => {
     cheque: null,
   });
   const [updtUId, setUpdtUId] = useState("");
-  const [userInfo, setUserinfo] = useState({});
+  const [userInfo, setUserinfo] = useState({
+  });
   const [uploadDocs, setuploadDocs] = useState({
     aadhar: null,
     pan: null,
@@ -52,6 +54,17 @@ const AddUserScreen = () => {
     chequePreview:null,
   });
 
+useEffect(()=>{
+        userInfo.db_user_fields = [];
+},[])
+
+  const [newFields, setNewFields] = useState({
+    field_lable: null,
+    input_type: null,
+    field_type: null,
+    field_size: null,
+    option: null,
+  });
   async function getRolesList() {
     await fetchData("/db/role", setUserroles, errorToast, setErrorToast);
   }
@@ -91,6 +104,20 @@ const AddUserScreen = () => {
     );
   };
 
+
+  
+  const AddFieldsFunc = (e) => {
+    e.preventDefault();
+    setiscollapse(true)
+  };
+
+
+
+
+    
+
+
+  
   const getState = async (id) => {
     await fetchData(
       `/db/area/states?cnt_id=${id}`,
@@ -133,6 +160,7 @@ const AddUserScreen = () => {
 
       setUpdtUId(data1?.user_id);
       setUserinfo({
+        db_user_fields:data1?.db_user_fields,
         user: data1?.user,
         user_l_name: data1?.user_l_name,
         email: data1?.email,
@@ -206,12 +234,16 @@ const AddUserScreen = () => {
       );
       const userId = response.data.data.userProfileData.user_id;
       if (response.status === 200 || response.status === 201) {
+        await postFieldsFunc(
+          response.data.data.userProfileData.user_id,
+          reqOptions.db_user_fields
+        );
         toast.success(response.data.message);
         if (uploadDocs.aadhar_card)
           AddUploadPicture(userId, "adh", uploadDocs.aadhar_card[0], 0);
         if (uploadDocs.pan_card)
           AddUploadPicture(userId, "pan", uploadDocs.aadhar_card[0], 0);
-        if (uploadDocs.driving_license)
+        if (uploadDocs.driving_license) 
           AddUploadPicture(userId, "dl", uploadDocs.aadhar_card[0], 0);
         if (userImage) AddUploadPicture(userId, "lsUser", userImage[0], 0);
         setisLoading(false);
@@ -234,6 +266,9 @@ const AddUserScreen = () => {
       setisLoading(false);
     }
   };
+
+
+
 
   const updateUserhandler = async () => {
     if (!hasCookie("token")) return;
@@ -258,6 +293,11 @@ const AddUserScreen = () => {
     try {
       const response = await axios.put(`${Baseurl}/db/users`, userInfo, header);
       if (response.status === 200 || response.status === 201) {
+        await postFieldsFunc(
+          // response.data.data.userProfileData.user_id,
+          userInfo.db_user_fields[0].user,
+          userInfo.db_user_fields
+        );
         toast.success(response.data.message);
         if (uploadDocs.aadhar)
           AddUploadPicture(
@@ -306,6 +346,145 @@ const AddUserScreen = () => {
     }
   };
 
+
+
+
+  async function postFieldsFunc(id, data) {
+    if (hasCookie("token")) {
+      setisLoading(true)
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+        },
+  
+      };
+    //   data?.map(item => {
+    //     item.opp_id = id
+    //   })
+  
+  
+    const updatedData = data.map(item => ({
+        ...item,
+        user:id
+      }));
+      try {
+        const response = await axios.post(Baseurl + `/db/users/field`,updatedData, header);
+        if (response.status === 204 || response.status === 200) {
+          setisLoading(false)
+        }
+      } catch (error) {
+        if (error?.response?.data?.status === 422) {
+          const taskObject = {}
+          const array = error?.response?.data?.data;
+          for (let i = 0; i < array.length; i++) {
+            const key = Object.keys(array[i])[0];
+            const value = Object.values(array[i])[0];
+            taskObject[key] = value;
+          }
+          setErrorData(taskObject);
+        }
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false)
+      }
+    }
+  }
+
+
+  const createInputField = (e) => {
+
+    e.preventDefault();
+    const { field_lable, input_type, field_type,field_size, option } = newFields;
+
+    const showError = (errorMessage) => {
+      toast.error(errorMessage);
+    };
+
+
+
+    
+
+    const validateField = () => {
+      if (!field_lable) {
+        showError('Please enter the Field Name');
+        return false;
+      } else if (!input_type) {
+        showError('Please select the Input Type');
+        return false;
+      }
+      else if (input_type === 'input' && !field_type ) {
+        showError('Please select the Field Type');
+        return false;
+      }
+      // else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
+      //   showError('Please Enter Field Size');
+      //   return false;
+      // }
+      else if (input_type === 'select' && !option) {
+        showError('Please select input Options');
+        return false;
+      }
+      return true;
+    };
+
+    if (validateField()) {
+      const inputReq = {
+        ...newFields,
+        field_name: field_lable.replaceAll(' ', '_'),
+        navigate_type: userInfo.navigate_type,
+        // field_order: inputsData.length + 1
+      };
+      // userInfo.db_user_fields = [];
+      let arr = userInfo
+      arr.db_user_fields.push(newFields)
+      setUserinfo(arr)
+      setiscollapse(!iscollapse);
+      setNewFields({
+        field_lable: null,
+        input_type: null,
+        field_type: null,
+        option: null,
+        field_size: null,
+      })
+    }
+  };
+
+
+
+
+  const inputClass = (value) => {
+    const inputClasses = {
+      text: "form-control",
+      date: "form-control",
+      email: "form-control",
+      number: "form-control",
+      checkbox: "form-check-input ms-3",
+    };
+    return inputClasses[value] || "";
+  };
+
+
+  const updateFieldInfo = (e, ind) => {
+    let newData = JSON.parse(JSON.stringify(userInfo))
+
+    if( newData?.db_user_fields[ind]?.field_type === 'checkbox'){
+      newData.db_user_fields[ind].input_value = e.target.checked
+
+    }else{
+
+      newData.db_user_fields[ind].input_value = e.target.value
+    }
+   
+    setUserinfo(newData)
+
+  };
   const AddUploadPicture = async (id, path, file, name) => {
     if (!hasCookie("token")) return;
 
@@ -1121,6 +1300,163 @@ const AddUserScreen = () => {
                   )}
                 </div>
               </div>
+
+
+
+
+
+              {userInfo.db_user_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>
+                          <div className="input_box">
+                            <label htmlFor={field_name + ind}> {field_lable} </label>
+                            {input_type === 'input' ? (
+                              <input
+                                type={field_type}
+                                className={inputClass(field_type)}
+                                id={field_name + ind}
+                                name={field_name}
+                                placeholder={field_lable}
+                                disabled={viewMode}
+                                onChange={(e) => updateFieldInfo(e, ind)}
+                                //value={userInfo.field_name ? userInfo.field_name : ""}
+                                checked={input_value == "1" ? true: false}
+                                value={input_value}
+
+                              />
+                            ) : null}
+                            {input_type === 'select' ? (
+                              <select
+                                onChange={(e) => updateFieldInfo(e, ind)}
+                                name={field_name}
+                                id={field_name + ind}
+                                className="form-control"
+                                value={input_value}
+                                disabled={viewMode}
+                              >
+                                <option value="">Select {field_lable}</option>
+                                {option?.split(",").map((data, i) => (
+                                  <option value={data} key={i}>{data}</option>
+                                ))}
+                              </select>
+                            ) : null}
+                          </div>
+                        </div>
+                      ))}
+
+
+
+                       {iscollapse && (
+                      <div className="addFieldsForm py-5">
+                        <div className="row">
+                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                            <div className="input_box">
+                              <label htmlFor='newFieldName'>Field Name</label>
+                              <input
+                                type='text'
+                                className='form-control'
+                                id='newFieldName'
+                                placeholder='Field Name'
+                                onChange={(e) => setNewFields({ ...newFields, field_lable: e.target.value })}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                            <div className="input_box">
+                              <label htmlFor='newFieldType'>Field Type</label>
+                              <select
+                                name="newFieldType"
+                                className='form-control'
+                                id="newFieldType"
+                                onChange={(e) => setNewFields({ ...newFields, input_type: e.target.value })}
+                              >
+                                <option>Select Field Type</option>
+                                <option value='input'>Input Box</option>
+                                <option value='select'>Select Box</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          {newFields.input_type === 'input' && (
+                            <>
+                              <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                                <div className="input_box">
+                                  <label htmlFor='newInputType'>Input Type</label>
+                                  <select
+                                    name="newInputType"
+                                    className='form-control'
+                                    onChange={(e) => setNewFields({ ...newFields, field_type: e.target.value })}
+                                    id="newInputType">
+                                    <option>Select Input Type</option>
+                                    <option value='text'>Text</option>
+                                    <option value='email'>Email</option>
+                                    <option value='checkbox'>Checkbox</option>
+                                    <option value='number'>Number</option>
+                                    <option value='date'>Date</option>
+                                  </select>
+                                </div>
+                              </div>
+                              {/* <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                                <div className="input_box">
+                                  <label htmlFor='field_size'>Field Size</label>
+                                  <input
+                                    type='number'
+                                    name="field_size"
+                                    className='form-control'
+                                    placeholder='Enter field size'
+                                    id="field_size"
+                                    onChange={(e) => setNewFields({ ...newFields, field_size: e.target.value })}
+                                  />
+                                </div>
+                              </div> */}
+
+                            </>
+                          )}
+
+                          {/* {
+                            newFields.input_type === 'input' && (newFields?.field_type==="text" ||  newFields?.field_type==="email" || newFields?.field_type==="number") && (
+                              <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                              <div className="input_box">
+                                <label htmlFor='field_size'>Field Size</label>
+                                <input
+                                  type='number'
+                                  name="field_size"
+                                  className='form-control'
+                                  placeholder='Enter field size'
+                                  id="field_size"
+                                  onChange={(e) => setNewFields({ ...newFields, field_size: e.target.value })}
+                                />
+                              </div>
+                            </div>
+                            )
+                          } */}
+                         
+
+                          {newFields.input_type === 'select' && (
+                            <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                              <div className="input_box">
+                                <label htmlFor='newKeywords'>Select Keywords</label>
+                                <input
+                                  type='text'
+                                  name="newKeywords"
+                                  className='form-control'
+                                  placeholder='e.g. Name, age, gender'
+                                  id="newKeywords"
+                                  onChange={(e) => setNewFields({ ...newFields, option: e.target.value })}
+                                />
+                              </div>
+                            </div>
+                          )}
+
+
+
+                        </div>
+
+                        <div className="btn-row my-4">
+                          {/* <button onClick={"AddFieldsFunc"} className="btn btn-light me-3">Cancel</button> */}
+                          <button onClick={createInputField} className="btn btn-success">Create Field</button>
+                        </div>
+                      </div>
+                    )}
             </div>
             <div className="other_details_info">
               <div className="other_details">
@@ -1546,8 +1882,27 @@ const AddUserScreen = () => {
               </div>
             ) : null}
 
+
+
+
+
+
+
+
+
+          
+
             <div className="text-end">
               <div className="submit_btn">
+           {viewMode ? null : (
+            <>
+                      <div className="add_screen_head">
+            <span className="text_bold"><button className='btn btn-primary ' onClick={AddFieldsFunc}> Add More Fields</button>{" "} </span>
+</div>{" "}</>)
+  
+
+           }
+
                 <Link href="/ManageUsers">
                   <button className="btn btn-cancel me-2 ">Cancel</button>
                 </Link>

@@ -109,7 +109,6 @@ const AddOpportunityScreen = () => {
 
       
     const createInputField = (e) => {
-        console.log("creating field")
 
         e.preventDefault();
         const { field_lable, input_type, field_type,field_size, option } = newFields;
@@ -140,7 +139,6 @@ const AddOpportunityScreen = () => {
           }
           return true;
         };
-        console.log("test 1")
     
         if (validateField()) {
           const inputReq = {
@@ -152,7 +150,6 @@ const AddOpportunityScreen = () => {
           let arr = userInfo
           arr.db_opportunity_fields.push(newFields)
           setUserInfo(arr)
-          console.log("arr",arr)
           setiscollapse(!iscollapse);
           setNewFields({
             field_lable: null,
@@ -161,7 +158,6 @@ const AddOpportunityScreen = () => {
             option: null,
             field_size: null,
           })
-          console.log("new file",newFields)
         }
       };
 
@@ -170,8 +166,6 @@ const AddOpportunityScreen = () => {
       
   const updateFieldInfo = (e, ind) => {
     let newData = JSON.parse(JSON.stringify(userInfo))
-    console.log('newData',newData)
-
     if( newData?.db_opportunity_fields[ind]?.field_type === 'checkbox'){
       newData.db_opportunity_fields[ind].input_value = e.target.checked
 
@@ -1246,8 +1240,9 @@ async function postFieldsFunc(id, data) {
 
 
 
-
-                        {userInfo.db_opportunity_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
+       <div className="row">
+    
+         {userInfo.db_opportunity_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
                         <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>
                           <div className="input_box">
                             <label htmlFor={field_name + ind}> {field_lable} </label>
@@ -1285,6 +1280,7 @@ async function postFieldsFunc(id, data) {
                         </div>
                       ))}
 
+</div>
                         {iscollapse && (
                       <div className="addFieldsForm py-5">
                         <div className="row">

@@ -107,7 +107,6 @@ const AddOpportunityScreen = () => {
 
       
     const createInputField = (e) => {
-        console.log("creating field")
 
         e.preventDefault();
         const { field_lable, input_type, field_type,field_size, option } = newFields;
@@ -138,7 +137,6 @@ const AddOpportunityScreen = () => {
           }
           return true;
         };
-        console.log("test 1")
     
         if (validateField()) {
           const inputReq = {
@@ -150,7 +148,6 @@ const AddOpportunityScreen = () => {
           let arr = userInfo
           arr.db_opportunity_fields.push(newFields)
           setUserInfo(arr)
-          console.log("arr angg",arr)
           setiscollapse(!iscollapse);
           setNewFields({
             field_lable: null,
@@ -159,7 +156,6 @@ const AddOpportunityScreen = () => {
             option: null,
             field_size: null,
           })
-          console.log("new file",newFields)
         }
       };
 
@@ -168,8 +164,6 @@ const AddOpportunityScreen = () => {
       
   const updateFieldInfo = (e, ind) => {
     let newData = JSON.parse(JSON.stringify(userInfo))
-    console.log('newData',newData)
-
     if( newData?.db_opportunity_fields[ind]?.field_type === 'checkbox'){
       newData.db_opportunity_fields[ind].input_value = e.target.checked
 

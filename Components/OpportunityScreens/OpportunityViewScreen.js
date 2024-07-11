@@ -605,7 +605,7 @@ const getProductList = async () => {
 
         {/* <div className="row"> */}
                       {dataList?.db_opportunity_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
-                        <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>
+                        <div className="col-xl-4 col-md-4 col-sm-12 col-12" key={ind}>
                           <div className="input_box">
                             <label htmlFor={field_name + ind}> {field_lable} </label>
                             {input_type === 'input' ? (

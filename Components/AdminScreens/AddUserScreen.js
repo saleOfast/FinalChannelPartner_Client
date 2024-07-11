@@ -250,7 +250,6 @@ useEffect(()=>{
         router.push("/ManageUsers");
       }
     } catch (error) {
-      console.log('error',error)
       if (error?.response?.data?.status === 422) {
         const taskObject = error.response.data.data.reduce((obj, item) => {
           const [key, value] = Object.entries(item)[0];
@@ -262,7 +261,7 @@ useEffect(()=>{
       if (error?.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error("Something went wrong! adduserHander");
+        toast.error("Something went wrong!");
       }
       setisLoading(false);
     }
@@ -292,11 +291,8 @@ useEffect(()=>{
     }
 
     try {
-      console.log("userinfo for updatee",userInfo,"id is ",   userInfo.db_user_fields[0].user,
-      )
       const response = await axios.put(`${Baseurl}/db/users`, userInfo, header);
       if (response.status === 200 || response.status === 201) {
-        console.log("update usre id ",response)
         await postFieldsFunc(
           // response.data.data.userProfileData.user_id,
           userInfo.db_user_fields[0].user,
@@ -332,7 +328,6 @@ useEffect(()=>{
         router.push("/ManageUsers");
       }
     } catch (error) {
-      console.log("update error",error)
       if (error?.response?.data?.status === 422) {
         const taskObject = error.response.data.data.reduce((acc, obj) => {
           const key = Object.keys(obj)[0];
@@ -345,7 +340,7 @@ useEffect(()=>{
       if (error?.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error("Something went wrong! updateHandler");
+        toast.error("Something went wrong!");
       }
       setisLoading(false);
     }
@@ -382,7 +377,6 @@ useEffect(()=>{
           setisLoading(false)
         }
       } catch (error) {
-        console.log(error)
         if (error?.response?.data?.status === 422) {
           const taskObject = {}
           const array = error?.response?.data?.data;
@@ -396,7 +390,7 @@ useEffect(()=>{
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
-          toast.error("Something went wrong! and and");
+          toast.error("Something went wrong!");
         }
         setisLoading(false)
       }
@@ -405,7 +399,6 @@ useEffect(()=>{
 
 
   const createInputField = (e) => {
-    console.log("creating field")
 
     e.preventDefault();
     const { field_lable, input_type, field_type,field_size, option } = newFields;
@@ -440,7 +433,6 @@ useEffect(()=>{
       }
       return true;
     };
-    console.log("test 1")
 
     if (validateField()) {
       const inputReq = {
@@ -453,7 +445,6 @@ useEffect(()=>{
       let arr = userInfo
       arr.db_user_fields.push(newFields)
       setUserinfo(arr)
-      console.log("ar agighgr",arr)
       setiscollapse(!iscollapse);
       setNewFields({
         field_lable: null,
@@ -462,7 +453,6 @@ useEffect(()=>{
         option: null,
         field_size: null,
       })
-      console.log("new file",newFields)
     }
   };
 
@@ -483,7 +473,6 @@ useEffect(()=>{
 
   const updateFieldInfo = (e, ind) => {
     let newData = JSON.parse(JSON.stringify(userInfo))
-    console.log('newData',newData)
 
     if( newData?.db_user_fields[ind]?.field_type === 'checkbox'){
       newData.db_user_fields[ind].input_value = e.target.checked
@@ -1315,7 +1304,6 @@ useEffect(()=>{
 
 
 
-{console.log("userInfo",userInfo)}
 
               {userInfo.db_user_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
                         <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>

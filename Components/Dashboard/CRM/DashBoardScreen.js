@@ -363,7 +363,11 @@ const DashBoardScreen = () => {
                             </div>
                         </div>
 
-                        <div className="row"> {dataList?.piechart?.length ?
+                        <div className="row">
+                            
+                        
+
+                             {dataList?.piechart?.length ?
                             <div className="col-xl-6 col-md-6 col-12 col-sm-12">
 
                                 <OpportunityCard
@@ -373,6 +377,8 @@ const DashBoardScreen = () => {
                                     dataList={dataList?.piechart}>
                                 </OpportunityCard>
                             </div> : null}
+
+                           
                             {dataList?.barchart?.length ?
                                 <div className="col-xl-6 col-md-6 col-12 col-sm-12 mt-2">
                                     <div className="dash_card chartSec">
@@ -384,6 +390,27 @@ const DashBoardScreen = () => {
                                     </div>
                                 </div> : null}
 
+                                {dataList?.piechartOpp?.length ?
+                            <div className="col-xl-6 col-md-6 col-12 col-sm-12">
+
+                                <OpportunityCard
+                                    head='OPPORTUNITY STATISTICS COUNT '
+                                    price='0'
+                                    date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
+                                    dataList={dataList?.piechartOpp}>
+                                </OpportunityCard>
+                            </div> : null}
+
+                            {dataList?.piechartOppAmount?.length ?
+                            <div className="col-xl-6 col-md-6 col-12 col-sm-12">
+
+                                <OpportunityCard
+                                    head='OPPORTUNITY REVENUE '
+                                    price='0'
+                                    date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
+                                    dataList={dataList?.piechartOppAmount}>
+                                </OpportunityCard>
+                            </div> : null}
 
                             {/* <div className="col-xl-6 col-md-6 col-12 col-sm-12">
                                 <OpportunityCard

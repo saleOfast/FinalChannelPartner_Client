@@ -1,11 +1,57 @@
-import React, { useState } from 'react';
-import { PieChart, Pie, Sector, Tooltip, ResponsiveContainer, Bar, Cell } from 'recharts';
+// import React, { useState } from 'react';
+// import { PieChart, Pie, Sector, Tooltip, ResponsiveContainer, Bar, Cell } from 'recharts';
+
+// const data = [
+//     { name: 'Group A', value: 400 },
+//     { name: 'Group B', value: 300 },
+//     { name: 'Group C', value: 500 },
+
+// ];
+
+// const colors = [
+//     '#0088FE', // Blue color for Group A
+//     '#413ea0', // Yellow color for Group B
+//     '#8dd1e1', // Default color for other groups
+// ];
+
+// const RevenueChart = ({ dataList }) => {
+
+//     return (
+//         <>
+//         {dataList && dataList.length > 0 ? 
+//         <ResponsiveContainer width='100%' height={200}>
+//             <PieChart width={100} height={200}>
+//                 <Pie
+//                     data={dataList}
+//                     cx="50%"
+//                     cy="50%"
+//                     innerRadius={30}
+//                     outerRadius={50}
+//                     fill="#8884d8"
+//                     dataKey="value"
+//                     isAnimationActive={true}
+//                     label
+//                 >
+//                     {data.map((entry, index) => (
+//                         <Cell key={index} fill={colors[index]} />
+//                     ))}
+//                 </Pie>
+//                 <Tooltip />
+//             </PieChart>
+//         </ResponsiveContainer >: <></>}
+//         </>
+
+//     );
+// };
+
+// export default RevenueChart;
+import React from 'react';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const data = [
     { name: 'Group A', value: 400 },
     { name: 'Group B', value: 300 },
     { name: 'Group C', value: 500 },
-
 ];
 
 const colors = [
@@ -15,32 +61,36 @@ const colors = [
 ];
 
 const RevenueChart = ({ dataList }) => {
-
     return (
         <>
-        {dataList && dataList.length > 0 ? 
-        <ResponsiveContainer width='100%' height={200}>
-            <PieChart width={100} height={200}>
-                <Pie
-                    data={dataList}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={30}
-                    outerRadius={50}
-                    fill="#8884d8"
-                    dataKey="value"
-                    isAnimationActive={true}
-                    label
-                >
-                    {data.map((entry, index) => (
-                        <Cell key={index} fill={colors[index]} />
-                    ))}
-                </Pie>
-                <Tooltip />
-            </PieChart>
-        </ResponsiveContainer >: <></>}
+            {dataList && dataList.length > 0 ? 
+                <ResponsiveContainer width='100%' height={300}>
+                    <PieChart>
+                        <Pie
+                            data={dataList}
+                            cx="40%"
+                            cy="50%"
+                            innerRadius={30}
+                            outerRadius={50}
+                            fill="#8884d8"
+                            dataKey="value"
+                            isAnimationActive={true}
+                            label
+                        >
+                            {data.map((entry, index) => (
+                                <Cell key={index} fill={colors[index % colors.length]} />
+                            ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend
+                            layout="vertical"
+                            align="right"
+                            verticalAlign="middle"
+                        />
+                    </PieChart>
+                </ResponsiveContainer>
+            : null}
         </>
-
     );
 };
 

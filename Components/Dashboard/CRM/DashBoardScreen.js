@@ -9,6 +9,7 @@ import DashLeadsCard from './DashLeadsCard'
 import TopOpportunityCard from './TopOpportunityCard';
 import TasksCard from './TasksCard';
 import OpportunityCard from './OpportunityCard';
+import OpportunityCard1 from './OpportunityCard1';
 import { Baseurl } from '../../../Utils/Constants';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -17,6 +18,7 @@ import RevenueChart from '../../../pages/RevenueChart';
 import ReChart from './ReChart';
 import Loader from '../../Loader/Loader';
 import crmIndexHOC from '../../../HOC/crmIndexHOC';
+
 
 
 const DashBoardScreen = () => {
@@ -391,6 +393,7 @@ const DashBoardScreen = () => {
                                 </div> : null}
 
                                 {dataList?.piechartOpp?.length ?
+                                // {dataList?.piechartOpp?.length ?
                             <div className="col-xl-6 col-md-6 col-12 col-sm-12">
 
                                 <OpportunityCard
@@ -403,13 +406,13 @@ const DashBoardScreen = () => {
 
                             {dataList?.piechartOppAmount?.length ?
                             <div className="col-xl-6 col-md-6 col-12 col-sm-12">
-
-                                <OpportunityCard
+                                
+                                <OpportunityCard1
                                     head='OPPORTUNITY REVENUE '
                                     price='0'
                                     date={`${moment(startDate).format("DD-MM-YYYY")} to ${moment(endDate).format("DD-MM-YYYY")}`}
                                     dataList={dataList?.piechartOppAmount}>
-                                </OpportunityCard>
+                                </OpportunityCard1>
                             </div> : null}
 
                             {/* <div className="col-xl-6 col-md-6 col-12 col-sm-12">

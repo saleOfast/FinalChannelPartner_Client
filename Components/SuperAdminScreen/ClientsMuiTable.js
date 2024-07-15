@@ -49,7 +49,7 @@ const ClientsMuiTable = ({ clientList, openEnableBox, renewSubscription, title, 
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div>{moment(value).format("DD-MM-YYYY LT")}</div>
+                        <div>{moment(value).format("DD-MM-YYYY")}</div>
                     );
                 }
             }
@@ -61,7 +61,8 @@ const ClientsMuiTable = ({ clientList, openEnableBox, renewSubscription, title, 
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div>{moment(value).format("DD-MM-YYYY LT")}</div>
+                        <div>{moment(value).format("DD-MM-YYYY")}</div>
+                        // <div>{moment(value).format("DD-MM-YYYY LT")}</div>
                     );
                 }
             }
@@ -78,6 +79,19 @@ const ClientsMuiTable = ({ clientList, openEnableBox, renewSubscription, title, 
                                 <span className='inactive status_btn'>inactive</span>}
                         </div>
                     )
+                }
+            }
+        },
+        {
+            name: 'createdAt',
+            label: "Creation Date",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <div>{moment(value).format("DD-MM-YYYY")}</div>
+                        // <div>{moment(value).format("DD-MM-YYYY LT")}</div>
+                    );
                 }
             }
         },

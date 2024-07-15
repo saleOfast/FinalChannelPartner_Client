@@ -102,6 +102,7 @@ const Taskscreens = () => {
           Authorization: "Bearer ".concat(token),
           db: db_name,
           pass:"pass",
+          
         },
         responseType: 'blob' // set the response type as blob
       };

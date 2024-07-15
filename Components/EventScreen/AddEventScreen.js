@@ -55,7 +55,7 @@ const AddEventScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 13
+          m_id: 236
         },
       };
 
@@ -109,7 +109,7 @@ const AddEventScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 13
+          m_id: 238
         },
       };
 
@@ -158,7 +158,7 @@ const AddEventScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 15
+          m_id: 237
         },
       };
       try {

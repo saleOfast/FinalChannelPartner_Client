@@ -488,6 +488,7 @@ const ManageLeadScreen = () => {
           Authorization: "Bearer ".concat(token),
           db: db_name,
           pass: "pass",
+          m_id:17
         },
         responseType: "blob", // set the response type as blob
       };
@@ -495,17 +496,20 @@ const ManageLeadScreen = () => {
       axios
         .get(Baseurl + `/db/leads/download`, header)
         .then((response) => {
-          const file = new Blob([response.data], {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          }); // change the content type to Excel
-          const fileUrl = URL.createObjectURL(file);
-          // programmatically create and trigger the download link
-          const downloadLink = document.createElement("a");
-          downloadLink.href = fileUrl;
-          downloadLink.setAttribute("download", "Leads.xlsx"); // specify the file name
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          document.body.removeChild(downloadLink);
+          if(response===200){
+            const file = new Blob([response.data], {
+              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            }); // change the content type to Excel
+            const fileUrl = URL.createObjectURL(file);
+            // programmatically create and trigger the download link
+            const downloadLink = document.createElement("a");
+            downloadLink.href = fileUrl;
+            downloadLink.setAttribute("download", "Leads.xlsx"); // specify the file name
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+          } 
+          
         })
         .catch((error) => {
           console.error(error);

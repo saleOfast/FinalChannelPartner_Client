@@ -119,7 +119,7 @@ const AddAccountScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 21
+          m_id: 20
         }
       }
 

@@ -101,6 +101,7 @@ const AccountScreen = () => {
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
                     pass: "pass",
+                    m_id:24
                 },
                 responseType: 'blob' // set the response type as blob
             };

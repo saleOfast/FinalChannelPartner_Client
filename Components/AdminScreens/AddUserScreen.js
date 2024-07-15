@@ -735,7 +735,90 @@ useEffect(()=>{
                       <div className="d-flex flex-wrap justify-content-start gap-5 py-2 ">
                         {userInfo.role_id !== 1 ? (
                           <>
-                            <div className="form-check">
+                          {
+                            hasCookie("allowedpermissions") &&
+                            JSON.parse(getCookie("allowedpermissions"))?.map((p) => (
+                              <>
+                                {p === "crm" && (
+                                  <div className="form-check">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      value="option1"
+                                      id="option1"
+                                      checked={userInfo?.isCRM}
+                                      onChange={(e) => {
+                                        if (userInfo.isCRM) {
+                                          setUserinfo({
+                                            ...userInfo,
+                                            isCRM: e.target.checked,
+                                          });
+                                        } else {
+                                          checkLicense(e, "crm", "isCRM");
+                                        }
+                                        setErrorData({ ...errorData, isCRM: "" });
+                                      }}
+                                    />
+                                    <label className="form-check-label" htmlFor="option1">
+                                      CRM
+                                    </label>
+                                  </div>
+                                )}
+                                {p === "dms" && (
+                                  <div className="form-check">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      value="option2"
+                                      id="option2"
+                                      checked={userInfo?.isDMS || false}
+                                      onChange={(e) => {
+                                        if (userInfo.isDMS) {
+                                          setUserinfo({
+                                            ...userInfo,
+                                            isDMS: e.target.checked,
+                                          });
+                                        } else {
+                                          checkLicense(e, "dms", "isDMS");
+                                        }
+                                        setErrorData({ ...errorData, isDMS: "" });
+                                      }}
+                                    />
+                                    <label className="form-check-label" htmlFor="option2">
+                                      DMS
+                                    </label>
+                                  </div>
+                                )}
+                                {p === "sales" && (
+                                  <div className="form-check">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      value="option3"
+                                      id="option3"
+                                      checked={userInfo?.isSALES || false}
+                                      onChange={(e) => {
+                                        if (userInfo.isSALES) {
+                                          setUserinfo({
+                                            ...userInfo,
+                                            isSALES: e.target.checked,
+                                          });
+                                        } else {
+                                          checkLicense(e, "sales", "isSALES");
+                                        }
+                                        setErrorData({ ...errorData, isSALES: "" });
+                                      }}
+                                    />
+                                    <label className="form-check-label" htmlFor="option3">
+                                      SALES
+                                    </label>
+                                  </div>
+                                )}
+                              </>
+                            ))
+                          }
+
+                            {/* <div className="form-check">
                               <input
                                 className="form-check-input"
                                 type="checkbox"
@@ -820,7 +903,7 @@ useEffect(()=>{
                               >
                                 SALES
                               </label>
-                            </div>
+                            </div> */}
                           </>
                         ) : (
                           <div className="form-check">

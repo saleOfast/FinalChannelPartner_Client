@@ -13,7 +13,7 @@ import ConfirmBox from '../Basics/ConfirmBox'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import moment from "moment";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import dynamic from 'next/dynamic';
 import DownloadIcon from '../Svg/DownloadIcon'
 const DynamicTable = dynamic(
@@ -35,6 +35,9 @@ export default function AdminDashboard() {
     setShow(false);
     setrenewSubsValue({ months: null, days: null })
   }
+  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+  const dispatch=useDispatch()
+
 
   const handleShow = () => setShow(true);
 

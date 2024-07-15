@@ -81,7 +81,7 @@ const AddLeave = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    pass: 'pass'
+                    m_id: 188
                 }
             }
             try {
@@ -148,7 +148,7 @@ const AddLeave = () => {
                         Accept: "application/json",
                         Authorization: "Bearer ".concat(token),
                         db: db_name,
-                        m_id: 15,
+                        m_id: 187,
                     },
                 };
 

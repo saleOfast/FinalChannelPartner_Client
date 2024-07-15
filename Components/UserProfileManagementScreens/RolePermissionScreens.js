@@ -177,9 +177,9 @@ const RolePermissionScreens = () => {
     };
 
     function renderMenu(menus) {
-        return menus.map((menu) => {
+        return menus.map((menu,index) => {
             const hasChildren = menu.children && menu.children.length > 0;
-
+            if(index===1) return null
             return (
                 <div className={hasChildren ? 'parent-divs' : 'col-xl-3 col-md-3 col-sm-12 col-12 mrgn-Btn'} key={menu.menu_id} >
                     <div

@@ -32,7 +32,7 @@ const ContactScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id: 26,
+                    m_id: 28,
                 }
             }
             try {
@@ -42,6 +42,7 @@ const ContactScreen = () => {
                     setAccountsList(response?.data?.data);
                 }
             } catch (error) {
+                setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 }

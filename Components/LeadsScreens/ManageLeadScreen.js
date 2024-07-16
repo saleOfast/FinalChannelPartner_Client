@@ -50,7 +50,7 @@ const ManageLeadScreen = () => {
           m_id: 4,
         },
       };
-
+      
       try {
         const response = await axios.get(Baseurl + `/db/leads`, header);
         if (response?.status == 200 || response?.status == 201) {
@@ -476,49 +476,89 @@ const ManageLeadScreen = () => {
     }
   }
 
-  const handleDownload = () => {
-    if (hasCookie("token")) {
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
+  // const handleDownload = () => {
+  //   if (hasCookie("token")) {
+  //     let token = getCookie("token");
+  //     let db_name = getCookie("db_name");
 
-      let header = {
-        headers: {
-          Accept:
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Change the Accept type to Excel
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          pass: "pass",
-          m_id:17
-        },
-        responseType: "blob", // set the response type as blob
-      };
+  //     let header = {
+  //       headers: {
+  //         Accept:
+  //           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Change the Accept type to Excel
+  //         Authorization: "Bearer ".concat(token),
+  //         db: db_name,
+  //         m_id:17
+  //       },
+  //       responseType: "blob", // set the response type as blob
+  //     };
 
-      axios
-        .get(Baseurl + `/db/leads/download`, header)
-        .then((response) => {
-          if(response===200){
-            const file = new Blob([response.data], {
-              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            }); // change the content type to Excel
-            const fileUrl = URL.createObjectURL(file);
-            // programmatically create and trigger the download link
-            const downloadLink = document.createElement("a");
-            downloadLink.href = fileUrl;
-            downloadLink.setAttribute("download", "Leads.xlsx"); // specify the file name
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-          } 
+  //     axios
+  //       .get(Baseurl + `/db/leads/download`, header)
+  //       .then((response) => {
+  //         const file = new Blob([response.data], {
+  //           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  //         }); // change the content type to Excel
+  //         const fileUrl = URL.createObjectURL(file);
+  //         // programmatically create and trigger the download link
+  //         const downloadLink = document.createElement("a");
+  //         downloadLink.href = fileUrl;
+  //         downloadLink.setAttribute("download", "Leads.xlsx"); // specify the file name
+  //         document.body.appendChild(downloadLink);
+  //         downloadLink.click();
+  //         document.body.removeChild(downloadLink);
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //       });
+  //   }
+  // };
+
+  const handleDownload = async () => {
+      if (hasCookie("token")) {
+        let token = getCookie("token");
+        let db_name = getCookie("db_name");
+  
+        let header = {
+          headers: {
+            Accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            Authorization: "Bearer ".concat(token),
+            db: db_name,
+            m_id: 7
+          },
+          responseType: "blob",
+        };
+  
+        try {
+          const response = await axios.get(Baseurl + `/db/leads/download`, header);
+         
+         if(response?.status==200){
+          const file = new Blob([response.data], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          const fileUrl = URL.createObjectURL(file);
+  
+          const downloadLink = document.createElement("a");
+          downloadLink.href = fileUrl;
+          downloadLink.setAttribute("download", "Leads.xlsx");
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+         }
           
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
+        } catch (error) {
+          console.log(error)
+          if (error?.response?.data?.message) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("Not Authorized!");
+          }
+        }
+      }  
   };
+  
 
   const checkAccountMatch = (lead_name) => {
-    // debugger
+    
     let account_name = accountsList?.filter(
       (account) => account?.acc_name === lead_name
     );

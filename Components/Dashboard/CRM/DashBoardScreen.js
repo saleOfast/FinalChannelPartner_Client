@@ -85,10 +85,10 @@ const DashBoardScreen = () => {
                     setisLoading(false);
                 }
             } catch (error) {
+                setisLoading(false)
                 if (error?.response?.data?.message) {
                     if (error.response.data.message == "not logged In") {
                         setCheckInState('1');
-                        setisLoading(false);
                     }
                 } else {
                     toast.error("Something went wrong!");

@@ -295,8 +295,8 @@ useEffect(()=>{
       if (response.status === 200 || response.status === 201) {
         await postFieldsFunc(
           // response.data.data.userProfileData.user_id,
-          userInfo.db_user_fields[0].user,
-          userInfo.db_user_fields
+          userInfo?.db_user_fields[0]?.user,
+          userInfo?.db_user_fields
         );
         toast.success(response.data.message);
         if (uploadDocs.aadhar)
@@ -328,6 +328,7 @@ useEffect(()=>{
         router.push("/ManageUsers");
       }
     } catch (error) {
+      
       if (error?.response?.data?.status === 422) {
         const taskObject = error.response.data.data.reduce((acc, obj) => {
           const key = Object.keys(obj)[0];

@@ -1249,7 +1249,7 @@ useEffect(()=>{
                 </div>
               </div>
 
-              <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+              {/* <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                 <div className="d-flex flex-column gap-1">
                   <label className="form-label">Aadhar Card </label>
                   <input
@@ -1315,9 +1315,11 @@ useEffect(()=>{
                     />
                   )}
                 </div>
-              </div>
+              </div> */}
 
-              <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+
+              {
+                userInfo?.role_id==1 && <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                 <div className="d-flex flex-column gap-1">
                   <label className="form-label">RERA License </label>
                   <input
@@ -1350,43 +1352,8 @@ useEffect(()=>{
                   )}
                 </div>
               </div>
-
-              <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                <div className="d-flex flex-column gap-1">
-                  <label className="form-label">Bank Cancelled Cheque</label>
-                  <input
-                    type="file"
-                    onChange={(e) => {
-                      handleImageChange(e,'cheque','chequePreview')
-                    }}
-                    className="form-control input-field"
-                    disabled={viewMode}
-                  />
-                  {oldFiles?.cheque && (
-                    <img
-                      src={`${filesUrl}/cheque/images${oldFiles.cheque}`}
-                      alt={`Bank Cancelled Cheque Preview`}
-                      style={{
-                        maxWidth: "100px",
-                        maxHeight: "100px",
-                      }}
-                    />
-                  )}
-                  {uploadDocs?.chequePreview && (
-                    <img
-                      src={uploadDocs.chequePreview}
-                      alt={`Bank Cancelled Cheque Preview`}
-                      style={{
-                        maxWidth: "100px",
-                        maxHeight: "100px",
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-
-
-
+              }
+              
 
 
               {userInfo.db_user_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
@@ -1962,6 +1929,39 @@ useEffect(()=>{
                       />
                     </div>
                   </div>
+                  <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                <div className="d-flex flex-column gap-1">
+                  <label className="form-label">Bank Cancelled Cheque</label>
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      handleImageChange(e,'cheque','chequePreview')
+                    }}
+                    className="form-control input-field"
+                    disabled={viewMode}
+                  />
+                  {oldFiles?.cheque && (
+                    <img
+                      src={`${filesUrl}/cheque/images${oldFiles.cheque}`}
+                      alt={`Bank Cancelled Cheque Preview`}
+                      style={{
+                        maxWidth: "100px",
+                        maxHeight: "100px",
+                      }}
+                    />
+                  )}
+                  {uploadDocs?.chequePreview && (
+                    <img
+                      src={uploadDocs.chequePreview}
+                      alt={`Bank Cancelled Cheque Preview`}
+                      style={{
+                        maxWidth: "100px",
+                        maxHeight: "100px",
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
                 </div>
               </div>
             ) : null}

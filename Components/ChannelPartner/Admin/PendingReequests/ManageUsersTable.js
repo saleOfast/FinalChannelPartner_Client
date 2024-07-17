@@ -271,8 +271,7 @@ const ManageUsersTable = ({
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             
-              (tableMeta?.rowData[7]===3 || tableMeta?.rowData[7]===2) ?<div className="text-center"></div> 
-              :
+              tableMeta?.rowData[7]===1 ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
@@ -288,7 +287,8 @@ const ManageUsersTable = ({
               </button>
           </div>
               </>
-            
+            :
+            <div className="text-center"></div> 
            
           );
         },

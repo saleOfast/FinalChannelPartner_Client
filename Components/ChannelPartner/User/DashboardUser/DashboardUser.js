@@ -360,7 +360,8 @@ const DashboardUser = () => {
                                  <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                                      <DashLeadsCard
                                          head='Tat For Leads'
-                                         price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
+                                        //  price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
+                                        price={dataList?.averageHours!="NaN" ?`${dataList?.averageHours || '0'} ʰʳˢ `  :`${'0'} ʰʳˢ `} 
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                          img='/images/usericon.png' />
                                  </div>

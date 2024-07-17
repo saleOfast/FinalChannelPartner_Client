@@ -169,6 +169,7 @@ const PolicyHeadScreen = () => {
     }
 
     const addPolicyHandler = async () => {
+        
         if (userInfo.policy_name == '') {
             toast.error('Please enter the Policy Name')
         } else {
@@ -186,7 +187,7 @@ const PolicyHeadScreen = () => {
                 }
 
                 try {
-                    const response = await axios.post(Baseurl + `/db//policy`, userInfo, header);
+                    const response = await axios.post(Baseurl + `/db/policy`, userInfo, header);
                     if (response.status === 204 || response.status === 200) {
                         toast.success(response.data.message)
                         handleClose();

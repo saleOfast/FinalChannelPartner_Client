@@ -168,6 +168,7 @@ const AddLeave = () => {
                         header
                     );
                     if (response.status === 204 || response.status === 200) {
+                        setisLoading(false)
                         toast.success(response.data.message)
                         setUserInfo({
                             head_leave_id: null,
@@ -180,6 +181,7 @@ const AddLeave = () => {
                         getUserLeaves();
                     }
                 } catch (error) {
+                    setisLoading(false)
                     if (error?.response?.data?.status === 422) {
                         const taskObject = {}
                         const array = error?.response?.data?.data;

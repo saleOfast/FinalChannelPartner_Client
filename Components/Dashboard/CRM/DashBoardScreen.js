@@ -64,6 +64,7 @@ const DashBoardScreen = () => {
     const nextDay = moment().add(1, 'day').format('YYYY-MM-DD 00:00:00');
 
     async function getAttndncData() {
+        
         if (hasCookie("token")) {
             let token = getCookie("token");
             let db_name = getCookie("db_name");
@@ -84,10 +85,15 @@ const DashBoardScreen = () => {
                     setCheckInState('2');
                     setisLoading(false);
                 }
-            } catch (error) {
+                else{
+                    setCheckInState('1');
+                    setisLoading(false);
+                }
+            } catch (error) { 
+                console.log(error)
                 setisLoading(false)
                 if (error?.response?.data?.message) {
-                    if (error.response.data.message == "not logged In") {
+                    if (error.response.data.message == "Not Logged In") {
                         setCheckInState('1');
                     }
                 } else {

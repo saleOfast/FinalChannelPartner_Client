@@ -48,7 +48,7 @@ const Layout = ({Component, pageProps}) => {
         setTopnavPermission("sales")
       } else{
         setSidebarMode("channel")
-        setTopnavPermission("channel")
+        setTopnavPermission("channel")  
       } 
     }
 

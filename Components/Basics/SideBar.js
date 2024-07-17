@@ -207,7 +207,7 @@ const SideBar = ({}) => {
                 <div className="header">
                   <div className="icon" title={allais_menu}>
                     {
-                      dbMode=="user" ? <img src={`${filesUrl}/sidebarIcons/${icon_path ? icon_path : `shield.svg`}`} alt="logo" width="100%" /> : <img src={`${filesUrl}/sidebarIcons/shield.svg`} alt="logo" width="100%" />
+                      dbMode=="user" ? <img src={`/sidebarIcons/${icon_path ? icon_path : `shield.svg`}`} alt="logo" width="100%" /> : <img src={`/sidebarIcons/shield.svg`} alt="logo" width="100%" />
                     }
                     {/* <img src={`${filesUrl}/sidebarIcons/${icon_path ? icon_path : `shield.svg`}`} alt="logo" width="100%" /> */}
                     {/* <img src={`${filesUrl}/sidebarIcons/shield.svg`} alt="logo" width="100%" /> */}

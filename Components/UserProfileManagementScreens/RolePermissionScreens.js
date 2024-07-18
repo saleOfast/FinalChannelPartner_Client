@@ -10,7 +10,10 @@ import { useSelector } from 'react-redux';
 import EditIcon from "../Svg/EditIcon";
 import Modal from "react-bootstrap/Modal";
 import { Button } from 'react-bootstrap';
+import { useDispatch} from 'react-redux';
 import CaretDownIcon from '../Svg/CaretDownIcon';
+import { startButtonLoading, stopButtonLoading } from '../../store/buttonLoaderSlice';
+
 
 const RolePermissionScreens = () => {
     const sideView = useSelector((state) => state.sideView.value);
@@ -24,6 +27,8 @@ const RolePermissionScreens = () => {
     const [permissionView, setpermissionView] = useState([]);
     const [show, setShow] = useState(false);
     const [loginDetails, setloginDetails] = useState({})
+    const { isButtonLoading } = useSelector((state) => state.buttonLoader);
+    const dispatch=useDispatch()
 
     const handleShow = () => setShow(true);
 
@@ -258,6 +263,7 @@ const RolePermissionScreens = () => {
 
 
     async function submitFunc() {
+        dispatch(startButtonLoading());
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -274,9 +280,11 @@ const RolePermissionScreens = () => {
             try {
                 const response = await axios.post(Baseurl + `/db/permission?id=${router.query.id}`, reqData, header);
                 if (response.status === 200 || response.status === 201) {
+                    dispatch(stopButtonLoading());
                     toast.success(response.data.message)
                 }
             } catch (error) {
+                dispatch(stopButtonLoading());
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 }
@@ -310,8 +318,19 @@ const RolePermissionScreens = () => {
                 <div className="permission-view">
                     {permissionView ? <> {renderMenu(permissionView)}</> : ''}
                     <div className="submit-btn-box">
-                        <Link href='/UserProfileManagement'><button className="btn btn-cancel">Go Back</button></Link>
-                        <button onClick={submitFunc} className="btn btn-primary">Submit</button>
+                        <button className="btn btn-cancel" disabled={isButtonLoading} onClick={()=>{
+                            router.push("/UserProfileManagement")
+                        }}>Go Back</button>
+                        <button onClick={submitFunc} disabled={isButtonLoading} className="btn btn-primary">
+                        {isButtonLoading ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                            &nbsp;Submit
+                                        </>
+                                    ) : (
+                                        'Submit'
+                                    )}
+                        </button>
                     </div>
                 </div>
                 <Modal className="commonModal" show={show} onHide={handleClose}>

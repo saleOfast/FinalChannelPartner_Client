@@ -57,7 +57,7 @@ const AddClientScreen = () => {
         pan: '',
         gst: '',
         address: "" ,
-        isCRM:1 ,
+        isCRM:null ,
         isDMS:null ,
         isSALES:null ,
         isCHANNEL:null ,
@@ -196,6 +196,13 @@ const AddClientScreen = () => {
     }
 
     async function addClientHandler() {
+      if(userInfo?.host_name==""){
+        setErrorData({ ...errorData, host_name: 'Please enter Salesforce Host URL' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(!userInfo?.isCRM && !userInfo?.isCHANNEL && !userInfo?.isDMS && !userInfo?.isSALES){
+        return toast.error('Please fill the Mandatory fields')
+      }
       if(userInfo?.isCRM){
         if(userInfo?.subscription_start_date==null){
            setErrorData({ ...errorData, subscription_start_date: 'Please enter subscription start date' })
@@ -313,7 +320,13 @@ const AddClientScreen = () => {
     };
 
     async function updateHandler() {
-      console.log(userInfo)
+      if(userInfo?.host_name==""){
+        setErrorData({ ...errorData, host_name: 'Please enter Salesforce Host URL' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(!userInfo?.isCRM && !userInfo?.isCHANNEL && !userInfo?.isDMS && !userInfo?.isSALES){
+        return toast.error('Please fill the Mandatory fields')
+      }
       if(userInfo?.isCRM){
         if(userInfo?.subscription_start_date==null){
            setErrorData({ ...errorData, subscription_start_date: 'Please enter subscription start date' })
@@ -885,7 +898,7 @@ const AddClientScreen = () => {
                    <div className="other_details_info" style={{ borderTop: '1px dashed #dfdfff'}}>
                       <div className="other_details">
                         <label className=" text_bold " htmlFor="opt_dtls">
-                          Product Details
+                          Product Details *
                         </label>
                       </div>
                   </div>
@@ -900,11 +913,13 @@ const AddClientScreen = () => {
                                   type="checkbox"
                                   value="option1"
                                   id="option1"
-                                  checked={!editMode ? true : userInfo.isCRM }
+                                  // checked={!editMode ? true : userInfo.isCRM }
+                                  checked={userInfo.isCRM }
                                   onChange={(e) => {
                                     setUserInfo({
                                       ...userInfo,
-                                      isCRM: !editMode ? 1 : e.target.checked ? 1 : 0,
+                                      // isCRM: !editMode ? 1 : e.target.checked ? 1 : 0,
+                                      isCRM: e.target.checked ? 1 : 0,
                                     });
                                     setErrorData({ ...errorData, isCRM: "" });
                                   }}

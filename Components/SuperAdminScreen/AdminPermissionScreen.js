@@ -1,10 +1,274 @@
-import React, { useEffect, useState } from 'react'
+// import React, { useEffect, useState } from 'react'
+// import Link from 'next/link';
+// import { Baseurl } from '../../Utils/Constants';
+// import Collapse from 'react-bootstrap/Collapse';
+// import axios from 'axios';
+// import { getCookie, hasCookie } from 'cookies-next';
+// import { useRouter } from 'next/router'
+// import { toast } from 'react-toastify';
+// import { useDispatch, useSelector } from 'react-redux';
+// import CaretDownIcon from '../Svg/CaretDownIcon';
+// import { Form } from 'react-bootstrap';
+// import { startButtonLoading, stopButtonLoading } from '../../store/buttonLoaderSlice';
+
+// const AdminPermissionScreen = () => {
+//     const sideView = useSelector((state) => state.sideView.value);
+//     const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
+//     const dispatch=useDispatch()
+//     const router = useRouter()
+//     const { id } = router.query
+
+//     const [open, setOpen] = useState({});
+//     const [reqData, setreqData] = useState([]);
+//     const [permissionView, setpermissionView] = useState([]);
+//     const [selectedOption, setSelectedOption] = useState('CRM');
+
+//     function renderMenu(menus) {
+//         return menus?.map((menu) => {
+//             const hasChildren = menu.children && menu.children.length > 0;
+
+//             return (
+//                 <>
+//                 <div className={hasChildren ? 'parent-divs' : 'col-xl-3 col-md-3 col-sm-12 col-12 mrgn-Btn'} key={menu.menu_id} >
+//                      <div
+//                         className={hasChildren ? 'first-parent' : 'child-box'} >
+//                         {hasChildren ? <div className="openToggler" aria-controls={menu.menu_id}
+//                             aria-expanded={open[menu.menu_id] ? open[menu.menu_id] : false}
+//                             onClick={() => handleClick(menu.menu_id)}>
+//                             <CaretDownIcon /> </div> : ''}
+//                         <input
+//                             className='input-box form-check-input me-2'
+//                             type="checkbox"
+//                             id={`${menu.menu_id}-input`}
+//                             checked={menu.actions ? true : false}
+//                             onChange={(e) =>
+//                                 clickHandler(e, menu.menu_id, menu.menu_name, menu.parent_id, menu.children)} />
+//                         <label htmlFor={`${menu.menu_id}-input`} className='form-check-label'>
+//                             <span className="check-head">{menu.allais_menu} </span>
+//                         </label>
+//                         {/* {hasChildren ? <div className='permissionediticon' onClick={() => EditClicked(menu)} ><EditIcon /></div> : ''} */}
+//                     </div>
+
+//                     {hasChildren && (
+//                         <Collapse in={open[menu.menu_id]}>
+//                             <div className={hasChildren ? 'child-box row m-auto' : ''} id={menu.menu_id}>
+//                                 {renderMenu(menu.children)}
+//                             </div>
+//                         </Collapse>
+//                     )}
+//                 </div>
+//                 </>
+                
+//             );
+//         });
+//     }
+
+
+//     const handleClick = (id) => {
+//         setOpen((prevState) => ({ ...prevState, [id]: !prevState[id] }));
+//     }
+
+//     function clickHandler(e, menu_id, menu_name, parent_id, childrens) {
+//         const currArr = updateActionsForParentIdThree([...permissionView], menu_id, e);
+//         const modifiedArray = addArrayToChildren(permissionView, menu_id, childCheckFuncs(childrens, e));
+//         checkFuncc(currArr);
+//     }
+
+//     function updateActionsForParentIdThree(arr, menu_id, e) {
+//         arr.forEach(item => {
+//             if (item.menu_id === menu_id) {
+//                 item.actions = e.target.checked;
+//                 item.is_active = e.target.checked;
+//             }
+//             if (item.children.length > 0) {
+//                 updateActionsForParentIdThree(item.children, menu_id, e);
+//             }
+//         });
+//         return arr;
+//     }
+
+//     function addArrayToChildren(array, menu_id, data) {
+//         array.forEach(item => {
+//             if (item.menu_id === menu_id) {
+//                 item.children = data;
+//             }
+//         });
+//         return array;
+//     }
+
+//     function childCheckFuncs(menu, e) {
+//         menu?.forEach(child => {
+//             child.is_active = e.target.checked;
+//             child.actions = e.target.checked;
+
+//             if (child.children) {
+//                 childCheckFuncs(child.children, e);
+//             }
+//         });
+//         return menu;
+//     }
+
+//     function checkFuncc(valArr, returnArr = []) {
+//         valArr?.forEach(data => {
+//             const checkinfo = {
+//                 menu_id: data.menu_id,
+//                 menu_name: data.menu_name,
+//                 parent_id: data.parent_id,
+//                 actions: data.actions,
+//                 icon_path: data.icon_path,
+//                 link: data.link,
+//                 is_active: data.is_active,
+//             };
+//             returnArr.push(checkinfo);
+//             setreqData(returnArr);
+//             if (data.children && data.children.length > 0) {
+//                 checkFuncc(data.children, returnArr);
+//             }
+//         });
+//     }
+
+//     async function getPermissionList(id) {
+//         if (hasCookie('saLsTkn')) {
+//             const token = getCookie('saLsTkn');
+//             let header = {
+//                 headers: {
+//                     Accept: "application/json",
+//                     Authorization: "Bearer ".concat(token),
+//                 }
+//             }
+//                 const query={
+//                     pf:selectedOption
+//                 }
+//             try {
+//                 const response = await axios.get(Baseurl + `/db/admin/permission?id=${id}`,{ ...header,params:query});
+//                 setpermissionView(response.data.data);
+//             } catch (error) {
+//                 if (error?.response?.data?.message) {
+//                     toast.error(error.response.data.message);
+//                 }
+//                 else {
+//                     toast.error('Something went wrong!')
+//                 }
+//             } 
+//         }
+//     }
+
+//     async function submitFunc() {
+//         dispatch(startButtonLoading())
+//         if (hasCookie('saLsTkn')) {
+//             const token = getCookie('saLsTkn');
+//             let header = {
+//                 headers: {
+//                     Accept: "application/json",
+//                     Authorization: "Bearer ".concat(token),
+//                 }
+//             }
+//             if (hasCookie('db_name')) {
+//                 let db_name = (getCookie('db_name'));
+//                 const reqOptions = { user_id: router.query.id, permissionData: reqData, db_name: db_name }
+//                 try {
+//                     const response = await axios.post(Baseurl + `/db/admin/permission`, reqOptions, header);
+//                     if (response.status === 200 || response.status === 201) {
+//                         dispatch(stopButtonLoading())
+//                         toast.success(response.data.message)
+//                     }
+//                 } catch (error) {
+//                     dispatch(stopButtonLoading())
+//                     if (error?.response?.data?.message) {
+//                         toast.error(error.response.data.message);
+//                     }
+//                     else {
+//                         toast.error('Something went wrong!')
+//                     }
+//                 }
+//             }
+//         }
+//     }
+
+//   const handleChange = (event) => {
+//     const value = event.target.value;
+//     setSelectedOption(value);
+//     console.log(`Selected option: ${value}`);
+//     // Add any additional logic you want to handle on selection change
+//   };
+
+//     useEffect(() => {
+//         if (!router.isReady) return;
+//         getPermissionList(id)
+//     }, [router.isReady, id,selectedOption]);
+
+//     return (
+//         <div className={`main_Box  w-100`}>
+//             <div className="bread_head">
+//                 <h3 className="content_head">CLIENT PERMISSIONS</h3>
+//                 <nav aria-label="breadcrumb">
+//                     <ol className="breadcrumb">
+//                         <li className="breadcrumb-item"> <Link href='/admin'> All Clients </Link></li>
+//                         <li className="breadcrumb-item active" aria-current="page"> Client Permissions</li>
+//                     </ol>
+//                 </nav>
+//             </div>
+//             <div className="main_content ">
+//                 <div className="permission-view">
+//                     <div className='w-25'>
+//                     <Form.Group controlId="dropdownMenu">
+//         <Form.Label>Select an option:</Form.Label>
+//         <Form.Control 
+//           as="select" 
+//           value={selectedOption} 
+//           onChange={handleChange} 
+//           className="form-control-sm"
+//         >
+//           <option>CRM</option>
+//           <option>CHANNEL</option>
+//           <option>DMS</option>
+//           <option>SALES</option>
+//         </Form.Control>
+//       </Form.Group>
+//                     </div>
+                
+
+
+//                     {permissionView ? <>
+//                      {renderMenu(permissionView)}
+                     
+//                      </> : ''}
+//                     {
+//                         permissionView?.length > 0 && (
+//                             <div className="submit-btn-box">
+//                         <button className="btn btn-cancel" disabled={isButtonLoading} onClick={()=>router.push("/admin")}>Go Back</button>
+//                         <button onClick={submitFunc} disabled={isButtonLoading} className="btn btn-primary">
+//                             {isButtonLoading ? (
+//                                   <>
+//                                     <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+//                                     &nbsp;Submit
+//                                   </>
+//                                 ) : (
+//                                   'Submit'
+//                                 )}
+//                         </button>
+//                     </div>
+//                         )
+//                     }
+                    
+//                 </div>
+
+//             </div>
+//         </div>
+//     )
+// }
+
+// export default AdminPermissionScreen
+
+
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Baseurl } from '../../Utils/Constants';
 import Collapse from 'react-bootstrap/Collapse';
 import axios from 'axios';
 import { getCookie, hasCookie } from 'cookies-next';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import CaretDownIcon from '../Svg/CaretDownIcon';
@@ -13,40 +277,51 @@ import { startButtonLoading, stopButtonLoading } from '../../store/buttonLoaderS
 
 const AdminPermissionScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
-    const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
-    const dispatch=useDispatch()
-    const router = useRouter()
-    const { id } = router.query
+    const { isButtonLoading } = useSelector((state) => state.buttonLoader);
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const { id } = router.query;
 
     const [open, setOpen] = useState({});
     const [reqData, setreqData] = useState([]);
     const [permissionView, setpermissionView] = useState([]);
-    const [selectedOption, setSelectedOption] = useState('CRM');
-
+    const [selectedOption, setSelectedOption] = useState();
+    let flag=true;
     function renderMenu(menus) {
-        return menus?.map((menu) => {
-            const hasChildren = menu.children && menu.children.length > 0;
+        let filteredMenus = menus;
+        
+        if (selectedOption === 'CRM' && flag) {
+            filteredMenus = [menus[0]]; // Show only the 0th index
+            flag=false;
+        } else if (selectedOption === 'COMMON'  && flag) {
+            filteredMenus = [menus[1]]; // Show only the 1st index
+            flag=false;
+        }
+
+        return filteredMenus?.map((menu) => {
+
+            const hasChildren = menu?.children && menu?.children.length > 0;
 
             return (
-                <>
-                <div className={hasChildren ? 'parent-divs' : 'col-xl-3 col-md-3 col-sm-12 col-12 mrgn-Btn'} key={menu.menu_id} >
-                     <div
-                        className={hasChildren ? 'first-parent' : 'child-box'} >
-                        {hasChildren ? <div className="openToggler" aria-controls={menu.menu_id}
-                            aria-expanded={open[menu.menu_id] ? open[menu.menu_id] : false}
-                            onClick={() => handleClick(menu.menu_id)}>
-                            <CaretDownIcon /> </div> : ''}
+                <div className={hasChildren ? 'parent-divs' : 'col-xl-3 col-md-3 col-sm-12 col-12 mrgn-Btn'} key={menu?.menu_id}>
+                    <div className={hasChildren ? 'first-parent' : 'child-box'}>
+                        {hasChildren ? (
+                            <div className="openToggler" aria-controls={menu.menu_id}
+                                aria-expanded={open[menu.menu_id] ? open[menu.menu_id] : false}
+                                onClick={() => handleClick(menu.menu_id)}>
+                                <CaretDownIcon />
+                            </div>
+                        ) : ''}
                         <input
                             className='input-box form-check-input me-2'
                             type="checkbox"
-                            id={`${menu.menu_id}-input`}
-                            checked={menu.actions ? true : false}
+                            id={`${menu?.menu_id}-input`}
+                            checked={menu?.actions ? true : false}
                             onChange={(e) =>
                                 clickHandler(e, menu.menu_id, menu.menu_name, menu.parent_id, menu.children)} />
-                        <label htmlFor={`${menu.menu_id}-input`} className='form-check-label'>
-                            <span className="check-head">{menu.allais_menu} </span>
+                        <label htmlFor={`${menu?.menu_id}-input`} className='form-check-label'>
+                            <span className="check-head">{menu?.allais_menu} </span>
                         </label>
-                        {/* {hasChildren ? <div className='permissionediticon' onClick={() => EditClicked(menu)} ><EditIcon /></div> : ''} */}
                     </div>
 
                     {hasChildren && (
@@ -57,16 +332,13 @@ const AdminPermissionScreen = () => {
                         </Collapse>
                     )}
                 </div>
-                </>
-                
             );
         });
     }
 
-
     const handleClick = (id) => {
         setOpen((prevState) => ({ ...prevState, [id]: !prevState[id] }));
-    }
+    };
 
     function clickHandler(e, menu_id, menu_name, parent_id, childrens) {
         const currArr = updateActionsForParentIdThree([...permissionView], menu_id, e);
@@ -136,25 +408,26 @@ const AdminPermissionScreen = () => {
                     Authorization: "Bearer ".concat(token),
                 }
             }
-                const query={
-                    pf:selectedOption
-                }
+            const query = {
+                pf: selectedOption == "COMMON" ? "CRM" : selectedOption
+            }
+
             try {
-                const response = await axios.get(Baseurl + `/db/admin/permission?id=${id}`,{ ...header,params:query});
+                const response = await axios.get(Baseurl + `/db/admin/permission?id=${id}`, { ...header, params: query });
                 setpermissionView(response.data.data);
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 }
                 else {
-                    toast.error('Something went wrong!')
+                    toast.error('Something went wrong!');
                 }
-            } 
+            }
         }
     }
 
     async function submitFunc() {
-        dispatch(startButtonLoading())
+        dispatch(startButtonLoading());
         if (hasCookie('saLsTkn')) {
             const token = getCookie('saLsTkn');
             let header = {
@@ -165,40 +438,73 @@ const AdminPermissionScreen = () => {
             }
             if (hasCookie('db_name')) {
                 let db_name = (getCookie('db_name'));
-                const reqOptions = { user_id: router.query.id, permissionData: reqData, db_name: db_name }
+                const reqOptions = { user_id: router.query.id, permissionData: reqData, db_name: db_name };
                 try {
                     const response = await axios.post(Baseurl + `/db/admin/permission`, reqOptions, header);
                     if (response.status === 200 || response.status === 201) {
-                        dispatch(stopButtonLoading())
-                        toast.success(response.data.message)
+                        dispatch(stopButtonLoading());
+                        toast.success(response.data.message);
                     }
                 } catch (error) {
-                    dispatch(stopButtonLoading())
+                    dispatch(stopButtonLoading());
                     if (error?.response?.data?.message) {
                         toast.error(error.response.data.message);
                     }
                     else {
-                        toast.error('Something went wrong!')
+                        toast.error('Something went wrong!');
                     }
                 }
             }
         }
     }
 
-  const handleChange = (event) => {
-    const value = event.target.value;
-    setSelectedOption(value);
-    console.log(`Selected option: ${value}`);
-    // Add any additional logic you want to handle on selection change
-  };
+    const handleChange = (event) => {
+        const value = event.target.value;
+        setSelectedOption(value);
+        console.log(`Selected option: ${value}`);
+        // Add any additional logic you want to handle on selection change
+    };
+    
+    const [optionsArray,setOptionsArray]=useState([])
+
+    const getSingleData = async (id) => {
+        if (hasCookie('saLsTkn')) {
+          const token = getCookie('saLsTkn');
+          try {
+            const response = await axios.get(Baseurl + `/db/admin?id=${id}`, {
+              headers: {
+                Accept: "application/json",
+                Authorization: "Bearer " + token,
+              },
+            });
+            const arr=[];
+            response?.data?.data?.db_client_platforms?.forEach(element => {
+              if(element?.actions){
+                arr.push(element?.db_platform?.platform_name)
+              }
+            });
+            setSelectedOption(arr[0])
+            setOptionsArray(arr)
+          } catch (error) {
+            console.log(error)
+            const errorMessage = error?.response?.message || 'Something went wrong!';
+            toast.error(errorMessage);
+          }
+        }
+      };
 
     useEffect(() => {
         if (!router.isReady) return;
-        getPermissionList(id)
-    }, [router.isReady, id,selectedOption]);
+        getPermissionList(id);
+       
+    }, [router.isReady, id, selectedOption]);
+
+    useEffect(()=>{
+        getSingleData(id)
+    },[router.isReady, id])
 
     return (
-        <div className={`main_Box  w-100`}>
+        <div className={`main_Box w-100`}>
             <div className="bread_head">
                 <h3 className="content_head">CLIENT PERMISSIONS</h3>
                 <nav aria-label="breadcrumb">
@@ -211,51 +517,51 @@ const AdminPermissionScreen = () => {
             <div className="main_content ">
                 <div className="permission-view">
                     <div className='w-25'>
-                    <Form.Group controlId="dropdownMenu">
-        <Form.Label>Select an option:</Form.Label>
-        <Form.Control 
-          as="select" 
-          value={selectedOption} 
-          onChange={handleChange} 
-          className="form-control-sm"
-        >
-          <option>CRM</option>
-          <option>CHANNEL</option>
-          <option>DMS</option>
-          <option>SALES</option>
-        </Form.Control>
-      </Form.Group>
+                        <Form.Group controlId="dropdownMenu">
+                            <Form.Label>Select an option:</Form.Label>
+                            <Form.Control
+                                as="select"
+                                value={selectedOption}
+                                onChange={handleChange}
+                                className="form-control-sm"
+                            >
+                                {
+                                    optionsArray?.map((item,i)=>(
+                                        <option key={i}>{item}</option>
+                                    ))
+                                }
+                                {/* <option>CRM</option>
+                                <option>CHANNEL</option>
+                                <option>DMS</option>
+                                <option>SALES</option> */}
+                                <option>COMMON</option>
+                            </Form.Control>
+                        </Form.Group>
                     </div>
-                
-
-
                     {permissionView ? <>
-                     {renderMenu(permissionView)}
-                     
-                     </> : ''}
+                        {renderMenu(permissionView)}
+                    </> : ''}
                     {
                         permissionView?.length > 0 && (
                             <div className="submit-btn-box">
-                        <button className="btn btn-cancel" disabled={isButtonLoading} onClick={()=>router.push("/admin")}>Go Back</button>
-                        <button onClick={submitFunc} disabled={isButtonLoading} className="btn btn-primary">
-                            {isButtonLoading ? (
-                                  <>
-                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                    &nbsp;Submit
-                                  </>
-                                ) : (
-                                  'Submit'
-                                )}
-                        </button>
-                    </div>
+                                <button className="btn btn-cancel" disabled={isButtonLoading} onClick={() => router.push("/admin")}>Go Back</button>
+                                <button onClick={submitFunc} disabled={isButtonLoading} className="btn btn-primary">
+                                    {isButtonLoading ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                            &nbsp;Submit
+                                        </>
+                                    ) : (
+                                        'Submit'
+                                    )}
+                                </button>
+                            </div>
                         )
                     }
-                    
                 </div>
-
             </div>
         </div>
-    )
+    );
 }
 
-export default AdminPermissionScreen
+export default AdminPermissionScreen;

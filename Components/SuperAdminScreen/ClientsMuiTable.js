@@ -46,7 +46,8 @@ const ClientsMuiTable = ({ clientList, openEnableBox, renewSubscription, title, 
             name: 'subscription_start_date',
             label: "subscription start date",
             options: {
-                filter: true,
+                filter: false,
+                display:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div>{moment(value).format("DD-MM-YYYY")}</div>
@@ -58,7 +59,8 @@ const ClientsMuiTable = ({ clientList, openEnableBox, renewSubscription, title, 
             name: 'subscription_end_date',
             label: "subscription end date",
             options: {
-                filter: true,
+                filter: false,
+                display:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div>{moment(value).format("DD-MM-YYYY")}</div>
@@ -99,7 +101,7 @@ const ClientsMuiTable = ({ clientList, openEnableBox, renewSubscription, title, 
             name: 'user_id',
             label: "Action",
             options: {
-                filter: true,
+                filter: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">

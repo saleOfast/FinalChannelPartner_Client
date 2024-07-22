@@ -427,7 +427,7 @@ const Topnav = ({  topnavPermission }) => {
                  {hasCookie("Admin") &&
                 
                 <img
-                src="/ChannelPartner/sale-o-fast-logo.png"
+                src="/Sale-o-fast.png"
                 alt
               />
                  }

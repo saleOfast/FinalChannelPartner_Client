@@ -1053,8 +1053,8 @@ const AddClientScreen = () => {
                                 <input
                                   className="form-check-input text-nowrap"
                                   type="checkbox"
-                                  value="option1"
-                                  id="option1"
+                                  value="option2"
+                                  id="option2"
                                   checked={userInfo.isCHANNEL}
                                   onChange={(e) => {
                                     setUserInfo({
@@ -1066,7 +1066,7 @@ const AddClientScreen = () => {
                                 />
                                 <label
                                   className="form-check-label"
-                                  htmlFor="option1"
+                                  htmlFor="option2"
                                 >
                                   Channel Partner
                                 </label>
@@ -1193,8 +1193,8 @@ const AddClientScreen = () => {
                                 <input
                                   className="form-check-input"
                                   type="checkbox"
-                                  value="option1"
-                                  id="option1"
+                                  value="option3"
+                                  id="option3"
                                   checked={userInfo.isDMS}
                                   onChange={(e) => {
                                     setUserInfo({
@@ -1206,7 +1206,7 @@ const AddClientScreen = () => {
                                 />
                                 <label
                                   className="form-check-label"
-                                  htmlFor="option1"
+                                  htmlFor="option3"
                                 >
                                   DMS
                                 </label>
@@ -1333,8 +1333,8 @@ const AddClientScreen = () => {
                                 <input
                                   className="form-check-input"
                                   type="checkbox"
-                                  value="option1"
-                                  id="option1"
+                                  value="option4"
+                                  id="option4"
                                   checked={userInfo.isSALES}
                                   onChange={(e) => {
                                     setUserInfo({
@@ -1346,7 +1346,7 @@ const AddClientScreen = () => {
                                 />
                                 <label
                                   className="form-check-label"
-                                  htmlFor="option1"
+                                  htmlFor="option4"
                                 >
                                   Sales App
                                 </label>

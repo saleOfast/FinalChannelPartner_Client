@@ -21,7 +21,7 @@ const UserPrflMgmtscreens = () => {
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
     const [currObj, setcurrObj] = useState('')
     const[loader,setLoader]=useState(false)
-
+    const allowedpermissions=hasCookie("allowedpermissions")? JSON.parse(getCookie("allowedpermissions")) :null
 
     function disableConfirm(value) {
         setcurrObj(value)
@@ -167,12 +167,17 @@ const UserPrflMgmtscreens = () => {
                 <div className="main_content">
                     <div className="table_screen">
                         <div className="top_btn_sec">
-                            <Link href='/AddProfileManage'>
+                            {
+                                allowedpermissions[0]==="channel" ? null :(
+                                    <Link href='/AddProfileManage'>
                                 <button className="btn btn-primary Add_btn">
                                     <PlusIcon />
                                     ADD PROFILE
                                 </button>
                             </Link>
+                                )
+                            }
+                            
                         </div>
                         <DynamicTable
                             title='Users Profile List'

@@ -53,6 +53,7 @@ const AddUserScreen = () => {
     reraPreview:null,
     chequePreview:null,
   });
+  const allowedpermissions=hasCookie("allowedpermissions") ? JSON.parse(getCookie("allowedpermissions")) : null
 
 useEffect(()=>{
         userInfo.db_user_fields = [];
@@ -205,13 +206,29 @@ useEffect(()=>{
         cheque: data2?.c_cheque_file,
       });
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message);
     }
   }
 
   const addUserHandler = async () => {
     
     if (!hasCookie("token")) return;
+    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL){
+     return toast.error("No App Permission Provided")
+    }
+    let data={...userInfo}
+    if(userInfo?.role_id=="1" || userInfo?.role_id=="2" || userInfo?.role_id=="3"){
+      data={...data,
+        isCRM:false,
+        isSALES:false,
+        isDMS:false,
+      }
+    }
+    if(userInfo?.role_id>3){
+      data={...data,
+        isCHANNEL:false,
+      }
+    }
     setisLoading(true);
     const token = getCookie("token");
     const db_name = getCookie("db_name");
@@ -234,6 +251,7 @@ useEffect(()=>{
       );
       const userId = response.data.data.userProfileData.user_id;
       if (response.status === 200 || response.status === 201) {
+        
         await postFieldsFunc(
           response.data.data.userProfileData.user_id,
           reqOptions.db_user_fields
@@ -250,6 +268,7 @@ useEffect(()=>{
         router.push("/ManageUsers");
       }
     } catch (error) {
+      setisLoading(false);
       if (error?.response?.data?.status === 422) {
         const taskObject = error.response.data.data.reduce((obj, item) => {
           const [key, value] = Object.entries(item)[0];
@@ -272,7 +291,23 @@ useEffect(()=>{
 
   const updateUserhandler = async () => {
     if (!hasCookie("token")) return;
-
+    
+    let data={...userInfo}
+    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL){
+      return toast.error("No App Permission Provided")
+     }
+    if(userInfo?.role_id=="1" || userInfo?.role_id=="2" || userInfo?.role_id=="3"){
+      data={...data,
+        isCRM:false,
+        isSALES:false,
+        isDMS:false,
+      }
+    }
+    if(userInfo?.role_id>3){
+      data={...data,
+        isCHANNEL:false,
+      }
+    }
     setisLoading(true);
     const token = getCookie("token");
     const db_name = getCookie("db_name");
@@ -291,7 +326,7 @@ useEffect(()=>{
     }
 
     try {
-      const response = await axios.put(`${Baseurl}/db/users`, userInfo, header);
+      const response = await axios.put(`${Baseurl}/db/users`, data, header);
       if (response.status === 200 || response.status === 201) {
         await postFieldsFunc(
           // response.data.data.userProfileData.user_id,
@@ -586,7 +621,7 @@ useEffect(()=>{
             ...userInfo,
             [perm_type]: false,
             });
-          toast.error("No CRM license available")
+          toast.error(`No  ${perm_type.slice(2)} license available`)
         }
         else{
           setUserinfo({
@@ -613,6 +648,8 @@ useEffect(()=>{
       setisLoading(false);
     }
   };
+
+  
   
 
   useEffect(() => {
@@ -707,13 +744,14 @@ useEffect(()=>{
                         onChange={(e) => {
                           setUserinfo({
                             ...userInfo,
-                            role_id: parseInt(e.target.value),
+                            role_id: e.target.value=="#"?"#": parseInt(e.target.value),
                           });
+                          
                           setErrorData({ ...errorData, role_id: "" });
                         }}
                         value={userInfo.role_id ? userInfo.role_id : ""}
                       >
-                        <option value="">Select User Profile </option>
+                        <option value="#">Select User Profile </option>
                         {userroles?.map(({ role_id, role_name }) => {
                           return (
                             <option key={role_id} value={role_id}>
@@ -729,218 +767,136 @@ useEffect(()=>{
                     </div>
                   </div>
 
-                  <div className="col-xl-6 col-md-6 col-sm-12 col-12 ">
+                  {
+                  (  userInfo?.role_id==null ||  userInfo?.role_id=="#"  )? null:(
+                      <div className="col-xl-6 col-md-6 col-sm-12 col-12">
                     <div className="input_box">
-                      <label htmlFor="task_name"> Apps Permission *</label>
+                      <label htmlFor="task_name">Apps Permission *</label>
                       <br />
-                      <div className="d-flex flex-wrap justify-content-start gap-5 py-2 ">
-                        {userInfo.role_id !== 1 ? (
-                          <>
-                          {
-                            hasCookie("allowedpermissions") &&
-                            JSON.parse(getCookie("allowedpermissions"))?.map((p) => (
-                              <>
-                                {p === "crm" && (
-                                  <div className="form-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      value="option1"
-                                      id="option1"
-                                      checked={userInfo?.isCRM}
-                                      onChange={(e) => {
-                                        if (userInfo.isCRM) {
-                                          setUserinfo({
-                                            ...userInfo,
-                                            isCRM: e.target.checked,
-                                          });
-                                        } else {
-                                          checkLicense(e, "crm", "isCRM");
-                                        }
-                                        setErrorData({ ...errorData, isCRM: "" });
-                                      }}
-                                    />
-                                    <label className="form-check-label" htmlFor="option1">
-                                      CRM
-                                    </label>
-                                  </div>
-                                )}
-                                {p === "dms" && (
-                                  <div className="form-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      value="option2"
-                                      id="option2"
-                                      checked={userInfo?.isDMS || false}
-                                      onChange={(e) => {
-                                        if (userInfo.isDMS) {
-                                          setUserinfo({
-                                            ...userInfo,
-                                            isDMS: e.target.checked,
-                                          });
-                                        } else {
-                                          checkLicense(e, "dms", "isDMS");
-                                        }
-                                        setErrorData({ ...errorData, isDMS: "" });
-                                      }}
-                                    />
-                                    <label className="form-check-label" htmlFor="option2">
-                                      DMS
-                                    </label>
-                                  </div>
-                                )}
-                                {p === "sales" && (
-                                  <div className="form-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      value="option3"
-                                      id="option3"
-                                      checked={userInfo?.isSALES || false}
-                                      onChange={(e) => {
-                                        if (userInfo.isSALES) {
-                                          setUserinfo({
-                                            ...userInfo,
-                                            isSALES: e.target.checked,
-                                          });
-                                        } else {
-                                          checkLicense(e, "sales", "isSALES");
-                                        }
-                                        setErrorData({ ...errorData, isSALES: "" });
-                                      }}
-                                    />
-                                    <label className="form-check-label" htmlFor="option3">
-                                      SALES
-                                    </label>
-                                  </div>
-                                )}
-                              </>
-                            ))
-                          }
+                      <div className="d-flex flex-wrap justify-content-start gap-5 py-2">
+                        {allowedpermissions?.map((p) => {
 
-                            {/* <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option1"
-                                id="option1"
-                                checked={userInfo?.isCRM}
-                                onChange={(e) => {
-                                  if(userInfo.isCRM){
-                                    setUserinfo({
-                                      ...userInfo,
-                                      isCRM: e.target.checked,
-                                    });
-                                  }
-                                  if(!userInfo?.isCRM){
-                                    checkLicense(e,"crm","isCRM");
-                                  }
+                          if(userInfo.role_id !== 1 && userInfo.role_id !== 2 && userInfo.role_id !== 3 && allowedpermissions[0]==="channel"){
+                            return (
+                              <>
+                                
+                                  <input type="text"  disabled placeholder="No Permissions Allowed" />
+                                  {/* <input type="text" style={{marginTop:"-9px"}}  disabled placeholder="No Permissions Allowed" className="form-control " /> */}
+                                
+                              </>
+                            )
+                          }
+                            
+                            if (userInfo.role_id !== 1 && userInfo.role_id !== 2 && userInfo.role_id !== 3) {
+                              return (
+                                <>
+                                  {p === "crm" && (
+                                    <div className="form-check" key="crm">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        value="option1"
+                                        id="option1"
+                                        checked={userInfo?.isCRM || false}
+                                        onChange={(e) => {
+                                          if (userInfo.isCRM) {
+                                            setUserinfo({ ...userInfo, isCRM: e.target.checked });
+                                          } else {
+                                            checkLicense(e, "crm", "isCRM");
+                                          }
+                                          setErrorData({ ...errorData, isCRM: "" });
+                                        }}
+                                      />
+                                      <label className="form-check-label" htmlFor="option1">
+                                        CRM
+                                      </label>
+                                    </div>
+                                  )}
+                                  {p === "dms" && (
+                                    <div className="form-check" key="dms">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        value="option2"
+                                        id="option2"
+                                        checked={userInfo?.isDMS || false}
+                                        onChange={(e) => {
+                                          if (userInfo.isDMS) {
+                                            setUserinfo({ ...userInfo, isDMS: e.target.checked });
+                                          } else {
+                                            checkLicense(e, "dms", "isDMS");
+                                          }
+                                          setErrorData({ ...errorData, isDMS: "" });
+                                        }}
+                                      />
+                                      <label className="form-check-label" htmlFor="option2">
+                                        DMS
+                                      </label>
+                                    </div>
+                                  )}
+                                  {p === "sales" && (
+                                    <div className="form-check" key="sales">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        value="option3"
+                                        id="option3"
+                                        checked={userInfo?.isSALES || false}
+                                        onChange={(e) => {
+                                          if (userInfo.isSALES) {
+                                            setUserinfo({ ...userInfo, isSALES: e.target.checked });
+                                          } else {
+                                            checkLicense(e, "sales", "isSALES");
+                                          }
+                                          setErrorData({ ...errorData, isSALES: "" });
+                                        }}
+                                      />
+                                      <label className="form-check-label" htmlFor="option3">
+                                        SALES
+                                      </label>
+                                    </div>
+                                  )}
                                   
-                                  setErrorData({ ...errorData, isCRM: "" });
-                                }}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="option1"
-                              >
-                                CRM
-                              </label>
-                            </div>
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option2"
-                                id="option2"
-                                checked={
-                                  userInfo.isDMS ? userInfo.isDMS : false
-                                }
-                                onChange={(e) => {
-                                  if(userInfo.isDMS){
-                                    setUserinfo({
-                                      ...userInfo,
-                                      isDMS: e.target.checked,
-                                    });
-                                  }
-                                  if(!userInfo?.isDMS){
-                                    checkLicense(e,"dms","isDMS");
-                                  }
-                                  setErrorData({ ...errorData, isDMS: "" });
-                                }}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="option2"
-                              >
-                                DMS
-                              </label>
-                            </div>
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value="option3"
-                                id="option3"
-                                checked={
-                                  userInfo.isSALES ? userInfo.isSALES : false
-                                }
-                                onChange={(e) => {
-                                  if(userInfo.isSALES){
-                                    setUserinfo({
-                                      ...userInfo,
-                                      isSALES: e.target.checked,
-                                    });
-                                  }
-                                  if(!userInfo?.isSALES){
-                                    checkLicense(e,"sales","isSALES");
-                                  }
-                                  setErrorData({ ...errorData, isSALES: "" });
-                                }}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="option3"
-                              >
-                                SALES
-                              </label>
-                            </div> */}
-                          </>
-                        ) : (
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              value="option4"
-                              id="option4"
-                              checked={
-                                userInfo.isCHANNEL ? userInfo.isCHANNEL  : false
-                              }
-                              onChange={(e) => {
-                                if(userInfo.isCHANNEL){
-                                  setUserinfo({
-                                    ...userInfo,
-                                    isCHANNEL: e.target.checked,
-                                  });
-                                }
-                                if(!userInfo?.isCHANNEL){
-                                  checkLicense(e,"partner","isCHANNEL");
-                                }
-                                setErrorData({ ...errorData, isCHANNEL: "" });
-                              }}
-                              disabled={viewMode}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="option4"
-                            >
-                              CHANNEL PARTNER
-                            </label>
-                          </div>
-                        )}
+                                </>
+                              );
+                            } 
+                            else {
+                              return (
+                                <>
+                                  {p === "channel" && (
+                                    <div className="form-check" key="channel">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        value="option4"
+                                        id="option4"
+                                        checked={userInfo?.isCHANNEL || false}
+                                        onChange={(e) => {
+                                          if (userInfo.isCHANNEL) {
+                                            setUserinfo({ ...userInfo, isCHANNEL: e.target.checked });
+                                          } else {
+                                            checkLicense(e, "partner", "isCHANNEL");
+                                          }
+                                          setErrorData({ ...errorData, isCHANNEL: "" });
+                                        }}
+                                        disabled={viewMode}
+                                      />
+                                      <label className="form-check-label" htmlFor="option4">
+                                        CHANNEL PARTNER
+                                      </label>
+                                    </div>
+                                  )}
+                                </>
+                              );
+                            }
+                          })}
                       </div>
                     </div>
                   </div>
+                    )
+                  }
+                  
+
                 </div>
                 <div className="row">
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">

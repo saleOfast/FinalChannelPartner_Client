@@ -42,19 +42,23 @@ const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disable
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
-                            <Link href={`/AddProfileManage?id=${value}`}>
-                                <button
-                                    className="action_btn"
-                                    title='Edit'>
-                                    <EditIcon />
-                                </button>
-                            </Link>
+
                             {tableMeta.rowData[2] ? <button
                                 onClick={() => disableConfirm(value)}
                                 className="action_btn"
                                 title='Disable'>
                                 <DisableIcon />
                             </button> : null}
+                            {
+                                (value!==1 && value!==2 && value!==3) ? (
+                                    <>
+                                            <Link href={`/AddProfileManage?id=${value}`}>
+                                <button
+                                    className="action_btn"
+                                    title='Edit'>
+                                    <EditIcon />
+                                </button>
+                            </Link>
                             <Link href={`/RolePermission?id=${value}`}>
                                 <button
                                     className="action_btn x2"
@@ -69,6 +73,13 @@ const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disable
                                 title='Delete'>
                                 <DeleteIcon />
                             </button>
+                                    </>
+                                )  :<div>
+                                    <input placeholder="Default Role/Permission" type="text" disabled />
+                                    
+                                </div> 
+                            }
+                            
                         </div>
                     )
                 }

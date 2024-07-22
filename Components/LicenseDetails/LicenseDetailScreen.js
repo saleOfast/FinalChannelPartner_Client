@@ -66,6 +66,8 @@ const LicenseDetailScreen = () => {
         }
     }
 }
+  
+const allowedpermissions=hasCookie("allowedpermissions") ? JSON.parse(getCookie("allowedpermissions")) :null;
 
 useEffect(()=>{
   getEmailConfig()
@@ -90,22 +92,54 @@ useEffect(()=>{
       <div className="main_content">
         <div className="container py-5">
           <div className="container mt-5 border p-2">
-          {renderSection(
+            {
+               allowedpermissions?.map((item,index)=>{
+                  if(item=="crm"){
+                    return renderSection(
+                      "CRM",
+                      userInfo?.no_of_license,
+                      licenseDetails[0]?.db_user_platforms?.length > 0 ? 
+                        licenseDetails[0]?.db_user_platforms[0]?.usedLicences : null, 
+                      licenseDetails[0]?.subscription_end_date
+                    )
+                  }
+
+                  if(item=="dms"){
+                    return renderSection("DMS", userInfo?.no_of_dms_license, licenseDetails[1]?.db_user_platforms?.length > 0 ? 
+                      licenseDetails[1]?.db_user_platforms[0]?.usedLicences : null,licenseDetails[1]?.subscription_end_date_dms)
+                  }
+
+                  if(item=="sales"){
+                    return renderSection("SALES", userInfo?.no_of_sales_license, licenseDetails[2]?.db_user_platforms?.length > 0 ? 
+                      licenseDetails[2]?.db_user_platforms[0]?.usedLicences : null,licenseDetails[2]?.subscription_end_date_sales)
+                  }
+
+                  if(item=="channel"){
+                    return renderSection("CHANNEL PARTNER", userInfo?.no_of_channel_license,licenseDetails[3]?.db_user_platforms?.length > 0 ? 
+                      licenseDetails[3]?.db_user_platforms[0]?.usedLicences : null,licenseDetails[3]?.subscription_end_date_channel)
+                  }
+
+
+
+               })
+            }
+           
+          {/* {renderSection(
             "CRM",
             userInfo?.no_of_license,
             licenseDetails[0]?.db_user_platforms?.length > 0 ? 
               licenseDetails[0]?.db_user_platforms[0]?.usedLicences : null, 
             licenseDetails[0]?.subscription_end_date
-          )}
+          )} */}
 
-            {renderSection("DMS", userInfo?.no_of_dms_license, licenseDetails[1]?.db_user_platforms?.length > 0 ? 
-              licenseDetails[1]?.db_user_platforms[0]?.usedLicences : null,licenseDetails[1]?.subscription_end_date_dms)}
+            {/* {renderSection("DMS", userInfo?.no_of_dms_license, licenseDetails[1]?.db_user_platforms?.length > 0 ? 
+              licenseDetails[1]?.db_user_platforms[0]?.usedLicences : null,licenseDetails[1]?.subscription_end_date_dms)} */}
 
-            {renderSection("SALES", userInfo?.no_of_sales_license, licenseDetails[2]?.db_user_platforms?.length > 0 ? 
-              licenseDetails[2]?.db_user_platforms[0]?.usedLicences : null,licenseDetails[2]?.subscription_end_date_sales)}
+            {/* {renderSection("SALES", userInfo?.no_of_sales_license, licenseDetails[2]?.db_user_platforms?.length > 0 ? 
+              licenseDetails[2]?.db_user_platforms[0]?.usedLicences : null,licenseDetails[2]?.subscription_end_date_sales)} */}
 
-            {renderSection("CHANNEL PARTNER", userInfo?.no_of_channel_license,licenseDetails[3]?.db_user_platforms?.length > 0 ? 
-              licenseDetails[3]?.db_user_platforms[0]?.usedLicences : null,licenseDetails[3]?.subscription_end_date_channel)}
+            {/* {renderSection("CHANNEL PARTNER", userInfo?.no_of_channel_license,licenseDetails[3]?.db_user_platforms?.length > 0 ? 
+              licenseDetails[3]?.db_user_platforms[0]?.usedLicences : null,licenseDetails[3]?.subscription_end_date_channel)} */}
           </div>
         </div>
       </div>

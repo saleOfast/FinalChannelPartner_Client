@@ -50,7 +50,7 @@ const ByCategory = () => {
       <div className="container">
     <div className="shop_by">
       <div className="text-wrapper-12">Shop By Category</div>
-      <div className="text-wrapper-13">See All</div>
+      {/* <div className="text-wrapper-13">See All</div> */}
     </div>
     <div className="row pt-3">
       {categories?.map((_v, _x) => (

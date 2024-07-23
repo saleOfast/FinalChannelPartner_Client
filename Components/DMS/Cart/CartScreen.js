@@ -99,7 +99,7 @@ const CartScreen = () => {
   
   useEffect(() => {
     dispatch(fetchCart())
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     let totalCartPrice = cart.reduce((total, item) => {
@@ -107,7 +107,9 @@ const CartScreen = () => {
     }, 0);
     setCartTotal(totalCartPrice);
     setTotal(totalCartPrice-105);
-  }, [cartItems]);
+  }, [cart]);
+
+  
 
   return (
     <section className="w-100 bg-white" style={{paddingBottom:"90px", overflowY:"scroll"}}>
@@ -376,3 +378,4 @@ const CartScreen = () => {
 };
 
 export default CartScreen;
+

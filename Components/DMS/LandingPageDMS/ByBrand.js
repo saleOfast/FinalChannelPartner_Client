@@ -45,7 +45,7 @@ const ByBrand = () => {
     <div className="container">
       <div className="brands">
         <div className="text-wrapper-22">Shop By Brand</div>
-        <div className="text-wrapper-23">See All</div>
+        {/* <div className="text-wrapper-23">See All</div> */}
       </div>
       {/* slider */}
       <div className="content-wrapper">

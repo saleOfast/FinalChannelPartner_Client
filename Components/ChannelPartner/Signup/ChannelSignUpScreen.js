@@ -55,89 +55,92 @@ const ChannelSignUpScreen = () => {
         { token }
       );
       if (data.status === 200) {
-        if (data.data.doc_verification === 0) {
+        if (data?.data?.doc_verification === 0) {
           toast.success(data.message);
           setFormFields({
             ...formFields,
-            name: data.data.user || "",
-            user_l_name: data.data.user_l_name || "",
-            mobile: data.data.contact_number || "",
-            email: data.data.email || "",
-            id: data.data.user_id,
+            name: data?.data?.user || "",
+            user_l_name: data?.data?.user_l_name || "",
+            mobile: data?.data?.contact_number || "",
+            email: data?.data?.email || "",
+            id: data?.data?.user_id,
             token: token,
             isTokenVerified: true,
           });
-        }else if (data.data.doc_verification === 1) {
+        }else if (data?.data?.doc_verification === 1) {
           toast.success("Pending for verification");
           setFormFields({
             ...formFields,
-            name: data.data.user || "",
-            user_l_name: data.data.user_l_name || "",
-            mobile: data.data.contact_number || "",
-            email: data.data.email || "",
-            pan: data.data.db_user_profile.pan_file || null,
-            aadhar: data.data.db_user_profile.aadhar_file || null,
-            rera: data.data.db_user_profile.rera_file || null,
-            cheque: data.data.db_user_profile.c_cheque_file || null,
+            name: data?.data?.user || "",
+            user_l_name: data?.data?.user_l_name || "",
+            mobile: data?.data?.contact_number || "",
+            email: data?.data?.email || "",
+            pan: data?.data?.db_user_profile?.pan_file || null,
+            aadhar: data?.data?.db_user_profile?.aadhar_file || null,
+            rera: data?.data?.db_user_profile?.rera_file || null,
+            cheque: data?.data?.db_user_profile?.c_cheque_file || null,
             isTokenVerified: true,
             isUploadVerified: true,
-            organisation: data.data.organisation || "",
-            state_id: data.data.state_id || "",
-            city_id: data.data.city_id || "",
-            address: data.data.address || "",
-            gst: data.data.gst || "",
-          });
-        }else if (data.data.doc_verification === 2) {
-          toast.success("Documents Verified");
-          setFormFields({
-            ...formFields,
-            name: data.data.user || "",
-            user_l_name: data.data.user_l_name || "",
-            mobile: data.data.contact_number || "",
-            email: data.data.email || "",
-            pan: data.data.db_user_profile.pan_file || null,
-            aadhar: data.data.db_user_profile.aadhar_file || null,
-            rera: data.data.db_user_profile.rera_file || null,
-            cheque: data.data.db_user_profile.c_cheque_file || null,
-            isTokenVerified: true,
-            isUploadVerified: true,
-            organisation: data.data.organisation || "",
-            state_id: data.data.state_id || "",
-            city_id: data.data.city_id || "",
-            address: data.data.address || "",
-            gst: data.data.gst || "",
+            organisation: data?.data?.organisation || "",
+            state_id: data?.data?.state_id || "",
+            city_id: data?.data?.city_id || "",
+            address: data?.data?.address || "",
+            gst: data?.data?.gst || "",
           });
           setInterval(()=>{
             router.push("/partner")
-          },[1000])
+          },[1500])
+        }else if (data?.data?.doc_verification === 2) {
+          toast.success("Documents Verified");
+          setFormFields({
+            ...formFields,
+            name: data?.data?.user || "",
+            user_l_name: data?.data?.user_l_name || "",
+            mobile: data?.data?.contact_number || "",
+            email: data?.data?.email || "",
+            pan: data?.data?.db_user_profile?.pan_file || null,
+            aadhar: data?.data?.db_user_profile?.aadhar_file || null,
+            rera: data?.data?.db_user_profile?.rera_file || null,
+            cheque: data?.data?.db_user_profile?.c_cheque_file || null,
+            isTokenVerified: true,
+            isUploadVerified: true,
+            organisation: data?.data?.organisation || "",
+            state_id: data?.data?.state_id || "",
+            city_id: data?.data?.city_id || "",
+            address: data?.data?.address || "",
+            gst: data?.data?.gst || "",
+          });
+          setInterval(()=>{
+            router.push("/partner")
+          },[1500])
         } else{
           toast.success("Documents Rejected");
           setFormFields({
             ...formFields,
-            name: data.data.user || "",
-            user_l_name: data.data.user_l_name || "",
-            mobile: data.data.contact_number || "",
-            email: data.data.email || "",
-            pan: data.data.db_user_profile.pan_file || null,
-            aadhar: data.data.db_user_profile.aadhar_file || null,
-            rera: data.data.db_user_profile.rera_file || null,
-            cheque: data.data.db_user_profile.c_cheque_file || null,
+            name: data?.data?.user || "",
+            user_l_name: data?.data?.user_l_name || "",
+            mobile: data?.data?.contact_number || "",
+            email: data?.data?.email || "",
+            pan: data?.data?.db_user_profile?.pan_file || null,
+            aadhar: data?.data?.db_user_profile?.aadhar_file || null,
+            rera: data?.data?.db_user_profile?.rera_file || null,
+            cheque: data?.data?.db_user_profile?.c_cheque_file || null,
             isTokenVerified: true,
             isUploadVerified: true,
-            organisation: data.data.organisation || "",
-            state_id: data.data.state_id || "",
-            city_id: data.data.city_id || "",
-            address: data.data.address || "",
-            gst: data.data.gst || "",
+            organisation: data?.data?.organisation || "",
+            state_id: data?.data?.state_id || "",
+            city_id: data?.data?.city_id || "",
+            address: data?.data?.address || "",
+            gst: data?.data?.gst || "",
           });
           setInterval(()=>{
             router.push("/partner")
-          },[1000])
+          },[1500])
         }
         
       }
     } catch (error) {
-      
+      console.log(error)
       const errorMessage =
         error?.response?.data?.message || "Something went wrong!";
       toast.error(errorMessage);

@@ -120,7 +120,8 @@ const ShopByBrandScreen = () => {
                 <div className="form">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control "
+                    style={{paddingLeft:"35px"}}
                     placeholder="Search Item"
                     aria-label="Recipient's username"
                     value={searchQuery}

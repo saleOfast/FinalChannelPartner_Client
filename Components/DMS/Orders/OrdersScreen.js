@@ -101,58 +101,61 @@ const OrdersScreen = () => {
           <div className="row">
             <div className="col-12">
               {
-                 orderList[0]?.orderItemList.map((order,i)=>
-                 {
-                  return(
-                  <div key={i} className="biscuit_deatails p-3">
-                    <div className="biscuits">
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div className="com_name">
-                        {formatDate(new Date(order?.createdAt))}
-                        </div>
-                        <div className="biscuit_name">
-                          <a href="#" className="text-decoration-none"><svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 16 16" fill="none">
-                              <path d="M2.66675 11.3333V12.6667C2.66675 13.0203 2.80722 13.3594 3.05727 13.6095C3.30732 13.8595 3.64646 14 4.00008 14H12.0001C12.3537 14 12.6928 13.8595 12.9429 13.6095C13.1929 13.3594 13.3334 13.0203 13.3334 12.6667V11.3333M4.66675 7.33333L8.00008 10.6667M8.00008 10.6667L11.3334 7.33333M8.00008 10.6667V2.66667" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>Download Invoice</a>
-                        </div>
-                      </div>
-                      <div className="underline" />
-                    </div>
-                  
-                  <div className="body shop_by_category pt-3">
-                    
-                      <div className="d-flex  align-items-center pb-2">
-                        <div className="items_img text-center"> <img src={`${filesUrl}/product/images${order?.OrderProductData?.image}`} style={{width:"150px"}} alt="normal"className="shadow-none" />
-                        </div>
-                        <div className="d-flex flex-column ms-4">
-                          <div className="d-flex flex-column gap-2">
-                            
-                              <div className="order_id">Order ID: {orderList[0]?.order_id}</div>
-                              <span className="Britannia">{order?.OrderProductData?.p_name}</span>
-                            
-                            <div className="prices d-flex align-items-center">
-                              <div className="price">
-                                <div className="rupees">{calculatePrice(order?.cases,order?.piece,order?.product_unit,order?.product_discount,order?.price)}</div>
-                                <div className='rupees'>Cases:{order?.cases}</div>
-                                <div className='rupees'>Piece:{order?.piece}</div>
-                              </div>
-                              <button type="button" className="btn btn_red d-flex flex-row align-items-center gap-1 border-0"><i className="fa-solid fa-rotate-right" />
-                                {orderList[0]?.p_status}</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="underline mb-0" />
-                   
-                    <div className="btn_cancel_payment d-flex justify-content-between pt-3">
-                      <button className="btn btn_left d-flex align-items-center justify-content-center m-0">Cancel</button>
-                      <button className="btn btn_right d-flex align-items-center justify-content-center m-0">Make
-                        Payment</button>
-                    </div>
-                  </div>
-                </div>
-                 )}
-                 )
+                orderList?.map((orderList)=>(
+                  orderList?.orderItemList.map((order,i)=>
+                    {
+                     return(
+                     <div key={i} className="biscuit_deatails p-3">
+                       <div className="biscuits">
+                         <div className="d-flex justify-content-between align-items-center">
+                           <div className="com_name">
+                           {formatDate(new Date(order?.createdAt))}
+                           </div>
+                           <div className="biscuit_name">
+                             <a href="#" className="text-decoration-none"><svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 16 16" fill="none">
+                                 <path d="M2.66675 11.3333V12.6667C2.66675 13.0203 2.80722 13.3594 3.05727 13.6095C3.30732 13.8595 3.64646 14 4.00008 14H12.0001C12.3537 14 12.6928 13.8595 12.9429 13.6095C13.1929 13.3594 13.3334 13.0203 13.3334 12.6667V11.3333M4.66675 7.33333L8.00008 10.6667M8.00008 10.6667L11.3334 7.33333M8.00008 10.6667V2.66667" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                               </svg>Download Invoice</a>
+                           </div>
+                         </div>
+                         <div className="underline" />
+                       </div>
+                     
+                     <div className="body shop_by_category pt-3">
+                       
+                         <div className="d-flex  align-items-center pb-2">
+                           <div className="items_img text-center"> <img src={`${filesUrl}/product/images${order?.OrderProductData?.image}`} style={{width:"150px"}} alt="normal"className="shadow-none" />
+                           </div>
+                           <div className="d-flex flex-column ms-4">
+                             <div className="d-flex flex-column gap-2">
+                               
+                                 <div className="order_id">Order ID: {orderList[0]?.order_id}</div>
+                                 <span className="Britannia">{order?.OrderProductData?.p_name}</span>
+                               
+                               <div className="prices d-flex align-items-center">
+                                 <div className="price">
+                                   <div className="rupees">{calculatePrice(order?.cases,order?.piece,order?.product_unit,order?.product_discount,order?.price)}</div>
+                                   <div className='rupees'>Cases:{order?.cases}</div>
+                                   <div className='rupees'>Piece:{order?.piece}</div>
+                                 </div>
+                                 <button type="button" className="btn btn_red d-flex flex-row align-items-center gap-1 border-0"><i className="fa-solid fa-rotate-right" />
+                                   {orderList[0]?.p_status}</button>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                         <div className="underline mb-0" />
+                      
+                       <div className="btn_cancel_payment d-flex justify-content-between pt-3">
+                         <button className="btn btn_left d-flex align-items-center justify-content-center m-0">Cancel</button>
+                         <button className="btn btn_right d-flex align-items-center justify-content-center m-0">Make
+                           Payment</button>
+                       </div>
+                     </div>
+                   </div>
+                    )}
+                    )
+                ))
+                
               }
              
             </div>

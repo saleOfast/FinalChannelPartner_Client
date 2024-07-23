@@ -7,6 +7,7 @@ import ProductCard from '../ProductCard/ProductCard';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import Link from 'next/link';
 
 const ShopByProduct = () => {
 
@@ -55,11 +56,11 @@ const ShopByProduct = () => {
     
           try {
             const {data} = await axios.get(Baseurl + `/db/product`, header);
-            setProducts(data.data);
-            console.log(data.data)
+            setProducts(data?.data);
+            console.log(data?.data)
           } catch (error) {
             if (error?.response?.data?.message) {
-              toast.error(error.response.data.message);
+              toast.error(error?.response?.data?.message);
             } else {
               toast.error("Something went wrong!");
             }
@@ -77,7 +78,7 @@ const ShopByProduct = () => {
     <div className="container">
       <div className="discounted">
         <div className="text-wrapper-12">Shop By Product</div>
-        <div className="text-wrapper-13">See All</div>
+        <Link href={"/dms/ShopByBrand"}><div className="text-wrapper-13">See All</div></Link>   
       </div>
       <Slider className='mx-2' {...settings} >
       {products?.map((product, i) => (

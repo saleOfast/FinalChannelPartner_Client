@@ -67,7 +67,7 @@ const LoginScreen = ({ isLoggedIn, setisLoggedIn }) => {
             <div className="form-left d-flex flex-column justify-content-between">
               <img src="/images/Ellipse26.png" alt="normal"className="image-one" />
               <img
-                src="/Sale-o-fast.png"
+                src="/sale-o-fast.png"
                 alt
                 className=" mx-auto w-auto"
               />

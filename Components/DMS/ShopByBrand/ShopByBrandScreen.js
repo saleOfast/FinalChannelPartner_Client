@@ -7,6 +7,7 @@ import { Baseurl, filesUrl } from "../../../Utils/Constants";
 import { toast } from "react-toastify";
 import { hasCookie, getCookie } from "cookies-next";
 import ProductCard from "../ProductCard/ProductCard";
+import { useSelector } from "react-redux";
 
 const ShopByBrandScreen = () => {
   const router = useRouter();
@@ -19,6 +20,7 @@ const ShopByBrandScreen = () => {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const clientLogo=hasCookie("clientLogo") ? JSON.parse( getCookie("clientLogo")) : null;
+  const {cart}=useSelector(state=>state.dmsCart)
 
   const fetchData = async (url, setData) => {
     if (hasCookie("token")) {
@@ -138,10 +140,21 @@ const ShopByBrandScreen = () => {
                   </div>
                 </div>
                 <div className="cart position-relative">
-                  <img src="/DMS_IMAGES/ICONS/shopping-cart.svg" alt="normal"/>
-                  <div className="circle d-flex justify-content-center align-items-center position-absolute">
-                    <span>0</span>
+                  <img src="/DMS_IMAGES/ICONS/shopping-cart.svg" alt="normal" onClick={()=>{
+                    router.push("/dms/Cart")
+                  }}/>
+                  {
+                    cart?.length > 0 ? (
+                      <div className="circle d-flex p-2 justify-content-center align-items-center position-absolute">
+                    <span>
+                      {
+                        cart?.length > 9 ? "9+" :cart?.length
+                      }
+                    </span>
                   </div>
+                    ) :null
+                  }
+                  
                 </div>
               </div>
             </div>

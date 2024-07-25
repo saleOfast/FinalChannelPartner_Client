@@ -64,6 +64,46 @@ const ManageUsersTable = ({
     }
   };
 
+  const resendEmail =  async(id,email) => {
+
+    
+      if (!hasCookie("token")) return;
+      const token = getCookie("token");
+      const db_name = getCookie("db_name");
+      const header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          db: db_name,
+          m_id: 79,
+        },
+      };
+
+      
+      try {
+        const response = await axios.post(`${Baseurl}/db/users/resendEmailToPendingUser`,{
+          email:email,
+          user_id:id
+        }, header);
+        if (response.status === 200 || response.status === 201) {
+          toast.success(response?.data?.message);
+          getDataList()
+        }
+      } catch (error) {
+        console.log(error)
+        if (error?.response?.data?.status === 422) {
+              toast.error(error?.response?.data?.message)  
+        }
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+  };
+
+
+
   const columns = [
     {
       name: "user_code",
@@ -270,8 +310,16 @@ const ManageUsersTable = ({
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-            
-              tableMeta?.rowData[7]===1 ?
+              <>
+              {tableMeta?.rowData[7]===0 && (
+                <button  onClick={()=>{
+                  let user=dataList?.find((user)=>(user?.user_code==value))
+                  resendEmail(user?.user_id,user?.email)
+                  }} style={{backgroundColor:"green"}} className="btn text-white rounded-5" >
+                Resend
+              </button>
+              )}
+              {tableMeta?.rowData[7]===1 ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
@@ -287,9 +335,11 @@ const ManageUsersTable = ({
               </button>
           </div>
               </>
+              
             :
-            <div className="text-center"></div> 
+            <div className="text-center"></div> }
            
+              </>
           );
         },
       },
@@ -405,6 +455,8 @@ const ManageUsersTable = ({
     }
     setUserData([])
   };
+
+
 
   return (
     <>

@@ -153,10 +153,14 @@ const CampaignAdminScreen = () => {
   };
   
   const createProject=  async() => {
+    if(projectData?.contact_no?.length!==10){
+      return toast.warning("contact no should be of 10 digit")
+     }
     if(!projectData?.project) return toast.warning("please enter property name")
    if(!projectData?.file) return toast.warning("please upload property cover image")
    if(!projectData?.logo) return toast.warning("please upload property logo")
    if(!projectData?.template) return toast.warning("please upload HTML template")
+    
       if (!hasCookie("token")) return;
       const token = getCookie("token");
       const db_name = getCookie("db_name");
@@ -200,7 +204,9 @@ const CampaignAdminScreen = () => {
   };
 
   const updateProject=  async() => {
-   
+    if(projectData?.contact_no?.length!==10){
+      return toast.warning("contact no should be of 10 digit")
+     }
     if (!hasCookie("token")) return;
     const token = getCookie("token");
     const db_name = getCookie("db_name");
@@ -449,7 +455,7 @@ const CampaignAdminScreen = () => {
                     Contact No.
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     value={projectData?.contact_no}
                     onChange={(e) => {
                       setProjectData({
@@ -556,10 +562,11 @@ const CampaignAdminScreen = () => {
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50  d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Template File
+                    Template File(HTML)
                   </label>
                   <input
                     type="file"
+                    accept=".html,.htm"
                     onChange={(e)=>{
                       handleFileChange(e,"template","template_name")
                     }}

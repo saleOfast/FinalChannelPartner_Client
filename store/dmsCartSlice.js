@@ -7,6 +7,7 @@ import { Baseurl } from '../Utils/Constants';
 const initialState = { cart:[] }
 
 export const fetchCart=()=>async(dispatch)=>{
+  
     if (hasCookie("token")) {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
@@ -21,7 +22,7 @@ export const fetchCart=()=>async(dispatch)=>{
   
         try {
           const { data } = await axios.get(Baseurl + `/db/cart`, header);
-          dispatch(addToCart(data.data))
+          dispatch(addToCart(data?.data))
         } catch (error) {
           if (error?.response?.data?.message) {
             toast.success(error.response.data.message);
@@ -37,6 +38,7 @@ export const dmsCartSlice = createSlice({
     initialState,
     reducers: {
         addToCart:(state,action)=>{
+          
             state.cart=action.payload
         }
     },

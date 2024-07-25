@@ -166,6 +166,8 @@ import { Baseurl, filesUrl } from '../../../Utils/Constants';
 import { getCookie, hasCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { fetchCart } from '../../../store/dmsCartSlice';
 
 const ProductCard = ({
   discount,
@@ -180,7 +182,7 @@ const ProductCard = ({
   getProducts,
 }) => {
   const userInfo = JSON.parse(getCookie('userInfo'));
-
+  const dispatch=useDispatch()
   const increaseCases_Piece = async (product_id, type) => {
     if (hasCookie('token')) {
       let token = getCookie('token');
@@ -198,6 +200,7 @@ const ProductCard = ({
           ? await axios.post(Baseurl + `/db/cart`, { user_id: userInfo.user_id, product_id, cases: 1 }, header)
           : await axios.post(Baseurl + `/db/cart`, { user_id: userInfo.user_id, product_id, piece: 1 }, header);
         await getProducts();
+        // dispatch(fetchCart())
       } catch (error) {
         console.log(error);
         if (error?.response?.data?.message) {
@@ -226,6 +229,8 @@ const ProductCard = ({
           ? await axios.put(Baseurl + `/db/cart`, { user_id: userInfo.user_id, product_id, cases: 1 }, header)
           : await axios.put(Baseurl + `/db/cart`, { user_id: userInfo.user_id, product_id, piece: 1 }, header);
         await getProducts();
+        // dispatch(fetchCart())
+
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.success(error.response.data.message);

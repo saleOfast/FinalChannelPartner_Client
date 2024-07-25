@@ -143,7 +143,8 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-6">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{bookingData?.Location}</span>
+                            <span className="list-right">{bookingData?.BookingleadData?.address}</span>
+                            {/* // <span className="list-right">{bookingData?.Location}</span> */}
                           </div>
                         </div>
                       </div>
@@ -171,7 +172,8 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{formatDate(bookingData?.visit_done_date)}</span>
+                            <span className="list-right">{formatDate(bookingData?.BookingleadData?.p_visit_date)}</span>
+                            {/* <span className="list-right">{formatDate(bookingData?.visit_done_date)}</span> */}
                           </div>
                         </div>
                       </div>
@@ -183,7 +185,8 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{formatTime(bookingData?.visit_done_time)}</span>
+                          <span className="list-right">{formatTime(bookingData?.BookingleadData?.p_visit_time)}</span>
+                            {/* <span className="list-right">{formatTime(bookingData?.visit_done_time)}</span> */}
                           </div>
                         </div>
                       </div>
@@ -219,7 +222,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{formatDate(bookingData?.revisit_done_date)}</span>
+                            <span className="list-right">{bookingData?.revisit_done_date===null ? "":formatDate(bookingData?.revisit_done_date)}</span>
                           </div>
                         </div>
                       </div>
@@ -231,7 +234,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{formatTime(bookingData?.revisit_done_time)}</span>
+                            <span className="list-right">{bookingData?.revisit_done_time===null?"":formatTime(bookingData?.revisit_done_time)}</span>
                           </div>
                         </div>
                       </div>
@@ -255,7 +258,7 @@ function formatDate(date) {
                           </div>
                           <div className="col-7 col-md-7 col-lg-7">
                             <div className="list-group-item list-group-item-action p-0 border-0">
-                              <span className="list-right">Agreement Done</span>
+                              <span className="list-right">{bookingData?.status}</span>
                             </div>
                           </div>
                         </div>

@@ -198,7 +198,7 @@ const AddUserScreen = () => {
   const addUserHandler = async () => {
     
     if (!hasCookie("token")) return;
-    if(userInfo?.cpt_id===""){
+    if(userInfo?.role_id=="1" && userInfo?.cpt_id===""){
       setErrorData({...errorData,cpt_id:"Please Enter a Valid Partner Type"})
       return
     }
@@ -497,8 +497,10 @@ const AddUserScreen = () => {
                       </span>
                     </div>
                   </div>
-
-                  <div className="col-xl-5 col-md-5 col-sm-12 col-12">
+                  
+                  {
+                    userInfo?.role_id=="1" && (
+                      <div className="col-xl-5 col-md-5 col-sm-12 col-12">
                     <div
                       className={
                         errorData?.cpt_id ? "input_box errorBox" : "input_box"
@@ -538,6 +540,9 @@ const AddUserScreen = () => {
                       </span>
                     </div>
                   </div>
+                    )
+                  }
+                  
 
                 </div>
                 <div className="row">

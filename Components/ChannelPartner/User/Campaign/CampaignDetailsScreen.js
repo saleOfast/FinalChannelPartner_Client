@@ -115,6 +115,7 @@ const CampaignDetailsScreen = () => {
             }
             
           } catch (error) {
+            console.log(error)
             if (error?.response?.data?.message) {
               setLoader(false)
               toast.error(error.response.data.message);
@@ -127,7 +128,9 @@ const CampaignDetailsScreen = () => {
       };
 
     const updateProject=  async() => {
-   
+      if(projectData?.contact_no?.toString().length!==10){
+        return toast.warning("contact no should be of 10 digit")
+       }
         if (!hasCookie("token")) return;
         const token = getCookie("token");
         const db_name = getCookie("db_name");

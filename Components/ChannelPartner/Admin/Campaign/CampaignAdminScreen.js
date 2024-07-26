@@ -153,7 +153,7 @@ const CampaignAdminScreen = () => {
   };
   
   const createProject=  async() => {
-    if(projectData?.contact_no?.length!==10){
+    if(projectData?.contact_no?.toString().length!==10){
       return toast.warning("contact no should be of 10 digit")
      }
     if(!projectData?.project) return toast.warning("please enter property name")
@@ -204,7 +204,8 @@ const CampaignAdminScreen = () => {
   };
 
   const updateProject=  async() => {
-    if(projectData?.contact_no?.length!==10){
+    
+    if(projectData?.contact_no?.toString().length!==10){
       return toast.warning("contact no should be of 10 digit")
      }
     if (!hasCookie("token")) return;
@@ -612,6 +613,7 @@ const CampaignAdminScreen = () => {
                 editMode ?
                 (
                     <button
+                    type="submit"
                     disabled={isButtonLoading}
                 className="btn text-white rounded-5"
                 style={{ background: clientBtnColor }}
@@ -629,6 +631,7 @@ const CampaignAdminScreen = () => {
                 :
                 (
                     <button
+                    type="submit"
                     disabled={isButtonLoading}
                 className="btn text-white rounded-5"
                 style={{ background: clientBtnColor }}

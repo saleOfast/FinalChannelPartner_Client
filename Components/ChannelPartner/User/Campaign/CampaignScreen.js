@@ -115,6 +115,7 @@ const CampaignScreen = () => {
             template_name:campaign?.html_file,
         })
       } catch (error) {
+        console.log(error)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
@@ -155,7 +156,7 @@ const CampaignScreen = () => {
   };
   
   const createProject=  async() => {
-    if(projectData?.contact_no?.length!==10){
+    if(projectData?.contact_no?.toString().length!==10){
       return toast.warning("contact no should be of 10 digit")
      }
     if(!projectData.project) return toast.warning("please enter project name")
@@ -199,7 +200,8 @@ const CampaignScreen = () => {
   };
 
   const updateProject=  async() => {
-    if(projectData?.contact_no?.length!==10){
+    
+    if(projectData?.contact_no?.toString().length!==10){
       return toast.warning("contact no should be of 10 digit")
      }
     if (!hasCookie("token")) return;
@@ -440,7 +442,6 @@ const CampaignScreen = () => {
                   </label>
                   <input
                     type="number"
-                    
                     value={projectData?.contact_no}
                     onChange={(e) => {
                       setProjectData({

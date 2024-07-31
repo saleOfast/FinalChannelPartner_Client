@@ -857,6 +857,8 @@ const AddQuotationScreen = () => {
                       setUserInfo({ ...userInfo, valid_till: e.target.value })
                       setErrorData({ ...errorData, valid_till: '' })
                     }}
+                    onPaste={(e)=>e.preventDefault()}
+                    onKeyDown={(e)=>e.preventDefault()}
                     value={userInfo?.valid_till ? moment(userInfo?.valid_till).format("YYYY-MM-DD") : ''}
                   />
                   <span className="errorText"> {errorData?.valid_till ? errorData?.valid_till : ''}</span>

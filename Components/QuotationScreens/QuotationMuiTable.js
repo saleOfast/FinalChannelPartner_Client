@@ -76,7 +76,23 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
                     return (
                         <div className='status_box'>
                             {/* <span className='active status_btn'>{value?.quat_status_name}</span> */}
-                            <span className='active status_btn'>{value}</span>
+                            {/* <span className='active status_btn' >{value}</span> */}
+                            <span 
+                                className='active status_btn' 
+                                style={{ 
+                                    color: 
+                                    value === 'New' ? 'blue' : 
+                                    value === 'In Progress' ? 'orange' : 
+                                    value === 'Submitted' ? 'purple' : 
+                                    value === 'Negotiation' ? 'teal' : 
+                                    value === 'Approved' ? 'green' : 
+                                    value === 'Rejected' ? 'red' : 
+                                    'black' 
+                                }}
+                                >
+                                {value}
+                                </span>
+
                         </div>
                     )
                 }

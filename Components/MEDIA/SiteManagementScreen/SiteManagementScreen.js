@@ -39,7 +39,7 @@ const SiteManagementScreen = () => {
       };
 
       try {
-        const response = await axios.get(Baseurl + `/db/tasks`, header);
+        const response = await axios.get(Baseurl + `/db/media/siteManagement/getSite`, header);
         if(response?.status==200|| response?.status==201){
           setLoader(false)
           setDataList(response?.data?.data);

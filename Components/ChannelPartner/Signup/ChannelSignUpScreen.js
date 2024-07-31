@@ -150,6 +150,10 @@ const ChannelSignUpScreen = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if(formFields?.name=="" || formFields.user_l_name=="" || formFields.organisation=="" || formFields.mobile=="" || formFields.email=="" || formFields.state_id=="" || formFields.city_id=="" || formFields.address=="" || formFields.gst=="" || formFields.aadhar=="" || formFields.pan=="" || formFields.rera=="" || formFields.cheque==""){
+      dispatch(stopButtonLoading())
+        return  toast.warning("Pls Fill All Mandatory Fields");
+    }
     try {
       dispatch(startButtonLoading())
       if (!formFields.aadhar || !formFields.pan || !formFields.rera) {
@@ -398,7 +402,7 @@ const ChannelSignUpScreen = () => {
                                 className="input-field"
                                 placeholder="Enter First Name"
                                 value={formFields.name}
-                                required
+                                
                                 disabled={formFields.isTokenVerified}
                               />
                             </div>
@@ -418,7 +422,7 @@ const ChannelSignUpScreen = () => {
                                 placeholder="Enter Last Name"
                                 value={formFields.user_l_name}
                                 disabled={formFields.isTokenVerified}
-                                required
+                                
                               />
                             </div>
                           </div>
@@ -439,7 +443,7 @@ const ChannelSignUpScreen = () => {
                               className="input-field"
                               placeholder="Enter Organisation Name"
                               value={formFields.organisation}
-                              required
+                              
                               disabled={formFields.isUploadVerified}
                               onChange={(e)=>{
                                 setFormFields({...formFields,organisation:e.target.value})
@@ -460,7 +464,7 @@ const ChannelSignUpScreen = () => {
                               name="number"
                               id="num"
                               className="input-field"
-                              required
+                              
                               placeholder="Enter Mobile Number"
                               value={formFields.mobile}
                               onChange={(e)=>{
@@ -482,7 +486,7 @@ const ChannelSignUpScreen = () => {
                               name="email"
                               id="email"
                               className="input-field"
-                              required
+                              
                               placeholder="Enter Email"
                               value={formFields.email}
                               disabled={formFields.isTokenVerified}
@@ -571,7 +575,7 @@ const ChannelSignUpScreen = () => {
                               onChange={(e)=>{
                                 setFormFields({...formFields,address:e.target.value})
                               }} 
-                              required
+                              
                               disabled={formFields.isUploadVerified}
                             />
                           </div>
@@ -584,7 +588,7 @@ const ChannelSignUpScreen = () => {
                             <span />
                           </div>
                           <div className="rightTab">
-                            <input
+                            {/* <input
                               autofocus
                               type="text"
                               name="name"
@@ -595,9 +599,35 @@ const ChannelSignUpScreen = () => {
                               onChange={(e)=>{
                                 setFormFields({...formFields,gst:e.target.value})
                               }}
-                              required
+                              
+                              disabled={formFields.isUploadVerified}
+                            /> */}
+                            <input
+                              autofocus
+                              type="text"
+                              name="name"
+                              id="GST"
+                              className="input-field"
+                              placeholder="Enter GST Number"
+                              value={formFields.gst}
+                              onChange={(e) => {
+                                // Get the new value from the input field
+                                const newValue = e.target.value;
+                                
+                                // Filter out non-alphanumeric characters
+                                const filteredValue = newValue.replace(/[^a-zA-Z0-9]/g, '');
+                                
+                                // Limit the length to 15 characters
+                                const limitedValue = filteredValue.slice(0, 15);
+                                
+                                // Update the form field state
+                                setFormFields({ ...formFields, gst: limitedValue });
+                              }}
+                              
                               disabled={formFields.isUploadVerified}
                             />
+
+
                           </div>
                         </div>
                         <div className="d-flex justify-content-between flex-wrap  upload-files">
@@ -624,11 +654,12 @@ const ChannelSignUpScreen = () => {
                                 <input
                                   autofocus
                                   type="file"
+                                  accept="image/*"
                                   name={input.field}
                                   id={input.field}
                                   className="input-field"
                                   style={{ display: "none" }}
-                                  required
+                                  
                                   onChange={(e) =>
                                     handleFileChange(e, input.field)
                                   }

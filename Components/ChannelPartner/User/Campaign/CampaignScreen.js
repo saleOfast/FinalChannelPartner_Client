@@ -159,8 +159,11 @@ const CampaignScreen = () => {
     if(projectData?.contact_no?.toString().length!==10){
       return toast.warning("contact no should be of 10 digit")
      }
-    if(!projectData.project) return toast.warning("please enter project name")
-   if(!projectData.file) return toast.warning("please upload cover image")
+     if( projectData?.contact_no=="" || projectData?.logo==""){
+      return toast.warning("Pls Fill Mandatory Fields")
+     }
+  //   if(!projectData.project) return toast.warning("please enter project name")
+  //  if(!projectData.file) return toast.warning("please upload cover image")
       if (!hasCookie("token")) return;
       const token = getCookie("token");
       const db_name = getCookie("db_name");
@@ -203,6 +206,9 @@ const CampaignScreen = () => {
     
     if(projectData?.contact_no?.toString().length!==10){
       return toast.warning("contact no should be of 10 digit")
+     }
+     if( projectData?.contact_no=="" || projectData?.logo==""){
+      return toast.warning("Pls Fill Mandatory Fields")
      }
     if (!hasCookie("token")) return;
     const token = getCookie("token");
@@ -356,7 +362,7 @@ const CampaignScreen = () => {
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Name
+                    Property Name*
                   </label>
                   <input
                     type="text"
@@ -375,7 +381,7 @@ const CampaignScreen = () => {
                 </div>
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Size
+                    Property Size*
                   </label>
                   <input
                     type="text"
@@ -397,7 +403,7 @@ const CampaignScreen = () => {
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Location
+                    Location*
                   </label>
                   <input
                     type="text"
@@ -416,7 +422,7 @@ const CampaignScreen = () => {
                 </div>
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Unit Area
+                    Unit Area*
                   </label>
                   <input
                     type="text"
@@ -438,7 +444,7 @@ const CampaignScreen = () => {
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Contact No.
+                    Contact No.*
                   </label>
                   <input
                     type="number"
@@ -456,7 +462,7 @@ const CampaignScreen = () => {
                 </div>
                 <div className="w-50 d-flex justify-content-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Price
+                    Price*
                   </label>
                   <input
                     type="text"
@@ -480,7 +486,7 @@ const CampaignScreen = () => {
                 
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Logo
+                    Property Logo*
                   </label>
                   <input
                     type="file"

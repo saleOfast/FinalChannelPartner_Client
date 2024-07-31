@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { fetchData } from "../../../../Utils/getReq";
 import Select from "react-select";
 import { Baseurl, filesUrl } from "../../../../Utils/Constants";
+import { Delete } from "@mui/icons-material";
 
 const AddUserScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
@@ -553,7 +554,7 @@ const AddUserScreen = () => {
                       }
                     >
                       <label htmlFor="firstName">Name *</label>
-                      <input
+                      {/* <input
                         type="text"
                         placeholder="Enter User Name"
                         name="name"
@@ -569,7 +570,31 @@ const AddUserScreen = () => {
                         }}
                         disabled={viewMode}
                         value={userInfo.user ? userInfo.user : ""}
-                      />
+                      /> */}
+                      <input
+                            type="text"
+                            placeholder="Enter User Name"
+                            name="name"
+                            id="firstName"
+                            className={
+                              errorData?.user
+                                ? "form-control is-invalid"
+                                : "form-control"
+                            }
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Allow only alphabetic characters and spaces
+                              if (/^[A-Za-z\s]*$/.test(value)) {
+                                setUserinfo({ ...userInfo, user: value });
+                                setErrorData({ ...errorData, user: "" });
+                              } else {
+                                setErrorData({ ...errorData, user: "Only alphabetic characters are allowed" });
+                              }
+                            }}
+                            disabled={viewMode}
+                            value={userInfo.user ? userInfo.user : ""}
+                          />
+
                       <span className="errorText">
                         {" "}
                         {errorData?.user ? errorData.user : ""}
@@ -583,7 +608,7 @@ const AddUserScreen = () => {
                       }
                     >
                       <label htmlFor="firstName">Last Name *</label>
-                      <input
+                      {/* <input
                         type="text"
                         placeholder="Enter User Name"
                         name="name"
@@ -599,7 +624,31 @@ const AddUserScreen = () => {
                         }}
                         disabled={viewMode}
                         value={userInfo.user_l_name ? userInfo.user_l_name : ""}
-                      />
+                      /> */}
+                      <input
+                          type="text"
+                          placeholder="Enter User Name"
+                          name="name"
+                          id="firstName"
+                          className={
+                            errorData?.user_l_name
+                              ? "form-control is-invalid"
+                              : "form-control"
+                          }
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            // Allow only alphabetic characters and spaces
+                            if (/^[A-Za-z\s]*$/.test(value)) {
+                              setUserinfo({ ...userInfo, user_l_name: value });
+                              setErrorData({ ...errorData, user_l_name: "" });
+                            } else {
+                              setErrorData({ ...errorData, user_l_name: "Only alphabetic characters are allowed" });
+                            }
+                          }}
+                          disabled={viewMode}
+                          value={userInfo.user_l_name ? userInfo.user_l_name : ""}
+                        />
+
                       <span className="errorText">
                         {" "}
                         {errorData?.user_l_name ? errorData.user_l_name : ""}
@@ -615,7 +664,7 @@ const AddUserScreen = () => {
                       }
                     >
                       <label htmlFor="contact_no">Contact No </label>
-                      <input
+                      {/* <input
                         type="number"
                         placeholder="Enter Contact No."
                         name="contact-no"
@@ -636,7 +685,34 @@ const AddUserScreen = () => {
                         value={
                           userInfo.contact_number ? userInfo.contact_number : ""
                         }
-                      />
+                      /> */}
+                      <input
+                          type="text"
+                          pattern="\d{10}"
+                          placeholder="Enter Contact No."
+                          name="contact-no"
+                          id="contact_no"
+                          className={
+                            errorData?.contact_number
+                              ? "form-control is-invalid"
+                              : "form-control"
+                          }
+                          disabled={viewMode}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^\d{0,10}$/.test(value)) {
+                              setUserinfo({
+                                ...userInfo,
+                                contact_number: value,
+                              });
+                              setErrorData({ ...errorData, contact_number: "" });
+                            }
+                          }}
+                          value={
+                            userInfo.contact_number ? userInfo.contact_number : ""
+                          }
+                        />
+
                       <span className="errorText">
                         {" "}
                         {errorData?.contact_number
@@ -747,7 +823,7 @@ const AddUserScreen = () => {
                     id={userInfo.des_id}
                     defaultValue={""}
                     isDisabled={viewMode}
-                    options={usersList?.map((data, index) => {
+                    options={usersList?.filter(user => user.role_id === 2)?.map((data, index) => {
                       return {
                         value: data?.user_id,
                         label: data?.user,
@@ -775,9 +851,38 @@ const AddUserScreen = () => {
 
                 </div>
               </div>
-              <div className="col-xl-2 col-md-2 col-sm-12 col-12">
+              <div className="col-xl-2 col-md-2 col-sm-12 col-12 relative">
+              {
+                      imgMode==="1" &&(
+                        <span style={{position:"absolute",top:"20px",right:"30px"}} onClick={()=>{
+                          setImgMode("3")
+                          setImgFile("")
+                        }
+                        
+                          } >
+                            <Delete style={{color: 'red',cursor:"pointer"}}/>
+                        </span>
+                      )
+                    }
+                {
+                      imgMode==="2" &&(
+                        <span style={{position:"absolute",top:"20px",right:"30px"}} onClick={()=>{
+                          setImgMode("3")
+                          setImgFile("")
+                          setUserinfo((prev)=>({
+                            ...prev,
+                            user_image_file:""
+                          }))
+                        }
+                        
+                          } >
+                            <Delete style={{color: 'red',cursor:"pointer"}}/>
+                        </span>
+                      )
+                    }
                 <div className="img_sec">
                   <label htmlFor="uploadImg" title="Upload Logo">
+                    
                     {imgMode === "1" ? (
                       <img src={imgFile} alt="logo" width="100%" />
                     ) : null}
@@ -790,6 +895,7 @@ const AddUserScreen = () => {
                             alt="logo"
                             width="100%"
                           />
+                          
                         ) : (
                           <>
                             <div className="img_holder">

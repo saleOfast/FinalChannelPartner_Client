@@ -156,9 +156,24 @@ const TasksMuiTable = ({
                 <span className="active status_btn">
                   {value}
                 </span> :
-                <span className="inactive status_btn">
+                // <span className="inactive status_btn">
+                //   {value}
+                // </span>
+                <span 
+                  className="inactive status_btn" 
+                  style={{ 
+                    color: 
+                      value === 'open' ? 'blue' : 
+                      value === 'active' ? 'green' : 
+                      value === 'inactive' ? 'gray' : 
+                      value === 'close' ? 'red' : 
+                      'black' 
+                  }}
+                >
                   {value}
-                </span>}
+                </span>
+
+                }
             </div>
           );
         },

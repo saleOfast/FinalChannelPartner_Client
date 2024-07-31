@@ -19,34 +19,59 @@ const TasksMuiTable = ({
 }) => {
   const columns = [
     {
-      name: "task_name",
-      label: "Task Name",
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: "due_date",
-      label: "Due Date",
+      name: "db_account.acc_name",
+      label: "Vendor",
       options: {
         filter: true,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-            <>{moment(value).format("DD-MM-YYYY LT")} </>
+            <>
+                {value}
+            </>
           );
         }
       },
     },
     {
-      name: "task_type",
-      label: "Task Type",
+      name: "db_country.country_name",
+      label: "Country",
       options: {
         filter: true,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <>{value} </>
+          );
+        }
       },
     },
     {
-      name: "assignedToUser",
-      label: "Assigned To",
+      name: "db_state.state_name",
+      label: "State",
+      options: {
+        filter: true,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <>{value} </>
+          );
+        }
+      },
+    },
+    {
+      name: "db_media_type.m_t_name",
+      label: "Media Type",
+      options: {
+        filter: true,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            // <>{value?.user}</>
+            <>{value}</>
+          );
+        },
+      },
+    },
+    {
+      name: "db_media_vehicle.m_v_name",
+      label: "Media Vehicle",
       options: {
         filter: true,
         customBodyRender: (value, tableMeta, updateValue) => {
@@ -58,69 +83,38 @@ const TasksMuiTable = ({
       },
     }, 
     {
-      name: "db_lead",
-      label: "Link With Leads",
+      name: "db_rating.rating_name",
+      label: "Rating",
       options: {
         filter: true,
-        // customBodyRender: (value, tableMeta, updateValue) => {
-        //   if (value?.lead_id) {
-        //     return (
-        //       <Link href={`/LeadsView?id=${value.lead_id}`}>
-        //         <>{value?.lead_name}</>
-        //       </Link>
-        //     );
-        //   } else {
-        //     return "---";; // Do not render anything if lead_id is null
-        //   }
-        // },
+        
 
         customBodyRender: (value, tableMeta, updateValue) => {
-          if (tableMeta?.rowData[9]) {
-            return (
-              <Link href={`/LeadsView?id=${tableMeta?.rowData[9]}`}>
-                <>{value}</>
-              </Link>
-            );
-          } else {
-            return "---";; // Do not render anything if lead_id is null
-          }
+          return (
+            // <>{value?.user}</>
+            <>{value}</>
+          );
         },
       },
     },
 
     {
-      name: "linkWithOpportunity",
-      label: "Link With Opportunity",
+      name: "db_site_category.site_cat_name",
+      label: "Site Category",
       options: {
         filter: true,
-        // customBodyRender: (value, tableMeta, updateValue) => {
-        //   if (value?.opp_id) {
-        //     return (
-        //       <Link href={`/OpportunityView?id=${value.opp_id}`}>
-        //         <>{value?.opp_name}</>
-        //       </Link>
-        //     );
-        //   } else {
-        //     return "---"; // Do not render anything if opp_id is null
-        //   }
-        // },
         customBodyRender: (value, tableMeta, updateValue) => {
-          if (tableMeta?.rowData[10]) {
-            return (
-              <Link href={`/OpportunityView?id=${tableMeta?.rowData[10]}`}>
-                <>{value}</>
-              </Link>
-            );
-          } else {
-            return "---"; // Do not render anything if opp_id is null
-          }
+          return (
+            // <>{value?.user}</>
+            <>{value}</>
+          );
         },
       },
     },
     
     {
-      name: "db_task_priority",
-      label: "Priority",
+      name: "db_site_status.s_s_name",
+      label: "Site Status",
       options: {
         filter: true,
         customBodyRender: (value, tableMeta, updateValue) => {
@@ -132,40 +126,7 @@ const TasksMuiTable = ({
       },
     },
     {
-      name: "db_task_status",
-      label: "Status",
-      options: {
-        filter: true,
-        // customBodyRender: (value, tableMeta, updateValue) => {
-        //   return (
-        //     <div className="status_box">
-        //       {value?.task_status_name == 'Open' || value?.task_status_name == 'Pending' ?
-        //         <span className="active status_btn">
-        //           {value?.task_status_name}
-        //         </span> :
-        //         <span className="inactive status_btn">
-        //           {value?.task_status_name}
-        //         </span>}
-        //     </div>
-        //   );
-        // },
-        customBodyRender: (value, tableMeta, updateValue) => {
-          return (
-            <div className="status_box">
-              {value == 'Open' || value == 'Pending' ?
-                <span className="active status_btn">
-                  {value}
-                </span> :
-                <span className="inactive status_btn">
-                  {value}
-                </span>}
-            </div>
-          );
-        },
-      },
-    },
-    {
-      name: "task_id",
+      name: "acc_id",
       label: "Action",
       options: {
         filter: false,
@@ -195,46 +156,27 @@ const TasksMuiTable = ({
         },
       },
     },
-    {
-      name: "lead_id",
-      label: "Task Name",
-      options: {
-        display:false,
-        filter: false,
-        download:false,
-        viewColumns:false,
-      },
-    },
-    {
-      name: "opp_id",
-      label: "Task Name",
-      options: {
-        display:false,
-        filter: false,
-        download:false,
-        viewColumns:false,
-      },
-    },
   ];
  const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions:{filename:"TasksList.csv"}
+        downloadOptions:{filename:"TasksList.csv"},
+        enableNestedDataAccess:"."
     };
 
-  const mappedDataList=dataList?.map(list=>({
-    task_name:list?.task_name,
-    due_date:list?.due_date,
-    task_type:list?.task_type,
-    assignedToUser:list?.assignedToUser?.user,
-    db_lead:list?.db_lead?.lead_name,
-    linkWithOpportunity:list?.linkWithOpportunity?.opp_name,
-    db_task_priority:list?.db_task_priority?.task_priority_name,
-    db_task_status:list?.db_task_status?.task_status_name,
-    task_id:list?.task_id,
-    lead_id:list?.db_lead?.lead_id,
-    opp_id:list?.linkWithOpportunity?.opp_id
-  }))
+  // const mappedDataList=dataList?.map(list=>({
+  //   task_name:list?.task_name,
+  //   due_date:list?.due_date,
+  //   task_type:list?.task_type,
+  //   assignedToUser:list?.assignedToUser?.user,
+  //   db_lead:list?.db_lead?.lead_name,
+  //   linkWithOpportunity:list?.linkWithOpportunity?.opp_name,
+  //   db_task_priority:list?.db_task_priority?.task_priority_name,
+  //   db_task_status:list?.db_task_status?.task_status_name,
+  //   task_id:list?.task_id,
+  //   lead_id:list?.db_lead?.lead_id,
+  //   opp_id:list?.linkWithOpportunity?.opp_id
+  // }))
 
   return (
     <>
@@ -243,8 +185,8 @@ const TasksMuiTable = ({
         <div className="miuiTable">
         <MUIDataTable
           title={title}
-          // data={dataList}
-          data={mappedDataList}
+          data={dataList}
+          // data={mappedDataList}
           columns={columns}
           options={options}
         />

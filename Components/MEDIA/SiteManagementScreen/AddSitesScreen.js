@@ -21,7 +21,55 @@ const AddSitesScreen = () => {
   const [isLoading, setisLoading] = useState(false)
   const [editMode, setEditMode] = useState(false);
   const [viewMode, setViewMode] = useState(false)
-  const [userInfo,setUserInfo]=useState({})
+  const [userInfo,setUserInfo]=useState({
+    site_code:"",
+    acc_id:"",
+    site_cat_id:"",
+    country_id:"",
+    state_id:"",
+    city_id:"",
+    location:"",
+    m_f_id:"",
+    m_v_id:"",
+    m_t_id:"",
+    s_s_id:"",
+    traffic_from:"",
+    traffic_to:"",
+    position_of_site:"",
+    lat_long:"",
+    rating_id:"",
+    a_s_id:"",
+    available_from:"",
+    available_to:"",
+    remarks:"",
+    lease_from:"",
+    lease_to:"",
+    lease_period:"",
+    lease_cost:"",
+    width:"",
+    height:"",
+    quantity:"",
+    total_sq_ft:"",
+    selling_cost:"",
+    buying_cost:"",
+    leased_cost:"",
+    card_rate:"",
+    selling_cost_sq_ft:"",
+    buying_cost_sq_ft:"",
+    leased_cost_sq_ft:"",
+    card_rate_sq_ft:"",
+    selling_cost_day:"",
+    buying_cost_day:"",
+    leased_cost_day:"",
+    card_rate_day:"",
+    p_close_shot:"",
+    p_long_shot:"",
+    p_night_shot:"",
+    p_close_shot:"",
+    p_close_shot_preview:"",
+    p_long_shot_preview:"",
+    p_night_shot_preview:""
+  })
   const [errorData, setErrorData] = useState({})
   const [errorToast, setErrorToast] = useState(false);
   const [newFields, setNewFields] = useState({
@@ -221,16 +269,20 @@ const AddSitesScreen = () => {
     );
   };
 
-  const handleImageChange = (e,image) => {
+  const handleImageChange = (e,image,preview) => {
+    
     if (e.target.files[0]) {
+      
       const reader = new FileReader();
       reader.onloadend = () => {
+        
         setUserInfo({
           ...userInfo,
           [image]:e.target.files[0],
+          [preview]:reader.result,
         });
       };
-      
+      console.log(userInfo)
       reader.readAsDataURL(e.target.files[0]);
     }
   };
@@ -371,7 +423,7 @@ const AddSitesScreen = () => {
       };
       try {
         const response = await axios.get(
-          Baseurl + `/db/tasks?t_id=${id}`,
+          Baseurl + `/db/media/siteManagement/getSite?site_id=${id}`,
           header
         );
         setUserInfo(response.data.data);
@@ -573,9 +625,9 @@ const AddSitesScreen = () => {
                               : "input_box"
                           }
                         >
-                          <label htmlFor="email">Country </label>
+                          <label htmlFor="country">Country </label>
                           <Select
-                            id={userInfo.country_id}
+                            id="country"
                             defaultValue={""}
                             isDisabled={viewMode}
                             options={countrylist?.map((data, index) => {
@@ -585,7 +637,7 @@ const AddSitesScreen = () => {
                               };
                             })}
                             value={countrylist?.map((data, index) => {
-                              if (userInfo.country_id === data.country_id) {
+                              if (userInfo?.country_id === data.country_id) {
                                 return {
                                   value: data?.country_id,
                                   label: data?.country_name,
@@ -613,9 +665,9 @@ const AddSitesScreen = () => {
                               : "input_box"
                           }
                         >
-                          <label htmlFor="per_cont">State </label>
+                          <label htmlFor="state">State </label>
                           <Select
-                            id={userInfo.country_id}
+                            id="state"
                             defaultValue={""}
                             isDisabled={viewMode}
                             options={statelist?.map((data, index) => {
@@ -653,9 +705,9 @@ const AddSitesScreen = () => {
                               : "input_box"
                           }
                         >
-                          <label htmlFor="wts_no">City </label>
+                          <label htmlFor="city">City </label>
                           <Select
-                            id={userInfo.city_id}
+                            id="city"
                             isDisabled={viewMode}
                             defaultValue={""}
                             options={citylist?.map((data, index) => {
@@ -701,7 +753,7 @@ const AddSitesScreen = () => {
                                 location: e.target.value,
                               })
                             }
-                            value={userInfo.location ? userInfo.location : ""}
+                            value={userInfo?.location ? userInfo.location : ""}
                           />
                         </div>
                       </div>
@@ -893,7 +945,7 @@ const AddSitesScreen = () => {
                                 traffic_from: e.target.value,
                               })
                             }
-                            value={userInfo.traffic_from ? userInfo.traffic_from : ""}
+                            value={userInfo?.traffic_from ? userInfo.traffic_from : ""}
                           />
                         </div>
                       </div>
@@ -914,7 +966,7 @@ const AddSitesScreen = () => {
                                 traffic_to: e.target.value,
                               })
                             }
-                            value={userInfo.traffic_to ? userInfo.traffic_to : ""}
+                            value={userInfo?.traffic_to ? userInfo.traffic_to : ""}
                           />
                         </div>
                       </div>
@@ -935,7 +987,7 @@ const AddSitesScreen = () => {
                                 position_of_site: e.target.value,
                               })
                             }
-                            value={userInfo.position_of_site ? userInfo.position_of_site : ""}
+                            value={userInfo?.position_of_site ? userInfo.position_of_site : ""}
                           />
                         </div>
                       </div>
@@ -956,7 +1008,7 @@ const AddSitesScreen = () => {
                                 lat_long: e.target.value,
                               })
                             }
-                            value={userInfo.lat_long ? userInfo.lat_long : ""}
+                            value={userInfo?.lat_long ? userInfo.lat_long : ""}
                           />
                         </div>
                       </div>
@@ -1055,6 +1107,9 @@ const AddSitesScreen = () => {
                             name="date"
                             id="available_from"
                             className="form-control"
+                            min={moment().format("YYYY-MM-DD")}
+                            onKeyDown={(e)=>e.preventDefault()}
+                            onPaste={(e)=>e.preventDefault()}
                             onChange={(e) =>
                               setUserInfo({
                                 ...userInfo,
@@ -1062,7 +1117,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={moment(userInfo?.available_from).format(
-                              "YYYY-MM-DDTHH"
+                              "YYYY-MM-DD"
                             )}
                           />
                         </div>
@@ -1075,6 +1130,9 @@ const AddSitesScreen = () => {
                             type="date"
                             name="date"
                             id="available_to"
+                            min={moment().format("YYYY-MM-DD")}
+                            onKeyDown={(e)=>e.preventDefault()}
+                            onPaste={(e)=>e.preventDefault()}
                             className="form-control"
                             onChange={(e) =>
                               setUserInfo({
@@ -1083,7 +1141,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={moment(userInfo?.available_to).format(
-                              "YYYY-MM-DDTHH"
+                              "YYYY-MM-DD"
                             )}
                           />
                         </div>
@@ -1105,7 +1163,7 @@ const AddSitesScreen = () => {
                                 remarks: e.target.value,
                               })
                             }
-                            value={userInfo.remarks ? userInfo.remarks : ""}
+                            value={userInfo?.remarks ? userInfo.remarks : ""}
                           />
                         </div>
                       </div>
@@ -1123,6 +1181,9 @@ const AddSitesScreen = () => {
                             type="date"
                             name="date"
                             id="lease_from"
+                            min={moment().format("YYYY-MM-DD")}
+                            onKeyDown={(e)=>e.preventDefault()}
+                            onPaste={(e)=>e.preventDefault()}
                             className="form-control"
                             onChange={(e) =>
                               setUserInfo({
@@ -1131,7 +1192,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={moment(userInfo?.lease_from).format(
-                              "YYYY-MM-DDTHH"
+                              "YYYY-MM-DD"
                             )}
                           />
                         </div>
@@ -1144,6 +1205,9 @@ const AddSitesScreen = () => {
                             type="date"
                             name="date"
                             id="lease_to"
+                            min={moment().format("YYYY-MM-DD")}
+                            onKeyDown={(e)=>e.preventDefault()}
+                            onPaste={(e)=>e.preventDefault()}
                             className="form-control"
                             onChange={(e) =>
                               setUserInfo({
@@ -1152,7 +1216,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={moment(userInfo?.lease_to).format(
-                              "YYYY-MM-DDTHH"
+                              "YYYY-MM-DD"
                             )}
                           />
                         </div>
@@ -1175,7 +1239,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.lease_period ? userInfo.lease_period : ""
+                              userInfo?.lease_period ? userInfo.lease_period : ""
                             }
                           />
                         </div>
@@ -1200,7 +1264,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.lease_cost ? userInfo.lease_cost : ""
+                              userInfo?.lease_cost ? userInfo.lease_cost : ""
                             }
                           />
                         </div>
@@ -1229,7 +1293,7 @@ const AddSitesScreen = () => {
                                 total_sq_ft:e.target.value*userInfo?.height
                               })
                             }
-                            value={userInfo.width ? userInfo.width : ""}
+                            value={userInfo?.width ? userInfo.width : ""}
                           />
                         </div>
                       </div>
@@ -1251,7 +1315,7 @@ const AddSitesScreen = () => {
                                 total_sq_ft:e.target.value*userInfo?.width
                               })
                             }
-                            value={userInfo.height ? userInfo.height : ""}
+                            value={userInfo?.height ? userInfo.height : ""}
                           />
                         </div>
                       </div>
@@ -1272,7 +1336,7 @@ const AddSitesScreen = () => {
                                 quantity: e.target.value,
                               })
                             }
-                            value={userInfo.quantity ? userInfo.quantity : ""}
+                            value={userInfo?.quantity ? userInfo.quantity : ""}
                           />
                         </div>
                       </div>
@@ -1294,7 +1358,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.total_sq_ft ? userInfo.total_sq_ft.toFixed(2) : ""
+                              userInfo?.total_sq_ft ? userInfo.total_sq_ft.toFixed(2) : ""
                             }
                           />
                         </div>
@@ -1327,7 +1391,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.selling_cost
+                              userInfo?.selling_cost
                                 ? userInfo.selling_cost
                                 : ""
                             }
@@ -1356,7 +1420,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.buying_cost
+                              userInfo?.buying_cost
                                 ? userInfo.buying_cost
                                 : ""
                             }
@@ -1385,7 +1449,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.leased_cost
+                              userInfo?.leased_cost
                                 ? userInfo.leased_cost
                                 : ""
                             }
@@ -1414,7 +1478,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.card_rate
+                              userInfo?.card_rate
                                 ? userInfo.card_rate
                                 : ""
                             }
@@ -1441,7 +1505,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.selling_cost_sq_ft
+                              userInfo?.selling_cost_sq_ft
                                 ? userInfo.selling_cost_sq_ft
                                 : ""
                             }
@@ -1468,7 +1532,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.buying_cost_sq_ft
+                              userInfo?.buying_cost_sq_ft
                                 ? userInfo.buying_cost_sq_ft
                                 : ""
                             }
@@ -1495,7 +1559,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.leased_cost_sq_ft
+                              userInfo?.leased_cost_sq_ft
                                 ? userInfo.leased_cost_sq_ft
                                 : ""
                             }
@@ -1522,7 +1586,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.card_rate_sq_ft
+                              userInfo?.card_rate_sq_ft
                                 ? userInfo.card_rate_sq_ft
                                 : ""
                             }
@@ -1549,7 +1613,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.selling_cost_day
+                              userInfo?.selling_cost_day
                                 ? userInfo.selling_cost_day
                                 : ""
                             }
@@ -1576,7 +1640,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.buying_cost_day
+                              userInfo?.buying_cost_day
                                 ? userInfo.buying_cost_day
                                 : ""
                             }
@@ -1603,7 +1667,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.leased_cost_day
+                              userInfo?.leased_cost_day
                                 ? userInfo.leased_cost_day
                                 : ""
                             }
@@ -1628,7 +1692,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo.card_rate_day
+                              userInfo?.card_rate_day
                                 ? userInfo.card_rate_day
                                 : ""
                             }
@@ -1642,7 +1706,7 @@ const AddSitesScreen = () => {
                   </div>
                   <div className="add_user_form">
                     <div className="row">
-                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                      <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                         <div className="input_box">
                           <label htmlFor="close_shot">Close Shot</label>
                           <input
@@ -1651,11 +1715,12 @@ const AddSitesScreen = () => {
                             id="close_shot"
                             disabled={viewMode}
                             className="form-control"
-                            onChange={(e) => handleImageChange(e,"p_close_shot")}
+                            accept="image/*"
+                            onChange={(e) => handleImageChange(e,"p_close_shot","p_close_shot_preview")}
                           />
-                          {userInfo?.p_close_shot && (
+                          {userInfo?.p_close_shot_preview && (
                             <img
-                              src={userInfo?.p_close_shot}
+                              src={userInfo?.p_close_shot_preview}
                               alt={` Preview`}
                               style={{
                                 maxWidth: "100px",
@@ -1666,7 +1731,7 @@ const AddSitesScreen = () => {
                         </div>
                       </div>
 
-                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                      <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                         <div className="input_box">
                           <label htmlFor="long_shot">Long Shot</label>
                           <input
@@ -1674,12 +1739,13 @@ const AddSitesScreen = () => {
                             name="long_shot"
                             id="long_shot"
                             disabled={viewMode}
+                            accept="image/*"
                             className="form-control"
-                            onChange={(e) => handleImageChange(e,"p_long_shot")}
+                            onChange={(e) => handleImageChange(e,"p_long_shot","p_long_shot_preview")}
                           />
-                          {userInfo?.p_long_shot && (
+                          {userInfo?.p_long_shot_preview && (
                             <img
-                              src={userInfo?.p_long_shot}
+                              src={userInfo?.p_long_shot_preview}
                               alt={` Preview`}
                               style={{
                                 maxWidth: "100px",
@@ -1690,7 +1756,7 @@ const AddSitesScreen = () => {
                         </div>
                       </div>
 
-                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                      <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                         <div className="input_box">
                           <label htmlFor="night_shot">Night Shot</label>
                           <input
@@ -1698,12 +1764,13 @@ const AddSitesScreen = () => {
                             name="night_shot"
                             id="night_shot"
                             disabled={viewMode}
+                            accept="image/*"
                             className="form-control"
-                            onChange={(e) => handleImageChange(e,"p_night_shot")}
+                            onChange={(e) => handleImageChange(e,"p_night_shot","p_night_shot_preview")}
                           />
-                          {userInfo?.p_night_shot && (
+                          {userInfo?.p_night_shot_preview && (
                             <img
-                              src={userInfo?.p_night_shot}
+                              src={userInfo?.p_night_shot_preview}
                               alt={` Preview`}
                               style={{
                                 maxWidth: "100px",

@@ -801,6 +801,8 @@ async function postFieldsFunc(id, data) {
                                         type="date"
                                         name="per_cont"
                                         id="per_cont"
+                                        onPaste={(e) => e.preventDefault()}
+                                        onKeyDown={(e) => e.preventDefault()}
                                         className={errorData?.close_date ? 'form-control is-invalid' : 'form-control'}
                                         onChange={(e) => {
                                             setUserInfo({

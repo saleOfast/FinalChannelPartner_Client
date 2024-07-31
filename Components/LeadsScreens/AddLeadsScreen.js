@@ -1600,7 +1600,7 @@ const AddLeadsScreen = () => {
                                 created_on: e.target.value,
                               })
                             }
-                            value={moment(userInfo?.created_on).format(
+                            value={moment(userInfo?.createdAt).format(
                               "YYYY-MM-DDTHH:mm"
                             )}
                           />
@@ -1623,7 +1623,7 @@ const AddLeadsScreen = () => {
                               })
                             }
                             // value={userInfo.updated_on ? userInfo.updated_on : ""}
-                            value={moment(userInfo?.updated_on).format(
+                            value={moment(userInfo?.updatedAt).format(
                               "YYYY-MM-DDTHH:mm"
                             )}
                           />

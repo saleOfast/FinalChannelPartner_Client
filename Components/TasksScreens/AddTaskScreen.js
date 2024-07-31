@@ -30,7 +30,7 @@ const AddTaskScreen = () => {
     link_with_opportunity: null,
   });
 
-  const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DD");
+  const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
 
   async function fetchData(url, setData) {
     const token = getCookie('token');
@@ -202,7 +202,9 @@ const AddTaskScreen = () => {
           Baseurl + `/db/tasks?t_id=${id}`,
           header
         );
-        setUserInfo(response.data.data);
+        let respData={...response.data.data}
+        respData={...respData,createdAt:moment(respData.createdAt).subtract(5, 'hours').subtract(30, 'minutes').format("YYYY-MM-DDTHH:mm")}
+        setUserInfo(respData);
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -388,6 +390,8 @@ const AddTaskScreen = () => {
                       name="due_date"
                       id="due_date"
                       disabled={viewMode}
+                      onPaste={(e) => e.preventDefault()}
+                      onKeyDown={(e) => e.preventDefault()}
                       min={minDate}
                       className={errorData?.due_date ? 'form-control is-invalid' : 'form-control'}
                       onChange={(e) => {
@@ -567,6 +571,7 @@ const AddTaskScreen = () => {
                         })
                       }
                       value={userInfo.createdAt ? moment(userInfo.createdAt).format("YYYY-MM-DDTHH:mm") : ""}
+                      
                     />
                   </div>
                 </div>

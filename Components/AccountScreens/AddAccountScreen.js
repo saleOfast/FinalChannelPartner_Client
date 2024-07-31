@@ -622,7 +622,7 @@ const AddAccountScreen = () => {
                     <div className={errorData?.acc_name ? 'input_box errorBox' : 'input_box'}>
                       <div className="input_box">
                         <label htmlFor="acc_name"> Name *</label>
-                        <input
+                        {/* <input
                           type="text"
                           placeholder="Enter Account Name"
                           name="name"
@@ -630,12 +630,34 @@ const AddAccountScreen = () => {
                           id="acc_name"
                           className={errorData?.acc_name ? 'form-control is-invalid' : 'form-control'}
                           onChange={(e) => {
-                            setUserInfo({ ...userInfo, acc_name: e.target.value })
-                            setErrorData({ ...errorData, acc_name: '' })
-
+                            const value = e.target.value;
+                            const regex = /^[a-zA-Z]*$/; // Regular expression to allow only alphabets
+                            if (regex.test(value)) {
+                              setUserInfo({ ...userInfo, acc_name: value });
+                              setErrorData({ ...errorData, acc_name: '' });
+                            }
                           }}
                           value={userInfo.acc_name ? userInfo.acc_name : ''}
-                        />
+                        /> */}
+                        <input
+                            type="text"
+                            placeholder="Enter Account Name"
+                            name="name"
+                            disabled={viewMode}
+                            id="acc_name"
+                            className={errorData?.acc_name ? 'form-control is-invalid' : 'form-control'}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              const regex = /^[a-zA-Z]*$/; // Regular expression to allow only alphabets
+                              if (regex.test(value)) {
+                                setUserInfo({ ...userInfo, acc_name: value });
+                                setErrorData({ ...errorData, acc_name: '' });
+                              }
+                            }}
+                            value={userInfo.acc_name ? userInfo.acc_name : ''}
+                          />
+
+
                         <span className="errorText"> {errorData?.acc_name ? errorData.acc_name : ''}</span>
                       </div>
 
@@ -1067,7 +1089,7 @@ const AddAccountScreen = () => {
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div className={errorData?.bill_pincode ? 'input_box errorBox' : 'input_box'}>
                       <label htmlFor="offc_no">Zip / Postal Code *</label>
-                      <input
+                      {/* <input
                         type="number"
                         placeholder="Zip / Postal Code"
                         name="pin-code"
@@ -1078,7 +1100,25 @@ const AddAccountScreen = () => {
                           setUserInfo({ ...userInfo, bill_pincode: e.target.value })
                           setErrorData({ ...errorData, bill_pincode: '' })
                         }}
-                        value={userInfo.bill_pincode ? userInfo.bill_pincode : ""} />
+                        value={userInfo.bill_pincode ? userInfo.bill_pincode : ""} /> */}
+                        <input
+                          type="text"
+                          placeholder="Zip / Postal Code"
+                          name="pin-code"
+                          disabled={viewMode}
+                          id="offc_no"
+                          className={errorData?.bill_pincode ? 'form-control is-invalid' : 'form-control'}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const regex = /^\d{0,6}$/; // Regular expression to allow only up to 6 digits
+                            if (regex.test(value)) {
+                              setUserInfo({ ...userInfo, bill_pincode: value });
+                              setErrorData({ ...errorData, bill_pincode: '' });
+                            }
+                          }}
+                          value={userInfo.bill_pincode ? userInfo.bill_pincode : ""}
+                        />
+
                       <span className="errorText"> {errorData?.bill_pincode ? errorData.bill_pincode : ''}</span>
                     </div>
                   </div>

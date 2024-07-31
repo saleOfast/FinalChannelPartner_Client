@@ -804,7 +804,7 @@ const AddAccountScreen = () => {
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div className={errorData?.contact_no ? 'input_box errorBox' : 'input_box'}>
                       <label htmlFor="contact_no">Contact No *</label>
-                      <input
+                      {/* <input
                         type="number"
                         name="contact-no"
                         placeholder="Enter Contact No."
@@ -817,7 +817,24 @@ const AddAccountScreen = () => {
 
                         }}
                         value={userInfo.contact_no ? userInfo.contact_no : ''}
-                      />
+                      /> */}
+                      <input
+                          type="text"
+                          name="contact-no"
+                          placeholder="Enter Contact No."
+                          id="contact_no"
+                          disabled={viewMode}
+                          className={errorData?.contact_no ? 'form-control is-invalid' : 'form-control'}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const regex = /^\d{0,10}$/; // Regular expression to allow only up to 10 digits
+                            if (regex.test(value)) {
+                              setUserInfo({ ...userInfo, contact_no: value });
+                              setErrorData({ ...errorData, contact_no: '' });
+                            }
+                          }}
+                          value={userInfo.contact_no ? userInfo.contact_no : ""}
+                        />
                       <span className="errorText"> {errorData?.contact_no ? errorData.contact_no : ''}</span>
                     </div>
                   </div>

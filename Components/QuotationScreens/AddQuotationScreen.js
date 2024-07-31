@@ -63,17 +63,17 @@ const AddQuotationScreen = () => {
     "product_scat": ""
 
   })
-  const[relatedOpportunityId,setRelatedOpportunityId]=useState("");
-  const[relatedAccountId,setRelatedAccountId]=useState("");
-  const [taxPerSum,setTaxPerSum]=useState()
-  useEffect(()=>{
-    
-    const taxSum=taxListView?.reduce((sum,tax)=>{
-      const taxAmount = (userInfo?.sub_total*tax.tax_percentage)/100
+  const [relatedOpportunityId, setRelatedOpportunityId] = useState("");
+  const [relatedAccountId, setRelatedAccountId] = useState("");
+  const [taxPerSum, setTaxPerSum] = useState()
+  useEffect(() => {
+
+    const taxSum = taxListView?.reduce((sum, tax) => {
+      const taxAmount = (userInfo?.sub_total * tax.tax_percentage) / 100
       return sum + taxAmount
-    },0)
+    }, 0)
     setTaxPerSum(taxSum)
-  },[userInfo?.sub_total])
+  }, [userInfo?.sub_total])
 
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DD")
 
@@ -125,7 +125,7 @@ const AddQuotationScreen = () => {
 
 
   async function getQuatationData(id) {
-    
+
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -469,7 +469,7 @@ const AddQuotationScreen = () => {
     let storeValue = []
     actualFiltData.map((item, i) => {
       if (!arr.includes(item.quat_tax_id)) {
-        console.log('in',item);
+        console.log('in', item);
         storeValue.push(item)
         arr.push(item.tax_id)
       } else {
@@ -613,10 +613,10 @@ const AddQuotationScreen = () => {
       // call the api with this acoount name 
       getSingleOpportunityList(userInfo.opp_id);
     }
-// eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.opp_id]);
 
-  
+
 
 
   return (
@@ -677,7 +677,7 @@ const AddQuotationScreen = () => {
               </div>
 
               <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={ 'input_box'}>
+                <div className={'input_box'}>
                   <label htmlFor="contact_no">Related Account</label>
                   <input
                     type="text"
@@ -686,8 +686,8 @@ const AddQuotationScreen = () => {
                     id="related_acc"
                     placeholder="Related Account"
                     className={'form-control'}
-                    value={opprtunityList?.find(account=>{
-                      return account?.opp_id===userInfo?.opp_id
+                    value={opprtunityList?.find(account => {
+                      return account?.opp_id === userInfo?.opp_id
                     })?.accName?.acc_name}
                   />
                 </div>
@@ -696,7 +696,7 @@ const AddQuotationScreen = () => {
               <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                 <div className={errorData?.contact_no ? 'input_box errorBox' : 'input_box'}>
                   <label htmlFor="contact_no">Mobile No. *</label>
-                  <input
+                  {/* <input
                     type="text"
                     name="contact_no"
                     id="contact_no"
@@ -705,6 +705,25 @@ const AddQuotationScreen = () => {
                     onChange={(e) => {
                       setUserInfo({ ...userInfo, contact_no: e.target.value })
                       setErrorData({ ...errorData, contact_no: '' })
+                    }}
+                    value={userInfo?.contact_no ? userInfo.contact_no : ''}
+                  /> */}
+                  <input
+                    type="text"
+                    name="contact_no"
+                    id="contact_no"
+                    placeholder="Enter Mobile No."
+                    className={errorData?.contact_no ? 'form-control is-invalid' : 'form-control'}
+                    maxLength="10"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Regular expression to allow only digits
+                      const regex = /^[0-9]*$/;
+
+                      if (regex.test(value)) {
+                        setUserInfo({ ...userInfo, contact_no: value });
+                        setErrorData({ ...errorData, contact_no: '' });
+                      }
                     }}
                     value={userInfo?.contact_no ? userInfo.contact_no : ''}
                   />
@@ -846,35 +865,35 @@ const AddQuotationScreen = () => {
 
 
               <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.assigned_to ? 'input_box errorBox' : 'input_box'}>
-                    <label htmlFor="task_name">Assign to *</label>
-                    <Select
-                      id={userInfo.assigned_to}
-                      defaultValue={""}
-                      options={usersList?.map((data, index) => {
+                <div className={errorData?.assigned_to ? 'input_box errorBox' : 'input_box'}>
+                  <label htmlFor="task_name">Assign to *</label>
+                  <Select
+                    id={userInfo.assigned_to}
+                    defaultValue={""}
+                    options={usersList?.map((data, index) => {
+                      return {
+                        value: data?.user_id,
+                        label: data?.user,
+
+                      }
+                    })}
+                    value={usersList?.map((data, index) => {
+                      if (userInfo.assigned_to === data.user_id) {
                         return {
                           value: data?.user_id,
                           label: data?.user,
 
                         }
-                      })}
-                        value={usersList?.map((data, index) => {
-                          if (userInfo.assigned_to === data.user_id) {
-                            return {
-                              value: data?.user_id,
-                              label: data?.user,
-
-                            }
-                          }
-                        })}
-                      onChange={(e) => {
-                        setUserInfo({ ...userInfo, assigned_to: e.value })
-                        setErrorData({ ...errorData, assigned_to: '' })
-                      }}
-                    />
-                    <span className="errorText"> {errorData?.assigned_to ? errorData.assigned_to : ''}</span>
-                  </div>
+                      }
+                    })}
+                    onChange={(e) => {
+                      setUserInfo({ ...userInfo, assigned_to: e.value })
+                      setErrorData({ ...errorData, assigned_to: '' })
+                    }}
+                  />
+                  <span className="errorText"> {errorData?.assigned_to ? errorData.assigned_to : ''}</span>
                 </div>
+              </div>
 
               <div className="col-xl-6 col-md-6 col-sm-20 col-20">
                 <div className={errorData?.quat_summery ? 'input_box errorBox' : 'input_box'}>
@@ -908,7 +927,7 @@ const AddQuotationScreen = () => {
             <div className="add_user_form">
               <div className="row">
 
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div className={errorData?.bill_cont ? 'input_box errorBox' : 'input_box'}>
                     <label htmlFor="task_name">Billing Country  *</label>
                     <Select
@@ -921,19 +940,19 @@ const AddQuotationScreen = () => {
 
                         }
                       })}
-                        value={countrylist?.map((data, index) => {
-                          if (userInfo.bill_cont === data.country_id) {
-                            return {
-                              value: data?.country_id,
-                              label: data?.country_name,
+                      value={countrylist?.map((data, index) => {
+                        if (userInfo.bill_cont === data.country_id) {
+                          return {
+                            value: data?.country_id,
+                            label: data?.country_name,
 
-                            }
                           }
-                        })}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, bill_cont: e.value })
-                          setErrorData({ ...errorData, bill_cont: '' })
-                        }}
+                        }
+                      })}
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, bill_cont: e.value })
+                        setErrorData({ ...errorData, bill_cont: '' })
+                      }}
                     />
                     <span className="errorText"> {errorData?.bill_cont ? errorData.bill_cont : ''}</span>
                   </div>
@@ -953,19 +972,19 @@ const AddQuotationScreen = () => {
 
                         }
                       })}
-                        value={billStates?.map((data, index) => {
-                          if (userInfo.bill_state === data.state_id) {
-                            return {
-                              value: data?.state_id,
-                              label: data?.state_name,
+                      value={billStates?.map((data, index) => {
+                        if (userInfo.bill_state === data.state_id) {
+                          return {
+                            value: data?.state_id,
+                            label: data?.state_name,
 
-                            }
                           }
-                        })}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, bill_state: e.value })
-                          setErrorData({ ...errorData, bill_state: '' })
-                        }}
+                        }
+                      })}
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, bill_state: e.value })
+                        setErrorData({ ...errorData, bill_state: '' })
+                      }}
                     />
                     <span className="errorText"> {errorData?.bill_state ? errorData.bill_state : ''}</span>
                   </div>
@@ -985,26 +1004,26 @@ const AddQuotationScreen = () => {
 
                         }
                       })}
-                        value={billingCities?.map((data, index) => {
-                          if (userInfo.bill_city === data.city_id) {
-                            return {
-                              value: data?.city_id,
-                              label: data?.city_name,
+                      value={billingCities?.map((data, index) => {
+                        if (userInfo.bill_city === data.city_id) {
+                          return {
+                            value: data?.city_id,
+                            label: data?.city_name,
 
-                            }
                           }
-                        })}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, bill_city: e.value })
-                          setErrorData({ ...errorData, bill_city: '' })
-                        }}
+                        }
+                      })}
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, bill_city: e.value })
+                        setErrorData({ ...errorData, bill_city: '' })
+                      }}
                     />
                     <span className="errorText"> {errorData?.bill_city ? errorData.bill_city : ''}</span>
                   </div>
                 </div>
 
 
-               
+
 
                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div className={errorData?.bill_pincode ? 'input_box errorBox' : 'input_box'}>
@@ -1060,19 +1079,19 @@ const AddQuotationScreen = () => {
 
                         }
                       })}
-                        value={countrylist?.map((data, index) => {
-                          if (userInfo.ship_cont === data.country_id) {
-                            return {
-                              value: data?.country_id,
-                              label: data?.country_name,
+                      value={countrylist?.map((data, index) => {
+                        if (userInfo.ship_cont === data.country_id) {
+                          return {
+                            value: data?.country_id,
+                            label: data?.country_name,
 
-                            }
                           }
-                        })}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, ship_cont: e.value })
-                          setErrorData({ ...errorData, ship_cont: '' })
-                        }}
+                        }
+                      })}
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, ship_cont: e.value })
+                        setErrorData({ ...errorData, ship_cont: '' })
+                      }}
                     />
                     <span className="errorText"> {errorData?.ship_cont ? errorData.ship_cont : ''}</span>
                   </div>
@@ -1091,19 +1110,19 @@ const AddQuotationScreen = () => {
 
                         }
                       })}
-                        value={shipStates?.map((data, index) => {
-                          if (userInfo.ship_state === data.state_id) {
-                            return {
-                              value: data?.state_id,
-                              label: data?.state_name,
+                      value={shipStates?.map((data, index) => {
+                        if (userInfo.ship_state === data.state_id) {
+                          return {
+                            value: data?.state_id,
+                            label: data?.state_name,
 
-                            }
                           }
-                        })}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, ship_state: e.value })
-                          setErrorData({ ...errorData, ship_state: '' })
-                        }}
+                        }
+                      })}
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, ship_state: e.value })
+                        setErrorData({ ...errorData, ship_state: '' })
+                      }}
                     />
                     <span className="errorText"> {errorData?.ship_state ? errorData.ship_state : ''}</span>
                   </div>
@@ -1123,20 +1142,20 @@ const AddQuotationScreen = () => {
 
                         }
                       })}
-                        value={shipCities?.map((data, index) => {
-                          if (userInfo.ship_city === data.city_id) {
-                            return {
-                              value: data?.city_id,
-                              label: data?.city_name,
+                      value={shipCities?.map((data, index) => {
+                        if (userInfo.ship_city === data.city_id) {
+                          return {
+                            value: data?.city_id,
+                            label: data?.city_name,
 
-                            }
                           }
-                        })}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, ship_city: e.value })
-                          setErrorData({ ...errorData, ship_city: '' })
-  
-                        }}
+                        }
+                      })}
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, ship_city: e.value })
+                        setErrorData({ ...errorData, ship_city: '' })
+
+                      }}
                     />
                     <span className="errorText"> {errorData?.ship_city ? errorData.ship_city : ''}</span>
                   </div>
@@ -1321,7 +1340,7 @@ const AddQuotationScreen = () => {
                             id="product_amount"
                             className="form-control"
                             // value={data?.total_amt}
-                            value={((userInfo?.sub_total*data?.tax_percentage)/100).toFixed(2)}
+                            value={((userInfo?.sub_total * data?.tax_percentage) / 100).toFixed(2)}
 
                           />
                         </div>
@@ -1340,7 +1359,7 @@ const AddQuotationScreen = () => {
                           id="product_amount"
                           className="form-control"
                           // value={userInfo?.grand_total ? (userInfo?.grand_total).toFixed(2) : ''}
-                          value={(userInfo?.sub_total+taxPerSum).toFixed(2)}
+                          value={(userInfo?.sub_total + taxPerSum).toFixed(2)}
                         />
 
                       </div>

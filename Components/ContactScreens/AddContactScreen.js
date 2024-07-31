@@ -130,15 +130,15 @@ const AddContactScreen = () => {
                 // })
                 setUserInfo((prevUserInfo) => ({
                     ...prevUserInfo,
-                    account_name:response?.data?.data?.acc_id,
-                    contact_no:response?.data?.data?.contact_no,
+                    account_name: response?.data?.data?.acc_id,
+                    contact_no: response?.data?.data?.contact_no,
                     mailing_cont: response?.data?.data?.ship_cont,
                     mailing_state: response?.data?.data?.ship_state,
                     mailing_city: response?.data?.data?.ship_city,
                     mailing_address: response?.data?.data?.ship_address,
                     mailing_pincode: response?.data?.data?.ship_pincode,
                 }));
-                
+
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -150,11 +150,11 @@ const AddContactScreen = () => {
         }
     }
 
-    useEffect(()=>{
-        if(ac_id){
+    useEffect(() => {
+        if (ac_id) {
             getSingleAccountsList(ac_id)
         }
-    },[ac_id])
+    }, [ac_id])
 
     const getSingleData = async (id) => {
         if (hasCookie("token")) {
@@ -254,7 +254,7 @@ const AddContactScreen = () => {
                 },
             };
 
-            let newUserInfo={...userInfo,updated_on:DateNow}
+            let newUserInfo = { ...userInfo, updated_on: DateNow }
 
             let newData = JSON.parse(JSON.stringify(newUserInfo))
 
@@ -297,7 +297,7 @@ const AddContactScreen = () => {
 
     const createInputField = (e) => {
         e.preventDefault();
-        const { field_lable, input_type, field_type, field_size,option } = newFields;
+        const { field_lable, input_type, field_type, field_size, option } = newFields;
 
         const showError = (errorMessage) => {
             toast.error(errorMessage);
@@ -413,12 +413,12 @@ const AddContactScreen = () => {
 
         let newData = JSON.parse(JSON.stringify(userInfo));
 
-        if( newData.db_contact_fields[ind].field_type === 'checkbox'){
+        if (newData.db_contact_fields[ind].field_type === 'checkbox') {
             newData.db_contact_fields[ind].input_value = e.target.checked
-      
-        }else{
-    
-        newData.db_contact_fields[ind].input_value = e.target.value
+
+        } else {
+
+            newData.db_contact_fields[ind].input_value = e.target.value
         }
 
         // newData.db_contact_fields[ind].input_value = e.target.value
@@ -683,7 +683,7 @@ const AddContactScreen = () => {
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                         <div className={errorData?.first_name ? 'input_box errorBox' : 'input_box'}>
                                             <label htmlFor="first_name">First Name *</label>
-                                            <input
+                                            {/* <input
                                                 type="text"
                                                 placeholder="Enter First Name"
                                                 name="first_name"
@@ -695,7 +695,27 @@ const AddContactScreen = () => {
                                                     setErrorData({ ...errorData, first_name: '' })
                                                 }}
                                                 value={userInfo.first_name ? userInfo.first_name : ""}
+                                            /> */}
+                                            <input
+                                                type="text"
+                                                placeholder="Enter First Name"
+                                                name="first_name"
+                                                id="first_name"
+                                                disabled={viewMode}
+                                                className={errorData?.first_name ? 'form-control is-invalid' : 'form-control'}
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+                                                    // Regular expression to allow only alphabetical characters
+                                                    const regex = /^[a-zA-Z]*$/;
+
+                                                    if (regex.test(value)) {
+                                                        setUserInfo({ ...userInfo, first_name: value });
+                                                        setErrorData({ ...errorData, first_name: '' });
+                                                    }
+                                                }}
+                                                value={userInfo.first_name ? userInfo.first_name : ""}
                                             />
+
                                             <span className="errorText"> {errorData?.first_name ? errorData.first_name : ''}</span>
                                         </div>
                                     </div>
@@ -703,7 +723,7 @@ const AddContactScreen = () => {
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                         <div className="input_box">
                                             <label htmlFor="task_name">Middle Name </label>
-                                            <input
+                                            {/* <input
                                                 type="text"
                                                 placeholder="Enter Middle Name "
                                                 name="task_name"
@@ -714,14 +734,33 @@ const AddContactScreen = () => {
                                                     setUserInfo({ ...userInfo, middle_name: e.target.value })
                                                 }
                                                 value={userInfo.middle_name ? userInfo.middle_name : ""}
+                                            /> */}
+                                            <input
+                                                type="text"
+                                                placeholder="Enter Middle Name"
+                                                name="task_name"
+                                                disabled={viewMode}
+                                                id="task_name"
+                                                className="form-control"
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+                                                    // Regular expression to allow only alphabetical characters
+                                                    const regex = /^[a-zA-Z]*$/;
+
+                                                    if (regex.test(value)) {
+                                                        setUserInfo({ ...userInfo, middle_name: value });
+                                                    }
+                                                }}
+                                                value={userInfo.middle_name ? userInfo.middle_name : ""}
                                             />
+
                                         </div>
                                     </div>
 
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                         <div className={errorData?.last_name ? 'input_box errorBox' : 'input_box'}>
                                             <label htmlFor="last_name">Last Name * </label>
-                                            <input
+                                            {/* <input
                                                 type="text"
                                                 placeholder="Enter Last Name "
                                                 name="last_name"
@@ -733,44 +772,61 @@ const AddContactScreen = () => {
                                                     setErrorData({ ...errorData, last_name: '' })
                                                 }}
                                                 value={userInfo.last_name ? userInfo.last_name : ""}
+                                            /> */}
+                                            <input
+                                                type="text"
+                                                placeholder="Enter Last Name"
+                                                name="last_name"
+                                                id="last_name"
+                                                disabled={viewMode}
+                                                className={errorData?.last_name ? 'form-control is-invalid' : 'form-control'}
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+                                                    // Regular expression to allow only alphabetical characters
+                                                    const regex = /^[a-zA-Z]*$/;
+                                                    if (regex.test(value)) {
+                                                        setUserInfo({ ...userInfo, last_name: value });
+                                                        setErrorData({ ...errorData, last_name: '' });
+                                                    }
+                                                }}
+                                                value={userInfo.last_name ? userInfo.last_name : ""}
                                             />
                                             <span className="errorText"> {errorData?.last_name ? errorData.last_name : ''}</span>
                                         </div>
                                     </div>
 
                                     {editMode ?
-                                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                       <div className={errorData?.assigned_to ? 'input_box errorBox' : 'input_box'}>
-                                         <label htmlFor="task_name">Assign To </label>
-                                         <Select
-                                           id={userInfo.assigned_to}
-                                           defaultValue={""}
-                                           isDisabled={viewMode}
-                                           options={usersList?.map((data, index) => {
-                                             return {
-                                               value: data?.user_id,
-                                               label: data?.user,
-                 
-                                             }
-                                           })}
-                                           value={usersList?.map((data, index) => {
-                                             if (userInfo.assigned_to === data.user_id) {
-                                               return {
-                                                 value: data?.user_id,
-                                                 label: data?.user,
-                 
-                                               }
-                                             }
-                                           })}
-                                           onChange={(e) => {
-                                             setUserInfo({ ...userInfo, assigned_to: e.value })
-                                             setErrorData({ ...errorData, assigned_to: '' })
-                                           }}
-                                         />
-                                         <span className="errorText"> {errorData?.assigned_to ? errorData.assigned_to : ''}</span>
-                                       </div>
-                                     </div>
-                                     : null}
+                                        <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                            <div className={errorData?.assigned_to ? 'input_box errorBox' : 'input_box'}>
+                                                <label htmlFor="task_name">Assign To </label>
+                                                <Select
+                                                    id={userInfo.assigned_to}
+                                                    defaultValue={""}
+                                                    isDisabled={viewMode}
+                                                    options={usersList?.map((data, index) => {
+                                                        return {
+                                                            value: data?.user_id,
+                                                            label: data?.user,
+
+                                                        }
+                                                    })}
+                                                    value={usersList?.map((data, index) => {
+                                                        if (userInfo.assigned_to === data.user_id) {
+                                                            return {
+                                                                value: data?.user_id,
+                                                                label: data?.user,
+                                                            }
+                                                        }
+                                                    })}
+                                                    onChange={(e) => {
+                                                        setUserInfo({ ...userInfo, assigned_to: e.value })
+                                                        setErrorData({ ...errorData, assigned_to: '' })
+                                                    }}
+                                                />
+                                                <span className="errorText"> {errorData?.assigned_to ? errorData.assigned_to : ''}</span>
+                                            </div>
+                                        </div>
+                                        : null}
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                         <div className="input_box">
                                             <label htmlFor="task_name">Designation</label>
@@ -1045,7 +1101,7 @@ const AddContactScreen = () => {
                                                         name={field_name}
                                                         placeholder={field_lable}
                                                         onChange={(e) => updateFieldInfo(e, ind)}
-                                                        checked={input_value == '1'? true: false}
+                                                        checked={input_value == '1' ? true : false}
                                                         value={input_value}
                                                     />
                                                 ) : null}
@@ -1216,106 +1272,106 @@ const AddContactScreen = () => {
                             </div>
 
                         </div>
-                        
-                      
+
+
                         <div className="col-xl-3 col-md-3 col-sm-12 col-12 sideCardAdd">
-                      {viewMode ?(
-                            <div className="opertunity_box">
-                                <div className="task_card mb-4">
-                                    <div className="task_head">Lead List</div>
-                                    <div className="tasks_details">
-                                        <ul className="tasks_list">
-                                            {userInfo?.db_leads?.map(({ lead_id, lead_name }, i) => {
-                                                return (
-                                                    <li key={lead_id} className="list-item">
+                            {viewMode ? (
+                                <div className="opertunity_box">
+                                    <div className="task_card mb-4">
+                                        <div className="task_head">Lead List</div>
+                                        <div className="tasks_details">
+                                            <ul className="tasks_list">
+                                                {userInfo?.db_leads?.map(({ lead_id, lead_name }, i) => {
+                                                    return (
+                                                        <li key={lead_id} className="list-item">
+                                                            <div className="opp_box">
+                                                                <Link href={`/crm/LeadsView?id=${lead_id}`}>
+                                                                    <div className="name">{lead_name}</div>
+                                                                </Link>
+                                                            </div>
+                                                        </li>
+                                                    );
+                                                })}
+                                            </ul>
+                                        </div>
+                                        <div className="card_footer">
+                                            <Link href='/crm/ManageLeads'>
+                                                <div className="text_more">view more</div>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                                : null}
+
+                            {viewMode ? (
+                                <div className="opertunity_box">
+                                    <div className="task_card mb-4">
+                                        <div className="task_head">Account List</div>
+                                        <div className="tasks_details">
+                                            <ul className="tasks_list">
+                                                {userInfo?.db_leads?.reduce((acc, lead) => {
+                                                    if (!acc.some(account => account.acc_id === lead.db_account.acc_id)) {
+                                                        acc.push(lead.db_account);
+                                                    }
+                                                    return acc;
+                                                }, []).map((account, i) => (
+                                                    <li key={i} className="list-item">
                                                         <div className="opp_box">
-                                                            <Link href={`/crm/LeadsView?id=${lead_id}`}>
-                                                                <div className="name">{lead_name}</div>
+                                                            <Link href={`/crm/AddAccount?id=${account.acc_id}&vw=mds`}>
+                                                                <div className="name">{account.acc_name}</div>
                                                             </Link>
                                                         </div>
                                                     </li>
-                                                );
-                                            })}
-                                        </ul>
-                                    </div>
-                                    <div className="card_footer">
-                                        <Link href='/crm/ManageLeads'>
-                                            <div className="text_more">view more</div>
-                                        </Link>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <div className="card_footer">
+                                            <Link href='/crm/Accounts'>
+                                                <div className="text_more">view more</div>
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )
-                        : null}
+                            ) : null}
 
-                        {viewMode ? (
-                        <div className="opertunity_box">
-                            <div className="task_card mb-4">
-                                <div className="task_head">Account List</div>
-                                <div className="tasks_details">
-                                    <ul className="tasks_list">
-                                        {userInfo?.db_leads?.reduce((acc, lead) => {
-                                            if (!acc.some(account => account.acc_id === lead.db_account.acc_id)) {
-                                                acc.push(lead.db_account);
-                                            }
-                                            return acc;
-                                        }, []).map((account, i) => (
-                                            <li key={i} className="list-item">
-                                                <div className="opp_box">
-                                                    <Link href={`/crm/AddAccount?id=${account.acc_id}&vw=mds`}>
-                                                        <div className="name">{account.acc_name}</div>
-                                                    </Link>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
+                            {viewMode ? (
+                                <div className="opertunity_box">
+                                    <div className="task_card mb-4">
+                                        <div className="task_head">Opportunity List</div>
+                                        <div className="tasks_details">
+                                            <ul className="tasks_list">
+                                                {userInfo?.db_leads?.reduce((acc, lead) => {
+                                                    if (!acc.some(opportunity => opportunity.opp_id === lead.db_opportunity.opp_id)) {
+                                                        acc.push(lead.db_opportunity);
+                                                    }
+                                                    return acc;
+                                                }, []).map((opportunity, i) => (
+                                                    <li key={i} className="list-item">
+                                                        <div className="opp_box">
+                                                            <Link href={`/crm/OpportunityView?id=${opportunity.opp_id}`}>
+                                                                <div className="name">{opportunity.opp_name}</div>
+                                                            </Link>
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <div className="card_footer">
+                                            <Link href='/crm/Opportunity'>
+                                                <div className="text_more">view more</div>
+                                            </Link>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="card_footer">
-                                    <Link href='/crm/Accounts'>
-                                        <div className="text_more">view more</div>
-                                    </Link>
-                                </div>
-                            </div>
+                            ) : null}
+
                         </div>
-                    ) : null}
-                        
-                        {viewMode ? (
-                        <div className="opertunity_box">
-                            <div className="task_card mb-4">
-                                <div className="task_head">Opportunity List</div>
-                                <div className="tasks_details">
-                                    <ul className="tasks_list">
-                                        {userInfo?.db_leads?.reduce((acc, lead) => {
-                                            if (!acc.some(opportunity => opportunity.opp_id === lead.db_opportunity.opp_id)) {
-                                                acc.push(lead.db_opportunity);
-                                            }
-                                            return acc;
-                                        }, []).map((opportunity, i) => (
-                                            <li key={i} className="list-item">
-                                                <div className="opp_box">
-                                                    <Link href={`/crm/OpportunityView?id=${opportunity.opp_id}`}>
-                                                        <div className="name">{opportunity.opp_name}</div>
-                                                    </Link>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                                <div className="card_footer">
-                                    <Link href='/crm/Opportunity'>
-                                        <div className="text_more">view more</div>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    ) : null}
-                        
-                        </div>                           
-                      
-                        
-                        
-                        
-                           
+
+
+
+
+
 
                     </div>
                 </div>

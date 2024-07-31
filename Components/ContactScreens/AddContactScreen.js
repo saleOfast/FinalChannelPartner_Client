@@ -847,7 +847,7 @@ const AddContactScreen = () => {
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                         <div className={contError?.contact_no ? 'input_box errorBox' : 'input_box'}>
                                             <label htmlFor="Contact">Contact No</label>
-                                            <input
+                                            {/* <input
                                                 type="number"
                                                 name="contact"
                                                 placeholder="Enter Contact No. "
@@ -858,7 +858,23 @@ const AddContactScreen = () => {
                                                     setUserInfo({ ...userInfo, contact_no: e.target.value })
                                                 }}
                                                 value={userInfo.contact_no ? userInfo.contact_no : ""}
+                                            /> */}
+                                            <input
+                                                type="number"
+                                                name="contact"
+                                                placeholder="Enter Contact No."
+                                                id="Contact"
+                                                disabled={viewMode}
+                                                className={contError?.contact_no ? 'form-control is-invalid' : 'form-control'}
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+                                                    if (value.length <= 10) {
+                                                        setUserInfo({ ...userInfo, contact_no: value });
+                                                    }
+                                                }}
+                                                value={userInfo.contact_no ? userInfo.contact_no : ""}
                                             />
+
                                             <span className="errorText"> {contError?.contact_no ? contError.contact_no : ''}</span>
                                         </div>
                                     </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Topnav from '../Basics/Topnav';
-import SideBar from '../Basics/SideBar';
+import MediaSideBar from '../Basics/MediaSideBar';
 import SidebarDMS from '../DMS/Sidebar/SidebarDMS';
 import SideBarChannel from '../Basics/SideBarChannel';
 import Loader from '../Loader/Loader';
@@ -9,6 +9,7 @@ import SideBarSales from '../Basics/SideBarSales';
 import { getCookie, hasCookie } from 'cookies-next';
 import Tabs from '../DMS/Tabs/Tabs';
 import { setSidebarColor, setTopNavColor, setbuttonColor } from '../../store/themeSlice';
+import SideBar from '../Basics/SideBar';
 
 const Layout = ({Component, pageProps}) => {
     const userLogin = useSelector((state) => state.userLogin.value);
@@ -43,7 +44,11 @@ const Layout = ({Component, pageProps}) => {
       }else if(hasCookie("dms")){
         setSidebarMode("dms")
         setTopnavPermission("dms")
-      }else if(hasCookie("sales")){
+      }    //Temporary
+      else if(hasCookie("media")){
+        setSidebarMode("media")
+        setTopnavPermission("media")
+      } else if(hasCookie("sales")){
         setSidebarMode("sales")
         setTopnavPermission("sales")
       } else{
@@ -107,6 +112,10 @@ const Layout = ({Component, pageProps}) => {
             
                   <div className="content_wrapper">
                       {sidebarMode==="crm" && <SideBar />}
+                      {/* //Temporary */}
+
+                      {sidebarMode==="media" && <MediaSideBar />}
+
                       {/* {sidebarMode==="dms" && <SidebarDMS/> } */}
                       {/* {sidebarMode==="channel" && <SideBarChannel    />} */}
                       {sidebarMode==="sales" && <SideBarSales    />}

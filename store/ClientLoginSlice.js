@@ -62,6 +62,9 @@ export const ClientLoginSlice = createSlice({
             }
             if (hasCookie("channel")) {
                 deleteCookie('channel')
+            } 
+            if (hasCookie("media")) {
+                deleteCookie('media')
             }
             if (hasCookie("allowedpermissions")) {
                 deleteCookie('allowedpermissions')

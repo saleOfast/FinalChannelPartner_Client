@@ -262,7 +262,7 @@ import { UserLogIN, userLogOut } from "../store/ClientLoginSlice";
 import { useRouter } from "next/router";
 import Loader from "../Components/Loader/Loader";
 import Link from "next/link";
-import { crm, dms, sales, channel, clearValue } from "../store/permissionSlice";
+import { crm, dms, sales, channel, clearValue,media } from "../store/permissionSlice";
 import { Baseurl, filesUrl } from "../Utils/Constants";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -296,6 +296,8 @@ export default mainIndexHOC(
       // toast.info(`Switched to ${mode} Mode`);
       router.push("/crm");  
     };
+    
+    
 
     const subscriptionInfo = hasCookie("subscriptionInfo")
       ? JSON.parse(getCookie("subscriptionInfo"))
@@ -308,7 +310,9 @@ export default mainIndexHOC(
         setDashboardMode("dms");
       } else if (hasCookie("sales")) {
         setDashboardMode("sales");
-      } else {
+      }  else if (hasCookie("media")) {
+        setDashboardMode("media");}
+        else {
         setDashboardMode("channel");
       }
     };
@@ -359,6 +363,16 @@ export default mainIndexHOC(
           // dispatch(sales())
           // router.push("/sales")
         }
+      }else if (permission === "media") {
+        if (
+          subscriptionInfo?.subscription_end_date_media <
+          moment(Date.now()).format("YYYY-MM-DD")
+        ) {
+          return toast("Your Media Subscription Has Ended");
+        } else {
+          dispatch(media());
+          router.push("/media");
+        }
       }
     };
   
@@ -388,6 +402,8 @@ export default mainIndexHOC(
       '/images/platform/COMMON.png',
       '/images/platform/CHANNEL.png',
       '/images/platform/DMS.png',
+      "/images/platform/MEDIA.png",
+
     ]
 
     const getPlatformFunc = (key = 'crm') => {
@@ -407,6 +423,9 @@ export default mainIndexHOC(
         case 'sales':
           fileSRc = platformImage[1]
           break;
+       case "media":
+            fileSRc = platformImage[4];
+            break;
         default:
           break;
       }

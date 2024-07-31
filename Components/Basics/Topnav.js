@@ -16,11 +16,12 @@ import Link from "next/link";
 import { Baseurl, filesUrl } from "../../Utils/Constants";
 import axios from "axios";
 import { clearMode, masterMode, userMode } from "../../store/dbModeSlice";
-import { channel, clearValue, crm, dms, sales } from "../../store/permissionSlice";
+import { channel, clearValue, crm, dms, sales,media } from "../../store/permissionSlice";
 import { startLoading, stopLoading } from "../../store/loaderSlice";
 import CP_Navbar_Admin from "../ChannelPartner/Admin/CP_NavBar_Admin/CP_NavBar_Admin"
 import CP_Navbar_User from "../ChannelPartner/User/CP_NavBar_User/CP_NavBar_User"
 import { clearTheme } from "../../store/themeSlice";
+import TopnavMedia from "../MEDIA/Topnav/TopnavMedia";
 
 const Topnav = ({  topnavPermission }) => {
   const router = useRouter();
@@ -174,9 +175,15 @@ const Topnav = ({  topnavPermission }) => {
           ): null
           : null
         }
+
+        {
+            hasCookie("media") && (
+              <TopnavMedia/>
+            )
+        }
         
-        
-      {userInfo &&  hasCookie("crm") && (
+        {/* Adding  hasCookie("media")  */}
+      {userInfo &&  hasCookie("crm")&& (
        <div className="mb-5 pb-4">
        <ConfirmBox
          showConfirm={showConfirm}

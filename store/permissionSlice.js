@@ -23,9 +23,30 @@ export const dbPermissionModeSlice = createSlice({
             if (hasCookie("channel")) {
                 deleteCookie('channel')
             }
+            if (hasCookie("media")) {
+                deleteCookie('media')
+            }
             setCookie('crm', 'crm');
             state.value='crm'
         },
+            //Temporary
+        media: (state) => {
+            if (hasCookie("dms")) {
+               
+               deleteCookie('dms')
+           }
+           if (hasCookie("sales")) {
+               deleteCookie('sales')
+           }
+           if (hasCookie("channel")) {
+               deleteCookie('channel')
+           }
+           if (hasCookie("crm")) {
+            deleteCookie('crm')
+        }
+           setCookie('media', 'media');
+           state.value='media'
+       },
         dms: (state) => {
             if (hasCookie("crm")) {
                 deleteCookie('crm')
@@ -35,6 +56,9 @@ export const dbPermissionModeSlice = createSlice({
             }
             if (hasCookie("channel")) {
                 deleteCookie('channel')
+            }
+            if (hasCookie("media")) {
+                deleteCookie('media')
             }
             setCookie('dms', 'dms');
             state.value='dms'
@@ -49,6 +73,9 @@ export const dbPermissionModeSlice = createSlice({
             if (hasCookie("channel")) {
                 deleteCookie('channel')
             }
+            if (hasCookie("media")) {
+                deleteCookie('media')
+            }
             setCookie('sales', 'sales');
             state.value='sales'
         },
@@ -62,6 +89,9 @@ export const dbPermissionModeSlice = createSlice({
             if (hasCookie("crm")) {
                 deleteCookie('crm')
             }
+            if (hasCookie("media")) {
+                deleteCookie('media')
+            }
             setCookie('channel', 'channel');
             state.value='channel'
         },
@@ -70,13 +100,21 @@ export const dbPermissionModeSlice = createSlice({
             setCookie('allowedpermissions', action.payload);
            
         },
+
+        //temp
+        // allowpermissions: (state, action) => {
+        //     const permissions = new Set(action.payload);
+        //     permissions.add('media');
+        //     state.allowedPermissions = Array.from(permissions);
+        //     setCookie('allowedpermissions', state.allowedPermissions);
+        // },
         clearValue:(state,action)=>{
             state.value=null
         }
     },
 })
 
-export const { crm,dms,sales,channel,allowpermissions,clearValue } = dbPermissionModeSlice.actions
+export const { crm,dms,sales,channel,allowpermissions,clearValue,media } = dbPermissionModeSlice.actions
 
 export default dbPermissionModeSlice.reducer
 

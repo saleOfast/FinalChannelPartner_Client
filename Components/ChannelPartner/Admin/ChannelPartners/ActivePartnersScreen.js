@@ -267,6 +267,7 @@ const ActivePartnersScreen = () => {
             db_name: db_name,
             user_code: showAssignTo,
             report_to: oldAssignTo,
+            isAssigned: true
           }, header);
           if (response.status === 200 || response.status === 201) {
             toast.success(response.data.message);

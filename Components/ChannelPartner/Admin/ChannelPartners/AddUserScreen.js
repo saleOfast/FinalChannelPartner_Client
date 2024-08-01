@@ -280,7 +280,8 @@ const AddUserScreen = () => {
     }
 
     try {
-      const response = await axios.put(`${Baseurl}/db/users`, userInfo, header);
+      let updatedInfo={...userInfo,isAssigned:true}
+      const response = await axios.put(`${Baseurl}/db/users`, updatedInfo, header);
       if (response.status === 200 || response.status === 201) {
         toast.success(response?.data?.message);
         if (uploadDocs.aadhar)

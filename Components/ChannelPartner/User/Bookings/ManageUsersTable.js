@@ -298,10 +298,11 @@ const [value, setValue] = useState(getCurrentWeekDates());
   console.log(fileRef,'After update:', brokerageBill);
 
   const createBrokerageBill =  async() => {
-
-    if(brokerageBill.file===null){
+    if(brokerageBill.file==null){
       return toast.error("Pls Upload Bill")
     }
+   
+   
       if (!hasCookie("token")) return;
       const token = getCookie("token");
       const db_name = getCookie("db_name");
@@ -490,10 +491,12 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                     <span className="star">*</span>
                                   </div>
                                   <div className="rightTab">
-                                    <input
+                                    {/* <input
                                       autofocus
                                       type="date"
                                       name="name"
+                                      onKeyDown={(e)=>e.preventDefault()}
+                                      onPaste={(e)=>e.preventDefault()}
                                       value={brokerageBill?.date}
                                       onChange={(e)=>{
                                         setBrokerageBill({...brokerageBill,date:e.target.value})
@@ -501,7 +504,22 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                       className="input-field"
                                       placeholder
                                       required
+                                    /> */}
+                                    <input
+                                      autofocus
+                                      type="date"
+                                      name="name"
+                                      min={new Date().toISOString().split("T")[0]}  // Sets the minimum date to today
+                                      onKeyDown={(e) => e.preventDefault()}
+                                      onPaste={(e) => e.preventDefault()}
+                                      value={brokerageBill?.date}
+                                      onChange={(e) => {
+                                        setBrokerageBill({ ...brokerageBill, date: e.target.value });
+                                      }}
+                                      className="input-field"
+                                      required
                                     />
+
                                   </div>
                                 </div>
                                 <div className="rowTab">
@@ -519,18 +537,27 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                     {
                                       brokerageBill?.file!==null ?
                                       (
-                                        <div className="relative w-73">
-                                        <div  >{brokerageBill?.file_name}</div>
-                                        <span className="absolute top-0 right-0" onClick={handleDeleteClick}>
-                                            <Delete style={{color: 'red',cursor:"pointer"}}/>
-                                        </span>
+                                    //     <div className="relative w-73">
+                                    //     <div  >{brokerageBill?.file_name}</div>
+                                    //     <span className="absolute top-0 right-0" onClick={handleDeleteClick}>
+                                    //         <Delete style={{color: 'red',cursor:"pointer"}}/>
+                                    //     </span>
+                                    // </div>
+                                    <div className="relative w-73">
+                                      <div className="truncate" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        {brokerageBill?.file_name}
+                                      </div>
+                                      <span className="absolute top-0 right-0" onClick={handleDeleteClick}>
+                                        <Delete style={{ color: 'red', cursor: "pointer" }} />
+                                      </span>
                                     </div>
+
                                       ) 
                                       :
                                       (
                                         <label
                                       htmlFor="adh"
-                                      className="form-control d-flex flex-row-reverse justify-content-between align-items-center"
+                                      className="form-control cursor-pointer d-flex flex-row-reverse justify-content-between align-items-center"
                                       style={{
                                         width: 162,
                                         height: 35,
@@ -547,15 +574,25 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                       ) 
                                     }
                                     
-                                    <input
+                                    {/* <input
                                       type="file"
                                       id="adh"
                                       ref={fileRef}
                                       onChange={(e)=>handleFileChange(e)}
                                       className="input-field"
                                       style={{ display: "none" }}
-                                      required
+                                      
+                                    /> */}
+                                    <input
+                                      type="file"
+                                      accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/png, image/jpeg"
+                                      id="adh"
+                                      ref={fileRef}
+                                      onChange={(e) => handleFileChange(e)}
+                                      className="input-field"
+                                      style={{ display: "none" }}
                                     />
+
                                   </div>
                                 </div>
                               </div>

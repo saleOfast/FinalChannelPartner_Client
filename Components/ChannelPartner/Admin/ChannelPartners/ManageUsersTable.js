@@ -353,6 +353,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
               db_name: db_name,
               user_code: element,
               report_to: oldAssignTo,
+              isAssigned: true
             }, header);
             
             if (response.status === 200 || response.status === 201) {

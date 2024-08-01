@@ -654,17 +654,15 @@ const ChannelSignUpScreen = () => {
                                 <input
                                   autofocus
                                   type="file"
-                                  accept="image/*"
+                                  accept="image/png, image/jpeg"
                                   name={input.field}
                                   id={input.field}
                                   className="input-field"
                                   style={{ display: "none" }}
-                                  
-                                  onChange={(e) =>
-                                    handleFileChange(e, input.field)
-                                  }
+                                  onChange={(e) => handleFileChange(e, input.field)}
                                   disabled={formFields.isUploadVerified}
                                 />
+
 
                                 {formFields.isUploadVerified === false &&
                                   formFields[input.field] && (

@@ -29,6 +29,7 @@ const AddLeadsScreen = () => {
   const [statelist, setStatelist] = useState([]);
   const [citylist, setCitylist] = useState([]);
   const [dataList, setDataList] = useState([]);
+  const [typesList, setTypesList] = useState([]);
   const [lossLists, setlossLists] = useState([]);
   const [taskOpen, setTaskOpen] = useState(false);
   const [accountsList, setAccountsList] = useState([]);
@@ -141,6 +142,10 @@ const AddLeadsScreen = () => {
 
   const getDataList = async () => {
     await fetchData(`/db/leadsrc`, setDataList, errorToast, setErrorToast);
+  };
+
+  const getTypesList = async () => {
+    await fetchData(`/db/leadtype`, setTypesList, errorToast, setErrorToast);
   };
 
   const getLossLists = async () => {
@@ -971,6 +976,7 @@ const AddLeadsScreen = () => {
 
   useEffect(() => {
     getDataList();
+    getTypesList();
     getLossLists();
     getsource();
     getAccountsList();
@@ -1266,6 +1272,7 @@ const AddLeadsScreen = () => {
                           </select>
                         </div>
                       </div>
+
                       <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                         <div
                           className={
@@ -1310,6 +1317,52 @@ const AddLeadsScreen = () => {
                           </span>
                         </div>
                       </div>
+                      
+                      <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                        <div
+                          className={
+                            errorData?.lead_src_id
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
+                          <label htmlFor="profilelevel">Lead Type </label>
+
+                          <Select
+                            id={userInfo.lead_type_id}
+                            defaultValue={""}
+                            isDisabled={viewMode}
+                            options={typesList?.map((data, index) => {
+                              return {
+                                value: data?.lead_type_id,
+                                label: data?.type,
+                              };
+                            })}
+                            value={typesList?.map((data, index) => {
+                              if (userInfo.lead_type_id === data.lead_type_id) {
+                                return {
+                                  value: data?.lead_type_id,
+                                label: data?.type,
+                                };
+                              }
+                            })}
+                            onChange={(e) => {
+                              setUserInfo({
+                                ...userInfo,
+                                lead_type_id: e.value,
+                              });
+                              setErrorData({ ...errorData, lead_type_id: "" });
+                            }}
+                          />
+                          <span className="errorText">
+                            {" "}
+                            {errorData?.lead_type_id
+                              ? errorData.lead_type_id
+                              : ""}
+                          </span>
+                        </div>
+                      </div>
+
                       <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                         <div
                           className={

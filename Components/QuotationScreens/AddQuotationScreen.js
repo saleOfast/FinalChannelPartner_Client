@@ -622,7 +622,7 @@ const AddQuotationScreen = () => {
   return (
     <div className={`main_Box  ${sideView}`}>
       <div className="bread_head">
-        <h3 className="content_head"> {editMode ? 'Edit' : 'Add'} QUOTATION</h3>
+        <h3 className="content_head"> {editMode ? 'EDIT' : 'ADD'} QUOTATION</h3>
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">

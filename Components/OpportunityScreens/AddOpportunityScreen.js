@@ -550,8 +550,11 @@ async function postFieldsFunc(id, data) {
             }
 
         } else {
-            // debugger
+            
             newFormValues[index][e.target.name] = e.target.value;
+            if(e.target.name=="qty"){
+                newFormValues[index]["price"]=e.target.value*productList?.find((item)=>(item.p_id==newFormValues[index]["p_id"]))?.p_price
+            }
         }
         setFormValues(newFormValues);
         const totalprice = sumPrices(newFormValues);
@@ -572,7 +575,7 @@ async function postFieldsFunc(id, data) {
             const numericValue = parseFloat(array[i].product_amount);
             sum += numericValue;
         } */
-       debugger
+       
         return sum;
     }
 
@@ -1212,7 +1215,7 @@ async function postFieldsFunc(id, data) {
                                                 created_on: e.target.value,
                                             })
                                         }
-                                        value={userInfo?.created_on ? moment(userInfo?.created_on).format("YYYY-MM-DDTHH:mm") : ''}
+                                        value={userInfo?.createdAt ? moment(userInfo?.createdAt).format("YYYY-MM-DDTHH:mm") : ''}
                                     />
                                 </div>
                             </div>  
@@ -1232,7 +1235,7 @@ async function postFieldsFunc(id, data) {
                                                 updated_on: e.target.value,
                                             })
                                         }
-                                        value={userInfo?.updated_on ? moment(userInfo?.updated_on).format("YYYY-MM-DDTHH:mm") : ''}
+                                        value={userInfo?.updatedAt ? moment(userInfo?.updatedAt).format("YYYY-MM-DDTHH:mm") : ''}
                                     />
                                 </div>
                             </div>

@@ -346,7 +346,7 @@ const AddEventScreen = () => {
                 <label htmlFor="contact_person_name">
                   Contact Person Name
                 </label>
-                <input
+                {/* <input
                   type="text"
                   placeholder="Enter Name"
                   disabled={viewMode}
@@ -360,7 +360,28 @@ const AddEventScreen = () => {
                     })
                   }
                   value={contactInfo.contact_person_name ? contactInfo.contact_person_name : ''}
+                /> */}
+                <input
+                  type="text"
+                  placeholder="Enter Name"
+                  disabled={viewMode}
+                  name="contact_person_name"
+                  id="contact_person_name"
+                  className="form-control"
+                  pattern="[a-zA-Z]*"
+                  title="Only letters are allowed"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const filteredValue = value.replace(/[^a-zA-Z]/g, '');
+                    setContactInfo({
+                      ...contactInfo,
+                      contact_person_name: filteredValue,
+                    });
+                  }}
+                  value={contactInfo.contact_person_name ? contactInfo.contact_person_name : ''}
                 />
+
+
               </div>
             </div>
             <div className="col-xl-4 col-md-4 col-sm-12 col-12">
@@ -394,6 +415,8 @@ const AddEventScreen = () => {
                   disabled={viewMode}
                   min={minDate}
                   id="due_date"
+                  onKeyDown={(e)=>e.preventDefault()}
+                  onPaste={(e)=>e.preventDefault()}
                   className={errorData?.event_date ? 'form-control is-invalid' : 'form-control'}
                   onChange={(e) => {
                     setContactInfo({

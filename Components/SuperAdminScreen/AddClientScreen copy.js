@@ -38,8 +38,6 @@ const AddClientScreen = () => {
         conPassword: '',
         subscription_start_date: null,
         subscription_end_date: null,
-        subscription_start_date_media: null,
-        subscription_end_date_media: null,
         subscription_start_date_channel: null,
         subscription_end_date_channel: null,
         subscription_start_date_dms: null,
@@ -48,7 +46,6 @@ const AddClientScreen = () => {
         subscription_end_date_sales: null,
         no_of_license: '',
         no_of_channel_license: 0,
-        no_of_media_license:0,
         no_of_dms_license: 0,
         no_of_sales_license: 0,
         button_color: theme.buttons,
@@ -61,7 +58,6 @@ const AddClientScreen = () => {
         gst: '',
         address: "" ,
         isCRM:null ,
-        isMEDIA:null,
         isDMS:null ,
         isSALES:null ,
         isCHANNEL:null ,
@@ -115,16 +111,6 @@ const AddClientScreen = () => {
                   subscription_end_date:(tempDate?.subscription_end_date==="0000-00-00" || tempDate?.subscription_end_date===null) ? null : moment(
                     tempDate.subscription_end_date
                   ).format("YYYY-MM-DD"),
-                  
-
-                  subscription_start_date_media: (tempDate?.subscription_start_date_media==="0000-00-00" || tempDate?.subscription_start_date_media===null ) ? null :  moment(
-                    tempDate.subscription_start_date_media
-                  ).format("YYYY-MM-DD"),
-                  subscription_end_date_media:(tempDate?.subscription_end_date_media==="0000-00-00" || tempDate?.subscription_end_date_media===null) ? null : moment(
-                    tempDate.subscription_end_date_media
-                  ).format("YYYY-MM-DD"),
-
-
                   subscription_start_date_channel: (tempDate?.subscription_start_date_channel===null || tempDate?.subscription_start_date_channel==="0000-00-00") ? null : moment(
                     tempDate.subscription_start_date_channel
                   ).format("YYYY-MM-DD"),
@@ -144,7 +130,6 @@ const AddClientScreen = () => {
                     tempDate.subscription_end_date_dms
                   ).format("YYYY-MM-DD"),
                   no_of_license: tempDate.no_of_license,
-                  no_of_media_license: tempDate.no_of_media_license,
                   gst: tempDate.gst,
                   no_of_months: tempDate.no_of_months,
                   domain: tempDate.domain,
@@ -152,7 +137,6 @@ const AddClientScreen = () => {
                   gst: tempDate.gst,
                   address: tempDate.address,
                   isCRM: true,  // Default values for flags
-                  isMEDIA:false,
                   isDMS: false,
                   isSALES: false,
                   isCHANNEL: false,
@@ -191,9 +175,6 @@ const AddClientScreen = () => {
                       case 4:
                         setUserInfo((prev)=>({...prev, isCHANNEL: element.actions}))
                       break;
-                      case 5:
-                        setUserInfo((prev)=>({...prev, isMEDIA: element.actions}))
-                      break;
                   
                     default:
                       break;
@@ -219,7 +200,7 @@ const AddClientScreen = () => {
         setErrorData({ ...errorData, host_name: 'Please enter Salesforce Host URL' })
         return toast.error('Please fill the Mandatory fields')
       }
-      if(!userInfo?.isCRM && !userInfo?.isCHANNEL && !userInfo?.isDMS && !userInfo?.isSALES && !userInfo?.isMEDIA){
+      if(!userInfo?.isCRM && !userInfo?.isCHANNEL && !userInfo?.isDMS && !userInfo?.isSALES){
         return toast.error('Please fill the Mandatory fields')
       }
       if(userInfo?.isCRM){
@@ -233,20 +214,6 @@ const AddClientScreen = () => {
            setErrorData({ ...errorData, no_of_license: 'Please enter no of licenses ' })
         }
         if(userInfo?.subscription_start_date==null || userInfo?.subscription_end_date==null ||userInfo?.no_of_license==0){
-          return toast.error('Please fill the Mandatory fields')
-        }
-      }
-      if(userInfo?.isMEDIA){
-        if(userInfo?.subscription_start_date_media==null){
-           setErrorData({ ...errorData, subscription_start_date_media: 'Please enter subscription start date' })
-        }
-        if(userInfo?.subscription_end_date_media==null){
-           setErrorData({ ...errorData, subscription_end_date_media: 'Please enter subscription end date' })
-        }
-        if(userInfo?.no_of_media_license==0){
-           setErrorData({ ...errorData, no_of_media_license: 'Please enter no of licenses ' })
-        }
-        if(userInfo?.subscription_start_date_media==null || userInfo?.subscription_end_date_media==null ||userInfo?.no_of_media_license==0){
           return toast.error('Please fill the Mandatory fields')
         }
       }
@@ -357,7 +324,7 @@ const AddClientScreen = () => {
         setErrorData({ ...errorData, host_name: 'Please enter Salesforce Host URL' })
         return toast.error('Please fill the Mandatory fields')
       }
-      if(!userInfo?.isCRM && !userInfo?.isCHANNEL && !userInfo?.isDMS && !userInfo?.isSALES &&!userInfo?.isMEDIA){
+      if(!userInfo?.isCRM && !userInfo?.isCHANNEL && !userInfo?.isDMS && !userInfo?.isSALES){
         return toast.error('Please fill the Mandatory fields')
       }
       if(userInfo?.isCRM){
@@ -371,20 +338,6 @@ const AddClientScreen = () => {
            setErrorData({ ...errorData, no_of_license: 'Please enter no of licenses ' })
         }
         if(userInfo?.subscription_start_date==null || userInfo?.subscription_end_date==null ||userInfo?.no_of_license==0){
-          return toast.error('Please fill the Mandatory fields')
-        }
-      }
-      if(userInfo?.isMEDIA){
-        if(userInfo?.subscription_start_date_media==null){
-           setErrorData({ ...errorData, subscription_start_date_media: 'Please enter subscription start date' })
-        }
-        if(userInfo?.subscription_end_date_media==null){
-           setErrorData({ ...errorData, subscription_end_date_media: 'Please enter subscription end date' })
-        }
-        if(userInfo?.no_of_media_license==0){
-           setErrorData({ ...errorData, no_of_media_license: 'Please enter no of licenses ' })
-        }
-        if(userInfo?.subscription_start_date_media==null || userInfo?.subscription_end_date_media==null ||userInfo?.no_of_license==0){
           return toast.error('Please fill the Mandatory fields')
         }
       }
@@ -1094,7 +1047,6 @@ const AddClientScreen = () => {
                       
                     </div>
 
-
                     <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
                     <div className='d-flex flex-column flex-md-row   justify-content-between'>
                         <div className="form-check col-xl-2 col-md-2 col-sm-12 col-12">
@@ -1514,150 +1466,6 @@ const AddClientScreen = () => {
                       </div>
                       
                     </div>
-
-  
-                    <div className="col-xl-12 col-md-12 col-sm-12 mb-3">
-                      <div className='d-flex flex-column flex-md-row  justify-content-between'>
-                        <div className="form-check col-xl-2 col-md-2 col-sm-12 col-12">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  value="option5"
-                                  id="option5"
-                                  // checked={!editMode ? true : userInfo.isCRM }
-                                  checked={userInfo?.isMEDIA }
-                                  onChange={(e) => {
-                                    setUserInfo({
-                                      ...userInfo,
-                                      // isCRM: !editMode ? 1 : e.target.checked ? 1 : 0,
-                                      isMEDIA: e.target.checked ? 1 : 0,
-                                    });
-                                    setErrorData({ ...errorData, isMEDIA: "" });
-                                  }}
-                                />
-                                <label
-                                  className="form-check-label "
-                                  htmlFor="option5"
-                                >
-                                  MEDIA
-                                </label>
-                        </div>
-                        {userInfo.isMEDIA ?
-                        <>
-                              <div className="input_box m-0 col-xl-3 col-md-3 col-sm-12 col-12">
-                          <label>Number of Licenses*</label>
-                          <input
-                          type="number"
-                          placeholder="Enter Licence"
-                          name="no_of_license"
-                          id="no_of_license"
-                          className={
-                            errorData?.no_of_media_license
-                              ? "form-control is-invalid"
-                              : "form-control"
-                          }
-                          onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              no_of_media_license: e.target.value,
-                            });
-                            setErrorData({ ...errorData, no_of_media_license: "" });
-                          }}
-                          value={
-                            userInfo.no_of_media_license ? userInfo.no_of_media_license : ""
-                          }
-                        />
-                        <span className="errorText">
-                          {" "}
-                          {errorData?.no_of_media_license ? errorData.no_of_media_license : ""}
-                        </span>
-                              </div>
-                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div
-                    className={
-                      errorData?.subscription_start_date_media
-                        ? "input_box errorBox"
-                        : "input_box"
-                    }
-                  >
-                    <label htmlFor="subscription_start_date">
-                      Subscription Start Date *
-                    </label>
-                    <input
-                      type="date"
-                      name="subscription_start_date"
-                      id="subscription_start_date"
-                      min={moment()
-                        .subtract(7, "days")
-                        .format("YYYY-MM-DD[T]HH:mm:ss")}
-                      className={
-                        errorData?.subscription_start_date_media
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      onChange={(e) => {
-                        setUserInfo({
-                          ...userInfo,
-                          subscription_start_date_media: e.target.value,
-                        });
-                        setErrorData({
-                          ...errorData,
-                          subscription_start_date_media: "",
-                        });
-                      }}
-                      value={
-                        userInfo.subscription_start_date_media
-                          ? userInfo.subscription_start_date_media
-                          : ""
-                      }
-                    />
-                    <span className="errorText">
-                      {" "}
-                      {errorData?.subscription_start_date_media
-                        ? errorData.subscription_start_date_media
-                        : ""}
-                    </span>
-                  </div>
-                              </div>
-                              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                              <div className="input_box">
-                                <label htmlFor="subscription_start_date">
-                                  Subscription End Date *
-                                </label>
-                                <input
-                                  type="date"
-                                  name="subscription_start_date"
-                                  id="subscription_start_date"
-                                  className={
-                                    errorData?.subscription_end_date_media
-                                      ? "form-control is-invalid"
-                                      : "form-control"
-                                  }
-                                  onChange={(e) => {
-                                    setUserInfo({
-                                      ...userInfo,
-                                      subscription_end_date_media: e.target.value,
-                                    });
-                                    setErrorData({
-                                      ...errorData,
-                                      subscription_end_date_media: "",
-                                    });
-                                  }}
-                                  value={
-                                    userInfo.subscription_end_date_media
-                                      ? userInfo.subscription_end_date_media
-                                      : ""
-                                  }
-                                />
-                              </div>
-                            </div>   
-                        </>
-                        
-                        : <></> }
-                      </div>
-                      
-                    </div>
-
 
                     </div>
 

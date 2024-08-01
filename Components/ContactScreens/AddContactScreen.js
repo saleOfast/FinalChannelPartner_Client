@@ -187,7 +187,8 @@ const AddContactScreen = () => {
     };
 
     const submitHandler = async () => {
-
+        
+        
         if (hasCookie("token")) {
             setisLoading(true)
             let token = getCookie("token");
@@ -214,6 +215,7 @@ const AddContactScreen = () => {
                 }
             } catch (error) {
                 if (error?.response?.data?.status === 422) {
+                    
                     const taskObject = {}
                     const array = error?.response?.data?.data;
                     for (let i = 0; i < array.length; i++) {
@@ -221,6 +223,8 @@ const AddContactScreen = () => {
                         const value = Object.values(array[i])[0];
                         taskObject[key] = value;
                     }
+                    
+                    
                     setErrorData(taskObject);
                 }
                 if (error?.response?.data?.message) {
@@ -474,6 +478,7 @@ const AddContactScreen = () => {
     }
 
     useEffect(() => {
+        
         if (userInfo.contact_no && !validPhone.test(userInfo.contact_no)) {
             setContError({ ...contError, contact_no: 'invalid contact no.' });
         } else {
@@ -489,6 +494,7 @@ const AddContactScreen = () => {
             setContError({ ...contError, email_id: '' });
         }
     }, [useDebounce(userInfo.email_id, 1000)]);
+
 
 
     useEffect(() => {
@@ -845,8 +851,8 @@ const AddContactScreen = () => {
                                         </div>
                                     </div>
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                        <div className={contError?.contact_no ? 'input_box errorBox' : 'input_box'}>
-                                            <label htmlFor="Contact">Contact No</label>
+                                        <div className={errorData?.contact_no ? 'input_box errorBox' : 'input_box'}>
+                                            <label htmlFor="Contact">Contact No*</label>
                                             {/* <input
                                                 type="number"
                                                 name="contact"
@@ -875,7 +881,7 @@ const AddContactScreen = () => {
                                                 value={userInfo.contact_no ? userInfo.contact_no : ""}
                                             />
 
-                                            <span className="errorText"> {contError?.contact_no ? contError.contact_no : ''}</span>
+                                            <span className="errorText"> {errorData?.contact_no ? errorData.contact_no : ''}</span>
                                         </div>
                                     </div>
 
@@ -937,7 +943,7 @@ const AddContactScreen = () => {
                                                         created_on: e.target.value,
                                                     })
                                                 }
-                                                value={moment(userInfo?.created_on).format("YYYY-MM-DDTHH:mm")}
+                                                value={moment(userInfo?.createdAt).format("YYYY-MM-DDTHH:mm")}
                                             />
                                         </div>
                                     </div>
@@ -957,7 +963,7 @@ const AddContactScreen = () => {
                                                         updated_on: e.target.value,
                                                     })
                                                 }
-                                                value={moment(userInfo?.updated_on).format("YYYY-MM-DDTHH:mm")}
+                                                value={moment(userInfo?.updatedAt).format("YYYY-MM-DDTHH:mm")}
                                             />
                                         </div>
                                     </div>
@@ -1073,7 +1079,7 @@ const AddContactScreen = () => {
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                         <div className="input_box">
                                             <label htmlFor="zip_add">Zip / Postal Code</label>
-                                            <input
+                                            {/* <input
                                                 type="number"
                                                 placeholder="Zip / Postal Code"
                                                 name="zip_add"
@@ -1082,7 +1088,24 @@ const AddContactScreen = () => {
                                                 className="form-control"
                                                 onChange={(e) => setUserInfo({ ...userInfo, mailing_pincode: e.target.value })}
                                                 value={userInfo.mailing_pincode ? userInfo.mailing_pincode : ""}
-                                            />
+                                            /> */}
+                                            <input
+                                                type="text"
+                                                placeholder="Zip / Postal Code"
+                                                name="zip_add"
+                                                id="zip_add"
+                                                disabled={viewMode}
+                                                className="form-control"
+                                                maxLength="6"  // Limit the number of characters to 6
+                                                pattern="\d{6}" // Ensure exactly 6 digits are entered
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+                                                    const filteredValue = value.replace(/\D/g, '').slice(0, 6);
+                                                    setUserInfo({ ...userInfo, mailing_pincode: filteredValue });
+                                                }}
+                                                value={userInfo.mailing_pincode ? userInfo.mailing_pincode : ""}
+                                                />
+
                                         </div>
                                     </div>
 

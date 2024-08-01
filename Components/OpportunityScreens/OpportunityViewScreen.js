@@ -502,7 +502,7 @@ const getProductList = async () => {
                               <input
                                 className='form-control'
                                 type="datetime-local"
-                                value={moment(dataList?.created_on).format("YYYY-MM-DDTHH:mm")}
+                                value={moment(dataList?.createdAt).format("YYYY-MM-DDTHH:mm")}
                                 disabled
                               />
                             </div>
@@ -513,7 +513,7 @@ const getProductList = async () => {
                               <input
                                 className='form-control'
                                 type="datetime-local"
-                                value={moment(dataList?.updated_on).format("YYYY-MM-DDTHH:mm")}
+                                value={moment(dataList?.updatedAt).format("YYYY-MM-DDTHH:mm")}
                                 disabled
                               />
                             </div>
@@ -700,6 +700,8 @@ const getProductList = async () => {
                                 name="due_date"
                                 min={minDate}
                                 id="due_date"
+                                onKeyDown={(e)=>e.preventDefault()}
+                                onPaste={(e)=>e.preventDefault()}
                                 className="form-control"
                                 onChange={(e) =>
                                   setUserInfo({

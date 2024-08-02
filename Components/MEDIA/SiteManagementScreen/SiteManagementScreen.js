@@ -74,7 +74,7 @@ const SiteManagementScreen = () => {
       };
 
       try {
-        const response = await axios.delete( Baseurl + `/db/tasks?t_id=${currObj}`, header);
+        const response = await axios.delete( Baseurl + `/db/media/siteManagement/deleteSite?site_id=${currObj}`, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message);
           setdisableShowConfirm(false);
@@ -150,7 +150,7 @@ const SiteManagementScreen = () => {
 
         const downloadLink = document.createElement("a");
         downloadLink.href = fileUrl;
-        downloadLink.setAttribute("download", "Tasks.xlsx");
+        downloadLink.setAttribute("download", "Sites.xlsx");
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
@@ -182,11 +182,11 @@ const SiteManagementScreen = () => {
       />
        <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
-          <h3 className="content_head">Task</h3>
+          <h3 className="content_head">Site Management</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item"> <Link href='/media'>Home   </Link></li>
-              <li className="breadcrumb-item active" aria-current="page">Task List</li>
+              <li className="breadcrumb-item active" aria-current="page">Site List</li>
             </ol>
           </nav>
         </div>
@@ -200,14 +200,14 @@ const SiteManagementScreen = () => {
                   ADD SITE
                 </button>
               </Link>
-              <button className="btn btn-primary Add_btn " onClick={handleDownload}>
+              {/* <button className="btn btn-primary Add_btn " onClick={handleDownload}>
                   <DownloadIcon />
                   EXPORT
-                </button>
+                </button> */}
             </div>
             </div>
             <DynamicTable
-              title="Tasks List"
+              title="Sites List"
               dataList={dataList}
               loader={loader}
               disableConfirm={disableConfirm}

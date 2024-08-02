@@ -200,7 +200,7 @@ const ProductCard = ({
           ? await axios.post(Baseurl + `/db/cart`, { user_id: userInfo.user_id, product_id, cases: 1 }, header)
           : await axios.post(Baseurl + `/db/cart`, { user_id: userInfo.user_id, product_id, piece: 1 }, header);
         await getProducts();
-        // dispatch(fetchCart())
+        dispatch(fetchCart())
       } catch (error) {
         console.log(error);
         if (error?.response?.data?.message) {
@@ -229,7 +229,7 @@ const ProductCard = ({
           ? await axios.put(Baseurl + `/db/cart`, { user_id: userInfo.user_id, product_id, cases: 1 }, header)
           : await axios.put(Baseurl + `/db/cart`, { user_id: userInfo.user_id, product_id, piece: 1 }, header);
         await getProducts();
-        // dispatch(fetchCart())
+        dispatch(fetchCart())
 
       } catch (error) {
         if (error?.response?.data?.message) {

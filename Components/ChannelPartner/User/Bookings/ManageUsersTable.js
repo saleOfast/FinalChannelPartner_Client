@@ -297,11 +297,18 @@ const [value, setValue] = useState(getCurrentWeekDates());
   };
   console.log(fileRef,'After update:', brokerageBill);
 
+  const isValidPdfFile = (file) => {
+    return file && file.type === 'application/pdf';
+  };
+
   const createBrokerageBill =  async() => {
     if(brokerageBill.file==null){
       return toast.error("Pls Upload Bill")
     }
    
+    if (!isValidPdfFile(brokerageBill.file)) {
+      return toast.error("Please upload Bill in PDF", { autoClose: 1000 }); // Adjust duration here
+    }
    
       if (!hasCookie("token")) return;
       const token = getCookie("token");
@@ -345,6 +352,58 @@ const [value, setValue] = useState(getCurrentWeekDates());
         }
       }
   };
+
+  // const updateBrokerageBill =  async() => {
+  //   if(brokerageBill.file==null){
+  //     return toast.error("Pls Upload Bill")
+  //   }
+   
+  //   if (!isValidPdfFile(brokerageBill.file)) {
+  //     return toast.error("Please upload Bill in PDF", { autoClose: 1000 }); // Adjust duration here
+  //   }
+   
+  //     if (!hasCookie("token")) return;
+  //     const token = getCookie("token");
+  //     const db_name = getCookie("db_name");
+  //     const header = {
+  //       headers: {
+  //         Accept: "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //         db: db_name,
+  //         m_id: 79,
+  //       },
+  //     };
+
+  //     const formData=new FormData();
+  //     for (const [key, value] of Object.entries(brokerageBill)) {
+  //       formData.append(key, value);
+  //     }
+  //     try {
+  //       dispatch(startButtonLoading())
+  //       const response = await axios.post(`${Baseurl}/db/channel/brokerage`,formData, header);
+  //       if (response.status === 200 || response.status === 201) {
+  //         toast.success(response.data.message);
+  //         dispatch(stopButtonLoading())
+  //         setBrokerageBill("")
+  //         setShowModal(false)
+  //         getDataList()
+  //       }
+  //     } catch (error) {
+  //       console.log(error)
+  //       if (error?.response?.data?.status === 422) {
+  //         dispatch(stopButtonLoading())
+  //             toast.error(error?.response?.data?.message)
+              
+  //       }
+  //       if (error?.response?.data?.message) {
+  //         dispatch(stopButtonLoading())
+  //         toast.error(error.response.data.message);
+  //       } else {
+  //         dispatch(stopButtonLoading())
+  //         toast.error("Something went wrong!");
+  //       }
+  //     }
+  // };
 
   const options = {
     selectableRows: 'none',
@@ -585,7 +644,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                     /> */}
                                     <input
                                       type="file"
-                                      accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/png, image/jpeg"
+                                      accept="application/pdf"
                                       id="adh"
                                       ref={fileRef}
                                       onChange={(e) => handleFileChange(e)}

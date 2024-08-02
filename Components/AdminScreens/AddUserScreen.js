@@ -1,3 +1,4 @@
+// code without media
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import CameraIcon from "../Svg/CameraIcon";
@@ -1921,17 +1922,6 @@ useEffect(()=>{
                 </div>
               </div>
             ) : null}
-
-
-
-
-
-
-
-
-
-          
-
             <div className="text-end">
               <div className="submit_btn">
            {viewMode ? null : (

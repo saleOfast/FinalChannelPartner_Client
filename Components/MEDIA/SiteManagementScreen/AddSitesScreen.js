@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Baseurl } from "../../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../../Utils/Constants";
 import { hasCookie, getCookie } from "cookies-next";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -369,21 +369,17 @@ const AddSitesScreen = () => {
         },
       };
 
-      if (userInfo.lead_id !== null) {
-        delete userInfo.link_with_opportunity;
-      } else if (userInfo.link_with_opportunity !== null) {
-        delete userInfo.lead_id;
-      }
+     
       try {
         const response = await axios.put(
-          Baseurl + `/db/tasks`,
+          Baseurl + `/db/media/siteManagement/updateSite`,
           userInfo,
           header
         );
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message);
           setisLoading(false)
-          router.push("/crm/TaskScreen");
+          router.push("/media/SiteManagement");
 
         }
       } catch (error) {
@@ -426,7 +422,23 @@ const AddSitesScreen = () => {
           Baseurl + `/db/media/siteManagement/getSite?site_id=${id}`,
           header
         );
-        setUserInfo(response.data.data);
+        let data={...response.data.data}
+        let newData={
+          ...data,
+          total_sq_ft:data?.total_area,
+          selling_cost_sq_ft:Number(data?.selling_cost_per_unit).toFixed(1),
+          selling_cost_day:Number(data?.selling_cost_per_day).toFixed(1),
+          buying_cost_sq_ft:Number(data?.buying_cost_per_unit).toFixed(1),
+          buying_cost_day:Number(data?.buying_cost_per_day).toFixed(1),
+          leased_cost_sq_ft:Number(data?.leased_cost_per_unit).toFixed(1),
+          leased_cost_day:Number(data?.leased_cost_per_day).toFixed(1),
+          card_rate_sq_ft:Number(data?.card_cost_per_unit).toFixed(1),
+          card_rate_day:Number(data?.card_cost_per_day).toFixed(1),
+          p_close_shot_preview:data?.p_close_shot===""?"":`${filesUrl}/SitePhotos/images${data?.p_close_shot}`,
+          p_long_shot_preview:data?.p_long_shot===""?"":`${filesUrl}/SitePhotos/images${data?.p_long_shot}`,
+          p_night_shot_preview:data?.p_night_shot===""?"":`${filesUrl}/SitePhotos/images${data?.p_night_shot}`,
+        }
+        setUserInfo(newData);
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -1106,6 +1118,7 @@ const AddSitesScreen = () => {
                             type="date"
                             name="date"
                             id="available_from"
+                            disabled={viewMode}
                             className="form-control"
                             min={moment().format("YYYY-MM-DD")}
                             onKeyDown={(e)=>e.preventDefault()}
@@ -1130,6 +1143,7 @@ const AddSitesScreen = () => {
                             type="date"
                             name="date"
                             id="available_to"
+                            disabled={viewMode}
                             min={moment().format("YYYY-MM-DD")}
                             onKeyDown={(e)=>e.preventDefault()}
                             onPaste={(e)=>e.preventDefault()}
@@ -1181,6 +1195,7 @@ const AddSitesScreen = () => {
                             type="date"
                             name="date"
                             id="lease_from"
+                            disabled={viewMode}
                             min={moment().format("YYYY-MM-DD")}
                             onKeyDown={(e)=>e.preventDefault()}
                             onPaste={(e)=>e.preventDefault()}
@@ -1205,6 +1220,7 @@ const AddSitesScreen = () => {
                             type="date"
                             name="date"
                             id="lease_to"
+                            disabled={viewMode}
                             min={moment().format("YYYY-MM-DD")}
                             onKeyDown={(e)=>e.preventDefault()}
                             onPaste={(e)=>e.preventDefault()}
@@ -1232,16 +1248,19 @@ const AddSitesScreen = () => {
                             id="lease_period"
                             disabled={viewMode}
                             className="form-control"
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const value = Math.max(0, e.target.value);
                               setUserInfo({
                                 ...userInfo,
-                                lease_period: e.target.value,
-                              })
-                            }
-                            value={
-                              userInfo?.lease_period ? userInfo.lease_period : ""
-                            }
+                                lease_period: value,
+                              });
+                            }}
+                            onInput={(e) => {
+                              e.target.value = Math.max(0, e.target.value);
+                            }}
+                            value={ userInfo?.lease_period ? userInfo.lease_period : ""  }
                           />
+
                         </div>
                       </div>
 
@@ -1252,21 +1271,24 @@ const AddSitesScreen = () => {
                           </label>
                           <input
                             type="number"
-                            name="lease_period"
+                            name="lease_cost"
                             placeholder="Enter Lease Cost"
                             id="lease_cost"
                             disabled={viewMode}
                             className="form-control"
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const value = Math.max(0, e.target.value);
                               setUserInfo({
                                 ...userInfo,
-                                lease_cost: e.target.value,
-                              })
-                            }
-                            value={
-                              userInfo?.lease_cost ? userInfo.lease_cost : ""
-                            }
+                                lease_cost: value,
+                              });
+                            }}
+                            onInput={(e) => {
+                              e.target.value = Math.max(0, e.target.value);
+                            }}
+                            value={ userInfo?.lease_cost ? userInfo.lease_cost : "" }
                           />
+
                         </div>
                       </div>
                     </div>
@@ -1286,15 +1308,20 @@ const AddSitesScreen = () => {
                             id="width"
                             disabled={viewMode}
                             className="form-control"
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const value = Math.max(0, e.target.value);
                               setUserInfo({
                                 ...userInfo,
-                                width: e.target.value,
-                                total_sq_ft:e.target.value*userInfo?.height
-                              })
-                            }
+                                width: value,
+                                total_sq_ft: value * userInfo?.height,
+                              });
+                            }}
+                            onInput={(e) => {
+                              e.target.value = Math.max(0, e.target.value);
+                            }}
                             value={userInfo?.width ? userInfo.width : ""}
                           />
+
                         </div>
                       </div>
 
@@ -1308,15 +1335,20 @@ const AddSitesScreen = () => {
                             id="height"
                             disabled={viewMode}
                             className="form-control"
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const value = Math.max(0, e.target.value);
                               setUserInfo({
                                 ...userInfo,
-                                height: e.target.value,
-                                total_sq_ft:e.target.value*userInfo?.width
-                              })
-                            }
+                                height: value,
+                                total_sq_ft: value * userInfo?.width,
+                              });
+                            }}
+                            onInput={(e) => {
+                              e.target.value = Math.max(0, e.target.value);
+                            }}
                             value={userInfo?.height ? userInfo.height : ""}
                           />
+
                         </div>
                       </div>
 
@@ -1324,20 +1356,25 @@ const AddSitesScreen = () => {
                         <div className="input_box">
                           <label htmlFor="quantity">Quantity</label>
                           <input
-                            type="number"
-                            name="quantity"
-                            placeholder="Enter Quantity"
-                            id="quantity"
-                            disabled={viewMode}
-                            className="form-control"
-                            onChange={(e) =>
-                              setUserInfo({
-                                ...userInfo,
-                                quantity: e.target.value,
-                              })
-                            }
-                            value={userInfo?.quantity ? userInfo.quantity : ""}
-                          />
+                              type="number"
+                              name="quantity"
+                              placeholder="Enter Quantity"
+                              id="quantity"
+                              disabled={viewMode}
+                              className="form-control"
+                              onChange={(e) => {
+                                const value = Math.max(0, e.target.value);
+                                setUserInfo({
+                                  ...userInfo,
+                                  quantity: value,
+                                });
+                              }}
+                              onInput={(e) => {
+                                e.target.value = Math.max(0, e.target.value);
+                              }}
+                              value={userInfo?.quantity ? userInfo.quantity : ""}
+                            />
+
                         </div>
                       </div>
 
@@ -1358,7 +1395,7 @@ const AddSitesScreen = () => {
                               })
                             }
                             value={
-                              userInfo?.total_sq_ft ? userInfo.total_sq_ft.toFixed(2) : ""
+                              userInfo?.total_sq_ft ? userInfo.total_sq_ft.toFixed(1) : ""
                             }
                           />
                         </div>
@@ -1382,20 +1419,21 @@ const AddSitesScreen = () => {
                             id="selling_cost_month"
                             disabled={viewMode}
                             className="form-control"
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const value = Math.max(0, e.target.value);
                               setUserInfo({
                                 ...userInfo,
-                                selling_cost: e.target.value,
-                                selling_cost_sq_ft:(e.target.value/userInfo?.total_sq_ft).toFixed(2),
-                                selling_cost_day:(e.target.value/30).toFixed(2)
-                              })
-                            }
-                            value={
-                              userInfo?.selling_cost
-                                ? userInfo.selling_cost
-                                : ""
-                            }
+                                selling_cost: value,
+                                selling_cost_sq_ft: (value / userInfo?.total_sq_ft).toFixed(2),
+                                selling_cost_day: (value / 30).toFixed(2),
+                              });
+                            }}
+                            onInput={(e) => {
+                              e.target.value = Math.max(0, e.target.value);
+                            }}
+                            value={userInfo?.selling_cost ? userInfo.selling_cost : "" }
                           />
+
                         </div>
                       </div>
 
@@ -1405,26 +1443,27 @@ const AddSitesScreen = () => {
                             Buying Cost/Month
                           </label>
                           <input
-                            type="number"
-                            name="buying_cost_month"
-                            placeholder="Enter Buying Cost/Month"
-                            id="buying_cost_month"
-                            disabled={viewMode}
-                            className="form-control"
-                            onChange={(e) =>
-                              setUserInfo({
-                                ...userInfo,
-                                buying_cost: e.target.value,
-                                buying_cost_sq_ft:(e.target.value/userInfo?.total_sq_ft).toFixed(2),
-                                buying_cost_day:(e.target.value/30).toFixed(2)
-                              })
-                            }
-                            value={
-                              userInfo?.buying_cost
-                                ? userInfo.buying_cost
-                                : ""
-                            }
-                          />
+                              type="number"
+                              name="buying_cost_month"
+                              placeholder="Enter Buying Cost/Month"
+                              id="buying_cost_month"
+                              disabled={viewMode}
+                              className="form-control"
+                              onChange={(e) => {
+                                const value = Math.max(0, e.target.value);
+                                setUserInfo({
+                                  ...userInfo,
+                                  buying_cost: value,
+                                  buying_cost_sq_ft: (value / userInfo?.total_sq_ft).toFixed(2),
+                                  buying_cost_day: (value / 30).toFixed(2),
+                                });
+                              }}
+                              onInput={(e) => {
+                                e.target.value = Math.max(0, e.target.value);
+                              }}
+                              value={ userInfo?.buying_cost ? userInfo.buying_cost : "" }
+                            />
+
                         </div>
                       </div>
 
@@ -1440,20 +1479,21 @@ const AddSitesScreen = () => {
                             id="leased_cost_month"
                             disabled={viewMode}
                             className="form-control"
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const value = Math.max(0, e.target.value);
                               setUserInfo({
                                 ...userInfo,
-                                leased_cost: e.target.value,
-                                leased_cost_sq_ft:(e.target.value/userInfo?.total_sq_ft).toFixed(2),
-                                leased_cost_day:(e.target.value/30).toFixed(2)
-                              })
-                            }
-                            value={
-                              userInfo?.leased_cost
-                                ? userInfo.leased_cost
-                                : ""
-                            }
+                                leased_cost: value,
+                                leased_cost_sq_ft: (value / userInfo?.total_sq_ft).toFixed(2),
+                                leased_cost_day: (value / 30).toFixed(2),
+                              });
+                            }}
+                            onInput={(e) => {
+                              e.target.value = Math.max(0, e.target.value);
+                            }}
+                            value={ userInfo?.leased_cost ? userInfo.leased_cost : "" }
                           />
+
                         </div>
                       </div>
 
@@ -1463,26 +1503,27 @@ const AddSitesScreen = () => {
                             Card Rate/Month
                           </label>
                           <input
-                            type="number"
-                            name="card_rate_month"
-                            placeholder="Enter Card Rate/Month"
-                            id="card_rate_month"
-                            disabled={viewMode}
-                            className="form-control"
-                            onChange={(e) =>
-                              setUserInfo({
-                                ...userInfo,
-                                card_rate: e.target.value,
-                                card_rate_sq_ft:(e.target.value/userInfo?.total_sq_ft).toFixed(2),
-                                card_rate_day:(e.target.value/30).toFixed(2)
-                              })
-                            }
-                            value={
-                              userInfo?.card_rate
-                                ? userInfo.card_rate
-                                : ""
-                            }
-                          />
+                              type="number"
+                              name="card_rate_month"
+                              placeholder="Enter Card Rate/Month"
+                              id="card_rate_month"
+                              disabled={viewMode}
+                              className="form-control"
+                              onChange={(e) => {
+                                const value = Math.max(0, e.target.value);
+                                setUserInfo({
+                                  ...userInfo,
+                                  card_rate: value,
+                                  card_rate_sq_ft: (value / userInfo?.total_sq_ft).toFixed(2),
+                                  card_rate_day: (value / 30).toFixed(2),
+                                });
+                              }}
+                              onInput={(e) => {
+                                e.target.value = Math.max(0, e.target.value);
+                              }}
+                              value={ userInfo?.card_rate ? userInfo.card_rate: "" }
+                            />
+
                         </div>
                       </div>
 
@@ -1506,7 +1547,7 @@ const AddSitesScreen = () => {
                             }
                             value={
                               userInfo?.selling_cost_sq_ft
-                                ? userInfo.selling_cost_sq_ft
+                                ? userInfo?.selling_cost_sq_ft
                                 : ""
                             }
                           />
@@ -1701,7 +1742,7 @@ const AddSitesScreen = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="add_screen_head">
+                  {/* <div className="add_screen_head">
                     <span className="text_bold">Photos</span>
                   </div>
                   <div className="add_user_form">
@@ -1718,7 +1759,7 @@ const AddSitesScreen = () => {
                             accept="image/*"
                             onChange={(e) => handleImageChange(e,"p_close_shot","p_close_shot_preview")}
                           />
-                          {userInfo?.p_close_shot_preview && (
+                          {userInfo?.p_close_shot_preview!=="" && (
                             <img
                               src={userInfo?.p_close_shot_preview}
                               alt={` Preview`}
@@ -1743,7 +1784,7 @@ const AddSitesScreen = () => {
                             className="form-control"
                             onChange={(e) => handleImageChange(e,"p_long_shot","p_long_shot_preview")}
                           />
-                          {userInfo?.p_long_shot_preview && (
+                          {userInfo?.p_long_shot_preview!=="" && (
                             <img
                               src={userInfo?.p_long_shot_preview}
                               alt={` Preview`}
@@ -1768,7 +1809,7 @@ const AddSitesScreen = () => {
                             className="form-control"
                             onChange={(e) => handleImageChange(e,"p_night_shot","p_night_shot_preview")}
                           />
-                          {userInfo?.p_night_shot_preview && (
+                          {userInfo?.p_night_shot_preview!=="" && (
                             <img
                               src={userInfo?.p_night_shot_preview}
                               alt={` Preview`}
@@ -1781,7 +1822,7 @@ const AddSitesScreen = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   {/* code for add field */}
                   <div className="add_user_form">
                     

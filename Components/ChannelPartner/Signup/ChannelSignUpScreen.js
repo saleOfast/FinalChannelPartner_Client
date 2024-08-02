@@ -147,6 +147,10 @@ const ChannelSignUpScreen = () => {
     }
   };
 
+  const isValidFileType = (file) => {
+    const validTypes = ['image/png', 'image/jpeg'];
+    return file && validTypes.includes(file.type);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -154,6 +158,16 @@ const ChannelSignUpScreen = () => {
       dispatch(stopButtonLoading())
         return  toast.warning("Pls Fill All Mandatory Fields");
     }
+    if (
+      !isValidFileType(formFields.aadhar) ||
+      !isValidFileType(formFields.pan) ||
+      !isValidFileType(formFields.rera) ||
+      (formFields.cheque && !isValidFileType(formFields.cheque))
+    ) {
+      dispatch(stopButtonLoading());
+      return toast.warning("Please upload files in PNG or JPEG format.");
+    }
+    
     try {
       dispatch(startButtonLoading())
       if (!formFields.aadhar || !formFields.pan || !formFields.rera) {

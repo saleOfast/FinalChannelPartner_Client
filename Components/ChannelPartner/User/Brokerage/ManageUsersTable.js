@@ -121,6 +121,9 @@ useEffect(() => {
 }, []);
 
 const updateBrokerageBill =  async() => {
+  if(updateBill?.status=="Payment Rejected" && updateBill?.reject_remark==""){
+    return toast.warning("Please Enter Reject Remark")
+  }
     if (!hasCookie("token")) return;
     const token = getCookie("token");
     const db_name = getCookie("db_name");

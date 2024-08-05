@@ -1,4 +1,4 @@
-// code without media
+// code with media
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import CameraIcon from "../Svg/CameraIcon";
@@ -113,13 +113,6 @@ useEffect(()=>{
     setiscollapse(true)
   };
 
-
-
-
-    
-
-
-  
   const getState = async (id) => {
     await fetchData(
       `/db/area/states?cnt_id=${id}`,
@@ -196,7 +189,8 @@ useEffect(()=>{
         isCRM:data1?.db_user_platforms[0].actions,
         isDMS:data1?.db_user_platforms[1].actions,
         isSALES:data1?.db_user_platforms[2].actions,
-        isCHANNEL:data1?.db_user_platforms[3].actions
+        isCHANNEL:data1?.db_user_platforms[3].actions,
+        isMEDIA:data1?.db_user_platforms[4].actions
       });
 
       setoldFiles({
@@ -214,7 +208,7 @@ useEffect(()=>{
   const addUserHandler = async () => {
     
     if (!hasCookie("token")) return;
-    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL){
+    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL && !userInfo?.isMEDIA){
      return toast.error("No App Permission Provided")
     }
     let data={...userInfo}
@@ -223,6 +217,7 @@ useEffect(()=>{
         isCRM:false,
         isSALES:false,
         isDMS:false,
+        isMEDIA:false
       }
     }
     if(userInfo?.role_id>3){
@@ -294,7 +289,7 @@ useEffect(()=>{
     if (!hasCookie("token")) return;
     
     let data={...userInfo}
-    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL){
+    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL && !userInfo?.isMEDIA){
       return toast.error("No App Permission Provided")
      }
     if(userInfo?.role_id=="1" || userInfo?.role_id=="2" || userInfo?.role_id=="3"){
@@ -302,6 +297,7 @@ useEffect(()=>{
         isCRM:false,
         isSALES:false,
         isDMS:false,
+        isMEDIA:false
       }
     }
     if(userInfo?.role_id>3){
@@ -854,6 +850,28 @@ useEffect(()=>{
                                       />
                                       <label className="form-check-label" htmlFor="option3">
                                         SALES
+                                      </label>
+                                    </div>
+                                  )}
+                                  {p === "media" && (
+                                    <div className="form-check" key="media">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        value="option4"
+                                        id="option4"
+                                        checked={userInfo?.isMEDIA || false}
+                                        onChange={(e) => {
+                                          if (userInfo.isMEDIA) {
+                                            setUserinfo({ ...userInfo, isMEDIA: e.target.checked });
+                                          } else {
+                                            checkLicense(e, "media", "isMEDIA");
+                                          }
+                                          setErrorData({ ...errorData, isMEDIA: "" });
+                                        }}
+                                      />
+                                      <label className="form-check-label" htmlFor="option4">
+                                        MEDIA
                                       </label>
                                     </div>
                                   )}
@@ -1922,6 +1940,7 @@ useEffect(()=>{
                 </div>
               </div>
             ) : null}
+
             <div className="text-end">
               <div className="submit_btn">
            {viewMode ? null : (

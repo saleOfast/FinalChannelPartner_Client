@@ -234,14 +234,16 @@ const [value, setValue] = useState(getCurrentWeekDates());
                   })
                 }}
                 style={{
-                  background:value?.length === 0 && tableMeta?.rowData[7] == "Eligible for brokerage bill" ? clientBtnColor :"#9C9AA5",
+                  // background:value?.length === 0 && tableMeta?.rowData[7] == "Eligible for brokerage bill" ? clientBtnColor :"#9C9AA5",
+                  background:tableMeta?.rowData[7] == "Eligible for brokerage bill" || tableMeta?.rowData[7] == "Payment Rejected" ? clientBtnColor :"#9C9AA5",
                   color: "white",
                   padding: "6px",
                   borderRadius: "20px",
                   border: "white",
                   cursor: "pointer",
                 }}
-                disabled={value?.length == 0 && tableMeta?.rowData[7] == "Eligible for brokerage bill" ? false:true }
+                // disabled={value?.length == 0 && tableMeta?.rowData[7] == "Eligible for brokerage bill" ? false:true }
+                disabled={ tableMeta?.rowData[7] == "Eligible for brokerage bill" || tableMeta?.rowData[7] == "Payment Rejected" ? false:true }
                 className="pe-3 ps-3 "
               >
                 + Create
@@ -307,7 +309,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
     }
    
     if (!isValidPdfFile(brokerageBill.file)) {
-      return toast.error("Please upload Bill in PDF", { autoClose: 1000 }); // Adjust duration here
+      return toast.error("Please upload Bill in PDF", { autoClose: 1000 }); 
     }
    
       if (!hasCookie("token")) return;
@@ -351,59 +353,66 @@ const [value, setValue] = useState(getCurrentWeekDates());
           toast.error("Something went wrong!");
         }
       }
-  };
+  }
 
-  // const updateBrokerageBill =  async() => {
-  //   if(brokerageBill.file==null){
-  //     return toast.error("Pls Upload Bill")
-  //   }
+  const updateBrokerageBill =  async() => {
+    if(brokerageBill.file==null){
+      return toast.error("Pls Upload Bill")
+    }
    
-  //   if (!isValidPdfFile(brokerageBill.file)) {
-  //     return toast.error("Please upload Bill in PDF", { autoClose: 1000 }); // Adjust duration here
-  //   }
+    if (!isValidPdfFile(brokerageBill.file)) {
+      return toast.error("Please upload Bill in PDF", { autoClose: 1000 }); 
+    }
    
-  //     if (!hasCookie("token")) return;
-  //     const token = getCookie("token");
-  //     const db_name = getCookie("db_name");
-  //     const header = {
-  //       headers: {
-  //         Accept: "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //         db: db_name,
-  //         m_id: 79,
-  //       },
-  //     };
+      if (!hasCookie("token")) return;
+      const token = getCookie("token");
+      const db_name = getCookie("db_name");
+      const header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          db: db_name,
+          m_id: 79,
+        },
+      };
 
-  //     const formData=new FormData();
-  //     for (const [key, value] of Object.entries(brokerageBill)) {
-  //       formData.append(key, value);
-  //     }
-  //     try {
-  //       dispatch(startButtonLoading())
-  //       const response = await axios.post(`${Baseurl}/db/channel/brokerage`,formData, header);
-  //       if (response.status === 200 || response.status === 201) {
-  //         toast.success(response.data.message);
-  //         dispatch(stopButtonLoading())
-  //         setBrokerageBill("")
-  //         setShowModal(false)
-  //         getDataList()
-  //       }
-  //     } catch (error) {
-  //       console.log(error)
-  //       if (error?.response?.data?.status === 422) {
-  //         dispatch(stopButtonLoading())
-  //             toast.error(error?.response?.data?.message)
+      let newBrokerageBill={...brokerageBill}
+      newBrokerageBill={
+        ...newBrokerageBill,
+        brokerage_id:dataList?.find((item)=>item?.booking_id==brokerageBill?.booking_id)?.BrokerageBookingList[0]?.brokerage_id,
+        status:dataList?.find((item)=>item?.booking_id==brokerageBill?.booking_id)?.status=="Payment Rejected" && "Bill sent"
+      }
+
+      const formData=new FormData();
+      for (const [key, value] of Object.entries(newBrokerageBill)) {
+        formData.append(key, value);
+      }
+      try {
+        dispatch(startButtonLoading())
+        const response = await axios.put(`${Baseurl}/db/channel/brokerage`,formData, header);
+        if (response.status === 200 || response.status === 201) {
+          toast.success(response.data.message);
+          dispatch(stopButtonLoading())
+          setBrokerageBill("")
+          setShowModal(false)
+          getDataList()
+        }
+      } catch (error) {
+        console.log(error)
+        if (error?.response?.data?.status === 422) {
+          dispatch(stopButtonLoading())
+              toast.error(error?.response?.data?.message)
               
-  //       }
-  //       if (error?.response?.data?.message) {
-  //         dispatch(stopButtonLoading())
-  //         toast.error(error.response.data.message);
-  //       } else {
-  //         dispatch(stopButtonLoading())
-  //         toast.error("Something went wrong!");
-  //       }
-  //     }
-  // };
+        }
+        if (error?.response?.data?.message) {
+          dispatch(stopButtonLoading())
+          toast.error(error.response.data.message);
+        } else {
+          dispatch(stopButtonLoading())
+          toast.error("Something went wrong!");
+        }
+      }
+  }
 
   const options = {
     selectableRows: 'none',
@@ -472,7 +481,8 @@ const [value, setValue] = useState(getCurrentWeekDates());
                         <div className="pt-3">
                           <form id="survey-form" onSubmit={(e)=>{
                             e.preventDefault();
-                            createBrokerageBill()
+                            dataList?.find((item)=>item?.booking_id==brokerageBill?.booking_id)?.status=="Eligible for brokerage bill" && createBrokerageBill()
+                            dataList?.find((item)=>item?.booking_id==brokerageBill?.booking_id)?.status=="Payment Rejected" && updateBrokerageBill()
                           }}>
                             <div className="d-lg-flex justify-content-lg-around">
                               <div className="d-flex flex-column gap-3 gap-md-4 gap-lg-5 Leads-form-details">

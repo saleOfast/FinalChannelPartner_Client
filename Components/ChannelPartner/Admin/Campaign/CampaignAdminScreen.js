@@ -126,41 +126,71 @@ const CampaignAdminScreen = () => {
     getDataList();
   }, []);
 
+  const handleFileChange = (e, field, fieldPreview) => {
+    const file = e.target.files[0];
+    const allowedTypes = field === "template" ? ['text/html', 'text/htm'] : ['image/jpg', 'image/jpeg', 'image/png'];
   
-
-  const handleFileChange = (e,field,fieldPreview) => {
-    if (e.target.files[0]) {
+    if (file && allowedTypes.includes(file.type)) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        if(fieldPreview==="template_name"){
+        if (fieldPreview === "template_name") {
           setProjectData({
             ...projectData,
-            [field]: e.target.files[0],
-            [fieldPreview]: e.target.files[0].name,
+            [field]: file,
+            [fieldPreview]: file.name,
           });
-        }
-        else{
+        } else {
           setProjectData({
             ...projectData,
-            [field]: e.target.files[0],
-            [fieldPreview]: URL.createObjectURL(e.target.files[0]),
+            [field]: file,
+            [fieldPreview]: URL.createObjectURL(file),
           });
         }
-        
       };
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(file);
+    } else {
+      // toast.warning(`Invalid file type. Please upload ${allowedTypes.join(', ')}.`);
+      const allowedExtensions = field === "template" ? ".html, .htm" : ".jpg, .jpeg, .png";
+      toast.warning(`Invalid file type. Please upload ${allowedExtensions}.`,{autoClose:1500});
     }
+  
+    // Reset the input value to ensure the change event is fired even if the same file is selected
+    e.target.value = "";
   };
+  
+
+  // const handleFileChange = (e,field,fieldPreview) => {
+  //   if (e.target.files[0]) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       if(fieldPreview==="template_name"){
+  //         setProjectData({
+  //           ...projectData,
+  //           [field]: e.target.files[0],
+  //           [fieldPreview]: e.target.files[0].name,
+  //         });
+  //       }
+  //       else{
+  //         setProjectData({
+  //           ...projectData,
+  //           [field]: e.target.files[0],
+  //           [fieldPreview]: URL.createObjectURL(e.target.files[0]),
+  //         });
+  //       }
+        
+  //     };
+  //     reader.readAsDataURL(e.target.files[0]);
+  //   }
+  // };
   
   const createProject=  async() => {
     if(projectData?.contact_no?.toString().length!==10){
       return toast.warning("contact no should be of 10 digit")
      }
-     if(projectData?.project=="" || projectData?.property_size=="" || projectData?.location=="" || projectData?.unit_area=="" || projectData?.contact_no=="" || projectData?.price=="" || projectData?.file=="" || projectData?.logo=="" || projectData?.template_name==""){
+     if(projectData?.project=="" || projectData?.property_size=="" || projectData?.location=="" || projectData?.unit_area=="" || projectData?.contact_no=="" || projectData?.price==""){
       return toast.warning("Pls Fill Mandatory Fields")
      }
-   
-    
+     
       if (!hasCookie("token")) return;
       const token = getCookie("token");
       const db_name = getCookie("db_name");
@@ -208,7 +238,7 @@ const CampaignAdminScreen = () => {
     if(projectData?.contact_no?.toString().length!==10){
       return toast.warning("contact no should be of 10 digit")
      }
-     if(projectData?.project=="" || projectData?.property_size=="" || projectData?.location=="" || projectData?.unit_area=="" || projectData?.contact_no=="" || projectData?.price=="" || projectData?.file=="" || projectData?.logo=="" || projectData?.template_name==""){
+     if(projectData?.project=="" || projectData?.property_size=="" || projectData?.location=="" || projectData?.unit_area=="" || projectData?.contact_no=="" || projectData?.price=="" ){
       return toast.warning("Pls Fill Mandatory Fields")
      }
     if (!hasCookie("token")) return;
@@ -496,14 +526,12 @@ const CampaignAdminScreen = () => {
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50  d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Cover*
+                    Property Cover
                   </label>
                   <input
                     type="file"
-                    accept="image/*"
-                    onChange={(e)=>{
-                      handleFileChange(e,"file","file_preview")
-                    }}
+                    accept=".jpeg, .jpg, .png"
+                    onChange={(e) => handleFileChange(e, "file", "file_preview")}
                     id="fileInput"
                     style={{ display: "none" }}
                   />
@@ -528,14 +556,12 @@ const CampaignAdminScreen = () => {
                 </div>
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Logo*
+                    Property Logo
                   </label>
                   <input
                     type="file"
-                    accept="image/*"
-                    onChange={(e)=>{
-                      handleFileChange(e,"logo","logo_preview")
-                    }}
+                    accept=".jpeg, .jpg, .png"
+                    onChange={(e) => handleFileChange(e, "logo", "logo_preview")}
                     id="logoInput"
                     style={{ display: "none" }}
                   />
@@ -568,7 +594,7 @@ const CampaignAdminScreen = () => {
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50  d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Template File(HTML)*
+                    Template File(HTML)
                   </label>
                   <input
                     type="file"

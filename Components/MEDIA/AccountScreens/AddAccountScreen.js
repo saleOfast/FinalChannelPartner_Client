@@ -56,7 +56,7 @@ const AddAccountScreen = () => {
     parent_id: "0",
     website: "",
     contact_no: "",
-    phone_no: "",
+    phone_no: null,
     contact_no_fill: "",
     mobile_no: "",
     ind_id: null,
@@ -78,7 +78,7 @@ const AddAccountScreen = () => {
     createdAt: "",
     phone_no_contact:"",
     updatedAt: "",
-    star_rating: "",
+    star_rating: null,
     contact_person: "",
     bank_name: "",
     ifsc_code: "",
@@ -95,9 +95,9 @@ const AddAccountScreen = () => {
     service_tax_number: "",
     bank_ac_no: "",
     contact_email: "",
-    debit_note: "",
-    credit_note: "",
-    volume_deal_agreement: "",
+    debit_note: null,
+    credit_note: null,
+    volume_deal_agreement: null,
     email_id: "",
     db_acc_fields: [],
   });
@@ -179,7 +179,7 @@ const AddAccountScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 20,
+          m_id: 312,
         },
       };
 
@@ -235,7 +235,7 @@ const AddAccountScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 22,
+          m_id: 314,
         },
       };
       userInfo.platform_id =5
@@ -943,25 +943,28 @@ const AddAccountScreen = () => {
                     >
                       <label htmlFor="contact_no">Mobile No *</label>
                       <input
-                        type="number"
+                        type="text"
                         name="contact_no"
                         placeholder="Enter Contact No."
                         id="contact_no"
                         disabled={viewMode}
                         className={
-                          errorData?.contact_no
-                            ? "form-control is-invalid"
-                            : "form-control"
+                          errorData?.contact_no ? "form-control is-invalid" : "form-control"
                         }
                         onChange={(e) => {
-                          setUserInfo({
-                            ...userInfo,
-                            contact_no: e.target.value,
-                          });
-                          setErrorData({ ...errorData, contact_no: "" });
+                          const value = e.target.value;
+                          const isValid = /^\d{0,10}$/.test(value); // Allows only up to 10 digits
+                          if (isValid) {
+                            setUserInfo({
+                              ...userInfo,
+                              contact_no: value,
+                            });
+                            setErrorData({ ...errorData, contact_no: "" });
+                          }
                         }}
                         value={userInfo.contact_no ? userInfo.contact_no : ""}
                       />
+
                       <span className="errorText">
                         {" "}
                         {errorData?.contact_no ? errorData.contact_no : ""}
@@ -988,13 +991,17 @@ const AddAccountScreen = () => {
                             : "form-control"
                         }
                         onChange={(e) => {
-                          setUserInfo({
-                            ...userInfo,
-                            phone_no: e.target.value,
-                          });
-                          setErrorData({ ...errorData, phone_no: "" });
+                          const value = e.target.value;
+                          const isValid = /^\d{0,10}$/.test(value); // Allows only up to 10 digits
+                          if (isValid) {
+                            setUserInfo({
+                              ...userInfo,  
+                              phone_no: value,
+                            });
+                            setErrorData({ ...errorData, phone_no: "" });
+                          }
                         }}
-                        value={userInfo.phone_no ? userInfo.phone_no : ""}
+                        value={userInfo.phone_no ? userInfo.phone_no : null}
                       />
                       <span className="errorText">
                         {" "}
@@ -1062,18 +1069,23 @@ const AddAccountScreen = () => {
                     <div className="input_box">
                       <label htmlFor="StarRating">Star Rating</label>
                       <input
-                        type="text"
+                        type="number"
                         name="StarRating"
                         id="StarRating"
                         disabled={viewMode}
                         placeholder="Enter Star Rating"
                         className="form-control"
-                        onChange={(e) =>
-                          setUserInfo({
-                            ...userInfo,
-                            star_rating: e.target.value,
-                          })
-                        }
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const isValid = /^\d{0,1}$/.test(value); // Allows only up to 10 digits
+                          if (isValid) {
+                            setUserInfo({
+                              ...userInfo,
+                              star_rating: value,
+                            });
+                            setErrorData({ ...errorData, star_rating: "" });
+                          }
+                        }}
                         value={userInfo.star_rating ? userInfo.star_rating : ""}
                       />
                     </div>
@@ -1448,12 +1460,16 @@ const AddAccountScreen = () => {
                             : "form-control"
                         }
                         onChange={(e) => {
-                          setUserInfo({
-                            ...userInfo,
-                            bill_pincode: e.target.value,
-                          });
-                          setErrorData({ ...errorData, bill_pincode: "" });
-                        }}
+                          const value = e.target.value;
+                          const isValid = /^\d{0,6}$/.test(value); // Allows only up to 10 digits
+                          if (isValid) {
+                            setUserInfo({
+                              ...userInfo,
+                              bill_pincode: value,
+                            });
+                            setErrorData({ ...errorData, bill_pincode: "" });
+                          }
+                        }}                        
                         value={
                           userInfo.bill_pincode ? userInfo.bill_pincode : ""
                         }
@@ -2041,11 +2057,15 @@ const AddAccountScreen = () => {
                               : "form-control"
                           }
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              mobile_finance: e.target.value,
-                            });
-                            setErrorData({ ...errorData, mobile_finance: "" });
+                            const value = e.target.value;
+                            const isValid = /^\d{0,10}$/.test(value); // Allows only up to 10 digits
+                            if (isValid) {
+                              setUserInfo({
+                                ...userInfo,
+                                mobile_finance: value,
+                              });
+                              setErrorData({ ...errorData, mobile_finance: "" });
+                            }
                           }}
                           value={
                             userInfo.mobile_finance
@@ -2672,11 +2692,15 @@ const AddAccountScreen = () => {
                             : "form-control"
                         }
                         onChange={(e) => {
-                          setUserInfo({
-                            ...userInfo,
-                            ship_pincode: e.target.value,
-                          });
-                          setErrorData({ ...errorData, ship_pincode: "" });
+                          const value = e.target.value;
+                          const isValid = /^\d{0,6}$/.test(value); // Allows only up to 10 digits
+                          if (isValid) {
+                            setUserInfo({
+                              ...userInfo,
+                              ship_pincode: value,
+                            });
+                            setErrorData({ ...errorData, ship_pincode: "" });
+                          }
                         }}
                         value={
                           userInfo.ship_pincode ? userInfo.ship_pincode : ""

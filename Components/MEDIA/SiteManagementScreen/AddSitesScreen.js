@@ -44,8 +44,8 @@ const AddSitesScreen = () => {
     remarks:"",
     lease_from:"",
     lease_to:"",
-    lease_period:"",
-    lease_cost:"",
+    lease_period:null,
+    lease_cost:null,
     width:"",
     height:"",
     quantity:"",
@@ -270,8 +270,10 @@ const AddSitesScreen = () => {
   };
 
   const handleImageChange = (e,image,preview) => {
-    
-    if (e.target.files[0]) {
+    const file = e.target.files[0];
+    const allowedTypes=['image/jpg', 'image/jpeg', 'image/png'];
+
+    if (file && allowedTypes.includes(file.type)) {
       
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -284,6 +286,10 @@ const AddSitesScreen = () => {
       };
       console.log(userInfo)
       reader.readAsDataURL(e.target.files[0]);
+    }
+    else{
+      toast.warning(`Invalid file type. Please upload .jpg, .jpeg, .png`,{autoClose:1500});
+      e.target.value = "";
     }
   };
 
@@ -314,7 +320,7 @@ const AddSitesScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 13,
+          m_id: 377,
         },
       };
 
@@ -365,7 +371,7 @@ const AddSitesScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 15,
+          m_id: 379,
         },
       };
 
@@ -1742,7 +1748,7 @@ const AddSitesScreen = () => {
                       </div>
                     </div>
                   </div>
-                  {/* <div className="add_screen_head">
+                  <div className="add_screen_head">
                     <span className="text_bold">Photos</span>
                   </div>
                   <div className="add_user_form">
@@ -1756,7 +1762,7 @@ const AddSitesScreen = () => {
                             id="close_shot"
                             disabled={viewMode}
                             className="form-control"
-                            accept="image/*"
+                            accept=".jpeg, .jpg, .png"
                             onChange={(e) => handleImageChange(e,"p_close_shot","p_close_shot_preview")}
                           />
                           {userInfo?.p_close_shot_preview!=="" && (
@@ -1780,7 +1786,7 @@ const AddSitesScreen = () => {
                             name="long_shot"
                             id="long_shot"
                             disabled={viewMode}
-                            accept="image/*"
+                            accept=".jpeg, .jpg, .png"
                             className="form-control"
                             onChange={(e) => handleImageChange(e,"p_long_shot","p_long_shot_preview")}
                           />
@@ -1805,7 +1811,7 @@ const AddSitesScreen = () => {
                             name="night_shot"
                             id="night_shot"
                             disabled={viewMode}
-                            accept="image/*"
+                            accept=".jpeg, .jpg, .png"
                             className="form-control"
                             onChange={(e) => handleImageChange(e,"p_night_shot","p_night_shot_preview")}
                           />
@@ -1822,7 +1828,7 @@ const AddSitesScreen = () => {
                         </div>
                       </div>
                     </div>
-                  </div> */}
+                  </div>
                   {/* code for add field */}
                   <div className="add_user_form">
                     

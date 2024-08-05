@@ -47,7 +47,7 @@ const ManageLeadScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 4,
+          m_id: 303,
         },
       };
       
@@ -451,7 +451,7 @@ const ManageLeadScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 6,
+          m_id: 305,
         },
       };
 
@@ -523,7 +523,7 @@ const ManageLeadScreen = () => {
             Accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id: 7
+            m_id: 306
           },
           responseType: "blob",
         };

@@ -931,17 +931,19 @@ useEffect(()=>{
                         name="name"
                         id="firstName"
                         className={
-                          errorData?.user
-                            ? "form-control is-invalid"
-                            : "form-control"
+                          errorData?.user ? "form-control is-invalid" : "form-control"
                         }
                         onChange={(e) => {
-                          setUserinfo({ ...userInfo, user: e.target.value });
-                          setErrorData({ ...errorData, user: "" });
+                          const value = e.target.value;
+                          if (/^[a-zA-Z]*$/.test(value)) {
+                            setUserinfo({ ...userInfo, user: value });
+                            setErrorData({ ...errorData, user: "" });
+                          }
                         }}
                         disabled={viewMode}
                         value={userInfo.user ? userInfo.user : ""}
                       />
+
                       <span className="errorText">
                         {" "}
                         {errorData?.user ? errorData.user : ""}
@@ -966,8 +968,12 @@ useEffect(()=>{
                             : "form-control"  
                         }
                         onChange={(e) => {
-                          setUserinfo({ ...userInfo, user_l_name: e.target.value });
+                          const value=e.target.value;
+                          if (/^[a-zA-Z]*$/.test(value)) {
+                            setUserinfo({ ...userInfo, user_l_name: value });
                           setErrorData({ ...errorData, user_l_name: "" });
+                          }
+                          
                         }}
                         disabled={viewMode}
                         value={userInfo.user_l_name ? userInfo.user_l_name : ""}
@@ -988,27 +994,28 @@ useEffect(()=>{
                     >
                       <label htmlFor="contact_no">Contact No </label>
                       <input
-                        type="number"
+                        type="text" // Use text to enforce custom validation
                         placeholder="Enter Contact No."
                         name="contact-no"
                         id="contact_no"
                         className={
-                          errorData?.contact_number
-                            ? "form-control is-invalid"
-                            : "form-control"
+                          errorData?.contact_number ? "form-control is-invalid" : "form-control"
                         }
                         disabled={viewMode}
                         onChange={(e) => {
-                          setUserinfo({
-                            ...userInfo,
-                            contact_number: e.target.value,
-                          });
-                          setErrorData({ ...errorData, contact_number: "" });
+                          const value = e.target.value;
+                          // Allow only numbers and limit to 10 digits
+                          if (/^\d{0,10}$/.test(value)) {
+                            setUserinfo({
+                              ...userInfo,
+                              contact_number: value,
+                            });
+                            setErrorData({ ...errorData, contact_number: "" });
+                          }
                         }}
-                        value={
-                          userInfo.contact_number ? userInfo.contact_number : ""
-                        }
+                        value={userInfo.contact_number ? userInfo.contact_number : ""}
                       />
+
                       <span className="errorText">
                         {" "}
                         {errorData?.contact_number

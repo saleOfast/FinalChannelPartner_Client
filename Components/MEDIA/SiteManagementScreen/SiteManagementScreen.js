@@ -33,8 +33,7 @@ const SiteManagementScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 14,
-
+          m_id: 378,
         },
       };
 
@@ -69,7 +68,7 @@ const SiteManagementScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 16,
+          m_id: 380,
         },
       };
 

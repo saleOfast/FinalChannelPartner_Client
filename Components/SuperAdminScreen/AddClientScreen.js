@@ -354,6 +354,7 @@ const AddClientScreen = () => {
     };
 
     async function updateHandler() {
+      
       if(userInfo?.host_name==""){
         setErrorData({ ...errorData, host_name: 'Please enter Salesforce Host URL' })
         return toast.error('Please fill the Mandatory fields')
@@ -385,7 +386,8 @@ const AddClientScreen = () => {
         if(userInfo?.no_of_media_license==0){
            setErrorData({ ...errorData, no_of_media_license: 'Please enter no of licenses ' })
         }
-        if(userInfo?.subscription_start_date_media==null || userInfo?.subscription_end_date_media==null ||userInfo?.no_of_license==0){
+        if(userInfo?.subscription_start_date_media==null || userInfo?.subscription_end_date_media==null ||userInfo?.no_of_media_license
+          ==0){
           return toast.error('Please fill the Mandatory fields')
         }
       }

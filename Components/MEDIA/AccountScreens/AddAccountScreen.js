@@ -5,7 +5,9 @@ import { hasCookie, getCookie } from "cookies-next";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { validPhone, validZip } from "../../../Utils/regex";
+import { validPhone, validZip ,validEmail} from "../../../Utils/regex";
+
+
 import { useSelector } from "react-redux";
 import { fetchData } from "../../../Utils/getReq";
 import Select from "react-select";
@@ -650,6 +652,39 @@ const AddAccountScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id]);
 
+  function useDebounce(value, delay) {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setDebouncedValue(value);
+      }, delay);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }, [value, delay]);
+
+    return debouncedValue;
+  }
+
+  useEffect(() => {
+    if (userInfo.email_id && !validEmail.test(userInfo.email_id)) {
+      setErrorData({ ...errorData, email_id: "invalid Email" });
+    } else {
+      setErrorData({ ...errorData, email_id: "" });
+    }
+  }, [useDebounce(userInfo.email_id, 1000)]);
+
+
+  
+  useEffect(() => {
+    if (userInfo.email_finance && !validEmail.test(userInfo.email_finance)) {
+      setErrorData({ ...errorData, email_finance: "invalid Email" });
+    } else {
+      setErrorData({ ...errorData, email_finance: "" });
+    }
+  }, [useDebounce(userInfo.email_finance, 1000)]);
 
 
   const [stateCode, setStateCode] = useState("");
@@ -663,6 +698,8 @@ const AddAccountScreen = () => {
       setStateCode("");
     }
   }, [userInfo.bill_state, billStates,setStateCode,stateCode]);
+
+
 
   return (
     <div className={`main_Box  ${sideView}`}>
@@ -720,12 +757,29 @@ const AddAccountScreen = () => {
                               ? "form-control is-invalid"
                               : "form-control"
                           }
+                          // onChange={(e) => {
+                          //   setUserInfo({
+                          //     ...userInfo,
+                          //     acc_name: e.target.value,
+                          //   });
+                          //   setErrorData({ ...errorData, acc_name: "" });
+                          // }}
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              acc_name: e.target.value,
-                            });
-                            setErrorData({ ...errorData, acc_name: "" });
+                            const value = e.target.value;
+                            const isValid = /^[a-zA-Z\s]*$/.test(value); 
+                  
+                            if (isValid) {
+                              setUserInfo({
+                                ...userInfo,
+                                acc_name: value,
+                              });
+                              setErrorData({ ...errorData, acc_name: "" });
+                            } else {
+                              setErrorData({
+                                ...errorData,
+                                acc_name: "Name cannot contain numbers",
+                              });
+                            }
                           }}
                           value={userInfo.acc_name ? userInfo.acc_name : ""}
                         />
@@ -928,6 +982,8 @@ const AddAccountScreen = () => {
                         onChange={(e) =>
                           setUserInfo({ ...userInfo, website: e.target.value })
                         }
+
+                      
                         value={userInfo.website ? userInfo.website : ""}
                       />
                     </div>
@@ -951,10 +1007,20 @@ const AddAccountScreen = () => {
                         className={
                           errorData?.contact_no ? "form-control is-invalid" : "form-control"
                         }
+                        // onChange={(e) => {
+                        //   const value = e.target.value;
+                        //   const isValid = /^\d{0,10}$/.test(value); // Allows only up to 10 digits
+                        //   if (isValid) {
+                        //     setUserInfo({
+                        //       ...userInfo,
+                        //       contact_no: value,
+                        //     });
+                        //     setErrorData({ ...errorData, contact_no: "" });
+                        //   }
+                        // }}
                         onChange={(e) => {
-                          const value = e.target.value;
-                          const isValid = /^\d{0,10}$/.test(value); // Allows only up to 10 digits
-                          if (isValid) {
+                          const value = e.target.value.replace(/[^0-9]/g, ''); // Remove non-digit characters
+                          if (value.length <= 10) { // Ensure length does not exceed 10 digits
                             setUserInfo({
                               ...userInfo,
                               contact_no: value,
@@ -1056,12 +1122,36 @@ const AddAccountScreen = () => {
                         id="Employee"
                         disabled={viewMode}
                         placeholder="Enter Employee"
-                        className="form-control"
-                        onChange={(e) =>
-                          setUserInfo({ ...userInfo, emp_name: e.target.value })
+                        // className="form-control"
+                        // onChange={(e) =>
+                        //   setUserInfo({ ...userInfo, emp_name: e.target.value })
+                        // }
+                        className={
+                          errorData?.emp_name ? "form-control is-invalid" : "form-control"
                         }
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Regex to allow only letters and spaces
+                          const isValidEmployee = /^[a-zA-Z\s]*$/.test(value);
+              
+                          if (isValidEmployee || value === "") { // Allow empty value
+                            setUserInfo({
+                              ...userInfo,
+                              emp_name: value,
+                            });
+                            setErrorData({ ...errorData, emp_name: "" });
+                          } else {
+                            setErrorData({
+                              ...errorData,
+                              emp_name: "Name cannot contain numbers",
+                            });
+                          }
+                        }}
                         value={userInfo.emp_name ? userInfo.emp_name : ""}
                       />
+                          <span className="errorText">
+          {errorData?.emp_name || ""}
+        </span>
                     </div>
                   </div>
 
@@ -1074,20 +1164,44 @@ const AddAccountScreen = () => {
                         id="StarRating"
                         disabled={viewMode}
                         placeholder="Enter Star Rating"
-                        className="form-control"
+                        // className="form-control"
+                        // onChange={(e) => {
+                        //   const value = e.target.value;
+                        //   const isValid = /^\d{0,1}$/.test(value); // Allows only up to 10 digits
+                        //   if (isValid) {
+                        //     setUserInfo({
+                        //       ...userInfo,
+                        //       star_rating: value,
+                        //     });
+                        //     setErrorData({ ...errorData, star_rating: "" });
+                        //   }
+                        // }}
+
+                        className={
+                          errorData?.star_rating ? "form-control is-invalid" : "form-control"
+                        }
                         onChange={(e) => {
                           const value = e.target.value;
-                          const isValid = /^\d{0,1}$/.test(value); // Allows only up to 10 digits
+                          const isValid = /^[0-5]?$/.test(value); // Allows only numbers 1 to 5
+              
                           if (isValid) {
                             setUserInfo({
                               ...userInfo,
                               star_rating: value,
                             });
                             setErrorData({ ...errorData, star_rating: "" });
+                          } else {
+                            setErrorData({
+                              ...errorData,
+                              star_rating: "Rating must be between 1 and 5",
+                            });
                           }
                         }}
                         value={userInfo.star_rating ? userInfo.star_rating : ""}
                       />
+                         <span className="errorText">
+          {errorData?.star_rating || ""}
+        </span>
                     </div>
                   </div>
 
@@ -1533,12 +1647,24 @@ const AddAccountScreen = () => {
                               ? "form-control is-invalid"
                               : "form-control"
                           }
+                          // onChange={(e) => {
+                          //   setUserInfo({
+                          //     ...userInfo,
+                          //     bank_name: e.target.value,
+                          //   });
+                          //   setErrorData({ ...errorData, bank_name: "" });
+                          // }}
+
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              bank_name: e.target.value,
-                            });
-                            setErrorData({ ...errorData, bank_name: "" });
+                            const newValue = e.target.value;
+                            // Allow only alphabetic characters and spaces
+                            if (/^[A-Za-z\s]*$/.test(newValue)) {
+                              setUserInfo({
+                                ...userInfo,
+                                bank_name: newValue,
+                              });
+                              setErrorData({ ...errorData, bank_name: "" });
+                            }
                           }}
                           value={userInfo.bank_name ? userInfo.bank_name : ""}
                         />
@@ -1571,12 +1697,30 @@ const AddAccountScreen = () => {
                               ? "form-control is-invalid"
                               : "form-control"
                           }
+                          // onChange={(e) => {
+                          //   setUserInfo({
+                          //     ...userInfo,
+                          //     bank_ac_no: e.target.value,
+                          //   });
+                          //   setErrorData({ ...errorData, bank_ac_no: "" });
+                          // }}
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              bank_ac_no: e.target.value,
-                            });
-                            setErrorData({ ...errorData, bank_ac_no: "" });
+                            const value = e.target.value;
+                            // Regex to allow only numbers
+                            const isValidNumber = /^\d*$/.test(value);
+                            
+                            if (isValidNumber || value === "") {
+                              setUserInfo({
+                                ...userInfo,
+                                bank_ac_no: value,
+                              });
+                              setErrorData({ ...errorData, bank_ac_no: "" });
+                            } else {
+                              setErrorData({
+                                ...errorData,
+                                bank_ac_no: "Invalid account number",
+                              });
+                            }
                           }}
                           value={userInfo.bank_ac_no ? userInfo.bank_ac_no : ""}
                         />
@@ -1685,12 +1829,30 @@ const AddAccountScreen = () => {
                               ? "form-control is-invalid"
                               : "form-control"
                           }
+                          // onChange={(e) => {
+                          //   setUserInfo({
+                          //     ...userInfo,
+                          //     credit_limit: e.target.value,
+                          //   });
+                          //   setErrorData({ ...errorData, credit_limit: "" });
+                          // }}
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              credit_limit: e.target.value,
-                            });
-                            setErrorData({ ...errorData, credit_limit: "" });
+                            const value = e.target.value;
+                            // Validate that the value is a valid number (allow empty value)
+                            const isValidNumber = /^\d*\.?\d*$/.test(value);
+              
+                            if (isValidNumber || value === "") {
+                              setUserInfo({
+                                ...userInfo,
+                                credit_limit: value,
+                              });
+                              setErrorData({ ...errorData, credit_limit: "" });
+                            } else {
+                              setErrorData({
+                                ...errorData,
+                                credit_limit: "Invalid credit limit",
+                              });
+                            }
                           }}
                           value={
                             userInfo.credit_limit ? userInfo.credit_limit : ""
@@ -1962,15 +2124,33 @@ const AddAccountScreen = () => {
                               ? "form-control is-invalid"
                               : "form-control"
                           }
+                          // onChange={(e) => {
+                          //   setUserInfo({
+                          //     ...userInfo,
+                          //     contact_person_finance: e.target.value,
+                          //   });
+                          //   setErrorData({
+                          //     ...errorData,
+                          //     contact_person_finance: "",
+                          //   });
+                          // }}
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              contact_person_finance: e.target.value,
-                            });
-                            setErrorData({
-                              ...errorData,
-                              contact_person_finance: "",
-                            });
+                            const value = e.target.value;
+                            // Regex to allow only letters and spaces
+                            const isValid = /^[a-zA-Z\s]*$/.test(value);
+              
+                            if (isValid || value === "") { // Allow empty value
+                              setUserInfo({
+                                ...userInfo,
+                                contact_person_finance: value,
+                              });
+                              setErrorData({ ...errorData, contact_person_finance: "" });
+                            } else {
+                              setErrorData({
+                                ...errorData,
+                                contact_person_finance: "Contact Person cannot contain numbers",
+                              });
+                            }
                           }}
                           value={
                             userInfo.contact_person_finance
@@ -2009,15 +2189,33 @@ const AddAccountScreen = () => {
                               ? "form-control is-invalid"
                               : "form-control"
                           }
+                          // onChange={(e) => {
+                          //   setUserInfo({
+                          //     ...userInfo,
+                          //     designation_finance: e.target.value,
+                          //   });
+                          //   setErrorData({
+                          //     ...errorData,
+                          //     designation_finance: "",
+                          //   });
+                          // }}
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              designation_finance: e.target.value,
-                            });
-                            setErrorData({
-                              ...errorData,
-                              designation_finance: "",
-                            });
+                            const value = e.target.value;
+                            // Regex to allow only letters and spaces
+                            const isValidText = /^[A-Za-z\s]*$/.test(value);
+              
+                            if (isValidText || value === "") { // Allow empty value
+                              setUserInfo({
+                                ...userInfo,
+                                designation_finance: value,
+                              });
+                              setErrorData({ ...errorData, designation_finance: "" });
+                            } else {
+                              setErrorData({
+                                ...errorData,
+                                designation_finance: "Only letters and spaces are allowed",
+                              });
+                            }
                           }}
                           value={
                             userInfo.designation_finance
@@ -2111,6 +2309,7 @@ const AddAccountScreen = () => {
                             });
                             setErrorData({ ...errorData, email_finance: "" });
                           }}
+                     
                           value={
                             userInfo.email_finance ? userInfo.email_finance : ""
                           }
@@ -2269,15 +2468,36 @@ const AddAccountScreen = () => {
                               ? "form-control is-invalid"
                               : "form-control"
                           }
+                          // onChange={(e) => {
+                          //   setUserInfo({
+                          //     ...userInfo,
+                          //     volume_deal_percentage: e.target.value,
+                          //   });
+                          //   setErrorData({
+                          //     ...errorData,
+                          //     volume_deal_percentage: "",
+                          //   });
+                          // }}
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              volume_deal_percentage: e.target.value,
-                            });
-                            setErrorData({
-                              ...errorData,
-                              volume_deal_percentage: "",
-                            });
+                            const value = e.target.value;
+                            // Regex to allow only numbers, including decimal numbers
+                            const isValidNumber = /^\d*\.?\d*$/.test(value);
+                            
+                            if (isValidNumber || value === "") {
+                              setUserInfo({
+                                ...userInfo,
+                                volume_deal_percentage: value,
+                              });
+                              setErrorData({
+                                ...errorData,
+                                volume_deal_percentage: "",
+                              });
+                            } else {
+                              setErrorData({
+                                ...errorData,
+                                volume_deal_percentage: "Invalid percentage",
+                              });
+                            }
                           }}
                           value={
                             userInfo.volume_deal_percentage

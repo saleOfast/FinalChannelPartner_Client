@@ -59,12 +59,12 @@ const PrintingCostTable = ({ accountsList, openConfirmBox , title, loader }) => 
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
-                            <Link href={`/media/AddContact?id=${value}&vw=mds`}>
+                            <Link href={`/media/AddPrintingCost?id=${value}&vw=mds`}>
                                 <button className="action_btn" title="View">
                                     <ViewIcon />
                                 </button>
                             </Link>
-                            <Link href={`/media/AddContact?id=${value}`}>
+                            <Link href={`/media/AddPrintingCost?id=${value}`}>
                                 <button className="action_btn" title='Edit'>
                                     <EditIcon />
                                 </button>

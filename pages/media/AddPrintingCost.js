@@ -1,21 +1,21 @@
+import AddPrintingCostScreen from '../../Components/MEDIA/PrintingCostManagementScreens/AddPrintingCostScreen'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setCookie } from 'cookies-next'
 import WithUserhoc_MEDIA from '../../HOC/WithUserhoc_MEDIA';
 import { setIsActive } from '../../store/isActiveSidebarSlice'
-import ProdMatMgmtScreen from '../../Components/MEDIA/ProductMaterialManagementScreens/ProdMatMgmtScreen.js';
 
- function ProdMatMgmt() {
+ function AddContact() {
     const dispatch = useDispatch()
     useEffect(() => {
-        setCookie('isActive', 'ProdMatMgmtScreen')
-        dispatch(setIsActive('ProdMatMgmtScreen'))
+        setCookie('isActive', 'PrintingCostMgmt')
+        dispatch(setIsActive('PrintingCostMgmt'))
     }, []);
     return (
         <>
-                    <ProdMatMgmtScreen />
+                    <AddPrintingCostScreen />
         </>
     )
 }
 
-export default WithUserhoc_MEDIA(ProdMatMgmt)
+export default WithUserhoc_MEDIA(AddContact)

@@ -1227,7 +1227,7 @@ const AddAccountScreen = () => {
                           } else {
                             setErrorData({
                               ...errorData,
-                              star_rating: "Rating must be between 1 and 5",
+                              star_rating: "Rating must be between 0 and 5",
                             });
                           }
                         }}

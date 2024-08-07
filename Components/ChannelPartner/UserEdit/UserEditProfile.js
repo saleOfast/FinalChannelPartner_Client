@@ -22,14 +22,29 @@ export default function UserEditProfile({ setEditMode, userData }) {
     const [userImage, setuserImage] = useState('');
     const router=useRouter();
     const dispatch=useDispatch();
+    // const UploadImgFun = (e) => {
+    //     let ImagesArray = Object.entries(e.target.files).map((e) =>
+    //         URL.createObjectURL(e[1])
+    //     );
+    //     userInfo.client_logo = ImagesArray[0]
+    //     setuserImage(e.target.files)
+    //     setImgFile(ImagesArray);
+    // }
     const UploadImgFun = (e) => {
-        let ImagesArray = Object.entries(e.target.files).map((e) =>
-            URL.createObjectURL(e[1])
-        );
-        userInfo.client_logo = ImagesArray[0]
-        setuserImage(e.target.files)
-        setImgFile(ImagesArray);
-    }
+        const files = e.target.files;
+        const acceptedImageTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+
+        if (files.length > 0 && acceptedImageTypes.includes(files[0].type)) {
+            let ImagesArray = Object.entries(files).map((e) =>
+                URL.createObjectURL(e[1])
+            );
+            userInfo.client_logo = ImagesArray[0];
+            setuserImage(files);
+            setImgFile(ImagesArray);
+        } else {
+            toast.error('Please upload a valid image file (PNG, JPG, JPEG)');
+        }
+    };
 
     const checkCurrentImg = () => {
         if (imgFile) {
@@ -70,6 +85,7 @@ export default function UserEditProfile({ setEditMode, userData }) {
                 if (res.status === 200 || res.status === 204) {
                     toast.success('Profile Updated Successfully')
                     dispatch(stopButtonLoading())
+                    router.push("/partner/ChannelProfile/")
                     console.log(userImage);
                     if (userImage) {
                         AddUploadPicture(userInfo.user_id, 'lsUser', userImage[0], userInfo.db_user_profile?.user_image_file)
@@ -178,7 +194,7 @@ export default function UserEditProfile({ setEditMode, userData }) {
                                                     </div></>}</> : null}
 
                                         </label>
-                                        <input type="file" id='uploadImg' accept="image/png, image/gif, image/jpeg" onChange={UploadImgFun} />
+                                        <input type="file" id='uploadImg' accept="image/png, image/jpg, image/jpeg" onChange={UploadImgFun} />
                                     </div>
                                     
                                     
@@ -211,14 +227,24 @@ export default function UserEditProfile({ setEditMode, userData }) {
                                                 <input
                                                     type="number"
                                                     name="contact"
-                                                    placeholder="Enter Contact No. "
+                                                    placeholder="Enter Contact No."
                                                     id="Contact"
                                                     className={errorData?.contact_number ? 'form-control is-invalid' : 'form-control'}
                                                     onChange={(e) => {
-                                                        setUserInfo({ ...userInfo, contact_number: e.target.value })
-                                                        setErrorData({ ...errorData, contact_number: '' })
+                                                        const value = e.target.value;
+                                                        const regex = /^\d{0,10}$/;
+                                                        if (regex.test(value)) {
+                                                            setUserInfo({ ...userInfo, contact_number: value });
+                                                            setErrorData({ ...errorData, contact_number: '' });
+                                                        } else {
+                                                            setErrorData({ ...errorData, contact_number: 'Contact number must be 10 digits' });
+                                                        }
                                                     }}
-                                                    value={userInfo?.contact_number ? userInfo.contact_number : ""} />
+                                                    value={userInfo?.contact_number ? userInfo.contact_number : ""} 
+                                                    maxLength="10" // Limits the input length to 10 digits
+                                                />
+
+                                                
                                                 <span className="errorText"> {errorData?.contact_number ? errorData.contact_number : ''}</span>
                                             </div>
                                         </div>

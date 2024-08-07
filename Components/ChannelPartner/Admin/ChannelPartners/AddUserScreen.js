@@ -42,7 +42,7 @@ const AddUserScreen = () => {
   const [updtUId, setUpdtUId] = useState("");
   const [userInfo, setUserinfo] = useState({
     role_id:"",
-    cpt_id:"",
+    cpt_id:null,
     user:"",
     user_l_name:"",
     email:""
@@ -199,7 +199,7 @@ const AddUserScreen = () => {
   const addUserHandler = async () => {
     
     if (!hasCookie("token")) return;
-    if(userInfo?.role_id=="1" && userInfo?.cpt_id===""){
+    if(userInfo?.role_id=="1" && userInfo?.cpt_id===null){
       setErrorData({...errorData,cpt_id:"Please Enter a Valid Partner Type"})
       return
     }
@@ -261,7 +261,16 @@ const AddUserScreen = () => {
 
   const updateUserhandler = async () => {
     if (!hasCookie("token")) return;
+    
+    if (userInfo?.user === "") {
+      toast.error("Please Enter the Name");
+      return;
+    }
 
+    if(userInfo?.role_id=="1" && userInfo?.cpt_id===null){
+      setErrorData({...errorData,cpt_id:"Please Enter a Valid Partner Type"})
+      return
+    }
     setisLoading(true);
     const token = getCookie("token");
     const db_name = getCookie("db_name");
@@ -274,10 +283,7 @@ const AddUserScreen = () => {
       },
     };
 
-    if (userInfo?.user === "") {
-      toast.error("Please Enter the Name");
-      return;
-    }
+    
 
     try {
       let updatedInfo={...userInfo,isAssigned:true}
@@ -366,14 +372,32 @@ const AddUserScreen = () => {
     }
   };
 
+  // const UploadImgFun = (e) => {
+  //   const ImagesArray = Array.from(e.target.files).map((file) =>
+  //     URL.createObjectURL(file)
+  //   );
+  //   userInfo.client_logo = ImagesArray[0];
+  //   setuserImage(e.target.files);
+  //   setImgFile(ImagesArray);
+  // };
+
   const UploadImgFun = (e) => {
-    const ImagesArray = Array.from(e.target.files).map((file) =>
-      URL.createObjectURL(file)
-    );
-    userInfo.client_logo = ImagesArray[0];
-    setuserImage(e.target.files);
-    setImgFile(ImagesArray);
-  };
+    const files = e.target.files;
+    const acceptedImageTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+
+    if (files.length > 0 && acceptedImageTypes.includes(files[0].type)) {
+        const ImagesArray = Array.from(files).map((file) =>
+            URL.createObjectURL(file)
+        );
+        userInfo.client_logo = ImagesArray[0];
+        setuserImage(files);
+        setImgFile(ImagesArray);
+    } else {
+        toast.error('Please upload a valid image file (PNG, JPG, JPEG)');
+    }
+};
+
+
 
   const checkCurrentImg = () => {
     if (imgFile) {
@@ -913,7 +937,7 @@ const AddUserScreen = () => {
                   <input
                     type="file"
                     id="uploadImg"
-                    accept="image/png, image/gif, image/jpeg"
+                    accept="image/png, image/jpg, image/jpeg"
                     onChange={UploadImgFun}
                     disabled={viewMode}
                   />

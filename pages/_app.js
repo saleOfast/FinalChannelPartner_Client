@@ -14,7 +14,7 @@ import Tabs from '../Components/DMS/Tabs/Tabs';
 import { hasCookie } from 'cookies-next';
 import { Fragment } from 'react';
 import dynamic from "next/dynamic";
-
+import Kloudmart from '../Components/DMS/LandingPageDMS/Kloudmart';
 
 
 function App({ Component, pageProps }) {
@@ -35,6 +35,7 @@ function App({ Component, pageProps }) {
                   draggable
                   pauseOnHover
                   theme="light" />
+      {hasCookie("dms") ? <Kloudmart/>  : <Fragment></Fragment> }  
         <Layout Component={Component} pageProps={pageProps}  />
       {hasCookie("dms") ? <Tabs/>  : <Fragment></Fragment> }  
         </SSRProvider>

@@ -12,7 +12,7 @@ const LandingPageDMS = () => {
   return (
    <div className='bg-white' style={{height:"92vh", overflow:"auto"}} >
   {/* header */}
-  <Kloudmart/>
+  {/* <Kloudmart/> */}
   {/* Hot Deals and Offers-start */}
  <HotDealsCarousel/>
   {/* Hot Deals and Offers-end */}

@@ -4,10 +4,13 @@ import { toast } from "react-toastify";
 import { Baseurl, filesUrl } from "../../../Utils/Constants";
 import axios from "axios";
 import { useRouter } from "next/router";
+import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 
-const ByCategory = () => {
+
+const ChildCategoryScreen = () => {
   const [categories, setCategories] = useState([]);
   const router=useRouter();
+  const {p_cat_id}=router.query;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,21 +49,22 @@ const ByCategory = () => {
 
   return (
     <>
-      <section className="shop_by_category px-1">
+      <section className="shop_by_category px-1 bg-white w-100">
       <div className="container">
     <div className="shop_by">
+    <div onClick={() => router.back()}>
+                  <KeyboardBackspaceOutlinedIcon />
+                </div>
       <div className="text-wrapper-12">Shop By Category</div>
       {/* <div className="text-wrapper-13">See All</div> */}
     </div>
     <div className="row pt-3">
-      {categories?.filter((item)=>(item?.parent_id==0))?.map((_v, _x) => (
+      {categories?.filter((item)=>(item?.parent_id==p_cat_id))?.map((_v, _x) => (
         <div key={_x} className="col-3 mt-2">
           <div 
             className="product d-flex flex-column gap-2"
             onClick={()=>{
-              
-              categories?.filter((item)=>(item?.parent_id==_v?.p_cat_id))?.length !==0 ?  router.push(`/dms/ChildCategories?p_cat_id=${_v.p_cat_id}`):router.push(`/dms/ShopByBrand?category_id=${_v.p_cat_id}`)
-              
+              router.push(`/dms/ShopByBrand?category_id=${_v.p_cat_id}`)
             }}
             style={{
               display: 'flex',
@@ -101,4 +105,4 @@ const ByCategory = () => {
   );
 };
 
-export default ByCategory;
+export default ChildCategoryScreen;

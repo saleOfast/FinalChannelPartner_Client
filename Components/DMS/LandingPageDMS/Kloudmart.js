@@ -12,7 +12,7 @@ const Kloudmart = () => {
   const clientLogo=hasCookie("clientLogo") ? JSON.parse( getCookie("clientLogo")) : null;
 
   return (  
-    <section className="kloudmart">
+    <section className="kloudmart bg-white">
     <div className="container">
       <div className="d-flex align-items-center gap-2">
         <button className="toggle_btn"><i className="fa-solid fa-bars" /></button>

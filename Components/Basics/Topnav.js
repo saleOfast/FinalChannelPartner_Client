@@ -149,7 +149,7 @@ const Topnav = ({  topnavPermission }) => {
       try {
         let baseUrl = window.location.origin;
         if(baseUrl==="http://localhost:3000"){
-          baseUrl="http://crm.cybermatrixsolutions.com"
+          baseUrl = "https://nkrealtors.saleofast.com"
         }
         const {data}=await axios.post(Baseurl+"/db/admin/url",{
           client_url:`${baseUrl}`,
@@ -199,7 +199,7 @@ const Topnav = ({  topnavPermission }) => {
        >
          <div className="top_nav" style={{height:"10vh"}}>
            {/* <div className="brand_icon"> */}
-           <div className="">
+           <div className="" style={{height:"10vh"}}>
              {!hasCookie("Admin") &&
              
              <img
@@ -208,6 +208,7 @@ const Topnav = ({  topnavPermission }) => {
                  &&( `${filesUrl}` +
                    `/logo/images${clientData?.logo}`)
              }
+             style={{height:"100%"}}
              className=""
              alt
            />
@@ -623,7 +624,9 @@ const Topnav = ({  topnavPermission }) => {
           >
             <div className="top_nav" style={{height:"10vh"}}>
               {/* <div className="brand_icon"> */}
-              <div className="">
+              <div className=""
+               style={{height:"10vh"}}
+                 >
 
                 <img
                 src={
@@ -631,6 +634,7 @@ const Topnav = ({  topnavPermission }) => {
                     &&( `${filesUrl}` +
                       `/logo/images${clientData?.logo}`)
                 }
+                style={{height:"100%"}}
                 className=""
                 alt
               />

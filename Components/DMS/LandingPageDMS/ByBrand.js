@@ -62,16 +62,6 @@ const ByBrand = () => {
                 >
                   <img src={`${filesUrl}/brand/images${item.brand_image}`} alt="sd"  />
                   </div>
-              )} {brands?.map((item, i)=> 
-                <div 
-                key={i} 
-                className="slider-item"
-                onClick={()=>{
-                  router.push(`/dms/ShopByBrand?brand_id=${item.brand_id}`)
-                }}
-                >
-                  <img src={`${filesUrl}/brand/images${item.brand_image}`} alt="sd"  />
-                  </div>
               )} 
             </div>
           </div>

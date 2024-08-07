@@ -121,21 +121,7 @@ const CartScreen = () => {
                 <KeyboardBackspaceOutlinedIcon />
                 <span>Cart</span>
               </div>
-              <div className="logo">
-                <div>
-                  {/* <img src="/DMS_IMAGES/kloudmart.png" alt="normal"/> */}
-                  {
-                      clientLogo?.logo ? <img
-                        src={
-                          clientLogo?.logo &&
-                          `${filesUrl}` + `/logo/images${clientLogo?.logo}`
-                        }
-                        alt="Logo"
-                        className=" mx-auto"
-                      /> : ""
-                      }
-                </div>
-              </div>
+             
             </div>
             {/* end col */}
             <div className="col-12">

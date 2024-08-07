@@ -70,20 +70,7 @@ const OrdersScreen = () => {
         <KeyboardBackspaceOutlinedIcon />
         <span>Orders</span>
       </div>
-      <div className="logo">
-        <div >
-        {
-                      clientLogo?.logo ? <img
-                        src={
-                          clientLogo?.logo &&
-                          `${filesUrl}` + `/logo/images${clientLogo?.logo}`
-                        }
-                        alt="Logo"
-                        className=" mx-auto"
-                      /> : ""
-                      }
-        </div>
-      </div>
+     
     </div>
     <div className="card">
       <nav className='w-100' >

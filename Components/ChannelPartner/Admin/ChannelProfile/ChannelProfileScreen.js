@@ -127,7 +127,20 @@ const ChannelProfileScreen = () => {
                                         </div>
                                         <div className="d-flex flex-column gap-4">
                                             <div className="d-flex flex-column justify-content-center align-items-center gap-1">
-                                                <span className="person-name mt-4">{userInfo.user}</span> <span className="idd">Admin</span>
+                                                <span className="person-name mt-4">{userInfo.user}</span> <span className="idd">
+                                                    {
+                                                        userInfo?.role_id==null && "Admin"
+                                                    }
+                                                     {
+                                                        userInfo?.role_id==1 && "Channel Partner"
+                                                    }
+                                                    {
+                                                        userInfo?.role_id==2 && "BST"
+                                                    }
+                                                     {
+                                                        userInfo?.role_id==3 && "Director"
+                                                    }
+                                                    </span>
                                             </div>
                                             <div className="d-flex flex-column gap-3 person-data">
                                                 <div className="d-flex flex-column person-email">

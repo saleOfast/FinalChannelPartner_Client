@@ -237,13 +237,34 @@ const [value, setValue] = useState(getCurrentWeekDates());
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="">
-                            <div
+                            {/* <div
                                 style={{padding:"6px", color:"white",background:value==="Completed" ?"#84CA4d":value==="Requested" ?"#FEC925":value==="Scheduled" ? "#17B4E7":"",borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3 btn-warning btn '
                                 title='Visit Status'>
                                    {value}
-                            </div>
-                          
+                            </div> */}
+                            <div
+                              style={{
+                                  padding: "6px",
+                                  color: "white",
+                                  background: value === "Completed" 
+                                      ? "#84CA4d" 
+                                      : value === "Requested" 
+                                      ? "#FEC925" 
+                                      : value === "Scheduled" 
+                                      ? "#17B4E7"
+                                      : value === "Rejected"
+                                      ? "#D9534F" // Add your desired color for "Rejected" here
+                                      : "",
+                                  borderRadius: "20px",
+                                  border: "white"
+                              }}
+                              className='pe-3 ps-3 btn-warning btn'
+                              title='Visit Status'
+                          >
+                              {value}
+                          </div>
+
                         </div>
                     )
                 }

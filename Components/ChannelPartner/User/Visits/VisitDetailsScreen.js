@@ -183,7 +183,7 @@ const VisitDetailsScreen = () => {
               </div>
               <div className="col-6 col-md-6">
                 <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-right">Requested</span>
+                  <span className="list-right">{visitData?.status}</span>
                 </div>
               </div>
             </div>

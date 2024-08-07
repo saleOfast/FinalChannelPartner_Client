@@ -100,20 +100,7 @@ const ShopByBrandScreen = () => {
                 </div>
                 <span>Shop By Brand</span>
               </div>
-              <div className="logo">
-                <div >
-                {
-                clientLogo?.logo ? <img
-                  src={
-                    clientLogo?.logo &&
-                    `${filesUrl}` + `/logo/images${clientLogo?.logo}`
-                  }
-                  alt="Logo"
-                  className=" mx-auto"
-                /> : ""
-                }
-                </div>
-              </div>
+              
             </div>
           </div>
           <div className="row pt-3">

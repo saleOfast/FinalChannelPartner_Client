@@ -504,20 +504,60 @@ const AddClientScreen = () => {
         }
     };
 
+    // const handleImageChange = (e) => {
+    //   if (e.target.files[0]) {
+    //     const reader = new FileReader();
+    //     reader.onloadend = () => {
+    //       setUserInfo({
+    //         ...userInfo,
+    //         logo:e.target.files[0],
+    //         logoPreview:reader.result
+    //       });
+    //     };
+        
+    //     reader.readAsDataURL(e.target.files[0]);
+    //   }
+    // }; 
+
     const handleImageChange = (e) => {
-      if (e.target.files[0]) {
+      const file = e.target.files[0];
+    
+      if (file) {
+        // Check file type
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        if (!allowedTypes.includes(file.type)) {
+          setUserInfo({...userInfo,logo:null,logoPreview:null})
+          toast.error('Invalid file type. Please select a PNG, JPEG, or JPG image.',{autoClose:1500});
+          e.target.value = ''; // Clear the input value to prevent invalid file from being selected
+          return; // Exit the function early
+        }
+    
+        // Read the file to check dimensions
         const reader = new FileReader();
         reader.onloadend = () => {
-          setUserInfo({
-            ...userInfo,
-            logo:e.target.files[0],
-            logoPreview:reader.result
-          });
+          const img = new Image();
+          img.onload = () => {
+            // Check dimensions
+            if (img.width !== 145 || img.height !== 65) {
+              setUserInfo({...userInfo,logo:null,logoPreview:null})
+              toast.error('Invalid image dimensions. The image must be 145x65 pixels.',{autoClose:1500});
+              e.target.value = ''; // Clear the input value to prevent invalid file from being selected
+              return; // Exit the function early
+            }
+    
+            // If everything is fine, update user info
+            setUserInfo({
+              ...userInfo,
+              logo: file,
+              logoPreview: reader.result
+            });
+          };
+          img.src = reader.result;
         };
-        
-        reader.readAsDataURL(e.target.files[0]);
+    
+        reader.readAsDataURL(file);
       }
-    }; 
+    };
     
     const handleClientImageChange = (e,image,preview) => {
       if (e.target.files[0]) {
@@ -1488,12 +1528,19 @@ const AddClientScreen = () => {
                     <div className="row">
                     <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                     <div className="d-flex flex-column gap-1">
-                    <label className="form-label">Logo (Best Size: 150x100)</label>
-                      <input
+                    <label className="form-label">Logo (Best Dimension: 145x65)</label>
+                      {/* <input
                         type="file"
                         onChange={(e) => handleImageChange(e)}
                         className="form-control input-field"
+                      /> */}
+                      <input
+                        type="file"
+                        accept=".png, .jpeg, .jpg"
+                        onChange={(e) => handleImageChange(e)}
+                        className="form-control input-field"
                       />
+
                       {userInfo?.logoPreview && (
                         <img
                           src={userInfo?.logoPreview}

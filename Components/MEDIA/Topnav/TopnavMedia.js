@@ -183,7 +183,8 @@ const TopnavMedia = ({  topnavPermission }) => {
        >
          <div className="top_nav" style={{height:"10vh"}}>
            {/* <div className="brand_icon"> */}
-           <div className="">
+           <div className=""
+           style={{height:"10vh"}}>
              {!hasCookie("Admin") &&
              
              <img
@@ -192,6 +193,7 @@ const TopnavMedia = ({  topnavPermission }) => {
                  &&( `${filesUrl}` +
                    `/logo/images${clientData?.logo}`)
              }
+             style={{height:"100%"}}
              className=""
              alt
            />

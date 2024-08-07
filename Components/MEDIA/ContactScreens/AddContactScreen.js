@@ -781,10 +781,16 @@ const AddContactScreen = () => {
                             } else {
                               // Optionally handle invalid input here, e.g., show an error message
                               // For example, you can use a state variable to display an error message
+                              setErrorData({ ...errorData, middle_name: "Only letters and spaces are allowed." });
+
                             }
                           }}
                         value={userInfo.middle_name ? userInfo.middle_name : ""}
                       />
+                       <span className="errorText">
+                        {" "}
+                        {errorData?.middle_name ? errorData.middle_name : ""}
+                      </span>
                     </div>
                   </div>
 
@@ -939,16 +945,33 @@ const AddContactScreen = () => {
                         //     contact_no: e.target.value,
                         //   });
                         // }}
+                        // onChange={(e) => {
+                        //     const newValue = e.target.value;
+                        //     // Allow only digits and limit length to 10 digits
+                        //     if (/^\d{0,10}$/.test(newValue)) {
+                        //       setUserInfo({
+                        //         ...userInfo,
+                        //         contact_no: newValue,
+                        //       });
+                        //     }
+                        //   }}
+
                         onChange={(e) => {
-                            const newValue = e.target.value;
-                            // Allow only digits and limit length to 10 digits
-                            if (/^\d{0,10}$/.test(newValue)) {
-                              setUserInfo({
-                                ...userInfo,
-                                contact_no: newValue,
-                              });
-                            }
-                          }}
+                          const newValue = e.target.value.replace(/[^0-9]/g, ''); // Remove non-digit characters
+                          if (newValue.length <= 10) {
+                            setUserInfo({
+                              ...userInfo,
+                              contact_no: newValue,
+                            });
+                            setContError({ ...contError, contact_no: "" }); // Clear any previous error message
+                          } else {
+                            setContError({ ...contError, contact_no: "Contact number cannot exceed 10 digits." });
+                          }
+                  
+                          if (e.target.value !== newValue) {
+                            setContError({ ...contError, contact_no: "Contact number can only contain digits." });
+                          }
+                        }}
                         value={userInfo.contact_no ? userInfo.contact_no : ""}
                       />
                       <span className="errorText">

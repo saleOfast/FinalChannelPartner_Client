@@ -270,6 +270,7 @@ const AddSitesScreen = () => {
   };
 
   const handleImageChange = (e,image,preview) => {
+    
     const file = e.target.files[0];
     const allowedTypes=['image/jpg', 'image/jpeg', 'image/png'];
 
@@ -278,11 +279,16 @@ const AddSitesScreen = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         
-        setUserInfo({
-          ...userInfo,
-          [image]:e.target.files[0],
+        // setUserInfo({
+        //   ...userInfo,
+        //   [image]:e.target.files[0],
+        //   [preview]:reader.result,
+        // });
+        setUserInfo((prev)=>({
+          ...prev,
+          [image]:file,
           [preview]:reader.result,
-        });
+        }))
       };
       console.log(userInfo)
       reader.readAsDataURL(e.target.files[0]);
@@ -374,12 +380,15 @@ const AddSitesScreen = () => {
           m_id: 379,
         },
       };
-
+      const formData=new FormData();
+            for (const [key, value] of Object.entries(userInfo)) {
+              formData.append(key, value);
+            }
      
       try {
         const response = await axios.put(
           Baseurl + `/db/media/siteManagement/updateSite`,
-          userInfo,
+          formData,
           header
         );
         if (response.status === 204 || response.status === 200) {

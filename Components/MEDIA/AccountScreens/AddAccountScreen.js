@@ -1018,14 +1018,31 @@ const AddAccountScreen = () => {
                         //     setErrorData({ ...errorData, contact_no: "" });
                         //   }
                         // }}
+                        // onChange={(e) => {
+                        //   const value = e.target.value.replace(/[^0-9]/g, ''); // Remove non-digit characters
+                        //   if (value.length <= 10) { // Ensure length does not exceed 10 digits
+                        //     setUserInfo({
+                        //       ...userInfo,
+                        //       contact_no: value,
+                        //     });
+                        //     setErrorData({ ...errorData, contact_no: "" });
+                        //   }
+                        // }}
+
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, ''); // Remove non-digit characters
-                          if (value.length <= 10) { // Ensure length does not exceed 10 digits
+                          if (value.length <= 10) {
                             setUserInfo({
                               ...userInfo,
                               contact_no: value,
                             });
                             setErrorData({ ...errorData, contact_no: "" });
+                          } else {
+                            setErrorData({ ...errorData, contact_no: "Mobile number cannot exceed 10 digits." });
+                          }
+                  
+                          if (e.target.value !== value) {
+                            setErrorData({ ...errorData, contact_no: "Mobile number can only contain digits." });
                           }
                         }}
                         value={userInfo.contact_no ? userInfo.contact_no : ""}
@@ -1056,15 +1073,32 @@ const AddAccountScreen = () => {
                             ? "form-control is-invalid"
                             : "form-control"
                         }
+                        // onChange={(e) => {
+                        //   const value = e.target.value;
+                        //   const isValid = /^\d{0,10}$/.test(value); // Allows only up to 10 digits
+                        //   if (isValid) {
+                        //     setUserInfo({
+                        //       ...userInfo,  
+                        //       phone_no: value,
+                        //     });
+                        //     setErrorData({ ...errorData, phone_no: "" });
+                        //   }
+                        // }}
+
                         onChange={(e) => {
-                          const value = e.target.value;
-                          const isValid = /^\d{0,10}$/.test(value); // Allows only up to 10 digits
-                          if (isValid) {
+                          const value = e.target.value.replace(/[^0-9]/g, ''); // Remove non-digit characters
+                          if (value.length <= 10) {
                             setUserInfo({
-                              ...userInfo,  
+                              ...userInfo,
                               phone_no: value,
                             });
                             setErrorData({ ...errorData, phone_no: "" });
+                          } else {
+                            setErrorData({ ...errorData, phone_no: "Phone number cannot exceed 10 digits." });
+                          }
+                  
+                          if (e.target.value !== value) {
+                            setErrorData({ ...errorData, phone_no: "Phone number can only contain digits." });
                           }
                         }}
                         value={userInfo.phone_no ? userInfo.phone_no : null}
@@ -1143,7 +1177,7 @@ const AddAccountScreen = () => {
                           } else {
                             setErrorData({
                               ...errorData,
-                              emp_name: "Name cannot contain numbers",
+                              emp_name: "Employee cannot contain numbers",
                             });
                           }
                         }}
@@ -2254,15 +2288,32 @@ const AddAccountScreen = () => {
                               ? "form-control is-invalid"
                               : "form-control"
                           }
+                          // onChange={(e) => {
+                          //   const value = e.target.value;
+                          //   const isValid = /^\d{0,10}$/.test(value); // Allows only up to 10 digits
+                          //   if (isValid) {
+                          //     setUserInfo({
+                          //       ...userInfo,
+                          //       mobile_finance: value,
+                          //     });
+                          //     setErrorData({ ...errorData, mobile_finance: "" });
+                          //   }
+                          // }}
+
                           onChange={(e) => {
-                            const value = e.target.value;
-                            const isValid = /^\d{0,10}$/.test(value); // Allows only up to 10 digits
-                            if (isValid) {
+                            const value = e.target.value.replace(/[^0-9]/g, ''); // Remove non-digit characters
+                            if (value.length <= 10) {
                               setUserInfo({
                                 ...userInfo,
                                 mobile_finance: value,
                               });
                               setErrorData({ ...errorData, mobile_finance: "" });
+                            } else {
+                              setErrorData({ ...errorData, mobile_finance: "Mobile number cannot exceed 10 digits." });
+                            }
+                  
+                            if (e.target.value !== value) {
+                              setErrorData({ ...errorData, mobile_finance: "Mobile number can only contain digits." });
                             }
                           }}
                           value={

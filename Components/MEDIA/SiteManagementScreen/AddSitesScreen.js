@@ -490,7 +490,7 @@ const AddSitesScreen = () => {
   return (
     <div className={`main_Box  ${sideView}`}>
       <div className="bread_head">
-        <h3 className="content_head"> {viewMode ? 'VIEW' : <>{editMode ? "EDIT" : "ADD"}</>} TASK</h3>
+        <h3 className="content_head"> {viewMode ? 'VIEW' : <>{editMode ? "EDIT" : "ADD"}</>} SITE</h3>
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item fw-bolder">
@@ -498,10 +498,10 @@ const AddSitesScreen = () => {
               <Link href="/media">Home</Link>
             </li>
             <li className="breadcrumb-item fw-bolder">
-              <Link href="/media/SiteManagement"> Tasks List </Link>
+              <Link href="/media/SiteManagement"> Site List </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
-              {viewMode ? 'View' : <>{editMode ? "Edit" : "Add"}</>} Task
+              {viewMode ? 'View' : <>{editMode ? "Edit" : "Add"}</>} Site
             </li>
           </ol>
         </nav>

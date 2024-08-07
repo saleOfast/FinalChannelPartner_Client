@@ -1206,12 +1206,30 @@ const AddLeadsScreen = () => {
                                 ? "form-control is-invalid"
                                 : "form-control"
                             }
+                            // onChange={(e) => {
+                            //   setUserInfo({
+                            //     ...userInfo,
+                            //     lead_name: e.target.value,
+                            //   });
+                            //   setErrorData({ ...errorData, lead_name: "" });
+                            // }}
                             onChange={(e) => {
-                              setUserInfo({
-                                ...userInfo,
-                                lead_name: e.target.value,
-                              });
-                              setErrorData({ ...errorData, lead_name: "" });
+                              const value = e.target.value;
+                              // Inline regex to validate alphabetic characters and spaces
+                              const isValidName = /^[a-zA-Z\s]*$/.test(value);
+                              
+                              if (isValidName || value === "") { // Allow empty value
+                                setUserInfo({
+                                  ...userInfo,
+                                  lead_name: value,
+                                });
+                                setErrorData({ ...errorData, lead_name: "" });
+                              } else {
+                                setErrorData({
+                                  ...errorData,
+                                  lead_name: "Name can only contain letters and spaces",
+                                });
+                              }
                             }}
                             value={userInfo.lead_name ? userInfo.lead_name : ""}
                           />
@@ -1332,12 +1350,30 @@ const AddLeadsScreen = () => {
                                 ? "form-control is-invalid"
                                 : "form-control"
                             }
+                            // onChange={(e) => {
+                            //   setUserInfo({
+                            //     ...userInfo,
+                            //     company_name: e.target.value,
+                            //   });
+                            //   setErrorData({ ...errorData, company_name: "" });
+                            // }}
                             onChange={(e) => {
-                              setUserInfo({
-                                ...userInfo,
-                                company_name: e.target.value,
-                              });
-                              setErrorData({ ...errorData, company_name: "" });
+                              const value = e.target.value;
+                              // Inline regex to validate alphabetic characters and spaces
+                              const isValidName = /^[a-zA-Z\s]*$/.test(value);
+                  
+                              if (isValidName || value === "") { // Allow empty value
+                                setUserInfo({
+                                  ...userInfo,
+                                  company_name: value,
+                                });
+                                setErrorData({ ...errorData, company_name: "" });
+                              } else {
+                                setErrorData({
+                                  ...errorData,
+                                  company_name: "Organization name can only contain letters and spaces",
+                                });
+                              }
                             }}
                             value={
                               userInfo.company_name ? userInfo.company_name : ""
@@ -1480,12 +1516,29 @@ const AddLeadsScreen = () => {
                                 ? "form-control is-invalid"
                                 : "form-control"
                             }
-                            onChange={(e) =>
+                            // onChange={(e) =>
+                            //   setUserInfo({
+                            //     ...userInfo,
+                            //     p_contact_no: e.target.value,
+                            //   })
+                            // }
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Remove non-digit characters and limit to 10 digits
+                              const sanitizedValue = value.replace(/[^0-9]/g, '').substring(0, 10);
+                      
                               setUserInfo({
                                 ...userInfo,
-                                p_contact_no: e.target.value,
-                              })
-                            }
+                                p_contact_no: sanitizedValue,
+                              });
+                      
+                              // Error handling
+                              if (sanitizedValue.length === 10 || sanitizedValue === '') {
+                                setContError({ ...contError, p_contact_no: '' });
+                              } else {
+                                setContError({ ...contError, p_contact_no: 'Contact number must be 10 digits' });
+                              }
+                            }}
                             value={
                               userInfo?.p_contact_no
                                 ? userInfo.p_contact_no
@@ -1522,12 +1575,29 @@ const AddLeadsScreen = () => {
                                 ? "form-control is-invalid"
                                 : "form-control"
                             }
-                            onChange={(e) =>
+                            // onChange={(e) =>
+                            //   setUserInfo({
+                            //     ...userInfo,
+                            //     whatsapp_no: e.target.value,
+                            //   })
+                            // }
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Remove non-digit characters and limit to 10 digits
+                              const sanitizedValue = value.replace(/[^0-9]/g, '').substring(0, 10);
+                      
                               setUserInfo({
                                 ...userInfo,
-                                whatsapp_no: e.target.value,
-                              })
-                            }
+                                whatsapp_no: sanitizedValue,
+                              });
+                      
+                              // Error handling
+                              if (sanitizedValue.length === 10 || sanitizedValue === '') {
+                                setContError({ ...contError, whatsapp_no: '' });
+                              } else {
+                                setContError({ ...contError, whatsapp_no: 'WhatsApp number must be 10 digits' });
+                              }
+                            }}
                             value={
                               userInfo.whatsapp_no ? userInfo.whatsapp_no : ""
                             }
@@ -1560,12 +1630,29 @@ const AddLeadsScreen = () => {
                                 ? "form-control is-invalid"
                                 : "form-control"
                             }
-                            onChange={(e) =>
+                            // onChange={(e) =>
+                            //   setUserInfo({
+                            //     ...userInfo,
+                            //     official_no: e.target.value,
+                            //   })
+                            // }
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Remove non-digit characters and limit to a specific length (e.g., 10 digits)
+                              const sanitizedValue = value.replace(/[^0-9]/g, '').substring(0, 10);
+                      
                               setUserInfo({
                                 ...userInfo,
-                                official_no: e.target.value,
-                              })
-                            }
+                                official_no: sanitizedValue,
+                              });
+                      
+                              // Error handling
+                              if (sanitizedValue.length === 10 || sanitizedValue === '') {
+                                setContError({ ...contError, official_no: '' });
+                              } else {
+                                setContError({ ...contError, official_no: 'Official number must be 10 digits' });
+                              }
+                            }}
                             value={
                               userInfo.official_no ? userInfo.official_no : ""
                             }

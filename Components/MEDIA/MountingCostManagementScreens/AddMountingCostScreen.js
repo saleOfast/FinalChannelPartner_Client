@@ -100,8 +100,30 @@ const AddMountingCostScreen = () => {
 
   const minDate = new Date().toISOString().slice(0, 10);
 
+
+  const validateFields = () => {
+    let isValid = true;
+    const newErrorData = {};
+
+    if (!userInfo.acc_id) {
+      newErrorData.acc_id = "Account Name is required";
+      isValid = false;
+    }
+    if (!userInfo.m_t_id) {
+      newErrorData.m_t_id = "Media Type is required";
+      isValid = false;
+    }
+    if (!userInfo.mo_c_cost) {
+      newErrorData.mo_c_cost = "Mounting Cost/Sq. Ft. is required";
+      isValid = false;
+    }
+
+    setErrorData(newErrorData);
+    return isValid;
+  };
   const submitHandler = async () => {
     if (hasCookie("token")) {
+      if (!validateFields()) return;
       setisLoading(true)
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -154,6 +176,7 @@ const AddMountingCostScreen = () => {
 
   const updateHandler = async () => {
     if (hasCookie("token")) {
+      if (!validateFields()) return;
       setisLoading(true)
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -338,7 +361,7 @@ const AddMountingCostScreen = () => {
                               : "input_box"
                           }
                         >
-                          <label htmlFor="media_owner">Account Name</label>
+                          <label htmlFor="media_owner">Account Name *</label>
                           <Select
                             id="media_owner"
                             isDisabled={viewMode}
@@ -389,7 +412,7 @@ const AddMountingCostScreen = () => {
                               : "input_box"
                           }
                         >
-                          <label htmlFor="media_type">Media Type</label>
+                          <label htmlFor="media_type">Media Type *</label>
                           <Select
                             id="media_type"
                             isDisabled={viewMode}
@@ -429,7 +452,7 @@ const AddMountingCostScreen = () => {
                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                         <div className="input_box">
                           <label htmlFor="mo_c_cost">
-                            Mounting Cost/Sq. Ft.
+                            Mounting Cost/Sq. Ft. *
                           </label>
                           <input
                             type="number"
@@ -450,6 +473,11 @@ const AddMountingCostScreen = () => {
                                 : ""
                             }
                           />
+                            <span className="errorText">
+                            {errorData?.mo_c_cost
+                              ? errorData.mo_c_cost
+                              : ""}
+                          </span>
                         </div>
                       </div>
 

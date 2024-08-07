@@ -6,7 +6,7 @@ import Collapse from 'react-bootstrap/Collapse';
 import axios from 'axios';
 import { getCookie, hasCookie } from 'cookies-next';
 import { useRouter } from 'next/router'
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'; 
 import { useSelector } from 'react-redux';
 import EditIcon from "../Svg/EditIcon";
 import Modal from "react-bootstrap/Modal";

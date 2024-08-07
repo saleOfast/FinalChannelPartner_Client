@@ -127,8 +127,10 @@ const ActivePartnersScreen = () => {
                 
                 const response = selectedOption=="Channel Partner" ? 
                 await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, {...header,params:queryObjLeads})
-                :
+                : selectedOption=="BST" ?
                 await axios.get(Baseurl + `/db/users/rolewise?role_id=2`, {...header,params:queryObjLeads})
+                :
+                await axios.get(Baseurl + `/db/users/rolewise?role_id=3`, {...header,params:queryObjLeads})
 
                 if(response?.status === 200 || response?.status === 201){
                     setLoader(false)

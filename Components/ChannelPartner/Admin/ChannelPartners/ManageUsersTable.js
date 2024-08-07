@@ -294,6 +294,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         >
           <option value="Channel Partner">Channel Partner</option>
           <option value="BST">BST</option>
+          <option value="Director">Director</option>
         </select>
       </div>
                 )
@@ -319,7 +320,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     };
 
 
-    console.log(userData, "userData")
+
     const options = {
         enableNestedDataAccess: ".",
         selectableRows: 'multiple',

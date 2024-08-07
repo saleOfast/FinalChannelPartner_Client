@@ -20,25 +20,25 @@ const PrintingMatMgmtScreen = () => {
 
   const [show, setShow] = useState(false);
   const [dataList, setDataList] = useState([])
-  const [userInfo, setUserInfo] = useState({ site_cat_name: '' })
+  const [userInfo, setUserInfo] = useState({ pr_m_name: "" })
   const [editMode, setEditMode] = useState(false)
   const [disableShowConfirm, setdisableShowConfirm] = useState(false)
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
-  const [currObj, setcurrObj] = useState({ site_cat_id: "", action: "" });
+  const [currObj, setcurrObj] = useState({ pr_m_id: null, action: "" });
   const [confirmText, setconfirmText] = useState("");
   const [loader, setLoader] = useState(false);
 
 
   const handleClose = () => {
     setShow(false);
-    setUserInfo({ site_cat_name: '' })
+    setUserInfo({ pr_m_name: '' })
   }
 
   const handleShow = () => setShow(true);
 
   const openEdtMdl = (value) => {
     setEditMode(true)
-    setUserInfo({ ...userInfo, site_cat_name: value[0], site_cat_code: value[1], site_cat_id: value[3] })
+    setUserInfo({ ...userInfo, pr_m_name: value[0], pr_m_code: value[1], pr_m_id: value[3] })
     handleShow();
   }
 
@@ -53,7 +53,7 @@ const PrintingMatMgmtScreen = () => {
     } else {
       setconfirmText("Disable");
     }
-    setcurrObj({ site_cat_id: value, action: type });
+    setcurrObj({ pr_m_id: value, action: type });
     setdisableShowConfirm(true);
   }
 
@@ -78,7 +78,7 @@ const PrintingMatMgmtScreen = () => {
       }
 
       try {
-        const response = await axios.get(Baseurl + `/db/media/siteManagement/getSiteCategory`, header);
+        const response = await axios.get(Baseurl + `/db/media/printingMaterial/getPrintingMaterial`, header);
         if (response?.status == 200 || response?.status == 201) {
           setLoader(false)
           setDataList(response.data.data);
@@ -98,8 +98,8 @@ const PrintingMatMgmtScreen = () => {
   async function disableHandler() {
 
     const reqInfo = {
-      site_cat_id: currObj.site_cat_id,
-      status: currObj.action == 1 ? true : false,
+      pr_m_id: currObj.pr_m_id,
+      status: currObj.action == 1 ? "ACTIVE" : "INACTIVE",
     };
 
     setdisableShowConfirm(false)
@@ -117,7 +117,7 @@ const PrintingMatMgmtScreen = () => {
       }
 
       try {
-        const response = await axios.put(Baseurl + `/db/media/siteManagement/updateSiteCategory`, reqInfo, header);
+        const response = await axios.put(Baseurl + `/db/media/printingMaterial/updatePrintingMaterial`, reqInfo, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setdisableShowConfirm(false)
@@ -150,7 +150,7 @@ const PrintingMatMgmtScreen = () => {
       }
 
       try {
-        const response = await axios.delete(Baseurl + `/db/media/siteManagement/deleteSiteCategory?site_cat_id=${currObj}`, header);
+        const response = await axios.delete(Baseurl + `/db/media/printingMaterial/deletePrintingMaterial?pr_m_id=${currObj}`, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setdeleteshowConfirm(false)
@@ -169,9 +169,9 @@ const PrintingMatMgmtScreen = () => {
 
   }
 
-  const addIndustryHandler = async () => {
-    if (userInfo.site_cat_name == '') {
-      toast.error('Please enter the Site Category Name')
+  const addPrintingMaterialHandler = async () => {
+    if (userInfo.pr_m_name == '') {
+      toast.error('Please enter the Print Material Name')
     } else {
       if (hasCookie('token')) {
         let token = (getCookie('token'));
@@ -188,7 +188,7 @@ const PrintingMatMgmtScreen = () => {
         }
 
         try {
-          const response = await axios.post(Baseurl + `/db/media/siteManagement/addSiteCategory`, userInfo, header);
+          const response = await axios.post(Baseurl + `/db/media/printingMaterial/addPrintingMaterial`, userInfo, header);
           if (response.status === 204 || response.status === 200) {
             toast.success(response.data.message)
             handleClose();
@@ -208,8 +208,8 @@ const PrintingMatMgmtScreen = () => {
   }
 
   const updateHandler = async () => {
-    if (userInfo.site_cat_name == '') {
-      toast.error('Please enter the Site Category Name')
+    if (userInfo.pr_m_name == '') {
+      toast.error('Please enter the Print Material Name')
     } else {
       if (hasCookie('token')) {
         let token = (getCookie('token'));
@@ -225,7 +225,7 @@ const PrintingMatMgmtScreen = () => {
         }
 
         try {
-          const response = await axios.put(Baseurl + `/db/media/siteManagement/updateSiteCategory`, userInfo, header);
+          const response = await axios.put(Baseurl + `/db/media/printingMaterial/updatePrintingMaterial`, userInfo, header);
           if (response.status === 204 || response.status === 200) {
             toast.success(response.data.message)
             handleClose();
@@ -309,8 +309,8 @@ const PrintingMatMgmtScreen = () => {
                     placeholder='Enter Printing Material Name'
                     name="email" id="email"
                     className="form-control"
-                    onChange={(e) => setUserInfo({ ...userInfo, site_cat_name: e.target.value })}
-                    value={userInfo.site_cat_name ? userInfo.site_cat_name : ''}
+                    onChange={(e) => setUserInfo({ ...userInfo, pr_m_name: e.target.value })}
+                    value={userInfo.pr_m_name ? userInfo.pr_m_name : ''}
                   />
 
                 </div>
@@ -322,7 +322,7 @@ const PrintingMatMgmtScreen = () => {
           {editMode ? <Button variant="primary" onClick={updateHandler} >
             UPDATE
           </Button> :
-            <Button variant="primary" onClick={addIndustryHandler} >
+            <Button variant="primary" onClick={addPrintingMaterialHandler} >
               SUBMIT
             </Button>}
 

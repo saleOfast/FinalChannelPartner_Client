@@ -11,14 +11,14 @@ const PrintingMatMgmtTab = ({ deleteConfirm, disableConfirm, dataList, openEdtMd
 
   const columns = [
     {
-      name: 'site_cat_name',
+      name: 'pr_m_name',
       label: "Printing Material Name",
       options: {
         filter: true,
       }
     },
     {
-      name: 'site_cat_code',
+      name: 'pr_m_code',
       label: "Printing Material Code",
       options: {
         filter: true,
@@ -33,7 +33,7 @@ const PrintingMatMgmtTab = ({ deleteConfirm, disableConfirm, dataList, openEdtMd
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <div className='status_box'>
-              {value ? <span className='active status_btn'>active</span> :
+              {value=="ACTIVE" ? <span className='active status_btn'>active</span> :
                 <span className='inactive status_btn'>inactive</span>}
             </div>
           )
@@ -41,7 +41,7 @@ const PrintingMatMgmtTab = ({ deleteConfirm, disableConfirm, dataList, openEdtMd
       }
     },
     {
-      name: 'site_cat_id',
+      name: 'pr_m_id',
       label: "Action",
       options: {
         filter: false,
@@ -56,7 +56,7 @@ const PrintingMatMgmtTab = ({ deleteConfirm, disableConfirm, dataList, openEdtMd
                 <EditIcon />
               </button>
 
-              {tableMeta.rowData[2] ?
+              {tableMeta.rowData[2]=="ACTIVE" ?
                 <button
                   onClick={() => disableConfirm(value, 0)}
                   className="action_btn"

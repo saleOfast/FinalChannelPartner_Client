@@ -14,44 +14,91 @@ const PrintingCostTable = ({ accountsList, openConfirmBox , title, loader }) => 
 
     const columns = [
         {
-            name: 'first_name',
-            label: "Name",
-            options: {
-                filter: true,
-            }
-        },
-        {
-            name: 'accountName',
+            name: 'acc_name',
             label: "Account Name",
             options: {
                 filter: true,
+            }
+        },
+        {
+            name: 'm_t_id',
+            label: "Media Type",
+            options: {
+                filter: true,
+            }
+        },
+        {
+            name: 'pr_m_id',
+            label: "Printing Material",
+            options: {
+                filter: true,
+            }
+        },
+        {
+            name: 'pr_c_cost',
+            label: "Printing Cost/Sq. Ft.",
+            options: {
+                filter: true,
+            }
+        },
+        // {
+        //     name: 'status',
+        //     label: "Status.",
+        //     options: {
+        //         filter: true,
+        //     }
+        // },
+        {
+            name: 'status',
+            label: "Status",
+            options: {
+                filter: false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        // <>{value?.acc_name? value.acc_name : ''}</>
-                        <>{value ? value : ''}</>
+                        <div className='status_box'>
+                            {value =="ACTIVE" ? <span className='active status_btn'>active</span> :
+                                <span className='inactive status_btn'>inactive</span>}
+                        </div>
                     )
                 }
             }
-        }, 
-        
-        {
-            name: 'contact_no',
-            label: "Contact No",
-            options: {
-                filter: true,
-            }
         },
-        {
-            name: 'email_id',
-            label: "Email Id ",
-            options: {
-                filter: true,
-            }
-        },
+
+
+
+        // {
+        //     name: 'accountName',
+        //     label: "Account Name",
+        //     options: {
+        //         filter: true,
+        //         customBodyRender: (value, tableMeta, updateValue) => {
+        //             return (
+        //                 // <>{value?.acc_name? value.acc_name : ''}</>
+        //                 <>{value ? value : ''}</>
+        //             )
+        //         }
+        //     }
+        // }, 
+        
+        // {
+        //     name: 'contact_no',
+        //     label: "Contact No",
+        //     options: {
+        //         filter: true,
+        //     }
+        // },
+        // {
+        //     name: 'email_id',
+        //     label: "Email Id ",
+        //     options: {
+        //         filter: true,
+        //     }
+        // },
         
         
         {
-            name: 'contact_id',
+            name: 'pr_c_id',
             label: "Action",
             options: {
                 filter:false,
@@ -77,6 +124,8 @@ const PrintingCostTable = ({ accountsList, openConfirmBox , title, loader }) => 
                 }
             }
         },
+
+        
     ];
     
     const options = {
@@ -86,11 +135,12 @@ const PrintingCostTable = ({ accountsList, openConfirmBox , title, loader }) => 
     };
 
     const mappedDataList=accountsList?.map(list=>({
-        first_name:list?.first_name,
-        accountName:list?.accountName?.acc_name,
-        contact_no:list?.contact_no,
-        email_id:list?.email_id,
-        contact_id:list?.contact_id
+        acc_name:list?.acc_name,
+        m_t_id:list?.db_media_type?.m_t_name,
+        pr_m_id:list?.db_printing_material?.pr_m_name,
+        pr_c_cost:list?.pr_c_cost,
+        status:list?.status,
+        pr_c_id:list?.pr_c_id
     }))
 
     return (

@@ -1,4 +1,4 @@
-import EventScreens from '../../Components/EventScreen/EventScreens'
+import EventScreens from '../../Components/MEDIA/EventScreen/EventScreens'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setCookie } from 'cookies-next'

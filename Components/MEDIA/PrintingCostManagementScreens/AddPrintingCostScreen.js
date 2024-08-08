@@ -49,6 +49,9 @@ const AddPrintingCostScreen = () => {
     pr_c_id: null,
     acc_id: null,
     acc_name:"",
+    // status:'ACTIVE',
+    m_t_id:null,
+    pr_m_id:null
   });
 
   async function getAccountsList() {
@@ -124,58 +127,58 @@ const AddPrintingCostScreen = () => {
     }
   }
 
-  const getSingleAccountsList = async (acc_id) => {
-    if (hasCookie("token")) {
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
+  // const getSingleAccountsList = async (acc_id) => {
+  //   if (hasCookie("token")) {
+  //     let token = getCookie("token");
+  //     let db_name = getCookie("db_name");
 
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          pass: "pass",
-        },
-      };
-      try {
-        const response = await axios.get(
-          Baseurl + `/db/account?acc_id=${acc_id}`,
-          header
-        );
-        setSingleAccount(response?.data?.data);
-        // setUserInfo({
-        //     ...userInfo,
-        //     mailing_cont: response?.data?.data?.ship_cont,
-        //     mailing_state: response? .data?.data?.ship_state,
-        //     mailing_city: response? .data?.data?.ship_city,
-        //     mailing_address: response? .data?.data?.ship_address,
-        //     mailing_pincode: response? .data?.data?.ship_pincode,
-        // })
-        setUserInfo((prevUserInfo) => ({
-          ...prevUserInfo,
-          account_name: response?.data?.data?.acc_id,
-          contact_no: response?.data?.data?.contact_no,
-          mailing_cont: response?.data?.data?.ship_cont,
-          mailing_state: response?.data?.data?.ship_state,
-          mailing_city: response?.data?.data?.ship_city,
-          mailing_address: response?.data?.data?.ship_address,
-          mailing_pincode: response?.data?.data?.ship_pincode,
-        }));
-      } catch (error) {
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-      }
-    }
-  };
+  //     let header = {
+  //       headers: {
+  //         Accept: "application/json",
+  //         Authorization: "Bearer ".concat(token),
+  //         db: db_name,
+  //         pass: "pass",
+  //       },
+  //     };
+  //     try {
+  //       const response = await axios.get(
+  //         Baseurl + `/db/media/printingCost/getPrintingCost?pr_c_id=${pr_c_id}`,
+  //         header
+  //       );
+  //       setSingleAccount(response?.data?.data);
+  //       // setUserInfo({
+  //       //     ...userInfo,
+  //       //     mailing_cont: response?.data?.data?.ship_cont,
+  //       //     mailing_state: response? .data?.data?.ship_state,
+  //       //     mailing_city: response? .data?.data?.ship_city,
+  //       //     mailing_address: response? .data?.data?.ship_address,
+  //       //     mailing_pincode: response? .data?.data?.ship_pincode,
+  //       // })
+  //       setUserInfo((prevUserInfo) => ({
+  //         ...prevUserInfo,
+  //         account_name: response?.data?.data?.acc_id,
+  //         contact_no: response?.data?.data?.contact_no,
+  //         mailing_cont: response?.data?.data?.ship_cont,
+  //         mailing_state: response?.data?.data?.ship_state,
+  //         mailing_city: response?.data?.data?.ship_city,
+  //         mailing_address: response?.data?.data?.ship_address,
+  //         mailing_pincode: response?.data?.data?.ship_pincode,
+  //       }));
+  //     } catch (error) {
+  //       if (error?.response?.data?.message) {
+  //         toast.error(error.response.data.message);
+  //       } else {
+  //         toast.error("Something went wrong!");
+  //       }
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    if (ac_id) {
-      getSingleAccountsList(ac_id);
-    }
-  }, [ac_id]);
+  // useEffect(() => {
+  //   if (ac_id) {
+  //     getSingleAccountsList(ac_id);
+  //   }
+  // }, [ac_id]);
 
   const getSingleData = async (id) => {
     if (hasCookie("token")) {
@@ -193,7 +196,7 @@ const AddPrintingCostScreen = () => {
 
       try {
         const response = await axios.get(
-          Baseurl + `/db/contacts?c_id=${id}`,
+          Baseurl + `/db/media/printingCost/getPrintingCost?pr_c_id=${id}`,
           header
         );
         setUserInfo(response.data.data);
@@ -210,6 +213,21 @@ const AddPrintingCostScreen = () => {
 
 
   const submitHandler = async () => {
+    const errors = {};
+    if (!userInfo.acc_id) {
+      errors.acc_name = "Account Name is required";
+    }
+    if (!userInfo.m_t_id) {
+      errors.m_t_id = "Media Type is required";
+    }
+    if (userInfo.pr_c_cost === null || isNaN(userInfo.pr_c_cost) || userInfo.pr_c_cost <= 0) {
+      errors.pr_c_cost = "Printing Cost/Sq. Ft. must be a positive number";
+    }
+  
+    if (Object.keys(errors).length > 0) {
+      setErrorData(errors);
+      return; // Stop form submission
+    }
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -241,7 +259,7 @@ const AddPrintingCostScreen = () => {
           );
           toast.success(response.data.message);
           setisLoading(false);
-          // router.push("/media/Contacts");
+          router.push("/media/PrintingCostMgmt");
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -336,14 +354,16 @@ const AddPrintingCostScreen = () => {
         },
       };
 
-      let newUserInfo = { ...userInfo, updated_on: DateNow };
+      let newUserInfo = { ...userInfo, updated_on: DateNow,pr_c_id:Number(id)};
+      let { status, ...newDataWithoutStatus } = newUserInfo;
+
 
       let newData = JSON.parse(JSON.stringify(newUserInfo));
 
       try {
         const response = await axios.put(
-          Baseurl + `/db/contacts`,
-          newData,
+          Baseurl + `/db/media/printingCost/updatePrintingCost`,
+          newDataWithoutStatus,
           header
         );
 
@@ -351,7 +371,7 @@ const AddPrintingCostScreen = () => {
           await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
           toast.success(response.data.message);
           setisLoading(false);
-          router.push("/media/Contacts");
+          router.push("/media/PrintingCostMgmt");
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -616,12 +636,12 @@ const AddPrintingCostScreen = () => {
     if (router.query.vw) [setViewMode(true)];
   }, [router.isReady, id]);
 
-  useEffect(() => {
-    if (userInfo.account_name !== null && !editMode) {
-      // call the api with this acoount name
-      getSingleAccountsList(userInfo.account_name);
-    }
-  }, [userInfo.account_name]);
+  // useEffect(() => {
+  //   if (userInfo.account_name !== null && !editMode) {
+  //     // call the api with this acoount name
+  //     getSingleAccountsList(userInfo.account_name);
+  //   }
+  // }, [userInfo.account_name]);
 
   useEffect(() => {
     // Accessing the accountName object when data changes
@@ -745,11 +765,11 @@ const AddPrintingCostScreen = () => {
           
           acc_id: e.value,
         });
-        setErrorData({ ...errorData, account_name: "" });
+        setErrorData({ ...errorData, acc_name: "" });
       }}
     />
     <span className="errorText">
-      {errorData?.account_name ? errorData.account_name : ""}
+      {errorData?.acc_name ? errorData.acc_name : ""}
     </span>
   </div>
 </div>
@@ -902,42 +922,38 @@ const AddPrintingCostScreen = () => {
                   </div> */}
 
 
-<div className="col-xl-3 col-md-3 col-sm-12 col-12">
-  <div
-    className={
-      errorData?.status ? "input_box errorBox" : "input_box"
-    }
-  >
-    <label htmlFor="site_status">Status</label>
-    <Select
-      id="site_status"
-      isDisabled={viewMode}
-      defaultValue={{ value: "active", label: "Active" }}  
-      options={[
-        { value: "active", label: "Active" },
-        { value: "inactive", label: "Inactive" },
-      ]}
-      value={
-        userInfo?.status
-          ? {
-              value: userInfo.status,
-              label: userInfo.status === "active" ? "Active" : "Inactive",
-            }
-          : { value: "active", label: "Active" }
-      }
-      onChange={(e) => {
-        setUserInfo({
-          ...userInfo,
-          status: e.value,
-        });
-        setErrorData({ ...errorData, status: "" });
-      }}
-    />
-    <span className="errorText">
-      {errorData?.status ? errorData.status : ""}
-    </span>
-  </div>
-</div>
+
+
+
+
+
+{/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+      <div className={errorData?.status ? "input_box errorBox" : "input_box"}>
+        <label htmlFor="site_status">Status</label>
+        <Select
+          id="site_status"
+          isDisabled={viewMode}
+          options={[
+            { value: 'active', label: 'Active' },
+            { value: 'inactive', label: 'Inactive' },
+          ]}
+          value={{
+            value: userInfo?.status?.toLowerCase(),
+            label: userInfo.status === 'ACTIVE' ? 'Active' : 'Inactive',
+          }}
+          onChange={(e) => {
+            setUserInfo({
+              ...userInfo,
+              status: e.value.toUpperCase(),
+            });
+            setErrorData({ ...errorData, status: '' });
+          }}
+        />
+        <span className="errorText">
+          {errorData?.status ? errorData.status : ''}
+        </span>
+      </div>
+    </div> */}
 
                 </div>
               </div>

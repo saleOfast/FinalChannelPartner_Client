@@ -1,5 +1,5 @@
 
-import Taskscreens from '../../Components/TasksScreens/Taskscreens'
+import Taskscreens from '../../Components/MEDIA/TasksScreens/Taskscreens'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setCookie } from 'cookies-next'

@@ -36,7 +36,7 @@ const PrintingCostMgmtScreen = () => {
                 }
             }
             try {
-                const response = await axios.get(Baseurl + `/db/contacts`, header);
+                const response = await axios.get(Baseurl + `/db/media/printingCost/getPrintingCost`, header);
                 if(response?.status==200 || response?.status==201){
                     setLoader(false)
                     setAccountsList(response?.data?.data);
@@ -73,7 +73,7 @@ const PrintingCostMgmtScreen = () => {
             }
 
             try {
-                const response = await axios.delete(Baseurl + `/db/contacts?c_id=${currObj}`, header);
+                const response = await axios.delete(Baseurl + `/db/media/printingCost/deletePrintingCost?pr_c_id=${currObj}`, header);
                 if (response.status === 204 || response.status === 200) {
                     toast.success(response.data.message)
                     setdeleteshowConfirm(false)
@@ -107,7 +107,7 @@ const PrintingCostMgmtScreen = () => {
           };
     
           try {
-            const response = await axios.get(Baseurl + `/db/contacts/download`, header);
+            const response = await axios.get(Baseurl + `/db/media/printingCost/download`, header);
            
            if(response?.status==200){
             const file = new Blob([response.data], {

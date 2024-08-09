@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import AddEventScreen from '../../Components/EventScreen/AddEventScreen'
+import AddEventScreen from '../../Components/MEDIA/EventScreen/AddEventScreen'
 import WithUserhoc_MEDIA from '../../HOC/WithUserhoc_MEDIA';
 import { setCookie } from 'cookies-next';
 import { useDispatch } from 'react-redux';

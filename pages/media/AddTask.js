@@ -1,4 +1,4 @@
-import AddTaskScreen from '../../Components/TasksScreens/AddTaskScreen'
+import AddTaskScreen from '../../Components/MEDIA/TasksScreens/AddTaskScreen'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setCookie } from 'cookies-next'

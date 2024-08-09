@@ -33,6 +33,9 @@ const AddPrintingCostScreen = () => {
   const [contError, setContError] = useState({});
   const [errorToast, setErrorToast] = useState(false);
   const [loginDetails, setloginDetails] = useState({});
+  const [mediaTypes, setMediaTypes] = useState([]);
+  const [printMaterial, setPrintMaterial] = useState([]);
+
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
   const [newFields, setNewFields] = useState({
     field_lable: null,
@@ -43,9 +46,12 @@ const AddPrintingCostScreen = () => {
   });
 
   const [userInfo, setUserInfo] = useState({
-    pr_c_id:null,
-    acc_id:null,
-    
+    pr_c_id: null,
+    acc_id: null,
+    acc_name:"",
+    // status:'ACTIVE',
+    m_t_id:null,
+    pr_m_id:null
   });
 
   async function getAccountsList() {
@@ -74,7 +80,24 @@ const AddPrintingCostScreen = () => {
       setErrorToast
     );
   }
+  
+  const getPrintingMaterial = async () => {
+    await fetchData(
+      `/db/media/printingMaterial/getPrintingMaterial`,
+      setPrintMaterial,
+      errorToast,
+      setErrorData
+    );
+  };
 
+  const getMediaTypes = async () => {
+    await fetchData(
+      `/db/media/mediaType/getMediaType`,
+      setMediaTypes,
+      errorToast,
+      setErrorData
+    );
+  };
   const getcity = async (id) => {
     await fetchData(
       `/db/area/city?st_id=${id}`,
@@ -104,58 +127,58 @@ const AddPrintingCostScreen = () => {
     }
   }
 
-  const getSingleAccountsList = async (acc_id) => {
-    if (hasCookie("token")) {
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
+  // const getSingleAccountsList = async (acc_id) => {
+  //   if (hasCookie("token")) {
+  //     let token = getCookie("token");
+  //     let db_name = getCookie("db_name");
 
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          pass: "pass",
-        },
-      };
-      try {
-        const response = await axios.get(
-          Baseurl + `/db/account?acc_id=${acc_id}`,
-          header
-        );
-        setSingleAccount(response?.data?.data);
-        // setUserInfo({
-        //     ...userInfo,
-        //     mailing_cont: response?.data?.data?.ship_cont,
-        //     mailing_state: response? .data?.data?.ship_state,
-        //     mailing_city: response? .data?.data?.ship_city,
-        //     mailing_address: response? .data?.data?.ship_address,
-        //     mailing_pincode: response? .data?.data?.ship_pincode,
-        // })
-        setUserInfo((prevUserInfo) => ({
-          ...prevUserInfo,
-          account_name: response?.data?.data?.acc_id,
-          contact_no: response?.data?.data?.contact_no,
-          mailing_cont: response?.data?.data?.ship_cont,
-          mailing_state: response?.data?.data?.ship_state,
-          mailing_city: response?.data?.data?.ship_city,
-          mailing_address: response?.data?.data?.ship_address,
-          mailing_pincode: response?.data?.data?.ship_pincode,
-        }));
-      } catch (error) {
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-      }
-    }
-  };
+  //     let header = {
+  //       headers: {
+  //         Accept: "application/json",
+  //         Authorization: "Bearer ".concat(token),
+  //         db: db_name,
+  //         pass: "pass",
+  //       },
+  //     };
+  //     try {
+  //       const response = await axios.get(
+  //         Baseurl + `/db/media/printingCost/getPrintingCost?pr_c_id=${pr_c_id}`,
+  //         header
+  //       );
+  //       setSingleAccount(response?.data?.data);
+  //       // setUserInfo({
+  //       //     ...userInfo,
+  //       //     mailing_cont: response?.data?.data?.ship_cont,
+  //       //     mailing_state: response? .data?.data?.ship_state,
+  //       //     mailing_city: response? .data?.data?.ship_city,
+  //       //     mailing_address: response? .data?.data?.ship_address,
+  //       //     mailing_pincode: response? .data?.data?.ship_pincode,
+  //       // })
+  //       setUserInfo((prevUserInfo) => ({
+  //         ...prevUserInfo,
+  //         account_name: response?.data?.data?.acc_id,
+  //         contact_no: response?.data?.data?.contact_no,
+  //         mailing_cont: response?.data?.data?.ship_cont,
+  //         mailing_state: response?.data?.data?.ship_state,
+  //         mailing_city: response?.data?.data?.ship_city,
+  //         mailing_address: response?.data?.data?.ship_address,
+  //         mailing_pincode: response?.data?.data?.ship_pincode,
+  //       }));
+  //     } catch (error) {
+  //       if (error?.response?.data?.message) {
+  //         toast.error(error.response.data.message);
+  //       } else {
+  //         toast.error("Something went wrong!");
+  //       }
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    if (ac_id) {
-      getSingleAccountsList(ac_id);
-    }
-  }, [ac_id]);
+  // useEffect(() => {
+  //   if (ac_id) {
+  //     getSingleAccountsList(ac_id);
+  //   }
+  // }, [ac_id]);
 
   const getSingleData = async (id) => {
     if (hasCookie("token")) {
@@ -173,7 +196,7 @@ const AddPrintingCostScreen = () => {
 
       try {
         const response = await axios.get(
-          Baseurl + `/db/contacts?c_id=${id}`,
+          Baseurl + `/db/media/printingCost/getPrintingCost?pr_c_id=${id}`,
           header
         );
         setUserInfo(response.data.data);
@@ -187,7 +210,24 @@ const AddPrintingCostScreen = () => {
     }
   };
 
+
+
   const submitHandler = async () => {
+    const errors = {};
+    if (!userInfo.acc_id) {
+      errors.acc_name = "Account Name is required";
+    }
+    if (!userInfo.m_t_id) {
+      errors.m_t_id = "Media Type is required";
+    }
+    if (userInfo.pr_c_cost === null || isNaN(userInfo.pr_c_cost) || userInfo.pr_c_cost <= 0) {
+      errors.pr_c_cost = "Printing Cost/Sq. Ft. must be a positive number";
+    }
+  
+    if (Object.keys(errors).length > 0) {
+      setErrorData(errors);
+      return; // Stop form submission
+    }
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -202,12 +242,14 @@ const AddPrintingCostScreen = () => {
         },
       };
 
-      let oppBody = { ...userInfo };
-      oppBody.contact_owner = loginDetails.user_id;
+      console.log("userinfo is ",userInfo)
+
+      // let oppBody = { ...userInfo };
+      // oppBody.contact_owner = loginDetails.user_id;
       try {
         const response = await axios.post(
-          Baseurl + `/db/contacts`,
-          oppBody,
+          Baseurl + `/db/media/printingCost/addPrintingCost`,
+          userInfo,
           header
         );
         if (response.status === 204 || response.status === 200) {
@@ -217,7 +259,7 @@ const AddPrintingCostScreen = () => {
           );
           toast.success(response.data.message);
           setisLoading(false);
-          router.push("/media/Contacts");
+          router.push("/media/PrintingCostMgmt");
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -242,6 +284,61 @@ const AddPrintingCostScreen = () => {
     }
   };
 
+  // const submitHandler = async () => {
+  //   if (hasCookie("token")) {
+  //     setisLoading(true);
+  //     let token = getCookie("token");
+  //     let db_name = getCookie("db_name");
+
+  //     let header = {
+  //       headers: {
+  //         Accept: "application/json",
+  //         Authorization: "Bearer ".concat(token),
+  //         db: db_name,
+  //         m_id: 319,
+  //       },
+  //     };
+
+  //     let oppBody = { ...userInfo };
+  //     oppBody.contact_owner = loginDetails.user_id;
+  //     try {
+  //       const response = await axios.post(
+  //         Baseurl + `/db/contacts`,
+  //         oppBody,
+  //         header
+  //       );
+  //       if (response.status === 204 || response.status === 200) {
+  //         await postFieldsFunc(
+  //           response.data.data.contact_id,
+  //           userInfo.db_contact_fields
+  //         );
+  //         toast.success(response.data.message);
+  //         setisLoading(false);
+  //         // router.push("/media/Contacts");
+  //       }
+  //     } catch (error) {
+  //       if (error?.response?.data?.status === 422) {
+  //         const taskObject = {};
+  //         const array = error?.response?.data?.data;
+  //         for (let i = 0; i < array.length; i++) {
+  //           const key = Object.keys(array[i])[0];
+  //           const value = Object.values(array[i])[0];
+  //           taskObject[key] = value;
+  //         }
+  //         setErrorData(taskObject);
+  //       }
+  //       if (error?.response?.data?.message) {
+  //         toast.error(error.response.data.message);
+  //       } else {
+  //         toast.error("Something went wrong!");
+  //       }
+  //       setisLoading(false);
+  //     }
+  //   } else {
+  //     toast.error("Please fill the Mandatory fileds");
+  //   }
+  // };
+
   const UpdateHandler = async () => {
     if (hasCookie("token")) {
       setisLoading(true);
@@ -257,14 +354,16 @@ const AddPrintingCostScreen = () => {
         },
       };
 
-      let newUserInfo = { ...userInfo, updated_on: DateNow };
+      let newUserInfo = { ...userInfo, updated_on: DateNow,pr_c_id:Number(id)};
+      let { status, ...newDataWithoutStatus } = newUserInfo;
+
 
       let newData = JSON.parse(JSON.stringify(newUserInfo));
 
       try {
         const response = await axios.put(
-          Baseurl + `/db/contacts`,
-          newData,
+          Baseurl + `/db/media/printingCost/updatePrintingCost`,
+          newDataWithoutStatus,
           header
         );
 
@@ -272,7 +371,7 @@ const AddPrintingCostScreen = () => {
           await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
           toast.success(response.data.message);
           setisLoading(false);
-          router.push("/media/Contacts");
+          router.push("/media/PrintingCostMgmt");
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -498,6 +597,8 @@ const AddPrintingCostScreen = () => {
     getState();
     getAccountsList();
     checkLogin();
+    getMediaTypes();
+    getPrintingMaterial();
     getusersList();
     setUserInfo({
       ...userInfo,
@@ -535,12 +636,12 @@ const AddPrintingCostScreen = () => {
     if (router.query.vw) [setViewMode(true)];
   }, [router.isReady, id]);
 
-  useEffect(() => {
-    if (userInfo.account_name !== null && !editMode) {
-      // call the api with this acoount name
-      getSingleAccountsList(userInfo.account_name);
-    }
-  }, [userInfo.account_name]);
+  // useEffect(() => {
+  //   if (userInfo.account_name !== null && !editMode) {
+  //     // call the api with this acoount name
+  //     getSingleAccountsList(userInfo.account_name);
+  //   }
+  // }, [userInfo.account_name]);
 
   useEffect(() => {
     // Accessing the accountName object when data changes
@@ -566,7 +667,8 @@ const AddPrintingCostScreen = () => {
               <Link href="/media/PrintingCostMgmt"> Printing Cost List </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
-              {viewMode ? "View" : <>{editMode ? "Edit" : "Add"}</>} Printing Cost
+              {viewMode ? "View" : <>{editMode ? "Edit" : "Add"}</>} Printing
+              Cost
             </li>
           </ol>
         </nav>
@@ -587,9 +689,8 @@ const AddPrintingCostScreen = () => {
               </div>
               <div className="add_user_form">
                 <div className="row">
-                  
 
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
                       className={
                         errorData?.account_name
@@ -617,7 +718,7 @@ const AddPrintingCostScreen = () => {
                           }
                         })}
                         onChange={(e) => {
-                          setUserInfo({ ...userInfo, account_name: e.value });
+                          setUserInfo({ ...userInfo, account_name:e.value,acc_id:e.value });
                           setErrorData({ ...errorData, account_name: "" });
                         }}
                       />
@@ -626,8 +727,234 @@ const AddPrintingCostScreen = () => {
                         {errorData?.account_name ? errorData.account_name : ""}
                       </span>
                     </div>
+                  </div> */}
+
+<div className="col-xl-3 col-md-3 col-sm-12 col-12">
+  <div
+    className={
+      errorData?.account_name ? "input_box errorBox" : "input_box"
+    }
+  >
+    <label htmlFor="task_name">Account Name *</label>
+    <Select
+      id={userInfo.task_status_id}
+      defaultValue=""
+      isDisabled={viewMode}
+      options={accountsList?.map((data) => {
+        return {
+          value: data?.acc_id,
+          label: data?.acc_name,
+        };
+      })}
+      value={
+        accountsList
+          ?.filter((data) => data.acc_id === userInfo.acc_id)
+          .map((data) => {
+            return {
+              value: data?.acc_id,
+              label: data?.acc_name,
+            };
+          })[0] || null
+      }
+      onChange={(e) => {
+        const selectedAccount = accountsList.find(account => account.acc_id === e.value);
+        setUserInfo({
+          ...userInfo,
+          
+          acc_name: selectedAccount.acc_name,
+          
+          acc_id: e.value,
+        });
+        setErrorData({ ...errorData, acc_name: "" });
+      }}
+    />
+    <span className="errorText">
+      {errorData?.acc_name ? errorData.acc_name : ""}
+    </span>
+  </div>
+</div>
+
+
+
+
+
+
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.m_t_id ? "input_box errorBox" : "input_box"
+                      }
+                    >
+                      <label htmlFor="media_type">Media Type *</label>
+                      <Select
+                        id="media_type"
+                        isDisabled={viewMode}
+                        defaultValue={""}
+                        options={mediaTypes?.map((item) => {
+                          return {
+                            value: item.m_t_id,
+                            label: item.m_t_name,
+                          };
+                        })}
+                        value={mediaTypes?.map((item) => {
+                          if (userInfo?.m_t_id == item?.m_t_id) {
+                            return {
+                              value: item.m_t_id,
+                              label: item.m_t_name,
+                            };
+                          }
+                        })}
+                        onChange={(e) => {
+                          setUserInfo({
+                            ...userInfo,
+                            m_t_id: e.value,
+                          });
+                          setErrorData({ ...errorData, m_t_id: "" });
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.m_t_id ? errorData.m_t_id : ""}
+                      </span>
+                    </div>
                   </div>
-                 
+
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.pr_m_id ? "input_box errorBox" : "input_box"
+                      }
+                    >
+                      <label htmlFor="media_type">Printing Material</label>
+                      <Select
+                        id="media_type"
+                        isDisabled={viewMode}
+                        defaultValue={""}
+                        options={printMaterial?.map((item) => {
+                          return {
+                            value: item.pr_m_id,
+                            label: item.pr_m_name,
+                          };
+                        })}
+                        value={printMaterial?.map((item) => {
+                          if (userInfo?.pr_m_id == item?.pr_m_id) {
+                            return {
+                              value: item.pr_m_id,
+                              label: item.pr_m_name,
+                            };
+                          }
+                        })}
+                        onChange={(e) => {
+                          setUserInfo({
+                            ...userInfo,
+                            pr_m_id: e.value,
+                          });
+                          setErrorData({ ...errorData, pr_m_id: "" });
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.pr_m_id ? errorData.pr_m_id : ""}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div className="input_box">
+                      <label htmlFor="pr_c_cost">Printing Cost/Sq. Ft. *</label>
+                      <input
+                        type="number"
+                        name="pr_c_cost"
+                        placeholder="Enter Mounting Cost/Sq. Ft."
+                        id="pr_c_cost"
+                        disabled={viewMode}
+                        className="form-control"
+                        onChange={(e) =>{
+                          const value = parseFloat(e.target.value) || null;
+
+                          setUserInfo({
+                            ...userInfo,
+                            pr_c_cost: value,
+                          })
+                        }}
+                        value={userInfo.pr_c_cost ? userInfo.pr_c_cost : ""}
+                      />
+                      <span className="errorText">
+                        {errorData?.pr_c_cost ? errorData.pr_c_cost : ""}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.status ? "input_box errorBox" : "input_box"
+                      }
+                    >
+                      <label htmlFor="site_status">Status</label>
+                      <Select
+                        id="site_status"
+                        isDisabled={viewMode}
+                        defaultValue=""
+                        options={[
+                          { value: "active", label: "Active" },
+                          { value: "inactive", label: "Inactive" },
+                        ]}
+                        value={{
+                          value: userInfo?.status,
+                          label:
+                            userInfo?.status === "active"
+                              ? "Active"
+                              : "Inactive",
+                        }}
+                        onChange={(e) => {
+                          setUserInfo({
+                            ...userInfo,
+                            status: e.value,
+                          });
+                          setErrorData({ ...errorData, status: "" });
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.status ? errorData.status : ""}
+                      </span>
+                    </div>
+                  </div> */}
+
+
+
+
+
+
+
+{/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+      <div className={errorData?.status ? "input_box errorBox" : "input_box"}>
+        <label htmlFor="site_status">Status</label>
+        <Select
+          id="site_status"
+          isDisabled={viewMode}
+          options={[
+            { value: 'active', label: 'Active' },
+            { value: 'inactive', label: 'Inactive' },
+          ]}
+          value={{
+            value: userInfo?.status?.toLowerCase(),
+            label: userInfo.status === 'ACTIVE' ? 'Active' : 'Inactive',
+          }}
+          onChange={(e) => {
+            setUserInfo({
+              ...userInfo,
+              status: e.value.toUpperCase(),
+            });
+            setErrorData({ ...errorData, status: '' });
+          }}
+        />
+        <span className="errorText">
+          {errorData?.status ? errorData.status : ''}
+        </span>
+      </div>
+    </div> */}
+
                 </div>
               </div>
 
@@ -682,7 +1009,6 @@ const AddPrintingCostScreen = () => {
                   </div>
                 </div>
               </div>
-
 
               <div className="add_user_form">
                 <div className="row">

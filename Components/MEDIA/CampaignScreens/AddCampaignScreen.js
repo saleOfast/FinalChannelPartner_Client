@@ -1,0 +1,1276 @@
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { Baseurl } from "../../../Utils/Constants";
+import { hasCookie, getCookie } from "cookies-next";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import { validEmail, validPhone, validZip } from "../../../Utils/regex";
+import moment from "moment";
+import { useSelector } from "react-redux";
+import { fetchData } from "../../../Utils/getReq";
+import Select from "react-select";
+import { Delete } from "@mui/icons-material";
+
+const costingDetailArray=[
+  { label: "Client Display Cost", id: "client_display_cost", fieldType: "currency" },
+  { label: "Client Mounting Cost", id: "client_mounting_cost", fieldType: "currency" },
+  { label: "Client Printing Cost", id: "client_printing_cost", fieldType: "currency" },
+  { label: "Total Client Cost", id: "total_client_cost", fieldType: "currency" },
+  { label: "Total Sales Order Value", id: "total_sales_order_value", fieldType: "currency" },
+  { label: "Total Credit Note Value", id: "total_credit_note_value", fieldType: "currency" },
+  { label: "Total Receipt from Client", id: "total_receipt_from_client", fieldType: "currency" },
+  { label: "Total Client Outstanding", id: "total_client_outstanding", fieldType: "currency" },
+  { label: "Total NDP Days", id: "total_ndp_days", fieldType: "number" },
+  { label: "Total Sales Invoice Value", id: "total_sales_invoice_value", fieldType: "currency" },
+  { label: "Total Vendor Display Cost", id: "total_vendor_display_cost", fieldType: "currency" },
+  { label: "Total Vendor Mounting Cost", id: "total_vendor_mounting_cost", fieldType: "currency" },
+  { label: "Total Vendor Printing Cost", id: "total_vendor_printing_cost", fieldType: "currency" },
+  { label: "Total Vendor Cost", id: "total_vendor_cost", fieldType: "currency" },
+  { label: "Total Purchase Order Value", id: "total_purchase_order_value", fieldType: "currency" },
+  { label: "Total Debit Note Value", id: "total_debit_note_value", fieldType: "currency" },
+  { label: "Total Vendor Payment", id: "total_vendor_payment", fieldType: "currency" },
+  { label: "Total Vendor Outstanding", id: "total_vendor_outstanding", fieldType: "currency" },
+  { label: "Total NDP Value", id: "total_ndp_value", fieldType: "currency" }
+]
+
+const marginInfoArray=[
+  { label: "Overall Margin", id: "overall_margin", fieldType: "currency" },
+  { label: "Display Margin", id: "display_margin", fieldType: "currency" },
+  { label: "Mounting Margin", id: "mounting_margin", fieldType: "currency" },
+  { label: "Printing Margin", id: "printing_margin", fieldType: "currency" },
+  { label: "Overall Margin %", id: "overall_margin_percentage", fieldType: "percentage" },
+  { label: "Display Margin %", id: "display_margin_percentage", fieldType: "percentage" },
+  { label: "Mounting Margin %", id: "mounting_margin_percentage", fieldType: "percentage" },
+  { label: "Printing Margin %", id: "printing_margin_percentage", fieldType: "percentage" },
+]
+
+
+
+const AddCampaignScreen = () => {
+  const sideView = useSelector((state) => state.sideView.value);
+
+  const router = useRouter();
+  const { id } = router.query;
+  const { ac_id } = router.query;
+
+  const [countrylist, setcountrylist] = useState([]);
+  const [statelist, setStatelist] = useState([]);
+  const [citylist, setCitylist] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [accountsList, setAccountsList] = useState([]);
+  const [singleAccount, setSingleAccount] = useState([]);
+  const [isLoading, setisLoading] = useState(false);
+  const [addInfo, setAddInfo] = useState([]);
+  const [viewMode, setViewMode] = useState(false);
+  const [usersList, setUsersLsit] = useState([]);
+  const [iscollapse, setiscollapse] = useState(false);
+  const [errorData, setErrorData] = useState({});
+  const [contError, setContError] = useState({});
+  const [errorToast, setErrorToast] = useState(false);
+  const [loginDetails, setloginDetails] = useState({});
+  const [campaignStatusList,setCampaignStatusList]=useState([])
+  const [proofOfConList,setProofOfConList]=useState([])
+  const [busiessTypeList,setBusinessTypeList]=useState([])
+  const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
+  const [newFields, setNewFields] = useState({
+    field_lable: null,
+    input_type: null,
+    field_type: null,
+    field_size: null,
+    option: null,
+  });
+
+  const [userInfo, setUserInfo] = useState({
+    campaign_id: null,
+    campaign_name: '',
+    acc_id: '',
+    contact: '',
+    campaign_brand: '',
+    cmpn_s_id: null,
+    campaign_start_date: '',
+    campaign_end_date: '',
+    campaign_duration: 0,
+    cmpn_p_id: null,
+    proof_attachment: null,
+    cmpn_b_t_id: null,
+    client_display_cost: 0,
+    client_mounting_cost: 0,
+    client_printing_cost: 0,
+    total_client_cost: 0,
+    total_sales_order_value: 0,
+    total_credit_note_value: 0,
+    total_receipt_from_client: 0,
+    total_client_outstanding: 0,
+    total_ndp_days: 0,
+    total_sales_invoice_value: 0,
+    total_vendor_display_cost: 0,
+    total_vendor_mounting_cost: 0,
+    total_vendor_printing_cost: 0,
+    total_vendor_cost: 0,
+    total_purchase_order_value: 0,
+    total_debit_note_value: 0,
+    total_vendor_payment: 0,
+    total_vendor_outstanding: 0,
+    total_ndp_value: 0,
+    overall_margin: 0,
+    display_margin: 0,
+    mounting_margin: 0,
+    printing_margin: 0,
+    overall_margin_percentage: 0,
+    display_margin_percentage: 0,
+    mounting_margin_percentage: 0,
+    printing_margin_percentage: 0,
+    createdAt:DateNow,
+    updatedAt:DateNow,
+    gst: false,
+    cgst: false,
+    sgst: false,
+  });
+
+  async function getAccountsList() {
+    await fetchData(
+      `/db/account?platform_id=5`,
+      setAccountsList,
+      errorToast,
+      setErrorToast
+    );
+  }
+  
+  async function getCampaignStatusList() {
+    await fetchData(
+      `/db/media/campaign/campaignStatus/getCampaignStatus`,
+      setCampaignStatusList,
+      errorToast,
+      setErrorToast
+    );
+  }
+
+  async function getProofOfConList() {
+    await fetchData(
+      `/db/media/campaign/campaignProofRoutes/getCampaignProof`,
+      setProofOfConList,
+      errorToast,
+      setErrorToast
+    );
+  }
+
+  async function getBusinessTypeList() {
+    await fetchData(
+      `/db/media/campaign/campaignBusinessTypeRoutes/getCampaignBusinessType`,
+      setBusinessTypeList,
+      errorToast,
+      setErrorToast
+    );
+  }
+
+  const getusersList = async (data) => {
+    let url;
+    if (data?.isDB == true) {
+      url = "/db/users?mode=ul";
+    } else {
+      url = "/db/users";
+    }
+    await fetchData(url, setUsersLsit, errorToast, setErrorToast);
+  };
+
+  function checkLogin() {
+    if (hasCookie("userInfo")) {
+      let token = getCookie("userInfo");
+      let data = JSON.parse(token);
+      setloginDetails(data);
+      getusersList(data);
+      // setUserInfo({ ...userInfo, contact_owner: data.user_id });
+    }
+  }
+
+
+  const getSingleData = async (id) => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id: 29,
+        },
+      };
+
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/contacts?c_id=${id}`,
+          header
+        );
+        setUserInfo(response.data.data);
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+  const submitHandler = async () => {
+    if (hasCookie("token")) {
+      setisLoading(true);
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id: 319,
+        },
+      };
+
+      let oppBody = { ...userInfo };
+      oppBody.contact_owner = loginDetails.user_id;
+      try {
+        const response = await axios.post(
+          Baseurl + `/db/contacts`,
+          oppBody,
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          await postFieldsFunc(
+            response.data.data.contact_id,
+            userInfo.db_contact_fields
+          );
+          toast.success(response.data.message);
+          setisLoading(false);
+          router.push("/media/Campaigns");
+        }
+      } catch (error) {
+        if (error?.response?.data?.status === 422) {
+          const taskObject = {};
+          const array = error?.response?.data?.data;
+          for (let i = 0; i < array.length; i++) {
+            const key = Object.keys(array[i])[0];
+            const value = Object.values(array[i])[0];
+            taskObject[key] = value;
+          }
+          setErrorData(taskObject);
+        }
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
+    } else {
+      toast.error("Please fill the Mandatory fileds");
+    }
+  };
+
+  const UpdateHandler = async () => {
+    if (hasCookie("token")) {
+      setisLoading(true);
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id: 321,
+        },
+      };
+
+      let newUserInfo = { ...userInfo, updated_on: DateNow };
+
+      let newData = JSON.parse(JSON.stringify(newUserInfo));
+
+      try {
+        const response = await axios.put(
+          Baseurl + `/db/contacts`,
+          newData,
+          header
+        );
+
+        if (response.status === 200 || response.status === 204) {
+          await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
+          toast.success(response.data.message);
+          setisLoading(false);
+          router.push("/media/Campaigns");
+        }
+      } catch (error) {
+        if (error?.response?.data?.status === 422) {
+          const taskObject = {};
+          const array = error?.response?.data?.data;
+          for (let i = 0; i < array.length; i++) {
+            const key = Object.keys(array[i])[0];
+            const value = Object.values(array[i])[0];
+            taskObject[key] = value;
+          }
+          setErrorData(taskObject);
+        }
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
+    } else {
+      toast.error("Please fill the Mandatory fileds");
+    }
+  };
+
+  const createInputField = (e) => {
+    e.preventDefault();
+    const { field_lable, input_type, field_type, field_size, option } =
+      newFields;
+
+    const showError = (errorMessage) => {
+      toast.error(errorMessage);
+    };
+
+    const validateField = () => {
+      if (!field_lable) {
+        showError("Please enter the Field Name");
+        return false;
+      } else if (!input_type) {
+        showError("Please select the Input Type");
+        return false;
+      } else if (input_type === "input" && !field_type) {
+        showError("Please select the Field Type");
+        return false;
+      }
+      // else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
+      //     showError('Please Enter Field Size');
+      //     return false;
+      // }
+      else if (input_type === "select" && !option) {
+        showError("Please select input Options");
+        return false;
+      }
+      return true;
+    };
+
+    if (validateField()) {
+      const inputReq = {
+        ...newFields,
+        field_name: field_lable.replaceAll(" ", "_"),
+        navigate_type: userInfo.navigate_type,
+        // field_order: inputsData.length + 1
+      };
+      let arr = userInfo;
+      arr.db_contact_fields.push(newFields);
+      setUserInfo(arr);
+      setiscollapse(!iscollapse);
+      setNewFields({
+        field_lable: null,
+        input_type: null,
+        field_type: null,
+        option: null,
+        field_size: null,
+      });
+    }
+  };
+
+  async function postFieldsFunc(id, data) {
+    if (hasCookie("token")) {
+      setisLoading(true);
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+      data?.map((item) => {
+        item.contact_id = id;
+      });
+
+      try {
+        const response = await axios.post(
+          Baseurl + `/db/contacts/field`,
+          data,
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response.data.message);
+          setisLoading(false);
+        }
+      } catch (error) {
+        if (error?.response?.data?.status === 422) {
+          const taskObject = {};
+          const array = error?.response?.data?.data;
+          for (let i = 0; i < array.length; i++) {
+            const key = Object.keys(array[i])[0];
+            const value = Object.values(array[i])[0];
+            taskObject[key] = value;
+          }
+          setErrorData(taskObject);
+        }
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
+    }
+  }
+
+  const AddFieldsFunc = (e) => {
+    e.preventDefault();
+    setiscollapse(true);
+  };
+
+  const inputClass = (value) => {
+    const inputClasses = {
+      text: "form-control",
+      date: "form-control",
+      email: "form-control",
+      number: "form-control",
+      checkbox: "form-check-input ms-3",
+    };
+    return inputClasses[value] || "";
+  };
+
+  const updateFieldInfo = (e, ind) => {
+    let newData = JSON.parse(JSON.stringify(userInfo));
+
+    if (newData.db_contact_fields[ind].field_type === "checkbox") {
+      newData.db_contact_fields[ind].input_value = e.target.checked;
+    } else {
+      newData.db_contact_fields[ind].input_value = e.target.value;
+    }
+
+    // newData.db_contact_fields[ind].input_value = e.target.value
+    setUserInfo(newData);
+    console.log("here", e.target.value);
+  };
+
+  const getContactFieldList = async () => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/field?nav_type=contact`,
+          header
+        );
+        setUserInfo({
+          ...userInfo,
+          db_contact_fields: response.data.data,
+          updated_on: DateNow,
+          created_on: DateNow,
+        });
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+  
+  
+
+  useEffect(() => {
+    getProofOfConList();
+    getCampaignStatusList();
+    getBusinessTypeList()
+    getAccountsList();
+    checkLogin();
+    getusersList();
+    setUserInfo({
+      ...userInfo,
+      created_on: DateNow,
+      updated_on: DateNow,
+    });
+  }, []);
+
+  const handleDateChange = (e) => {
+    const { id, value } = e.target;
+    let updatedUserInfo = { ...userInfo, [id]: value };
+  
+    // Calculate duration if both dates are selected
+    if (updatedUserInfo.campaign_start_date && updatedUserInfo.campaign_end_date) {
+      const startDate = new Date(updatedUserInfo.campaign_start_date);
+      const endDate = new Date(updatedUserInfo.campaign_end_date);
+  
+      // Calculate the difference in time
+      const timeDiff = endDate - startDate;
+      // Convert time difference to days
+      const duration = timeDiff / (1000 * 60 * 60 * 24);
+  
+      // Ensure duration is non-negative (in case of invalid date selection)
+      updatedUserInfo.campaign_duration = duration >= 0 ? duration : 0;
+    }
+  
+    setUserInfo(updatedUserInfo);
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+  
+    if (file && file.type !== 'application/pdf') {
+      toast.error('Only PDF files are allowed');
+      event.target.value = '';
+    } else {
+      setUserInfo({
+        ...userInfo,
+        proof_attachment:file
+      })
+    }
+  };
+
+  const handleCostingInputChange = (e, fieldType) => {
+    const { id, value } = e.target;
+    let isValid = true;
+  
+    switch (fieldType) {
+      case 'currency':
+        isValid = /^\d*(\.\d{0,2})?$/.test(value); // Allow digits and up to two decimal places
+        break;
+      case 'number':
+        isValid = /^\d*$/.test(value); // Allow only digits
+        break;
+      default:
+        break;
+    }
+  
+    if (isValid) {
+      setUserInfo(prevState => {
+        const updatedInfo = { ...prevState, [id]: value };
+  
+        // Calculate Total Client Cost
+        updatedInfo.total_client_cost = parseFloat(updatedInfo.client_display_cost || 0) +
+                                        parseFloat(updatedInfo.client_mounting_cost || 0) +
+                                        parseFloat(updatedInfo.client_printing_cost || 0);
+  
+        return updatedInfo;
+      });
+    }
+  };
+  
+  const handleMarginInfoChange = (e, fieldType) => {
+    const { id, value } = e.target;
+    let isValid = true;
+  
+    switch (fieldType) {
+      case 'currency':
+        isValid = /^\d*(\.\d{0,2})?$/.test(value); // Allow digits and up to two decimal places
+        break;
+      case 'percentage':
+        isValid = /^\d{0,3}$/.test(value); // Allow only digits
+        break;
+      default:
+        break;
+    }
+  
+    if (isValid) {
+      setUserInfo(prevState => {
+        const updatedInfo = { ...prevState, [id]: value };
+  
+        return updatedInfo;
+      });
+    }
+  };
+  
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    if (router.query.id) {
+      setEditMode(true);
+      getSingleData(id);
+    } else {
+      if (userInfo !== undefined) {
+        getContactFieldList();
+      }
+    }
+    if (router.query.vw) [setViewMode(true)];
+  }, [router.isReady, id]);
+
+
+  return (
+    <div className={`main_Box  ${sideView}`}>
+      <div className="bread_head">
+        <h3 className="content_head">
+          {" "}
+          {viewMode ? "VIEW" : <>{editMode ? "EDIT" : "ADD"}</>} PRINTING COST
+        </h3>
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb">
+            <li className="breadcrumb-item fw-bolder ">
+              <Link href="/media">Home</Link>
+            </li>
+            <li className="breadcrumb-item fw-bolder">
+              <Link href="/media/Campaigns"> Campaigns </Link>
+            </li>
+            <li className="breadcrumb-item active" aria-current="page">
+              {viewMode ? "View" : <>{editMode ? "Edit" : "Add"}</>} Campaigns
+            </li>
+          </ol>
+        </nav>
+      </div>
+      <div className="main_content">
+        <div className="Add_user_screen">
+          <div className="row">
+            {/* <div
+              className={
+                viewMode
+                  ? `col-xl-9 col-md-9 col-sm-12 col-12`
+                  : `col-xl-12 col-md-12 col-sm-12 col-12`
+              }
+            > */}
+            <div
+              className={ `col-xl-12 col-md-12 col-sm-12 col-12`}
+            >
+              
+              <div className="add_screen_head">
+                <span className="text_bold">Fill Details</span> ( * Fields are
+                mandatory)
+              </div>
+              <div className="add_user_form">
+                <div className="row">
+                  
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.campaign_name ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="campaign_name">Campaign Name *</label>
+                  <input
+                    type="text"
+                    id="campaign_name"
+                    className="form-control"
+                    disabled={viewMode}
+                    placeholder="Enter Campaign Name"
+                    value={userInfo.campaign_name}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Allow only alphabetic characters
+                      if (/^[a-zA-Z\s]*$/.test(value)) {
+                        setUserInfo({ ...userInfo, campaign_name: value });
+                      }
+                    }}
+                  />
+                  <span className="errorText">{errorData?.campaign_name ? errorData.campaign_name : ""}</span>
+                </div>
+                </div>
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.account_name
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="client_name">Client Name *</label>
+                      <Select
+                        id="client_name"
+                        defaultValue={""}
+                        placeholder="Enter Client Name"
+                        isDisabled={viewMode}
+                        options={accountsList?.map((data, index) => {
+                          return {
+                            value: data?.acc_id,
+                            label: data?.acc_name,
+                          };
+                        })}
+                        value={accountsList?.map((data, index) => {
+                          if (userInfo.acc_id === data.acc_id) {
+                            return {
+                              value: data?.acc_id,
+                              label: data?.acc_name,
+                            };
+                          }
+                        })}
+                        onChange={(e) => {
+                          setUserInfo({ ...userInfo, acc_id: e.value,contact:accountsList?.find((item)=>item?.acc_id==e.value)?.contact_no });
+                          setErrorData({ ...errorData, acc_id: "" });
+                        }}
+                      />
+                      <span className="errorText">
+                        {" "}
+                        {errorData?.account_name ? errorData.account_name : ""}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.cmpn_s_id
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="client_name">Campaign Status *</label>
+                      <Select
+                        id="client_name"
+                        defaultValue={""}
+                        placeholder="Select Campaign Status"
+                        isDisabled={viewMode}
+                        options={campaignStatusList?.map((data, index) => {
+                          return {
+                            value: data?.cmpn_s_id,
+                            label: data?.cmpn_s_name,
+                          };
+                        })}
+                        value={campaignStatusList?.map((data, index) => {
+                          if (userInfo.cmpn_s_id === data.cmpn_s_id) {
+                            return {
+                              value: data?.cmpn_s_id,
+                              label: data?.cmpn_s_name,
+                            };
+                          }
+                        })}
+                        onChange={(e) => {
+                          setUserInfo({ ...userInfo, cmpn_s_id: e.value });
+                          setErrorData({ ...errorData, cmpn_s_id: "" });
+                        }}
+                      />
+                      <span className="errorText">
+                        {" "}
+                        {errorData?.cmpn_s_id ? errorData.cmpn_s_id : ""}
+                      </span>
+                    </div>
+                  </div>
+
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className={errorData?.contact ? "input_box errorBox" : "input_box"}>
+                    <label htmlFor="contact">Contact *</label>
+                    <input
+                    type="text"
+                    id="contact"
+                    className="form-control"
+                    disabled
+                    value={userInfo.contact}
+                  />
+                    <span className="errorText">{errorData?.contact ? errorData.contact : ""}</span>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.campaign_brand ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="campaign_brand">Campaign Brand *</label>
+                  <input
+                    type="text"
+                    id="campaign_brand"
+                    className="form-control"
+                    disabled={viewMode}
+                    placeholder="Enter Campaign Brand"
+                    value={userInfo?.campaign_brand}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Allow only alphabetic characters
+                      if (/^[a-zA-Z\s]*$/.test(value)) {
+                        setUserInfo({ ...userInfo, campaign_brand: value });
+                      }
+                    }}
+                  />
+                  <span className="errorText">{errorData?.campaign_brand ? errorData.campaign_brand : ""}</span>
+                </div>
+                </div>
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.campaign_start_date ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="campaign_start_date">Campaign Start Date *</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    id="campaign_start_date"
+                    min={new Date().toISOString().split('T')[0]} 
+                    onPaste={(e) => e.preventDefault()}
+                    onKeyDown={(e) => e.preventDefault()}
+                    value={userInfo.campaign_start_date}
+                    onChange={handleDateChange}
+                  />
+                  <span className="errorText">{errorData?.campaign_start_date ? errorData.campaign_start_date : ""}</span>
+                </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.campaign_end_date ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="campaign_end_date">Campaign End Date *</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    id="campaign_end_date"
+                    min={new Date().toISOString().split('T')[0]} 
+                    onPaste={(e) => e.preventDefault()}
+                    onKeyDown={(e) => e.preventDefault()}
+                    value={userInfo.campaign_end_date}
+                    onChange={handleDateChange}
+                  />
+                  <span className="errorText">{errorData?.campaign_end_date ? errorData.campaign_end_date : ""}</span>
+                </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.campaign_duration ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="campaign_duration">Campaign Duration *</label>
+                  <input
+                    type="text"
+                    id="campaign_duration"
+                    className="form-control"
+                    disabled
+                    value={`${userInfo?.campaign_duration} days` || "0days"}
+                  />
+                  <span className="errorText">{errorData?.campaign_duration ? errorData.campaign_duration : ""}</span>
+                </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.cmpn_p_id
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="client_name">Proof of Confirmation *</label>
+                      <Select
+                        id="client_name"
+                        defaultValue={""}
+                        placeholder="Select Proof of Confirmation"
+                        isDisabled={viewMode}
+                        options={proofOfConList?.map((data, index) => {
+                          return {
+                            value: data?.cmpn_p_id,
+                            label: data?.cmpn_p_name,
+                          };
+                        })}
+                        value={proofOfConList?.map((data, index) => {
+                          if (userInfo.cmpn_p_id === data.cmpn_p_id) {
+                            return {
+                              value: data?.cmpn_p_id,
+                              label: data?.cmpn_p_name,
+                            };
+                          }
+                        })}
+                        onChange={(e) => {
+                          setUserInfo({ ...userInfo, cmpn_p_id: e.value });
+                          setErrorData({ ...errorData, cmpn_p_id: "" });
+                        }}
+                      />
+                      <span className="errorText">
+                        {" "}
+                        {errorData?.cmpn_p_id ? errorData.cmpn_p_id : ""}
+                      </span>
+                    </div>
+                  </div>
+              
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.proof_attachment ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="campaign_brand">Proof Attachment *</label>
+                  <input
+                    type="file"
+                    id="proof_attachment"
+                    accept="application/pdf"
+                    className="form-control"
+                    disabled={viewMode}
+                    placeholder="Enter Campaign Brand"
+                    onChange={handleFileChange}
+                  />
+                  <span className="errorText">{errorData?.proof_attachment ? errorData.proof_attachment : ""}</span>
+                </div>
+                </div>
+             
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.cmpn_b_t_id
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="client_name">Business Type  *</label>
+                      <Select
+                        id="client_name"
+                        defaultValue={""}
+                        placeholder="Select Business Type "
+                        isDisabled={viewMode}
+                        options={busiessTypeList?.map((data, index) => {
+                          return {
+                            value: data?.cmpn_b_t_id,
+                            label: data?.cmpn_b_t_name,
+                          };
+                        })}
+                        value={busiessTypeList?.map((data, index) => {
+                          if (userInfo.cmpn_b_t_id === data.cmpn_b_t_id) {
+                            return {
+                              value: data?.cmpn_b_t_id,
+                              label: data?.cmpn_b_t_name,
+                            };
+                          }
+                        })}
+                        onChange={(e) => {
+                          setUserInfo({ ...userInfo, cmpn_b_t_id: e.value });
+                          setErrorData({ ...errorData, cmpn_b_t_id: "" });
+                        }}
+                      />
+                      <span className="errorText">
+                        {" "}
+                        {errorData?.cmpn_b_t_id ? errorData.cmpn_b_t_id : ""}
+                      </span>
+                    </div>
+                  </div>
+
+
+                 
+                </div>
+              </div>
+
+              <div className="add_screen_head">
+                <span className="text_bold">Costing Details </span>
+              </div>
+              <div className="add_user_form">
+              <div className="row ">
+                      {
+                costingDetailArray?.map((item)=>(
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={item.id}>
+                  <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
+                    <label htmlFor="campaign_brand">{item?.label} </label>
+                    <input
+                      type="text"
+                      id={item?.id}
+                      className="form-control"
+                      disabled={item?.id==="total_client_cost"}
+                      placeholder={`Enter ${item?.label}`}
+                      value={userInfo?.[item?.id]}
+                      onChange={(e) => handleCostingInputChange(e,item?.fieldType)}
+                    />
+                    <span className="errorText">{errorData?.[item?.id] ? errorData?.[item?.id] : ""}</span>
+                  </div>
+                  </div>
+                ))
+              }
+              </div>
+              </div>
+
+              <div className="add_screen_head">
+                <span className="text_bold">Margin Information </span>
+              </div>
+              <div className="add_user_form">
+              <div className="row ">
+                      {
+                marginInfoArray?.map((item)=>(
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={item.id}>
+                  <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
+                    <label htmlFor="campaign_brand">{item?.label} </label>
+                    <input
+                      type="text"
+                      id={item?.id}
+                      className="form-control"
+                      
+                      placeholder={`Enter ${item?.label}`}
+                      value={userInfo?.[item?.id]}
+                      onChange={(e) => handleMarginInfoChange(e,item?.fieldType)}
+                    />
+                    <span className="errorText">{errorData?.[item?.id] ? errorData?.[item?.id] : ""}</span>
+                  </div>
+                  </div>
+                ))
+              }
+              </div>
+              </div>
+              
+              
+                
+
+
+              <div className="add_screen_head">
+                <span className="text_bold">System Information </span>
+              </div>
+
+              <div className="add_user_form">
+                <div className="row">
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div className="input_box">
+                      <label htmlFor="created_on">Created On</label>
+                      <input
+                        type="datetime-local"
+                        name="per_cont"
+                        id="per_cont"
+                        disabled
+                        className="form-control"
+                        onChange={(e) =>
+                          setUserInfo({
+                            ...userInfo,
+                            created_on: e.target.value,
+                          })
+                        }
+                        value={moment(userInfo?.created_on).format(
+                          "YYYY-MM-DDTHH:mm"
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div className="input_box">
+                      <label htmlFor="last_modified">Last Modified On</label>
+                      <input
+                        type="datetime-local"
+                        name="per_cont"
+                        id="per_cont"
+                        disabled
+                        className="form-control"
+                        onChange={(e) =>
+                          setUserInfo({
+                            ...userInfo,
+                            updated_on: e.target.value,
+                          })
+                        }
+                        value={moment(userInfo?.updated_on).format(
+                          "YYYY-MM-DDTHH:mm"
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div className="add_user_form">
+                <div className="row">
+                  {userInfo.db_contact_fields?.map(
+                    (
+                      {
+                        option,
+                        field_name,
+                        field_lable,
+                        field_type,
+                        input_type,
+                        input_value,
+                      },
+                      ind
+                    ) => (
+                      <div
+                        className="col-xl-3 col-md-3 col-sm-12 col-12"
+                        key={ind}
+                      >
+                        <div className="input_box">
+                          <label htmlFor={field_name + ind}>
+                            {" "}
+                            {field_lable}{" "}
+                          </label>
+                          {input_type === "input" ? (
+                            <input
+                              type={field_type}
+                              className={inputClass(field_type)}
+                              id={field_name + ind}
+                              disabled={viewMode}
+                              name={field_name}
+                              placeholder={field_lable}
+                              onChange={(e) => updateFieldInfo(e, ind)}
+                              checked={input_value == "1" ? true : false}
+                              value={input_value}
+                            />
+                          ) : null}
+                          {input_type === "select" ? (
+                            <select
+                              onChange={(e) => updateFieldInfo(e, ind)}
+                              name={field_name}
+                              id={field_name + ind}
+                              className="form-control"
+                              value={input_value}
+                              disabled={viewMode}
+                            >
+                              <option value="">Select {field_lable}</option>
+                              {option?.split(",").map((data, i) => (
+                                <option value={data} key={i}>
+                                  {data}
+                                </option>
+                              ))}
+                            </select>
+                          ) : null}
+                        </div>
+                      </div>
+                    )
+                  )}
+
+                  {iscollapse && (
+                    <div className="addFieldsForm py-5">
+                      <div className="row">
+                        <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                          <div className="input_box">
+                            <label htmlFor="newFieldName">Field Name</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="newFieldName"
+                              disabled={viewMode}
+                              placeholder="Field Name"
+                              onChange={(e) =>
+                                setNewFields({
+                                  ...newFields,
+                                  field_lable: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                        <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                          <div className="input_box">
+                            <label htmlFor="newFieldType">Field Type</label>
+                            <select
+                              name="newFieldType"
+                              className="form-control"
+                              disabled={viewMode}
+                              id="newFieldType"
+                              onChange={(e) =>
+                                setNewFields({
+                                  ...newFields,
+                                  input_type: e.target.value,
+                                })
+                              }
+                            >
+                              <option>Select Field Type</option>
+                              <option value="input">Input Box</option>
+                              <option value="select">Select Box</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {newFields.input_type === "input" && (
+                          <>
+                            <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                              <div className="input_box">
+                                <label htmlFor="newInputType">Input Type</label>
+                                <select
+                                  name="newInputType"
+                                  className="form-control"
+                                  disabled={viewMode}
+                                  onChange={(e) =>
+                                    setNewFields({
+                                      ...newFields,
+                                      field_type: e.target.value,
+                                    })
+                                  }
+                                  id="newInputType"
+                                >
+                                  <option>Select Input Type</option>
+                                  <option value="text">Text</option>
+                                  <option value="email">Email</option>
+                                  <option value="checkbox">Checkbox</option>
+                                  <option value="number">Number</option>
+                                  <option value="date">Date</option>
+                                </select>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        
+
+                        {newFields.input_type === "select" && (
+                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                            <div className="input_box">
+                              <label htmlFor="newKeywords">
+                                Select Keywords
+                              </label>
+                              <input
+                                type="text"
+                                name="newKeywords"
+                                disabled={viewMode}
+                                className="form-control"
+                                placeholder="e.g. Name, age, gender"
+                                id="newKeywords"
+                                onChange={(e) =>
+                                  setNewFields({
+                                    ...newFields,
+                                    option: e.target.value,
+                                  })
+                                }
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="btn-row my-4">
+                        {/* <button onClick={"AddFieldsFunc"} className="btn btn-light me-3">Cancel</button> */}
+                        <button
+                          onClick={createInputField}
+                          className="btn btn-success"
+                        >
+                          Create Field
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  <div className="text-end">
+                    <div className="submit_btn">
+                      {/* {viewMode ? null : (
+                        <div className="add_screen_head">
+                          <span className="text_bold">
+                            <button
+                              className="btn btn-primary "
+                              onClick={AddFieldsFunc}
+                            >
+                              {" "}
+                              Add More Fields
+                            </button>{" "}
+                          </span>
+                        </div>
+                      )} */}
+                      {viewMode ? null : (
+                        <>
+                          <Link href="/media/PrintingCostMgmt">
+                            <button className="btn btn-cancel m-3 ">
+                              Cancel
+                            </button>
+                          </Link>
+                          {editMode ? (
+                            <button
+                              disabled={isLoading}
+                              className="btn btn-primary"
+                              onClick={UpdateHandler}
+                            >
+                              {isLoading ? "Loading..." : "Update"}
+                            </button>
+                          ) : (
+                            <button
+                              disabled={isLoading}
+                              className="btn btn-primary"
+                              onClick={submitHandler}
+                            >
+                              {isLoading ? "Loading..." : "Save & Submit"}
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AddCampaignScreen;

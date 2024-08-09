@@ -11,15 +11,15 @@ const ManageProofOfConfirmationTab = ({ deleteConfirm, disableConfirm, dataList,
 
   const columns = [
     {
-      name: 'm_t_name',
-      label: "Media Type Name",
+      name: 'cmpn_p_name',
+      label: "Proof Of Confirmation Name",
       options: {
         filter: true,
       }
     },
     {
-      name: 'm_t_code',
-      label: "Media Type Code",
+      name: 'cmpn_p_code',
+      label: "Proof Of Confirmation Code",
       options: {
         filter: true,
       }
@@ -41,7 +41,7 @@ const ManageProofOfConfirmationTab = ({ deleteConfirm, disableConfirm, dataList,
       }
     },
     {
-      name: 'm_t_id',
+      name: 'cmpn_p_id',
       label: "Action",
       options: {
         filter: false,

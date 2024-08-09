@@ -1,5 +1,4 @@
-// code with media
-
+// code without media
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import PlusIcon from "../Svg/PlusIcon";
@@ -11,11 +10,11 @@ import { toast } from "react-toastify";
 import Button from "react-bootstrap/Button";
 import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
-import dynamic from "next/dynamic";
-import Select from "react-select";
-const DynamicTable = dynamic(() => import("./AccountTypeScreenTab"), {
-  ssr: false,
-});
+import dynamic from 'next/dynamic'
+const DynamicTable = dynamic(
+  () => import('./AccountTypeScreenTab'),
+  { ssr: false }
+)
 const AccountTypeScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
 
@@ -25,8 +24,6 @@ const AccountTypeScreen = () => {
   const [editMode, setEditMode] = useState(false);
   const [disableShowConfirm, setdisableShowConfirm] = useState(false);
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(1);
-  const [addAccountselectedOption, setAddAccountSelectedOption] = useState(1);
   const [confirmText, setconfirmText] = useState("");
   const [currObj, setcurrObj] = useState({ account_type_id: "", action: "" });
   const [loader, setLoader] = useState(false);
@@ -70,7 +67,7 @@ const AccountTypeScreen = () => {
   }
 
   const getDataList = async () => {
-    setLoader(true);
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -80,19 +77,18 @@ const AccountTypeScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 145,
+          m_id: 145
         },
       };
 
-   
       try {
-        const response = await axios.get(Baseurl + `/db/account/type?platform_id=${selectedOption}`, header);
+        const response = await axios.get(Baseurl + `/db/account/type`, header);
         if (response?.status == 200 || response?.status == 201) {
-          setLoader(false);
+          setLoader(false)
           setDataList(response.data.data);
         }
       } catch (error) {
-        setLoader(false);
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
@@ -116,7 +112,7 @@ const AccountTypeScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 148,
+          m_id: 148
         },
       };
 
@@ -151,7 +147,7 @@ const AccountTypeScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 149,
+          m_id: 149
         },
       };
 
@@ -189,10 +185,10 @@ const AccountTypeScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id: 146,
+            m_id: 146
           },
         };
-          userInfo.platform_id=addAccountselectedOption;
+
         try {
           const response = await axios.post(
             Baseurl + `/db/account/type`,
@@ -228,10 +224,9 @@ const AccountTypeScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id: 148,
+            m_id: 148
           },
         };
-        userInfo.platform_id = addAccountselectedOption
 
         try {
           const response = await axios.put(
@@ -257,17 +252,7 @@ const AccountTypeScreen = () => {
 
   useEffect(() => {
     getDataList();
-  }, [selectedOption]);
-
-  const handleChange = (selected) => {
-    const value = selected.value === "CRM" ? 1 : 5;
-    setSelectedOption(value);
-  };
-
-  const addAccounthandleChange = (selected) => {
-    const value = selected.value === "CRM" ? 1 : 5;
-    setAddAccountSelectedOption(value);
-  };
+  }, []);
 
   return (
     <>
@@ -301,31 +286,7 @@ const AccountTypeScreen = () => {
         </div>
         <div className="main_content">
           <div className="table_screen">
-            <div className="top_btn_sec" style={{ textAlign: "left" }}>
-              
-        
-        
-
-              <div
-                className="col-xl-3 col-md-3 col-sm-3 col-3"
-                style={{ marginLeft: "20px" }}
-              >
-                <div className="input_box">
-                  <Select
-                    id="select_option"
-                    value={{
-                      value: selectedOption === 1 ? "CRM" : "Media",
-                      label: selectedOption === 1 ? "CRM" : "Media",
-                    }}
-                    options={[
-                      { value: "CRM", label: "CRM" },
-                      { value: "Media", label: "Media" },
-                    ]}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
+            <div className="top_btn_sec">
               <button
                 className="btn btn-primary Add_btn"
                 onClick={OpenAddModal}
@@ -341,7 +302,6 @@ const AccountTypeScreen = () => {
               dataList={dataList}
               disableConfirm={disableConfirm}
               deleteConfirm={deleteConfirm}
-       
             />
           </div>
         </div>
@@ -375,32 +335,6 @@ const AccountTypeScreen = () => {
                         : ""
                     }
                   />
-
-
-                  
-              <div
-                className="col-xl-12 col-md-12 col-sm-12 col-12"
-                style={{ marginTop: "20px" }}
-              >
-                <div className="input_box">
-                  <Select
-                    id="select_option"
-                    value={{
-                      value: addAccountselectedOption === 1 ? "CRM" : "Media",
-                      label: addAccountselectedOption === 1 ? "CRM" : "Media",
-                    }}
-                    options={[
-                      { value: "CRM", label: "CRM" },
-                      { value: "Media", label: "Media" },
-                    ]}
-                    onChange={addAccounthandleChange}
-                  />
-                </div>
-              </div>
-
-
-
-      
                 </div>
               </div>
             </div>

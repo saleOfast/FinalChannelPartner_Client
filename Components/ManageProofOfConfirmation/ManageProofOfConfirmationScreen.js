@@ -20,25 +20,25 @@ const ManageProofOfConfirmationScreen = () => {
 
   const [show, setShow] = useState(false);
   const [dataList, setDataList] = useState([])
-  const [userInfo, setUserInfo] = useState({ m_t_name: '' })
+  const [userInfo, setUserInfo] = useState({ cmpn_p_name: '' })
   const [editMode, setEditMode] = useState(false)
   const [disableShowConfirm, setdisableShowConfirm] = useState(false)
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
-  const [currObj, setcurrObj] = useState({ m_t_id: "", action: "" });
+  const [currObj, setcurrObj] = useState({ cmpn_p_id: "", action: "" });
   const [confirmText, setconfirmText] = useState("");
   const [loader, setLoader] = useState(false);
 
 
   const handleClose = () => {
     setShow(false);
-    setUserInfo({ m_t_name: '' })
+    setUserInfo({ cmpn_p_name: '' })
   }
 
   const handleShow = () => setShow(true);
 
   const openEdtMdl = (value) => {
     setEditMode(true)
-    setUserInfo({ ...userInfo, m_t_name: value[0], m_t_code: value[1], m_t_id: value[3] })
+    setUserInfo({ ...userInfo, cmpn_p_name: value[0], cmpn_p_code: value[1], cmpn_p_id: value[3] })
     handleShow();
   }
 
@@ -53,7 +53,7 @@ const ManageProofOfConfirmationScreen = () => {
     } else {
       setconfirmText("Disable");
     }
-    setcurrObj({ m_t_id: value, action: type });
+    setcurrObj({ cmpn_p_id: value, action: type });
     setdisableShowConfirm(true);
   }
 
@@ -78,7 +78,7 @@ const ManageProofOfConfirmationScreen = () => {
       }
 
       try {
-        const response = await axios.get(Baseurl + `/db/media/mediaType/getMediaType`, header);
+        const response = await axios.get(Baseurl + `/db/media/campaign/campaignProof/getCampaignProof`, header);
         if (response?.status == 200 || response?.status == 201) {
           setLoader(false)
           setDataList(response.data.data);
@@ -98,7 +98,7 @@ const ManageProofOfConfirmationScreen = () => {
   async function disableHandler() {
 
     const reqInfo = {
-      m_t_id: currObj.m_t_id,
+      cmpn_p_id: currObj.cmpn_p_id,
       status: currObj.action == 1 ? true : false,
     };
 
@@ -117,7 +117,7 @@ const ManageProofOfConfirmationScreen = () => {
       }
 
       try {
-        const response = await axios.put(Baseurl + `/db/media/mediaType/updateMediaType`, reqInfo, header);
+        const response = await axios.put(Baseurl + `/db/media/campaign/campaignProof/updateCampaignProof`, reqInfo, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setdisableShowConfirm(false)
@@ -150,7 +150,7 @@ const ManageProofOfConfirmationScreen = () => {
       }
 
       try {
-        const response = await axios.delete(Baseurl + `/db/media/mediaType/deleteMediaType?m_t_id=${currObj}`, header);
+        const response = await axios.delete(Baseurl + `/db/media/campaign/campaignProof/deleteCampaignProof?cmpn_p_id=${currObj}`, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setdeleteshowConfirm(false)
@@ -170,8 +170,8 @@ const ManageProofOfConfirmationScreen = () => {
   }
 
   const addIndustryHandler = async () => {
-    if (userInfo.m_t_name == '') {
-      toast.error('Please enter the Media Type Name')
+    if (userInfo.cmpn_p_name == '') {
+      toast.error('Please enter the Proof Of Confirmation Name')
     } else {
       if (hasCookie('token')) {
         let token = (getCookie('token'));
@@ -188,7 +188,7 @@ const ManageProofOfConfirmationScreen = () => {
         }
 
         try {
-          const response = await axios.post(Baseurl + `/db/media/mediaType/addMediaType`, userInfo, header);
+          const response = await axios.post(Baseurl + `/db/media/campaign/campaignProof/addCampaignProof`, userInfo, header);
           if (response.status === 204 || response.status === 200) {
             toast.success(response.data.message)
             handleClose();
@@ -208,8 +208,8 @@ const ManageProofOfConfirmationScreen = () => {
   }
 
   const updateHandler = async () => {
-    if (userInfo.m_t_name == '') {
-      toast.error('Please enter the Media Type Name')
+    if (userInfo.cmpn_p_name == '') {
+      toast.error('Please enter the Proof Of Confirmation Name')
     } else {
       if (hasCookie('token')) {
         let token = (getCookie('token'));
@@ -225,7 +225,7 @@ const ManageProofOfConfirmationScreen = () => {
         }
 
         try {
-          const response = await axios.put(Baseurl + `/db/media/mediaType/updateMediaType`, userInfo, header);
+          const response = await axios.put(Baseurl + `/db/media/campaign/campaignProof/updateCampaignProof`, userInfo, header);
           if (response.status === 204 || response.status === 200) {
             toast.success(response.data.message)
             handleClose();
@@ -264,13 +264,13 @@ const ManageProofOfConfirmationScreen = () => {
 
       <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
-          <h3 className="content_head">MEDIA TYPE MASTER</h3>
+          <h3 className="content_head">PROOF OF CONFIRMATION MASTER</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link href="/crm">Home </Link>
               </li>
-              <li className="breadcrumb-item"> Media Type Master</li>
+              <li className="breadcrumb-item"> Proof Of Confirmation Master</li>
             </ol>
           </nav>
         </div>
@@ -284,7 +284,7 @@ const ManageProofOfConfirmationScreen = () => {
             </div>
             <DynamicTable
               loader={loader}
-              title='Media Type List'
+              title='Proof Of Confirmation List'
               openEdtMdl={openEdtMdl}
               dataList={dataList}
               disableConfirm={disableConfirm}
@@ -303,14 +303,14 @@ const ManageProofOfConfirmationScreen = () => {
             <div className="row">
               <div className="col-xl-12 col-md-12 col-sm-12 col-12">
                 <div className="input_box">
-                  <label htmlFor="email">Media Type Name</label>
+                  <label htmlFor="email">Proof Of Confirmation Name</label>
                   <input
                     type="text"
-                    placeholder='Enter Media Type Name'
+                    placeholder='Enter Proof Of Confirmation Name'
                     name="email" id="email"
                     className="form-control"
-                    onChange={(e) => setUserInfo({ ...userInfo, m_t_name: e.target.value })}
-                    value={userInfo.m_t_name ? userInfo.m_t_name : ''}
+                    onChange={(e) => setUserInfo({ ...userInfo, cmpn_p_name: e.target.value })}
+                    value={userInfo.cmpn_p_name ? userInfo.cmpn_p_name : ''}
                   />
 
                 </div>

@@ -185,20 +185,6 @@ const CP_NavBar_Admin = () => {
         <li className="nav-item">
         <Link
                     className={`nav-link ${isActive(
-                      "/partner/Bookings"
-                    )}`}
-                    href="/partner/Bookings"
-                    onClick={()=>{
-                      dispatch(setActiveLink("/partner/Bookings"))
-                      setCookie("activeLink","/partner/Bookings")
-                    }}
-                  >
-                    Bookings
-                  </Link>
-        </li>
-        <li className="nav-item">
-        <Link
-                    className={`nav-link ${isActive(
                       "/partner/Visits"
                     )}`}
                     href="/partner/Visits"
@@ -210,6 +196,21 @@ const CP_NavBar_Admin = () => {
                     Visits
                   </Link>
         </li>
+        <li className="nav-item">
+        <Link
+                    className={`nav-link ${isActive(
+                      "/partner/Bookings"
+                    )}`}
+                    href="/partner/Bookings"
+                    onClick={()=>{
+                      dispatch(setActiveLink("/partner/Bookings"))
+                      setCookie("activeLink","/partner/Bookings")
+                    }}
+                  >
+                    Bookings
+                  </Link>
+        </li>
+        
         <li className="nav-item">
         <Link
                     className={`nav-link ${isActive(

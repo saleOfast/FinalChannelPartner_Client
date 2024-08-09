@@ -1,4 +1,4 @@
-// code with media
+// code without media
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import { Baseurl } from '../../Utils/Constants';
@@ -6,14 +6,13 @@ import Collapse from 'react-bootstrap/Collapse';
 import axios from 'axios';
 import { getCookie, hasCookie } from 'cookies-next';
 import { useRouter } from 'next/router'
-import { toast } from 'react-toastify'; 
+import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import EditIcon from "../Svg/EditIcon";
 import Modal from "react-bootstrap/Modal";
 import { Button } from 'react-bootstrap';
 import { useDispatch} from 'react-redux';
 import CaretDownIcon from '../Svg/CaretDownIcon';
-import { Form } from 'react-bootstrap';
 import { startButtonLoading, stopButtonLoading } from '../../store/buttonLoaderSlice';
 
 
@@ -30,7 +29,6 @@ const RolePermissionScreens = () => {
     const [show, setShow] = useState(false);
     const [loginDetails, setloginDetails] = useState({})
     const { isButtonLoading } = useSelector((state) => state.buttonLoader);
-    const [selectedPermission,setSelectedPermission] = useState("")
     const dispatch=useDispatch()
 
     const handleShow = () => setShow(true);
@@ -38,9 +36,8 @@ const RolePermissionScreens = () => {
     const handleClick = (id) => {
         setOpen((prevState) => ({ ...prevState, [id]: !prevState[id] }));
     };
-    
-    const allowedpermission = hasCookie("allowedpermissions") ? JSON.parse(getCookie("allowedpermissions")): "";
 
+    
 
     function checkLogin() {
         if (hasCookie("userInfo")) {
@@ -76,7 +73,7 @@ const RolePermissionScreens = () => {
                 }
             }
             try {
-                const response = await axios.get(`${Baseurl}/db/permission?id=${id}&pf=${selectedPermission.toUpperCase()}`, header);
+                const response = await axios.get(Baseurl + `/db/permission?id=${id}`, header);
                 setpermissionView(response.data.data);
             } catch (error) {
                 if (error?.response?.data?.message) {
@@ -265,21 +262,10 @@ const RolePermissionScreens = () => {
         }
     }
 
-    const handleChange = (event) => {
-        const value = event.target.value;
-        setSelectedPermission(value);
-    };
-
     useEffect(() => {
         if (!router.isReady) return;
         getPermissionList(id)
-    }, [router.isReady, id,selectedPermission]);
-
-    useEffect(()=>{
-        if(allowedpermission?.length){
-            setSelectedPermission(allowedpermission[0])
-        }
-    },[])
+    }, [router.isReady, id]);
 
     useEffect(() => {
         checkLogin();
@@ -297,23 +283,6 @@ const RolePermissionScreens = () => {
             </div>
             <div className="main_content ">
                 <div className="permission-view">
-                <div className='w-25'>
-                        <Form.Group controlId="dropdownMenu">
-                            <Form.Label>Select an option:</Form.Label>
-                            <Form.Control
-                                as="select"
-                                value={selectedPermission}
-                                onChange={handleChange}
-                                className="form-control-sm"
-                            >
-                                {
-                                    allowedpermission&& allowedpermission.map((item,i)=>(
-                                        <option key={i}>{item.toUpperCase()}</option>
-                                    ))
-                                }
-                            </Form.Control>
-                        </Form.Group>
-                    </div>
                     {permissionView ? <> {renderMenu(permissionView)}</> : ''}
                     <div className="submit-btn-box">
                         <button className="btn btn-cancel" disabled={isButtonLoading} onClick={()=>{

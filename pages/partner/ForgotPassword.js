@@ -29,10 +29,17 @@ const ForgotPassword = () => {
   };
 
   const handleVerify = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.trim()) {
       toast.error("Please enter email.");
       return;
     }
+
+  if (!emailRegex.test(email.trim())) {
+    toast.error("Please enter a valid email address.");
+    return;
+  }
+
     if (!code.trim()) {
       toast.error("Please enter code.");
       return;
@@ -55,16 +62,26 @@ const ForgotPassword = () => {
       }
     } catch (error) {
       console.log("error", error);
-      toast.error("Something went wrong.");
+      if (error?.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong!");
+      }
       dispatch(stopButtonLoading())
     }
   };
 
   const handleSendVerificationCode = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.trim()) {
       toast.error("Please enter email.");
       return;
     }
+
+  if (!emailRegex.test(email.trim())) {
+    toast.error("Please enter a valid email address.");
+    return;
+  }
     try {
       dispatch(startButtonLoading())
       // Make the API request using Axios
@@ -82,7 +99,11 @@ const ForgotPassword = () => {
       }
     } catch (error) {
       console.log("error", error);
-      toast.error("Something went wrong.");
+      if (error?.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong!");
+      }
       dispatch(stopButtonLoading())
     }
   };

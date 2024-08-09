@@ -10,8 +10,8 @@ import ManageBusinessTypeScreen from '../Components/ManageBusinessType/ManageBus
 export default WithUserhoc_COMMON (function BusinessType() {
   const dispatch = useDispatch()
   useEffect(() => {
-      setCookie('isActive', 'CampaignStatus')
-      dispatch(setIsActive('CampaignStatus'))
+      setCookie('isActive', 'BusinessType')
+      dispatch(setIsActive('BusinessType'))
   }, [dispatch]);
   return (
     <>

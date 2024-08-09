@@ -20,25 +20,25 @@ const ManageBusinessTypeScreen = () => {
 
   const [show, setShow] = useState(false);
   const [dataList, setDataList] = useState([])
-  const [userInfo, setUserInfo] = useState({ m_t_name: '' })
+  const [userInfo, setUserInfo] = useState({ cmpn_b_t_name: '' })
   const [editMode, setEditMode] = useState(false)
   const [disableShowConfirm, setdisableShowConfirm] = useState(false)
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
-  const [currObj, setcurrObj] = useState({ m_t_id: "", action: "" });
+  const [currObj, setcurrObj] = useState({ cmpn_b_t_id: "", action: "" });
   const [confirmText, setconfirmText] = useState("");
   const [loader, setLoader] = useState(false);
 
 
   const handleClose = () => {
     setShow(false);
-    setUserInfo({ m_t_name: '' })
+    setUserInfo({ cmpn_b_t_name: '' })
   }
 
   const handleShow = () => setShow(true);
 
   const openEdtMdl = (value) => {
     setEditMode(true)
-    setUserInfo({ ...userInfo, m_t_name: value[0], m_t_code: value[1], m_t_id: value[3] })
+    setUserInfo({ ...userInfo, cmpn_b_t_name: value[0], cmpn_b_t_code: value[1], cmpn_b_t_id: value[3] })
     handleShow();
   }
 
@@ -53,7 +53,7 @@ const ManageBusinessTypeScreen = () => {
     } else {
       setconfirmText("Disable");
     }
-    setcurrObj({ m_t_id: value, action: type });
+    setcurrObj({ cmpn_b_t_id: value, action: type });
     setdisableShowConfirm(true);
   }
 
@@ -78,7 +78,7 @@ const ManageBusinessTypeScreen = () => {
       }
 
       try {
-        const response = await axios.get(Baseurl + `/db/media/campaign/campaignBusinessTypeRoutes/getCampaignBusinessType`, header);
+        const response = await axios.get(Baseurl + `/db/media/campaign/campaignBusinessType/getCampaignBusinessType`, header);
         if (response?.status == 200 || response?.status == 201) {
           setLoader(false)
           setDataList(response.data.data);
@@ -98,7 +98,7 @@ const ManageBusinessTypeScreen = () => {
   async function disableHandler() {
 
     const reqInfo = {
-      m_t_id: currObj.m_t_id,
+      cmpn_b_t_id: currObj.cmpn_b_t_id,
       status: currObj.action == 1 ? true : false,
     };
 
@@ -117,7 +117,7 @@ const ManageBusinessTypeScreen = () => {
       }
 
       try {
-        const response = await axios.put(Baseurl + `/db/media/campaign/campaignBusinessTypeRoutes/updateCampaignBusinessType`, reqInfo, header);
+        const response = await axios.put(Baseurl + `/db/media/campaign/campaignBusinessType/updateCampaignBusinessType`, reqInfo, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setdisableShowConfirm(false)
@@ -150,7 +150,7 @@ const ManageBusinessTypeScreen = () => {
       }
 
       try {
-        const response = await axios.delete(Baseurl + `/db/media/campaign/campaignBusinessTypeRoutes/deleteCampaignBusinessType?m_t_id=${currObj}`, header);
+        const response = await axios.delete(Baseurl + `/db/media/campaign/campaignBusinessType/deleteCampaignBusinessType?cmpn_b_t_id=${currObj}`, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setdeleteshowConfirm(false)
@@ -170,7 +170,7 @@ const ManageBusinessTypeScreen = () => {
   }
 
   const addIndustryHandler = async () => {
-    if (userInfo.m_t_name == '') {
+    if (userInfo.cmpn_b_t_name == '') {
       toast.error('Please enter the Business Type Name')
     } else {
       if (hasCookie('token')) {
@@ -188,7 +188,7 @@ const ManageBusinessTypeScreen = () => {
         }
 
         try {
-          const response = await axios.post(Baseurl + `/db/media/campaign/campaignBusinessTypeRoutes/addCampaignBusinessType`, userInfo, header);
+          const response = await axios.post(Baseurl + `/db/media/campaign/campaignBusinessType/addCampaignBusinessType`, userInfo, header);
           if (response.status === 204 || response.status === 200) {
             toast.success(response.data.message)
             handleClose();
@@ -208,7 +208,7 @@ const ManageBusinessTypeScreen = () => {
   }
 
   const updateHandler = async () => {
-    if (userInfo.m_t_name == '') {
+    if (userInfo.cmpn_b_t_name == '') {
       toast.error('Please enter the Business Type Name')
     } else {
       if (hasCookie('token')) {
@@ -225,7 +225,7 @@ const ManageBusinessTypeScreen = () => {
         }
 
         try {
-          const response = await axios.put(Baseurl + `/db/media/campaign/campaignBusinessTypeRoutes/updateCampaignBusinessType`, userInfo, header);
+          const response = await axios.put(Baseurl + `/db/media/campaign/campaignBusinessType/updateCampaignBusinessType`, userInfo, header);
           if (response.status === 204 || response.status === 200) {
             toast.success(response.data.message)
             handleClose();
@@ -309,8 +309,8 @@ const ManageBusinessTypeScreen = () => {
                     placeholder='Enter Business Type Name'
                     name="email" id="email"
                     className="form-control"
-                    onChange={(e) => setUserInfo({ ...userInfo, m_t_name: e.target.value })}
-                    value={userInfo.m_t_name ? userInfo.m_t_name : ''}
+                    onChange={(e) => setUserInfo({ ...userInfo, cmpn_b_t_name: e.target.value })}
+                    value={userInfo.cmpn_b_t_name ? userInfo.cmpn_b_t_name : ''}
                   />
 
                 </div>

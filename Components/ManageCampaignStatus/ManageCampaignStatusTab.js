@@ -11,15 +11,15 @@ const ManageCampaignStatusTab = ({ deleteConfirm, disableConfirm, dataList, open
 
   const columns = [
     {
-      name: 'm_t_name',
-      label: "Media Type Name",
+      name: 'cmpn_s_name',
+      label: "Campaign Status Name",
       options: {
         filter: true,
       }
     },
     {
-      name: 'm_t_code',
-      label: "Media Type Code",
+      name: 'cmpn_s_code',
+      label: "Campaign Status Code",
       options: {
         filter: true,
       }
@@ -41,7 +41,7 @@ const ManageCampaignStatusTab = ({ deleteConfirm, disableConfirm, dataList, open
       }
     },
     {
-      name: 'm_t_id',
+      name: 'cmpn_s_id',
       label: "Action",
       options: {
         filter: false,

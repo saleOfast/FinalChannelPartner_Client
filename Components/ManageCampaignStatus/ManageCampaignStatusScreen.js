@@ -20,25 +20,25 @@ const ManageCampaignStatusScreen = () => {
 
   const [show, setShow] = useState(false);
   const [dataList, setDataList] = useState([])
-  const [userInfo, setUserInfo] = useState({ m_t_name: '' })
+  const [userInfo, setUserInfo] = useState({ cmpn_s_name: '' })
   const [editMode, setEditMode] = useState(false)
   const [disableShowConfirm, setdisableShowConfirm] = useState(false)
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
-  const [currObj, setcurrObj] = useState({ m_t_id: "", action: "" });
+  const [currObj, setcurrObj] = useState({ cmpn_s_id: "", action: "" });
   const [confirmText, setconfirmText] = useState("");
   const [loader, setLoader] = useState(false);
 
 
   const handleClose = () => {
     setShow(false);
-    setUserInfo({ m_t_name: '' })
+    setUserInfo({ cmpn_s_name: '' })
   }
 
   const handleShow = () => setShow(true);
 
   const openEdtMdl = (value) => {
     setEditMode(true)
-    setUserInfo({ ...userInfo, m_t_name: value[0], m_t_code: value[1], m_t_id: value[3] })
+    setUserInfo({ ...userInfo, cmpn_s_name: value[0], cmpn_s_code: value[1], cmpn_s_id: value[3] })
     handleShow();
   }
 
@@ -53,7 +53,7 @@ const ManageCampaignStatusScreen = () => {
     } else {
       setconfirmText("Disable");
     }
-    setcurrObj({ m_t_id: value, action: type });
+    setcurrObj({ cmpn_s_id: value, action: type });
     setdisableShowConfirm(true);
   }
 
@@ -78,7 +78,7 @@ const ManageCampaignStatusScreen = () => {
       }
 
       try {
-        const response = await axios.get(Baseurl + `/db/media/mediaType/getMediaType`, header);
+        const response = await axios.get(Baseurl + `/db/media/campaign/campaignStatus/getCampaignStatus`, header);
         if (response?.status == 200 || response?.status == 201) {
           setLoader(false)
           setDataList(response.data.data);
@@ -98,7 +98,7 @@ const ManageCampaignStatusScreen = () => {
   async function disableHandler() {
 
     const reqInfo = {
-      m_t_id: currObj.m_t_id,
+      cmpn_s_id: currObj.cmpn_s_id,
       status: currObj.action == 1 ? true : false,
     };
 
@@ -117,7 +117,7 @@ const ManageCampaignStatusScreen = () => {
       }
 
       try {
-        const response = await axios.put(Baseurl + `/db/media/mediaType/updateMediaType`, reqInfo, header);
+        const response = await axios.put(Baseurl + `/db/media/campaign/campaignStatus/updateCampaignStatus`, reqInfo, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setdisableShowConfirm(false)
@@ -150,7 +150,7 @@ const ManageCampaignStatusScreen = () => {
       }
 
       try {
-        const response = await axios.delete(Baseurl + `/db/media/mediaType/deleteMediaType?m_t_id=${currObj}`, header);
+        const response = await axios.delete(Baseurl + `/db/media/campaign/campaignStatus/deleteCampaignStatus?cmpn_s_id=${currObj}`, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setdeleteshowConfirm(false)
@@ -170,7 +170,7 @@ const ManageCampaignStatusScreen = () => {
   }
 
   const addIndustryHandler = async () => {
-    if (userInfo.m_t_name == '') {
+    if (userInfo.cmpn_s_name == '') {
       toast.error('Please enter the Media Type Name')
     } else {
       if (hasCookie('token')) {
@@ -188,7 +188,7 @@ const ManageCampaignStatusScreen = () => {
         }
 
         try {
-          const response = await axios.post(Baseurl + `/db/media/mediaType/addMediaType`, userInfo, header);
+          const response = await axios.post(Baseurl + `/db/media/campaign/campaignStatus/addCampaignStatus`, userInfo, header);
           if (response.status === 204 || response.status === 200) {
             toast.success(response.data.message)
             handleClose();
@@ -208,7 +208,7 @@ const ManageCampaignStatusScreen = () => {
   }
 
   const updateHandler = async () => {
-    if (userInfo.m_t_name == '') {
+    if (userInfo.cmpn_s_name == '') {
       toast.error('Please enter the Media Type Name')
     } else {
       if (hasCookie('token')) {
@@ -225,7 +225,7 @@ const ManageCampaignStatusScreen = () => {
         }
 
         try {
-          const response = await axios.put(Baseurl + `/db/media/mediaType/updateMediaType`, userInfo, header);
+          const response = await axios.put(Baseurl + `/db/media/campaign/campaignStatus/updateCampaignStatus`, userInfo, header);
           if (response.status === 204 || response.status === 200) {
             toast.success(response.data.message)
             handleClose();
@@ -264,13 +264,13 @@ const ManageCampaignStatusScreen = () => {
 
       <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
-          <h3 className="content_head">MEDIA TYPE MASTER</h3>
+          <h3 className="content_head">CAMPAIGN STATUS MASTER</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link href="/crm">Home </Link>
               </li>
-              <li className="breadcrumb-item"> Media Type Master</li>
+              <li className="breadcrumb-item"> Campaign Status Master</li>
             </ol>
           </nav>
         </div>
@@ -279,12 +279,12 @@ const ManageCampaignStatusScreen = () => {
             <div className="top_btn_sec">
               <button className="btn btn-primary Add_btn" onClick={OpenAddModal}>
                 <PlusIcon />
-                ADD MEDIA TYPE
+                ADD CAMPAIGN STATUS
               </button>
             </div>
             <DynamicTable
               loader={loader}
-              title='Media Type List'
+              title='Campaign Status List'
               openEdtMdl={openEdtMdl}
               dataList={dataList}
               disableConfirm={disableConfirm}
@@ -296,21 +296,21 @@ const ManageCampaignStatusScreen = () => {
 
       <Modal className="commonModal" show={show} onHide={handleClose} >
         <Modal.Header closeButton>
-          <Modal.Title> {editMode ? 'EDIT' : ' ADD'} MEDIA TYPE</Modal.Title>
+          <Modal.Title> {editMode ? 'EDIT' : ' ADD'} CAMPAIGN STATUS</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="add_user_form">
             <div className="row">
               <div className="col-xl-12 col-md-12 col-sm-12 col-12">
                 <div className="input_box">
-                  <label htmlFor="email">Media Type Name</label>
+                  <label htmlFor="email">Campaign Status Name</label>
                   <input
                     type="text"
-                    placeholder='Enter Media Type Name'
+                    placeholder='Enter Campaign Status Name'
                     name="email" id="email"
                     className="form-control"
-                    onChange={(e) => setUserInfo({ ...userInfo, m_t_name: e.target.value })}
-                    value={userInfo.m_t_name ? userInfo.m_t_name : ''}
+                    onChange={(e) => setUserInfo({ ...userInfo, cmpn_s_name: e.target.value })}
+                    value={userInfo.cmpn_s_name ? userInfo.cmpn_s_name : ''}
                   />
 
                 </div>

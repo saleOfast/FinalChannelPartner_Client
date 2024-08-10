@@ -81,34 +81,6 @@ const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }
             }
         }, 
         
-        
-        {
-            name: 'opp_id',
-            label: "Action",
-            options: {
-                filter: false,
-                download:false,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    return (
-                        <div className="table_btns">
-                            <Link href={`/crm/OpportunityView?id=${value}`}>
-                                <button className="action_btn" title="View">
-                                    <ViewIcon />
-                                </button>
-                            </Link>
-                            <Link href={`/crm/AddOpportunity?id=${value}`}>
-                                <button className="action_btn" title='Edit'>
-                                    <EditIcon />
-                                </button>
-                            </Link>
-                            <button className="action_btn" onClick={() => openConfirmBox(value)} title='Remove'>
-                                <DeleteIcon />
-                            </button>
-                        </div>
-                    )
-                }
-            }
-        },
     ];
     
     const options = {

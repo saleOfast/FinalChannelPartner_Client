@@ -9,19 +9,24 @@ import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 import DownloadIcon from "../Svg/DownloadIcon";
-import { Row, Col, Container } from 'react-bootstrap';
-const DynamicTable = dynamic(() => import("./ClosedWonOpportunitiesTable"), {
+import { Row, Col, Container } from "react-bootstrap";
+const DynamicTable = dynamic(() => import("./OpenOpportunitiesInPipelineTable"), {
   ssr: false,
 });
 import Select from "react-select";
+import { fetchData } from "../../Utils/getReq";
 
-const ClosedWonOpportunities = () => {
+const OpenOpportunitiesInPipelineScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
+  const [accountsList, setAccountsList] = useState([]);
+  const [errorToast, setErrorToast] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [financialYear, setFinancialYear] = useState("");
   const [filterBy, setFilterBy] = useState("quarter");
   const [quarter, setQuarter] = useState("");
   const [month, setMonth] = useState("");
+  const [accountName, setAccountName] = useState("");
+  const [stage, setStage] = useState(3);
 
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState("");
@@ -29,8 +34,8 @@ const ClosedWonOpportunities = () => {
 
   const generateFinancialYearOptions = () => {
     const options = [];
-    const startYear = 2023; 
-    const endYear = new Date().getFullYear() + 1; 
+    const startYear = 2022;
+    const endYear = new Date().getFullYear() + 1;
 
     for (let i = startYear; i <= endYear; i++) {
       options.push({
@@ -50,6 +55,11 @@ const ClosedWonOpportunities = () => {
     { value: "4", label: "Q4" },
   ];
 
+  const stageOptions = [
+    { value: "1", label: "Open" },
+    { value: "3", label: "Won" },
+  ];
+
   const monthOptions = [
     { value: "1", label: "January" },
     { value: "2", label: "February" },
@@ -64,6 +74,10 @@ const ClosedWonOpportunities = () => {
     { value: "11", label: "November" },
     { value: "12", label: "December" },
   ];
+
+  const getAccountsList = async () => {
+    await fetchData(`/db/account`, setAccountsList, errorToast, setErrorToast);
+  };
 
   const getDataList = async () => {
     setLoader(true);
@@ -80,11 +94,9 @@ const ClosedWonOpportunities = () => {
         },
       };
 
-      let query = {};
-      if (financialYear) query.financialYear = financialYear.slice(0,4);
-      if (quarter) query.quarter = quarter;
-      if (month) query.month = month;
-      query.opportunity_stg_id = 3;
+      let query = {
+        opportunity_stg_id: 1,
+      };
 
       const queryString = new URLSearchParams(query).toString();
 
@@ -119,23 +131,22 @@ const ClosedWonOpportunities = () => {
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass:"pass"
+          m_id: 38,
         },
         responseType: "blob",
       };
-  
-      // Generate a meaningful file name
-      const currentDate = new Date().toISOString().slice(0, 10); // Get current date in YYYY-MM-DD format
-      const filterPart = filterBy === "quarter" ? `Q${quarter}` : monthOptions.find(option => option.value === month)?.label;
-      const fileName = `Closed_Won_Oportunity_${financialYear}_${filterPart}_${currentDate}.xlsx`;
+
+      let accname=accountsList?.find((item)=>item?.acc_id==accountName)?.acc_name
+      let stageName=stageOptions?.find((item)=>item?.value==stage)?.label
+      const fileName = `${stageName}_Opportunity_${accname}.xlsx`;
+
       
-      let query = {};
-      if (financialYear) query.financialYear = financialYear.slice(0,4);
-      if (quarter) query.quarter = quarter;
-      if (month) query.month = month;
-      query.opportunity_stg_id = 3;
+      let query = {
+        opportunity_stg_id: 1,
+      };
 
       const queryString = new URLSearchParams(query).toString();
+  
       try {
         const response = await axios.get(
           Baseurl + `/db/opportunity/opportunityReport/downloadExcelData?${queryString}`,
@@ -169,28 +180,29 @@ const ClosedWonOpportunities = () => {
 
   useEffect(() => {
     getDataList();
+    getAccountsList();
   }, []);
 
   return (
     <>
       <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
-          <h3 className="content_head">CLOSED WON OPPORTUNITY</h3>
+          <h3 className="content_head">OPEN OPPORTUNITIES IN PIPELINE</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link href="/crm">Home </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                Closed Won Opportunity
+                Closed Lost Opportunity
               </li>
             </ol>
           </nav>
         </div>
         <div className="main_content">
-        <Container className="table_screen">
-      <Row className="align-items-end mb-3">
-        <Col xs={12} sm={6} md={4} lg={2}>
+          <Container className="table_screen">
+            <Row className="align-items-end mb-3">
+              {/* <Col xs={12} sm={6} md={4} lg={2}>
           <label>Financial Year</label>
           <Select
             name="financialYear"
@@ -246,35 +258,33 @@ const ClosedWonOpportunities = () => {
 
         <Col xs={12} sm={6} md={4} lg={2}>
           <button
-            className="btn btn-primary w-100 mt-2"
+            className="btn btn-primary w-100"
             onClick={getDataList}
           >
             Apply Filters
           </button>
-        </Col>
+        </Col> */}
+              <Col xs={12} sm={6} md={4} lg={2}>
+                <button
+                  className="btn btn-primary w-100 "
+                  onClick={handleDownload}
+                >
+                  {/* <DownloadIcon /> */}
+                  EXPORT
+                </button>
+              </Col>
+            </Row>
 
-        <Col xs={12} sm={6} md={4} lg={2}>
-          <button
-            className="btn btn-primary w-100 mt-2"
-            onClick={handleDownload}
-          >
-            {/* <DownloadIcon /> */}
-            EXPORT
-          </button>
-        </Col>
-      </Row>
-
-      <DynamicTable
-        title="Closed Won Opportunity List"
-        dataList={dataList}
-        loader={loader}
-      />
-        </Container>
+            <DynamicTable
+              title="Closed Lost Opportunity List"
+              dataList={dataList}
+              loader={loader}
+            />
+          </Container>
         </div>
       </div>
     </>
   );
 };
 
-export default ClosedWonOpportunities;
-
+export default OpenOpportunitiesInPipelineScreen;

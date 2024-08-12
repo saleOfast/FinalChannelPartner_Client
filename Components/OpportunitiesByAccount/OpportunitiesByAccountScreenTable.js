@@ -3,7 +3,7 @@ import MUIDataTable from "mui-datatables";
 import Loader from '../Loader/Loader';
 import moment from 'moment/moment';
 
-const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }) => {
+const OpportunitiesByAccountScreenTable = ({ dataList, title, openConfirmBox, loader }) => {
 
     const columns = [
         {
@@ -134,6 +134,7 @@ const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }
         downloadOptions:{
             filename:"OpportunityList.csv"
         },
+        enableNestedDataAccess:"."
     
     };
 
@@ -159,4 +160,4 @@ const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }
     )
 }
 
-export default ClosedWonOpportunitiesTable
+export default OpportunitiesByAccountScreenTable

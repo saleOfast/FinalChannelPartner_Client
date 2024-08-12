@@ -279,7 +279,7 @@ const ManageProofOfConfirmationScreen = () => {
             <div className="top_btn_sec">
               <button className="btn btn-primary Add_btn" onClick={OpenAddModal}>
                 <PlusIcon />
-                ADD MEDIA TYPE
+                ADD PROOF OF CONFIRMATION
               </button>
             </div>
             <DynamicTable
@@ -296,7 +296,7 @@ const ManageProofOfConfirmationScreen = () => {
 
       <Modal className="commonModal" show={show} onHide={handleClose} >
         <Modal.Header closeButton>
-          <Modal.Title> {editMode ? 'EDIT' : ' ADD'} MEDIA TYPE</Modal.Title>
+          <Modal.Title> {editMode ? 'EDIT' : ' ADD'} PROOF OF CONFIRMATION</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="add_user_form">

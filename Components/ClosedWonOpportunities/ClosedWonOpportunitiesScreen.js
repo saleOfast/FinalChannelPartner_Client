@@ -9,6 +9,7 @@ import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 import DownloadIcon from "../Svg/DownloadIcon";
+import { Row, Col, Container } from 'react-bootstrap';
 const DynamicTable = dynamic(() => import("./ClosedWonOpportunitiesTable"), {
   ssr: false,
 });
@@ -17,11 +18,10 @@ import Select from "react-select";
 const ClosedWonOpportunities = () => {
   const sideView = useSelector((state) => state.sideView.value);
   const [dataList, setDataList] = useState([]);
-  const [accountName, setAccountName] = useState("");
   const [financialYear, setFinancialYear] = useState("");
+  const [filterBy, setFilterBy] = useState("quarter");
   const [quarter, setQuarter] = useState("");
   const [month, setMonth] = useState("");
-  const [opportunityId, setOpportunityId] = useState("");
 
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState("");
@@ -71,11 +71,10 @@ const ClosedWonOpportunities = () => {
       };
 
       let query = {};
-      if (accountName) (query.type = "ac_name"), (query.ac = accountName);
       if (financialYear) query.financialYear = financialYear;
       if (quarter) query.quarter = quarter;
       if (month) query.month = month;
-      if (opportunityId) query.o_id = opportunityId;
+      query.opportunity_stg_id = 3;
 
       const queryString = new URLSearchParams(query).toString();
 
@@ -149,6 +148,13 @@ const ClosedWonOpportunities = () => {
     getDataList();
   }, []);
 
+  const handleFinancialYearInput = (e) => {
+    const value = e.target.value;
+    if (/^\d{0,4}$/.test(value)) {
+      setFinancialYear(value);
+    }
+  };
+
   return (
     <>
       <div className={`main_Box  ${sideView}`}>
@@ -166,86 +172,85 @@ const ClosedWonOpportunities = () => {
           </nav>
         </div>
         <div className="main_content">
-          <div className="table_screen">
-            
-          <div
-  style={{
-    display: "flex",
-    flexWrap: "wrap",
-    padding: "10px",
-    justifyContent: "space-around",
-    gap: "1rem",
-  }}
->
-  <Select
-    name="financial_year"
-    options={financialYearOptions}
-    value={financialYearOptions.find(
-      (option) => option.value === financialYear
-    )}
-    onChange={(e) => setFinancialYear(e?.value || "")}
-    placeholder="Select Financial Year"
-    style={{
-      
-      flex: 1,
-    }}
-  />
+        <Container className="table_screen">
+      <Row className="align-items-end mb-3">
+        <Col xs={12} sm={6} md={4} lg={2}>
+          <label>Financial Year</label>
+          <input
+            type="text"
+            value={financialYear}
+            onChange={handleFinancialYearInput}
+            placeholder="Enter Financial Year"
+            className="form-control"
+          />
+        </Col>
 
-  <Select
-    name="quarter"
-    options={quarterOptions}
-    value={quarterOptions.find((option) => option.value === quarter)}
-    onChange={(e) => setQuarter(e?.value || "")}
-    placeholder="Select Quarter"
-    style={{
-      
-      flex: 1,
-    }}
-  />
+        <Col xs={12} sm={6} md={4} lg={2}>
+          <label>Filter By</label>
+          <Select
+            name="filterBy"
+            options={[
+              { value: "quarter", label: "By Quarter" },
+              { value: "month", label: "By Month" },
+            ]}
+            value={{ value: filterBy, label: `By ${filterBy.charAt(0).toUpperCase() + filterBy.slice(1)}` }}
+            onChange={(e) => setFilterBy(e.value)}
+            placeholder="Select Filter"
+          />
+        </Col>
 
-  <Select
-    name="month"
-    options={monthOptions}
-    value={monthOptions.find((option) => option.value === month)}
-    onChange={(e) => setMonth(e?.value || "")}
-    placeholder="Select Month"
-    style={{
-     
-      flex: 1,
-    }}
-  />
-
-  <button
-    className="btn btn-primary "
-    onClick={getDataList}
-    style={{
-      flex: 1,
-      minWidth: "150px",
-    }}
-  >
-    Apply Filters
-  </button>
-
-  <button
-    className="btn btn-primary Add_btn"
-    onClick={handleDownload}
-    style={{
-      flex: 1,
-      minWidth: "150px",
-    }}
-  >
-    <DownloadIcon />
-    EXPORT
-  </button>
-</div>
-
-            
-            <DynamicTable
-              title="Opportunity List"
-              dataList={dataList}
-              loader={loader}
+        {filterBy === "quarter" && (
+          <Col xs={12} sm={6} md={4} lg={2}>
+            <label>Quarter</label>
+            <Select
+              name="quarter"
+              options={quarterOptions}
+              value={quarterOptions.find((option) => option.value === quarter)}
+              onChange={(e) => setQuarter(e?.value || "")}
+              placeholder="Select Quarter"
             />
-          </div>
+          </Col>
+        )}
+
+        {filterBy === "month" && (
+          <Col xs={12} sm={6} md={4} lg={2}>
+            <label>Month</label>
+            <Select
+              name="month"
+              options={monthOptions}
+              value={monthOptions.find((option) => option.value === month)}
+              onChange={(e) => setMonth(e?.value || "")}
+              placeholder="Select Month"
+            />
+          </Col>
+        )}
+
+        <Col xs={12} sm={6} md={4} lg={2}>
+          <button
+            className="btn btn-primary w-100"
+            onClick={getDataList}
+          >
+            Apply Filters
+          </button>
+        </Col>
+
+        <Col xs={12} sm={6} md={4} lg={2}>
+          <button
+            className="btn btn-primary w-100 "
+            onClick={handleDownload}
+          >
+            {/* <DownloadIcon /> */}
+            EXPORT
+          </button>
+        </Col>
+      </Row>
+
+      <DynamicTable
+        title="Opportunity List"
+        dataList={dataList}
+        loader={loader}
+      />
+    </Container>
         </div>
       </div>
     </>

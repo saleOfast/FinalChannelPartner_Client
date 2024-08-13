@@ -139,7 +139,8 @@ const AddEstimationScreen = () => {
 
   async function getAccountsList() {
     await fetchData(
-      `/db/account?platform_id=5`,
+      // `/db/account?platform_id=5`,
+      `/db/media/campaign/campaignManagement/getCampaign`,
       setAccountsList,
       errorToast,
       setErrorToast
@@ -737,21 +738,22 @@ const AddEstimationScreen = () => {
                         isDisabled={viewMode}
                         options={accountsList?.map((data, index) => {
                           return {
-                            value: data?.acc_id,
-                            label: data?.acc_name,
+                            value: data?.campaign_id,
+                            label: data?.campaign_name,
                           };
                         })}
                         value={accountsList?.map((data, index) => {
-                          if (userInfo.acc_id === data.acc_id) {
+                          if (userInfo.campaign_id === data.campaign_id) {
                             return {
-                              value: data?.acc_id,
-                              label: data?.acc_name,
+                              value: data?.campaign_id,
+                              label: data?.campaign_name,
                             };
                           }
                         })}
                         onChange={(e) => {
-                          setUserInfo({ ...userInfo, acc_id: e.value,contact:accountsList?.find((item)=>item?.acc_id==e.value)?.contact_no });
-                          setErrorData({ ...errorData, acc_id: "" });
+                          const campaign=accountsList?.find((item)=>item?.campaign_id==e.value)
+                          setUserInfo({ ...userInfo, campaign_id: e.value,campaign_start_date:campaign?.campaign_start_date,campaign_end_date:campaign?.campaign_end_date,campaign_duration:campaign?.campaign_duration,cmpn_b_t_id:campaign?.cmpn_b_t_id });
+                          setErrorData({ ...errorData, campaign_id: "" });
                         }}
                       />
                       <span className="errorText">

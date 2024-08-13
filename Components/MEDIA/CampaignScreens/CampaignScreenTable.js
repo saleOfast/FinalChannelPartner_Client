@@ -21,14 +21,14 @@ const CampaignScreenTable = ({ accountsList, openConfirmBox , title, loader }) =
             }
         },
         {
-            name: 'acc_id',
+            name: 'acc_name',
             label: "Client Name",
             options: {
                 filter: true,
             }
         },
         {
-            name: 'cmpn_s_id',
+            name: 'cmpn_s_name',
             label: "Status",
             options: {
                 filter: true,
@@ -56,14 +56,14 @@ const CampaignScreenTable = ({ accountsList, openConfirmBox , title, loader }) =
             }
         },
         {
-            name: 'cmpn_p_id',
+            name: 'cmpn_p_name',
             label: "Proof of Confirmation",
             options: {
                 filter: true,
             }
         },
         {
-            name: 'cmpn_b_t_id',
+            name: 'cmpn_b_t_name',
             label: "Business Type",
             options: {
                 filter: true,
@@ -136,13 +136,13 @@ const CampaignScreenTable = ({ accountsList, openConfirmBox , title, loader }) =
 
     const mappedDataList=accountsList?.map(list=>({
         campaign_name:list?.campaign_name,
-        acc_id:list?.accountName?.acc_id,
-        cmpn_s_id:list?.cmpn_s_id,
+        acc_name:list?.db_account?.acc_name,
+        cmpn_s_name:list?.db_campaign_status.cmpn_s_name,
         contact:list?.contact,
         campaign_brand:list?.campaign_brand,
         campaign_duration:list?.campaign_duration,
-        cmpn_p_id:list?.cmpn_p_id,
-        cmpn_b_t_id:list?.cmpn_b_t_id,
+        cmpn_p_name:list?.db_campaign_proof?.cmpn_p_name,
+        cmpn_b_t_name:list?.db_campaign_business_type?.cmpn_b_t_name,
         campaign_id:list?.campaign_id
 
     }))

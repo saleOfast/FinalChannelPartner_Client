@@ -12,27 +12,41 @@ import { fetchData } from "../../../Utils/getReq";
 import Select from "react-select";
 import { Delete } from "@mui/icons-material";
 
-const costingDetailArray=[
-  { label: "Client Display Cost", id: "client_display_cost", fieldType: "currency" },
-  { label: "Client Mounting Cost", id: "client_mounting_cost", fieldType: "currency" },
-  { label: "Client Printing Cost", id: "client_printing_cost", fieldType: "currency" },
-  { label: "Total Client Cost", id: "total_client_cost", fieldType: "currency" },
-  { label: "Total Sales Order Value", id: "total_sales_order_value", fieldType: "currency" },
-  { label: "Total Credit Note Value", id: "total_credit_note_value", fieldType: "currency" },
-  { label: "Total Receipt from Client", id: "total_receipt_from_client", fieldType: "currency" },
-  { label: "Total Client Outstanding", id: "total_client_outstanding", fieldType: "currency" },
-  { label: "Total NDP Days", id: "total_ndp_days", fieldType: "number" },
-  { label: "Total Sales Invoice Value", id: "total_sales_invoice_value", fieldType: "currency" },
-  { label: "Total Vendor Display Cost", id: "total_vendor_display_cost", fieldType: "currency" },
-  { label: "Total Vendor Mounting Cost", id: "total_vendor_mounting_cost", fieldType: "currency" },
-  { label: "Total Vendor Printing Cost", id: "total_vendor_printing_cost", fieldType: "currency" },
-  { label: "Total Vendor Cost", id: "total_vendor_cost", fieldType: "currency" },
-  { label: "Total Purchase Order Value", id: "total_purchase_order_value", fieldType: "currency" },
-  { label: "Total Debit Note Value", id: "total_debit_note_value", fieldType: "currency" },
-  { label: "Total Vendor Payment", id: "total_vendor_payment", fieldType: "currency" },
-  { label: "Total Vendor Outstanding", id: "total_vendor_outstanding", fieldType: "currency" },
-  { label: "Total NDP Value", id: "total_ndp_value", fieldType: "currency" }
+const DMPCArray=[
+  { label: "Display Selling Cost", id: "display_selling_cost", fieldType: "currency" },
+  { label: "Mounting Selling Cost", id: "mounting_selling_cost", fieldType: "currency" },
+  { label: "Printing Selling Cost", id: "printing_selling_cost", fieldType: "currency" },
+  { label: "Total Selling Cost", id: "total_selling_cost", fieldType: "currency" },
+  { label: "Display Buying Cost", id: "display_buying_cost", fieldType: "currency" },
+  { label: "Mounting Buying Cost", id: "mounting_buying_cost", fieldType: "currency" },
+  { label: "Printing Buying Cost", id: "printing_buying_cost", fieldType: "currency" },
+  { label: "Total Buying Cost", id: "total_buying_cost", fieldType: "currency" },
+
 ]
+
+const additionalInfoArray=[
+  { label: "Sales Order Value", id: "sales_order_value", fieldType: "currency" },
+  { label: "Sales Order Value without Tax", id: "sales_order_value_without_tax", fieldType: "currency" },
+  { label: "Invoice Value", id: "invoice_value", fieldType: "currency" },
+  { label: "Purchase Order Value", id: "purchase_order_value", fieldType: "currency" },
+  { label: "Receipt from Customer Value", id: "receipt_from_customer_value", fieldType: "currency" },
+  { label: "Client Outstanding", id: "client_outstanding", fieldType: "currency" },
+  { label: "Credit Note Value", id: "credit_note_value", fieldType: "currency" },
+  { label: "Debit Note Value", id: "debit_note_value", fieldType: "currency" },
+  { label: "Vendor Payment Value", id: "vendor_payment_value", fieldType: "currency" },
+  { label: "Total NDP Days", id: "total_ndp_days", fieldType: "number" },
+  { label: "Total NDP Value", id: "total_ndp_value", fieldType: "currency" },
+  { label: "Vendor Outstanding", id: "vendor_outstanding", fieldType: "currency" },
+]
+
+const TotalCostArray = [
+  { label: "Total Client Cost without Tax", id: "total_client_cost_without_tax", fieldType: "currency" },
+  { label: "Client Tax", id: "client_tax", fieldType: "currency" },
+  { label: "Total Client Cost with Tax", id: "total_client_cost_with_tax", fieldType: "currency" },
+  { label: "Total Vendor Cost without Tax", id: "total_vendor_cost_without_tax", fieldType: "currency" },
+  { label: "Vendor Tax", id: "vendor_tax", fieldType: "currency" },
+  { label: "Total Vendor Cost with Tax", id: "total_vendor_cost_with_tax", fieldType: "currency" },
+];
 
 const marginInfoArray=[
   { label: "Overall Margin", id: "overall_margin", fieldType: "currency" },
@@ -47,21 +61,16 @@ const marginInfoArray=[
 
 
 
-const AddCampaignScreen = () => {
+const AddEstimationScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
 
   const router = useRouter();
   const { id } = router.query;
   const { ac_id } = router.query;
 
-  const [countrylist, setcountrylist] = useState([]);
-  const [statelist, setStatelist] = useState([]);
-  const [citylist, setCitylist] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [accountsList, setAccountsList] = useState([]);
-  const [singleAccount, setSingleAccount] = useState([]);
   const [isLoading, setisLoading] = useState(false);
-  const [addInfo, setAddInfo] = useState([]);
   const [viewMode, setViewMode] = useState(false);
   const [usersList, setUsersLsit] = useState([]);
   const [iscollapse, setiscollapse] = useState(false);
@@ -506,26 +515,6 @@ const AddCampaignScreen = () => {
     });
   }, []);
 
-  const handleDateChange = (e) => {
-    const { id, value } = e.target;
-    let updatedUserInfo = { ...userInfo, [id]: value };
-  
-    // Calculate duration if both dates are selected
-    if (updatedUserInfo.campaign_start_date && updatedUserInfo.campaign_end_date) {
-      const startDate = new Date(updatedUserInfo.campaign_start_date);
-      const endDate = new Date(updatedUserInfo.campaign_end_date);
-  
-      // Calculate the difference in time
-      const timeDiff = endDate - startDate;
-      // Convert time difference to days
-      const duration = timeDiff / (1000 * 60 * 60 * 24);
-  
-      // Ensure duration is non-negative (in case of invalid date selection)
-      updatedUserInfo.campaign_duration = duration >= 0 ? duration : 0;
-    }
-  
-    setUserInfo(updatedUserInfo);
-  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -541,7 +530,7 @@ const AddCampaignScreen = () => {
     }
   };
 
-  const handleCostingInputChange = (e, fieldType) => {
+  const handleDMPCInfoChange = (e, fieldType) => {
     const { id, value } = e.target;
     let isValid = true;
   
@@ -561,15 +550,52 @@ const AddCampaignScreen = () => {
         const updatedInfo = { ...prevState, [id]: value };
   
         // Calculate Total Client Cost
-        updatedInfo.total_client_cost = parseFloat(updatedInfo.client_display_cost || 0) +
-                                        parseFloat(updatedInfo.client_mounting_cost || 0) +
-                                        parseFloat(updatedInfo.client_printing_cost || 0);
+        updatedInfo.total_selling_cost = parseFloat(updatedInfo.display_selling_cost || 0) +
+                                        parseFloat(updatedInfo.mounting_selling_cost || 0) +
+                                        parseFloat(updatedInfo.printing_selling_cost || 0);
+
+         updatedInfo.total_buying_cost = parseFloat(updatedInfo.display_buying_cost || 0) +
+                                        parseFloat(updatedInfo.mounting_buying_cost || 0) +
+                                        parseFloat(updatedInfo.printing_buying_cost || 0);
   
         return updatedInfo;
       });
     }
   };
+
+  const handleTotalCostInfoChange = (e, fieldType) => {
+    const { id, value } = e.target;
+    let isValid = true;
   
+    switch (fieldType) {
+      case 'currency':
+        isValid = /^\d*(\.\d{0,2})?$/.test(value); // Allow digits and up to two decimal places
+        break;
+      case 'number':
+        isValid = /^\d*$/.test(value); // Allow only digits
+        break;
+      default:
+        break;
+    }
+  
+    if (isValid) {
+      setUserInfo(prevState => {
+        const updatedInfo = { ...prevState, [id]: value };
+  
+        // Calculate Total Client Cost
+        updatedInfo.total_client_cost_with_tax = parseFloat(updatedInfo.total_client_cost_without_tax || 0) +
+                                        parseFloat(updatedInfo.client_tax || 0) 
+                                        
+
+         updatedInfo.total_vendor_cost_with_tax = parseFloat(updatedInfo.total_vendor_cost_without_tax || 0) +
+                                        parseFloat(updatedInfo.vendor_tax || 0) 
+                                        
+  
+        return updatedInfo;
+      });
+    }
+  };
+
   const handleMarginInfoChange = (e, fieldType) => {
     const { id, value } = e.target;
     let isValid = true;
@@ -614,7 +640,7 @@ const AddCampaignScreen = () => {
       <div className="bread_head">
         <h3 className="content_head">
           {" "}
-          {viewMode ? "VIEW" : <>{editMode ? "EDIT" : "ADD"}</>} PRINTING COST
+          {viewMode ? "VIEW" : <>{editMode ? "EDIT" : "ADD"}</>} Estimation
         </h3>
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
@@ -622,10 +648,10 @@ const AddCampaignScreen = () => {
               <Link href="/media">Home</Link>
             </li>
             <li className="breadcrumb-item fw-bolder">
-              <Link href="/media/Campaigns"> Campaigns </Link>
+              <Link href="/media/Estimations"> Estimations </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
-              {viewMode ? "View" : <>{editMode ? "Edit" : "Add"}</>} Campaigns
+              {viewMode ? "View" : <>{editMode ? "Edit" : "Add"}</>} Estimation
             </li>
           </ol>
         </nav>
@@ -653,24 +679,45 @@ const AddCampaignScreen = () => {
                   
 
                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.campaign_name ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_name">Campaign Name *</label>
+                <div className={errorData?.estimate_date ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="estimate_date">Estimate Date*</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    id="estimate_date"
+                    min={new Date().toISOString().split('T')[0]} 
+                    onPaste={(e) => e.preventDefault()}
+                    onKeyDown={(e) => e.preventDefault()}
+                    value={moment(userInfo?.estimate_date).format(
+                      "YYYY-MM-DD"
+                    )}
+                    onChange={(e)=>{
+                      setUserInfo({...userInfo,estimate_date:e.target.value})
+                    }}
+                  />
+                  <span className="errorText">{errorData?.estimate_date ? errorData.estimate_date : ""}</span>
+                </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.estimate_approval_status ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="estimate_approval_status">Estimate Approval Status *</label>
                   <input
                     type="text"
-                    id="campaign_name"
+                    id="estimate_approval_status"
                     className="form-control"
                     disabled={viewMode}
-                    placeholder="Enter Campaign Name"
-                    value={userInfo.campaign_name}
+                    placeholder="Enter Campaign Brand"
+                    value={userInfo?.estimate_approval_status}
                     onChange={(e) => {
                       const value = e.target.value;
                       // Allow only alphabetic characters
                       if (/^[a-zA-Z\s]*$/.test(value)) {
-                        setUserInfo({ ...userInfo, campaign_name: value });
+                        setUserInfo({ ...userInfo, estimate_approval_status: value });
                       }
                     }}
                   />
-                  <span className="errorText">{errorData?.campaign_name ? errorData.campaign_name : ""}</span>
+                  <span className="errorText">{errorData?.estimate_approval_status ? errorData.estimate_approval_status : ""}</span>
                 </div>
                 </div>
 
@@ -682,11 +729,11 @@ const AddCampaignScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="client_name">Client Name *</label>
+                      <label htmlFor="campaign_name">Campaign Name *</label>
                       <Select
-                        id="client_name"
+                        id="campaign_name"
                         defaultValue={""}
-                        placeholder="Enter Client Name"
+                        placeholder="Enter Campaign"
                         isDisabled={viewMode}
                         options={accountsList?.map((data, index) => {
                           return {
@@ -715,85 +762,8 @@ const AddCampaignScreen = () => {
                   </div>
                   
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                    <div
-                      className={
-                        errorData?.cmpn_s_id
-                          ? "input_box errorBox"
-                          : "input_box"
-                      }
-                    >
-                      <label htmlFor="client_name">Campaign Status *</label>
-                      <Select
-                        id="client_name"
-                        defaultValue={""}
-                        placeholder="Select Campaign Status"
-                        isDisabled={viewMode}
-                        options={campaignStatusList?.map((data, index) => {
-                          return {
-                            value: data?.cmpn_s_id,
-                            label: data?.cmpn_s_name,
-                          };
-                        })}
-                        value={campaignStatusList?.map((data, index) => {
-                          if (userInfo.cmpn_s_id === data.cmpn_s_id) {
-                            return {
-                              value: data?.cmpn_s_id,
-                              label: data?.cmpn_s_name,
-                            };
-                          }
-                        })}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, cmpn_s_id: e.value });
-                          setErrorData({ ...errorData, cmpn_s_id: "" });
-                        }}
-                      />
-                      <span className="errorText">
-                        {" "}
-                        {errorData?.cmpn_s_id ? errorData.cmpn_s_id : ""}
-                      </span>
-                    </div>
-                  </div>
-
-
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.contact ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="contact">Contact *</label>
-                    <input
-                    type="text"
-                    id="contact"
-                    className="form-control"
-                    disabled
-                    value={userInfo.contact}
-                  />
-                    <span className="errorText">{errorData?.contact ? errorData.contact : ""}</span>
-                  </div>
-                </div>
-
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.campaign_brand ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_brand">Campaign Brand *</label>
-                  <input
-                    type="text"
-                    id="campaign_brand"
-                    className="form-control"
-                    disabled={viewMode}
-                    placeholder="Enter Campaign Brand"
-                    value={userInfo?.campaign_brand}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      // Allow only alphabetic characters
-                      if (/^[a-zA-Z\s]*$/.test(value)) {
-                        setUserInfo({ ...userInfo, campaign_brand: value });
-                      }
-                    }}
-                  />
-                  <span className="errorText">{errorData?.campaign_brand ? errorData.campaign_brand : ""}</span>
-                </div>
-                </div>
-
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.campaign_start_date ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_start_date">Campaign Start Date *</label>
+                <div className={errorData?.estimate_date ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="campaign_start_date">Campaign Start Date*</label>
                   <input
                     type="date"
                     className="form-control"
@@ -801,25 +771,35 @@ const AddCampaignScreen = () => {
                     min={new Date().toISOString().split('T')[0]} 
                     onPaste={(e) => e.preventDefault()}
                     onKeyDown={(e) => e.preventDefault()}
-                    value={userInfo.campaign_start_date}
-                    onChange={handleDateChange}
+                    value={moment(userInfo?.campaign_start_date).format(
+                      "YYYY-MM-DD"
+                    )}
+                    disabled
+                    onChange={(e)=>{
+                      setUserInfo({...userInfo,campaign_start_date:e.target.value})
+                    }}
                   />
                   <span className="errorText">{errorData?.campaign_start_date ? errorData.campaign_start_date : ""}</span>
                 </div>
               </div>
 
               <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.campaign_end_date ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_end_date">Campaign End Date *</label>
+                <div className={errorData?.estimate_date ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="campaign_end_date">Campaign End Date*</label>
                   <input
                     type="date"
                     className="form-control"
+                    disabled
                     id="campaign_end_date"
                     min={new Date().toISOString().split('T')[0]} 
                     onPaste={(e) => e.preventDefault()}
                     onKeyDown={(e) => e.preventDefault()}
-                    value={userInfo.campaign_end_date}
-                    onChange={handleDateChange}
+                    value={moment(userInfo?.campaign_end_date).format(
+                      "YYYY-MM-DD"
+                    )}
+                    onChange={(e)=>{
+                      setUserInfo({...userInfo,campaign_end_date:e.target.value})
+                    }}
                   />
                   <span className="errorText">{errorData?.campaign_end_date ? errorData.campaign_end_date : ""}</span>
                 </div>
@@ -842,62 +822,6 @@ const AddCampaignScreen = () => {
               <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
                       className={
-                        errorData?.cmpn_p_id
-                          ? "input_box errorBox"
-                          : "input_box"
-                      }
-                    >
-                      <label htmlFor="client_name">Proof of Confirmation *</label>
-                      <Select
-                        id="client_name"
-                        defaultValue={""}
-                        placeholder="Select Proof of Confirmation"
-                        isDisabled={viewMode}
-                        options={proofOfConList?.map((data, index) => {
-                          return {
-                            value: data?.cmpn_p_id,
-                            label: data?.cmpn_p_name,
-                          };
-                        })}
-                        value={proofOfConList?.map((data, index) => {
-                          if (userInfo.cmpn_p_id === data.cmpn_p_id) {
-                            return {
-                              value: data?.cmpn_p_id,
-                              label: data?.cmpn_p_name,
-                            };
-                          }
-                        })}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, cmpn_p_id: e.value });
-                          setErrorData({ ...errorData, cmpn_p_id: "" });
-                        }}
-                      />
-                      <span className="errorText">
-                        {" "}
-                        {errorData?.cmpn_p_id ? errorData.cmpn_p_id : ""}
-                      </span>
-                    </div>
-                  </div>
-              
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.proof_attachment ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_brand">Proof Attachment *</label>
-                  <input
-                    type="file"
-                    id="proof_attachment"
-                    accept="application/pdf"
-                    className="form-control"
-                    disabled={viewMode}
-                    placeholder="Enter Campaign Brand"
-                    onChange={handleFileChange}
-                  />
-                  <span className="errorText">{errorData?.proof_attachment ? errorData.proof_attachment : ""}</span>
-                </div>
-                </div>
-             
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                    <div
-                      className={
                         errorData?.cmpn_b_t_id
                           ? "input_box errorBox"
                           : "input_box"
@@ -908,7 +832,7 @@ const AddCampaignScreen = () => {
                         id="client_name"
                         defaultValue={""}
                         placeholder="Select Business Type "
-                        isDisabled={viewMode}
+                        isDisabled
                         options={busiessTypeList?.map((data, index) => {
                           return {
                             value: data?.cmpn_b_t_id,
@@ -933,31 +857,353 @@ const AddCampaignScreen = () => {
                         {errorData?.cmpn_b_t_id ? errorData.cmpn_b_t_id : ""}
                       </span>
                     </div>
+                </div>
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className={errorData?.package_offer ? "input_box errorBox" : "input_box"}>
+                    <label htmlFor="package_offer">Package Offer</label>
+                    <Select
+                      id="package_offer"
+                      className="react-select"
+                      classNamePrefix="select"
+                      isDisabled={viewMode}
+                      options={[
+                        { value: 'Yes', label: 'Yes' },
+                        { value: 'No', label: 'No' },
+                      ]}
+                      value={[
+                        { value: 'Yes', label: 'Yes' },
+                        { value: 'No', label: 'No' },
+                      ].find(option => option.value === userInfo.package_offer)}
+                      onChange={(selectedOption) => {
+                        setUserInfo({
+                          ...userInfo,
+                          package_offer: selectedOption ? selectedOption.value : null
+                        });
+                      }}
+                      placeholder="Select Package Offer"
+                    />
+                    <span className="errorText">{errorData?.package_offer ? errorData.package_offer : ""}</span>
                   </div>
+                </div>
 
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className={errorData?.package_cost_display ? "input_box errorBox" : "input_box"}>
+                    <label htmlFor="package_cost_display">Package Cost Display *</label>
+                    <input
+                      type="text"
+                      id="package_cost_display"
+                      className="form-control"
+                      disabled={viewMode}
+                      placeholder="Enter Display Currency"
+                      value={userInfo?.package_cost_display}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Allow only numeric characters and decimal point
+                        if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                          setUserInfo({ ...userInfo, package_cost_display: value });
+                        }
+                      }}
+                    />
+                    <span className="errorText">{errorData?.package_cost_display ? errorData.package_cost_display : ""}</span>
+                  </div>
+                </div>
 
-                 
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className={errorData?.package_cost_mounting ? "input_box errorBox" : "input_box"}>
+                    <label htmlFor="package_cost_mounting">Package Cost Mounting *</label>
+                    <input
+                      type="text"
+                      id="package_cost_mounting"
+                      className="form-control"
+                      disabled={viewMode}
+                      placeholder="Enter Mounting Currency"
+                      value={userInfo?.package_cost_mounting}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Allow only numeric characters and decimal point
+                        if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                          setUserInfo({ ...userInfo, package_cost_mounting: value });
+                        }
+                      }}
+                    />
+                    <span className="errorText">{errorData?.package_cost_mounting ? errorData.package_cost_mounting : ""}</span>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className={errorData?.package_cost_printing ? "input_box errorBox" : "input_box"}>
+                    <label htmlFor="package_cost_printing_currency">Package Cost Printing *</label>
+                    <input
+                      type="text"
+                      id="package_cost_printing"
+                      className="form-control"
+                      disabled={viewMode}
+                      placeholder="Enter Printing Currency"
+                      value={userInfo?.package_cost_printing}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Allow only numeric characters and decimal point
+                        if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                          setUserInfo({ ...userInfo, package_cost_printing: value });
+                        }
+                      }}
+                    />
+                    <span className="errorText">{errorData?.package_cost_printing ? errorData.package_cost_printing : ""}</span>
+                  </div>
+                </div>
+
+                {"Agency" === "Agency" && (
+                    <>
+                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className={errorData?.commission_display ? "input_box errorBox" : "input_box"}>
+                          <label htmlFor="agency_commission_display">Agency Commission on Display (%) *</label>
+                          <input
+                            type="text"
+                            id="agency_commission_display"
+                            className="form-control"
+                            disabled={viewMode}
+                            placeholder="Enter Display Commission Percentage"
+                            value={userInfo?.agency_commission_display}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Allow only numeric characters and decimal point
+                              if (/^\d{0,3}$/.test(value)) {
+                                setUserInfo({ ...userInfo, agency_commission_display: value });
+                              }
+                            }}
+                          />
+                          <span className="errorText">{errorData?.agency_commission_display ? errorData.agency_commission_display : ""}</span>
+                        </div>
+                      </div>
+
+                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className={errorData?.agency_commission_mounting ? "input_box errorBox" : "input_box"}>
+                          <label htmlFor="agency_commission_mounting">Agency Commission on Mounting (%) *</label>
+                          <input
+                            type="text"
+                            id="agency_commission_mounting"
+                            className="form-control"
+                            disabled={viewMode}
+                            placeholder="Enter Mounting Commission Percentage"
+                            value={userInfo?.agency_commission_mounting}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Allow only numeric characters and decimal point
+                              if (/^\d{0,3}$/.test(value)) {
+                                setUserInfo({ ...userInfo, agency_commission_mounting: value });
+                              }
+                            }}
+                          />
+                          <span className="errorText">{errorData?.agency_commission_mounting ? errorData.agency_commission_mounting : ""}</span>
+                        </div>
+                      </div>
+
+                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className={errorData?.agency_commission_printing ? "input_box errorBox" : "input_box"}>
+                          <label htmlFor="commission_printing">Agency Commission on Printing (%) *</label>
+                          <input
+                            type="text"
+                            id="commission_printing"
+                            className="form-control"
+                            disabled={viewMode}
+                            placeholder="Enter Printing Commission Percentage"
+                            value={userInfo?.agency_commission_printing}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Allow only numeric characters and decimal point
+                              if (/^\d{0,3}$/.test(value)) {
+                                setUserInfo({ ...userInfo, agency_commission_printing: value });
+                              }
+                            }}
+                          />
+                          <span className="errorText">{errorData?.agency_commission_printing ? errorData.agency_commission_printing : ""}</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
               <div className="add_screen_head">
-                <span className="text_bold">Costing Details </span>
+                <span className="text_bold">Approval Details </span>
+              </div>
+              <div className="add_user_form">
+              <div className="row ">
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.submitted_date ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="submitted_date">Submitted Date </label>
+                  <input
+                    type="date"
+                    id="submitted_date"
+                    className="form-control"
+                    disabled={viewMode}
+                    min={new Date().toISOString().split('T')[0]} 
+                    onPaste={(e) => e.preventDefault()}
+                    onKeyDown={(e) => e.preventDefault()}
+                    value={userInfo?.submitted_date ? moment(userInfo?.submitted_date).format(
+                      "YYYY-MM-DD"
+                    ):""}
+                    onChange={(e) => setUserInfo({ ...userInfo, submitted_date: e.target.value })}
+                  />
+                  <span className="errorText">{errorData?.submitted_date ? errorData.submitted_date : ""}</span>
+                </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+              <div className={errorData?.approval_status ? "input_box errorBox" : "input_box"}>
+                <label htmlFor="approval_status">Approval Status </label>
+                <input
+                  type="text"
+                  id="approval_status"
+                  className="form-control"
+                  disabled={viewMode}
+                  placeholder="Enter Approval Status"
+                  value={userInfo?.approval_status}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Allow only alphabetic characters (including spaces)
+                    if (/^[A-Za-z0-9\s]*$/.test(value)) {
+                      setUserInfo({ ...userInfo, approval_status: value });
+                    }
+                  }}
+                />
+                <span className="errorText">{errorData?.approval_status ? errorData.approval_status : ""}</span>
+              </div>
+            </div>
+
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.approved_date ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="approved_date">Approved Date </label>
+                  <input
+                    type="date"
+                    id="approved_date"
+                    className="form-control"
+                    min={new Date().toISOString().split('T')[0]} 
+                    onPaste={(e) => e.preventDefault()}
+                    onKeyDown={(e) => e.preventDefault()}
+                    value={userInfo?.approved_date ? moment(userInfo?.approved_date).format(
+                      "YYYY-MM-DD"
+                    ):""}
+                    onChange={(e) => setUserInfo({ ...userInfo, approved_date: e.target.value })}
+                  />
+                  <span className="errorText">{errorData?.approved_date ? errorData.approved_date : ""}</span>
+                </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.approval_comments ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="approval_comments">Approval Comments </label>
+                  <input
+                    type="text"
+                    id="approval_comments"
+                    className="form-control"
+                    disabled={viewMode}
+                    placeholder="Enter Approval Comments"
+                    value={userInfo?.approval_comments}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Allow only alphabetic characters (including spaces)
+                      if (/^[A-Za-z0-9\s]*$/.test(value)) {
+                        setUserInfo({ ...userInfo, approval_comments: value });
+                      }
+                    }}
+                  />
+                  <span className="errorText">{errorData?.approval_comments ? errorData.approval_comments : ""}</span>
+                </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.rejected_date ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="rejected_date">Rejected Date </label>
+                  <input
+                    type="date"
+                    id="rejected_date"
+                    className="form-control"
+                    disabled={viewMode}
+                    min={new Date().toISOString().split('T')[0]} 
+                    onPaste={(e) => e.preventDefault()}
+                    onKeyDown={(e) => e.preventDefault()}
+                    value={userInfo?.rejected_date ? moment(userInfo?.rejected_date).format(
+                      "YYYY-MM-DD"
+                    ):""}
+                    onChange={(e) => setUserInfo({ ...userInfo, rejected_date: e.target.value })}
+                  />
+                  <span className="errorText">{errorData?.rejected_date ? errorData.rejected_date : ""}</span>
+                </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.rejection_comments ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="rejection_comments">Rejection Comments </label>
+                  <input
+                    type="text"
+                    id="rejection_comments"
+                    className="form-control"
+                    disabled={viewMode}
+                    placeholder="Enter Rejection Comments"
+                    value={userInfo?.rejection_comments}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Allow only alphabetic characters (including spaces)
+                      if (/^[A-Za-z0-9\s]*$/.test(value)) {
+                        setUserInfo({ ...userInfo, rejection_comments: value });
+                      }
+                    }}
+                  />
+                  <span className="errorText">{errorData?.rejection_comments ? errorData.rejection_comments : ""}</span>
+                </div>
+              </div>
+
+              </div>
+              </div>
+
+              <div className="add_screen_head">
+                <span className="text_bold">Display, Mounting and Printing Cost </span>
               </div>
               <div className="add_user_form">
               <div className="row ">
                       {
-                costingDetailArray?.map((item)=>(
+                DMPCArray?.map((item)=>(
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={item.id}>
                   <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
                     <label htmlFor="campaign_brand">{item?.label} </label>
                     <input
-                      type="text"
+                      type="number"
                       id={item?.id}
                       className="form-control"
-                      disabled={item?.id==="total_client_cost"}
+                      disabled={viewMode || item?.id==="total_selling_cost" || item?.id==="total_buying_cost" }
                       placeholder={`Enter ${item?.label}`}
                       value={userInfo?.[item?.id]}
-                      onChange={(e) => handleCostingInputChange(e,item?.fieldType)}
+                      onChange={(e) => handleDMPCInfoChange(e,item?.fieldType)}
+                    />
+                    <span className="errorText">{errorData?.[item?.id] ? errorData?.[item?.id] : ""}</span>
+                  </div>
+                  </div>
+                ))
+              }
+              </div>
+              </div>
+              
+              <div className="add_screen_head">
+                <span className="text_bold">Total Cost</span>
+              </div>
+              <div className="add_user_form">
+              <div className="row ">
+                      {
+                TotalCostArray?.map((item)=>(
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={item.id}>
+                  <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
+                    <label htmlFor="campaign_brand">{item?.label} </label>
+                    <input
+                      type="number"
+                      id={item?.id}
+                      className="form-control"
+                      disabled={viewMode || item?.id==="total_vendor_cost_with_tax" || item?.id==="total_client_cost_with_tax" }
+                      placeholder={`Enter ${item?.label}`}
+                      value={userInfo?.[item?.id]}
+                      onChange={(e) => handleTotalCostInfoChange(e,item?.fieldType)}
                     />
                     <span className="errorText">{errorData?.[item?.id] ? errorData?.[item?.id] : ""}</span>
                   </div>
@@ -967,6 +1213,33 @@ const AddCampaignScreen = () => {
               </div>
               </div>
 
+              <div className="add_screen_head">
+                <span className="text_bold">Additional Information</span>
+              </div>
+              <div className="add_user_form">
+              <div className="row ">
+                      {
+                additionalInfoArray?.map((item)=>(
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={item.id}>
+                  <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
+                    <label htmlFor="campaign_brand">{item?.label} </label>
+                    <input
+                      type="number"
+                      id={item?.id}
+                      className="form-control"
+                      disabled={viewMode }
+                      placeholder={`Enter ${item?.label}`}
+                      value={userInfo?.[item?.id]}
+                      onChange={(e) => handleTotalCostInfoChange(e,item?.fieldType)}
+                    />
+                    <span className="errorText">{errorData?.[item?.id] ? errorData?.[item?.id] : ""}</span>
+                  </div>
+                  </div>
+                ))
+              }
+              </div>
+              </div>
+              
               <div className="add_screen_head">
                 <span className="text_bold">Margin Information </span>
               </div>
@@ -978,7 +1251,7 @@ const AddCampaignScreen = () => {
                   <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
                     <label htmlFor="campaign_brand">{item?.label} </label>
                     <input
-                      type="number"
+                      type="text"
                       id={item?.id}
                       className="form-control"
                       
@@ -994,8 +1267,6 @@ const AddCampaignScreen = () => {
               </div>
               </div>
               
-              
-                
 
 
               <div className="add_screen_head">
@@ -1273,4 +1544,4 @@ const AddCampaignScreen = () => {
   );
 };
 
-export default AddCampaignScreen;
+export default AddEstimationScreen;

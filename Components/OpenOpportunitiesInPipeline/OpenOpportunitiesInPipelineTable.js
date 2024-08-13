@@ -94,7 +94,7 @@ const OpenOpportunitiesInPipelineTable = ({ dataList, title, openConfirmBox, loa
             }
         }, 
         {
-            name: 'decs',
+            name: 'desc',
             label: "Description",
             options: {
                 filter: true,

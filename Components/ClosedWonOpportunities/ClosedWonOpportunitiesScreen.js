@@ -81,8 +81,18 @@ const ClosedWonOpportunities = () => {
       };
 
       let query = {};
-      if (financialYear) query.financialYear = financialYear.slice(0,4);
-      if (quarter) query.quarter = quarter;
+      if (financialYear)
+        {
+        query.financialYear = financialYear.slice(0,4)
+        }
+        else{
+          query.financialYear = getCurrentFinancialYear().slice(0,4)
+      }
+      if (quarter)
+         {query.quarter = quarter;}
+      else{
+        query.quarter = getCurrentQuarter()
+      }
       if (month) query.month = month;
       query.opportunity_stg_id = 3;
 
@@ -165,9 +175,34 @@ const ClosedWonOpportunities = () => {
       }
     }
   };
+
+  const getCurrentFinancialYear = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // getMonth() is zero-indexed
+    return month >= 4 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+  };
+
+  const getCurrentQuarter = () => {
+    const today = new Date();
+    const month = today.getMonth() + 1; // getMonth() is zero-indexed
+  
+    if (month >= 4 && month <= 6) {
+      return "1"; // Q1: Apr-Jun
+    } else if (month >= 7 && month <= 9) {
+      return "2"; // Q2: Jul-Sep
+    } else if (month >= 10 && month <= 12) {
+      return "3"; // Q3: Oct-Dec
+    } else {
+      return "4"; // Q4: Jan-Mar (next year)
+    }
+  };
+  
   
 
   useEffect(() => {
+    setFinancialYear(getCurrentFinancialYear())
+    setQuarter(getCurrentQuarter())
     getDataList();
   }, []);
 

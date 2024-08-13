@@ -94,7 +94,7 @@ const ClosedLostOpportunitiesTable = ({ dataList, title, openConfirmBox, loader 
             }
         }, 
         {
-            name: 'decs',
+            name: 'desc',
             label: "Description",
             options: {
                 filter: true,

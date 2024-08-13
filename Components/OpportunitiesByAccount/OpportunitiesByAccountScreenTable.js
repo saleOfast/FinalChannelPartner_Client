@@ -94,7 +94,7 @@ const OpportunitiesByAccountScreenTable = ({ dataList, title, openConfirmBox, lo
             }
         }, 
         {
-            name: 'decs',
+            name: 'desc',
             label: "Description",
             options: {
                 filter: true,

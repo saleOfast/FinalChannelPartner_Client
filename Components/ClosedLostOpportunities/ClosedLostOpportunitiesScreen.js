@@ -10,12 +10,12 @@ import { useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 import DownloadIcon from "../Svg/DownloadIcon";
 import { Row, Col, Container } from 'react-bootstrap';
-const DynamicTable = dynamic(() => import("./ClosedWonOpportunitiesTable"), {
+const DynamicTable = dynamic(() => import("./ClosedLostOpportunitiesTable"), {
   ssr: false,
 });
 import Select from "react-select";
 
-const ClosedWonOpportunities = () => {
+const ClosedLostOpportunitiesScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
   const [dataList, setDataList] = useState([]);
   const [financialYear, setFinancialYear] = useState("");
@@ -29,7 +29,7 @@ const ClosedWonOpportunities = () => {
 
   const generateFinancialYearOptions = () => {
     const options = [];
-    const startYear = 2023; 
+    const startYear = 2022; 
     const endYear = new Date().getFullYear() + 1; 
 
     for (let i = startYear; i <= endYear; i++) {
@@ -70,7 +70,7 @@ const ClosedWonOpportunities = () => {
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
-
+  
       let header = {
         headers: {
           Accept: "application/json",
@@ -79,25 +79,23 @@ const ClosedWonOpportunities = () => {
           m_id: 35,
         },
       };
-
-      let query = {};
-      if (financialYear)
-        {
-        query.financialYear = financialYear.slice(0,4)
-        }
-        else{
-          query.financialYear = getCurrentFinancialYear().slice(0,4)
-      }
-      if (quarter)
-         {query.quarter = quarter;}
-      else{
-        query.quarter = getCurrentQuarter()
-      }
-      if (month) query.month = month;
-      query.opportunity_stg_id = 3;
-
+  
+      // Calculate the current financial year
+      const today = new Date();
+      const currentMonth = today.getMonth() + 1; // Months are 0-indexed in JS
+      const currentYear = today.getFullYear();
+      const financialYear = currentMonth >= 4 
+        ? `${currentYear}-${currentYear + 1}` 
+        : `${currentYear - 1}-${currentYear}`;
+  
+      // Build the query with only financial year
+      let query = {
+        financialYear: financialYear,
+        opportunity_stg_id: 4,
+      };
+  
       const queryString = new URLSearchParams(query).toString();
-
+  
       try {
         const response = await axios.get(
           Baseurl + `/db/opportunity/opportunityReport?${queryString} `,
@@ -117,6 +115,7 @@ const ClosedWonOpportunities = () => {
       }
     }
   };
+  
 
   const handleDownload = async () => {
     if (hasCookie("token")) {
@@ -129,23 +128,30 @@ const ClosedWonOpportunities = () => {
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass:"pass"
+          m_id: 38,
         },
         responseType: "blob",
       };
+      
+      const today = new Date();
+      const currentMonth = today.getMonth() + 1; // Months are 0-indexed in JS
+      const currentYear = today.getFullYear();
+      const financialYear = currentMonth >= 4 
+        ? `${currentYear}-${currentYear + 1}` 
+        : `${currentYear - 1}-${currentYear}`;
   
+      // Build the query with only financial year
+      let query = {
+        financialYear: financialYear,
+        opportunity_stg_id: 4,
+      };
+  
+      const queryString = new URLSearchParams(query).toString();
       // Generate a meaningful file name
       const currentDate = new Date().toISOString().slice(0, 10); // Get current date in YYYY-MM-DD format
       const filterPart = filterBy === "quarter" ? `Q${quarter}` : monthOptions.find(option => option.value === month)?.label;
-      const fileName = `Closed_Won_Oportunity_${financialYear}_${filterPart}_${currentDate}.xlsx`;
-      
-      let query = {};
-      if (financialYear) query.financialYear = financialYear.slice(0,4);
-      if (quarter) query.quarter = quarter;
-      if (month) query.month = month;
-      query.opportunity_stg_id = 3;
-
-      const queryString = new URLSearchParams(query).toString();
+      const fileName = `Closed_Lost_Oportunity_${financialYear}_${filterPart}_${currentDate}.xlsx`;
+  
       try {
         const response = await axios.get(
           Baseurl + `/db/opportunity/opportunityReport/downloadExcelData?${queryString}`,
@@ -175,34 +181,9 @@ const ClosedWonOpportunities = () => {
       }
     }
   };
-
-  const getCurrentFinancialYear = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1; // getMonth() is zero-indexed
-    return month >= 4 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
-  };
-
-  const getCurrentQuarter = () => {
-    const today = new Date();
-    const month = today.getMonth() + 1; // getMonth() is zero-indexed
-  
-    if (month >= 4 && month <= 6) {
-      return "1"; // Q1: Apr-Jun
-    } else if (month >= 7 && month <= 9) {
-      return "2"; // Q2: Jul-Sep
-    } else if (month >= 10 && month <= 12) {
-      return "3"; // Q3: Oct-Dec
-    } else {
-      return "4"; // Q4: Jan-Mar (next year)
-    }
-  };
-  
   
 
   useEffect(() => {
-    setFinancialYear(getCurrentFinancialYear())
-    setQuarter(getCurrentQuarter())
     getDataList();
   }, []);
 
@@ -210,14 +191,14 @@ const ClosedWonOpportunities = () => {
     <>
       <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
-          <h3 className="content_head">CLOSED WON OPPORTUNITY</h3>
+          <h3 className="content_head">CLOSED LOST OPPORTUNITY (FYTD)</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link href="/crm">Home </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                Closed Won Opportunity
+                Closed Lost Opportunity
               </li>
             </ol>
           </nav>
@@ -225,7 +206,7 @@ const ClosedWonOpportunities = () => {
         <div className="main_content">
         <Container className="table_screen">
       <Row className="align-items-end mb-3">
-        <Col xs={12} sm={6} md={4} lg={2}>
+        {/* <Col xs={12} sm={6} md={4} lg={2}>
           <label>Financial Year</label>
           <Select
             name="financialYear"
@@ -281,16 +262,16 @@ const ClosedWonOpportunities = () => {
 
         <Col xs={12} sm={6} md={4} lg={2}>
           <button
-            className="btn btn-primary w-100 mt-2"
+            className="btn btn-primary w-100"
             onClick={getDataList}
           >
             Apply Filters
           </button>
-        </Col>
+        </Col> */}
 
         <Col xs={12} sm={6} md={4} lg={2}>
           <button
-            className="btn btn-primary w-100 mt-2"
+            className="btn btn-primary w-100 "
             onClick={handleDownload}
           >
             {/* <DownloadIcon /> */}
@@ -300,7 +281,7 @@ const ClosedWonOpportunities = () => {
       </Row>
 
       <DynamicTable
-        title="Closed Won Opportunity List"
+        title="Closed Lost Opportunity List"
         dataList={dataList}
         loader={loader}
       />
@@ -311,5 +292,5 @@ const ClosedWonOpportunities = () => {
   );
 };
 
-export default ClosedWonOpportunities;
+export default ClosedLostOpportunitiesScreen;
 

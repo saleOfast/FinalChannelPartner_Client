@@ -3,7 +3,7 @@ import MUIDataTable from "mui-datatables";
 import Loader from '../Loader/Loader';
 import moment from 'moment/moment';
 
-const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }) => {
+const ClosedLostOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }) => {
 
     const columns = [
         {
@@ -159,4 +159,4 @@ const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }
     )
 }
 
-export default ClosedWonOpportunitiesTable
+export default ClosedLostOpportunitiesTable

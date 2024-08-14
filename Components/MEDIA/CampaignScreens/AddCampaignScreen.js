@@ -226,6 +226,7 @@ const AddCampaignScreen = () => {
     if (!userInfo.campaign_end_date.trim()) errors.campaign_end_date = "Campaign End Date is required";
     if (!userInfo.cmpn_p_id) errors.cmpn_p_id = "Proof of Confirmation is required";
     if (!userInfo.cmpn_b_t_id) errors.cmpn_b_t_id = "Business Type is required";
+    if (!userInfo.proof_attachment) errors.proof_attachment = "Proof Attachment is required";
     
     setErrorData(errors);
     return Object.keys(errors).length === 0;
@@ -240,6 +241,21 @@ const AddCampaignScreen = () => {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
 
+      const formData = new FormData();
+
+
+      Object.keys(userInfo).forEach(key => {
+        if (userInfo[key] instanceof File) {
+          formData.append(key, userInfo[key]);
+        } else {
+          formData.append(key, userInfo[key]);
+        }
+      });
+
+      formData.append('contact_owner', loginDetails.user_id);
+
+
+
       let header = {
         headers: {
           Accept: "application/json",
@@ -249,12 +265,13 @@ const AddCampaignScreen = () => {
         },
       };
 
-      let oppBody = { ...userInfo };
-      oppBody.contact_owner = loginDetails.user_id;
+      // let oppBody = { ...userInfo };
+      // oppBody.contact_owner = loginDetails.user_id;
       try {
+
         const response = await axios.post(
           Baseurl + `/db/media/campaign/campaignManagement/addCampaign`,
-          oppBody,
+          formData,
           header
         );
         if (response.status === 204 || response.status === 200) {
@@ -555,14 +572,30 @@ const AddCampaignScreen = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
   
-    if (file && file.type !== 'application/pdf') {
-      toast.error('Only PDF files are allowed');
-      event.target.value = '';
-    } else {
-      setUserInfo({
-        ...userInfo,
-        proof_attachment:file
-      })
+    // if (file && file.type !== 'application/pdf') {
+    //   toast.error('Only PDF files are allowed');
+    //   event.target.value = '';
+    // } else {
+    //   setUserInfo({
+    //     ...userInfo,
+    //     proof_attachment:file
+    //   })
+    // }
+
+
+
+    if (file) {
+      console.log("file is ",file)
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error('Only PDF, JPG, PNG, and JPEG files are allowed');
+        event.target.value = ''; 
+      } else {
+        setUserInfo({
+          ...userInfo,
+          proof_attachment: file
+        });
+      }
     }
   };
 
@@ -915,7 +948,8 @@ const AddCampaignScreen = () => {
                   <input
                     type="file"
                     id="proof_attachment"
-                    accept="application/pdf"
+                    // accept="application/pdf"
+                    accept=".pdf,image/jpeg,image/png"
                     className="form-control"
                     disabled={viewMode}
                     placeholder="Enter Campaign Brand"

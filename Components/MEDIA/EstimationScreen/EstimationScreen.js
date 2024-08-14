@@ -36,7 +36,7 @@ const EstimationScreen = () => {
                 }
             }
             try {
-                const response = await axios.get(Baseurl + `/db/contacts`, header);
+                const response = await axios.get(Baseurl + `/db/media/estimation/getEstimation`, header);
                 if(response?.status==200 || response?.status==201){
                     setLoader(false)
                     setAccountsList(response?.data?.data);
@@ -73,7 +73,7 @@ const EstimationScreen = () => {
             }
 
             try {
-                const response = await axios.delete(Baseurl + `/db/contacts?c_id=${currObj}`, header);
+                const response = await axios.delete(Baseurl + `/db/media/estimation/deleteEstimation?estimate_id=${currObj}`, header);
                 if (response.status === 204 || response.status === 200) {
                     toast.success(response.data.message)
                     setdeleteshowConfirm(false)

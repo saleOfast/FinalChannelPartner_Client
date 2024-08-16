@@ -169,14 +169,14 @@ const AddEstimationScreen = () => {
     );
   }
 
-  async function getProofOfConList() {
-    await fetchData(
-      `/db/media/campaign/campaignProofRoutes/getCampaignProof`,
-      setProofOfConList,
-      errorToast,
-      setErrorToast
-    );
-  }
+  // async function getProofOfConList() {
+  //   await fetchData(
+  //     `/db/media/campaign/campaignProofRoutes/getCampaignProof`,
+  //     setProofOfConList,
+  //     errorToast,
+  //     setErrorToast
+  //   );
+  // }
 
   async function getBusinessTypeList() {
     await fetchData(
@@ -545,7 +545,7 @@ const AddEstimationScreen = () => {
   
 
   useEffect(() => {
-    getProofOfConList();
+    // getProofOfConList();
     getCampaignStatusList();
     getBusinessTypeList()
     getAccountsList();
@@ -974,7 +974,7 @@ const AddEstimationScreen = () => {
                         { value: 'No', label: 'No' },
                       ]}
                       value={[
-                        { value: 'Yes', label: 'Yes' },
+                        { value: 'Yes', label: 'Yes' },   
                         { value: 'No', label: 'No' },
                       ].find(option => option.value === userInfo.package_offer)}
                       onChange={(selectedOption) => {
@@ -1626,7 +1626,7 @@ const AddEstimationScreen = () => {
                       )} */}
                       {viewMode ? null : (
                         <>
-                          <Link href="/media/PrintingCostMgmt">
+                          <Link href="/media/Estimations">
                             <button className="btn btn-cancel m-3 ">
                               Cancel
                             </button>

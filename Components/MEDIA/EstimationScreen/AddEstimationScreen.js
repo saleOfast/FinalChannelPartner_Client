@@ -81,6 +81,7 @@ const AddEstimationScreen = () => {
   const [campaignStatusList,setCampaignStatusList]=useState([])
   const [proofOfConList,setProofOfConList]=useState([])
   const [busiessTypeList,setBusinessTypeList]=useState([])
+  const [isAgency,setIsAgency]=useState(false);
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
   const [newFields, setNewFields] = useState({
     field_lable: null,
@@ -169,6 +170,19 @@ const AddEstimationScreen = () => {
     );
   }
 
+
+  useEffect(() => {
+    const selectedBusiness = busiessTypeList.find(
+      (data) => data.cmpn_b_t_id === userInfo?.cmpn_b_t_id
+    );
+
+    if (selectedBusiness?.cmpn_b_t_name === "Agency") {
+      setIsAgency(true);
+    } else {
+      setIsAgency(false);
+    }
+  }, [userInfo, busiessTypeList]);
+
   // async function getProofOfConList() {
   //   await fetchData(
   //     `/db/media/campaign/campaignProofRoutes/getCampaignProof`,
@@ -249,9 +263,11 @@ const AddEstimationScreen = () => {
     if (!userInfo.package_cost_display) errors.package_cost_display = "Package cost display is required";
     if (!userInfo.package_cost_mounting) errors.package_cost_mounting = "Package cost mounting  is required";
     if (!userInfo.package_cost_printing) errors.package_cost_printing = "Package cost printing  is required";
+   if(isAgency){
     if (!userInfo.agency_commission_display) errors.agency_commission_display = "Agency commission display is required";
     if (!userInfo.agency_commission_mounting) errors.agency_commission_mounting = "Agency commission mounting is required";
     if (!userInfo.agency_commission_printing) errors.agency_commission_printing = "Agency commission printing is required";
+   }
     if (!userInfo.package_offer) errors.package_offer = "Package offer is required";
     // if (!userInfo.campaign_duration) errors.campaign_duration = "Campaign Duration is required";
     // if (!userInfo.cmpn_b_t_id) errors.cmpn_b_t_id = "Business Type is required";
@@ -928,6 +944,7 @@ const AddEstimationScreen = () => {
                         placeholder="Select Business Type "
                         isDisabled
                         options={busiessTypeList?.map((data, index) => {
+                        
                           return {
                             value: data?.cmpn_b_t_id,
                             label: data?.cmpn_b_t_name,
@@ -935,7 +952,9 @@ const AddEstimationScreen = () => {
                         })}
                         value={busiessTypeList?.map((data, index) => {
                           if(id && data.cmpn_b_t_id==userInfo?.db_media_campaign?.cmpn_b_t_id ){
+                           
                             return {
+                           
                               value: data?.cmpn_b_t_id,
                               label: data?.cmpn_b_t_name,
                             };
@@ -952,6 +971,7 @@ const AddEstimationScreen = () => {
                         onChange={(e) => {
                           setUserInfo({ ...userInfo, cmpn_b_t_id: e.value });
                           setErrorData({ ...errorData, cmpn_b_t_id: "" });
+
                         }}
                       />
                       <span className="errorText">
@@ -1069,7 +1089,8 @@ const AddEstimationScreen = () => {
                   </div>
                 </div>
 
-                {"Agency" === "Agency" && (
+                {/* {"Agency" === "Agency" && ( */}
+                {isAgency && (
                     <>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                         <div className={errorData?.commission_display ? "input_box errorBox" : "input_box"}>

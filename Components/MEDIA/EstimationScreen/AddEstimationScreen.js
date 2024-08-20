@@ -69,7 +69,7 @@ const AddEstimationScreen = () => {
   const { ac_id } = router.query;
 
   const [editMode, setEditMode] = useState(false);
-  const [accountsList, setAccountsList] = useState([]);
+  const [estimatesList, setEstimatesList] = useState([]);
   const [isLoading, setisLoading] = useState(false);
   const [viewMode, setViewMode] = useState(false);
   const [usersList, setUsersLsit] = useState([]);
@@ -90,27 +90,39 @@ const AddEstimationScreen = () => {
     option: null,
   });
 
+  const getTodayDate = () => {
+    return new Date().toISOString().split('T')[0];
+  };
+
   const [userInfo, setUserInfo] = useState({
+    estimate_type:'',
     campaign_id: null,
     campaign_name: '',
     acc_id: '',
+    package_offer:'',
     contact: '',
     campaign_brand: '',
     cmpn_s_id: null,
     campaign_start_date: '',
     campaign_end_date: '',
+    estimate_date:getTodayDate(),
     campaign_duration: 0,
     cmpn_p_id: null,
     proof_attachment: null,
     cmpn_b_t_id: null,
+    package_cost_display:0,
+    package_cost_printing:0,
+    package_cost_mounting:0,
     client_display_cost: 0,
     client_mounting_cost: 0,
     client_printing_cost: 0,
+    agency_commission_mounting:0,
     total_client_cost: 0,
     total_sales_order_value: 0,
     total_credit_note_value: 0,
     total_receipt_from_client: 0,
     total_client_outstanding: 0,
+    agency_commission_display:0,
     total_ndp_days: 0,
     total_sales_invoice_value: 0,
     total_vendor_display_cost: 0,
@@ -118,6 +130,7 @@ const AddEstimationScreen = () => {
     total_vendor_printing_cost: 0,
     total_vendor_cost: 0,
     total_purchase_order_value: 0,
+    agency_commission_printing:0,
     total_debit_note_value: 0,
     total_vendor_payment: 0,
     total_vendor_outstanding: 0,
@@ -139,8 +152,9 @@ const AddEstimationScreen = () => {
 
   async function getAccountsList() {
     await fetchData(
-      `/db/account?platform_id=5`,
-      setAccountsList,
+      // `/db/account?platform_id=5`,
+      `/db/media/campaign/campaignManagement/getCampaign`,
+      setEstimatesList,
       errorToast,
       setErrorToast
     );
@@ -155,18 +169,18 @@ const AddEstimationScreen = () => {
     );
   }
 
-  async function getProofOfConList() {
-    await fetchData(
-      `/db/media/campaign/campaignProofRoutes/getCampaignProof`,
-      setProofOfConList,
-      errorToast,
-      setErrorToast
-    );
-  }
+  // async function getProofOfConList() {
+  //   await fetchData(
+  //     `/db/media/campaign/campaignProofRoutes/getCampaignProof`,
+  //     setProofOfConList,
+  //     errorToast,
+  //     setErrorToast
+  //   );
+  // }
 
   async function getBusinessTypeList() {
     await fetchData(
-      `/db/media/campaign/campaignBusinessTypeRoutes/getCampaignBusinessType`,
+      `/db/media/campaign/campaignBusinessType/getCampaignBusinessType`,
       setBusinessTypeList,
       errorToast,
       setErrorToast
@@ -210,7 +224,7 @@ const AddEstimationScreen = () => {
 
       try {
         const response = await axios.get(
-          Baseurl + `/db/contacts?c_id=${id}`,
+          Baseurl + `/db/media/estimation/getEstimation?estimate_id=${id}`,
           header
         );
         setUserInfo(response.data.data);
@@ -224,7 +238,33 @@ const AddEstimationScreen = () => {
     }
   };
 
+
+  const validate = () => {
+    const errors = {};
+    // if (!userInfo.campaign_start_date.trim()) errors.campaign_start_date = "Campaign Start Date is required";
+    if (userInfo.campaign_id === null || userInfo.campaign_id === '') {
+      errors.campaign_id = "Campaign Name is required";
+    }
+    // if (!userInfo.campaign_end_date.trim()) errors.campaign_end_date = "Campaign End Date is required";
+    if (!userInfo.package_cost_display) errors.package_cost_display = "Package cost display is required";
+    if (!userInfo.package_cost_mounting) errors.package_cost_mounting = "Package cost mounting  is required";
+    if (!userInfo.package_cost_printing) errors.package_cost_printing = "Package cost printing  is required";
+    if (!userInfo.agency_commission_display) errors.agency_commission_display = "Agency commission display is required";
+    if (!userInfo.agency_commission_mounting) errors.agency_commission_mounting = "Agency commission mounting is required";
+    if (!userInfo.agency_commission_printing) errors.agency_commission_printing = "Agency commission printing is required";
+    if (!userInfo.package_offer) errors.package_offer = "Package offer is required";
+    // if (!userInfo.campaign_duration) errors.campaign_duration = "Campaign Duration is required";
+    // if (!userInfo.cmpn_b_t_id) errors.cmpn_b_t_id = "Business Type is required";
+    if (!userInfo.estimate_date) errors.estimate_date = "Estimate Date is required";
+    if (!userInfo.estimate_type.trim()) errors.estimate_type = "Estimate Type is required"; // Ensure estimate_type is not empty
+  
+    setErrorData(errors);
+    return Object.keys(errors).length === 0;
+  };
+  
+
   const submitHandler = async () => {
+    if(validate()){
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -243,7 +283,7 @@ const AddEstimationScreen = () => {
       oppBody.contact_owner = loginDetails.user_id;
       try {
         const response = await axios.post(
-          Baseurl + `/db/contacts`,
+          Baseurl + `/db/media/estimation/addEstimation`,
           oppBody,
           header
         );
@@ -254,7 +294,7 @@ const AddEstimationScreen = () => {
           );
           toast.success(response.data.message);
           setisLoading(false);
-          router.push("/media/Campaigns");
+          router.push("/media/Estimations");
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -274,12 +314,14 @@ const AddEstimationScreen = () => {
         }
         setisLoading(false);
       }
+      }
     } else {
       toast.error("Please fill the Mandatory fileds");
     }
   };
 
   const UpdateHandler = async () => {
+    if(validate()){
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -300,7 +342,7 @@ const AddEstimationScreen = () => {
 
       try {
         const response = await axios.put(
-          Baseurl + `/db/contacts`,
+          Baseurl + `/db/media/estimation/updateEstimation`,
           newData,
           header
         );
@@ -309,7 +351,7 @@ const AddEstimationScreen = () => {
           await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
           toast.success(response.data.message);
           setisLoading(false);
-          router.push("/media/Campaigns");
+          router.push("/media/Estimations");
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -329,6 +371,7 @@ const AddEstimationScreen = () => {
         }
         setisLoading(false);
       }
+    }
     } else {
       toast.error("Please fill the Mandatory fileds");
     }
@@ -502,7 +545,7 @@ const AddEstimationScreen = () => {
   
 
   useEffect(() => {
-    getProofOfConList();
+    // getProofOfConList();
     getCampaignStatusList();
     getBusinessTypeList()
     getAccountsList();
@@ -685,6 +728,7 @@ const AddEstimationScreen = () => {
                     type="date"
                     className="form-control"
                     id="estimate_date"
+                    disabled={viewMode} 
                     min={new Date().toISOString().split('T')[0]} 
                     onPaste={(e) => e.preventDefault()}
                     onKeyDown={(e) => e.preventDefault()}
@@ -692,6 +736,7 @@ const AddEstimationScreen = () => {
                       "YYYY-MM-DD"
                     )}
                     onChange={(e)=>{
+                      setErrorData({...errorData,estimate_date:""})
                       setUserInfo({...userInfo,estimate_date:e.target.value})
                     }}
                   />
@@ -699,7 +744,42 @@ const AddEstimationScreen = () => {
                 </div>
               </div>
 
+
+
+              
               <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className={errorData?.estimate_type ? "input_box errorBox" : "input_box"}>
+                    <label htmlFor="estimate_type">Estimate Type *</label>
+                    <input
+                      type="text"
+                      id="estimate_type"
+                      className="form-control"
+                      disabled={viewMode}
+                      placeholder="Enter Estimate Type"
+                      value={userInfo?.estimate_type || ""}
+                      // onChange={(e) => {
+                      //   const value = e.target.value;
+                      //   // Allow only alphabetic characters (including spaces)
+                    
+                      //     setUserInfo({ ...userInfo, estimate_type: value });
+                      
+                      // }}
+                      onChange={(e) => {
+                        setErrorData({...errorData,estimate_type:""})
+                        // Regular expression to match only alphabetic characters and spaces
+                        const regex = /^[A-Za-z\s]*$/;
+                        const value = e.target.value;
+                
+                        if (regex.test(value)) {
+                          setUserInfo({ ...userInfo, estimate_type: value });
+                        }
+                      }}
+                    />
+                    <span className="errorText">{errorData?.estimate_type ? errorData.estimate_type : ""}</span>
+                  </div>
+                </div>
+
+              {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                 <div className={errorData?.estimate_approval_status ? "input_box errorBox" : "input_box"}>
                   <label htmlFor="estimate_approval_status">Estimate Approval Status *</label>
                   <input
@@ -707,7 +787,7 @@ const AddEstimationScreen = () => {
                     id="estimate_approval_status"
                     className="form-control"
                     disabled={viewMode}
-                    placeholder="Enter Campaign Brand"
+                    placeholder="Enter Approval status"
                     value={userInfo?.estimate_approval_status}
                     onChange={(e) => {
                       const value = e.target.value;
@@ -719,7 +799,7 @@ const AddEstimationScreen = () => {
                   />
                   <span className="errorText">{errorData?.estimate_approval_status ? errorData.estimate_approval_status : ""}</span>
                 </div>
-                </div>
+                </div> */}
 
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
@@ -735,28 +815,30 @@ const AddEstimationScreen = () => {
                         defaultValue={""}
                         placeholder="Enter Campaign"
                         isDisabled={viewMode}
-                        options={accountsList?.map((data, index) => {
+                        options={estimatesList?.map((data, index) => {
                           return {
-                            value: data?.acc_id,
-                            label: data?.acc_name,
+                            value: data?.campaign_id,
+                            label: data?.campaign_name,
                           };
                         })}
-                        value={accountsList?.map((data, index) => {
-                          if (userInfo.acc_id === data.acc_id) {
+                        value={estimatesList?.map((data, index) => {
+                          if (userInfo.campaign_id === data.campaign_id) {
                             return {
-                              value: data?.acc_id,
-                              label: data?.acc_name,
+                              value: data?.campaign_id,
+                              label: data?.campaign_name,
                             };
                           }
                         })}
                         onChange={(e) => {
-                          setUserInfo({ ...userInfo, acc_id: e.value,contact:accountsList?.find((item)=>item?.acc_id==e.value)?.contact_no });
-                          setErrorData({ ...errorData, acc_id: "" });
+                          setErrorData({...errorData,campaign_id:""})
+                          const campaign=estimatesList?.find((item)=>item?.campaign_id==e.value)
+                          setUserInfo({ ...userInfo, campaign_id: e.value,campaign_start_date:campaign?.campaign_start_date,campaign_end_date:campaign?.campaign_end_date,campaign_duration:campaign?.campaign_duration,cmpn_b_t_id:campaign?.cmpn_b_t_id });
+                          setErrorData({ ...errorData, campaign_id: "" });
                         }}
                       />
                       <span className="errorText">
                         {" "}
-                        {errorData?.account_name ? errorData.account_name : ""}
+                        {errorData?.campaign_id ? errorData.campaign_id : ""}
                       </span>
                     </div>
                   </div>
@@ -771,11 +853,15 @@ const AddEstimationScreen = () => {
                     min={new Date().toISOString().split('T')[0]} 
                     onPaste={(e) => e.preventDefault()}
                     onKeyDown={(e) => e.preventDefault()}
-                    value={moment(userInfo?.campaign_start_date).format(
+
+                    value={id ? moment(estimatesList?.find((item)=>item?.campaign_id==userInfo?.campaign_id)?.campaign_start_date).format(
+                      "YYYY-MM-DD"
+                    ):moment(userInfo?.campaign_start_date).format(
                       "YYYY-MM-DD"
                     )}
                     disabled
                     onChange={(e)=>{
+                      setErrorData({...errorData,campaign_start_date:""})
                       setUserInfo({...userInfo,campaign_start_date:e.target.value})
                     }}
                   />
@@ -794,10 +880,17 @@ const AddEstimationScreen = () => {
                     min={new Date().toISOString().split('T')[0]} 
                     onPaste={(e) => e.preventDefault()}
                     onKeyDown={(e) => e.preventDefault()}
-                    value={moment(userInfo?.campaign_end_date).format(
+                    // value={moment(userInfo?.campaign_end_date).format(
+                    //   "YYYY-MM-DD"
+                    // )}
+                    
+                    value={id ? moment(estimatesList?.find((item)=>item?.campaign_id==userInfo?.campaign_id)?.campaign_end_date).format(
+                      "YYYY-MM-DD"
+                    ):moment(userInfo?.campaign_end_date).format(
                       "YYYY-MM-DD"
                     )}
                     onChange={(e)=>{
+                      setErrorData({...errorData,campaign_end_date:""})
                       setUserInfo({...userInfo,campaign_end_date:e.target.value})
                     }}
                   />
@@ -813,7 +906,8 @@ const AddEstimationScreen = () => {
                     id="campaign_duration"
                     className="form-control"
                     disabled
-                    value={`${userInfo?.campaign_duration} days` || "0days"}
+                    // value={`${userInfo?.campaign_duration} days` || "0days"}
+                    value={id ?(estimatesList?.find((item)=>item?.campaign_id==userInfo?.campaign_id)?.campaign_duration):(userInfo?.campaign_duration) ||"0days"}
                   />
                   <span className="errorText">{errorData?.campaign_duration ? errorData.campaign_duration : ""}</span>
                 </div>
@@ -827,7 +921,7 @@ const AddEstimationScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="client_name">Business Type  *</label>
+                      <label htmlFor="client_name">Business Type *</label>
                       <Select
                         id="client_name"
                         defaultValue={""}
@@ -840,12 +934,20 @@ const AddEstimationScreen = () => {
                           };
                         })}
                         value={busiessTypeList?.map((data, index) => {
-                          if (userInfo.cmpn_b_t_id === data.cmpn_b_t_id) {
+                          if(id && data.cmpn_b_t_id==userInfo?.db_media_campaign?.cmpn_b_t_id ){
                             return {
                               value: data?.cmpn_b_t_id,
                               label: data?.cmpn_b_t_name,
                             };
                           }
+                          else if (userInfo.cmpn_b_t_id === data.cmpn_b_t_id) {
+                            return {
+                              value: data?.cmpn_b_t_id,
+                              label: data?.cmpn_b_t_name,
+                            };
+                          }
+                         
+
                         })}
                         onChange={(e) => {
                           setUserInfo({ ...userInfo, cmpn_b_t_id: e.value });
@@ -872,10 +974,11 @@ const AddEstimationScreen = () => {
                         { value: 'No', label: 'No' },
                       ]}
                       value={[
-                        { value: 'Yes', label: 'Yes' },
+                        { value: 'Yes', label: 'Yes' },   
                         { value: 'No', label: 'No' },
                       ].find(option => option.value === userInfo.package_offer)}
                       onChange={(selectedOption) => {
+                        setErrorData({...errorData,package_offer:""})
                         setUserInfo({
                           ...userInfo,
                           package_offer: selectedOption ? selectedOption.value : null
@@ -897,13 +1000,24 @@ const AddEstimationScreen = () => {
                       disabled={viewMode}
                       placeholder="Enter Display Currency"
                       value={userInfo?.package_cost_display}
+                      // onChange={(e) => {
+                      //   const value = e.target.value;
+                      //   // Allow only numeric characters and decimal point
+                      //   if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                      //     setUserInfo({ ...userInfo, package_cost_display: value });
+                      //   }
+                      // }}
+
+
                       onChange={(e) => {
+                        setErrorData({...errorData,package_cost_display:""})
                         const value = e.target.value;
-                        // Allow only numeric characters and decimal point
-                        if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                        const regex = /^\d*\.?\d*$/;
+                        if (regex.test(value)) {
                           setUserInfo({ ...userInfo, package_cost_display: value });
                         }
                       }}
+                 
                     />
                     <span className="errorText">{errorData?.package_cost_display ? errorData.package_cost_display : ""}</span>
                   </div>
@@ -920,6 +1034,7 @@ const AddEstimationScreen = () => {
                       placeholder="Enter Mounting Currency"
                       value={userInfo?.package_cost_mounting}
                       onChange={(e) => {
+                        setErrorData({...errorData,package_cost_mounting:""})
                         const value = e.target.value;
                         // Allow only numeric characters and decimal point
                         if (/^[0-9]*\.?[0-9]*$/.test(value)) {
@@ -942,6 +1057,7 @@ const AddEstimationScreen = () => {
                       placeholder="Enter Printing Currency"
                       value={userInfo?.package_cost_printing}
                       onChange={(e) => {
+                        setErrorData({...errorData,package_cost_printing:""})
                         const value = e.target.value;
                         // Allow only numeric characters and decimal point
                         if (/^[0-9]*\.?[0-9]*$/.test(value)) {
@@ -966,6 +1082,7 @@ const AddEstimationScreen = () => {
                             placeholder="Enter Display Commission Percentage"
                             value={userInfo?.agency_commission_display}
                             onChange={(e) => {
+                              setErrorData({...errorData,agency_commission_display:""})
                               const value = e.target.value;
                               // Allow only numeric characters and decimal point
                               if (/^\d{0,3}$/.test(value)) {
@@ -988,6 +1105,7 @@ const AddEstimationScreen = () => {
                             placeholder="Enter Mounting Commission Percentage"
                             value={userInfo?.agency_commission_mounting}
                             onChange={(e) => {
+                              setErrorData({...errorData,agency_commission_mounting:""})
                               const value = e.target.value;
                               // Allow only numeric characters and decimal point
                               if (/^\d{0,3}$/.test(value)) {
@@ -1010,6 +1128,7 @@ const AddEstimationScreen = () => {
                             placeholder="Enter Printing Commission Percentage"
                             value={userInfo?.agency_commission_printing}
                             onChange={(e) => {
+                              setErrorData({...errorData,agency_commission_printing:""})
                               const value = e.target.value;
                               // Allow only numeric characters and decimal point
                               if (/^\d{0,3}$/.test(value)) {
@@ -1079,6 +1198,7 @@ const AddEstimationScreen = () => {
                   <input
                     type="date"
                     id="approved_date"
+                    disabled={viewMode}
                     className="form-control"
                     min={new Date().toISOString().split('T')[0]} 
                     onPaste={(e) => e.preventDefault()}
@@ -1103,12 +1223,12 @@ const AddEstimationScreen = () => {
                     placeholder="Enter Approval Comments"
                     value={userInfo?.approval_comments}
                     onChange={(e) => {
+                      // Regular expression to match only alphabetic characters and spaces
                       const value = e.target.value;
-                      // Allow only alphabetic characters (including spaces)
-                      if (/^[A-Za-z0-9\s]*$/.test(value)) {
+              
                         setUserInfo({ ...userInfo, approval_comments: value });
-                      }
                     }}
+                  
                   />
                   <span className="errorText">{errorData?.approval_comments ? errorData.approval_comments : ""}</span>
                 </div>
@@ -1254,7 +1374,7 @@ const AddEstimationScreen = () => {
                       type="text"
                       id={item?.id}
                       className="form-control"
-                      
+                      disabled={viewMode }
                       placeholder={`Enter ${item?.label}`}
                       value={userInfo?.[item?.id]}
                       onChange={(e) => handleMarginInfoChange(e,item?.fieldType)}
@@ -1506,7 +1626,7 @@ const AddEstimationScreen = () => {
                       )} */}
                       {viewMode ? null : (
                         <>
-                          <Link href="/media/PrintingCostMgmt">
+                          <Link href="/media/Estimations">
                             <button className="btn btn-cancel m-3 ">
                               Cancel
                             </button>

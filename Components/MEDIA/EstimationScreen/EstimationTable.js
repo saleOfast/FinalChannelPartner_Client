@@ -14,44 +14,58 @@ const EstimationTable = ({ accountsList, openConfirmBox , title, loader }) => {
 
     const columns = [
         {
-            name: 'first_name',
-            label: "Name",
+            name: 'campaign_name',
+            label:  "Campaign Name",
             options: {
                 filter: true,
             }
         },
         {
-            name: 'accountName',
-            label: "Account Name",
-            options: {
-                filter: true,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    return (
-                        // <>{value?.acc_name? value.acc_name : ''}</>
-                        <>{value ? value : ''}</>
-                    )
-                }
-            }
-        }, 
-        
-        {
-            name: 'contact_no',
-            label: "Contact No",
+            name: 'estimate_type',
+            label:  "Estimated Type",
             options: {
                 filter: true,
             }
         },
         {
-            name: 'email_id',
-            label: "Email Id ",
+            name: 'invoice_value',
+            label:  "Invoice",
             options: {
                 filter: true,
             }
         },
+        // {
+        //     name: 'accountName',
+        //     label: "Account Name",
+        //     options: {
+        //         filter: true,
+        //         customBodyRender: (value, tableMeta, updateValue) => {
+        //             return (
+        //                 // <>{value?.acc_name? value.acc_name : ''}</>
+        //                 <>{value ? value : ''}</>
+        //             )
+        //         }
+        //     }
+        // }, 
+        
+        // {
+        //     name: 'contact_no',
+        //     label: "Contact No",
+        //     options: {
+        //         filter: true,
+        //     }
+        // },
+        // {
+        //     name: 'email_id',
+        //     label: "Email Id ",
+        //     options: {
+        //         filter: true,
+        //     }
+        // },
         
         
         {
-            name: 'contact_id',
+            name: 'estimate_id',
             label: "Action",
             options: {
                 filter:false,
@@ -59,12 +73,12 @@ const EstimationTable = ({ accountsList, openConfirmBox , title, loader }) => {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
-                            <Link href={`/media/AddCampaigns?id=${value}&vw=mds`}>
+                            <Link href={`/media/AddEstimations?id=${value}&vw=mds`}>
                                 <button className="action_btn" title="View">
                                     <ViewIcon />
                                 </button>
                             </Link>
-                            <Link href={`/media/AddCampaigns?id=${value}`}>
+                            <Link href={`/media/AddEstimations?id=${value}`}>
                                 <button className="action_btn" title='Edit'>
                                     <EditIcon />
                                 </button>
@@ -86,11 +100,12 @@ const EstimationTable = ({ accountsList, openConfirmBox , title, loader }) => {
     };
 
     const mappedDataList=accountsList?.map(list=>({
-        first_name:list?.first_name,
-        accountName:list?.accountName?.acc_name,
-        contact_no:list?.contact_no,
-        email_id:list?.email_id,
-        contact_id:list?.contact_id
+        campaign_name:list?.db_media_campaign?.campaign_name,
+        estimate_type:list?.estimate_type,
+        invoice_value:list?.invoice_value,
+        estimate_id:list?.estimate_id,
+
+    
     }))
 
     return (

@@ -12,40 +12,122 @@ import { fetchData } from "../../../Utils/getReq";
 import Select from "react-select";
 import { Delete } from "@mui/icons-material";
 
-const costingDetailArray=[
-  { label: "Client Display Cost", id: "client_display_cost", fieldType: "currency" },
-  { label: "Client Mounting Cost", id: "client_mounting_cost", fieldType: "currency" },
-  { label: "Client Printing Cost", id: "client_printing_cost", fieldType: "currency" },
-  { label: "Total Client Cost", id: "total_client_cost", fieldType: "currency" },
-  { label: "Total Sales Order Value", id: "total_sales_order_value", fieldType: "currency" },
-  { label: "Total Credit Note Value", id: "total_credit_note_value", fieldType: "currency" },
-  { label: "Total Receipt from Client", id: "total_receipt_from_client", fieldType: "currency" },
-  { label: "Total Client Outstanding", id: "total_client_outstanding", fieldType: "currency" },
+const costingDetailArray = [
+  {
+    label: "Client Display Cost",
+    id: "client_display_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Client Mounting Cost",
+    id: "client_mounting_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Client Printing Cost",
+    id: "client_printing_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Client Cost",
+    id: "total_client_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Sales Order Value",
+    id: "total_sales_order_value",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Credit Note Value",
+    id: "total_credit_note_value",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Receipt from Client",
+    id: "total_receipt_from_client",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Client Outstanding",
+    id: "total_client_outstanding",
+    fieldType: "currency",
+  },
   { label: "Total NDP Days", id: "total_ndp_days", fieldType: "number" },
-  { label: "Total Sales Invoice Value", id: "total_sales_invoice_value", fieldType: "currency" },
-  { label: "Total Vendor Display Cost", id: "total_vendor_display_cost", fieldType: "currency" },
-  { label: "Total Vendor Mounting Cost", id: "total_vendor_mounting_cost", fieldType: "currency" },
-  { label: "Total Vendor Printing Cost", id: "total_vendor_printing_cost", fieldType: "currency" },
-  { label: "Total Vendor Cost", id: "total_vendor_cost", fieldType: "currency" },
-  { label: "Total Purchase Order Value", id: "total_purchase_order_value", fieldType: "currency" },
-  { label: "Total Debit Note Value", id: "total_debit_note_value", fieldType: "currency" },
-  { label: "Total Vendor Payment", id: "total_vendor_payment", fieldType: "currency" },
-  { label: "Total Vendor Outstanding", id: "total_vendor_outstanding", fieldType: "currency" },
-  { label: "Total NDP Value", id: "total_ndp_value", fieldType: "currency" }
-]
+  {
+    label: "Total Sales Invoice Value",
+    id: "total_sales_invoice_value",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Vendor Display Cost",
+    id: "total_vendor_display_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Vendor Mounting Cost",
+    id: "total_vendor_mounting_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Vendor Printing Cost",
+    id: "total_vendor_printing_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Vendor Cost",
+    id: "total_vendor_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Purchase Order Value",
+    id: "total_purchase_order_value",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Debit Note Value",
+    id: "total_debit_note_value",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Vendor Payment",
+    id: "total_vendor_payment",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Vendor Outstanding",
+    id: "total_vendor_outstanding",
+    fieldType: "currency",
+  },
+  { label: "Total NDP Value", id: "total_ndp_value", fieldType: "currency" },
+];
 
-const marginInfoArray=[
+const marginInfoArray = [
   { label: "Overall Margin", id: "overall_margin", fieldType: "currency" },
   { label: "Display Margin", id: "display_margin", fieldType: "currency" },
   { label: "Mounting Margin", id: "mounting_margin", fieldType: "currency" },
   { label: "Printing Margin", id: "printing_margin", fieldType: "currency" },
-  { label: "Overall Margin %", id: "overall_margin_percentage", fieldType: "percentage" },
-  { label: "Display Margin %", id: "display_margin_percentage", fieldType: "percentage" },
-  { label: "Mounting Margin %", id: "mounting_margin_percentage", fieldType: "percentage" },
-  { label: "Printing Margin %", id: "printing_margin_percentage", fieldType: "percentage" },
-]
-
-
+  {
+    label: "Overall Margin %",
+    id: "overall_margin_percentage",
+    fieldType: "percentage",
+  },
+  {
+    label: "Display Margin %",
+    id: "display_margin_percentage",
+    fieldType: "percentage",
+  },
+  {
+    label: "Mounting Margin %",
+    id: "mounting_margin_percentage",
+    fieldType: "percentage",
+  },
+  {
+    label: "Printing Margin %",
+    id: "printing_margin_percentage",
+    fieldType: "percentage",
+  },
+];
 
 const AddCampaignScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
@@ -69,9 +151,9 @@ const AddCampaignScreen = () => {
   const [contError, setContError] = useState({});
   const [errorToast, setErrorToast] = useState(false);
   const [loginDetails, setloginDetails] = useState({});
-  const [campaignStatusList,setCampaignStatusList]=useState([])
-  const [proofOfConList,setProofOfConList]=useState([])
-  const [busiessTypeList,setBusinessTypeList]=useState([])
+  const [campaignStatusList, setCampaignStatusList] = useState([]);
+  const [proofOfConList, setProofOfConList] = useState([]);
+  const [busiessTypeList, setBusinessTypeList] = useState([]);
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
   const [newFields, setNewFields] = useState({
     field_lable: null,
@@ -83,13 +165,13 @@ const AddCampaignScreen = () => {
 
   const [userInfo, setUserInfo] = useState({
     campaign_id: null,
-    campaign_name: '',
-    acc_id: '',
-    contact: '',
-    campaign_brand: '',
+    campaign_name: "",
+    acc_id: "",
+    contact: "",
+    campaign_brand: "",
     cmpn_s_id: null,
-    campaign_start_date: '',
-    campaign_end_date: '',
+    campaign_start_date: "",
+    campaign_end_date: "",
     campaign_duration: 0,
     cmpn_p_id: null,
     // proof_attachment: null,
@@ -121,8 +203,8 @@ const AddCampaignScreen = () => {
     display_margin_percentage: 0,
     mounting_margin_percentage: 0,
     printing_margin_percentage: 0,
-    createdAt:DateNow,
-    updatedAt:DateNow,
+    createdAt: DateNow,
+    updatedAt: DateNow,
     gst: false,
     cgst: false,
     sgst: false,
@@ -136,7 +218,7 @@ const AddCampaignScreen = () => {
       setErrorToast
     );
   }
-  
+
   async function getCampaignStatusList() {
     await fetchData(
       `/db/media/campaign/campaignStatus/getCampaignStatus`,
@@ -154,6 +236,18 @@ const AddCampaignScreen = () => {
       setErrorToast
     );
   }
+
+  const handleRemoveFile = () => {
+
+    setUserInfo((prevState) => ({
+      ...prevState,
+      proof_attachment: null,
+    }));
+
+
+  };
+
+
 
   async function getBusinessTypeList() {
     await fetchData(
@@ -184,7 +278,6 @@ const AddCampaignScreen = () => {
     }
   }
 
-
   const getSingleData = async (id) => {
     if (hasCookie("token")) {
       let token = getCookie("token");
@@ -201,7 +294,8 @@ const AddCampaignScreen = () => {
 
       try {
         const response = await axios.get(
-          Baseurl + `/db/media/campaign/campaignManagement/getCampaign?campaign_id=${id}`,
+          Baseurl +
+            `/db/media/campaign/campaignManagement/getCampaign?campaign_id=${id}`,
           header
         );
         setUserInfo(response.data.data);
@@ -217,134 +311,227 @@ const AddCampaignScreen = () => {
 
   const validate = () => {
     const errors = {};
-    if (!userInfo.campaign_name.trim()) errors.campaign_name = "Campaign Name is required";
+    if (!userInfo.campaign_name.trim())
+      errors.campaign_name = "Campaign Name is required";
     if (!userInfo.acc_id) errors.acc_id = "Client Name is required";
-    if (!userInfo.cmpn_s_id) errors.cmpn_s_id = "Campaign Status is required";   
+    if (!userInfo.cmpn_s_id) errors.cmpn_s_id = "Campaign Status is required";
 
-    if (!userInfo.campaign_brand.trim()) errors.campaign_brand = "Campaign Brand is required";
-    if (!userInfo.campaign_start_date.trim()) errors.campaign_start_date = "Campaign Start Date is required";
-    if (!userInfo.campaign_end_date.trim()) errors.campaign_end_date = "Campaign End Date is required";
-    if (!userInfo.cmpn_p_id) errors.cmpn_p_id = "Proof of Confirmation is required";
+    if (!userInfo.campaign_brand.trim())
+      errors.campaign_brand = "Campaign Brand is required";
+    if (!userInfo.campaign_start_date.trim())
+      errors.campaign_start_date = "Campaign Start Date is required";
+    if (!userInfo.campaign_end_date.trim())
+      errors.campaign_end_date = "Campaign End Date is required";
+    if (!userInfo.cmpn_p_id)
+      errors.cmpn_p_id = "Proof of Confirmation is required";
     if (!userInfo.cmpn_b_t_id) errors.cmpn_b_t_id = "Business Type is required";
-    
+    // if (!userInfo.proof_attachment)
+    //   errors.proof_attachment = "Proof Attachment is required";
+
     setErrorData(errors);
     return Object.keys(errors).length === 0;
   };
 
-
   const submitHandler = async () => {
-    if(validate()){
-    if (hasCookie("token")) {
-      setisLoading(true)
+    if (validate()) {
+      if (hasCookie("token")) {
+        setisLoading(true);
 
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
+        let token = getCookie("token");
+        let db_name = getCookie("db_name");
 
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          m_id: 319,
-        },
-      };
+        const formData = new FormData();
 
-      let oppBody = { ...userInfo };
-      oppBody.contact_owner = loginDetails.user_id;
-      try {
-        const response = await axios.post(
-          Baseurl + `/db/media/campaign/campaignManagement/addCampaign`,
-          oppBody,
-          header
-        );
-        if (response.status === 204 || response.status === 200) {
-          // await postFieldsFunc(
-          //   response.data.data.contact_id,
-          //   userInfo.db_contact_fields
-          // );
-          toast.success(response.data.message);
-          setisLoading(false);
-          router.push("/media/Campaigns");
-        }
-      } catch (error) {
-        console.log("error is ",error,"msg",error.message)
-        if (error?.response?.data?.status === 422) {
-          const taskObject = {};
-          const array = error?.response?.data?.data;
-          for (let i = 0; i < array.length; i++) {
-            const key = Object.keys(array[i])[0];
-            const value = Object.values(array[i])[0];
-            taskObject[key] = value;
+        Object.keys(userInfo).forEach((key) => {
+          if (userInfo[key] instanceof File) {
+            formData.append(key, userInfo[key]);
+          } else {
+            formData.append(key, userInfo[key]);
           }
-          setErrorData(taskObject);
+        });
+
+        formData.append("contact_owner", loginDetails.user_id);
+
+        let header = {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer ".concat(token),
+            db: db_name,
+            m_id: 319,
+          },
+        };
+
+        // let oppBody = { ...userInfo };
+        // oppBody.contact_owner = loginDetails.user_id;
+        try {
+          formData.delete("campaign_id");
+
+          const response = await axios.post(
+            Baseurl + `/db/media/campaign/campaignManagement/addCampaign`,
+            formData,
+            header
+          );
+          if (response.status === 204 || response.status === 200) {
+            // await postFieldsFunc(
+            //   response.data.data.contact_id,
+            //   userInfo.db_contact_fields
+            // );
+            toast.success(response.data.message);
+            setisLoading(false);
+            router.push("/media/Campaigns");
+          }
+        } catch (error) {
+          console.log("error is ", error, "msg", error.message);
+          if (error?.response?.data?.status === 422) {
+            const taskObject = {};
+            const array = error?.response?.data?.data;
+            for (let i = 0; i < array.length; i++) {
+              const key = Object.keys(array[i])[0];
+              const value = Object.values(array[i])[0];
+              taskObject[key] = value;
+            }
+            setErrorData(taskObject);
+          }
+          if (error?.response?.data?.message) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("Something went wrong!");
+          }
+          setisLoading(false);
         }
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-        setisLoading(false);
       }
-    }}else {
+    } else {
       toast.error("Please fill the Mandatory fileds");
     }
   };
+
+  // const UpdateHandler = async () => {
+  //   if (validate()) {
+  //     if (hasCookie("token")) {
+  //       setisLoading(true);
+  //       let token = getCookie("token");
+  //       let db_name = getCookie("db_name");
+
+  //       let header = {
+  //         headers: {
+  //           Accept: "application/json",
+  //           Authorization: "Bearer ".concat(token),
+  //           db: db_name,
+  //           m_id: 321,
+  //         },
+  //       };
+
+  //       let newUserInfo = { ...userInfo, updated_on: DateNow };
+
+  //       let newData = JSON.parse(JSON.stringify(newUserInfo));
+
+  //       try {
+  //         const response = await axios.put(
+  //           Baseurl + `/db/media/campaign/campaignManagement/updateCampaign`,
+  //           newData,
+  //           header
+  //         );
+
+  //         if (response.status === 200 || response.status === 204) {
+  //           await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
+  //           toast.success(response.data.message);
+  //           setisLoading(false);
+  //           router.push("/media/Campaigns");
+  //         }
+  //       } catch (error) {
+  //         if (error?.response?.data?.status === 422) {
+  //           const taskObject = {};
+  //           const array = error?.response?.data?.data;
+  //           for (let i = 0; i < array.length; i++) {
+  //             const key = Object.keys(array[i])[0];
+  //             const value = Object.values(array[i])[0];
+  //             taskObject[key] = value;
+  //           }
+  //           setErrorData(taskObject);
+  //         }
+  //         if (error?.response?.data?.message) {
+  //           toast.error(error.response.data.message);
+  //         } else {
+  //           toast.error("Something went wrong!");
+  //         }
+  //         setisLoading(false);
+  //       }
+  //     }
+  //   } else {
+  //     toast.error("Please fill the Mandatory fileds");
+  //   }
+  // };
+
+
 
   const UpdateHandler = async () => {
-      if(validate()){
-    if (hasCookie("token")) {
-      setisLoading(true);
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
-
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          m_id: 321,
-        },
-      };
-
-      let newUserInfo = { ...userInfo, updated_on: DateNow };
-
-      let newData = JSON.parse(JSON.stringify(newUserInfo));
-
-      try {
-        const response = await axios.put(
-          Baseurl + `/db/media/campaign/campaignManagement/updateCampaign`,
-          newData,
-          header
-        );
-
-        if (response.status === 200 || response.status === 204) {
-          await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
-          toast.success(response.data.message);
-          setisLoading(false);
-          router.push("/media/Campaigns");
-        }
-      } catch (error) {
-        if (error?.response?.data?.status === 422) {
-          const taskObject = {};
-          const array = error?.response?.data?.data;
-          for (let i = 0; i < array.length; i++) {
-            const key = Object.keys(array[i])[0];
-            const value = Object.values(array[i])[0];
-            taskObject[key] = value;
+    if (validate()) {
+      if (hasCookie("token")) {
+        setisLoading(true);
+        let token = getCookie("token");
+        let db_name = getCookie("db_name");
+  
+        let header = {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer ".concat(token),
+            db: db_name,
+            m_id: 321,
+          },
+        };
+  
+        // Create a FormData instance
+        const formData = new FormData();
+  
+        // Create new user info with updated_on field
+        let newUserInfo = { ...userInfo, updated_on: new Date().toISOString() };
+  
+        // Append all userInfo properties to formData
+        Object.keys(newUserInfo).forEach((key) => {
+          if (newUserInfo[key] instanceof File) {
+            formData.append(key, newUserInfo[key]);
+          } else {
+            formData.append(key, newUserInfo[key]);
           }
-          setErrorData(taskObject);
+        });
+  
+        try {
+          const response = await axios.put(
+            Baseurl + `/db/media/campaign/campaignManagement/updateCampaign`,
+            formData,
+            header
+          );
+  
+          if (response.status === 200 || response.status === 204) {
+            await postFieldsFunc(newUserInfo.contact_id, newUserInfo.db_contact_fields);
+            toast.success(response.data.message);
+            setisLoading(false);
+            router.push("/media/Campaigns");
+          }
+        } catch (error) {
+          if (error?.response?.data?.status === 422) {
+            const taskObject = {};
+            const array = error?.response?.data?.data;
+            for (let i = 0; i < array.length; i++) {
+              const key = Object.keys(array[i])[0];
+              const value = Object.values(array[i])[0];
+              taskObject[key] = value;
+            }
+            setErrorData(taskObject);
+          }
+          if (error?.response?.data?.message) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("Something went wrong!");
+          }
+          setisLoading(false);
         }
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-        setisLoading(false);
       }
-    } }else {
-      toast.error("Please fill the Mandatory fileds");
+    } else {
+      toast.error("Please fill the Mandatory fields");
     }
   };
+  
 
   const createInputField = (e) => {
     e.preventDefault();
@@ -510,13 +697,10 @@ const AddCampaignScreen = () => {
     }
   };
 
-  
-  
-
   useEffect(() => {
     getProofOfConList();
     getCampaignStatusList();
-    getBusinessTypeList()
+    getBusinessTypeList();
     getAccountsList();
     checkLogin();
     getusersList();
@@ -528,97 +712,114 @@ const AddCampaignScreen = () => {
   }, []);
 
   const handleDateChange = (e) => {
-    setErrorData({...errorData,campaign_end_date:""})
-    setErrorData({...errorData,campaign_start_date:""})
-
+    setErrorData({ ...errorData, campaign_end_date: "" });
+    setErrorData({ ...errorData, campaign_start_date: "" });
 
     const { id, value } = e.target;
     let updatedUserInfo = { ...userInfo, [id]: value };
-  
+
     // Calculate duration if both dates are selected
-    if (updatedUserInfo.campaign_start_date && updatedUserInfo.campaign_end_date) {
+    if (
+      updatedUserInfo.campaign_start_date &&
+      updatedUserInfo.campaign_end_date
+    ) {
       const startDate = new Date(updatedUserInfo.campaign_start_date);
       const endDate = new Date(updatedUserInfo.campaign_end_date);
-  
+
       // Calculate the difference in time
       const timeDiff = endDate - startDate;
       // Convert time difference to days
       const duration = timeDiff / (1000 * 60 * 60 * 24);
-  
+
       // Ensure duration is non-negative (in case of invalid date selection)
       updatedUserInfo.campaign_duration = duration >= 0 ? duration : 0;
     }
-  
+
     setUserInfo(updatedUserInfo);
   };
 
   const handleFileChange = (event) => {
+    console.log("file is hter oa",event.target.files,"single ",event.target.files[0])
     const file = event.target.files[0];
-  
-    if (file && file.type !== 'application/pdf') {
-      toast.error('Only PDF files are allowed');
-      event.target.value = '';
-    } else {
-      setUserInfo({
-        ...userInfo,
-        proof_attachment:file
-      })
+    // if (file && file.type !== "application/pdf") {
+    //   toast.error("Only PDF files are allowed");
+    //   event.target.value = "";
+    // } else {
+    //   setUserInfo({
+    //     ...userInfo,
+    //     proof_attachment: file,
+    //   });
+    // }
+
+    if (file) {
+      console.log("file is ", file);
+      const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error("Only PDF, JPG, PNG, and JPEG files are allowed");
+        event.target.value = "";
+      } else {
+      
+        setUserInfo({
+          ...userInfo,
+          proof_attachment: file,
+        });
+      }
     }
   };
 
   const handleCostingInputChange = (e, fieldType) => {
     const { id, value } = e.target;
     let isValid = true;
-  
+
     switch (fieldType) {
-      case 'currency':
+      case "currency":
         isValid = /^\d*(\.\d{0,2})?$/.test(value); // Allow digits and up to two decimal places
         break;
-      case 'number':
+      case "number":
         isValid = /^\d*$/.test(value); // Allow only digits
         break;
       default:
         break;
     }
-  
+
     if (isValid) {
-      setUserInfo(prevState => {
+      setUserInfo((prevState) => {
         const updatedInfo = { ...prevState, [id]: value };
-  
+
         // Calculate Total Client Cost
-        updatedInfo.total_client_cost = parseFloat(updatedInfo.client_display_cost || 0) +
-                                        parseFloat(updatedInfo.client_mounting_cost || 0) +
-                                        parseFloat(updatedInfo.client_printing_cost || 0);
-  
+        updatedInfo.total_client_cost =
+          parseFloat(updatedInfo.client_display_cost || 0) +
+          parseFloat(updatedInfo.client_mounting_cost || 0) +
+          parseFloat(updatedInfo.client_printing_cost || 0);
+
         return updatedInfo;
       });
     }
   };
-  
+
   const handleMarginInfoChange = (e, fieldType) => {
     const { id, value } = e.target;
     let isValid = true;
-  
+
     switch (fieldType) {
-      case 'currency':
+      case "currency":
         isValid = /^\d*(\.\d{0,2})?$/.test(value); // Allow digits and up to two decimal places
         break;
-      case 'percentage':
+      case "percentage":
         isValid = /^\d{0,3}$/.test(value); // Allow only digits
         break;
       default:
         break;
     }
-  
+
     if (isValid) {
-      setUserInfo(prevState => {
+      setUserInfo((prevState) => {
         const updatedInfo = { ...prevState, [id]: value };
-  
+
         return updatedInfo;
       });
     }
   };
-  
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -632,7 +833,6 @@ const AddCampaignScreen = () => {
     }
     if (router.query.vw) [setViewMode(true)];
   }, [router.isReady, id]);
-
 
   return (
     <div className={`main_Box  ${sideView}`}>
@@ -665,40 +865,45 @@ const AddCampaignScreen = () => {
                   : `col-xl-12 col-md-12 col-sm-12 col-12`
               }
             > */}
-            <div
-              className={ `col-xl-12 col-md-12 col-sm-12 col-12`}
-            >
-              
+            <div className={`col-xl-12 col-md-12 col-sm-12 col-12`}>
               <div className="add_screen_head">
                 <span className="text_bold">Fill Details</span> ( * Fields are
                 mandatory)
               </div>
               <div className="add_user_form">
                 <div className="row">
-                  
-
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.campaign_name ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_name">Campaign Name *</label>
-                  <input
-                    type="text"
-                    id="campaign_name"
-                    className="form-control"
-                    disabled={viewMode}
-                    placeholder="Enter Campaign Name"
-                    value={userInfo?.campaign_name}
-                    onChange={(e) => {
-                      setErrorData({...errorData,campaign_name:""})
-                      const value = e.target.value;
-                      // Allow only alphabetic characters
-                      if (/^[a-zA-Z\s]*$/.test(value)) {
-                        setUserInfo({ ...userInfo, campaign_name: value });
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.campaign_name
+                          ? "input_box errorBox"
+                          : "input_box"
                       }
-                    }}
-                  />
-                  <span className="errorText">{errorData?.campaign_name ? errorData.campaign_name : ""}</span>
-                </div>
-                </div>
+                    >
+                      <label htmlFor="campaign_name">Campaign Name *</label>
+                      <input
+                        type="text"
+                        id="campaign_name"
+                        className="form-control"
+                        disabled={viewMode}
+                        placeholder="Enter Campaign Name"
+                        value={userInfo?.campaign_name}
+                        onChange={(e) => {
+                          setErrorData({ ...errorData, campaign_name: "" });
+                          const value = e.target.value;
+                          // Allow only alphabetic characters
+                          if (/^[a-zA-Z\s]*$/.test(value)) {
+                            setUserInfo({ ...userInfo, campaign_name: value });
+                          }
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.campaign_name
+                          ? errorData.campaign_name
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
 
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
@@ -729,7 +934,13 @@ const AddCampaignScreen = () => {
                           }
                         })}
                         onChange={(e) => {
-                          setUserInfo({ ...userInfo, acc_id: e.value,contact:accountsList?.find((item)=>item?.acc_id==e.value)?.contact_no });
+                          setUserInfo({
+                            ...userInfo,
+                            acc_id: e.value,
+                            contact: accountsList?.find(
+                              (item) => item?.acc_id == e.value
+                            )?.contact_no,
+                          });
                           setErrorData({ ...errorData, acc_id: "" });
                         }}
                       />
@@ -739,7 +950,7 @@ const AddCampaignScreen = () => {
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
                       className={
@@ -780,96 +991,150 @@ const AddCampaignScreen = () => {
                     </div>
                   </div>
 
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.contact ? "input_box errorBox" : "input_box"
+                      }
+                    >
+                      <label htmlFor="contact">Contact *</label>
+                      <input
+                        type="text"
+                        id="contact"
+                        className="form-control"
+                        disabled
+                        value={userInfo.contact}
+                      />
+                      <span className="errorText">
+                        {errorData?.contact ? errorData.contact : ""}
+                      </span>
+                    </div>
+                  </div>
 
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.contact ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="contact">Contact *</label>
-                    <input
-                    type="text"
-                    id="contact"
-                    className="form-control"
-                    disabled
-                    value={userInfo.contact}
-                  />
-                    <span className="errorText">{errorData?.contact ? errorData.contact : ""}</span>
-                  </div>
-                </div>
-
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.campaign_brand ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_brand">Campaign Brand *</label>
-                  <input
-                    type="text"
-                    id="campaign_brand"
-                    className="form-control"
-                    disabled={viewMode}
-                    placeholder="Enter Campaign Brand"
-                    value={userInfo?.campaign_brand}
-                    onChange={(e) => {
-                      setErrorData({...errorData,campaign_brand:""})
-                      const value = e.target.value;
-                      // Allow only alphabetic characters
-                      if (/^[a-zA-Z\s]*$/.test(value)) {
-                        setUserInfo({ ...userInfo, campaign_brand: value });
+                    <div
+                      className={
+                        errorData?.campaign_brand
+                          ? "input_box errorBox"
+                          : "input_box"
                       }
-                    }}
-                  />
-                  <span className="errorText">{errorData?.campaign_brand ? errorData.campaign_brand : ""}</span>
-                </div>
-                </div>
+                    >
+                      <label htmlFor="campaign_brand">Campaign Brand *</label>
+                      <input
+                        type="text"
+                        id="campaign_brand"
+                        className="form-control"
+                        disabled={viewMode}
+                        placeholder="Enter Campaign Brand"
+                        value={userInfo?.campaign_brand}
+                        onChange={(e) => {
+                          setErrorData({ ...errorData, campaign_brand: "" });
+                          const value = e.target.value;
+                          // Allow only alphabetic characters
+                          if (/^[a-zA-Z\s]*$/.test(value)) {
+                            setUserInfo({ ...userInfo, campaign_brand: value });
+                          }
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.campaign_brand
+                          ? errorData.campaign_brand
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.campaign_start_date ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_start_date">Campaign Start Date *</label>
-                  <input
-                    type="date"
-                    disabled={viewMode}
-                    className="form-control"
-                    id="campaign_start_date"
-                    min={new Date().toISOString().split('T')[0]} 
-                    onPaste={(e) => e.preventDefault()}
-                    onKeyDown={(e) => e.preventDefault()}
-                    value={moment(userInfo.campaign_start_date).format("YYYY-MM-DD")}
-                    onChange={handleDateChange}
-                  />
-                  <span className="errorText">{errorData?.campaign_start_date ? errorData.campaign_start_date : ""}</span>
-                </div>
-              </div>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.campaign_start_date
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="campaign_start_date">
+                        Campaign Start Date *
+                      </label>
+                      <input
+                        type="date"
+                        disabled={viewMode}
+                        className="form-control"
+                        id="campaign_start_date"
+                        min={new Date().toISOString().split("T")[0]}
+                        onPaste={(e) => e.preventDefault()}
+                        onKeyDown={(e) => e.preventDefault()}
+                        value={moment(userInfo.campaign_start_date).format(
+                          "YYYY-MM-DD"
+                        )}
+                        onChange={handleDateChange}
+                      />
+                      <span className="errorText">
+                        {errorData?.campaign_start_date
+                          ? errorData.campaign_start_date
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
 
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.campaign_end_date ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_end_date">Campaign End Date *</label>
-                  <input
-                    type="date"
-                    disabled={viewMode}
-                    className="form-control"
-                    id="campaign_end_date"
-                    min={new Date().toISOString().split('T')[0]} 
-                    onPaste={(e) => e.preventDefault()}
-                    onKeyDown={(e) => e.preventDefault()}
-                    value={moment(userInfo.campaign_end_date).format("YYYY-MM-DD")}
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.campaign_end_date
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="campaign_end_date">
+                        Campaign End Date *
+                      </label>
+                      <input
+                        type="date"
+                        disabled={viewMode}
+                        className="form-control"
+                        id="campaign_end_date"
+                        min={new Date().toISOString().split("T")[0]}
+                        onPaste={(e) => e.preventDefault()}
+                        onKeyDown={(e) => e.preventDefault()}
+                        value={moment(userInfo.campaign_end_date).format(
+                          "YYYY-MM-DD"
+                        )}
+                        onChange={handleDateChange}
+                      />
+                      <span className="errorText">
+                        {errorData?.campaign_end_date
+                          ? errorData.campaign_end_date
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
 
-                    onChange={handleDateChange}
-                  />
-                  <span className="errorText">{errorData?.campaign_end_date ? errorData.campaign_end_date : ""}</span>
-                </div>
-              </div>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.campaign_duration
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="campaign_duration">
+                        Campaign Duration *
+                      </label>
+                      <input
+                        type="text"
+                        id="campaign_duration"
+                        className="form-control"
+                        disabled
+                        value={`${userInfo?.campaign_duration} days` || "0days"}
+                      />
+                      <span className="errorText">
+                        {errorData?.campaign_duration
+                          ? errorData.campaign_duration
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
 
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.campaign_duration ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_duration">Campaign Duration *</label>
-                  <input
-                    type="text"
-                    id="campaign_duration"
-                    className="form-control"
-                    disabled
-                    value={`${userInfo?.campaign_duration} days` || "0days"}
-                  />
-                  <span className="errorText">{errorData?.campaign_duration ? errorData.campaign_duration : ""}</span>
-                </div>
-              </div>
-
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
                       className={
                         errorData?.cmpn_p_id
@@ -877,7 +1142,9 @@ const AddCampaignScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="client_name">Proof of Confirmation *</label>
+                      <label htmlFor="client_name">
+                        Proof of Confirmation *
+                      </label>
                       <Select
                         id="client_name"
                         defaultValue={""}
@@ -908,24 +1175,49 @@ const AddCampaignScreen = () => {
                       </span>
                     </div>
                   </div>
-              
-              {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.proof_attachment ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_brand">Proof Attachment *</label>
-                  <input
-                    type="file"
-                    id="proof_attachment"
-                    accept="application/pdf"
-                    className="form-control"
-                    disabled={viewMode}
-                    placeholder="Enter Campaign Brand"
-                  onChange={handleFileChange}
-                  />
-                  <span className="errorText">{errorData?.proof_attachment ? errorData.proof_attachment : ""}</span>
-                </div>
-                </div> */}
-             
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+
+                  {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.proof_attachment
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="campaign_brand">Proof Attachment *</label>
+                      {editMode && userInfo?.proof_attachment ? (
+                        <div className="file-preview">
+                          <span>{userInfo.proof_attachment}</span>
+                          <button
+                            type="button"
+                            className="remove-file-button"
+                            onClick={handleRemoveFile}
+                            style={{ marginLeft: '10px' }}
+                          >
+                            &#x2715; 
+                          </button>
+                        </div>
+                      ) : (
+                        <input
+                          type="file"
+                          id="proof_attachment"
+                          // accept="application/pdf"
+                          accept=".pdf,image/jpeg,image/png"
+                          className="form-control"
+                          disabled={viewMode}
+                          placeholder="Enter Campaign Brand"
+                          onChange={handleFileChange}
+                        />
+                      )}
+                      <span className="errorText">
+                        {errorData?.proof_attachment
+                          ? errorData.proof_attachment
+                          : ""}
+                      </span>
+                    </div>
+                  </div> */}
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
                       className={
                         errorData?.cmpn_b_t_id
@@ -933,7 +1225,7 @@ const AddCampaignScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="client_name">Business Type  *</label>
+                      <label htmlFor="client_name">Business Type *</label>
                       <Select
                         id="client_name"
                         defaultValue={""}
@@ -964,9 +1256,6 @@ const AddCampaignScreen = () => {
                       </span>
                     </div>
                   </div>
-
-
-                 
                 </div>
               </div>
 
@@ -974,60 +1263,80 @@ const AddCampaignScreen = () => {
                 <span className="text_bold">Costing Details </span>
               </div>
               <div className="add_user_form">
-              <div className="row ">
-                      {
-                costingDetailArray?.map((item)=>(
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={item.id}>
-                  <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="campaign_brand">{item?.label} </label>
-                    <input
-                      type="text"
-                      id={item?.id}
-                      className="form-control"
-                      // disabled={item?.id==="total_client_cost"}
-                      disabled={viewMode || item?.id ==="total_client_cost"}
-                      placeholder={`Enter ${item?.label}`}
-                      value={userInfo?.[item?.id]}
-                      onChange={(e) => handleCostingInputChange(e,item?.fieldType)}
-                    />
-                    <span className="errorText">{errorData?.[item?.id] ? errorData?.[item?.id] : ""}</span>
-                  </div>
-                  </div>
-                ))
-              }
-              </div>
+                <div className="row ">
+                  {costingDetailArray?.map((item) => (
+                    <div
+                      className="col-xl-3 col-md-3 col-sm-12 col-12"
+                      key={item.id}
+                    >
+                      <div
+                        className={
+                          errorData?.[item?.id]
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="campaign_brand">{item?.label} </label>
+                        <input
+                          type="text"
+                          id={item?.id}
+                          className="form-control"
+                          // disabled={item?.id==="total_client_cost"}
+                          disabled={
+                            viewMode || item?.id === "total_client_cost"
+                          }
+                          placeholder={`Enter ${item?.label}`}
+                          value={userInfo?.[item?.id]}
+                          onChange={(e) =>
+                            handleCostingInputChange(e, item?.fieldType)
+                          }
+                        />
+                        <span className="errorText">
+                          {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="add_screen_head">
                 <span className="text_bold">Margin Information </span>
               </div>
               <div className="add_user_form">
-              <div className="row ">
-                      {
-                marginInfoArray?.map((item)=>(
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={item.id}>
-                  <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="campaign_brand">{item?.label} </label>
-                    <input
-                      type="number"
-                      id={item?.id}
-                      className="form-control"
-                      disabled={viewMode }
-                      placeholder={`Enter ${item?.label}`}
-                      value={userInfo?.[item?.id]}
-                      onChange={(e) => handleMarginInfoChange(e,item?.fieldType)}
-                    />
-                    <span className="errorText">{errorData?.[item?.id] ? errorData?.[item?.id] : ""}</span>
-                  </div>
-                  </div>
-                ))
-              }
+                <div className="row ">
+                  {marginInfoArray?.map((item) => (
+                    <div
+                      className="col-xl-3 col-md-3 col-sm-12 col-12"
+                      key={item.id}
+                    >
+                      <div
+                        className={
+                          errorData?.[item?.id]
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="campaign_brand">{item?.label} </label>
+                        <input
+                          type="number"
+                          id={item?.id}
+                          className="form-control"
+                          disabled={viewMode}
+                          placeholder={`Enter ${item?.label}`}
+                          value={userInfo?.[item?.id]}
+                          onChange={(e) =>
+                            handleMarginInfoChange(e, item?.fieldType)
+                          }
+                        />
+                        <span className="errorText">
+                          {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              </div>
-              
-              
-                
-
 
               <div className="add_screen_head">
                 <span className="text_bold">System Information </span>
@@ -1080,7 +1389,6 @@ const AddCampaignScreen = () => {
                   </div>
                 </div>
               </div>
-
 
               <div className="add_user_form">
                 <div className="row">
@@ -1211,7 +1519,6 @@ const AddCampaignScreen = () => {
                             </div>
                           </>
                         )}
-                        
 
                         {newFields.input_type === "select" && (
                           <div className="col-xl-4 col-md-4 col-sm-12 col-12">
@@ -1266,7 +1573,7 @@ const AddCampaignScreen = () => {
                       )} */}
                       {viewMode ? null : (
                         <>
-                          <Link href="/media/PrintingCostMgmt">
+                          <Link href="/media/Campaigns">
                             <button className="btn btn-cancel m-3 ">
                               Cancel
                             </button>
@@ -1295,8 +1602,6 @@ const AddCampaignScreen = () => {
                 </div>
               </div>
             </div>
-
-            
           </div>
         </div>
       </div>

@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { fetchData } from "../../../Utils/getReq";
 import Select from "react-select";
 import { Delete } from "@mui/icons-material";
+import { data } from "autoprefixer";
 
 const DMPCArray=[
   { label: "Display Selling Cost", id: "display_selling_cost", fieldType: "currency" },
@@ -114,9 +115,10 @@ const AddEstimationScreen = () => {
     package_cost_display:0,
     package_cost_printing:0,
     package_cost_mounting:0,
-    client_display_cost: 0,
-    client_mounting_cost: 0,
-    client_printing_cost: 0,
+    // client_display_cost: 0,
+    total_agency_commision:0,
+    // client_mounting_cost: 0,
+    // client_printing_cost: 0,
     agency_commission_mounting:0,
     total_client_cost: 0,
     total_sales_order_value: 0,
@@ -169,28 +171,58 @@ const AddEstimationScreen = () => {
       setErrorToast
     );
   }
+  // useEffect(()=>{
+  //    if(userInfo?.db_media_campaign?.cmpn_b_t_id){
+  //      setUserInfo({...userInfo,cmpn_b_t_id:userInfo?.db_media_campaign.cmpn_b_t_id})
+  //   }
+  //   const selectedBusiness = busiessTypeList.find( (data) => data.cmpn_b_t_id === userInfo?.cmpn_b_t_id)
+  //   if (selectedBusiness?.cmpn_b_t_name === "Agency") {
+  //     setIsAgency(true);
+  //   } else {
+  //     setIsAgency(false);
+  //   }
+  // },[editMode])
+ 
 
+  // useEffect(()=>{
+  //   if(editMode && userInfo?.db_media_campaign?.cmpn_b_t_id){
+  //        setUserInfo({...userInfo,cmpn_b_t_id:userInfo?.db_media_campaign.cmpn_b_t_id})
+  //     }
+  // },[editMode])
+
+  // const manageAgecny=()=>{
+  //   if( userInfo?.db_media_campaign?.cmpn_b_t_id){
+  //            setUserInfo({...userInfo,cmpn_b_t_id:userInfo?.db_media_campaign.cmpn_b_t_id})
+  //         }
+
+  // }
 
   useEffect(() => {
-    const selectedBusiness = busiessTypeList.find(
-      (data) => data.cmpn_b_t_id === userInfo?.cmpn_b_t_id
-    );
+    if(editMode && userInfo?.db_media_campaign?.cmpn_b_t_id && !userInfo?.cmpn_b_t_id ){
+       setUserInfo({...userInfo,cmpn_b_t_id:userInfo?.db_media_campaign.cmpn_b_t_id})
+    }
+    const selectedBusiness = busiessTypeList.find( (data) => data.cmpn_b_t_id === userInfo?.cmpn_b_t_id)
+
+    console.log("data is ",data.cmpn_b_t_id,"user if s",userInfo?.cmpn_b_t_id)
 
     if (selectedBusiness?.cmpn_b_t_name === "Agency") {
       setIsAgency(true);
     } else {
       setIsAgency(false);
     }
-  }, [userInfo, busiessTypeList]);
+  }, [userInfo, busiessTypeList,editMode]);
 
-  // async function getProofOfConList() {
-  //   await fetchData(
-  //     `/db/media/campaign/campaignProofRoutes/getCampaignProof`,
-  //     setProofOfConList,
-  //     errorToast,
-  //     setErrorToast
-  //   );
-  // }
+
+ 
+  
+  async function getProofOfConList() {
+    await fetchData(
+      `/db/media/campaign/campaignProofRoutes/getCampaignProof`,
+      setProofOfConList,
+      errorToast,
+      setErrorToast
+    );
+  }
 
   async function getBusinessTypeList() {
     await fetchData(
@@ -242,6 +274,7 @@ const AddEstimationScreen = () => {
           header
         );
         setUserInfo(response.data.data);
+      
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -304,10 +337,10 @@ const AddEstimationScreen = () => {
           header
         );
         if (response.status === 204 || response.status === 200) {
-          await postFieldsFunc(
-            response.data.data.contact_id,
-            userInfo.db_contact_fields
-          );
+          // await postFieldsFunc(
+          //   response.data.data.contact_id,
+          //   userInfo.db_contact_fields
+          // );
           toast.success(response.data.message);
           setisLoading(false);
           router.push("/media/Estimations");
@@ -326,7 +359,7 @@ const AddEstimationScreen = () => {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong2!");
         }
         setisLoading(false);
       }
@@ -351,12 +384,18 @@ const AddEstimationScreen = () => {
           m_id: 321,
         },
       };
+      let newUserInfo 
 
-      let newUserInfo = { ...userInfo, updated_on: DateNow };
+      if(!isAgency){
+         newUserInfo = { ...userInfo, updated_on: DateNow, agency_commission_display:0,agency_commission_mounting:0,agency_commission_printing:0};
+      }else{
+       newUserInfo = { ...userInfo, updated_on: DateNow};
+      }
 
       let newData = JSON.parse(JSON.stringify(newUserInfo));
 
       try {
+  
         const response = await axios.put(
           Baseurl + `/db/media/estimation/updateEstimation`,
           newData,
@@ -364,10 +403,14 @@ const AddEstimationScreen = () => {
         );
 
         if (response.status === 200 || response.status === 204) {
-          await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
+          // await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
           toast.success(response.data.message);
           setisLoading(false);
+      
+
           router.push("/media/Estimations");
+        
+
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -445,53 +488,53 @@ const AddEstimationScreen = () => {
     }
   };
 
-  async function postFieldsFunc(id, data) {
-    if (hasCookie("token")) {
-      setisLoading(true);
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          pass: "pass",
-        },
-      };
-      data?.map((item) => {
-        item.contact_id = id;
-      });
+  // async function postFieldsFunc(id, data) {
+  //   if (hasCookie("token")) {
+  //     setisLoading(true);
+  //     let token = getCookie("token");
+  //     let db_name = getCookie("db_name");
+  //     let header = {
+  //       headers: {
+  //         Accept: "application/json",
+  //         Authorization: "Bearer ".concat(token),
+  //         db: db_name,
+  //         pass: "pass",
+  //       },
+  //     };
+  //     data?.map((item) => {
+  //       item.contact_id = id;
+  //     });
 
-      try {
-        const response = await axios.post(
-          Baseurl + `/db/contacts/field`,
-          data,
-          header
-        );
-        if (response.status === 204 || response.status === 200) {
-          toast.success(response.data.message);
-          setisLoading(false);
-        }
-      } catch (error) {
-        if (error?.response?.data?.status === 422) {
-          const taskObject = {};
-          const array = error?.response?.data?.data;
-          for (let i = 0; i < array.length; i++) {
-            const key = Object.keys(array[i])[0];
-            const value = Object.values(array[i])[0];
-            taskObject[key] = value;
-          }
-          setErrorData(taskObject);
-        }
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-        setisLoading(false);
-      }
-    }
-  }
+  //     try {
+  //       const response = await axios.post(
+  //         Baseurl + `/db/contacts/field`,
+  //         data,
+  //         header
+  //       );
+  //       if (response.status === 204 || response.status === 200) {
+  //         toast.success(response.data.message);
+  //         setisLoading(false);
+  //       }
+  //     } catch (error) {
+  //       if (error?.response?.data?.status === 422) {
+  //         const taskObject = {};
+  //         const array = error?.response?.data?.data;
+  //         for (let i = 0; i < array.length; i++) {
+  //           const key = Object.keys(array[i])[0];
+  //           const value = Object.values(array[i])[0];
+  //           taskObject[key] = value;
+  //         }
+  //         setErrorData(taskObject);
+  //       }
+  //       if (error?.response?.data?.message) {
+  //         toast.error(error.response.data.message);
+  //       } else {
+  //         toast.error("Something went wrong!");
+  //       }
+  //       setisLoading(false);
+  //     }
+  //   }
+  // }
 
   const AddFieldsFunc = (e) => {
     e.preventDefault();
@@ -1154,6 +1197,30 @@ const AddEstimationScreen = () => {
                               // Allow only numeric characters and decimal point
                               if (/^\d{0,3}$/.test(value)) {
                                 setUserInfo({ ...userInfo, agency_commission_printing: value });
+                              }
+                            }}
+                          />
+                          <span className="errorText">{errorData?.agency_commission_printing ? errorData.agency_commission_printing : ""}</span>
+                        </div>
+                      </div>
+
+
+                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className={errorData?.total_agency_commision ? "input_box errorBox" : "input_box"}>
+                          <label htmlFor="commission_printing">Total Agency Commission</label>
+                          <input
+                            type="text"
+                            id="commission_printing"
+                            className="form-control"
+                            disabled
+                            placeholder="Enter Total Agency Commission"
+                            value={userInfo?.total_agency_commision}
+                            onChange={(e) => {
+                              setErrorData({...errorData,total_agency_commision:""})
+                              const value = e.target.value;
+                              // Allow only numeric characters and decimal point
+                              if (/^\d{0,3}$/.test(value)) {
+                                setUserInfo({ ...userInfo, total_agency_commision: value });
                               }
                             }}
                           />

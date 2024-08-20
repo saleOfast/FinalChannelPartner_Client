@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import AddOpportunityScreen from '../../Components/OpportunityScreens/AddOpportunityScreen'
+import AddOpportunityScreen from '../../Components/MEDIA/OpportunityScreens/AddOpportunityScreen'
 import WithUserhoc_MEDIA from '../../HOC/WithUserhoc_MEDIA';
 import { useEffect } from 'react';
 import { setCookie } from 'cookies-next';

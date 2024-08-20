@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import PlusIcon from "../Svg/PlusIcon";
+import PlusIcon from "../../Svg/PlusIcon";
 import Link from "next/link";
 import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { Baseurl } from "../../Utils/Constants";
-import ConfirmBox from "../Basics/ConfirmBox";
+import { Baseurl } from "../../../Utils/Constants";
+import ConfirmBox from "../../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from 'next/dynamic'
-import DownloadIcon from "../Svg/DownloadIcon";
+import DownloadIcon from "../../Svg/DownloadIcon";
 const DynamicTable = dynamic(
     () => import('./OpportunityMuiTable'),
     { ssr: false }
@@ -156,7 +156,7 @@ const OpportunityScreen = () => {
                     <h3 className="content_head">OPPORTUNITY MANAGEMENT</h3>
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"><Link href="/crm">Home </Link></li>
+                            <li className="breadcrumb-item"><Link href="/media">Home </Link></li>
                             <li className="breadcrumb-item active" aria-current="page">Opportunity</li>
                         </ol>
                     </nav>

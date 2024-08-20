@@ -6,8 +6,8 @@
 
 /*  -----------------iis links------------- */
 
-// export const Baseurl = 'http://crm.cybermatrixsolutions.com/support/api/v1';
-// export const filesUrl = 'http://crm.cybermatrixsolutions.com/support/images'; 
+export const Baseurl = 'http://crm.cybermatrixsolutions.com/support/api/v1';
+export const filesUrl = 'http://crm.cybermatrixsolutions.com/support/images'; 
 
 // export const Baseurl = 'http://catalogue.cybermatrixsolutions.com/support/api/v1';
 // export const filesUrl = 'http://catalogue.cybermatrixsolutions.com/support/images';

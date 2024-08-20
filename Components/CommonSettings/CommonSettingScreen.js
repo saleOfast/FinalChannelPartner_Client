@@ -4,6 +4,7 @@ import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import axios from "axios";
+import Select from "react-select";
 import { Baseurl } from "../../Utils/Constants";
 import { useRouter } from "next/router";
 
@@ -12,6 +13,7 @@ const CommonSettingScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
   const [formData, setFormData] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [currencyList, setCurrencyList] = useState([]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -22,9 +24,18 @@ const CommonSettingScreen = () => {
     );
   };
 
+  const handleSelectChange = (selectedOption, setting_name) => {
+    setFormData((prevFormData) =>
+      prevFormData.map((item) =>
+        item.setting_name === setting_name
+          ? { ...item, setting_value: selectedOption ? selectedOption.value : '' }
+          : item
+      )
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     if (hasCookie("token")) {
       const token = getCookie("token");
       const db_name = getCookie("db_name");
@@ -49,7 +60,6 @@ const CommonSettingScreen = () => {
           router.push("/");
         }
       } catch (error) {
-        console.log(error);
         if (error?.response?.data?.status === 422) {
           toast.error(error?.response?.data?.message);
         }
@@ -63,7 +73,7 @@ const CommonSettingScreen = () => {
     }
   };
 
-  const getEmailConfig = async () => {
+  const getCommonSettings = async () => {
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -82,7 +92,7 @@ const CommonSettingScreen = () => {
           Baseurl + `/db/settings/generalSettings`,
           header
         );
-        setFormData(data?.data); // Assuming `data` is an object with a `data` property which is an array
+        setFormData(data?.data);
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error?.response?.data.message);
@@ -93,10 +103,41 @@ const CommonSettingScreen = () => {
     }
   };
 
-  const updateEmailConfig = async (e, setting_id,setting_value) => {
-    e.preventDefault();
-    console.log(setting_id);
+  const getCurrencyList = async () => {
     if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          db: db_name,
+          m_id: 76,
+        },
+      };
+
+      try {
+        const { data } = await axios.get(
+          Baseurl + `/db/settings/generalSettings/getCurrencies`,
+          header
+        );
+        setCurrencyList(data?.data);
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+  const updateCommonSettings = async (e, setting_id) => {
+    e.preventDefault();
+    const settingToUpdate = formData.find(item => item.setting_id === setting_id);
+
+    if (settingToUpdate && hasCookie("token")) {
       const token = getCookie("token");
       const db_name = getCookie("db_name");
 
@@ -111,18 +152,17 @@ const CommonSettingScreen = () => {
 
       try {
         const response = await axios.put(
-          `${Baseurl}/db/settings/generalSettings`,{
-            setting_id:setting_id,
-            setting_value:setting_value
+          `${Baseurl}/db/settings/generalSettings`,
+          {
+            setting_id: settingToUpdate.setting_id,
+            setting_value: settingToUpdate.setting_value
           },
           header
         );
         if (response.status === 200 || response.status === 201) {
           toast.success(response.data.message);
-          
         }
       } catch (error) {
-        console.log(error);
         if (error?.response?.data?.status === 422) {
           toast.error(error?.response?.data?.message);
         }
@@ -136,8 +176,8 @@ const CommonSettingScreen = () => {
   };
 
   useEffect(() => {
-    getEmailConfig();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getCommonSettings();
+    getCurrencyList();
   }, []);
 
   return (
@@ -161,11 +201,7 @@ const CommonSettingScreen = () => {
             formData.map((data) => (
               <form
                 key={data?.setting_id}
-                onSubmit={(e) => {
-                  data?.setting_id
-                    ? updateEmailConfig(e, data?.setting_id,data?.setting_value)
-                    : handleSubmit(e);
-                }}
+                onSubmit={(e) => updateCommonSettings(e, data?.setting_id)}
               >
                 <div className="row">
                   <div className="mb-3 col-xl-9 col-lg-9 col-9">
@@ -177,20 +213,36 @@ const CommonSettingScreen = () => {
                         >
                           {data?.setting_name} *
                         </label>
-                        <input
-                          type="number"
-                          className="form-control mt-1 mt-md-0"
+                        {data?.setting_name === "visit_date_validation" && (
+                          <input
+                            type="number"
+                            className="form-control mt-1 mt-md-0"
+                            id={data?.setting_name}
+                            placeholder={`Enter ${data?.setting_name}`}
+                            value={Number(data?.setting_value)}
+                            onChange={handleChange}
+                            required
+                          />
+                        )}
+                        {data?.setting_name === "currency" && (
+                          <select
                           id={data?.setting_name}
-                          placeholder={`Enter ${data?.setting_name}`}
-                          value={Number(data?.setting_value)}
-                          onChange={handleChange}
-                          required
-                        />
+                          className="form-select mt-1 mt-md-0"
+                          value={data?.setting_value || ''}
+                          onChange={(e) => handleSelectChange({ value: e.target.value }, data?.setting_name)}
+                        >
+                          <option value="">Select {data?.setting_name}</option>
+                          {currencyList.map((currency) => (
+                            <option key={currency.currency_id} value={currency.currency_id}>
+                              {currency?.country_name+"-"+currency?.code}
+                            </option>
+                          ))}
+                        </select>
+                        
+                        
+                        )}
                       </div>
-                      <div
-                        className=""
-                        style={{ marginTop: "30px" }}
-                      >
+                      <div className="" style={{ marginTop: "30px" }}>
                         <button
                           type="submit"
                           className="btn btn-primary w-100"

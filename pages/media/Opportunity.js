@@ -1,4 +1,4 @@
-import OpportunityScreen from '../../Components/OpportunityScreens/OpportunityScreen'
+import OpportunityScreen from '../../Components/MEDIA/OpportunityScreens/OpportunityScreen'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setCookie } from 'cookies-next'

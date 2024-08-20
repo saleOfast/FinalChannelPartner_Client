@@ -20,6 +20,7 @@ const EstimationTable = ({ accountsList, openConfirmBox , title, loader }) => {
                 filter: true,
             }
         },
+        
         {
             name: 'estimate_type',
             label:  "Estimated Type",

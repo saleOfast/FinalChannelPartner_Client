@@ -109,7 +109,7 @@ const AddSitesScreen = () => {
         setData(response.data.data);
       }
     } catch (error) {
-      toast.error(error.response.data.message || 'Something went wrong!');
+      toast.error(error?.response?.data?.message || 'Something went wrong!');
     }
   }
 

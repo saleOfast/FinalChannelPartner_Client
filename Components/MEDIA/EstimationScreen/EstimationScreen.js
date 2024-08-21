@@ -42,6 +42,7 @@ const EstimationScreen = () => {
                     setAccountsList(response?.data?.data);
                 }
             } catch (error) {
+                console.log(error)
                 setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);

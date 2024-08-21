@@ -360,6 +360,11 @@ import { fetchData } from "../../../Utils/getReq";
 import { Button, Modal, Table } from "react-bootstrap";
 import Select from "react-select";
 import { toast } from "react-toastify";
+import { Baseurl } from "../../../Utils/Constants";
+import { getCookie, hasCookie } from "cookies-next";
+import axios from "axios";
+import ModelAssetSite1 from "./ModelAssetSite1";
+import ModelAssetSite2 from "./ModelAssetSite2";
 
 const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
   const [errorToast, setErrorToast] = useState({});
@@ -372,7 +377,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
   const [selectedSites, setSelectedSites] = useState([]);
-
+  const [estimationId,setEstimationId] =useState(null)
+  const [isLoading, setisLoading] = useState(false);
   const handleClose = () => {
     setShow(false);
     setStateId("");
@@ -430,6 +436,50 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
 
     handleClose();
     setShow2(true);
+  };
+
+  const addAssetInSite = async (formattedSites) => {
+    if (hasCookie("token")) {
+      setisLoading(true);
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass:"pass"
+        },
+      };
+
+     
+      try {
+        const response = await axios.post(
+          Baseurl + `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
+          {
+            estimate_id:estimationId,
+            sites: formattedSites
+          },
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          setisLoading(false);
+          handleClose2()
+          setSelectedSites()
+        }
+      } catch (error) {
+        console.log(error)
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
+      }
+   
   };
 
   useEffect(() => {
@@ -495,6 +545,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
                 <button
                   className="action_btn"
                   onClick={() => {
+                    setEstimationId(tableMeta?.rowData[3])
                     getState();
                     setShow(true);
                   }}
@@ -545,70 +596,20 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
           />
         </div>
       )}
-      <Modal className="commonModal" show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Offer Asset Site</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="add_user_form">
-            <div className="row">
-              <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                <div className="input_box">
-                  <label htmlFor="state">State *</label>
-                  <Select
-                    id="state"
-                    value={stateList
-                      .map((item) => ({
-                        value: item.state_id,
-                        label: item.state_name,
-                      }))
-                      .find((option) => option.value === stateId)}
-                    options={stateList.map((state) => ({
-                      value: state.state_id,
-                      label: state.state_name,
-                    }))}
-                    onChange={(e) => {
-                      setStateId(e.value);
-                      setCityIds([]);
-                    }}
-                    placeholder="Select State"
-                  />
-                </div>
-              </div>
-              <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                <div className="input_box">
-                  <label htmlFor="cities">Cities *</label>
-                  <Select
-                    id="cities"
-                    isMulti
-                    value={cityList
-                      .filter((city) => cityIds.includes(city.city_id))
-                      .map((city) => ({
-                        value: city.city_id,
-                        label: city.city_name,
-                      }))}
-                    options={cityList.map((city) => ({
-                      value: city.city_id,
-                      label: city.city_name,
-                    }))}
-                    onChange={(selectedOptions) => {
-                      setCityIds(selectedOptions.map((option) => option.value));
-                    }}
-                    placeholder="Select Cities"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={getSiteList}>
-            SUBMIT
-          </Button>
-        </Modal.Footer>
-      </Modal>
 
-      <Modal className="commonModal" show={show2} onHide={handleClose2} size="xl">
+      <ModelAssetSite1
+        show={show}
+        handleClose={handleClose}
+        stateList={stateList}
+        setStateId={setStateId}
+        setCityIds={setCityIds}
+        cityList={cityList}
+        getSiteList={getSiteList}
+        stateId={stateId}
+        cityIds={cityIds}
+      />
+
+      {/* <Modal  show={show2} onHide={handleClose2} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Offer Asset Site</Modal.Title>
         </Modal.Header>
@@ -666,19 +667,28 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
         <Modal.Footer>
           <Button
             variant="primary"
+            disabled={isLoading}
             onClick={() => {
               const formattedSites = selectedSites.map((site_id) => ({
                 site_id,
                 status: true,
               }));
-              
-              console.log(formattedSites);
+                addAssetInSite(formattedSites)                      
             }}
           >
-            SUBMIT
+            {isLoading ? "Loading..." : "Submit"}
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
+      <ModelAssetSite2
+        show2={show2}
+        handleClose2={handleClose2}
+        siteLists={siteLists}
+        isLoading={isLoading}
+        selectedSites={selectedSites}
+        handleSelectSite={handleSelectSite}
+        addAssetInSite={addAssetInSite}
+      />
     </>
   );
 };

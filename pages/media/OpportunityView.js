@@ -1,5 +1,5 @@
 
-import OpportunityViewScreen from '../../Components/OpportunityScreens/OpportunityViewScreen'
+import OpportunityViewScreen from '../../Components/MEDIA/OpportunityScreens/OpportunityViewScreen'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setCookie } from 'cookies-next'

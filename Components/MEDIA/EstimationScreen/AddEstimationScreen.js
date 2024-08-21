@@ -12,6 +12,8 @@ import { fetchData } from "../../../Utils/getReq";
 import Select from "react-select";
 import { Delete } from "@mui/icons-material";
 import { data } from "autoprefixer";
+import { Table } from "react-bootstrap";
+import DeleteIcon from "../../Svg/DeleteIcon";
 
 const DMPCArray=[
   { label: "Display Selling Cost", id: "display_selling_cost", fieldType: "currency" },
@@ -79,10 +81,9 @@ const AddEstimationScreen = () => {
   const [contError, setContError] = useState({});
   const [errorToast, setErrorToast] = useState(false);
   const [loginDetails, setloginDetails] = useState({});
-  const [campaignStatusList,setCampaignStatusList]=useState([])
-  const [proofOfConList,setProofOfConList]=useState([])
   const [busiessTypeList,setBusinessTypeList]=useState([])
   const [isAgency,setIsAgency]=useState(false);
+  const [assetSiteLists,setAssetSiteLists]=useState([])
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
   const [newFields, setNewFields] = useState({
     field_lable: null,
@@ -163,39 +164,8 @@ const AddEstimationScreen = () => {
     );
   }
   
-  async function getCampaignStatusList() {
-    await fetchData(
-      `/db/media/campaign/campaignStatus/getCampaignStatus`,
-      setCampaignStatusList,
-      errorToast,
-      setErrorToast
-    );
-  }
-  // useEffect(()=>{
-  //    if(userInfo?.db_media_campaign?.cmpn_b_t_id){
-  //      setUserInfo({...userInfo,cmpn_b_t_id:userInfo?.db_media_campaign.cmpn_b_t_id})
-  //   }
-  //   const selectedBusiness = busiessTypeList.find( (data) => data.cmpn_b_t_id === userInfo?.cmpn_b_t_id)
-  //   if (selectedBusiness?.cmpn_b_t_name === "Agency") {
-  //     setIsAgency(true);
-  //   } else {
-  //     setIsAgency(false);
-  //   }
-  // },[editMode])
- 
-
-  // useEffect(()=>{
-  //   if(editMode && userInfo?.db_media_campaign?.cmpn_b_t_id){
-  //        setUserInfo({...userInfo,cmpn_b_t_id:userInfo?.db_media_campaign.cmpn_b_t_id})
-  //     }
-  // },[editMode])
-
-  // const manageAgecny=()=>{
-  //   if( userInfo?.db_media_campaign?.cmpn_b_t_id){
-  //            setUserInfo({...userInfo,cmpn_b_t_id:userInfo?.db_media_campaign.cmpn_b_t_id})
-  //         }
-
-  // }
+  
+  
 
   useEffect(() => {
     if(editMode && userInfo?.db_media_campaign?.cmpn_b_t_id && !userInfo?.cmpn_b_t_id ){
@@ -213,21 +183,20 @@ const AddEstimationScreen = () => {
   }, [userInfo, busiessTypeList,editMode]);
 
 
- 
-  
-  async function getProofOfConList() {
-    await fetchData(
-      `/db/media/campaign/campaignProofRoutes/getCampaignProof`,
-      setProofOfConList,
-      errorToast,
-      setErrorToast
-    );
-  }
 
   async function getBusinessTypeList() {
     await fetchData(
       `/db/media/campaign/campaignBusinessType/getCampaignBusinessType`,
       setBusinessTypeList,
+      errorToast,
+      setErrorToast
+    );
+  }
+
+  async function getAssetSites() {
+    await fetchData(
+      `/db/media/estimationAssetBusiness/getEstimationAssetBusiness?estimate_id=${id}`,
+      setAssetSiteLists,
       errorToast,
       setErrorToast
     );
@@ -600,12 +569,54 @@ const AddEstimationScreen = () => {
     }
   };
 
+  const deleteAssetSite = async (site_id) => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass:"pass"
+        },
+      };
+
+     
+      try {
+        const response = await axios.post(
+          Baseurl + `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
+          {
+            estimate_id:id,
+            sites: [{
+              site_id: site_id,
+              status:false
+            }]
+          },
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          getAssetSites()
+        }
+      } catch (error) {
+        console.log(error)
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
+      }
+   
+  };
+
   
   
 
   useEffect(() => {
-    // getProofOfConList();
-    getCampaignStatusList();
     getBusinessTypeList()
     getAccountsList();
     checkLogin();
@@ -734,6 +745,7 @@ const AddEstimationScreen = () => {
       }
     }
     if (router.query.vw) [setViewMode(true)];
+    getAssetSites()
   }, [router.isReady, id]);
 
 
@@ -816,13 +828,7 @@ const AddEstimationScreen = () => {
                       disabled={viewMode}
                       placeholder="Enter Estimate Type"
                       value={userInfo?.estimate_type || ""}
-                      // onChange={(e) => {
-                      //   const value = e.target.value;
-                      //   // Allow only alphabetic characters (including spaces)
-                    
-                      //     setUserInfo({ ...userInfo, estimate_type: value });
                       
-                      // }}
                       onChange={(e) => {
                         setErrorData({...errorData,estimate_type:""})
                         // Regular expression to match only alphabetic characters and spaces
@@ -1132,7 +1138,6 @@ const AddEstimationScreen = () => {
                   </div>
                 </div>
 
-                {/* {"Agency" === "Agency" && ( */}
                 {isAgency && (
                     <>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
@@ -1475,6 +1480,146 @@ const AddEstimationScreen = () => {
               </div>
               </div>
               
+
+
+              {
+
+                busiessTypeList?.find((item)=>item?.cmpn_b_t_id==userInfo?.db_media_campaign?.cmpn_b_t_id)?.cmpn_b_t_name=="Asset" && (
+                  <>
+                         <div className="add_screen_head">
+                <span className="text_bold">Asset Sites </span>
+              </div>
+              <div className="add_user_form">
+                  <div className="row ">
+                  {assetSiteLists?.filter((item)=>item.status==true).length > 0 ? (
+            <Table  bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>Site ID</th>
+                  <th>State</th>
+                  <th>City</th>
+                  <th>Location</th>
+                  <th>Category</th>
+                  <th>Media Format</th>
+                  <th>Media Vehicle</th>
+                  <th>Media Type</th>
+                  <th>Quantity</th>
+                  <th>Height (Ft.)</th>
+                  <th>Width (Ft.)</th>
+                  <th>Total Sq. Ft.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {assetSiteLists?.filter((item)=>item.status==true)?.map((site) => (
+                  <tr key={site.site_id}>
+                    <td>{site.site_id}</td>
+                    <td>{site?.db_site?.db_state?.state_name}</td>
+                    <td>{site?.db_site?.db_city?.city_name}</td>
+                    <td>{site?.db_site.location}</td>
+                    <td>{site?.db_site?.db_site_category?.site_cat_name}</td>
+                    <td>{site?.db_site?.db_media_format?.m_f_name}</td>
+                    <td>{site?.db_site?.db_media_vehicle?.m_v_name}</td>
+                    <td>{site?.db_site?.db_media_type?.m_t_name}</td>
+                    <td>{site?.db_site.quantity}</td>
+                    <td>{site?.db_site.height}</td>
+                    <td>{site?.db_site.width}</td>
+                    <td>{(site?.db_site.height*site?.db_site.width)}</td>
+                    {
+                      !viewMode ? <td className="table_btns">
+                      <button
+                        className="action_btn"
+                        title="Delete"
+                        onClick={()=>{
+                            deleteAssetSite(site.site_id)
+                        }}
+                      >
+                        <DeleteIcon />
+                      </button>
+                      </td> :""
+                    }
+                    
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          ) : (
+            <p>No sites available</p>
+          )}
+                  </div>
+              </div>
+                  </>
+                )
+              }
+
+               {
+
+                busiessTypeList?.find((item)=>item?.cmpn_b_t_id==userInfo?.db_media_campaign?.cmpn_b_t_id)?.cmpn_b_t_name=="Agency" && (
+                  <>
+                         <div className="add_screen_head">
+                <span className="text_bold">Agency Sites </span>
+              </div>
+              <div className="add_user_form">
+                  <div className="row ">
+                  {assetSiteLists?.filter((item)=>item.status==true).length > 0 ? (
+            <Table  bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>Site ID</th>
+                  <th>State</th>
+                  <th>City</th>
+                  <th>Location</th>
+                  <th>Category</th>
+                  <th>Media Format</th>
+                  <th>Media Vehicle</th>
+                  <th>Media Type</th>
+                  <th>Quantity</th>
+                  <th>Height (Ft.)</th>
+                  <th>Width (Ft.)</th>
+                  <th>Total Sq. Ft.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {assetSiteLists?.filter((item)=>item.status==true)?.map((site) => (
+                  <tr key={site.site_id}>
+                    <td>{site.site_id}</td>
+                    <td>{site?.db_site?.db_state?.state_name}</td>
+                    <td>{site?.db_site?.db_city?.city_name}</td>
+                    <td>{site?.db_site.location}</td>
+                    <td>{site?.db_site?.db_site_category?.site_cat_name}</td>
+                    <td>{site?.db_site?.db_media_format?.m_f_name}</td>
+                    <td>{site?.db_site?.db_media_vehicle?.m_v_name}</td>
+                    <td>{site?.db_site?.db_media_type?.m_t_name}</td>
+                    <td>{site?.db_site.quantity}</td>
+                    <td>{site?.db_site.height}</td>
+                    <td>{site?.db_site.width}</td>
+                    <td>{(site?.db_site.height*site?.db_site.width)}</td>
+                    {
+                      !viewMode ? <td className="table_btns">
+                      <button
+                        className="action_btn"
+                        title="Delete"
+                        onClick={()=>{
+                            deleteAssetSite(site.site_id)
+                        }}
+                      >
+                        <DeleteIcon />
+                      </button>
+                      </td> :""
+                    }
+                    
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          ) : (
+            <p>No sites available</p>
+          )}
+                  </div>
+              </div>
+                  </>
+                )
+              }
+             
 
 
               <div className="add_screen_head">

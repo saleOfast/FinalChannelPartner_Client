@@ -10,8 +10,8 @@ import MountingCostManagementScreens from '../../Components/MEDIA/MountingCostMa
 export default WithUserhoc_MEDIA( function MountingCostManagementScreen() {
     const dispatch = useDispatch()
     useEffect(() => {
-        setCookie('isActive', 'tasks')
-        dispatch(setIsActive('tasks'))
+        setCookie('isActive', 'MountingCostManagement')
+        dispatch(setIsActive('MountingCostManagement'))
     }, [dispatch]);
     return (
         <>

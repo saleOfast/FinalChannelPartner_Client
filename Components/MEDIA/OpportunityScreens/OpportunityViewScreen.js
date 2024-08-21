@@ -1,20 +1,20 @@
 
 import React, { useEffect, useState } from "react";
 
-import PlusIcon from "../Svg/PlusIcon";
+import PlusIcon from "../../Svg/PlusIcon";
 import Link from "next/link";
 import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { Baseurl } from "../../Utils/Constants";
-import ConfirmBox from "../Basics/ConfirmBox";
+import { Baseurl } from "../../../Utils/Constants";
+import ConfirmBox from "../../Basics/ConfirmBox";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
 import moment from "moment";
 import OpportunityDetailComponent from "./OpportunityDetailComponent";
 import { useSelector } from "react-redux";
-import { fetchData } from "../../Utils/getReq";
+import { fetchData } from "../../../Utils/getReq";
 import Select from 'react-select';
 
 
@@ -350,10 +350,10 @@ const getProductList = async () => {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item fw-bolder">
-                <Link href="/crm">Home </Link>
+                <Link href="/media">Home </Link>
               </li>
               <li className="breadcrumb-item fw-bolder">
-                <Link href="/crm/Opportunity">Manage Opportunity </Link>
+                <Link href="/media/Opportunity">Manage Opportunity </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
                 Opportunity
@@ -476,6 +476,19 @@ const getProductList = async () => {
                               />
                             </div>
                           </div>
+                             
+                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                            <div className='input_box'>
+                              <label htmlFor="profilelevel">Conversion </label>
+                              <input
+                                className='form-control'
+                                value={dataList?.conversion_perc}
+                                disabled
+                              />
+                            </div>
+                          </div>
+
+
                           <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                             <div className='input_box'>
                               <label htmlFor="profilelevel">Lead Source</label>
@@ -498,24 +511,17 @@ const getProductList = async () => {
                           </div>
 
 
-                          {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                <div className={errorData?.opp_name ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="remark">Remark *</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter Remark"
-                                        name="task_name"
-                                        id="remark"
-                                        className={`form-control ${errorData?.remark ? ' is-invalid' : ''}`}
-                                        onChange={(e) => {
-                                            setUserInfo({ ...userInfo, remark: e.target.value })
-                                            setErrorData({ ...errorData, remark: '' })
-                                        }}
-                                        value={userInfo.remark ? userInfo.remark : ""}
-                                    />
-                                    <span className="errorText"> {errorData?.remark ? errorData.remark : ''}</span>
-                                </div>
-                            </div> */}
+                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                            <div className='input_box'>
+                              <label htmlFor="profilelevel">Remarks </label>
+                              <input
+                                className='form-control'
+                                value={dataList?.remark}
+                                disabled
+                              />
+                            </div>
+                          </div>
+
 
 
                           <div className="col-xl-4 col-md-4 col-sm-12 col-12">
@@ -1046,7 +1052,7 @@ const getProductList = async () => {
                                                 return (
                                                     <li key={quat_mast_id} className="list-item">
                                                         <div className="opp_box">
-                                                            <Link href={`/crm/QuotationView?id=${quat_mast_id}`}>
+                                                            <Link href={`/media/QuotationView?id=${quat_mast_id}`}>
                                                                 <div className="name">{quat_code}</div>
                                                             </Link>
                                                         </div>
@@ -1056,7 +1062,7 @@ const getProductList = async () => {
                                         </ul>
                                     </div>
                                     <div className="card_footer">
-                                        <Link href='/crm/Quotations'>
+                                        <Link href='/media/Quotations'>
                                             <div className="text_more">view more</div>
                                         </Link>
                                     </div>
@@ -1073,7 +1079,7 @@ const getProductList = async () => {
                                                 return (
                                                     <li key={lead_id} className="list-item">
                                                         <div className="opp_box">
-                                                            <Link href={`/crm/LeadsView?id=${lead_id}`}>
+                                                            <Link href={`/media/LeadsView?id=${lead_id}`}>
                                                                 <div className="name">{lead_name}</div>
                                                             </Link>
                                                         </div>
@@ -1083,7 +1089,7 @@ const getProductList = async () => {
                                         </ul>
                                     </div>
                                     <div className="card_footer">
-                                        <Link href='/crm/ManageLeads'>
+                                        <Link href='/media/ManageLeads'>
                                             <div className="text_more">view more</div>
                                         </Link>
                                     </div>

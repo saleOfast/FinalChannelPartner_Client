@@ -496,6 +496,28 @@ const getProductList = async () => {
                               />
                             </div>
                           </div>
+
+
+                          {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className={errorData?.opp_name ? 'input_box errorBox' : 'input_box'}>
+                                    <label htmlFor="remark">Remark *</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Remark"
+                                        name="task_name"
+                                        id="remark"
+                                        className={`form-control ${errorData?.remark ? ' is-invalid' : ''}`}
+                                        onChange={(e) => {
+                                            setUserInfo({ ...userInfo, remark: e.target.value })
+                                            setErrorData({ ...errorData, remark: '' })
+                                        }}
+                                        value={userInfo.remark ? userInfo.remark : ""}
+                                    />
+                                    <span className="errorText"> {errorData?.remark ? errorData.remark : ''}</span>
+                                </div>
+                            </div> */}
+
+
                           <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                             <div className='input_box'>
                               <label htmlFor="profilelevel">Created On</label>

@@ -165,7 +165,7 @@ const OpportunityScreen = () => {
                     <div className="table_screen">
                         <div className="top_btn_sec">
                         <div className="d-flex">
-                            <Link href='/media/AddOpportunity'>
+                            <Link href='/crm/AddOpportunity'>
                                 <button className="btn btn-primary Add_btn me-3">
                                     <PlusIcon />
                                     ADD OPPORTUNITY

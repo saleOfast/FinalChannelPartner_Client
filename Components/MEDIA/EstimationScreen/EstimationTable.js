@@ -364,6 +364,7 @@ import { Baseurl } from "../../../Utils/Constants";
 import { getCookie, hasCookie } from "cookies-next";
 import axios from "axios";
 import ModelAssetSite1 from "./ModelAssetSite1";
+import ModelAgencySite from "./ModelAgencySite";
 import ModelAssetSite2 from "./ModelAssetSite2";
 
 const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
@@ -376,8 +377,11 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
   const [siteLists, setSiteLists] = useState([]);
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
+  const [show3, setShow3] = useState(false);
+
   const [selectedSites, setSelectedSites] = useState([]);
   const [estimationId,setEstimationId] =useState(null)
+
   const [isLoading, setisLoading] = useState(false);
   const handleClose = () => {
     setShow(false);
@@ -387,6 +391,10 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
 
   const handleClose2 = () => {
     setShow2(false);
+  };
+  
+  const handleClose3 = () => {
+    setShow3(false);
   };
 
   const getState = async () => {
@@ -554,6 +562,22 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
                   <DisableIcon />
                 </button>
               )}
+              {busiessTypeList.find(
+                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
+              )?.cmpn_b_t_name === "Agency" && (
+                <button
+                  className="action_btn"
+                  onClick={() => {
+                    setEstimationId(tableMeta?.rowData[3])
+                    
+                    setShow3(true);
+
+                  }}
+                  title="Offer Agency Site"
+                >
+                  <DisableIcon />
+                </button>
+              )}
             </div>
           );
         },
@@ -600,6 +624,18 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
       <ModelAssetSite1
         show={show}
         handleClose={handleClose}
+        stateList={stateList}
+        setStateId={setStateId}
+        setCityIds={setCityIds}
+        cityList={cityList}
+        getSiteList={getSiteList}
+        stateId={stateId}
+        cityIds={cityIds}
+      />
+      
+      <ModelAgencySite
+        show={show3}
+        handleClose3={handleClose3}
         stateList={stateList}
         setStateId={setStateId}
         setCityIds={setCityIds}

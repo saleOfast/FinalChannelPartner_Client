@@ -2,500 +2,1490 @@ import React, { useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import Select from "react-select";
 import axios from "axios";
-import { Baseurl } from "../../../Utils/Constants"; // Adjust path as needed
+import { Baseurl } from "../../../Utils/Constants";
 import { toast } from "react-toastify";
-import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap CSS is imported
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { getCookie } from "cookies-next";
 
 const ModelAgencySite = ({
   show,
   handleClose3,
   getSiteList,
-  userInfo
+  userInfo,
+  estimateId
 }) => {
-  const [rows, setRows] = useState([{
-    state: '',
-    city: '',
-    location: '',
-    mediaFormat: '',
-    mediaVehicle: '',
-    mediaType: '',
-    quantity: '',
-    height: '',
-    width: '',
-    totalSqFt: '',
-    clientDisplayCost: '',
-    clientMountingCost: '',
-    clientPrintingCost: ''
-  }]);
+    const [rows, setRows] = useState([{
+      state: '',
+      city: '',
+      location: '',
+      mediaFormat: '',
+      mediaVehicle: '',
+      mediaType: '',
+      quantity: '',
+      height: '',
+      width: '',
+      totalSqFt: '',
+      clientDisplayCost: '',
+      clientMountingCost: '',
+      clientPrintingCost: '',
+      cityList: [],  // Track city list for each row
+    }]);
 
-  const [mediaFormats, setMediaFormats] = useState([]);
-  const [mediaVehicles, setMediaVehicles] = useState([]);
-  const [mediaTypes, setMediaTypes] = useState([]);
+    const [mediaFormats, setMediaFormats] = useState([]);
+    const [mediaVehicles, setMediaVehicles] = useState([]);
+    const [mediaTypes, setMediaTypes] = useState([]);
+    const [stateList, setStateList] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState({});
+    const defaultCountryId = 101;
 
-  const [stateList, setStateList] = useState([]);
-  const [cityList, setCityList] = useState([]);
+    // Fetch data utility function
+    const fetchData = async (url, dataKey) => {
+        const token = getCookie("token");
+        const db_name = getCookie("db_name");
 
-  const defaultCountryId = 101;
+        const headers = {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            db: db_name,
+            pass: "pass",
+        };
 
-  const fetchData = async (url, dataKey) => {
-    const token = getCookie("token");
-    const db_name = getCookie("db_name");
-
-    const headers = {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-      db: db_name,
-      pass: "pass",
+        try {
+            const response = await axios.get(Baseurl + url, { headers });
+            if (response.status === 200) {
+                return response.data[dataKey];
+            }
+            throw new Error("Failed to fetch");
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Something went wrong!");
+            return [];
+        }
     };
 
-    try {
-      const response = await axios.get(Baseurl + url, { headers });
-      if (response.status === 200) {
-        return { status: response.status, data: response.data[dataKey] };
-      }
-      throw new Error("Failed to fetch");
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong!");
-      return { status: error.response?.status || 500, data: [] };
-    }
-  };
-
-  const getStates = async (countryId = defaultCountryId) => {
-    try {
-      const response = await fetchData(`/db/area/states?cnt_id=${countryId}`, 'data');
-      if (response.status === 200) {
-        const states = response.data.map(state => ({
-          value: state.state_id,
-          label: state.state_name
+    // Fetch states
+    const getStates = async (countryId = defaultCountryId) => {
+        const states = await fetchData(`/db/area/states?cnt_id=${countryId}`, 'data');
+        const formattedStates = states.map(state => ({
+            value: state.state_id,
+            label: state.state_name
         }));
-        setStateList(states);
-        setCityList([]); // Reset cities when states are fetched
-      }
-    } catch (error) {
-      console.error('Failed to fetch states:', error);
-    }
-  };
+        setStateList(formattedStates);
+    };
 
-  const getCities = async (stateId) => {
-    try {
-      const response = await fetchData(`/db/area/city?st_id=${stateId}`, 'data');
-      if (response.status === 200) {
-        const cities = response?.data?.cityData?.map(city => ({
-          value: city.city_id,
-          label: city.city_name
+    // Fetch cities for a given state
+    const getCities = async (stateId, rowIndex) => {
+        const cities = await fetchData(`/db/area/city?st_id=${stateId}`, 'data');
+        const formattedCities = cities.cityData.map(city => ({
+            value: city.city_id,
+            label: city.city_name
         }));
-        setCityList(cities);    
-      }
-    } catch (error) {
-      console.error('Failed to fetch cities:', error);
-    }
-  };
+        
+        const updatedRows = [...rows];
+        updatedRows[rowIndex] = { ...updatedRows[rowIndex], cityList: formattedCities };
+        setRows(updatedRows);
+    };
 
-  const getMediaFormats = async () => {
-    await fetchData(`/db/media/mediaFormat/getMediaFormat`, 'data').then(response => {
-      const formats = response.data.map(format => ({
-        value: format.m_f_id,
-        label: format.m_f_name
-      }));
-      setMediaFormats(formats);
-    });
-  };
+    // Fetch media formats
+    const getMediaFormats = async () => {
+        const formats = await fetchData(`/db/media/mediaFormat/getMediaFormat`, 'data');
+        const formattedFormats = formats.map(format => ({
+            value: format.m_f_id,
+            label: format.m_f_name
+        }));
+        setMediaFormats(formattedFormats);
+    };
 
-  const getMediaVehicles = async () => {
-    await fetchData(`/db/media/mediaVehicle/getMediaVehicle`, 'data').then(response => {
-      const vehicles = response.data.map(vehicle => ({
-        value: vehicle.m_v_id,
-        label: vehicle.m_v_name
-      }));
-      setMediaVehicles(vehicles);
-    });
-  };
+    // Fetch media vehicles
+    const getMediaVehicles = async () => {
+        const vehicles = await fetchData(`/db/media/mediaVehicle/getMediaVehicle`, 'data');
+        const formattedVehicles = vehicles.map(vehicle => ({
+            value: vehicle.m_v_id,
+            label: vehicle.m_v_name
+        }));
+        setMediaVehicles(formattedVehicles);
+    };
 
-  const getMediaTypes = async () => {
-    await fetchData(`/db/media/mediaType/getMediaType`, 'data').then(response => {
-      const types = response.data.map(type => ({
-        value: type.m_t_id,
-        label: type.m_t_name
-      }));
-      setMediaTypes(types);
-    });
-  };
+    // Fetch media types
+    const getMediaTypes = async () => {
+        const types = await fetchData(`/db/media/mediaType/getMediaType`, 'data');
+        const formattedTypes = types.map(type => ({
+            value: type.m_t_id,
+            label: type.m_t_name
+        }));
+        setMediaTypes(formattedTypes);
+    };
 
-  useEffect(() => {
-    if (show) {
-      getMediaFormats();
-      getMediaVehicles();
-      getMediaTypes();
-      getStates(userInfo?.country_id || defaultCountryId);
-    }
-  }, [show, userInfo?.country_id]);
+    // Fetch all initial data when the modal is shown
+    useEffect(() => {
+        if (show) {
+            getMediaFormats();
+            getMediaVehicles();
+            getMediaTypes();
+            getStates(userInfo?.country_id || defaultCountryId);
+        }
+    }, [show, userInfo?.country_id]);
 
-  useEffect(() => {
-    if (userInfo?.state_id) {
-      getCities(userInfo.state_id);
-    }
-  }, [userInfo?.state_id]);
+    // Handle form submission
+    const handleSubmit = async () => {
+        setLoading(true);
+        setError('');
 
-  const handleInputChange = (index, event) => {
-    const { name, value } = event.target;
-    const updatedRows = [...rows];
+        const token = getCookie("token");
+        const db_name = getCookie("db_name");
 
-    // Update the specific field
-    updatedRows[index] = { ...updatedRows[index], [name]: value };
+        const headers = {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            db: db_name,
+            pass: "pass",
+            'Content-Type': 'application/json'
+        };
 
-    // Recalculate Total SqFt if Height or Width changes
-    if (name === 'height' || name === 'width') {
-      const height = parseFloat(updatedRows[index].height) || 0;
-      const width = parseFloat(updatedRows[index].width) || 0;
-      updatedRows[index].totalSqFt = (height * width).toFixed(2);
-    }
+        const transformedRows = rows.map(row => ({
+            country_id: "India",
+            estimate_id: estimateId,
+            state_id: row.state, // Ensure state_id is set
+            city_id: row.city,  // Ensure city_id is set
+            location: row.location,
+            m_f_id: row.mediaFormat,
+            m_v_id: row.mediaVehicle,
+            m_t_id: row.mediaType,
+            quantity: row.quantity,
+            height: row.height,
+            width: row.width,
+            total_sqft: row.totalSqFt,
+            client_display_cost: row.clientDisplayCost,
+            client_mounting_cost: row.clientMountingCost,
+            client_printing_cost: row.clientPrintingCost
+        }));
 
-    setRows(updatedRows);
-  };
+        console.log("Transformed Rows:", transformedRows); // Debugging
 
-  const handleSelectChange = (index, fieldName, selectedOption) => {
-    const updatedRows = [...rows];
-    updatedRows[index] = { ...updatedRows[index], [fieldName]: selectedOption ? selectedOption.value : '' };
+        try {
+            const response = await axios.post(
+                `${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`,
+                { sites: transformedRows },
+                { headers }
+            );
 
-    // Reset Media Vehicle if Media Format is cleared
-    if (fieldName === 'mediaFormat' && !selectedOption) {
-      updatedRows[index].mediaVehicle = '';
-    }
+            if (response.status === 200) {
+                toast.success("Data saved successfully!");
+                getSiteList();
+                handleClose3();
+            } else {
+                toast.error("Failed to save data. Please try again.");
+            }
+        } catch (error) {
+            setError(error?.response?.data?.message || "Something went wrong!");
+            toast.error(error?.response?.data?.message || "Something went wrong!");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    setRows(updatedRows);
+    // Handle input changes
+    const handleInputChange = (index, event) => {
+        const { name, value } = event.target;
+        const updatedRows = [...rows];
+        updatedRows[index] = { ...updatedRows[index], [name]: value };
 
-    // Fetch Media Vehicles if Media Format is selected
-    if (fieldName === 'mediaFormat' && selectedOption) {
-      getMediaVehicles();
-    }
+        if (name === 'height' || name === 'width') {
+            const height = parseFloat(updatedRows[index].height) || 0;
+            const width = parseFloat(updatedRows[index].width) || 0;
+            updatedRows[index].totalSqFt = (height * width).toFixed(2);
+        }
+        setRows(updatedRows);
+    };
 
-    // Get Cities when State changes
-    if (fieldName === 'state') {
-      updatedRows[index].city = ''; // Reset city when state changes
-      setRows(updatedRows);
-      getCities(selectedOption ? selectedOption.value : '');
-    }
-  };
+    // Handle select changes
+    const handleSelectChange = (index, fieldName, selectedOption) => {
+        const updatedRows = [...rows];
+        updatedRows[index] = { ...updatedRows[index], [fieldName]: selectedOption ? selectedOption.value : '' };
 
-  const handleAddRow = () => {
-    setRows([
-      ...rows,
-      {
-        state: '',
-        city: '',
-        location: '',
-        mediaFormat: '',
-        mediaVehicle: '',
-        mediaType: '',
-        quantity: '',
-        height: '',
-        width: '',
-        totalSqFt: '',
-        clientDisplayCost: '',
-        clientMountingCost: '',
-        clientPrintingCost: ''
-      }
-    ]);
-  };
+        if (fieldName === 'state') {
+            updatedRows[index].city = ''; 
+            updatedRows[index].cityList = []; // Clear the city list when state changes
+            setRows(updatedRows);
+            getCities(selectedOption ? selectedOption.value : '', index);
+        }
+        
+        setRows(updatedRows);
+    };
 
-  const handleRemoveRow = (index) => {
-    if (index !== 0) {
-      setRows(rows.filter((_, i) => i !== index));
-    }
-  };
+    // Add a new row to the form
+    const handleAddRow = () => {
+        setRows([
+            ...rows,
+            {
+                state: '',
+                city: '',
+                location: '',
+                mediaFormat: '',
+                mediaVehicle: '',
+                mediaType: '',
+                quantity: '',
+                height: '',
+                width: '',
+                totalSqFt: '',
+                clientDisplayCost: '',
+                clientMountingCost: '',
+                clientPrintingCost: '',
+                cityList: [] // Initialize with an empty list
+            }
+        ]);
+    };
 
-  const handleSubmit = () => {
-    console.log('Form data:', rows);
-    getSiteList();
-  };
+    // Remove a row from the form
+    const handleRemoveRow = (index) => {
+        if (index !== 0) {
+            setRows(rows.filter((_, i) => i !== index));
+        }
+    };
 
-  return (
-    <Modal show={show} onHide={handleClose3} size="xl">
-      <Modal.Header closeButton>
-        <Modal.Title>Offer Agency Site</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <div className="add_user_form">
-          <form>
-            <div className="overflow-auto">
-              <div className="d-flex flex-column">
+    return (
+        <Modal show={show} onHide={handleClose3} size="xl">
+            <Modal.Header closeButton>
+                <Modal.Title>Add Agency Site</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
                 {rows.map((row, index) => (
-                  <div key={index} className="mb-3">
-                    <div className="d-flex flex-nowrap">
-                      {/* State */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`state-${index}`}>State</label>
-                          <Select
-                            id={`state-${index}`}
-                            defaultValue={null}
-                            options={stateList}
-                            value={stateList.find(option => option.value === row.state)}
-                            onChange={(selectedOption) => handleSelectChange(index, 'state', selectedOption)}
-                            menuPosition="fixed"    
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),   
-                            }}
-                          />
+                    <div key={index} className="row mb-3">
+                        <div className="col-md-2">
+                            <label>State</label>
+                            <Select
+                                options={stateList}
+                                value={stateList.find(option => option.value === row.state)}
+                                onChange={option => handleSelectChange(index, 'state', option)}
+                                placeholder="Select State"
+                            />
                         </div>
-                      </div>
-
-                      {/* City */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`city-${index}`}>City</label>
-                          <Select
-                            id={`city-${index}`}
-                            defaultValue={null}
-                            options={cityList}
-                            value={cityList?.find(option => option.value === row.city)}
-                            onChange={(selectedOption) => handleSelectChange(index, 'city', selectedOption)}
-                            menuPosition="fixed"
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
+                        <div className="col-md-2">
+                            <label>City</label>
+                            <Select
+                                options={row.cityList}
+                                value={row.cityList.find(option => option.value === row.city)}
+                                onChange={option => handleSelectChange(index, 'city', option)}
+                                placeholder="Select City"
+                            />
                         </div>
-                      </div>
-
-                      {/* Location */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`location-${index}`}>Location</label>
-                          <input
-                            type="text"
-                            id={`location-${index}`}
-                            name="location"
-                            placeholder="Enter Location"
-                            className="form-control"
-                            value={row.location}
-                            onChange={(event) => handleInputChange(index, event)}
-                          />
+                        <div className="col-md-2">
+                            <label>Location</label>
+                            <input
+                                type="text"
+                                name="location"
+                                value={row.location}
+                                onChange={event => handleInputChange(index, event)}
+                                className="form-control"
+                            />
                         </div>
-                      </div>
-
-                      {/* Media Format */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`mediaFormat-${index}`}>Media Format</label>
-                          <Select
-                            id={`mediaFormat-${index}`}
-                            defaultValue={null}
-                            options={mediaFormats}
-                            value={mediaFormats.find(option => option.value === row.mediaFormat)}
-                            onChange={(selectedOption) => handleSelectChange(index, 'mediaFormat', selectedOption)}
-                            menuPosition="fixed"
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
+                        <div className="col-md-2">
+                            <label>Media Format</label>
+                            <Select
+                                options={mediaFormats}
+                                value={mediaFormats.find(option => option.value === row.mediaFormat)}
+                                onChange={option => handleSelectChange(index, 'mediaFormat', option)}
+                                placeholder="Select Media Format"
+                            />
                         </div>
-                      </div>
-
-                      {/* Media Vehicle */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`mediaVehicle-${index}`}>Media Vehicle</label>
-                          <Select
-                            id={`mediaVehicle-${index}`}
-                            defaultValue={null}
-                            options={mediaVehicles}
-                            isDisabled={!row.mediaFormat}
-                            value={mediaVehicles.find(option => option.value === row.mediaVehicle)}
-                            onChange={(selectedOption) => handleSelectChange(index, 'mediaVehicle', selectedOption)}
-                            menuPosition="fixed"
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
+                        <div className="col-md-2">
+                            <label>Media Vehicle</label>
+                            <Select
+                                options={mediaVehicles}
+                                value={mediaVehicles.find(option => option.value === row.mediaVehicle)}
+                                onChange={option => handleSelectChange(index, 'mediaVehicle', option)}
+                                placeholder="Select Media Vehicle"
+                            />
                         </div>
-                      </div>
-
-                      {/* Media Type */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`mediaType-${index}`}>Media Type</label>
-                          <Select
-                            id={`mediaType-${index}`}
-                            defaultValue={null}
-                            options={mediaTypes}
-                            value={mediaTypes.find(option => option.value === row.mediaType)}
-                            onChange={(selectedOption) => handleSelectChange(index, 'mediaType', selectedOption)}
-                            menuPosition="fixed"
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
+                        <div className="col-md-2">
+                            <label>Media Type</label>
+                            <Select
+                                options={mediaTypes}
+                                value={mediaTypes.find(option => option.value === row.mediaType)}
+                                onChange={option => handleSelectChange(index, 'mediaType', option)}
+                                placeholder="Select Media Type"
+                            />
                         </div>
-                      </div>
-
-                      {/* Quantity */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`quantity-${index}`}>Quantity</label>
-                          <input
-                            type="text"
-                            id={`quantity-${index}`}
-                            name="quantity"
-                            placeholder="Enter Quantity"
-                            className="form-control"
-                            value={row.quantity}
-                            onChange={(event) => handleInputChange(index, event)}
-                          />
+                        <div className="col-md-2">
+                            <label>Quantity</label>
+                            <input
+                                type="number"
+                                name="quantity"
+                                value={row.quantity}
+                                onChange={event => handleInputChange(index, event)}
+                                className="form-control"
+                            />
                         </div>
-                      </div>
-
-                      {/* Height */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`height-${index}`}>Height</label>
-                          <input
-                            type="text"
-                            id={`height-${index}`}
-                            name="height"
-                            placeholder="Enter Height"
-                            className="form-control"
-                            value={row.height}
-                            onChange={(event) => handleInputChange(index, event)}
-                          />
+                        <div className="col-md-2">
+                            <label>Height</label>
+                            <input
+                                type="number"
+                                name="height"
+                                value={row.height}
+                                onChange={event => handleInputChange(index, event)}
+                                className="form-control"
+                            />
                         </div>
-                      </div>
-
-                      {/* Width */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`width-${index}`}>Width</label>
-                          <input
-                            type="text"
-                            id={`width-${index}`}
-                            name="width"
-                            placeholder="Enter Width"
-                            className="form-control"
-                            value={row.width}
-                            onChange={(event) => handleInputChange(index, event)}
-                          />
+                        <div className="col-md-2">
+                            <label>Width</label>
+                            <input
+                                type="number"
+                                name="width"
+                                value={row.width}
+                                onChange={event => handleInputChange(index, event)}
+                                className="form-control"
+                            />
                         </div>
-                      </div>
-
-                      {/* Total SqFt */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`totalSqFt-${index}`}>Total SqFt</label>
-                          <input
-                            type="text"
-                            id={`totalSqFt-${index}`}
-                            name="totalSqFt"
-                            placeholder="Total SqFt"
-                            className="form-control"
-                            value={row.totalSqFt}
-                            disabled
-                          />
+                        <div className="col-md-2">
+                            <label>Total Sq Ft</label>
+                            <input
+                                type="text"
+                                name="totalSqFt"
+                                value={row.totalSqFt}
+                                readOnly
+                                className="form-control"
+                            />
                         </div>
-                      </div>
-
-                      {/* Client Display Cost */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`clientDisplayCost-${index}`}>Client Display Cost</label>
-                          <input
-                            type="text"
-                            id={`clientDisplayCost-${index}`}
-                            name="clientDisplayCost"
-                            placeholder="Enter Display Cost"
-                            className="form-control"
-                            value={row.clientDisplayCost}
-                            onChange={(event) => handleInputChange(index, event)}
-                          />
+                        <div className="col-md-2">
+                            <label>Client Display Cost</label>
+                            <input
+                                type="number"
+                                name="clientDisplayCost"
+                                value={row.clientDisplayCost}
+                                onChange={event => handleInputChange(index, event)}
+                                className="form-control"
+                            />
                         </div>
-                      </div>
-
-                      {/* Client Mounting Cost */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`clientMountingCost-${index}`}>Client Mounting Cost</label>
-                          <input
-                            type="text"
-                            id={`clientMountingCost-${index}`}
-                            name="clientMountingCost"
-                            placeholder="Enter Mounting Cost"
-                            className="form-control"
-                            value={row.clientMountingCost}
-                            onChange={(event) => handleInputChange(index, event)}
-                          />
+                        <div className="col-md-2">
+                            <label>Client Mounting Cost</label>
+                            <input
+                                type="number"
+                                name="clientMountingCost"
+                                value={row.clientMountingCost}
+                                onChange={event => handleInputChange(index, event)}
+                                className="form-control"
+                            />
                         </div>
-                      </div>
-
-                      {/* Client Printing Cost */}
-                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-                        <div className="input_box">
-                          <label htmlFor={`clientPrintingCost-${index}`}>Client Printing Cost</label>
-                          <input
-                            type="text"
-                            id={`clientPrintingCost-${index}`}
-                            name="clientPrintingCost"
-                            placeholder="Enter Printing Cost"
-                            className="form-control"
-                            value={row.clientPrintingCost}
-                            onChange={(event) => handleInputChange(index, event)}
-                          />
+                        <div className="col-md-2">
+                            <label>Client Printing Cost</label>
+                            <input
+                                type="number"
+                                name="clientPrintingCost"
+                                value={row.clientPrintingCost}
+                                onChange={event => handleInputChange(index, event)}
+                                className="form-control"
+                            />
                         </div>
-                      </div>
-
-                      {/* Remove Button */}
-                      {index !== 0 && (
-                        <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1 d-flex align-items-center">
-                          <Button
-                            variant="danger"
-                            onClick={() => handleRemoveRow(index)}
-                          >
-                            Remove Agency
-                          </Button>
+                        <div className="col-md-1 mt-4">
+                            <Button variant="danger" onClick={() => handleRemoveRow(index)}>Remove</Button>
                         </div>
-                      )}
                     </div>
-                  </div>
                 ))}
-              </div>
-            </div>
-            <Button
-              variant="primary"
-              onClick={handleAddRow}
-              className="mt-2"
-            >
-              Add Agency
-            </Button>
-          </form>
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose3}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleSubmit}>
-          Save Changes
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
+                <Button variant="primary" onClick={handleAddRow}>Add Row</Button>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose3}>Close</Button>
+                <Button variant="primary" onClick={handleSubmit} disabled={loading}>
+                    {loading ? "Saving..." : "Save"}
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
 };
 
 export default ModelAgencySite;
+
+
+
+
+
+
+
+
+
+
+
+//11
+// import React, { useState, useEffect } from "react";
+// import { Button, Modal } from "react-bootstrap";
+// import Select from "react-select";
+// import axios from "axios";
+// import { Baseurl } from "../../../Utils/Constants"; 
+// import { toast } from "react-toastify";
+// import 'bootstrap/dist/css/bootstrap.min.css'; 
+// import { getCookie } from "cookies-next";
+
+// const ModelAgencySite = ({
+//   show,
+//   handleClose3,
+//   getSiteList,
+//   userInfo,
+//   estimateId
+// }) => {
+//     const [rows, setRows] = useState([{
+//       state: '',
+//       city: '',
+//       location: '',
+//       mediaFormat: '',
+//       mediaVehicle: '',
+//       mediaType: '',
+//       quantity: '',
+//       height: '',
+//       width: '',
+//       totalSqFt: '',
+//       clientDisplayCost: '',
+//       clientMountingCost: '',
+//       clientPrintingCost: '',
+//       cityList: [],  // Track city list for each row
+//     }]);
+
+//     const [mediaFormats, setMediaFormats] = useState([]);
+//     const [mediaVehicles, setMediaVehicles] = useState([]);
+//     const [mediaTypes, setMediaTypes] = useState([]);
+//     const [stateList, setStateList] = useState([]);
+//     const [loading, setLoading] = useState(false);
+//     const [error, setError] = useState({});
+//     const defaultCountryId = 101;
+
+//     const fetchData = async (url, dataKey) => {
+//         const token = getCookie("token");
+//         const db_name = getCookie("db_name");
+
+//         const headers = {
+//             Accept: "application/json",
+//             Authorization: `Bearer ${token}`,
+//             db: db_name,
+//             pass: "pass",
+//         };
+
+//         try {
+//             const response = await axios.get(Baseurl + url, { headers });
+//             if (response.status === 200) {
+//                 return response.data[dataKey];
+//             }
+//             throw new Error("Failed to fetch");
+//         } catch (error) {
+//             toast.error(error?.response?.data?.message || "Something went wrong!");
+//             return [];
+//         }
+//     };
+
+//     const getStates = async (countryId = defaultCountryId) => {
+//         const states = await fetchData(`/db/area/states?cnt_id=${countryId}`, 'data');
+//         const formattedStates = states.map(state => ({
+//             value: state.state_id,
+//             label: state.state_name
+//         }));
+//         setStateList(formattedStates);
+//     };
+
+//     const getCities = async (stateId, rowIndex) => {
+//         const cities = await fetchData(`/db/area/city?st_id=${stateId}`, 'data');
+//         const formattedCities = cities.cityData.map(city => ({
+//             value: city.city_id,
+//             label: city.city_name
+//         }));
+        
+//         const updatedRows = [...rows];
+//         updatedRows[rowIndex] = { ...updatedRows[rowIndex], cityList: formattedCities };
+//         setRows(updatedRows);
+//     };
+
+//     const getMediaFormats = async () => {
+//         const formats = await fetchData(`/db/media/mediaFormat/getMediaFormat`, 'data');
+//         const formattedFormats = formats.map(format => ({
+//             value: format.m_f_id,
+//             label: format.m_f_name
+//         }));
+//         setMediaFormats(formattedFormats);
+//     };
+
+//     const getMediaVehicles = async () => {
+//         const vehicles = await fetchData(`/db/media/mediaVehicle/getMediaVehicle`, 'data');
+//         const formattedVehicles = vehicles.map(vehicle => ({
+//             value: vehicle.m_v_id,
+//             label: vehicle.m_v_name
+//         }));
+//         setMediaVehicles(formattedVehicles);
+//     };
+
+//     const getMediaTypes = async () => {
+//         const types = await fetchData(`/db/media/mediaType/getMediaType`, 'data');
+//         const formattedTypes = types.map(type => ({
+//             value: type.m_t_id,
+//             label: type.m_t_name
+//         }));
+//         setMediaTypes(formattedTypes);
+//     };
+
+//     useEffect(() => {
+//         if (show) {
+//             getMediaFormats();
+//             getMediaVehicles();
+//             getMediaTypes();
+//             getStates(userInfo?.country_id || defaultCountryId);
+//         }
+//     }, [show, userInfo?.country_id]);
+
+//     const handleSubmit = async () => {
+//         setLoading(true);
+//         setError('');
+
+//         const token = getCookie("token");
+//         const db_name = getCookie("db_name");
+
+//         const headers = {
+//             Accept: "application/json",
+//             Authorization: `Bearer ${token}`,
+//             db: db_name,
+//             pass: "pass",
+//             'Content-Type': 'application/json'
+//         };
+
+//         const transformedRows = rows.map(row => ({
+//             country_id: "India",
+//             estimate_id: estimateId,
+//             state_id: row.state,
+//             city_id: row.city,
+//             location: row.location,
+//             m_f_id: row.mediaFormat,
+//             m_v_id: row.mediaVehicle,
+//             m_t_id: row.mediaType,
+//             quantity: row.quantity,
+//             height: row.height,
+//             width: row.width,
+//             total_sqft: row.totalSqFt,
+//             client_display_cost: row.clientDisplayCost,
+//             client_mounting_cost: row.clientMountingCost,
+//             client_printing_cost: row.clientPrintingCost
+//         }));
+
+//         console.log("Transformed Rows:", transformedRows); // Debugging
+
+//         try {
+//             const response = await axios.post(
+//                 `${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`,
+//                 { sites: transformedRows },
+//                 { headers }
+//             );
+
+//             if (response.status === 200) {
+//                 toast.success("Data saved successfully!");
+//                 getSiteList();
+//                 handleClose3();
+//             } else {
+//                 toast.error("Failed to save data. Please try again.");
+//             }
+//         } catch (error) {
+//             setError(error?.response?.data?.message || "Something went wrong!");
+//             toast.error(error?.response?.data?.message || "Something went wrong!");
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     const handleInputChange = (index, event) => {
+//         const { name, value } = event.target;
+//         const updatedRows = [...rows];
+//         updatedRows[index] = { ...updatedRows[index], [name]: value };
+
+//         if (name === 'height' || name === 'width') {
+//             const height = parseFloat(updatedRows[index].height) || 0;
+//             const width = parseFloat(updatedRows[index].width) || 0;
+//             updatedRows[index].totalSqFt = (height * width).toFixed(2);
+//         }
+//         setRows(updatedRows);
+//     };
+
+//     const handleSelectChange = (index, fieldName, selectedOption) => {
+//         const updatedRows = [...rows];
+//         updatedRows[index] = { ...updatedRows[index], [fieldName]: selectedOption ? selectedOption.value : '' };
+
+//         if (fieldName === 'state') {
+//             updatedRows[index].city = ''; 
+//             updatedRows[index].cityList = []; // Clear the city list when state changes
+//             setRows(updatedRows);
+//             getCities(selectedOption ? selectedOption.value : '', index);
+//         }
+
+//         if (fieldName === 'mediaFormat') {
+//             getMediaVehicles();
+//         }
+        
+//         setRows(updatedRows);
+//     };
+
+//     const handleAddRow = () => {
+//         setRows([
+//             ...rows,
+//             {
+//                 state: '',
+//                 city: '',
+//                 location: '',
+//                 mediaFormat: '',
+//                 mediaVehicle: '',
+//                 mediaType: '',
+//                 quantity: '',
+//                 height: '',
+//                 width: '',
+//                 totalSqFt: '',
+//                 clientDisplayCost: '',
+//                 clientMountingCost: '',
+//                 clientPrintingCost: '',
+//                 cityList: [] // Initialize with an empty list
+//             }
+//         ]);
+//     };
+
+//     const handleRemoveRow = (index) => {
+//         if (index !== 0) {
+//             setRows(rows.filter((_, i) => i !== index));
+//         }
+//     };
+
+//     return (
+//         <Modal show={show} onHide={handleClose3} size="xl">
+//             <Modal.Header closeButton>
+//                 <Modal.Title>Add Agency Site</Modal.Title>
+//             </Modal.Header>
+//             <Modal.Body>
+//                 {rows.map((row, index) => (
+//                     <div key={index} className="row mb-3">
+//                         <div className="col-md-2">
+//                             <label>State</label>
+//                             <Select
+//                                 options={stateList}
+//                                 value={stateList.find(option => option.value === row.state)}
+//                                 onChange={option => handleSelectChange(index, 'state', option)}
+//                                 placeholder="Select State"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>City</label>
+//                             <Select
+//                                 options={row.cityList}
+//                                 value={row.cityList.find(option => option.value === row.city)}
+//                                 onChange={option => handleSelectChange(index, 'city', option)}
+//                                 placeholder="Select City"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Location</label>
+//                             <input
+//                                 type="text"
+//                                 name="location"
+//                                 value={row.location}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Media Format</label>
+//                             <Select
+//                                 options={mediaFormats}
+//                                 value={mediaFormats.find(option => option.value === row.mediaFormat)}
+//                                 onChange={option => handleSelectChange(index, 'mediaFormat', option)}
+//                                 placeholder="Select Format"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Media Vehicle</label>
+//                             <Select
+//                                 options={mediaVehicles}
+//                                 value={mediaVehicles.find(option => option.value === row.mediaVehicle)}
+//                                 onChange={option => handleSelectChange(index, 'mediaVehicle', option)}
+//                                 placeholder="Select Vehicle"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Media Type</label>
+//                             <Select
+//                                 options={mediaTypes}
+//                                 value={mediaTypes.find(option => option.value === row.mediaType)}
+//                                 onChange={option => handleSelectChange(index, 'mediaType', option)}
+//                                 placeholder="Select Type"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Quantity</label>
+//                             <input
+//                                 type="number"
+//                                 name="quantity"
+//                                 value={row.quantity}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Height</label>
+//                             <input
+//                                 type="number"
+//                                 name="height"
+//                                 value={row.height}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Width</label>
+//                             <input
+//                                 type="number"
+//                                 name="width"
+//                                 value={row.width}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Total Sq Ft</label>
+//                             <input
+//                                 type="text"
+//                                 name="totalSqFt"
+//                                 value={row.totalSqFt}
+//                                 readOnly
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Client Display Cost</label>
+//                             <input
+//                                 type="number"
+//                                 name="clientDisplayCost"
+//                                 value={row.clientDisplayCost}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Client Mounting Cost</label>
+//                             <input
+//                                 type="number"
+//                                 name="clientMountingCost"
+//                                 value={row.clientMountingCost}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Client Printing Cost</label>
+//                             <input
+//                                 type="number"
+//                                 name="clientPrintingCost"
+//                                 value={row.clientPrintingCost}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-1">
+//                             <Button variant="danger" onClick={() => handleRemoveRow(index)}>
+//                                 Remove
+//                             </Button>
+//                         </div>
+//                     </div>
+//                 ))}
+//                 <Button variant="primary" onClick={handleAddRow}>
+//                     Add Row
+//                 </Button>
+//             </Modal.Body>
+//             <Modal.Footer>
+//                 <Button variant="secondary" onClick={handleClose3}>
+//                     Close
+//                 </Button>
+//                 <Button variant="primary" onClick={handleSubmit} disabled={loading}>
+//                     {loading ? "Saving..." : "Save"}
+//                 </Button>
+//             </Modal.Footer>
+//         </Modal>
+//     );
+// };
+
+// export default ModelAgencySite;
+
+
+
+
+
+
+//10
+// import React, { useState, useEffect } from "react";
+// import { Button, Modal } from "react-bootstrap";
+// import Select from "react-select";
+// import axios from "axios";
+// import { Baseurl } from "../../../Utils/Constants"; // Adjust path as needed
+// import { toast } from "react-toastify";
+// import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap CSS is imported
+// import { getCookie } from "cookies-next";
+
+// const ModelAgencySite = ({
+//   show,
+//   handleClose3,
+//   getSiteList,
+//   userInfo,
+//   estimateId
+// }) => {
+//     const [rows, setRows] = useState([{
+//     state: '',
+//     city: '',
+//     location: '',
+//     mediaFormat: '',
+//     mediaVehicle: '',
+//     mediaType: '',
+//     quantity: '',
+//     height: '',
+//     width: '',
+//     totalSqFt: '',
+//     clientDisplayCost: '',
+//     clientMountingCost: '',
+//     clientPrintingCost: ''
+//   }]);
+
+//   const [mediaFormats, setMediaFormats] = useState([]);
+//   const [mediaVehicles, setMediaVehicles] = useState([]);
+//   const [mediaTypes, setMediaTypes] = useState([]);
+
+//   const [stateList, setStateList] = useState([]);
+//   const [cityList, setCityList] = useState([]);
+//   const [loading,setLoading]=useState(false)
+//   const [error,setError]=useState({})
+
+//   const defaultCountryId = 101;
+
+//   const fetchData = async (url, dataKey) => {
+//     const token = getCookie("token");
+//     const db_name = getCookie("db_name");
+
+//     const headers = {
+//       Accept: "application/json",
+//       Authorization: `Bearer ${token}`,
+//       db: db_name,
+//       pass: "pass",
+//     };
+
+//     try {
+//       const response = await axios.get(Baseurl + url, { headers });
+//       if (response.status === 200) {
+//         return { status: response.status, data: response.data[dataKey] };
+//       }
+//       throw new Error("Failed to fetch");
+//     } catch (error) {
+//       toast.error(error?.response?.data?.message || "Something went wrong!");
+//       return { status: error.response?.status || 500, data: [] };
+//     }
+//   };
+
+//   const getStates = async (countryId = defaultCountryId) => {
+//     try {
+//       const response = await fetchData(`/db/area/states?cnt_id=${countryId}`, 'data');
+//       if (response.status === 200) {
+//         const states = response.data.map(state => ({
+//           value: state.state_id,
+//           label: state.state_name
+//         }));
+//         setStateList(states);
+//         setCityList([]); // Reset cities when states are fetched
+//       }
+//     } catch (error) {
+//       console.error('Failed to fetch states:', error);
+//     }
+//   };
+
+//   const getCities = async (stateId) => {
+//     try {
+//       const response = await fetchData(`/db/area/city?st_id=${stateId}`, 'data');
+//       if (response.status === 200) {
+//         const cities = response?.data?.cityData?.map(city => ({
+//           value: city.city_id,
+//           label: city.city_name
+//         }));
+//         setCityList(cities);    
+//       }
+//     } catch (error) {
+//       console.error('Failed to fetch cities:', error);
+//     }
+//   };
+
+//   const getMediaFormats = async () => {
+//     await fetchData(`/db/media/mediaFormat/getMediaFormat`, 'data').then(response => {
+//       const formats = response.data.map(format => ({
+//         value: format.m_f_id,
+//         label: format.m_f_name
+//       }));
+//       setMediaFormats(formats);
+//     });
+//   };
+
+//     useEffect(() => {
+//     if (!show) {
+//       setRows([{
+//         state: '',
+//         city: '',
+//         location: '',
+//         mediaFormat: '',
+//         mediaVehicle: '',
+//         mediaType: '',
+//         quantity: '',
+//         height: '',
+//         width: '',
+//         totalSqFt: '',
+//         clientDisplayCost: '',
+//         clientMountingCost: '',
+//         clientPrintingCost: ''
+//       }]);
+//     }
+//   }, [show]);
+
+//   const getMediaVehicles = async () => {
+//     await fetchData(`/db/media/mediaVehicle/getMediaVehicle`, 'data').then(response => {
+//       const vehicles = response.data.map(vehicle => ({
+//         value: vehicle.m_v_id,
+//         label: vehicle.m_v_name
+//       }));
+//       setMediaVehicles(vehicles);
+//     });
+//   };
+
+//   const getMediaTypes = async () => {
+//     await fetchData(`/db/media/mediaType/getMediaType`, 'data').then(response => {
+//       const types = response.data.map(type => ({
+//         value: type.m_t_id,
+//         label: type.m_t_name
+//       }));
+//       setMediaTypes(types);
+//     });
+//   };
+
+//   useEffect(() => {
+//     if (show) {
+//       getMediaFormats();
+//       getMediaVehicles();
+//       getMediaTypes();
+//       getStates(userInfo?.country_id || defaultCountryId);
+//     }
+//   }, [show, userInfo?.country_id]);
+
+//   useEffect(() => {
+//     if (userInfo?.state_id) {
+//       getCities(userInfo.state_id);
+//     }
+//   }, [userInfo?.state_id]);
+
+
+//   // const handleSubmit = async () => {
+//   //   const token = getCookie("token");
+//   //   const db_name = getCookie("db_name");
+  
+//   //   const headers = {
+//   //     Accept: "application/json",
+//   //     Authorization: `Bearer ${token}`,
+//   //     db: db_name,
+//   //     pass: "pass",
+//   //     'Content-Type': 'application/json'
+//   //   };
+  
+//   //   try {
+//   //     const response = await axios.post(
+//   //       `${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`,
+//   //       { sites: rows }, // Sending the rows data as payload
+//   //       { headers }
+//   //     );
+  
+//   //     if (response.status === 200) {
+//   //       toast.success("Data saved successfully!");
+//   //       getSiteList(); // Call the getSiteList function to refresh the site list
+//   //       handleClose3(); // Close the modal after successful submission
+//   //     } else {
+//   //       toast.error("Failed to save data. Please try again.");
+//   //     }
+//   //   } catch (error) {
+//   //     toast.error(error?.response?.data?.message || "Something went wrong!");
+//   //   }
+//   // };
+  
+
+
+//   // const handleSubmit = async () => {
+//   //   setLoading(true);
+//   //   setError('');
+  
+//   //   const token = getCookie("token");
+//   //   const db_name = getCookie("db_name");
+  
+//   //   const headers = {
+//   //     Accept: "application/json",
+//   //     Authorization: `Bearer ${token}`,
+//   //     db: db_name,
+//   //     pass: "pass",
+//   //     'Content-Type': 'application/json'
+//   //   };
+  
+//   //   // Transform rows to include values instead of IDs
+//   //   const transformedRows = rows.map(row => ({
+//   //     state: stateList.find(option => option.value === row.state)?.label || '',
+//   //     city: cityList.find(option => option.value === row.city)?.label || '',
+//   //     location: row.location,
+//   //     mediaFormat: mediaFormats.find(option => option.value === row.mediaFormat)?.label || '',
+//   //     mediaVehicle: mediaVehicles.find(option => option.value === row.mediaVehicle)?.label || '',
+//   //     mediaType: mediaTypes.find(option => option.value === row.mediaType)?.label || '',
+//   //     quantity: row.quantity,
+//   //     height: row.height,
+//   //     width: row.width,
+//   //     totalSqFt: row.totalSqFt,
+//   //     clientDisplayCost: row.clientDisplayCost,
+//   //     clientMountingCost: row.clientMountingCost,
+//   //     clientPrintingCost: row.clientPrintingCost
+//   //   }));
+  
+//   //   try {
+//   //     const response = await axios.post(
+//   //       `${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`,
+//   //       { sites: transformedRows }, // Sending transformed data
+//   //       { headers }
+//   //     );
+  
+//   //     if (response.status === 200) {
+//   //       toast.success("Data saved successfully!");
+//   //       getSiteList();
+//   //       handleClose3();
+//   //     } else {
+//   //       toast.error("Failed to save data. Please try again.");
+//   //     }
+//   //   } catch (error) {
+//   //     setError(error?.response?.data?.message || "Something went wrong!");
+//   //     toast.error(error?.response?.data?.message || "Something went wrong!");
+//   //   } finally {
+//   //     setLoading(false);
+//   //   }
+//   // };
+  
+
+//   const handleSubmit = async () => {
+//     setLoading(true);
+//     setError('');
+  
+//     const token = getCookie("token");
+//     const db_name = getCookie("db_name");
+  
+//     const headers = {
+//       Accept: "application/json",
+//       Authorization: `Bearer ${token}`,
+//       db: db_name,
+//       pass: "pass",
+//       'Content-Type': 'application/json'
+//     };
+//   console.log("row is ",rows,"citylist is",cityList,"label is ",cityList.label)
+//   console.log("row is ",rows,"statelist is",stateList,"stateList is ",stateList.label)
+
+//     // Transform rows to include values instead of IDs and use correct payload keys
+//     const transformedRows = rows.map(row => ({
+//       // state_id: row.state.value, // Using IDs for state, city, etc.
+//       // city_id: row.city,
+//        country_id:"India",
+//        estimate_id:estimateId,
+//       state_id: stateList.find(option => option.value === row.state)?.label || '', // Use label for state_id
+//       city_id: cityList.find(option => option.value === row.city)?.label || '', // Use label for city_id
+//       location: row.location,
+//       // m_f_id: row.mediaFormat,
+//       m_f_id: mediaFormats.find(option => option.value === row.mediaFormat)?.label || '',
+//       // m_v_id: row.mediaVehicle,
+//       m_v_id: mediaVehicles.find(option => option.value === row.mediaVehicle)?.label || '',
+
+//       // m_t_id: row.mediaType,
+//       m_t_id: mediaTypes.find(option => option.value === row.mediaType)?.label || '',
+
+//       quantity: row.quantity,
+//       height: row.height,
+//       width: row.width,
+//       total_sqft: row.totalSqFt,
+//       client_display_cost: row.clientDisplayCost,
+//       client_mounting_cost: row.clientMountingCost,
+//       client_printing_cost: row.clientPrintingCost
+//     }));
+
+//     console.log("transform is ",)
+  
+//     try {
+//       const response = await axios.post(
+//         `${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`,
+//         { sites: transformedRows },
+//         { headers }
+//       );
+  
+//       if (response.status === 200) {
+//         toast.success("Data saved successfully!");
+//         getSiteList();
+//         handleClose3();
+//       } else {
+//         toast.error("Failed to save data. Please try again.");
+//       }
+//     } catch (error) {
+//       setError(error?.response?.data?.message || "Something went wrong!");
+//       toast.error(error?.response?.data?.message || "Something went wrong!");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+  
+
+
+//   const handleInputChange = (index, event) => {
+//     const { name, value } = event.target;
+//     const updatedRows = [...rows];
+
+//     // Update the specific field
+//     updatedRows[index] = { ...updatedRows[index], [name]: value };
+
+//     // Recalculate Total SqFt if Height or Width changes
+//     if (name === 'height' || name === 'width') {
+//       const height = parseFloat(updatedRows[index].height) || 0;
+//       const width = parseFloat(updatedRows[index].width) || 0;
+//       updatedRows[index].totalSqFt = (height * width).toFixed(2);
+//     }
+
+//     setRows(updatedRows);
+//   };
+
+//   const handleSelectChange = (index, fieldName, selectedOption) => {
+//     const updatedRows = [...rows];
+//     updatedRows[index] = { ...updatedRows[index], [fieldName]: selectedOption ? selectedOption.value : '' };
+
+//     // Reset Media Vehicle if Media Format is cleared
+//     if (fieldName === 'mediaFormat' && !selectedOption) {
+//       updatedRows[index].mediaVehicle = '';
+//     }
+
+//     setRows(updatedRows);
+
+//     // Fetch Media Vehicles if Media Format is selected
+//     if (fieldName === 'mediaFormat' && selectedOption) {
+//       getMediaVehicles();
+//     }
+
+//     // Get Cities when State changes
+//     if (fieldName === 'state') {
+//       updatedRows[index].city = ''; // Reset city when state changes
+//       setRows(updatedRows);
+//       getCities(selectedOption ? selectedOption.value : '');
+//     }
+//   };
+
+//   const handleAddRow = () => {
+//     setRows([
+//       ...rows,
+//       {
+//         state: '',
+//         city: '',
+//         location: '',
+//         mediaFormat: '',
+//         mediaVehicle: '',
+//         mediaType: '',
+//         quantity: '',
+//         height: '',
+//         width: '',
+//         totalSqFt: '',
+//         clientDisplayCost: '',
+//         clientMountingCost: '',
+//         clientPrintingCost: ''
+//       }
+//     ]);
+//   };
+
+//   const handleRemoveRow = (index) => {
+//     if (index !== 0) {
+//       setRows(rows.filter((_, i) => i !== index));
+//     }
+//   };
+
+//   // const handleSubmit = () => {
+//   //   console.log('Form data:', rows);
+//   //   getSiteList();
+//   // };
+
+//   return (
+//     <Modal show={show} onHide={handleClose3} size="xl">
+//       <Modal.Header closeButton>
+//         <Modal.Title>Offer Agency Site</Modal.Title>
+//       </Modal.Header>
+//       <Modal.Body>
+//         <div className="add_user_form">
+//           <form>
+//             <div className="overflow-auto">
+//               <div className="d-flex flex-column">
+//                 {rows.map((row, index) => (
+//                   <div key={index} className="mb-3">
+//                     <div className="d-flex flex-nowrap">
+//                       {/* State */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`state-${index}`}>State</label>
+//                           <Select
+//                             id={`state-${index}`}
+//                             defaultValue={null}
+//                             options={stateList}
+//                             value={stateList.find(option => option.value === row.state)}
+//                             onChange={(selectedOption) => handleSelectChange(index, 'state', selectedOption)}
+//                             menuPosition="fixed"    
+//                             styles={{
+//                               menu: (provided) => ({
+//                                 ...provided,
+//                                 zIndex: 9999,
+//                               }),   
+//                             }}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* City */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`city-${index}`}>City</label>
+//                           <Select
+//                             id={`city-${index}`}
+//                             defaultValue={null}
+//                             options={cityList}
+//                             value={cityList?.find(option => option.value === row.city)}
+//                             onChange={(selectedOption) => handleSelectChange(index, 'city', selectedOption)}
+//                             menuPosition="fixed"
+//                             styles={{
+//                               menu: (provided) => ({
+//                                 ...provided,
+//                                 zIndex: 9999,
+//                               }),
+//                             }}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Location */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`location-${index}`}>Location</label>
+//                           <input
+//                             type="text"
+//                             id={`location-${index}`}
+//                             name="location"
+//                             placeholder="Enter Location"
+//                             className="form-control"
+//                             value={row.location}
+//                             onChange={(event) => handleInputChange(index, event)}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Media Format */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`mediaFormat-${index}`}>Media Format</label>
+//                           <Select
+//                             id={`mediaFormat-${index}`}
+//                             defaultValue={null}
+//                             options={mediaFormats}
+//                             value={mediaFormats.find(option => option.value === row.mediaFormat)}
+//                             onChange={(selectedOption) => handleSelectChange(index, 'mediaFormat', selectedOption)}
+//                             menuPosition="fixed"
+//                             styles={{
+//                               menu: (provided) => ({
+//                                 ...provided,
+//                                 zIndex: 9999,
+//                               }),
+//                             }}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Media Vehicle */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`mediaVehicle-${index}`}>Media Vehicle</label>
+//                           <Select
+//                             id={`mediaVehicle-${index}`}
+//                             defaultValue={null}
+//                             options={mediaVehicles}
+//                             isDisabled={!row.mediaFormat}
+//                             value={mediaVehicles.find(option => option.value === row.mediaVehicle)}
+//                             onChange={(selectedOption) => handleSelectChange(index, 'mediaVehicle', selectedOption)}
+//                             menuPosition="fixed"
+//                             styles={{
+//                               menu: (provided) => ({
+//                                 ...provided,
+//                                 zIndex: 9999,
+//                               }),
+//                             }}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Media Type */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`mediaType-${index}`}>Media Type</label>
+//                           <Select
+//                             id={`mediaType-${index}`}
+//                             defaultValue={null}
+//                             options={mediaTypes}
+//                             value={mediaTypes.find(option => option.value === row.mediaType)}
+//                             onChange={(selectedOption) => handleSelectChange(index, 'mediaType', selectedOption)}
+//                             menuPosition="fixed"
+//                             styles={{
+//                               menu: (provided) => ({
+//                                 ...provided,
+//                                 zIndex: 9999,
+//                               }),
+//                             }}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Quantity */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`quantity-${index}`}>Quantity</label>
+//                           <input
+//                             type="text"
+//                             id={`quantity-${index}`}
+//                             name="quantity"
+//                             placeholder="Enter Quantity"
+//                             className="form-control"
+//                             value={row.quantity}
+//                             onChange={(event) => handleInputChange(index, event)}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Height */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`height-${index}`}>Height</label>
+//                           <input
+//                             type="text"
+//                             id={`height-${index}`}
+//                             name="height"
+//                             placeholder="Enter Height"
+//                             className="form-control"
+//                             value={row.height}
+//                             onChange={(event) => handleInputChange(index, event)}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Width */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`width-${index}`}>Width</label>
+//                           <input
+//                             type="text"
+//                             id={`width-${index}`}
+//                             name="width"
+//                             placeholder="Enter Width"
+//                             className="form-control"
+//                             value={row.width}
+//                             onChange={(event) => handleInputChange(index, event)}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Total SqFt */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`totalSqFt-${index}`}>Total SqFt</label>
+//                           <input
+//                             type="text"
+//                             id={`totalSqFt-${index}`}
+//                             name="totalSqFt"
+//                             placeholder="Total SqFt"
+//                             className="form-control"
+//                             value={row.totalSqFt}
+//                             disabled
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Client Display Cost */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`clientDisplayCost-${index}`}>Client Display Cost</label>
+//                           <input
+//                             type="text"
+//                             id={`clientDisplayCost-${index}`}
+//                             name="clientDisplayCost"
+//                             placeholder="Enter Display Cost"
+//                             className="form-control"
+//                             value={row.clientDisplayCost}
+//                             onChange={(event) => handleInputChange(index, event)}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Client Mounting Cost */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`clientMountingCost-${index}`}>Client Mounting Cost</label>
+//                           <input
+//                             type="text"
+//                             id={`clientMountingCost-${index}`}
+//                             name="clientMountingCost"
+//                             placeholder="Enter Mounting Cost"
+//                             className="form-control"
+//                             value={row.clientMountingCost}
+//                             onChange={(event) => handleInputChange(index, event)}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Client Printing Cost */}
+//                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+//                         <div className="input_box">
+//                           <label htmlFor={`clientPrintingCost-${index}`}>Client Printing Cost</label>
+//                           <input
+//                             type="text"
+//                             id={`clientPrintingCost-${index}`}
+//                             name="clientPrintingCost"
+//                             placeholder="Enter Printing Cost"
+//                             className="form-control"
+//                             value={row.clientPrintingCost}
+//                             onChange={(event) => handleInputChange(index, event)}
+//                           />
+//                         </div>
+//                       </div>
+
+//                       {/* Remove Button */}
+//                       {index !== 0 && (
+//                         <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1 d-flex align-items-center">
+//                           <Button
+//                             variant="danger"
+//                             onClick={() => handleRemoveRow(index)}
+//                           >
+//                             Remove Agency
+//                           </Button>
+//                         </div>
+//                       )}
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//             <Button
+//               variant="primary"
+//               onClick={handleAddRow}
+//               className="mt-2"
+//             >
+//               Add Row
+//             </Button>
+//           </form>
+//         </div>
+//       </Modal.Body>
+//       <Modal.Footer>
+//         <Button variant="secondary" onClick={handleClose3}>
+//           Close
+//         </Button>
+//         <Button variant="primary" onClick={handleSubmit}>
+//           Save Changes
+//         </Button>
+//       </Modal.Footer>
+//     </Modal>
+//   );
+// };
+
+// export default ModelAgencySite;
 
 
 

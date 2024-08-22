@@ -87,7 +87,7 @@
 
 //   useEffect(() => {
 //     getBusinessTypeList();
-    
+
 //   }, []);
 
 //   useEffect(() => {
@@ -160,7 +160,7 @@
 //               )?.cmpn_b_t_name == "Asset" && (
 //                 <button
 //                   className="action_btn"
-//                   onClick={() =>{ 
+//                   onClick={() =>{
 //                     getState()
 //                     setShow(true)}
 //                 }
@@ -183,7 +183,6 @@
 //         : [...prevSelected, site_id]
 //     );
 //   };
-  
 
 //   const options = {
 //     selectableRows: "none",
@@ -232,7 +231,7 @@
 //                     options={stateList.map(state => ({ value: state?.state_id, label: state?.state_name }))}
 //                     onChange={(e) => {
 //                         setStateId(e.value);
-//                         setCityIds([]); 
+//                         setCityIds([]);
 //                     }}
 //                     placeholder="Select State"
 //                   />
@@ -256,7 +255,7 @@
 //                     }))}
 //                     onChange={(selectedOptions) => {
 //                       setCityIds(selectedOptions.map((option) => option.value));
-//                     }}  
+//                     }}
 //                     placeholder="Select Cities"
 //                   />
 //                 </div>
@@ -267,7 +266,7 @@
 //         <Modal.Footer>
 //           <Button variant="primary" onClick={() => {
 //             getSiteList()
-            
+
 //           }}>
 //             SUBMIT
 //           </Button>
@@ -321,7 +320,7 @@
 //             <td>{site.height}</td>
 //             <td>{site.width}</td>
 //             <td>{site.total_area}</td>
-            
+
 //             {/* Add more data fields as needed */}
 //           </tr>
 //         ))}
@@ -335,7 +334,7 @@
 //         <Modal.Footer>
 //           <Button variant="primary" onClick={() => {
 //             console.log(selectedSites)
-            
+
 //           }}>
 //             SUBMIT
 //           </Button>
@@ -346,7 +345,6 @@
 // };
 
 // export default EstimationTable;
-
 
 import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
@@ -366,6 +364,8 @@ import axios from "axios";
 import ModelAssetSite1 from "./ModelAssetSite1";
 import ModelAgencySite from "./ModelAgencySite";
 import ModelAssetSite2 from "./ModelAssetSite2";
+import ModelAgencySiteUpload from "./ModelAgencySiteUpload";
+
 
 const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
   const [errorToast, setErrorToast] = useState({});
@@ -378,9 +378,10 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
   const [show3, setShow3] = useState(false);
+  const [show4,setShow4]= useState(false);
 
   const [selectedSites, setSelectedSites] = useState([]);
-  const [estimationId,setEstimationId] =useState(null)
+  const [estimationId, setEstimationId] = useState(null);
 
   const [isLoading, setisLoading] = useState(false);
   const handleClose = () => {
@@ -392,11 +393,14 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
   const handleClose2 = () => {
     setShow2(false);
   };
-  
+
   const handleClose3 = () => {
     setShow3(false);
   };
 
+  const handleClose4 = () => {
+    setShow4(false);
+  };
   const getState = async () => {
     await fetchData(
       `/db/area/states?cnt_id=101`,
@@ -457,28 +461,28 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass:"pass"
+          pass: "pass",
         },
       };
 
-     
       try {
         const response = await axios.post(
-          Baseurl + `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
+          Baseurl +
+            `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
           {
-            estimate_id:estimationId,
-            sites: formattedSites
+            estimate_id: estimationId,
+            sites: formattedSites,
           },
           header
         );
         if (response.status === 204 || response.status === 200) {
           toast.success(response?.data?.message);
           setisLoading(false);
-          handleClose2()
-          setSelectedSites()
+          handleClose2();
+          setSelectedSites();
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
         if (error?.response?.data?.message) {
           toast.error(error?.response?.data?.message);
         } else {
@@ -486,8 +490,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
         }
         setisLoading(false);
       }
-      }
-   
+    }
   };
 
   useEffect(() => {
@@ -515,9 +518,10 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
       options: {
         filter: true,
         customBodyRender: (value) => {
-          return busiessTypeList.find(
-            (item) => item.cmpn_b_t_id === value
-          )?.cmpn_b_t_name || "";
+          return (
+            busiessTypeList.find((item) => item.cmpn_b_t_id === value)
+              ?.cmpn_b_t_name || ""
+          );
         },
       },
     },
@@ -553,7 +557,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
                 <button
                   className="action_btn"
                   onClick={() => {
-                    setEstimationId(tableMeta?.rowData[3])
+                    setEstimationId(tableMeta?.rowData[3]);
                     getState();
                     setShow(true);
                   }}
@@ -568,16 +572,34 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
                 <button
                   className="action_btn"
                   onClick={() => {
-                    setEstimationId(tableMeta?.rowData[3])
-                    
-                    setShow3(true);
+                    setEstimationId(tableMeta?.rowData[3]);
 
+                    setShow3(true);
                   }}
                   title="Offer Agency Site"
                 >
                   <DisableIcon />
                 </button>
               )}
+                  {busiessTypeList.find(
+                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
+              )?.cmpn_b_t_name === "Agency" && (
+                <button
+                  className="action_btn"
+                  onClick={() => {
+                    setEstimationId(tableMeta?.rowData[3]);
+
+                    setShow4(true);
+                  }}
+                  title="Upload Site"
+                >
+                  <EditIcon />
+                  </button>
+              )}
+
+                {/* <button className="action_btn" title="Upload Site" onClick={()=>{setShow4(true)}}>
+                  <EditIcon />
+                </button> */}
             </div>
           );
         },
@@ -632,7 +654,21 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
         stateId={stateId}
         cityIds={cityIds}
       />
+
       
+     <ModelAgencySiteUpload
+        show={show4}
+        handleClose={handleClose4}
+        stateList={stateList}
+        setStateId={setStateId}
+        setCityIds={setCityIds}
+        cityList={cityList}
+        getSiteList={getSiteList}
+        stateId={stateId}
+        estimateId={estimationId}
+        cityIds={cityIds}
+      />
+
       <ModelAgencySite
         show={show3}
         handleClose3={handleClose3}
@@ -643,7 +679,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
         getSiteList={getSiteList}
         stateId={stateId}
         cityIds={cityIds}
+        estimateId={estimationId}
       />
+
 
       <ModelAssetSite2
         show2={show2}
@@ -659,4 +697,3 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
 };
 
 export default EstimationTable;
-

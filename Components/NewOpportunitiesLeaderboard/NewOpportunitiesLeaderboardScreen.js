@@ -9,24 +9,19 @@ import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 import DownloadIcon from "../Svg/DownloadIcon";
-import { Row, Col, Container } from "react-bootstrap";
-const DynamicTable = dynamic(() => import("./OpenOpportunitiesInPipelineTable"), {
+import { Row, Col, Container } from 'react-bootstrap';
+const DynamicTable = dynamic(() => import("./NewOpportunitiesLeaderboardTable"), {
   ssr: false,
 });
 import Select from "react-select";
-import { fetchData } from "../../Utils/getReq";
 
-const OpenOpportunitiesInPipelineScreen = () => {
+const NewOpportunitiesLeaderboardScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
-  const [accountsList, setAccountsList] = useState([]);
-  const [errorToast, setErrorToast] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [financialYear, setFinancialYear] = useState("");
   const [filterBy, setFilterBy] = useState("quarter");
   const [quarter, setQuarter] = useState("");
   const [month, setMonth] = useState("");
-  const [accountName, setAccountName] = useState("");
-  const [stage, setStage] = useState(3);
 
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState("");
@@ -34,8 +29,8 @@ const OpenOpportunitiesInPipelineScreen = () => {
 
   const generateFinancialYearOptions = () => {
     const options = [];
-    const startYear = 2022;
-    const endYear = new Date().getFullYear() + 1;
+    const startYear = 2022; 
+    const endYear = new Date().getFullYear() + 1; 
 
     for (let i = startYear; i <= endYear; i++) {
       options.push({
@@ -55,11 +50,6 @@ const OpenOpportunitiesInPipelineScreen = () => {
     { value: "4", label: "Q4" },
   ];
 
-  const stageOptions = [
-    { value: "1", label: "Open" },
-    { value: "3", label: "Won" },
-  ];
-
   const monthOptions = [
     { value: "1", label: "January" },
     { value: "2", label: "February" },
@@ -75,16 +65,12 @@ const OpenOpportunitiesInPipelineScreen = () => {
     { value: "12", label: "December" },
   ];
 
-  const getAccountsList = async () => {
-    await fetchData(`/db/account`, setAccountsList, errorToast, setErrorToast);
-  };
-
   const getDataList = async () => {
     setLoader(true);
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
-
+  
       let header = {
         headers: {
           Accept: "application/json",
@@ -93,13 +79,22 @@ const OpenOpportunitiesInPipelineScreen = () => {
           m_id: 35,
         },
       };
-
+  
+      // Calculate the current financial year
+      const today = new Date();
+      const currentMonth = today.getMonth() + 1; // Months are 0-indexed in JS
+      const currentYear = today.getFullYear();
+      const financialYear = currentMonth >= 4 
+        ? `${currentYear}-${currentYear + 1}` 
+        : `${currentYear - 1}-${currentYear}`;
+  
+      // Build the query with only financial year
       let query = {
-        opportunity_stg_id: 1,
+       type:"expected_weighted",
       };
-
+  
       const queryString = new URLSearchParams(query).toString();
-
+  
       try {
         const response = await axios.get(
           Baseurl + `/db/opportunity/opportunityReport?${queryString} `,
@@ -119,6 +114,7 @@ const OpenOpportunitiesInPipelineScreen = () => {
       }
     }
   };
+  
 
   const handleDownload = async () => {
     if (hasCookie("token")) {
@@ -135,17 +131,15 @@ const OpenOpportunitiesInPipelineScreen = () => {
         },
         responseType: "blob",
       };
-
-      let accname=accountsList?.find((item)=>item?.acc_id==accountName)?.acc_name
-      let stageName=stageOptions?.find((item)=>item?.value==stage)?.label
-      const fileName = `${stageName}_Opportunity_${accname}.xlsx`;
-
+      
       
       let query = {
-        opportunity_stg_id: 1,
-      };
-
-      const queryString = new URLSearchParams(query).toString();
+        type:"expected_weighted",
+       };
+  
+       const queryString = new URLSearchParams(query).toString();
+      
+      const fileName = `New_Opportunities_LeaderBoard.xlsx`;
   
       try {
         const response = await axios.get(
@@ -180,29 +174,28 @@ const OpenOpportunitiesInPipelineScreen = () => {
 
   useEffect(() => {
     getDataList();
-    getAccountsList();
   }, []);
 
   return (
     <>
       <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
-          <h3 className="content_head">OPEN OPPORTUNITIES IN PIPELINE</h3>
+          <h3 className="content_head">NEW OPPORTUNITIES LEADERBOARD</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link href="/crm">Home </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                Closed Lost Opportunity
+                New Opportunites Leaderboard
               </li>
             </ol>
           </nav>
         </div>
         <div className="main_content">
-          <Container className="table_screen">
-            <Row className="align-items-end mb-3">
-              {/* <Col xs={12} sm={6} md={4} lg={2}>
+        <Container className="table_screen">
+      <Row className="align-items-end mb-3">
+        {/* <Col xs={12} sm={6} md={4} lg={2}>
           <label>Financial Year</label>
           <Select
             name="financialYear"
@@ -264,27 +257,29 @@ const OpenOpportunitiesInPipelineScreen = () => {
             Apply Filters
           </button>
         </Col> */}
-              <Col xs={12} sm={6} md={4} lg={2} className="d-flex justify-content-end align-items-end w-100">
-                <button
-                  className="btn btn-primary  "
-                  onClick={handleDownload}
-                >
-                  {/* <DownloadIcon /> */}
-                  EXPORT
-                </button>
-              </Col>
-            </Row>
 
-            <DynamicTable
-              title="Closed Lost Opportunity List"
-              dataList={dataList}
-              loader={loader}
-            />
-          </Container>
+          <Col xs={12} sm={6} md={4} lg={2} className="d-flex justify-content-end align-items-end w-100">
+          <button
+            className="btn btn-primary  "
+            onClick={handleDownload}
+          >
+            {/* <DownloadIcon /> */}
+            EXPORT
+          </button>
+        </Col>
+      </Row>
+
+      <DynamicTable
+        title="New Opportunites Leaderboard List"
+        dataList={dataList}
+        loader={loader}
+      />
+        </Container>
         </div>
       </div>
     </>
   );
 };
 
-export default OpenOpportunitiesInPipelineScreen;
+export default NewOpportunitiesLeaderboardScreen;
+

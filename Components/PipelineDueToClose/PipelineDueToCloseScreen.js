@@ -10,13 +10,13 @@ import { useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 import DownloadIcon from "../Svg/DownloadIcon";
 import { Row, Col, Container } from "react-bootstrap";
-const DynamicTable = dynamic(() => import("./OpenOpportunitiesInPipelineTable"), {
+const DynamicTable = dynamic(() => import("./PipelineDueToCloseTable"), {
   ssr: false,
 });
 import Select from "react-select";
 import { fetchData } from "../../Utils/getReq";
 
-const OpenOpportunitiesInPipelineScreen = () => {
+const PipelineDueToCloseScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
   const [accountsList, setAccountsList] = useState([]);
   const [errorToast, setErrorToast] = useState(false);
@@ -287,4 +287,4 @@ const OpenOpportunitiesInPipelineScreen = () => {
   );
 };
 
-export default OpenOpportunitiesInPipelineScreen;
+export default PipelineDueToCloseScreen;

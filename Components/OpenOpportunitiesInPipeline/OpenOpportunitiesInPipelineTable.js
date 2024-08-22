@@ -34,7 +34,7 @@ const OpenOpportunitiesInPipelineTable = ({ dataList, title, openConfirmBox, loa
         },
         
         {
-            name: 'oppOwner',
+            name: 'assignedOpp',
             label: "Assign To",
             options: {
                 filter: true,

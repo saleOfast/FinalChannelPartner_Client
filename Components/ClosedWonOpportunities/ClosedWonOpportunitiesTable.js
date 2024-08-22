@@ -34,7 +34,7 @@ const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }
         },
         
         {
-            name: 'oppOwner',
+            name: 'assignedOpp',
             label: "Assign To",
             options: {
                 filter: true,

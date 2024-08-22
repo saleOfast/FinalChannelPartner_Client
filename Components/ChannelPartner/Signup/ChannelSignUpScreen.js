@@ -154,7 +154,7 @@ const ChannelSignUpScreen = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if(formFields?.name=="" || formFields.user_l_name=="" || formFields.organisation=="" || formFields.mobile=="" || formFields.email=="" || formFields.state_id=="" || formFields.city_id=="" || formFields.address=="" || formFields.gst=="" || formFields.aadhar=="" || formFields.pan=="" || formFields.rera=="" || formFields.cheque==""){
+    if(formFields?.name=="" || formFields.user_l_name=="" || formFields.organisation=="" || formFields.mobile=="" || formFields.email=="" || formFields.state_id=="" || formFields.city_id=="" || formFields.address==""  || formFields.aadhar=="" || formFields.pan=="" || formFields.rera=="" || formFields.cheque==""){
       dispatch(stopButtonLoading())
         return  toast.warning("Pls Fill All Mandatory Fields");
     }
@@ -473,7 +473,7 @@ const ChannelSignUpScreen = () => {
                             <span>*</span>
                           </div>
                           <div className="rightTab">
-                            <input
+                            {/* <input
                               type="tel"
                               name="number"
                               id="num"
@@ -484,6 +484,20 @@ const ChannelSignUpScreen = () => {
                               onChange={(e)=>{
                                 setFormFields({...formFields,mobile:e.target.value})
                               }} 
+                            /> */}
+                            <input
+                              type="tel"
+                              name="number"
+                              id="num"
+                              className="input-field"
+                              placeholder="Enter Mobile Number"
+                              value={formFields.mobile}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                // Filter out non-digit characters and limit length to 10
+                                const formattedValue = value.replace(/\D/g, '').slice(0, 10);
+                                setFormFields({ ...formFields, mobile: formattedValue });
+                              }}
                             />
                           </div>
                         </div>
@@ -597,7 +611,7 @@ const ChannelSignUpScreen = () => {
                         <div className="rowTab">
                           <div className="labels">
                             <label id="GST" htmlFor="name">
-                              GST Number *
+                              GST Number 
                             </label>
                             <span />
                           </div>

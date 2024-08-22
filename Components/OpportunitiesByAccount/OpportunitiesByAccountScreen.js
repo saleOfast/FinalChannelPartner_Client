@@ -219,7 +219,7 @@ const OpportunitiesByAccountScreen = () => {
                 <Link href="/crm">Home </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                Closed Lost Opportunity
+                Opportubity By Account
               </li>
             </ol>
           </nav>
@@ -343,7 +343,7 @@ const OpportunitiesByAccountScreen = () => {
             </Row>
 
             <DynamicTable
-              title="Closed Lost Opportunity List"
+              title="Opportubity By Account List"
               dataList={dataList}
               loader={loader}
             />

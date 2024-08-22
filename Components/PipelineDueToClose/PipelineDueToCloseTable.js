@@ -3,7 +3,7 @@ import MUIDataTable from "mui-datatables";
 import Loader from '../Loader/Loader';
 import moment from 'moment/moment';
 
-const OpportunitiesByAccountScreenTable = ({ dataList, title, openConfirmBox, loader }) => {
+const PipelineDueToCloseTable = ({ dataList, title, openConfirmBox, loader }) => {
 
     const columns = [
         {
@@ -160,4 +160,4 @@ const OpportunitiesByAccountScreenTable = ({ dataList, title, openConfirmBox, lo
     )
 }
 
-export default OpportunitiesByAccountScreenTable
+export default PipelineDueToCloseTable

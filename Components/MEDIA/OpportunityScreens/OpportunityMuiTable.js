@@ -54,7 +54,7 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox, loader }) => {
         },
 
         {
-            name: 'oppOwner',
+            name: 'assignedOpp',
             label: "Assign To",
             options: {
                 filter: true,
@@ -124,7 +124,7 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox, loader }) => {
         opp_name:list?.opp_name,
         accName:list?.accName?.acc_name,
         amount:list?.amount,
-        oppOwner:list?.oppOwner?.user,
+        assignedOpp:list?.assignedOpp?.user,
         db_opportunity_stg:list?.db_opportunity_stg?.opportunity_stg_name,
         opp_id:list?.opp_id,
     }))

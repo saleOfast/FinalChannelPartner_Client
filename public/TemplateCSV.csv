@@ -1,0 +1,2 @@
+country_id,state_id,city_id,location,m_f_id,m_v_id,m_t_id,height,width,quantity,client_display_cost,client_mounting_cost,client_printing_cost
+India,Delhi,New Delhi,Kalkaji,Hoarding,Truck,BL,10,20,100,500,200,300

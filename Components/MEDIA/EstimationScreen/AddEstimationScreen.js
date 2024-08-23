@@ -14,55 +14,150 @@ import { Delete } from "@mui/icons-material";
 import { data } from "autoprefixer";
 import { Table } from "react-bootstrap";
 import DeleteIcon from "../../Svg/DeleteIcon";
+import EditIcon from "../../Svg/EditIcon";
+import ModelEditAgencySite from "./ModelEditAgencySite"
 
-const DMPCArray=[
-  { label: "Display Selling Cost", id: "display_selling_cost", fieldType: "currency" },
-  { label: "Mounting Selling Cost", id: "mounting_selling_cost", fieldType: "currency" },
-  { label: "Printing Selling Cost", id: "printing_selling_cost", fieldType: "currency" },
-  { label: "Total Selling Cost", id: "total_selling_cost", fieldType: "currency" },
-  { label: "Display Buying Cost", id: "display_buying_cost", fieldType: "currency" },
-  { label: "Mounting Buying Cost", id: "mounting_buying_cost", fieldType: "currency" },
-  { label: "Printing Buying Cost", id: "printing_buying_cost", fieldType: "currency" },
-  { label: "Total Buying Cost", id: "total_buying_cost", fieldType: "currency" },
-
-]
-
-const additionalInfoArray=[
-  { label: "Sales Order Value", id: "sales_order_value", fieldType: "currency" },
-  { label: "Sales Order Value without Tax", id: "sales_order_value_without_tax", fieldType: "currency" },
-  { label: "Invoice Value", id: "invoice_value", fieldType: "currency" },
-  { label: "Purchase Order Value", id: "purchase_order_value", fieldType: "currency" },
-  { label: "Receipt from Customer Value", id: "receipt_from_customer_value", fieldType: "currency" },
-  { label: "Client Outstanding", id: "client_outstanding", fieldType: "currency" },
-  { label: "Credit Note Value", id: "credit_note_value", fieldType: "currency" },
-  { label: "Debit Note Value", id: "debit_note_value", fieldType: "currency" },
-  { label: "Vendor Payment Value", id: "vendor_payment_value", fieldType: "currency" },
-  { label: "Total NDP Days", id: "total_ndp_days", fieldType: "number" },
-  { label: "Total NDP Value", id: "total_ndp_value", fieldType: "currency" },
-  { label: "Vendor Outstanding", id: "vendor_outstanding", fieldType: "currency" },
-]
-
-const TotalCostArray = [
-  { label: "Total Client Cost without Tax", id: "total_client_cost_without_tax", fieldType: "currency" },
-  { label: "Client Tax", id: "client_tax", fieldType: "currency" },
-  { label: "Total Client Cost with Tax", id: "total_client_cost_with_tax", fieldType: "currency" },
-  { label: "Total Vendor Cost without Tax", id: "total_vendor_cost_without_tax", fieldType: "currency" },
-  { label: "Vendor Tax", id: "vendor_tax", fieldType: "currency" },
-  { label: "Total Vendor Cost with Tax", id: "total_vendor_cost_with_tax", fieldType: "currency" },
+const DMPCArray = [
+  {
+    label: "Display Selling Cost",
+    id: "display_selling_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Mounting Selling Cost",
+    id: "mounting_selling_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Printing Selling Cost",
+    id: "printing_selling_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Selling Cost",
+    id: "total_selling_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Display Buying Cost",
+    id: "display_buying_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Mounting Buying Cost",
+    id: "mounting_buying_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Printing Buying Cost",
+    id: "printing_buying_cost",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Buying Cost",
+    id: "total_buying_cost",
+    fieldType: "currency",
+  },
 ];
 
-const marginInfoArray=[
+const additionalInfoArray = [
+  {
+    label: "Sales Order Value",
+    id: "sales_order_value",
+    fieldType: "currency",
+  },
+  {
+    label: "Sales Order Value without Tax",
+    id: "sales_order_value_without_tax",
+    fieldType: "currency",
+  },
+  { label: "Invoice Value", id: "invoice_value", fieldType: "currency" },
+  {
+    label: "Purchase Order Value",
+    id: "purchase_order_value",
+    fieldType: "currency",
+  },
+  {
+    label: "Receipt from Customer Value",
+    id: "receipt_from_customer_value",
+    fieldType: "currency",
+  },
+  {
+    label: "Client Outstanding",
+    id: "client_outstanding",
+    fieldType: "currency",
+  },
+  {
+    label: "Credit Note Value",
+    id: "credit_note_value",
+    fieldType: "currency",
+  },
+  { label: "Debit Note Value", id: "debit_note_value", fieldType: "currency" },
+  {
+    label: "Vendor Payment Value",
+    id: "vendor_payment_value",
+    fieldType: "currency",
+  },
+  { label: "Total NDP Days", id: "total_ndp_days", fieldType: "number" },
+  { label: "Total NDP Value", id: "total_ndp_value", fieldType: "currency" },
+  {
+    label: "Vendor Outstanding",
+    id: "vendor_outstanding",
+    fieldType: "currency",
+  },
+];
+
+const TotalCostArray = [
+  {
+    label: "Total Client Cost without Tax",
+    id: "total_client_cost_without_tax",
+    fieldType: "currency",
+  },
+  { label: "Client Tax", id: "client_tax", fieldType: "currency" },
+  {
+    label: "Total Client Cost with Tax",
+    id: "total_client_cost_with_tax",
+    fieldType: "currency",
+  },
+  {
+    label: "Total Vendor Cost without Tax",
+    id: "total_vendor_cost_without_tax",
+    fieldType: "currency",
+  },
+  { label: "Vendor Tax", id: "vendor_tax", fieldType: "currency" },
+  {
+    label: "Total Vendor Cost with Tax",
+    id: "total_vendor_cost_with_tax",
+    fieldType: "currency",
+  },
+];
+
+const marginInfoArray = [
   { label: "Overall Margin", id: "overall_margin", fieldType: "currency" },
   { label: "Display Margin", id: "display_margin", fieldType: "currency" },
   { label: "Mounting Margin", id: "mounting_margin", fieldType: "currency" },
   { label: "Printing Margin", id: "printing_margin", fieldType: "currency" },
-  { label: "Overall Margin %", id: "overall_margin_percentage", fieldType: "percentage" },
-  { label: "Display Margin %", id: "display_margin_percentage", fieldType: "percentage" },
-  { label: "Mounting Margin %", id: "mounting_margin_percentage", fieldType: "percentage" },
-  { label: "Printing Margin %", id: "printing_margin_percentage", fieldType: "percentage" },
-]
-
-
+  {
+    label: "Overall Margin %",
+    id: "overall_margin_percentage",
+    fieldType: "percentage",
+  },
+  {
+    label: "Display Margin %",
+    id: "display_margin_percentage",
+    fieldType: "percentage",
+  },
+  {
+    label: "Mounting Margin %",
+    id: "mounting_margin_percentage",
+    fieldType: "percentage",
+  },
+  {
+    label: "Printing Margin %",
+    id: "printing_margin_percentage",
+    fieldType: "percentage",
+  },
+];
 
 const AddEstimationScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
@@ -81,9 +176,12 @@ const AddEstimationScreen = () => {
   const [contError, setContError] = useState({});
   const [errorToast, setErrorToast] = useState(false);
   const [loginDetails, setloginDetails] = useState({});
-  const [busiessTypeList,setBusinessTypeList]=useState([])
-  const [isAgency,setIsAgency]=useState(false);
-  const [assetSiteLists,setAssetSiteLists]=useState([])
+  const [busiessTypeList, setBusinessTypeList] = useState([]);
+  const [isAgency, setIsAgency] = useState(false);
+  const [assetSiteLists, setAssetSiteLists] = useState([]);
+  const [agencySiteLists,setAgencySiteLists]=useState([]);
+  const [agencySiteData,setAgencySiteData]=useState([]);
+  const [show,setShow]=useState(false)
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
   const [newFields, setNewFields] = useState({
     field_lable: null,
@@ -94,39 +192,39 @@ const AddEstimationScreen = () => {
   });
 
   const getTodayDate = () => {
-    return new Date().toISOString().split('T')[0];
+    return new Date().toISOString().split("T")[0];
   };
 
   const [userInfo, setUserInfo] = useState({
-    estimate_type:'',
+    estimate_type: "",
     campaign_id: null,
-    campaign_name: '',
-    acc_id: '',
-    package_offer:'',
-    contact: '',
-    campaign_brand: '',
+    campaign_name: "",
+    acc_id: "",
+    package_offer: "",
+    contact: "",
+    campaign_brand: "",
     cmpn_s_id: null,
-    campaign_start_date: '',
-    campaign_end_date: '',
-    estimate_date:getTodayDate(),
+    campaign_start_date: "",
+    campaign_end_date: "",
+    estimate_date: getTodayDate(),
     campaign_duration: 0,
     cmpn_p_id: null,
     proof_attachment: null,
     cmpn_b_t_id: null,
-    package_cost_display:0,
-    package_cost_printing:0,
-    package_cost_mounting:0,
+    package_cost_display: 0,
+    package_cost_printing: 0,
+    package_cost_mounting: 0,
     // client_display_cost: 0,
-    total_agency_commision:0,
+    total_agency_commision: 0,
     // client_mounting_cost: 0,
     // client_printing_cost: 0,
-    agency_commission_mounting:0,
+    agency_commission_mounting: 0,
     total_client_cost: 0,
     total_sales_order_value: 0,
     total_credit_note_value: 0,
     total_receipt_from_client: 0,
     total_client_outstanding: 0,
-    agency_commission_display:0,
+    agency_commission_display: 0,
     total_ndp_days: 0,
     total_sales_invoice_value: 0,
     total_vendor_display_cost: 0,
@@ -134,7 +232,7 @@ const AddEstimationScreen = () => {
     total_vendor_printing_cost: 0,
     total_vendor_cost: 0,
     total_purchase_order_value: 0,
-    agency_commission_printing:0,
+    agency_commission_printing: 0,
     total_debit_note_value: 0,
     total_vendor_payment: 0,
     total_vendor_outstanding: 0,
@@ -147,8 +245,8 @@ const AddEstimationScreen = () => {
     display_margin_percentage: 0,
     mounting_margin_percentage: 0,
     printing_margin_percentage: 0,
-    createdAt:DateNow,
-    updatedAt:DateNow,
+    createdAt: DateNow,
+    updatedAt: DateNow,
     gst: false,
     cgst: false,
     sgst: false,
@@ -163,26 +261,38 @@ const AddEstimationScreen = () => {
       setErrorToast
     );
   }
-  
-  
-  
+  const handleClose = () => {
+    setShow(false);
+  };
 
   useEffect(() => {
-    if(editMode && userInfo?.db_media_campaign?.cmpn_b_t_id && !userInfo?.cmpn_b_t_id ){
-       setUserInfo({...userInfo,cmpn_b_t_id:userInfo?.db_media_campaign.cmpn_b_t_id})
+    if (
+      editMode &&
+      userInfo?.db_media_campaign?.cmpn_b_t_id &&
+      !userInfo?.cmpn_b_t_id
+    ) {
+      setUserInfo({
+        ...userInfo,
+        cmpn_b_t_id: userInfo?.db_media_campaign.cmpn_b_t_id,
+      });
     }
-    const selectedBusiness = busiessTypeList.find( (data) => data.cmpn_b_t_id === userInfo?.cmpn_b_t_id)
+    const selectedBusiness = busiessTypeList.find(
+      (data) => data.cmpn_b_t_id === userInfo?.cmpn_b_t_id
+    );
 
-    console.log("data is ",data.cmpn_b_t_id,"user if s",userInfo?.cmpn_b_t_id)
+    console.log(
+      "data is ",
+      data.cmpn_b_t_id,
+      "user if s",
+      userInfo?.cmpn_b_t_id
+    );
 
     if (selectedBusiness?.cmpn_b_t_name === "Agency") {
       setIsAgency(true);
     } else {
       setIsAgency(false);
     }
-  }, [userInfo, busiessTypeList,editMode]);
-
-
+  }, [userInfo, busiessTypeList, editMode]);
 
   async function getBusinessTypeList() {
     await fetchData(
@@ -197,6 +307,18 @@ const AddEstimationScreen = () => {
     await fetchData(
       `/db/media/estimationAssetBusiness/getEstimationAssetBusiness?estimate_id=${id}`,
       setAssetSiteLists,
+      errorToast,
+      setErrorToast
+    );
+  }
+
+
+  async function getAgencySites() {
+    await fetchData(
+      `/db/media/estimationAgencyBusiness/getSitesForAgencyEstimates?estimate_id=${id}`,
+
+
+      setAgencySiteLists,
       errorToast,
       setErrorToast
     );
@@ -222,7 +344,6 @@ const AddEstimationScreen = () => {
     }
   }
 
-
   const getSingleData = async (id) => {
     if (hasCookie("token")) {
       let token = getCookie("token");
@@ -243,7 +364,6 @@ const AddEstimationScreen = () => {
           header
         );
         setUserInfo(response.data.data);
-      
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -254,84 +374,94 @@ const AddEstimationScreen = () => {
     }
   };
 
-
   const validate = () => {
     const errors = {};
     // if (!userInfo.campaign_start_date.trim()) errors.campaign_start_date = "Campaign Start Date is required";
-    if (userInfo.campaign_id === null || userInfo.campaign_id === '') {
+    if (userInfo.campaign_id === null || userInfo.campaign_id === "") {
       errors.campaign_id = "Campaign Name is required";
     }
     // if (!userInfo.campaign_end_date.trim()) errors.campaign_end_date = "Campaign End Date is required";
-    if (!userInfo.package_cost_display) errors.package_cost_display = "Package cost display is required";
-    if (!userInfo.package_cost_mounting) errors.package_cost_mounting = "Package cost mounting  is required";
-    if (!userInfo.package_cost_printing) errors.package_cost_printing = "Package cost printing  is required";
-   if(isAgency){
-    if (!userInfo.agency_commission_display) errors.agency_commission_display = "Agency commission display is required";
-    if (!userInfo.agency_commission_mounting) errors.agency_commission_mounting = "Agency commission mounting is required";
-    if (!userInfo.agency_commission_printing) errors.agency_commission_printing = "Agency commission printing is required";
-   }
-    if (!userInfo.package_offer) errors.package_offer = "Package offer is required";
+    if (!userInfo.package_cost_display)
+      errors.package_cost_display = "Package cost display is required";
+    if (!userInfo.package_cost_mounting)
+      errors.package_cost_mounting = "Package cost mounting  is required";
+    if (!userInfo.package_cost_printing)
+      errors.package_cost_printing = "Package cost printing  is required";
+    if (isAgency) {
+      if (!userInfo.agency_commission_display)
+        errors.agency_commission_display =
+          "Agency commission display is required";
+      if (!userInfo.agency_commission_mounting)
+        errors.agency_commission_mounting =
+          "Agency commission mounting is required";
+      if (!userInfo.agency_commission_printing)
+        errors.agency_commission_printing =
+          "Agency commission printing is required";
+    }
+    if (!userInfo.package_offer)
+      errors.package_offer = "Package offer is required";
     // if (!userInfo.campaign_duration) errors.campaign_duration = "Campaign Duration is required";
     // if (!userInfo.cmpn_b_t_id) errors.cmpn_b_t_id = "Business Type is required";
-    if (!userInfo.estimate_date) errors.estimate_date = "Estimate Date is required";
-    if (!userInfo.estimate_type.trim()) errors.estimate_type = "Estimate Type is required"; // Ensure estimate_type is not empty
-  
+    if (!userInfo.estimate_date)
+      errors.estimate_date = "Estimate Date is required";
+    if (!userInfo.estimate_type.trim())
+      errors.estimate_type = "Estimate Type is required"; // Ensure estimate_type is not empty
+
     setErrorData(errors);
     return Object.keys(errors).length === 0;
   };
-  
 
   const submitHandler = async () => {
-    if(validate()){
-    if (hasCookie("token")) {
-      setisLoading(true);
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
+    if (validate()) {
+      if (hasCookie("token")) {
+        setisLoading(true);
+        let token = getCookie("token");
+        let db_name = getCookie("db_name");
 
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          m_id: 319,
-        },
-      };
+        let header = {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer ".concat(token),
+            db: db_name,
+            m_id: 319,
+          },
+        };
 
-      let oppBody = { ...userInfo };
-      oppBody.contact_owner = loginDetails.user_id;
-      try {
-        const response = await axios.post(
-          Baseurl + `/db/media/estimation/addEstimation`,
-          oppBody,
-          header
-        );
-        if (response.status === 204 || response.status === 200) {
-          // await postFieldsFunc(
-          //   response.data.data.contact_id,
-          //   userInfo.db_contact_fields
-          // );
-          toast.success(response.data.message);
-          setisLoading(false);
-          router.push("/media/Estimations");
-        }
-      } catch (error) {
-        if (error?.response?.data?.status === 422) {
-          const taskObject = {};
-          const array = error?.response?.data?.data;
-          for (let i = 0; i < array.length; i++) {
-            const key = Object.keys(array[i])[0];
-            const value = Object.values(array[i])[0];
-            taskObject[key] = value;
+        let oppBody = { ...userInfo };
+        oppBody.contact_owner = loginDetails.user_id;
+        try {
+          const response = await axios.post(
+            Baseurl + `/db/media/estimation/addEstimation`,
+            oppBody,
+            header
+          );
+          if (response.status === 204 || response.status === 200) {
+            // await postFieldsFunc(
+            //   response.data.data.contact_id,
+            //   userInfo.db_contact_fields
+            // );
+            toast.success(response.data.message);
+            setisLoading(false);
+            router.push("/media/Estimations");
           }
-          setErrorData(taskObject);
+        } catch (error) {
+          if (error?.response?.data?.status === 422) {
+            const taskObject = {};
+            const array = error?.response?.data?.data;
+            for (let i = 0; i < array.length; i++) {
+              const key = Object.keys(array[i])[0];
+              const value = Object.values(array[i])[0];
+              taskObject[key] = value;
+            }
+            setErrorData(taskObject);
+          }
+          if (error?.response?.data?.message) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("Something went wrong2!");
+          }
+          setisLoading(false);
         }
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong2!");
-        }
-        setisLoading(false);
-      }
       }
     } else {
       toast.error("Please fill the Mandatory fileds");
@@ -339,67 +469,69 @@ const AddEstimationScreen = () => {
   };
 
   const UpdateHandler = async () => {
-    if(validate()){
-    if (hasCookie("token")) {
-      setisLoading(true);
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
+    if (validate()) {
+      if (hasCookie("token")) {
+        setisLoading(true);
+        let token = getCookie("token");
+        let db_name = getCookie("db_name");
 
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          m_id: 321,
-        },
-      };
-      let newUserInfo 
+        let header = {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer ".concat(token),
+            db: db_name,
+            m_id: 321,
+          },
+        };
+        let newUserInfo;
 
-      if(!isAgency){
-         newUserInfo = { ...userInfo, updated_on: DateNow, agency_commission_display:0,agency_commission_mounting:0,agency_commission_printing:0};
-      }else{
-       newUserInfo = { ...userInfo, updated_on: DateNow};
-      }
-
-      let newData = JSON.parse(JSON.stringify(newUserInfo));
-
-      try {
-  
-        const response = await axios.put(
-          Baseurl + `/db/media/estimation/updateEstimation`,
-          newData,
-          header
-        );
-
-        if (response.status === 200 || response.status === 204) {
-          // await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
-          toast.success(response.data.message);
-          setisLoading(false);
-      
-
-          router.push("/media/Estimations");
-        
-
-        }
-      } catch (error) {
-        if (error?.response?.data?.status === 422) {
-          const taskObject = {};
-          const array = error?.response?.data?.data;
-          for (let i = 0; i < array.length; i++) {
-            const key = Object.keys(array[i])[0];
-            const value = Object.values(array[i])[0];
-            taskObject[key] = value;
-          }
-          setErrorData(taskObject);
-        }
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+        if (!isAgency) {
+          newUserInfo = {
+            ...userInfo,
+            updated_on: DateNow,
+            agency_commission_display: 0,
+            agency_commission_mounting: 0,
+            agency_commission_printing: 0,
+          };
         } else {
-          toast.error("Something went wrong!");
+          newUserInfo = { ...userInfo, updated_on: DateNow };
         }
-        setisLoading(false);
+
+        let newData = JSON.parse(JSON.stringify(newUserInfo));
+
+        try {
+          const response = await axios.put(
+            Baseurl + `/db/media/estimation/updateEstimation`,
+            newData,
+            header
+          );
+
+          if (response.status === 200 || response.status === 204) {
+            // await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
+            toast.success(response.data.message);
+            setisLoading(false);
+
+            router.push("/media/Estimations");
+          }
+        } catch (error) {
+          if (error?.response?.data?.status === 422) {
+            const taskObject = {};
+            const array = error?.response?.data?.data;
+            for (let i = 0; i < array.length; i++) {
+              const key = Object.keys(array[i])[0];
+              const value = Object.values(array[i])[0];
+              taskObject[key] = value;
+            }
+            setErrorData(taskObject);
+          }
+          if (error?.response?.data?.message) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("Something went wrong!");
+          }
+          setisLoading(false);
+        }
       }
-    }
     } else {
       toast.error("Please fill the Mandatory fileds");
     }
@@ -579,29 +711,33 @@ const AddEstimationScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass:"pass"
+          pass: "pass",
         },
       };
 
-     
+ 
+
       try {
         const response = await axios.post(
-          Baseurl + `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
+          Baseurl +
+            `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
           {
-            estimate_id:id,
-            sites: [{
-              site_id: site_id,
-              status:false
-            }]
+            estimate_id: id,
+            sites: [
+              {
+                site_id: site_id,
+                status: false,
+              },
+            ],
           },
           header
         );
         if (response.status === 204 || response.status === 200) {
           toast.success(response?.data?.message);
-          getAssetSites()
+          getAssetSites();
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
         if (error?.response?.data?.message) {
           toast.error(error?.response?.data?.message);
         } else {
@@ -609,15 +745,60 @@ const AddEstimationScreen = () => {
         }
         setisLoading(false);
       }
-      }
-   
+    }
   };
 
-  
-  
+
+
+  const deleteAgencySite = async (site_id) => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+
+ 
+
+      try {
+        const response = await axios.post(
+          Baseurl +
+            `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
+          {
+            estimate_id: id,
+            sites: [
+              {
+                site_id: site_id,
+                status: false,
+              },
+            ],
+          },
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          getAssetSites();
+        }
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
+    }
+  };
 
   useEffect(() => {
-    getBusinessTypeList()
+    getBusinessTypeList();
     getAccountsList();
     checkLogin();
     getusersList();
@@ -628,49 +809,50 @@ const AddEstimationScreen = () => {
     });
   }, []);
 
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-  
-    if (file && file.type !== 'application/pdf') {
-      toast.error('Only PDF files are allowed');
-      event.target.value = '';
+
+    if (file && file.type !== "application/pdf") {
+      toast.error("Only PDF files are allowed");
+      event.target.value = "";
     } else {
       setUserInfo({
         ...userInfo,
-        proof_attachment:file
-      })
+        proof_attachment: file,
+      });
     }
   };
 
   const handleDMPCInfoChange = (e, fieldType) => {
     const { id, value } = e.target;
     let isValid = true;
-  
+
     switch (fieldType) {
-      case 'currency':
+      case "currency":
         isValid = /^\d*(\.\d{0,2})?$/.test(value); // Allow digits and up to two decimal places
         break;
-      case 'number':
+      case "number":
         isValid = /^\d*$/.test(value); // Allow only digits
         break;
       default:
         break;
     }
-  
-    if (isValid) {
-      setUserInfo(prevState => {
-        const updatedInfo = { ...prevState, [id]: value };
-  
-        // Calculate Total Client Cost
-        updatedInfo.total_selling_cost = parseFloat(updatedInfo.display_selling_cost || 0) +
-                                        parseFloat(updatedInfo.mounting_selling_cost || 0) +
-                                        parseFloat(updatedInfo.printing_selling_cost || 0);
 
-         updatedInfo.total_buying_cost = parseFloat(updatedInfo.display_buying_cost || 0) +
-                                        parseFloat(updatedInfo.mounting_buying_cost || 0) +
-                                        parseFloat(updatedInfo.printing_buying_cost || 0);
-  
+    if (isValid) {
+      setUserInfo((prevState) => {
+        const updatedInfo = { ...prevState, [id]: value };
+
+        // Calculate Total Client Cost
+        updatedInfo.total_selling_cost =
+          parseFloat(updatedInfo.display_selling_cost || 0) +
+          parseFloat(updatedInfo.mounting_selling_cost || 0) +
+          parseFloat(updatedInfo.printing_selling_cost || 0);
+
+        updatedInfo.total_buying_cost =
+          parseFloat(updatedInfo.display_buying_cost || 0) +
+          parseFloat(updatedInfo.mounting_buying_cost || 0) +
+          parseFloat(updatedInfo.printing_buying_cost || 0);
+
         return updatedInfo;
       });
     }
@@ -679,31 +861,31 @@ const AddEstimationScreen = () => {
   const handleTotalCostInfoChange = (e, fieldType) => {
     const { id, value } = e.target;
     let isValid = true;
-  
+
     switch (fieldType) {
-      case 'currency':
+      case "currency":
         isValid = /^\d*(\.\d{0,2})?$/.test(value); // Allow digits and up to two decimal places
         break;
-      case 'number':
+      case "number":
         isValid = /^\d*$/.test(value); // Allow only digits
         break;
       default:
         break;
     }
-  
-    if (isValid) {
-      setUserInfo(prevState => {
-        const updatedInfo = { ...prevState, [id]: value };
-  
-        // Calculate Total Client Cost
-        updatedInfo.total_client_cost_with_tax = parseFloat(updatedInfo.total_client_cost_without_tax || 0) +
-                                        parseFloat(updatedInfo.client_tax || 0) 
-                                        
 
-         updatedInfo.total_vendor_cost_with_tax = parseFloat(updatedInfo.total_vendor_cost_without_tax || 0) +
-                                        parseFloat(updatedInfo.vendor_tax || 0) 
-                                        
-  
+    if (isValid) {
+      setUserInfo((prevState) => {
+        const updatedInfo = { ...prevState, [id]: value };
+
+        // Calculate Total Client Cost
+        updatedInfo.total_client_cost_with_tax =
+          parseFloat(updatedInfo.total_client_cost_without_tax || 0) +
+          parseFloat(updatedInfo.client_tax || 0);
+
+        updatedInfo.total_vendor_cost_with_tax =
+          parseFloat(updatedInfo.total_vendor_cost_without_tax || 0) +
+          parseFloat(updatedInfo.vendor_tax || 0);
+
         return updatedInfo;
       });
     }
@@ -712,27 +894,26 @@ const AddEstimationScreen = () => {
   const handleMarginInfoChange = (e, fieldType) => {
     const { id, value } = e.target;
     let isValid = true;
-  
+
     switch (fieldType) {
-      case 'currency':
+      case "currency":
         isValid = /^\d*(\.\d{0,2})?$/.test(value); // Allow digits and up to two decimal places
         break;
-      case 'percentage':
+      case "percentage":
         isValid = /^\d{0,3}$/.test(value); // Allow only digits
         break;
       default:
         break;
     }
-  
+
     if (isValid) {
-      setUserInfo(prevState => {
+      setUserInfo((prevState) => {
         const updatedInfo = { ...prevState, [id]: value };
-  
+
         return updatedInfo;
       });
     }
   };
-  
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -745,9 +926,22 @@ const AddEstimationScreen = () => {
       }
     }
     if (router.query.vw) [setViewMode(true)];
-    getAssetSites()
+    getAssetSites();
   }, [router.isReady, id]);
 
+  useEffect(() => {
+    if (!router.isReady) return;
+    if (router.query.id) {
+      setEditMode(true);
+      getSingleData(id);
+    } else {
+      if (userInfo !== undefined) {
+        getContactFieldList();
+      }
+    }
+    if (router.query.vw) [setViewMode(true)];
+    getAgencySites();
+  }, [router.isReady, id]);
 
   return (
     <div className={`main_Box  ${sideView}`}>
@@ -780,71 +974,85 @@ const AddEstimationScreen = () => {
                   : `col-xl-12 col-md-12 col-sm-12 col-12`
               }
             > */}
-            <div
-              className={ `col-xl-12 col-md-12 col-sm-12 col-12`}
-            >
-              
+            <div className={`col-xl-12 col-md-12 col-sm-12 col-12`}>
               <div className="add_screen_head">
                 <span className="text_bold">Fill Details</span> ( * Fields are
                 mandatory)
               </div>
               <div className="add_user_form">
                 <div className="row">
-                  
-
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.estimate_date ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="estimate_date">Estimate Date*</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    id="estimate_date"
-                    disabled={viewMode} 
-                    min={new Date().toISOString().split('T')[0]} 
-                    onPaste={(e) => e.preventDefault()}
-                    onKeyDown={(e) => e.preventDefault()}
-                    value={moment(userInfo?.estimate_date).format(
-                      "YYYY-MM-DD"
-                    )}
-                    onChange={(e)=>{
-                      setErrorData({...errorData,estimate_date:""})
-                      setUserInfo({...userInfo,estimate_date:e.target.value})
-                    }}
-                  />
-                  <span className="errorText">{errorData?.estimate_date ? errorData.estimate_date : ""}</span>
-                </div>
-              </div>
-
-
-
-              
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.estimate_type ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="estimate_type">Estimate Type *</label>
-                    <input
-                      type="text"
-                      id="estimate_type"
-                      className="form-control"
-                      disabled={viewMode}
-                      placeholder="Enter Estimate Type"
-                      value={userInfo?.estimate_type || ""}
-                      
-                      onChange={(e) => {
-                        setErrorData({...errorData,estimate_type:""})
-                        // Regular expression to match only alphabetic characters and spaces
-                        const regex = /^[A-Za-z\s]*$/;
-                        const value = e.target.value;
-                
-                        if (regex.test(value)) {
-                          setUserInfo({ ...userInfo, estimate_type: value });
-                        }
-                      }}
-                    />
-                    <span className="errorText">{errorData?.estimate_type ? errorData.estimate_type : ""}</span>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.estimate_date
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="estimate_date">Estimate Date*</label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        id="estimate_date"
+                        disabled={viewMode}
+                        min={new Date().toISOString().split("T")[0]}
+                        onPaste={(e) => e.preventDefault()}
+                        onKeyDown={(e) => e.preventDefault()}
+                        value={moment(userInfo?.estimate_date).format(
+                          "YYYY-MM-DD"
+                        )}
+                        onChange={(e) => {
+                          setErrorData({ ...errorData, estimate_date: "" });
+                          setUserInfo({
+                            ...userInfo,
+                            estimate_date: e.target.value,
+                          });
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.estimate_date
+                          ? errorData.estimate_date
+                          : ""}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-              {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.estimate_type
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="estimate_type">Estimate Type *</label>
+                      <input
+                        type="text"
+                        id="estimate_type"
+                        className="form-control"
+                        disabled={viewMode}
+                        placeholder="Enter Estimate Type"
+                        value={userInfo?.estimate_type || ""}
+                        onChange={(e) => {
+                          setErrorData({ ...errorData, estimate_type: "" });
+                          // Regular expression to match only alphabetic characters and spaces
+                          const regex = /^[A-Za-z\s]*$/;
+                          const value = e.target.value;
+
+                          if (regex.test(value)) {
+                            setUserInfo({ ...userInfo, estimate_type: value });
+                          }
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.estimate_type
+                          ? errorData.estimate_type
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                 <div className={errorData?.estimate_approval_status ? "input_box errorBox" : "input_box"}>
                   <label htmlFor="estimate_approval_status">Estimate Approval Status *</label>
                   <input
@@ -895,9 +1103,18 @@ const AddEstimationScreen = () => {
                           }
                         })}
                         onChange={(e) => {
-                          setErrorData({...errorData,campaign_id:""})
-                          const campaign=estimatesList?.find((item)=>item?.campaign_id==e.value)
-                          setUserInfo({ ...userInfo, campaign_id: e.value,campaign_start_date:campaign?.campaign_start_date,campaign_end_date:campaign?.campaign_end_date,campaign_duration:campaign?.campaign_duration,cmpn_b_t_id:campaign?.cmpn_b_t_id });
+                          setErrorData({ ...errorData, campaign_id: "" });
+                          const campaign = estimatesList?.find(
+                            (item) => item?.campaign_id == e.value
+                          );
+                          setUserInfo({
+                            ...userInfo,
+                            campaign_id: e.value,
+                            campaign_start_date: campaign?.campaign_start_date,
+                            campaign_end_date: campaign?.campaign_end_date,
+                            campaign_duration: campaign?.campaign_duration,
+                            cmpn_b_t_id: campaign?.cmpn_b_t_id,
+                          });
                           setErrorData({ ...errorData, campaign_id: "" });
                         }}
                       />
@@ -907,78 +1124,143 @@ const AddEstimationScreen = () => {
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.estimate_date ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_start_date">Campaign Start Date*</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    id="campaign_start_date"
-                    min={new Date().toISOString().split('T')[0]} 
-                    onPaste={(e) => e.preventDefault()}
-                    onKeyDown={(e) => e.preventDefault()}
+                    <div
+                      className={
+                        errorData?.estimate_date
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="campaign_start_date">
+                        Campaign Start Date*
+                      </label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        id="campaign_start_date"
+                        min={new Date().toISOString().split("T")[0]}
+                        onPaste={(e) => e.preventDefault()}
+                        onKeyDown={(e) => e.preventDefault()}
+                        value={
+                          id
+                            ? moment(
+                                estimatesList?.find(
+                                  (item) =>
+                                    item?.campaign_id == userInfo?.campaign_id
+                                )?.campaign_start_date
+                              ).format("YYYY-MM-DD")
+                            : moment(userInfo?.campaign_start_date).format(
+                                "YYYY-MM-DD"
+                              )
+                        }
+                        disabled
+                        onChange={(e) => {
+                          setErrorData({
+                            ...errorData,
+                            campaign_start_date: "",
+                          });
+                          setUserInfo({
+                            ...userInfo,
+                            campaign_start_date: e.target.value,
+                          });
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.campaign_start_date
+                          ? errorData.campaign_start_date
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
 
-                    value={id ? moment(estimatesList?.find((item)=>item?.campaign_id==userInfo?.campaign_id)?.campaign_start_date).format(
-                      "YYYY-MM-DD"
-                    ):moment(userInfo?.campaign_start_date).format(
-                      "YYYY-MM-DD"
-                    )}
-                    disabled
-                    onChange={(e)=>{
-                      setErrorData({...errorData,campaign_start_date:""})
-                      setUserInfo({...userInfo,campaign_start_date:e.target.value})
-                    }}
-                  />
-                  <span className="errorText">{errorData?.campaign_start_date ? errorData.campaign_start_date : ""}</span>
-                </div>
-              </div>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.estimate_date
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="campaign_end_date">
+                        Campaign End Date*
+                      </label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        disabled
+                        id="campaign_end_date"
+                        min={new Date().toISOString().split("T")[0]}
+                        onPaste={(e) => e.preventDefault()}
+                        onKeyDown={(e) => e.preventDefault()}
+                        // value={moment(userInfo?.campaign_end_date).format(
+                        //   "YYYY-MM-DD"
+                        // )}
 
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.estimate_date ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_end_date">Campaign End Date*</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    disabled
-                    id="campaign_end_date"
-                    min={new Date().toISOString().split('T')[0]} 
-                    onPaste={(e) => e.preventDefault()}
-                    onKeyDown={(e) => e.preventDefault()}
-                    // value={moment(userInfo?.campaign_end_date).format(
-                    //   "YYYY-MM-DD"
-                    // )}
-                    
-                    value={id ? moment(estimatesList?.find((item)=>item?.campaign_id==userInfo?.campaign_id)?.campaign_end_date).format(
-                      "YYYY-MM-DD"
-                    ):moment(userInfo?.campaign_end_date).format(
-                      "YYYY-MM-DD"
-                    )}
-                    onChange={(e)=>{
-                      setErrorData({...errorData,campaign_end_date:""})
-                      setUserInfo({...userInfo,campaign_end_date:e.target.value})
-                    }}
-                  />
-                  <span className="errorText">{errorData?.campaign_end_date ? errorData.campaign_end_date : ""}</span>
-                </div>
-              </div>
+                        value={
+                          id
+                            ? moment(
+                                estimatesList?.find(
+                                  (item) =>
+                                    item?.campaign_id == userInfo?.campaign_id
+                                )?.campaign_end_date
+                              ).format("YYYY-MM-DD")
+                            : moment(userInfo?.campaign_end_date).format(
+                                "YYYY-MM-DD"
+                              )
+                        }
+                        onChange={(e) => {
+                          setErrorData({ ...errorData, campaign_end_date: "" });
+                          setUserInfo({
+                            ...userInfo,
+                            campaign_end_date: e.target.value,
+                          });
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.campaign_end_date
+                          ? errorData.campaign_end_date
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
 
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.campaign_duration ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="campaign_duration">Campaign Duration *</label>
-                  <input
-                    type="text"
-                    id="campaign_duration"
-                    className="form-control"
-                    disabled
-                    // value={`${userInfo?.campaign_duration} days` || "0days"}
-                    value={id ?(estimatesList?.find((item)=>item?.campaign_id==userInfo?.campaign_id)?.campaign_duration):(userInfo?.campaign_duration) ||"0days"}
-                  />
-                  <span className="errorText">{errorData?.campaign_duration ? errorData.campaign_duration : ""}</span>
-                </div>
-              </div>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.campaign_duration
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="campaign_duration">
+                        Campaign Duration *
+                      </label>
+                      <input
+                        type="text"
+                        id="campaign_duration"
+                        className="form-control"
+                        disabled
+                        // value={`${userInfo?.campaign_duration} days` || "0days"}
+                        value={
+                          id
+                            ? estimatesList?.find(
+                                (item) =>
+                                  item?.campaign_id == userInfo?.campaign_id
+                              )?.campaign_duration
+                            : userInfo?.campaign_duration || "0days"
+                        }
+                      />
+                      <span className="errorText">
+                        {errorData?.campaign_duration
+                          ? errorData.campaign_duration
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
 
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
                       className={
                         errorData?.cmpn_b_t_id
@@ -993,34 +1275,33 @@ const AddEstimationScreen = () => {
                         placeholder="Select Business Type "
                         isDisabled
                         options={busiessTypeList?.map((data, index) => {
-                        
                           return {
                             value: data?.cmpn_b_t_id,
                             label: data?.cmpn_b_t_name,
                           };
                         })}
                         value={busiessTypeList?.map((data, index) => {
-                          if(id && data.cmpn_b_t_id==userInfo?.db_media_campaign?.cmpn_b_t_id ){
-                           
-                            return {
-                           
-                              value: data?.cmpn_b_t_id,
-                              label: data?.cmpn_b_t_name,
-                            };
-                          }
-                          else if (userInfo.cmpn_b_t_id === data.cmpn_b_t_id) {
+                          if (
+                            id &&
+                            data.cmpn_b_t_id ==
+                              userInfo?.db_media_campaign?.cmpn_b_t_id
+                          ) {
                             return {
                               value: data?.cmpn_b_t_id,
                               label: data?.cmpn_b_t_name,
                             };
+                          } else if (
+                            userInfo.cmpn_b_t_id === data.cmpn_b_t_id
+                          ) {
+                            return {
+                              value: data?.cmpn_b_t_id,
+                              label: data?.cmpn_b_t_name,
+                            };
                           }
-                         
-
                         })}
                         onChange={(e) => {
                           setUserInfo({ ...userInfo, cmpn_b_t_id: e.value });
                           setErrorData({ ...errorData, cmpn_b_t_id: "" });
-
                         }}
                       />
                       <span className="errorText">
@@ -1028,121 +1309,195 @@ const AddEstimationScreen = () => {
                         {errorData?.cmpn_b_t_id ? errorData.cmpn_b_t_id : ""}
                       </span>
                     </div>
-                </div>
+                  </div>
 
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.package_offer ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="package_offer">Package Offer</label>
-                    <Select
-                      id="package_offer"
-                      className="react-select"
-                      classNamePrefix="select"
-                      isDisabled={viewMode}
-                      options={[
-                        { value: 'Yes', label: 'Yes' },
-                        { value: 'No', label: 'No' },
-                      ]}
-                      value={[
-                        { value: 'Yes', label: 'Yes' },   
-                        { value: 'No', label: 'No' },
-                      ].find(option => option.value === userInfo.package_offer)}
-                      onChange={(selectedOption) => {
-                        setErrorData({...errorData,package_offer:""})
-                        setUserInfo({
-                          ...userInfo,
-                          package_offer: selectedOption ? selectedOption.value : null
-                        });
-                      }}
-                      placeholder="Select Package Offer"
-                    />
-                    <span className="errorText">{errorData?.package_offer ? errorData.package_offer : ""}</span>
+                    <div
+                      className={
+                        errorData?.package_offer
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="package_offer">Package Offer</label>
+                      <Select
+                        id="package_offer"
+                        className="react-select"
+                        classNamePrefix="select"
+                        isDisabled={viewMode}
+                        options={[
+                          { value: "Yes", label: "Yes" },
+                          { value: "No", label: "No" },
+                        ]}
+                        value={[
+                          { value: "Yes", label: "Yes" },
+                          { value: "No", label: "No" },
+                        ].find(
+                          (option) => option.value === userInfo.package_offer
+                        )}
+                        onChange={(selectedOption) => {
+                          setErrorData({ ...errorData, package_offer: "" });
+                          setUserInfo({
+                            ...userInfo,
+                            package_offer: selectedOption
+                              ? selectedOption.value
+                              : null,
+                          });
+                        }}
+                        placeholder="Select Package Offer"
+                      />
+                      <span className="errorText">
+                        {errorData?.package_offer
+                          ? errorData.package_offer
+                          : ""}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.package_cost_display ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="package_cost_display">Package Cost Display *</label>
-                    <input
-                      type="text"
-                      id="package_cost_display"
-                      className="form-control"
-                      disabled={viewMode}
-                      placeholder="Enter Display Currency"
-                      value={userInfo?.package_cost_display}
-                      // onChange={(e) => {
-                      //   const value = e.target.value;
-                      //   // Allow only numeric characters and decimal point
-                      //   if (/^[0-9]*\.?[0-9]*$/.test(value)) {
-                      //     setUserInfo({ ...userInfo, package_cost_display: value });
-                      //   }
-                      // }}
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.package_cost_display
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="package_cost_display">
+                        Package Cost Display *
+                      </label>
+                      <input
+                        type="text"
+                        id="package_cost_display"
+                        className="form-control"
+                        disabled={viewMode}
+                        placeholder="Enter Display Currency"
+                        value={userInfo?.package_cost_display}
+                        // onChange={(e) => {
+                        //   const value = e.target.value;
+                        //   // Allow only numeric characters and decimal point
+                        //   if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                        //     setUserInfo({ ...userInfo, package_cost_display: value });
+                        //   }
+                        // }}
 
-
-                      onChange={(e) => {
-                        setErrorData({...errorData,package_cost_display:""})
-                        const value = e.target.value;
-                        const regex = /^\d*\.?\d*$/;
-                        if (regex.test(value)) {
-                          setUserInfo({ ...userInfo, package_cost_display: value });
-                        }
-                      }}
-                 
-                    />
-                    <span className="errorText">{errorData?.package_cost_display ? errorData.package_cost_display : ""}</span>
+                        onChange={(e) => {
+                          setErrorData({
+                            ...errorData,
+                            package_cost_display: "",
+                          });
+                          const value = e.target.value;
+                          const regex = /^\d*\.?\d*$/;
+                          if (regex.test(value)) {
+                            setUserInfo({
+                              ...userInfo,
+                              package_cost_display: value,
+                            });
+                          }
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.package_cost_display
+                          ? errorData.package_cost_display
+                          : ""}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.package_cost_mounting ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="package_cost_mounting">Package Cost Mounting *</label>
-                    <input
-                      type="text"
-                      id="package_cost_mounting"
-                      className="form-control"
-                      disabled={viewMode}
-                      placeholder="Enter Mounting Currency"
-                      value={userInfo?.package_cost_mounting}
-                      onChange={(e) => {
-                        setErrorData({...errorData,package_cost_mounting:""})
-                        const value = e.target.value;
-                        // Allow only numeric characters and decimal point
-                        if (/^[0-9]*\.?[0-9]*$/.test(value)) {
-                          setUserInfo({ ...userInfo, package_cost_mounting: value });
-                        }
-                      }}
-                    />
-                    <span className="errorText">{errorData?.package_cost_mounting ? errorData.package_cost_mounting : ""}</span>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.package_cost_mounting
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="package_cost_mounting">
+                        Package Cost Mounting *
+                      </label>
+                      <input
+                        type="text"
+                        id="package_cost_mounting"
+                        className="form-control"
+                        disabled={viewMode}
+                        placeholder="Enter Mounting Currency"
+                        value={userInfo?.package_cost_mounting}
+                        onChange={(e) => {
+                          setErrorData({
+                            ...errorData,
+                            package_cost_mounting: "",
+                          });
+                          const value = e.target.value;
+                          // Allow only numeric characters and decimal point
+                          if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                            setUserInfo({
+                              ...userInfo,
+                              package_cost_mounting: value,
+                            });
+                          }
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.package_cost_mounting
+                          ? errorData.package_cost_mounting
+                          : ""}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.package_cost_printing ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="package_cost_printing_currency">Package Cost Printing *</label>
-                    <input
-                      type="text"
-                      id="package_cost_printing"
-                      className="form-control"
-                      disabled={viewMode}
-                      placeholder="Enter Printing Currency"
-                      value={userInfo?.package_cost_printing}
-                      onChange={(e) => {
-                        setErrorData({...errorData,package_cost_printing:""})
-                        const value = e.target.value;
-                        // Allow only numeric characters and decimal point
-                        if (/^[0-9]*\.?[0-9]*$/.test(value)) {
-                          setUserInfo({ ...userInfo, package_cost_printing: value });
-                        }
-                      }}
-                    />
-                    <span className="errorText">{errorData?.package_cost_printing ? errorData.package_cost_printing : ""}</span>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.package_cost_printing
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="package_cost_printing_currency">
+                        Package Cost Printing *
+                      </label>
+                      <input
+                        type="text"
+                        id="package_cost_printing"
+                        className="form-control"
+                        disabled={viewMode}
+                        placeholder="Enter Printing Currency"
+                        value={userInfo?.package_cost_printing}
+                        onChange={(e) => {
+                          setErrorData({
+                            ...errorData,
+                            package_cost_printing: "",
+                          });
+                          const value = e.target.value;
+                          // Allow only numeric characters and decimal point
+                          if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                            setUserInfo({
+                              ...userInfo,
+                              package_cost_printing: value,
+                            });
+                          }
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.package_cost_printing
+                          ? errorData.package_cost_printing
+                          : ""}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                {isAgency && (
+                  {isAgency && (
                     <>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={errorData?.commission_display ? "input_box errorBox" : "input_box"}>
-                          <label htmlFor="agency_commission_display">Agency Commission on Display (%) *</label>
+                        <div
+                          className={
+                            errorData?.commission_display
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
+                          <label htmlFor="agency_commission_display">
+                            Agency Commission on Display (%) *
+                          </label>
                           <input
                             type="text"
                             id="agency_commission_display"
@@ -1151,21 +1506,39 @@ const AddEstimationScreen = () => {
                             placeholder="Enter Display Commission Percentage"
                             value={userInfo?.agency_commission_display}
                             onChange={(e) => {
-                              setErrorData({...errorData,agency_commission_display:""})
+                              setErrorData({
+                                ...errorData,
+                                agency_commission_display: "",
+                              });
                               const value = e.target.value;
                               // Allow only numeric characters and decimal point
                               if (/^\d{0,3}$/.test(value)) {
-                                setUserInfo({ ...userInfo, agency_commission_display: value });
+                                setUserInfo({
+                                  ...userInfo,
+                                  agency_commission_display: value,
+                                });
                               }
                             }}
                           />
-                          <span className="errorText">{errorData?.agency_commission_display ? errorData.agency_commission_display : ""}</span>
+                          <span className="errorText">
+                            {errorData?.agency_commission_display
+                              ? errorData.agency_commission_display
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={errorData?.agency_commission_mounting ? "input_box errorBox" : "input_box"}>
-                          <label htmlFor="agency_commission_mounting">Agency Commission on Mounting (%) *</label>
+                        <div
+                          className={
+                            errorData?.agency_commission_mounting
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
+                          <label htmlFor="agency_commission_mounting">
+                            Agency Commission on Mounting (%) *
+                          </label>
                           <input
                             type="text"
                             id="agency_commission_mounting"
@@ -1174,21 +1547,39 @@ const AddEstimationScreen = () => {
                             placeholder="Enter Mounting Commission Percentage"
                             value={userInfo?.agency_commission_mounting}
                             onChange={(e) => {
-                              setErrorData({...errorData,agency_commission_mounting:""})
+                              setErrorData({
+                                ...errorData,
+                                agency_commission_mounting: "",
+                              });
                               const value = e.target.value;
                               // Allow only numeric characters and decimal point
                               if (/^\d{0,3}$/.test(value)) {
-                                setUserInfo({ ...userInfo, agency_commission_mounting: value });
+                                setUserInfo({
+                                  ...userInfo,
+                                  agency_commission_mounting: value,
+                                });
                               }
                             }}
                           />
-                          <span className="errorText">{errorData?.agency_commission_mounting ? errorData.agency_commission_mounting : ""}</span>
+                          <span className="errorText">
+                            {errorData?.agency_commission_mounting
+                              ? errorData.agency_commission_mounting
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={errorData?.agency_commission_printing ? "input_box errorBox" : "input_box"}>
-                          <label htmlFor="commission_printing">Agency Commission on Printing (%) *</label>
+                        <div
+                          className={
+                            errorData?.agency_commission_printing
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
+                          <label htmlFor="commission_printing">
+                            Agency Commission on Printing (%) *
+                          </label>
                           <input
                             type="text"
                             id="commission_printing"
@@ -1197,22 +1588,39 @@ const AddEstimationScreen = () => {
                             placeholder="Enter Printing Commission Percentage"
                             value={userInfo?.agency_commission_printing}
                             onChange={(e) => {
-                              setErrorData({...errorData,agency_commission_printing:""})
+                              setErrorData({
+                                ...errorData,
+                                agency_commission_printing: "",
+                              });
                               const value = e.target.value;
                               // Allow only numeric characters and decimal point
                               if (/^\d{0,3}$/.test(value)) {
-                                setUserInfo({ ...userInfo, agency_commission_printing: value });
+                                setUserInfo({
+                                  ...userInfo,
+                                  agency_commission_printing: value,
+                                });
                               }
                             }}
                           />
-                          <span className="errorText">{errorData?.agency_commission_printing ? errorData.agency_commission_printing : ""}</span>
+                          <span className="errorText">
+                            {errorData?.agency_commission_printing
+                              ? errorData.agency_commission_printing
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
-
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className={errorData?.total_agency_commision ? "input_box errorBox" : "input_box"}>
-                          <label htmlFor="commission_printing">Total Agency Commission</label>
+                        <div
+                          className={
+                            errorData?.total_agency_commision
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
+                          <label htmlFor="commission_printing">
+                            Total Agency Commission
+                          </label>
                           <input
                             type="text"
                             id="commission_printing"
@@ -1221,15 +1629,25 @@ const AddEstimationScreen = () => {
                             placeholder="Enter Total Agency Commission"
                             value={userInfo?.total_agency_commision}
                             onChange={(e) => {
-                              setErrorData({...errorData,total_agency_commision:""})
+                              setErrorData({
+                                ...errorData,
+                                total_agency_commision: "",
+                              });
                               const value = e.target.value;
                               // Allow only numeric characters and decimal point
                               if (/^\d{0,3}$/.test(value)) {
-                                setUserInfo({ ...userInfo, total_agency_commision: value });
+                                setUserInfo({
+                                  ...userInfo,
+                                  total_agency_commision: value,
+                                });
                               }
                             }}
                           />
-                          <span className="errorText">{errorData?.agency_commission_printing ? errorData.agency_commission_printing : ""}</span>
+                          <span className="errorText">
+                            {errorData?.agency_commission_printing
+                              ? errorData.agency_commission_printing
+                              : ""}
+                          </span>
                         </div>
                       </div>
                     </>
@@ -1241,386 +1659,603 @@ const AddEstimationScreen = () => {
                 <span className="text_bold">Approval Details </span>
               </div>
               <div className="add_user_form">
-              <div className="row ">
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.submitted_date ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="submitted_date">Submitted Date </label>
-                  <input
-                    type="date"
-                    id="submitted_date"
-                    className="form-control"
-                    disabled={viewMode}
-                    min={new Date().toISOString().split('T')[0]} 
-                    onPaste={(e) => e.preventDefault()}
-                    onKeyDown={(e) => e.preventDefault()}
-                    value={userInfo?.submitted_date ? moment(userInfo?.submitted_date).format(
-                      "YYYY-MM-DD"
-                    ):""}
-                    onChange={(e) => setUserInfo({ ...userInfo, submitted_date: e.target.value })}
-                  />
-                  <span className="errorText">{errorData?.submitted_date ? errorData.submitted_date : ""}</span>
-                </div>
-              </div>
-
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-              <div className={errorData?.approval_status ? "input_box errorBox" : "input_box"}>
-                <label htmlFor="approval_status">Approval Status </label>
-                <input
-                  type="text"
-                  id="approval_status"
-                  className="form-control"
-                  disabled={viewMode}
-                  placeholder="Enter Approval Status"
-                  value={userInfo?.approval_status}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    // Allow only alphabetic characters (including spaces)
-                    if (/^[A-Za-z0-9\s]*$/.test(value)) {
-                      setUserInfo({ ...userInfo, approval_status: value });
-                    }
-                  }}
-                />
-                <span className="errorText">{errorData?.approval_status ? errorData.approval_status : ""}</span>
-              </div>
-            </div>
-
-
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.approved_date ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="approved_date">Approved Date </label>
-                  <input
-                    type="date"
-                    id="approved_date"
-                    disabled={viewMode}
-                    className="form-control"
-                    min={new Date().toISOString().split('T')[0]} 
-                    onPaste={(e) => e.preventDefault()}
-                    onKeyDown={(e) => e.preventDefault()}
-                    value={userInfo?.approved_date ? moment(userInfo?.approved_date).format(
-                      "YYYY-MM-DD"
-                    ):""}
-                    onChange={(e) => setUserInfo({ ...userInfo, approved_date: e.target.value })}
-                  />
-                  <span className="errorText">{errorData?.approved_date ? errorData.approved_date : ""}</span>
-                </div>
-              </div>
-
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.approval_comments ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="approval_comments">Approval Comments </label>
-                  <input
-                    type="text"
-                    id="approval_comments"
-                    className="form-control"
-                    disabled={viewMode}
-                    placeholder="Enter Approval Comments"
-                    value={userInfo?.approval_comments}
-                    onChange={(e) => {
-                      // Regular expression to match only alphabetic characters and spaces
-                      const value = e.target.value;
-              
-                        setUserInfo({ ...userInfo, approval_comments: value });
-                    }}
-                  
-                  />
-                  <span className="errorText">{errorData?.approval_comments ? errorData.approval_comments : ""}</span>
-                </div>
-              </div>
-
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.rejected_date ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="rejected_date">Rejected Date </label>
-                  <input
-                    type="date"
-                    id="rejected_date"
-                    className="form-control"
-                    disabled={viewMode}
-                    min={new Date().toISOString().split('T')[0]} 
-                    onPaste={(e) => e.preventDefault()}
-                    onKeyDown={(e) => e.preventDefault()}
-                    value={userInfo?.rejected_date ? moment(userInfo?.rejected_date).format(
-                      "YYYY-MM-DD"
-                    ):""}
-                    onChange={(e) => setUserInfo({ ...userInfo, rejected_date: e.target.value })}
-                  />
-                  <span className="errorText">{errorData?.rejected_date ? errorData.rejected_date : ""}</span>
-                </div>
-              </div>
-
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.rejection_comments ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="rejection_comments">Rejection Comments </label>
-                  <input
-                    type="text"
-                    id="rejection_comments"
-                    className="form-control"
-                    disabled={viewMode}
-                    placeholder="Enter Rejection Comments"
-                    value={userInfo?.rejection_comments}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      // Allow only alphabetic characters (including spaces)
-                      if (/^[A-Za-z0-9\s]*$/.test(value)) {
-                        setUserInfo({ ...userInfo, rejection_comments: value });
+                <div className="row ">
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.submitted_date
+                          ? "input_box errorBox"
+                          : "input_box"
                       }
-                    }}
-                  />
-                  <span className="errorText">{errorData?.rejection_comments ? errorData.rejection_comments : ""}</span>
-                </div>
-              </div>
+                    >
+                      <label htmlFor="submitted_date">Submitted Date </label>
+                      <input
+                        type="date"
+                        id="submitted_date"
+                        className="form-control"
+                        disabled={viewMode}
+                        min={new Date().toISOString().split("T")[0]}
+                        onPaste={(e) => e.preventDefault()}
+                        onKeyDown={(e) => e.preventDefault()}
+                        value={
+                          userInfo?.submitted_date
+                            ? moment(userInfo?.submitted_date).format(
+                                "YYYY-MM-DD"
+                              )
+                            : ""
+                        }
+                        onChange={(e) =>
+                          setUserInfo({
+                            ...userInfo,
+                            submitted_date: e.target.value,
+                          })
+                        }
+                      />
+                      <span className="errorText">
+                        {errorData?.submitted_date
+                          ? errorData.submitted_date
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
 
-              </div>
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.approval_status
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="approval_status">Approval Status </label>
+                      <input
+                        type="text"
+                        id="approval_status"
+                        className="form-control"
+                        disabled={viewMode}
+                        placeholder="Enter Approval Status"
+                        value={userInfo?.approval_status}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Allow only alphabetic characters (including spaces)
+                          if (/^[A-Za-z0-9\s]*$/.test(value)) {
+                            setUserInfo({
+                              ...userInfo,
+                              approval_status: value,
+                            });
+                          }
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.approval_status
+                          ? errorData.approval_status
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.approved_date
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="approved_date">Approved Date </label>
+                      <input
+                        type="date"
+                        id="approved_date"
+                        disabled={viewMode}
+                        className="form-control"
+                        min={new Date().toISOString().split("T")[0]}
+                        onPaste={(e) => e.preventDefault()}
+                        onKeyDown={(e) => e.preventDefault()}
+                        value={
+                          userInfo?.approved_date
+                            ? moment(userInfo?.approved_date).format(
+                                "YYYY-MM-DD"
+                              )
+                            : ""
+                        }
+                        onChange={(e) =>
+                          setUserInfo({
+                            ...userInfo,
+                            approved_date: e.target.value,
+                          })
+                        }
+                      />
+                      <span className="errorText">
+                        {errorData?.approved_date
+                          ? errorData.approved_date
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.approval_comments
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="approval_comments">
+                        Approval Comments{" "}
+                      </label>
+                      <input
+                        type="text"
+                        id="approval_comments"
+                        className="form-control"
+                        disabled={viewMode}
+                        placeholder="Enter Approval Comments"
+                        value={userInfo?.approval_comments}
+                        onChange={(e) => {
+                          // Regular expression to match only alphabetic characters and spaces
+                          const value = e.target.value;
+
+                          setUserInfo({
+                            ...userInfo,
+                            approval_comments: value,
+                          });
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.approval_comments
+                          ? errorData.approval_comments
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.rejected_date
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="rejected_date">Rejected Date </label>
+                      <input
+                        type="date"
+                        id="rejected_date"
+                        className="form-control"
+                        disabled={viewMode}
+                        min={new Date().toISOString().split("T")[0]}
+                        onPaste={(e) => e.preventDefault()}
+                        onKeyDown={(e) => e.preventDefault()}
+                        value={
+                          userInfo?.rejected_date
+                            ? moment(userInfo?.rejected_date).format(
+                                "YYYY-MM-DD"
+                              )
+                            : ""
+                        }
+                        onChange={(e) =>
+                          setUserInfo({
+                            ...userInfo,
+                            rejected_date: e.target.value,
+                          })
+                        }
+                      />
+                      <span className="errorText">
+                        {errorData?.rejected_date
+                          ? errorData.rejected_date
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div
+                      className={
+                        errorData?.rejection_comments
+                          ? "input_box errorBox"
+                          : "input_box"
+                      }
+                    >
+                      <label htmlFor="rejection_comments">
+                        Rejection Comments{" "}
+                      </label>
+                      <input
+                        type="text"
+                        id="rejection_comments"
+                        className="form-control"
+                        disabled={viewMode}
+                        placeholder="Enter Rejection Comments"
+                        value={userInfo?.rejection_comments}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Allow only alphabetic characters (including spaces)
+                          if (/^[A-Za-z0-9\s]*$/.test(value)) {
+                            setUserInfo({
+                              ...userInfo,
+                              rejection_comments: value,
+                            });
+                          }
+                        }}
+                      />
+                      <span className="errorText">
+                        {errorData?.rejection_comments
+                          ? errorData.rejection_comments
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="add_screen_head">
-                <span className="text_bold">Display, Mounting and Printing Cost </span>
+                <span className="text_bold">
+                  Display, Mounting and Printing Cost{" "}
+                </span>
               </div>
               <div className="add_user_form">
-              <div className="row ">
-                      {
-                DMPCArray?.map((item)=>(
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={item.id}>
-                  <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="campaign_brand">{item?.label} </label>
-                    <input
-                      type="number"
-                      id={item?.id}
-                      className="form-control"
-                      disabled={viewMode || item?.id==="total_selling_cost" || item?.id==="total_buying_cost" }
-                      placeholder={`Enter ${item?.label}`}
-                      value={userInfo?.[item?.id]}
-                      onChange={(e) => handleDMPCInfoChange(e,item?.fieldType)}
-                    />
-                    <span className="errorText">{errorData?.[item?.id] ? errorData?.[item?.id] : ""}</span>
-                  </div>
-                  </div>
-                ))
-              }
+                <div className="row ">
+                  {DMPCArray?.map((item) => (
+                    <div
+                      className="col-xl-3 col-md-3 col-sm-12 col-12"
+                      key={item.id}
+                    >
+                      <div
+                        className={
+                          errorData?.[item?.id]
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="campaign_brand">{item?.label} </label>
+                        <input
+                          type="number"
+                          id={item?.id}
+                          className="form-control"
+                          disabled={
+                            viewMode ||
+                            item?.id === "total_selling_cost" ||
+                            item?.id === "total_buying_cost"
+                          }
+                          placeholder={`Enter ${item?.label}`}
+                          value={userInfo?.[item?.id]}
+                          onChange={(e) =>
+                            handleDMPCInfoChange(e, item?.fieldType)
+                          }
+                        />
+                        <span className="errorText">
+                          {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              </div>
-              
+
               <div className="add_screen_head">
                 <span className="text_bold">Total Cost</span>
               </div>
               <div className="add_user_form">
-              <div className="row ">
-                      {
-                TotalCostArray?.map((item)=>(
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={item.id}>
-                  <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="campaign_brand">{item?.label} </label>
-                    <input
-                      type="number"
-                      id={item?.id}
-                      className="form-control"
-                      disabled={viewMode || item?.id==="total_vendor_cost_with_tax" || item?.id==="total_client_cost_with_tax" }
-                      placeholder={`Enter ${item?.label}`}
-                      value={userInfo?.[item?.id]}
-                      onChange={(e) => handleTotalCostInfoChange(e,item?.fieldType)}
-                    />
-                    <span className="errorText">{errorData?.[item?.id] ? errorData?.[item?.id] : ""}</span>
-                  </div>
-                  </div>
-                ))
-              }
-              </div>
+                <div className="row ">
+                  {TotalCostArray?.map((item) => (
+                    <div
+                      className="col-xl-3 col-md-3 col-sm-12 col-12"
+                      key={item.id}
+                    >
+                      <div
+                        className={
+                          errorData?.[item?.id]
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="campaign_brand">{item?.label} </label>
+                        <input
+                          type="number"
+                          id={item?.id}
+                          className="form-control"
+                          disabled={
+                            viewMode ||
+                            item?.id === "total_vendor_cost_with_tax" ||
+                            item?.id === "total_client_cost_with_tax"
+                          }
+                          placeholder={`Enter ${item?.label}`}
+                          value={userInfo?.[item?.id]}
+                          onChange={(e) =>
+                            handleTotalCostInfoChange(e, item?.fieldType)
+                          }
+                        />
+                        <span className="errorText">
+                          {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="add_screen_head">
                 <span className="text_bold">Additional Information</span>
               </div>
               <div className="add_user_form">
-              <div className="row ">
-                      {
-                additionalInfoArray?.map((item)=>(
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={item.id}>
-                  <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="campaign_brand">{item?.label} </label>
-                    <input
-                      type="number"
-                      id={item?.id}
-                      className="form-control"
-                      disabled={viewMode }
-                      placeholder={`Enter ${item?.label}`}
-                      value={userInfo?.[item?.id]}
-                      onChange={(e) => handleTotalCostInfoChange(e,item?.fieldType)}
-                    />
-                    <span className="errorText">{errorData?.[item?.id] ? errorData?.[item?.id] : ""}</span>
-                  </div>
-                  </div>
-                ))
-              }
+                <div className="row ">
+                  {additionalInfoArray?.map((item) => (
+                    <div
+                      className="col-xl-3 col-md-3 col-sm-12 col-12"
+                      key={item.id}
+                    >
+                      <div
+                        className={
+                          errorData?.[item?.id]
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="campaign_brand">{item?.label} </label>
+                        <input
+                          type="number"
+                          id={item?.id}
+                          className="form-control"
+                          disabled={viewMode}
+                          placeholder={`Enter ${item?.label}`}
+                          value={userInfo?.[item?.id]}
+                          onChange={(e) =>
+                            handleTotalCostInfoChange(e, item?.fieldType)
+                          }
+                        />
+                        <span className="errorText">
+                          {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              </div>
-              
+
               <div className="add_screen_head">
                 <span className="text_bold">Margin Information </span>
               </div>
               <div className="add_user_form">
-              <div className="row ">
+                <div className="row ">
+                  {marginInfoArray?.map((item) => (
+                    <div
+                      className="col-xl-3 col-md-3 col-sm-12 col-12"
+                      key={item.id}
+                    >
+                      <div
+                        className={
+                          errorData?.[item?.id]
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor="campaign_brand">{item?.label} </label>
+                        <input
+                          type="text"
+                          id={item?.id}
+                          className="form-control"
+                          disabled={viewMode}
+                          placeholder={`Enter ${item?.label}`}
+                          value={userInfo?.[item?.id]}
+                          onChange={(e) =>
+                            handleMarginInfoChange(e, item?.fieldType)
+                          }
+                        />
+                        <span className="errorText">
+                          {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {busiessTypeList?.find(
+                (item) =>
+                  item?.cmpn_b_t_id == userInfo?.db_media_campaign?.cmpn_b_t_id
+              )?.cmpn_b_t_name == "Asset" && (
+                <>
+                  <div className="add_screen_head">
+                    <span className="text_bold">Asset Sites</span>
+                  </div>
+                  <div className="add_user_form">
+                    <div className="row ">
+                      {assetSiteLists?.filter((item) => item.status == true)
+                        .length > 0 ? (
+                        <Table bordered hover responsive>
+                          <thead>
+                            <tr>
+                              <th>Site ID</th>
+                              <th>State</th>
+                              <th>City</th>
+                              <th>Location</th>
+                              <th>Category</th>
+                              <th>Media Format</th>
+                              <th>Media Vehicle</th>
+                              <th>Media Type</th>
+                              <th>Quantity</th>
+                              <th>Height (Ft.)</th>
+                              <th>Width (Ft.)</th>
+                              <th>Total Sq. Ft.</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {assetSiteLists
+                              ?.filter((item) => item.status == true)
+                              ?.map((site) => (
+                                <tr key={site.site_id}>
+                                  <td>{site.site_id}</td>
+                                  <td>{site?.db_site?.db_state?.state_name}</td>
+                                  <td>{site?.db_site?.db_city?.city_name}</td>
+                                  <td>{site?.db_site?.location}</td>
+                                  <td>
+                                    {
+                                      site?.db_site?.db_site_category
+                                        ?.site_cat_name
+                                    }
+                                  </td>
+                                  <td>
+                                    {site?.db_site?.db_media_format?.m_f_name}
+                                  </td>
+                                  <td>
+                                    {site?.db_site?.db_media_vehicle?.m_v_name}
+                                  </td>
+                                  <td>
+                                    {site?.db_site?.db_media_type?.m_t_name}
+                                  </td>
+                                  <td>{site?.db_site.quantity}</td>
+                                  <td>{site?.db_site.height}</td>
+                                  <td>{site?.db_site.width}</td>
+                                  <td>
+                                    {site?.db_site.height * site?.db_site.width}
+                                  </td>
+                                  {!viewMode ? (
+                                    <td className="table_btns">
+                                      <button
+                                        className="action_btn"
+                                        title="Delete"
+                                        onClick={() => {
+                                          deleteAssetSite(site.site_id);
+                                        }}
+                                      >
+                                        <DeleteIcon />
+                                      </button>
+                                    </td>
+                                  ) : (
+                                    ""
+                                  )}
+                                </tr>
+                              ))}
+                          </tbody>
+                        </Table>
+                      ) : (
+                        <p>No sites available</p>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {busiessTypeList?.find(
+                (item) =>
+                  item?.cmpn_b_t_id == userInfo?.db_media_campaign?.cmpn_b_t_id
+              )?.cmpn_b_t_name == "Agency" && (
+                <>
+                  <div className="add_screen_head">
+                    <span className="text_bold">Agency Sites</span>
+                  </div>
+                  <div className="add_user_form">
+                    <div className="row ">
+                      {agencySiteLists?.filter((item) => item.status == true)
+                        .length > 0 ? (
+                        <Table bordered hover responsive>
+                          <thead>
+                            <tr>
+                              <th>Site ID</th>
+                              <th>State</th>
+                              <th>City</th>
+                              <th>Location</th>
+                              <th>Media Format</th>
+                              <th>Media Vehicle</th>
+                              <th>Media Type</th>
+                              <th>Quantity</th>
+                              <th>Height (Ft.)</th>
+                              <th>Width (Ft.)</th>
+                              <th>Total Sq. Ft.</th>
+                              <th>Client Display Cost</th>
+                              <th>Client Mounting Cost / Sq. Ft.</th>
+                              <th>Client Printing Cost / Sq. Ft.</th>
+                              <th>Edit</th>
+                              <th>Delete</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {agencySiteLists
+                              ?.filter((item) => item.status == true)
+                              ?.map((site) => (
+                                <tr key={site.site_id}>
+                                  <td>{site.site_id}</td>
+                                  <td>{site?.state_id}</td>
+                                  <td>{site?.city_id}</td>
+                                  <td>{site?.location}</td>
+                              
+                                  <td>
+                                    {site?.m_f_id}
+                                  </td>
+                                  <td>
+                                    {site?.m_v_id}
+                                  </td>
+                                  <td>
+                                    {site?.m_t_id}
+                                  </td>
+                                  <td>{site?.quantity}</td>
+                                  <td>{site?.height}</td>
+                                  <td>{site?.width}</td>
+                                  <td>
+                                    {site?.height * site?.width}
+                                  </td>
+                                  <td>{site?.client_display_cost}</td>
+                                  <td>{site?.client_mounting_cost}</td>
+                                  <td>{site?.client_printing_cost}</td>
+
+                                  {!viewMode ? (
+                              
+                                    <td className="table_btns">
+                                      <button
+                                        className="action_btn"
+                                        title="Edit"
+                                        onClick={() => {
+                                          setAgencySiteData(site);
+                                          setShow(true)
+                                        }}
+                                      >
+                                        <EditIcon />
+                                      </button>
+                                    </td> 
+                                  ) : (
+                                    ""
+                                  )}
+
+
+                              {!viewMode ? (
+                              
+                              <td className="delete-btn">
+                                <button
+                                  className="action_btn"
+                                  title="Edit"
+                                  onClick={() => {
+                                    deleteAgencySite(site.site_id);
+                                    setShow(true)
+                                  }}
+                                >
+                                  <DeleteIcon />
+                                </button>
+                              </td> 
+                            ) : (
+                              ""
+                            )}
+  
+                                </tr>
+
+                              
+                              ))}
+                          </tbody>
+                        </Table>
+                      ) : (
+                        <p>No sites available</p>
+                      )}
                       {
-                marginInfoArray?.map((item)=>(
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={item.id}>
-                  <div className={errorData?.[item?.id] ? "input_box errorBox" : "input_box"}>
-                    <label htmlFor="campaign_brand">{item?.label} </label>
-                    <input
-                      type="text"
-                      id={item?.id}
-                      className="form-control"
-                      disabled={viewMode }
-                      placeholder={`Enter ${item?.label}`}
-                      value={userInfo?.[item?.id]}
-                      onChange={(e) => handleMarginInfoChange(e,item?.fieldType)}
-                    />
-                    <span className="errorText">{errorData?.[item?.id] ? errorData?.[item?.id] : ""}</span>
+                        
+      <ModelEditAgencySite
+      show={show}
+      handleClose={handleClose}
+      agencySiteData={agencySiteData}
+  
+    />
+                      }
+                    </div>
                   </div>
-                  </div>
-                ))
-              }
-              </div>
-              </div>
-              
-
-
-              {
-
-                busiessTypeList?.find((item)=>item?.cmpn_b_t_id==userInfo?.db_media_campaign?.cmpn_b_t_id)?.cmpn_b_t_name=="Asset" && (
-                  <>
-                         <div className="add_screen_head">
-                <span className="text_bold">Asset Sites </span>
-              </div>
-              <div className="add_user_form">
-                  <div className="row ">
-                  {assetSiteLists?.filter((item)=>item.status==true).length > 0 ? (
-            <Table  bordered hover responsive>
-              <thead>
-                <tr>
-                  <th>Site ID</th>
-                  <th>State</th>
-                  <th>City</th>
-                  <th>Location</th>
-                  <th>Category</th>
-                  <th>Media Format</th>
-                  <th>Media Vehicle</th>
-                  <th>Media Type</th>
-                  <th>Quantity</th>
-                  <th>Height (Ft.)</th>
-                  <th>Width (Ft.)</th>
-                  <th>Total Sq. Ft.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {assetSiteLists?.filter((item)=>item.status==true)?.map((site) => (
-                  <tr key={site.site_id}>
-                    <td>{site.site_id}</td>
-                    <td>{site?.db_site?.db_state?.state_name}</td>
-                    <td>{site?.db_site?.db_city?.city_name}</td>
-                    <td>{site?.db_site.location}</td>
-                    <td>{site?.db_site?.db_site_category?.site_cat_name}</td>
-                    <td>{site?.db_site?.db_media_format?.m_f_name}</td>
-                    <td>{site?.db_site?.db_media_vehicle?.m_v_name}</td>
-                    <td>{site?.db_site?.db_media_type?.m_t_name}</td>
-                    <td>{site?.db_site.quantity}</td>
-                    <td>{site?.db_site.height}</td>
-                    <td>{site?.db_site.width}</td>
-                    <td>{(site?.db_site.height*site?.db_site.width)}</td>
-                    {
-                      !viewMode ? <td className="table_btns">
-                      <button
-                        className="action_btn"
-                        title="Delete"
-                        onClick={()=>{
-                            deleteAssetSite(site.site_id)
-                        }}
-                      >
-                        <DeleteIcon />
-                      </button>
-                      </td> :""
-                    }
-                    
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          ) : (
-            <p>No sites available</p>
-          )}
-                  </div>
-              </div>
-                  </>
-                )
-              }
-
-               {
-
-                busiessTypeList?.find((item)=>item?.cmpn_b_t_id==userInfo?.db_media_campaign?.cmpn_b_t_id)?.cmpn_b_t_name=="Agency" && (
-                  <>
-                         <div className="add_screen_head">
-                <span className="text_bold">Agency Sites </span>
-              </div>
-              <div className="add_user_form">
-                  <div className="row ">
-                  {assetSiteLists?.filter((item)=>item.status==true).length > 0 ? (
-            <Table  bordered hover responsive>
-              <thead>
-                <tr>
-                  <th>Site ID</th>
-                  <th>State</th>
-                  <th>City</th>
-                  <th>Location</th>
-                  <th>Category</th>
-                  <th>Media Format</th>
-                  <th>Media Vehicle</th>
-                  <th>Media Type</th>
-                  <th>Quantity</th>
-                  <th>Height (Ft.)</th>
-                  <th>Width (Ft.)</th>
-                  <th>Total Sq. Ft.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {assetSiteLists?.filter((item)=>item.status==true)?.map((site) => (
-                  <tr key={site.site_id}>
-                    <td>{site.site_id}</td>
-                    <td>{site?.db_site?.db_state?.state_name}</td>
-                    <td>{site?.db_site?.db_city?.city_name}</td>
-                    <td>{site?.db_site.location}</td>
-                    <td>{site?.db_site?.db_site_category?.site_cat_name}</td>
-                    <td>{site?.db_site?.db_media_format?.m_f_name}</td>
-                    <td>{site?.db_site?.db_media_vehicle?.m_v_name}</td>
-                    <td>{site?.db_site?.db_media_type?.m_t_name}</td>
-                    <td>{site?.db_site.quantity}</td>
-                    <td>{site?.db_site.height}</td>
-                    <td>{site?.db_site.width}</td>
-                    <td>{(site?.db_site.height*site?.db_site.width)}</td>
-                    {
-                      !viewMode ? <td className="table_btns">
-                      <button
-                        className="action_btn"
-                        title="Delete"
-                        onClick={()=>{
-                            deleteAssetSite(site.site_id)
-                        }}
-                      >
-                        <DeleteIcon />
-                      </button>
-                      </td> :""
-                    }
-                    
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          ) : (
-            <p>No sites available</p>
-          )}
-                  </div>
-              </div>
-                  </>
-                )
-              }
-             
-
+                </>
+              )}
 
               <div className="add_screen_head">
                 <span className="text_bold">System Information </span>
@@ -1673,7 +2308,6 @@ const AddEstimationScreen = () => {
                   </div>
                 </div>
               </div>
-
 
               <div className="add_user_form">
                 <div className="row">
@@ -1804,7 +2438,6 @@ const AddEstimationScreen = () => {
                             </div>
                           </>
                         )}
-                        
 
                         {newFields.input_type === "select" && (
                           <div className="col-xl-4 col-md-4 col-sm-12 col-12">
@@ -1888,8 +2521,6 @@ const AddEstimationScreen = () => {
                 </div>
               </div>
             </div>
-
-            
           </div>
         </div>
       </div>

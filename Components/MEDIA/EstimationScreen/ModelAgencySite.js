@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import Select from "react-select";
@@ -14,386 +15,806 @@ const ModelAgencySite = ({
   userInfo,
   estimateId
 }) => {
-    const [rows, setRows] = useState([{
-      state: '',
-      city: '',
-      location: '',
-      mediaFormat: '',
-      mediaVehicle: '',
-      mediaType: '',
-      quantity: '',
-      height: '',
-      width: '',
-      totalSqFt: '',
-      clientDisplayCost: '',
-      clientMountingCost: '',
-      clientPrintingCost: '',
-      cityList: [],  // Track city list for each row
-    }]);
+  const [rows, setRows] = useState([{
+    state: '',
+    city: '',
+    location: '',
+    mediaFormat: '',
+    mediaVehicle: '',
+    mediaType: '',
+    quantity: '',
+    height: '',
+    width: '',
+    totalSqFt: '',
+    clientDisplayCost: '',
+    clientMountingCost: '',
+    clientPrintingCost: '',
+    cityList: [],  // Track city list for each row
+  }]);
 
-    const [mediaFormats, setMediaFormats] = useState([]);
-    const [mediaVehicles, setMediaVehicles] = useState([]);
-    const [mediaTypes, setMediaTypes] = useState([]);
-    const [stateList, setStateList] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState({});
-    const defaultCountryId = 101;
+  const [mediaFormats, setMediaFormats] = useState([]);
+  const [mediaVehicles, setMediaVehicles] = useState([]);
+  const [mediaTypes, setMediaTypes] = useState([]);
+  const [stateList, setStateList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState({});
+  const defaultCountryId = 101;
 
-    // Fetch data utility function
-    const fetchData = async (url, dataKey) => {
-        const token = getCookie("token");
-        const db_name = getCookie("db_name");
+  // Fetch data utility function
+  const fetchData = async (url, dataKey) => {
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
 
-        const headers = {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-            db: db_name,
-            pass: "pass",
-        };
-
-        try {
-            const response = await axios.get(Baseurl + url, { headers });
-            if (response.status === 200) {
-                return response.data[dataKey];
-            }
-            throw new Error("Failed to fetch");
-        } catch (error) {
-            toast.error(error?.response?.data?.message || "Something went wrong!");
-            return [];
-        }
+    const headers = {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+      db: db_name,
+      pass: "pass",
     };
 
-    // Fetch states
-    const getStates = async (countryId = defaultCountryId) => {
-        const states = await fetchData(`/db/area/states?cnt_id=${countryId}`, 'data');
-        const formattedStates = states.map(state => ({
-            value: state.state_id,
-            label: state.state_name
-        }));
-        setStateList(formattedStates);
+    try {
+      const response = await axios.get(Baseurl + url, { headers });
+      if (response.status === 200) {
+        return response.data[dataKey];
+      }
+      throw new Error("Failed to fetch");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+      return [];
+    }
+  };
+
+  // Fetch states
+  const getStates = async (countryId = defaultCountryId) => {
+    const states = await fetchData(`/db/area/states?cnt_id=${countryId}`, 'data');
+    const formattedStates = states.map(state => ({
+      value: state.state_id,
+      label: state.state_name
+    }));
+    setStateList(formattedStates);
+  };
+
+  // Fetch cities for a given state
+  const getCities = async (stateId, rowIndex) => {
+    const cities = await fetchData(`/db/area/city?st_id=${stateId}`, 'data');
+    const formattedCities = cities.cityData.map(city => ({
+      value: city.city_id,
+      label: city.city_name
+    }));
+    
+    const updatedRows = [...rows];
+    updatedRows[rowIndex] = { ...updatedRows[rowIndex], cityList: formattedCities };
+    setRows(updatedRows);
+  };
+
+  // Fetch media formats
+  const getMediaFormats = async () => {
+    const formats = await fetchData(`/db/media/mediaFormat/getMediaFormat`, 'data');
+    const formattedFormats = formats.map(format => ({
+      value: format.m_f_id,
+      label: format.m_f_name
+    }));
+    setMediaFormats(formattedFormats);
+  };
+
+  // Fetch media vehicles
+  const getMediaVehicles = async () => {
+    const vehicles = await fetchData(`/db/media/mediaVehicle/getMediaVehicle`, 'data');
+    const formattedVehicles = vehicles.map(vehicle => ({
+      value: vehicle.m_v_id,
+      label: vehicle.m_v_name
+    }));
+    setMediaVehicles(formattedVehicles);
+  };
+
+  // Fetch media types
+  const getMediaTypes = async () => {
+    const types = await fetchData(`/db/media/mediaType/getMediaType`, 'data');
+    const formattedTypes = types.map(type => ({
+      value: type.m_t_id,
+      label: type.m_t_name
+    }));
+    setMediaTypes(formattedTypes);
+  };
+
+  // Fetch all initial data when the modal is shown
+  useEffect(() => {
+    if (show) {
+      getMediaFormats();
+      getMediaVehicles();
+      getMediaTypes();
+      getStates(userInfo?.country_id || defaultCountryId);
+    }
+  }, [show, userInfo?.country_id]);
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError('');
+
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+
+    const headers = {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+      db: db_name,
+      pass: "pass",
+      'Content-Type': 'application/json'
     };
 
-    // Fetch cities for a given state
-    const getCities = async (stateId, rowIndex) => {
-        const cities = await fetchData(`/db/area/city?st_id=${stateId}`, 'data');
-        const formattedCities = cities.cityData.map(city => ({
-            value: city.city_id,
-            label: city.city_name
-        }));
-        
-        const updatedRows = [...rows];
-        updatedRows[rowIndex] = { ...updatedRows[rowIndex], cityList: formattedCities };
-        setRows(updatedRows);
-    };
+    const transformedRows = rows.map(row => ({
+      country_id: "India",
+      estimate_id: estimateId,
+      state_id: row.state,  // Include state_id in payload
+      city_id: row.city,  // Include city_id in payload
+      location: row.location,
+      m_f_id: row.mediaFormat,
+      m_v_id: row.mediaVehicle,
+      m_t_id: row.mediaType,
+      quantity: row.quantity,
+      height: row.height,
+      width: row.width,
+      total_sqft: row.totalSqFt,
+      client_display_cost: row.clientDisplayCost,
+      client_mounting_cost: row.clientMountingCost,
+      client_printing_cost: row.clientPrintingCost
+    }));
 
-    // Fetch media formats
-    const getMediaFormats = async () => {
-        const formats = await fetchData(`/db/media/mediaFormat/getMediaFormat`, 'data');
-        const formattedFormats = formats.map(format => ({
-            value: format.m_f_id,
-            label: format.m_f_name
-        }));
-        setMediaFormats(formattedFormats);
-    };
+    try {
+      const response = await axios.post(
+        `${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`,
+        { sites: transformedRows },
+        { headers }
+      );
 
-    // Fetch media vehicles
-    const getMediaVehicles = async () => {
-        const vehicles = await fetchData(`/db/media/mediaVehicle/getMediaVehicle`, 'data');
-        const formattedVehicles = vehicles.map(vehicle => ({
-            value: vehicle.m_v_id,
-            label: vehicle.m_v_name
-        }));
-        setMediaVehicles(formattedVehicles);
-    };
+      if (response.status === 200) {
+        toast.success("Data saved successfully!");
+        getSiteList();
+        handleClose3();
+      } else {
+        toast.error("Failed to save data. Please try again.");
+      }
+    } catch (error) {
+      setError(error?.response?.data?.message || "Something went wrong!");
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // Fetch media types
-    const getMediaTypes = async () => {
-        const types = await fetchData(`/db/media/mediaType/getMediaType`, 'data');
-        const formattedTypes = types.map(type => ({
-            value: type.m_t_id,
-            label: type.m_t_name
-        }));
-        setMediaTypes(formattedTypes);
-    };
+  // Handle input changes
+  const handleInputChange = (index, event) => {
+    const { name, value } = event.target;
+    const updatedRows = [...rows];
+    updatedRows[index] = { ...updatedRows[index], [name]: value };
 
-    // Fetch all initial data when the modal is shown
-    useEffect(() => {
-        if (show) {
-            getMediaFormats();
-            getMediaVehicles();
-            getMediaTypes();
-            getStates(userInfo?.country_id || defaultCountryId);
-        }
-    }, [show, userInfo?.country_id]);
+    if (name === 'height' || name === 'width') {
+      const height = parseFloat(updatedRows[index].height) || 0;
+      const width = parseFloat(updatedRows[index].width) || 0;
+      updatedRows[index].totalSqFt = (height * width).toFixed(2);
+    }
+    setRows(updatedRows);
+  };
 
-    // Handle form submission
-    const handleSubmit = async () => {
-        setLoading(true);
-        setError('');
+  // Handle select changes
+  const handleSelectChange = (index, fieldName, selectedOption) => {
+    const updatedRows = [...rows];
+    updatedRows[index] = { ...updatedRows[index], [fieldName]: selectedOption ? selectedOption.value : '' };
 
-        const token = getCookie("token");
-        const db_name = getCookie("db_name");
+    if (fieldName === 'state') {
+      updatedRows[index].city = ''; 
+      updatedRows[index].cityList = []; // Clear the city list when state changes
+      setRows(updatedRows);
+      getCities(selectedOption ? selectedOption.value : '', index);
+    }
+    
+    setRows(updatedRows);
+  };
 
-        const headers = {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-            db: db_name,
-            pass: "pass",
-            'Content-Type': 'application/json'
-        };
+  // Add a new row to the form
+  const handleAddRow = () => {
+    setRows([
+      ...rows,
+      {
+        state: '',
+        city: '',
+        location: '',
+        mediaFormat: '',
+        mediaVehicle: '',
+        mediaType: '',
+        quantity: '',
+        height: '',
+        width: '',
+        totalSqFt: '',
+        clientDisplayCost: '',
+        clientMountingCost: '',
+        clientPrintingCost: '',
+        cityList: [] // Initialize with an empty list
+      }
+    ]);
+  };
 
-        const transformedRows = rows.map(row => ({
-            country_id: "India",
-            estimate_id: estimateId,
-            state_id: row.state, // Ensure state_id is set
-            city_id: row.city,  // Ensure city_id is set
-            location: row.location,
-            m_f_id: row.mediaFormat,
-            m_v_id: row.mediaVehicle,
-            m_t_id: row.mediaType,
-            quantity: row.quantity,
-            height: row.height,
-            width: row.width,
-            total_sqft: row.totalSqFt,
-            client_display_cost: row.clientDisplayCost,
-            client_mounting_cost: row.clientMountingCost,
-            client_printing_cost: row.clientPrintingCost
-        }));
+  // Remove a row from the form
+  const handleRemoveRow = (index) => {
+    if (index !== 0) {
+      setRows(rows.filter((_, i) => i !== index));
+    }
+  };
 
-        console.log("Transformed Rows:", transformedRows); // Debugging
-
-        try {
-            const response = await axios.post(
-                `${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`,
-                { sites: transformedRows },
-                { headers }
-            );
-
-            if (response.status === 200) {
-                toast.success("Data saved successfully!");
-                getSiteList();
-                handleClose3();
-            } else {
-                toast.error("Failed to save data. Please try again.");
-            }
-        } catch (error) {
-            setError(error?.response?.data?.message || "Something went wrong!");
-            toast.error(error?.response?.data?.message || "Something went wrong!");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Handle input changes
-    const handleInputChange = (index, event) => {
-        const { name, value } = event.target;
-        const updatedRows = [...rows];
-        updatedRows[index] = { ...updatedRows[index], [name]: value };
-
-        if (name === 'height' || name === 'width') {
-            const height = parseFloat(updatedRows[index].height) || 0;
-            const width = parseFloat(updatedRows[index].width) || 0;
-            updatedRows[index].totalSqFt = (height * width).toFixed(2);
-        }
-        setRows(updatedRows);
-    };
-
-    // Handle select changes
-    const handleSelectChange = (index, fieldName, selectedOption) => {
-        const updatedRows = [...rows];
-        updatedRows[index] = { ...updatedRows[index], [fieldName]: selectedOption ? selectedOption.value : '' };
-
-        if (fieldName === 'state') {
-            updatedRows[index].city = ''; 
-            updatedRows[index].cityList = []; // Clear the city list when state changes
-            setRows(updatedRows);
-            getCities(selectedOption ? selectedOption.value : '', index);
-        }
-        
-        setRows(updatedRows);
-    };
-
-    // Add a new row to the form
-    const handleAddRow = () => {
-        setRows([
-            ...rows,
-            {
-                state: '',
-                city: '',
-                location: '',
-                mediaFormat: '',
-                mediaVehicle: '',
-                mediaType: '',
-                quantity: '',
-                height: '',
-                width: '',
-                totalSqFt: '',
-                clientDisplayCost: '',
-                clientMountingCost: '',
-                clientPrintingCost: '',
-                cityList: [] // Initialize with an empty list
-            }
-        ]);
-    };
-
-    // Remove a row from the form
-    const handleRemoveRow = (index) => {
-        if (index !== 0) {
-            setRows(rows.filter((_, i) => i !== index));
-        }
-    };
-
-    return (
-        <Modal show={show} onHide={handleClose3} size="xl">
-            <Modal.Header closeButton>
-                <Modal.Title>Add Agency Site</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {rows.map((row, index) => (
-                    <div key={index} className="row mb-3">
-                        <div className="col-md-2">
-                            <label>State</label>
-                            <Select
-                                options={stateList}
-                                value={stateList.find(option => option.value === row.state)}
-                                onChange={option => handleSelectChange(index, 'state', option)}
-                                placeholder="Select State"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>City</label>
-                            <Select
-                                options={row.cityList}
-                                value={row.cityList.find(option => option.value === row.city)}
-                                onChange={option => handleSelectChange(index, 'city', option)}
-                                placeholder="Select City"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>Location</label>
-                            <input
-                                type="text"
-                                name="location"
-                                value={row.location}
-                                onChange={event => handleInputChange(index, event)}
-                                className="form-control"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>Media Format</label>
-                            <Select
-                                options={mediaFormats}
-                                value={mediaFormats.find(option => option.value === row.mediaFormat)}
-                                onChange={option => handleSelectChange(index, 'mediaFormat', option)}
-                                placeholder="Select Media Format"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>Media Vehicle</label>
-                            <Select
-                                options={mediaVehicles}
-                                value={mediaVehicles.find(option => option.value === row.mediaVehicle)}
-                                onChange={option => handleSelectChange(index, 'mediaVehicle', option)}
-                                placeholder="Select Media Vehicle"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>Media Type</label>
-                            <Select
-                                options={mediaTypes}
-                                value={mediaTypes.find(option => option.value === row.mediaType)}
-                                onChange={option => handleSelectChange(index, 'mediaType', option)}
-                                placeholder="Select Media Type"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>Quantity</label>
-                            <input
-                                type="number"
-                                name="quantity"
-                                value={row.quantity}
-                                onChange={event => handleInputChange(index, event)}
-                                className="form-control"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>Height</label>
-                            <input
-                                type="number"
-                                name="height"
-                                value={row.height}
-                                onChange={event => handleInputChange(index, event)}
-                                className="form-control"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>Width</label>
-                            <input
-                                type="number"
-                                name="width"
-                                value={row.width}
-                                onChange={event => handleInputChange(index, event)}
-                                className="form-control"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>Total Sq Ft</label>
-                            <input
-                                type="text"
-                                name="totalSqFt"
-                                value={row.totalSqFt}
-                                readOnly
-                                className="form-control"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>Client Display Cost</label>
-                            <input
-                                type="number"
-                                name="clientDisplayCost"
-                                value={row.clientDisplayCost}
-                                onChange={event => handleInputChange(index, event)}
-                                className="form-control"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>Client Mounting Cost</label>
-                            <input
-                                type="number"
-                                name="clientMountingCost"
-                                value={row.clientMountingCost}
-                                onChange={event => handleInputChange(index, event)}
-                                className="form-control"
-                            />
-                        </div>
-                        <div className="col-md-2">
-                            <label>Client Printing Cost</label>
-                            <input
-                                type="number"
-                                name="clientPrintingCost"
-                                value={row.clientPrintingCost}
-                                onChange={event => handleInputChange(index, event)}
-                                className="form-control"
-                            />
-                        </div>
-                        <div className="col-md-1 mt-4">
-                            <Button variant="danger" onClick={() => handleRemoveRow(index)}>Remove</Button>
-                        </div>
-                    </div>
-                ))}
-                <Button variant="primary" onClick={handleAddRow}>Add Row</Button>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose3}>Close</Button>
-                <Button variant="primary" onClick={handleSubmit} disabled={loading}>
-                    {loading ? "Saving..." : "Save"}
+  return (
+    <Modal show={show} onHide={handleClose3} size="xl">
+      <Modal.Header closeButton>
+        <Modal.Title>Add Agency Site</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {rows.map((row, index) => (
+          <div key={index} className="row mb-3">
+            <div className="col-md-2">
+              <label>State</label>
+              <Select
+                options={stateList}
+                value={stateList.find(option => option.value === row.state)}
+                onChange={option => handleSelectChange(index, 'state', option)}
+                placeholder="Select State"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>City</label>
+              <Select
+                options={row.cityList}
+                value={row.cityList.find(option => option.value === row.city)}
+                onChange={option => handleSelectChange(index, 'city', option)}
+                placeholder="Select City"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>Location</label>
+              <input
+                type="text"
+                name="location"
+                value={row.location}
+                onChange={event => handleInputChange(index, event)}
+                className="form-control"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>Media Format</label>
+              <Select
+                options={mediaFormats}
+                value={mediaFormats.find(option => option.value === row.mediaFormat)}
+                onChange={option => handleSelectChange(index, 'mediaFormat', option)}
+                placeholder="Select Media Format"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>Media Vehicle</label>
+              <Select
+                options={mediaVehicles}
+                value={mediaVehicles.find(option => option.value === row.mediaVehicle)}
+                onChange={option => handleSelectChange(index, 'mediaVehicle', option)}
+                placeholder="Select Media Vehicle"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>Media Type</label>
+              <Select
+                options={mediaTypes}
+                value={mediaTypes.find(option => option.value === row.mediaType)}
+                onChange={option => handleSelectChange(index, 'mediaType', option)}
+                placeholder="Select Media Type"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>Quantity</label>
+              <input
+                type="number"
+                name="quantity"
+                value={row.quantity}
+                onChange={event => handleInputChange(index, event)}
+                className="form-control"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>Height</label>
+              <input
+                type="number"
+                name="height"
+                value={row.height}
+                onChange={event => handleInputChange(index, event)}
+                className="form-control"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>Width</label>
+              <input
+                type="number"
+                name="width"
+                value={row.width}
+                onChange={event => handleInputChange(index, event)}
+                className="form-control"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>Total Sq. Ft.</label>
+              <input
+                type="text"
+                name="totalSqFt"
+                value={row.totalSqFt}
+                readOnly
+                className="form-control"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>Client Display Cost</label>
+              <input
+                type="number"
+                name="clientDisplayCost"
+                value={row.clientDisplayCost}
+                onChange={event => handleInputChange(index, event)}
+                className="form-control"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>Client Mounting Cost</label>
+              <input
+                type="number"
+                name="clientMountingCost"
+                value={row.clientMountingCost}
+                onChange={event => handleInputChange(index, event)}
+                className="form-control"
+              />
+            </div>
+            <div className="col-md-2">
+              <label>Client Printing Cost</label>
+              <input
+                type="number"
+                name="clientPrintingCost"
+                value={row.clientPrintingCost}
+                onChange={event => handleInputChange(index, event)}
+                className="form-control"
+              />
+            </div>
+            {/* Remove Row Button */}
+            <div className="col-md-12 text-right mt-3">
+              {index !== 0 && (
+                <Button variant="danger" onClick={() => handleRemoveRow(index)}>
+                  Remove Row
                 </Button>
-            </Modal.Footer>
-        </Modal>
-    );
+              )}
+            </div>
+          </div>
+        ))}
+        <div className="text-right">
+          <Button variant="primary" onClick={handleAddRow}>
+            Add Row
+          </Button>
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose3}>
+          Close
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save"}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 };
 
 export default ModelAgencySite;
+
+
+
+
+
+
+
+
+
+
+//12
+// import React, { useState, useEffect } from "react";
+// import { Button, Modal } from "react-bootstrap";
+// import Select from "react-select";
+// import axios from "axios";
+// import { Baseurl } from "../../../Utils/Constants";
+// import { toast } from "react-toastify";
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import { getCookie } from "cookies-next";
+
+// const ModelAgencySite = ({
+//   show,
+//   handleClose3,
+//   getSiteList,
+//   userInfo,
+//   estimateId
+// }) => {
+//     const [rows, setRows] = useState([{
+//       state: '',
+//       city: '',
+//       location: '',
+//       mediaFormat: '',
+//       mediaVehicle: '',
+//       mediaType: '',
+//       quantity: '',
+//       height: '',
+//       width: '',
+//       totalSqFt: '',
+//       clientDisplayCost: '',
+//       clientMountingCost: '',
+//       clientPrintingCost: '',
+//       cityList: [],  // Track city list for each row
+//     }]);
+
+//     const [mediaFormats, setMediaFormats] = useState([]);
+//     const [mediaVehicles, setMediaVehicles] = useState([]);
+//     const [mediaTypes, setMediaTypes] = useState([]);
+//     const [stateList, setStateList] = useState([]);
+//     const [loading, setLoading] = useState(false);
+//     const [error, setError] = useState({});
+//     const defaultCountryId = 101;
+
+//     // Fetch data utility function
+//     const fetchData = async (url, dataKey) => {
+//         const token = getCookie("token");
+//         const db_name = getCookie("db_name");
+
+//         const headers = {
+//             Accept: "application/json",
+//             Authorization: `Bearer ${token}`,
+//             db: db_name,
+//             pass: "pass",
+//         };
+
+//         try {
+//             const response = await axios.get(Baseurl + url, { headers });
+//             if (response.status === 200) {
+//                 return response.data[dataKey];
+//             }
+//             throw new Error("Failed to fetch");
+//         } catch (error) {
+//             toast.error(error?.response?.data?.message || "Something went wrong!");
+//             return [];
+//         }
+//     };
+
+//     // Fetch states
+//     const getStates = async (countryId = defaultCountryId) => {
+//         const states = await fetchData(`/db/area/states?cnt_id=${countryId}`, 'data');
+//         const formattedStates = states.map(state => ({
+//             value: state.state_id,
+//             label: state.state_name
+//         }));
+//         setStateList(formattedStates);
+//     };
+
+//     // Fetch cities for a given state
+//     const getCities = async (stateId, rowIndex) => {
+//         const cities = await fetchData(`/db/area/city?st_id=${stateId}`, 'data');
+//         const formattedCities = cities.cityData.map(city => ({
+//             value: city.city_id,
+//             label: city.city_name
+//         }));
+        
+//         const updatedRows = [...rows];
+//         updatedRows[rowIndex] = { ...updatedRows[rowIndex], cityList: formattedCities };
+//         setRows(updatedRows);
+//     };
+
+//     // Fetch media formats
+//     const getMediaFormats = async () => {
+//         const formats = await fetchData(`/db/media/mediaFormat/getMediaFormat`, 'data');
+//         const formattedFormats = formats.map(format => ({
+//             value: format.m_f_id,
+//             label: format.m_f_name
+//         }));
+//         setMediaFormats(formattedFormats);
+//     };
+
+//     // Fetch media vehicles
+//     const getMediaVehicles = async () => {
+//         const vehicles = await fetchData(`/db/media/mediaVehicle/getMediaVehicle`, 'data');
+//         const formattedVehicles = vehicles.map(vehicle => ({
+//             value: vehicle.m_v_id,
+//             label: vehicle.m_v_name
+//         }));
+//         setMediaVehicles(formattedVehicles);
+//     };
+
+//     // Fetch media types
+//     const getMediaTypes = async () => {
+//         const types = await fetchData(`/db/media/mediaType/getMediaType`, 'data');
+//         const formattedTypes = types.map(type => ({
+//             value: type.m_t_id,
+//             label: type.m_t_name
+//         }));
+//         setMediaTypes(formattedTypes);
+//     };
+
+//     // Fetch all initial data when the modal is shown
+//     useEffect(() => {
+//         if (show) {
+//             getMediaFormats();
+//             getMediaVehicles();
+//             getMediaTypes();
+//             getStates(userInfo?.country_id || defaultCountryId);
+//         }
+//     }, [show, userInfo?.country_id]);
+
+//     // Handle form submission
+//     const handleSubmit = async () => {
+//         setLoading(true);
+//         setError('');
+
+//         const token = getCookie("token");
+//         const db_name = getCookie("db_name");
+
+//         const headers = {
+//             Accept: "application/json",
+//             Authorization: `Bearer ${token}`,
+//             db: db_name,
+//             pass: "pass",
+//             'Content-Type': 'application/json'
+//         };
+
+//         const transformedRows = rows.map(row => ({
+//             country_id: "India",
+//             estimate_id: estimateId,
+//             state_id: row.state, // Ensure state_id is set
+//             city_id: row.city,  // Ensure city_id is set
+//             location: row.location,
+//             m_f_id: row.mediaFormat,
+//             m_v_id: row.mediaVehicle,
+//             m_t_id: row.mediaType,
+//             quantity: row.quantity,
+//             height: row.height,
+//             width: row.width,
+//             total_sqft: row.totalSqFt,
+//             client_display_cost: row.clientDisplayCost,
+//             client_mounting_cost: row.clientMountingCost,
+//             client_printing_cost: row.clientPrintingCost
+//         }));
+
+//         console.log("Transformed Rows:", transformedRows); // Debugging
+
+//         try {
+//             const response = await axios.post(
+//                 `${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`,
+//                 { sites: transformedRows },
+//                 { headers }
+//             );
+
+//             if (response.status === 200) {
+//                 toast.success("Data saved successfully!");
+//                 getSiteList();
+//                 handleClose3();
+//             } else {
+//                 toast.error("Failed to save data. Please try again.");
+//             }
+//         } catch (error) {
+//             setError(error?.response?.data?.message || "Something went wrong!");
+//             toast.error(error?.response?.data?.message || "Something went wrong!");
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     // Handle input changes
+//     const handleInputChange = (index, event) => {
+//         const { name, value } = event.target;
+//         const updatedRows = [...rows];
+//         updatedRows[index] = { ...updatedRows[index], [name]: value };
+
+//         if (name === 'height' || name === 'width') {
+//             const height = parseFloat(updatedRows[index].height) || 0;
+//             const width = parseFloat(updatedRows[index].width) || 0;
+//             updatedRows[index].totalSqFt = (height * width).toFixed(2);
+//         }
+//         setRows(updatedRows);
+//     };
+
+//     // Handle select changes
+//     const handleSelectChange = (index, fieldName, selectedOption) => {
+//         const updatedRows = [...rows];
+//         updatedRows[index] = { ...updatedRows[index], [fieldName]: selectedOption ? selectedOption.value : '' };
+
+//         if (fieldName === 'state') {
+//             updatedRows[index].city = ''; 
+//             updatedRows[index].cityList = []; // Clear the city list when state changes
+//             setRows(updatedRows);
+//             getCities(selectedOption ? selectedOption.value : '', index);
+//         }
+        
+//         setRows(updatedRows);
+//     };
+
+//     // Add a new row to the form
+//     const handleAddRow = () => {
+//         setRows([
+//             ...rows,
+//             {
+//                 state: '',
+//                 city: '',
+//                 location: '',
+//                 mediaFormat: '',
+//                 mediaVehicle: '',
+//                 mediaType: '',
+//                 quantity: '',
+//                 height: '',
+//                 width: '',
+//                 totalSqFt: '',
+//                 clientDisplayCost: '',
+//                 clientMountingCost: '',
+//                 clientPrintingCost: '',
+//                 cityList: [] // Initialize with an empty list
+//             }
+//         ]);
+//     };
+
+//     // Remove a row from the form
+//     const handleRemoveRow = (index) => {
+//         if (index !== 0) {
+//             setRows(rows.filter((_, i) => i !== index));
+//         }
+//     };
+
+//     return (
+//         <Modal show={show} onHide={handleClose3} size="xl">
+//             <Modal.Header closeButton>
+//                 <Modal.Title>Add Agency Site</Modal.Title>
+//             </Modal.Header>
+//             <Modal.Body>
+//                 {rows.map((row, index) => (
+//                     <div key={index} className="row mb-3">
+//                         <div className="col-md-2">
+//                             <label>State</label>
+//                             <Select
+//                                 options={stateList}
+//                                 value={stateList.find(option => option.value === row.state)}
+//                                 onChange={option => handleSelectChange(index, 'state', option)}
+//                                 placeholder="Select State"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>City</label>
+//                             <Select
+//                                 options={row.cityList}
+//                                 value={row.cityList.find(option => option.value === row.city)}
+//                                 onChange={option => handleSelectChange(index, 'city', option)}
+//                                 placeholder="Select City"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Location</label>
+//                             <input
+//                                 type="text"
+//                                 name="location"
+//                                 value={row.location}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Media Format</label>
+//                             <Select
+//                                 options={mediaFormats}
+//                                 value={mediaFormats.find(option => option.value === row.mediaFormat)}
+//                                 onChange={option => handleSelectChange(index, 'mediaFormat', option)}
+//                                 placeholder="Select Media Format"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Media Vehicle</label>
+//                             <Select
+//                                 options={mediaVehicles}
+//                                 value={mediaVehicles.find(option => option.value === row.mediaVehicle)}
+//                                 onChange={option => handleSelectChange(index, 'mediaVehicle', option)}
+//                                 placeholder="Select Media Vehicle"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Media Type</label>
+//                             <Select
+//                                 options={mediaTypes}
+//                                 value={mediaTypes.find(option => option.value === row.mediaType)}
+//                                 onChange={option => handleSelectChange(index, 'mediaType', option)}
+//                                 placeholder="Select Media Type"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Quantity</label>
+//                             <input
+//                                 type="number"
+//                                 name="quantity"
+//                                 value={row.quantity}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Height</label>
+//                             <input
+//                                 type="number"
+//                                 name="height"
+//                                 value={row.height}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Width</label>
+//                             <input
+//                                 type="number"
+//                                 name="width"
+//                                 value={row.width}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Total Sq Ft</label>
+//                             <input
+//                                 type="text"
+//                                 name="totalSqFt"
+//                                 value={row.totalSqFt}
+//                                 readOnly
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Client Display Cost</label>
+//                             <input
+//                                 type="number"
+//                                 name="clientDisplayCost"
+//                                 value={row.clientDisplayCost}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Client Mounting Cost</label>
+//                             <input
+//                                 type="number"
+//                                 name="clientMountingCost"
+//                                 value={row.clientMountingCost}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-2">
+//                             <label>Client Printing Cost</label>
+//                             <input
+//                                 type="number"
+//                                 name="clientPrintingCost"
+//                                 value={row.clientPrintingCost}
+//                                 onChange={event => handleInputChange(index, event)}
+//                                 className="form-control"
+//                             />
+//                         </div>
+//                         <div className="col-md-1 mt-4">
+//                             <Button variant="danger" onClick={() => handleRemoveRow(index)}>Remove</Button>
+//                         </div>
+//                     </div>
+//                 ))}
+//                 <Button variant="primary" onClick={handleAddRow}>Add Row</Button>
+//             </Modal.Body>
+//             <Modal.Footer>
+//                 <Button variant="secondary" onClick={handleClose3}>Close</Button>
+//                 <Button variant="primary" onClick={handleSubmit} disabled={loading}>
+//                     {loading ? "Saving..." : "Save"}
+//                 </Button>
+//             </Modal.Footer>
+//         </Modal>
+//     );
+// };
+
+// export default ModelAgencySite;
 
 
 

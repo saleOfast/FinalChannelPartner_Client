@@ -95,7 +95,8 @@ const PipelineDueToCloseScreen = () => {
       };
 
       let query = {
-        opportunity_stg_id: 1,
+       opportunity_stg_id:2,
+       month: new Date().getMonth() + 1
       };
 
       const queryString = new URLSearchParams(query).toString();
@@ -136,14 +137,13 @@ const PipelineDueToCloseScreen = () => {
         responseType: "blob",
       };
 
-      let accname=accountsList?.find((item)=>item?.acc_id==accountName)?.acc_name
-      let stageName=stageOptions?.find((item)=>item?.value==stage)?.label
-      const fileName = `${stageName}_Opportunity_${accname}.xlsx`;
+      const fileName = `PipelineDueToClose.xlsx`;
 
       
       let query = {
-        opportunity_stg_id: 1,
-      };
+        opportunity_stg_id:2,
+        month: new Date().getMonth() + 1
+       };
 
       const queryString = new URLSearchParams(query).toString();
   
@@ -187,14 +187,14 @@ const PipelineDueToCloseScreen = () => {
     <>
       <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
-          <h3 className="content_head">OPEN OPPORTUNITIES IN PIPELINE</h3>
+          <h3 className="content_head">PIPELINE DUE TO CLOSE THIS MONTH</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link href="/crm">Home </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                Closed Lost Opportunity
+                Pipeline Due TO Close This Month
               </li>
             </ol>
           </nav>
@@ -276,7 +276,7 @@ const PipelineDueToCloseScreen = () => {
             </Row>
 
             <DynamicTable
-              title="Closed Lost Opportunity List"
+              title="Pipeline Due To Close This Month List"
               dataList={dataList}
               loader={loader}
             />

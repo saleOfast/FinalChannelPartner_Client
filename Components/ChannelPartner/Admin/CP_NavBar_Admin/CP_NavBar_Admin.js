@@ -152,6 +152,14 @@ const CP_NavBar_Admin = () => {
                 >Reports & Dashboard</Link>
         </li>
         <li className="nav-item">
+        <Link className={`nav-link ${isActive('/partner/CPRegisterLeads')}`} href="/partner/CPRegisterLeads"
+                  onClick={()=>{
+                    dispatch(setActiveLink("/partner/CPRegisterLeads"))
+                    setCookie("activeLink","/partner/CPRegisterLeads")
+                  }}
+                >C.P Leads</Link>
+        </li>
+        <li className="nav-item">
         <Link className={`nav-link ${isActive('/partner/ActivePartners')}`} href="/partner/ActivePartners"
                   onClick={()=>{
                     dispatch(setActiveLink("/partner/ActivePartners"))

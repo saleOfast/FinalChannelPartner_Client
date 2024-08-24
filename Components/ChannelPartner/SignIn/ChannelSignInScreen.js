@@ -278,12 +278,26 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                           </button>
                         </form>
                         {/* MOT DE PASSE OUBLIE ? */}
+                        <div className=" d-flex justify-content-between">
                         <Link
                           href="/partner/ForgotPassword"
                           className="fp text-decoration-none"
                         >
                           Forgot password?
                         </Link>
+                        <Link
+                          href="/partner/NewRegistration"
+                          className="fp text-decoration-none"
+                        >
+                          New Registration
+                        </Link>
+                        </div>
+                        {/* <Link
+                          href="/partner/ForgotPassword"
+                          className="fp text-decoration-none"
+                        >
+                          Forgot password?
+                        </Link> */}
                        
                       </div>
                     </div>

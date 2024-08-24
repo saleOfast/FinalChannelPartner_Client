@@ -187,7 +187,40 @@ const VisitDetailsScreen = () => {
                 </div>
               </div>
             </div>
-
+            {
+              visitData?.revisit_date && (
+                <div className="row">
+                <div className="col-6 col-md-5">
+                  <div className="list-group-item list-group-item-action p-0 border-0">
+                    <span className="list-left">Revisit Date</span>
+                  </div>
+                </div>
+                <div className="col-6 col-md-6">
+                  <div className="list-group-item list-group-item-action p-0 border-0">
+                    <span className="list-right">{formatDate(visitData?.revisit_date)}</span>
+                  </div>
+                </div>
+              </div>
+              )
+            }
+            
+            {
+              visitData?.revisit_time && (
+                <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Revisit Time</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">{formatTime(visitData?.revisit_time)}</span>
+                </div>
+              </div>
+            </div>
+              )
+            }
+            
           </ul></div>
         <Link href={'/partner/Visits'} className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
           <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0"

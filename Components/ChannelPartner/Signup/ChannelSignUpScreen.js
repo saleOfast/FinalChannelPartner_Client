@@ -285,7 +285,7 @@ const ChannelSignUpScreen = () => {
             <div className="col-12 col-md-7">
               <div className="row gx-3">
                 <div className="Sign-In-logo pb-4">
-                  <img style={{height: '90px'}} src={
+                  <img  src={
                         clientData?.logo
                           ? `${filesUrl}` +
                             `/logo/images${clientData?.logo}`

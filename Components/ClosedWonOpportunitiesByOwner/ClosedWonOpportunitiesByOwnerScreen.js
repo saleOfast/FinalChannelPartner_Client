@@ -9,19 +9,24 @@ import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 import DownloadIcon from "../Svg/DownloadIcon";
-import { Row, Col, Container } from 'react-bootstrap';
-const DynamicTable = dynamic(() => import("./ClosedLostOpportunitiesTable"), {
+import { Row, Col, Container } from "react-bootstrap";
+const DynamicTable = dynamic(() => import("./ClosedWonOpportunitiesByOwnerTable"), {
   ssr: false,
 });
 import Select from "react-select";
+import { fetchData } from "../../Utils/getReq";
 
-const ClosedLostOpportunitiesScreen = () => {
+const ClosedWonOpportunitiesByOwnerScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
+  const [accountsList, setAccountsList] = useState([]);
+  const [errorToast, setErrorToast] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [financialYear, setFinancialYear] = useState("");
   const [filterBy, setFilterBy] = useState("quarter");
   const [quarter, setQuarter] = useState("");
   const [month, setMonth] = useState("");
+  const [accountName, setAccountName] = useState("");
+  const [stage, setStage] = useState(3);
 
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [currObj, setcurrObj] = useState("");
@@ -29,8 +34,8 @@ const ClosedLostOpportunitiesScreen = () => {
 
   const generateFinancialYearOptions = () => {
     const options = [];
-    const startYear = 2022; 
-    const endYear = new Date().getFullYear() + 1; 
+    const startYear = 2022;
+    const endYear = new Date().getFullYear() + 1;
 
     for (let i = startYear; i <= endYear; i++) {
       options.push({
@@ -50,6 +55,11 @@ const ClosedLostOpportunitiesScreen = () => {
     { value: "4", label: "Q4" },
   ];
 
+  const stageOptions = [
+    { value: "1", label: "Open" },
+    { value: "3", label: "Won" },
+  ];
+
   const monthOptions = [
     { value: "1", label: "January" },
     { value: "2", label: "February" },
@@ -65,12 +75,16 @@ const ClosedLostOpportunitiesScreen = () => {
     { value: "12", label: "December" },
   ];
 
+  const getAccountsList = async () => {
+    await fetchData(`/db/users`, setAccountsList, errorToast, setErrorToast);
+  };
+
   const getDataList = async () => {
     setLoader(true);
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
-  
+
       let header = {
         headers: {
           Accept: "application/json",
@@ -79,23 +93,24 @@ const ClosedLostOpportunitiesScreen = () => {
           m_id: 35,
         },
       };
-  
+
       // Calculate the current financial year
       const today = new Date();
       const currentMonth = today.getMonth() + 1; // Months are 0-indexed in JS
       const currentYear = today.getFullYear();
-      const financialYear = currentMonth >= 4 
-        ? `${currentYear}-${currentYear + 1}` 
-        : `${currentYear - 1}-${currentYear}`;
-  
+      const financialYear =
+        currentMonth >= 4
+          ? `${currentYear}-${currentYear + 1}`
+          : `${currentYear - 1}-${currentYear}`;
+
       // Build the query with only financial year
       let query = {
-        financialYear: financialYear,
-        opportunity_stg_id: 4,
+        type:"opp_by_owner",
+        opp_owner:accountName ? accountName: ""
       };
-  
+
       const queryString = new URLSearchParams(query).toString();
-  
+
       try {
         const response = await axios.get(
           Baseurl + `/db/opportunity/opportunityReport?${queryString} `,
@@ -115,7 +130,6 @@ const ClosedLostOpportunitiesScreen = () => {
       }
     }
   };
-  
 
   const handleDownload = async () => {
     if (hasCookie("token")) {
@@ -132,25 +146,25 @@ const ClosedLostOpportunitiesScreen = () => {
         },
         responseType: "blob",
       };
-      
+
+      const fileName = `ClosedWonOpportunitiesByRep.xlsx`;
+
+      // Calculate the current financial year
       const today = new Date();
       const currentMonth = today.getMonth() + 1; // Months are 0-indexed in JS
       const currentYear = today.getFullYear();
-      const financialYear = currentMonth >= 4 
-        ? `${currentYear}-${currentYear + 1}` 
-        : `${currentYear - 1}-${currentYear}`;
-  
+      const financialYear =
+        currentMonth >= 4
+          ? `${currentYear}-${currentYear + 1}`
+          : `${currentYear - 1}-${currentYear}`;
+
       // Build the query with only financial year
       let query = {
-        financialYear: financialYear,
-        opportunity_stg_id: 4,
+        type:"opp_by_owner",
+        opp_owner:accountName ? accountName: ""
       };
-  
+
       const queryString = new URLSearchParams(query).toString();
-      // Generate a meaningful file name
-      const currentDate = new Date().toISOString().slice(0, 10); // Get current date in YYYY-MM-DD format
-      const filterPart = filterBy === "quarter" ? `Q${quarter}` : monthOptions.find(option => option.value === month)?.label;
-      const fileName = `Closed_Lost_Oportunity_${financialYear}_${filterPart}_${currentDate}.xlsx`;
   
       try {
         const response = await axios.get(
@@ -185,28 +199,29 @@ const ClosedLostOpportunitiesScreen = () => {
 
   useEffect(() => {
     getDataList();
+    getAccountsList();
   }, []);
 
   return (
     <>
       <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
-          <h3 className="content_head">CLOSED LOST OPPORTUNITY (FYTD)</h3>
-          <nav aria-label="breadcrumb">
+          <h3 className="content_head">CLOSED WON OPPORTUNITIES BY REP</h3>
+          <nav aria-label="breadcrumb">   
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link href="/crm">Home </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                Closed Lost Opportunity
+                Closed Won Opportunities By Rep
               </li>
             </ol>
           </nav>
         </div>
         <div className="main_content">
-        <Container className="table_screen">
-      <Row className="align-items-end mb-3">
-        {/* <Col xs={12} sm={6} md={4} lg={2}>
+          <Container className="table_screen">
+            <Row className="align-items-end mb-3">
+              {/* <Col xs={12} sm={6} md={4} lg={2}>
           <label>Financial Year</label>
           <Select
             name="financialYear"
@@ -269,28 +284,59 @@ const ClosedLostOpportunitiesScreen = () => {
           </button>
         </Col> */}
 
-<Col xs={12} sm={6} md={4} lg={2} className="d-flex justify-content-end align-items-end w-100">
+              <Col xs={12} sm={6} md={4} lg={2}>
+              <label>Opp Owner</label>
+                <Select
+                  defaultValue={""}
+                  options={accountsList?.map((data, index) => {
+                    return {
+                      value: data?.user_id,
+                      label: data?.user,
+                    };
+                  })}
+                  value={accountsList?.map((data, index) => {
+                    if (accountName === data.user_id) {
+                      return {
+                        value: data?.user_id,
+                        label: data?.user,
+                      };
+                    }
+                  })}
+                  onChange={(e) => {
+                    setAccountName(e.value);
+                  }}
+                />
+              </Col>
+              
+          <Col xs={12} sm={6} md={4} lg={2}>
           <button
-            className="btn btn-primary  "
-            onClick={handleDownload}
+            className="btn btn-primary w-100"
+            onClick={getDataList}
           >
-            {/* <DownloadIcon /> */}
-            EXPORT
+            Apply Filters
           </button>
         </Col>
-      </Row>
+              <Col xs={12} sm={6} md={4} lg={2}>
+                <button
+                  className="btn btn-primary w-100 "
+                  onClick={handleDownload}
+                >
+                  {/* <DownloadIcon /> */}
+                  EXPORT
+                </button>
+              </Col>
+            </Row>
 
-      <DynamicTable
-        title="Closed Lost Opportunity (FYTD) List"
-        dataList={dataList}
-        loader={loader}
-      />
-        </Container>
+            <DynamicTable
+              title="Closed Won Opportunities By Rep List"
+              dataList={dataList}
+              loader={loader}
+            />
+          </Container>
         </div>
       </div>
     </>
   );
 };
 
-export default ClosedLostOpportunitiesScreen;
-
+export default ClosedWonOpportunitiesByOwnerScreen;

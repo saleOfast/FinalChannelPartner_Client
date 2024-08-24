@@ -248,14 +248,16 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                   padding: "6px",
                                   color: "white",
                                   background: value === "Completed" 
-                                      ? "#84CA4d" 
-                                      : value === "Requested" 
-                                      ? "#FEC925" 
-                                      : value === "Scheduled" 
-                                      ? "#17B4E7"
-                                      : value === "Rejected"
-                                      ? "#D9534F" // Add your desired color for "Rejected" here
-                                      : "",
+                                    ? "#84CA4d" 
+                                    : value === "Requested" 
+                                    ? "#FEC925" 
+                                    : value === "Scheduled" 
+                                    ? "#17B4E7"
+                                    : value === "Rejected"
+                                    ? "#D9534F" 
+                                    : value === "Rescheduled"
+                                    ? "#FF6F61"  // or any color of your choice
+                                    : "",
                                   borderRadius: "20px",
                                   border: "white"
                               }}

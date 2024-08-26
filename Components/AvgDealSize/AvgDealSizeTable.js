@@ -25,7 +25,7 @@ const AvgDealSizeTable = ({ dataList, title, openConfirmBox, loader }) => {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value}</>
+                        <>{Number(value).toFixed(2)}</>
                     )
                 }
             }

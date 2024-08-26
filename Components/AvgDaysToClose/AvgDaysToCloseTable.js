@@ -7,7 +7,7 @@ const AvgDaysToCloseTable = ({ dataList, title, openConfirmBox, loader }) => {
 
     const columns = [
         {
-            name: 'assignedOpp',
+            name: 'assigned_to',
             label: "Name",
             options: {
                 filter: true,
@@ -19,10 +19,15 @@ const AvgDaysToCloseTable = ({ dataList, title, openConfirmBox, loader }) => {
             }
         }, 
         {
-            name: 'total_amount',
+            name: 'average_days_difference',
             label: "Average Days",
             options: {
                 filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <>{Number(value).toFixed(2)}</>
+                    )
+                }
             }
         },
        

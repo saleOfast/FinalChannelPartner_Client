@@ -127,7 +127,7 @@ const WinRatioCurrentScreen = () => {
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 38,
+          pass:"pass"
         },
         responseType: "blob",
       };
@@ -142,7 +142,7 @@ const WinRatioCurrentScreen = () => {
   
       try {
         const response = await axios.get(
-          Baseurl + `/db/opportunity/getOpportunityRatio/downloadExcelData?${queryString}`,
+          Baseurl + `/db/opportunity/getOpportunityRatio/downloadExcelDataRatio?${queryString}`,
           header
         );
   

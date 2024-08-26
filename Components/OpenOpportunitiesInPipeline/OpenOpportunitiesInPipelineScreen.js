@@ -131,7 +131,7 @@ const OpenOpportunitiesInPipelineScreen = () => {
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 38,
+          pass:"pass"
         },
         responseType: "blob",
       };
@@ -194,7 +194,7 @@ const OpenOpportunitiesInPipelineScreen = () => {
                 <Link href="/crm">Home </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                Closed Lost Opportunity
+                Open Opportunities In Pipeline
               </li>
             </ol>
           </nav>
@@ -276,7 +276,7 @@ const OpenOpportunitiesInPipelineScreen = () => {
             </Row>
 
             <DynamicTable
-              title="Closed Lost Opportunity List"
+              title=" Open Opportunities In Pipeline List"
               dataList={dataList}
               loader={loader}
             />

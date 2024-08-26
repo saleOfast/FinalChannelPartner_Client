@@ -132,7 +132,7 @@ const PipelineDueToCloseScreen = () => {
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 38,
+          pass:"pass"
         },
         responseType: "blob",
       };

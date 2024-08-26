@@ -136,8 +136,13 @@ import axios from 'axios';
 import { Baseurl } from '../../../Utils/Constants'; // Ensure the path is correct
 import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap CSS is imported
 import { toast } from "react-toastify";
+import { hasCookie, getCookie } from "cookies-next";
+import { fetchData } from "../../../Utils/getReq";
 
-const ModelEditAgencySite = ({ show, handleClose, agencySiteData }) => {
+
+
+
+const ModelEditAgencySite = ({ show, handleClose, agencySiteData,setGetAgencyData,getAgencyData }) => {
     console.log("site agency data is ", agencySiteData);
 
     // State for all form fields
@@ -155,7 +160,11 @@ const ModelEditAgencySite = ({ show, handleClose, agencySiteData }) => {
         client_display_cost: '',
         client_mounting_cost: '',
         client_printing_cost: ''
-    });
+});
+// const [agencySiteLists,setAgencySiteLists]=useState([]);
+// const [errorToast, setErrorToast] = useState(false);
+
+
 
     // State for loading
     const [loading, setLoading] = useState(false);
@@ -190,22 +199,46 @@ const ModelEditAgencySite = ({ show, handleClose, agencySiteData }) => {
     };
 
     const handleUpdate = async () => {
-        setLoading(true); // Start loading
+        setLoading(true);
+
+let header;
+        if (hasCookie("token")) {
+            let token = getCookie("token");
+            let db_name = getCookie("db_name");
+      
+         header = {
+              headers: {
+                Accept: "application/json",
+                Authorization: "Bearer ".concat(token),
+                db: db_name,
+                m_id: 29,
+              },
+            };
+        }   
+
+        const { status, ...formDataWithoutStatus } = formData;
+
 
         try {
-            const response = await axios.post(
+
+            
+            const response = await axios.put(
                 `${Baseurl}/db/media/estimationAgencyBusiness/updateSitesForAgencyEstimates`,
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                }
+                
+                formDataWithoutStatus,
+                header
             );
 
             // Handle successful response
             console.log('Update successful', response.data);
-            handleClose(); // Close the modal after successful update
+             // Close the modal after successful update
+            if (response.status === 204 || response.status === 200) {
+              
+                setLoading(false);
+                handleClose();
+                setGetAgencyData(!getAgencyData)
+                // getAgencySites();
+              }
         } catch (error) {
             if (error.response && error.response.data && error.response.data.message) {
                 toast.error(error.response.data.message);
@@ -216,6 +249,17 @@ const ModelEditAgencySite = ({ show, handleClose, agencySiteData }) => {
             setLoading(false); // Stop loading
         }
     };
+
+    // async function getAgencySites() {
+    //     await fetchData(
+    //       `/db/media/estimationAgencyBusiness/getSitesForAgencyEstimates?estimate_id=${agencySiteData.site_id}`,
+    //       setAgencySiteLists,
+    //       errorToast,
+    //       setErrorToast
+    //     );
+    //   }
+
+    
 
     return (
         <>
@@ -241,7 +285,7 @@ const ModelEditAgencySite = ({ show, handleClose, agencySiteData }) => {
                                 { id: 'client_mounting_cost', label: 'Client Mounting Cost / Sq. Ft.', type: 'number', placeholder: 'Enter client mounting cost / sq. ft.' },
                                 { id: 'client_printing_cost', label: 'Client Printing Cost', type: 'number', placeholder: 'Enter client printing cost' }
                             ].map(({ id, label, type, placeholder, disabled }, index) => (
-                                <div key={index} className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+                                <div key={index} className="col-xl-4 col-md-4 col-sm-4 col-4 p-1">
                                     <div className="form-group">
                                         <label htmlFor={id}>{label}</label>
                                         <input

@@ -364,8 +364,12 @@ import axios from "axios";
 import ModelAssetSite1 from "./ModelAssetSite1";
 import ModelAgencySite from "./ModelAgencySite";
 import ModelAssetSite2 from "./ModelAssetSite2";
+// import ModelAssetSite3 from "./ModelAssetSite3";
+// import ModelAssetSite5 from "./ModelAssetSite5";
 import ModelAgencySiteUpload from "./ModelAgencySiteUpload";
-
+import PlusIcon from "../../Svg/PlusIcon";
+import ModelClientCostAgency from "./ModelClientCostAgency";
+import ModelClientCostAsset from "./ModelClientCostAsset";
 
 const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
   const [errorToast, setErrorToast] = useState({});
@@ -378,7 +382,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
   const [show3, setShow3] = useState(false);
-  const [show4,setShow4]= useState(false);
+  const [show4, setShow4] = useState(false);
+  const [show5, setShow5] = useState(false);
+  const [show6, setShow6] = useState(false);
 
   const [selectedSites, setSelectedSites] = useState([]);
   const [estimationId, setEstimationId] = useState(null);
@@ -393,6 +399,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
   const handleClose2 = () => {
     setShow2(false);
   };
+  const handleClose6 = () => {
+    setShow6(false);
+  };
 
   const handleClose3 = () => {
     setShow3(false);
@@ -400,6 +409,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
 
   const handleClose4 = () => {
     setShow4(false);
+  };
+  const handleClose5 = () => {
+    setShow5(false);
   };
   const getState = async () => {
     await fetchData(
@@ -566,6 +578,23 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
                   <DisableIcon />
                 </button>
               )}
+
+              {busiessTypeList.find(
+                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
+              )?.cmpn_b_t_name === "Asset" && (
+                <button
+                  className="action_btn"
+                  onClick={() => {
+                    setEstimationId(tableMeta?.rowData[3]);
+                    getState();
+                    setShow5(true);
+                  }}
+                  title="Client Cost Sheet Update"
+                >
+                  <PlusIcon />
+                </button>
+              )}
+
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
               )?.cmpn_b_t_name === "Agency" && (
@@ -581,7 +610,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
                   <DisableIcon />
                 </button>
               )}
-                  {busiessTypeList.find(
+              {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
               )?.cmpn_b_t_name === "Agency" && (
                 <button
@@ -594,10 +623,26 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
                   title="Upload Site"
                 >
                   <EditIcon />
-                  </button>
+                </button>
               )}
 
-                {/* <button className="action_btn" title="Upload Site" onClick={()=>{setShow4(true)}}>
+              {busiessTypeList.find(
+                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
+              )?.cmpn_b_t_name === "Agency" && (
+                <button
+                  className="action_btn"
+                  onClick={() => {
+                    setEstimationId(tableMeta?.rowData[3]);
+                    getState();
+                    setShow6(true);
+                  }}
+                  title="Client Cost Sheet Update"
+                >
+                  <PlusIcon />
+                </button>
+              )}
+
+              {/* <button className="action_btn" title="Upload Site" onClick={()=>{setShow4(true)}}>
                   <EditIcon />
                 </button> */}
             </div>
@@ -655,8 +700,33 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
         cityIds={cityIds}
       />
 
-      
-     <ModelAgencySiteUpload
+      <ModelClientCostAsset
+        show={show5}
+        handleClose={handleClose5}
+        stateList={stateList}
+        setStateId={setStateId}
+        setCityIds={setCityIds}
+        cityList={cityList}
+        getSiteList={getSiteList}
+        stateId={stateId}
+        cityIds={cityIds}
+        estimateId={estimationId}
+      />
+
+      <ModelClientCostAgency
+        show={show6}
+        handleClose={handleClose6}
+        stateList={stateList}
+        setStateId={setStateId}
+        setCityIds={setCityIds}
+        cityList={cityList}
+        getSiteList={getSiteList}
+        stateId={stateId}
+        cityIds={cityIds}
+        estimateId={estimationId}
+      />
+
+      <ModelAgencySiteUpload
         show={show4}
         handleClose={handleClose4}
         stateList={stateList}
@@ -681,7 +751,6 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
         cityIds={cityIds}
         estimateId={estimationId}
       />
-
 
       <ModelAssetSite2
         show2={show2}

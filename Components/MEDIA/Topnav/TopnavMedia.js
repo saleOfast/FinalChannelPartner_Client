@@ -177,14 +177,15 @@ const TopnavMedia = ({  topnavPermission }) => {
        />
        <div
          className="topNav_Wrapper"
-         style={{
-           height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
-         }}
+        //  style={{
+        //    height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
+        //  }}
        >
-         <div className="top_nav" style={{height:"10vh"}}>
-           {/* <div className="brand_icon"> */}
-           <div className=""
-           style={{height:"10vh"}}>
+         <div className="top_nav"
+          // style={{height:"10vh"}}
+          >
+           <div className="brand_icon">
+           {/* <div className="" style={{height:"10vh"}}> */}
              {!hasCookie("Admin") &&
              
              <img
@@ -193,7 +194,7 @@ const TopnavMedia = ({  topnavPermission }) => {
                  &&( `${filesUrl}` +
                    `/logo/images${clientData?.logo}`)
              }
-             style={{height:"100%"}}
+            //  style={{height:"100%"}}
              className=""
              alt
            />

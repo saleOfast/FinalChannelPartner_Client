@@ -149,7 +149,7 @@ const Topnav = ({  topnavPermission }) => {
       try {
         let baseUrl = window.location.origin;
         if(baseUrl==="http://localhost:3000"){
-          baseUrl = "https://nkrealtors.saleofast.com"
+          baseUrl = "https://crm.saleofast.com"
         }
         const {data}=await axios.post(Baseurl+"/db/admin/url",{
           client_url:`${baseUrl}`,
@@ -193,13 +193,15 @@ const Topnav = ({  topnavPermission }) => {
        />
        <div
          className="topNav_Wrapper"
-         style={{
-           height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
-         }}
+        //  style={{
+        //    height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
+        //  }}
        >
-         <div className="top_nav" style={{height:"10vh"}}>
-           {/* <div className="brand_icon"> */}
-           <div className="" style={{height:"10vh"}}>
+         <div className="top_nav"
+          // style={{height:"10vh"}}
+          >
+           <div className="brand_icon">
+           {/* <div className="" style={{height:"10vh"}}> */}
              {!hasCookie("Admin") &&
              
              <img
@@ -208,7 +210,7 @@ const Topnav = ({  topnavPermission }) => {
                  &&( `${filesUrl}` +
                    `/logo/images${clientData?.logo}`)
              }
-             style={{height:"100%"}}
+            //  style={{height:"100%"}}
              className=""
              alt
            />
@@ -618,23 +620,22 @@ const Topnav = ({  topnavPermission }) => {
           />
           <div
             className="topNav_Wrapper"
-            style={{
-              height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
-            }}
+            // style={{
+            //   height: path !== "/partner/ActivePartners" ? "8vh" : "1vh",
+            // }}
           >
-            <div className="top_nav" style={{height:"10vh"}}>
-              {/* <div className="brand_icon"> */}
-              <div className=""
-               style={{height:"10vh"}}
-                 >
-
+            <div className="top_nav"
+            //  style={{height:"10vh"}}
+             >
+              <div className="brand_icon">
+              {/* <div className="" style={{height:"10vh"}} > */}
                 <img
                 src={
                   clientData?.logo
                     &&( `${filesUrl}` +
                       `/logo/images${clientData?.logo}`)
                 }
-                style={{height:"100%"}}
+                // style={{height:"100%"}}
                 className=""
                 alt
               />
@@ -677,17 +678,6 @@ const Topnav = ({  topnavPermission }) => {
 
                     <Dropdown.Menu>
                       <ul className="profile_list">
-                        {/* <Link
-                          href={dbMode == "admin" ? "/Profile" : "/UserProfile"}
-                        >
-                          <li className="list-item">
-                            <div className="icon">
-                              <AvatarIcon />
-                            </div>
-                            <div className="text"> Profile </div>
-                          </li>
-                        </Link> */}
-
                         <li className="list-item">
                           <div className="icon">
                             {" "}
@@ -710,7 +700,9 @@ const Topnav = ({  topnavPermission }) => {
           </div>
         </div>
       )}
-
+      
+     
+      
       
       
     </>

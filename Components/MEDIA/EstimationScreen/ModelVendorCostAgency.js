@@ -12,9 +12,10 @@ import ModelUpdateClientCostAsset from "./ModelUpdateClientCostAsset";
 import Link from "next/link";
 import { Baseurl } from "../../../Utils/Constants";
 import axios from "axios";
+import ModelUpdateVendorCostAsset from "./ModelUpdateVendorCostAsset";
 
 
-const ModelClientCostAsset = ({
+const ModelVendorCostAsset = ({
   show,
   handleClose,
   stateList,
@@ -34,7 +35,6 @@ const ModelClientCostAsset = ({
   const [isLoading, setisLoading] = useState(false);
   const [show1,setShow1]=useState(false);
   const [selectedSite, setSelectedSite] = useState(null);
-
 
   const [userInfo, setUserInfo] = useState({
     estimate_type: "",
@@ -174,7 +174,7 @@ const ModelClientCostAsset = ({
     <>
 
     
-<ModelUpdateClientCostAsset
+<ModelUpdateVendorCostAsset
         show={show1}
         handleClose={handleClose1}
         stateList={stateList}
@@ -186,7 +186,6 @@ const ModelClientCostAsset = ({
         cityIds={cityIds}
         estimateId={estimateId}
         selectedSite={selectedSite} 
-        
       />
       {/* <ConfirmBox
         showConfirm={assetDeleteShowConfirm}
@@ -197,7 +196,7 @@ const ModelClientCostAsset = ({
       
       <Modal show={show} onHide={handleClose} size="xl">
         <Modal.Header closeButton>
-          <Modal.Title>Client Cost Sheet Update for Asset Business</Modal.Title>
+          <Modal.Title>Vendor Cost Sheet Update for Asset Business</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <>
@@ -273,34 +272,21 @@ const ModelClientCostAsset = ({
                               <button
                                 className="action_btn"
                                 onClick={() => {
+                                    setSelectedSite(site);
                                 //   setEstimationId(tableMeta?.rowData[3]);
-                                setSelectedSite(site);
                                   setShow1(true);
                                 }}
-                                title="Client Cost Sheet Update"
+                                title="Vendor Cost Sheet Update"
                               >
                                 <ViewIcon />
                               </button>
                             </td>
                             <td className="table_btns">
-                              {/* <button
-                                className="action_btn"
-                                title="Delete"
-                                onClick={() => {
-                                  // deleteAssetSite(site.site_id);
-                                  setAssetDeleteShowConfirm(true);
-                                  setDeleteSiteAssetId(site.site_id);
-                                }}
-                              >
-                                <ViewIcon />
-                              </button> */}
-
+                    
                               
 
                             </td>
-                            {/* ) : (
-                                      ""
-                                    )} */}
+                
                           </tr>
                         ))}
                     </tbody>
@@ -322,4 +308,4 @@ const ModelClientCostAsset = ({
   );
 };
 
-export default ModelClientCostAsset;
+export default ModelVendorCostAsset;

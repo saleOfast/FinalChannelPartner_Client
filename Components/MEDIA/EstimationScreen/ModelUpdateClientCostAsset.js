@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect} from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 
@@ -11,6 +11,7 @@ const ModelUpdateClientCostAsset = ({
   cityList,
   stateId,
   cityIds,
+  selectedSite
 }) => {
   const [formData, setFormData] = useState({
     siteCode: '',
@@ -35,6 +36,39 @@ const ModelUpdateClientCostAsset = ({
     printingCost: '',
     remarks: '',
   });
+
+
+  useEffect(() => {
+    if (show && selectedSite) {
+      setFormData({
+        siteCode: selectedSite?.site_id || '',
+        state:selectedSite?.db_site?.db_state?.state_name || '',
+        city:selectedSite?.db_site?.db_city?.city_name || '',
+
+        location: selectedSite?.db_site?.location || '',
+        category: selectedSite?.db_site?.db_site_category?.site_cat_name || '',
+        mediaFormat: selectedSite?.db_site?.db_media_format?.m_f_name|| '',
+        mediaVehicle: selectedSite?.db_site?.db_media_vehicle?.m_v_name || '',
+        mediaType: selectedSite?.db_site?.db_media_type?.m_t_name || '',
+        quantity: selectedSite?.db_site.quantity || '',
+        width:selectedSite?.db_site.width || '',
+        height:selectedSite?.db_site.height || '',
+        total: (selectedSite?.db_site.width *selectedSite?.db_site.height).toFixed(2) || '',
+        campaignStartDate: selectedSite.campaignStartDate || '',
+        campaignEndDate: selectedSite.campaignEndDate || '',
+        campaignDuration: selectedSite.campaignDuration || '',
+        displayCostPerMonth: selectedSite.displayCostPerMonth || '',
+        sellingPriceAsPerDuration: selectedSite.sellingPriceAsPerDuration || '',
+        finalClientPOCost: selectedSite.finalClientPOCost || '',
+        mountingCostPerSqFt: selectedSite.mountingCostPerSqFt || '',
+        mountingCost: selectedSite.mountingCost || '',
+        printingCostPerSqFt: selectedSite.printingCostPerSqFt || '',
+        printingCost: selectedSite.printingCost || '',
+        remarks: selectedSite?.db_site?.remarks || '',
+      });
+    }
+    console.log("agjg",selectedSite)
+  }, [show, selectedSite]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

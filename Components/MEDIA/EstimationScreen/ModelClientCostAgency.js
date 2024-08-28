@@ -280,7 +280,7 @@ const ModelClientCostAgency = ({
                                 //   setEstimationId(tableMeta?.rowData[3]);
                                   setShow1(true);
                                 }}
-                                title="Offer Agency Site"
+                                title="Client Cost Sheet Update"
                               >
                                 <ViewIcon />
                               </button>

@@ -177,6 +177,7 @@ const ModelClientCostAsset = ({
 <ModelUpdateClientCostAsset
         show={show1}
         handleClose={handleClose1}
+        getAssetSites={getAssetSites}
         stateList={stateList}
         setStateId={setStateId}
         setCityIds={setCityIds}

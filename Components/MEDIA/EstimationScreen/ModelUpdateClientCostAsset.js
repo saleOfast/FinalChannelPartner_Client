@@ -1,6 +1,11 @@
 import React, { useState,useEffect} from 'react';
 import { Button, Modal } from 'react-bootstrap';
+import { hasCookie, getCookie } from "cookies-next";
+import { Baseurl } from "../../../Utils/Constants";
+import axios from "axios";
 import Select from 'react-select';
+import moment from 'moment/moment';
+import { toast } from 'react-toastify';
 
 const ModelUpdateClientCostAsset = ({
   show,
@@ -11,63 +16,108 @@ const ModelUpdateClientCostAsset = ({
   cityList,
   stateId,
   cityIds,
-  selectedSite
+  selectedSite,
+  getAssetSites
 }) => {
   const [formData, setFormData] = useState({
-    siteCode: '',
+    site_id: null,
+    eab_id:null,
+    campaign_id:null,
+    state:"",
+    city:"",
     location: '',
     category: '',
-    mediaFormat: '',
-    mediaVehicle: '',
-    mediaType: '',
+    media_format: '',
+    media_vehicle: '',
+    media_type: '',
     quantity: '',
     width: '',
     height: '',
-    total: '',
-    campaignStartDate: '',
-    campaignEndDate: '',
-    campaignDuration: '',
-    displayCostPerMonth: '',
-    sellingPriceAsPerDuration: '',
-    finalClientPOCost: '',
-    mountingCostPerSqFt: '',
-    mountingCost: '',
-    printingCostPerSqFt: '',
-    printingCost: '',
+    total_sq_ft: '',
+    campaign_start_date: '',
+    campaign_end_date: '',
+    campaign_duration: '',
+    display_cost_per_month: '',
+    selling_price_as_per_duration: '',
+    final_client_po_cost: '',
+    mounting_cost_per_sq_ft: '',
+    mounting_cost: '',
+    printing_cost_per_sq_ft: 0,
+    printing_cost: '',
     remarks: '',
   });
+
+  const [loading,setLoading]=useState(false)
+  const [flag,setFlag]= useState(false)
+
+  const getClientCostSheetInfoForParticularSite = async () => {
+    
+    if (hasCookie('token')) {
+        let token = (getCookie('token'));
+        let db_name = (getCookie('db_name'));
+
+        let header = {
+            headers: {
+                Accept: "application/json",
+                Authorization: "Bearer ".concat(token),
+                db: db_name,
+                pass:"pass"
+            }
+        }
+        try {
+          
+            const response = await axios.get(Baseurl + `/db/media/costSheet/clientCostSheet/getAssetClientCostSheet?eab_id=${selectedSite?.eab_id}&site_id=${selectedSite?.site_id}`, header);
+
+            if((response?.status==200 || response?.status==201 )&& Object.values(response?.data)[2].length > 0){
+                setFlag(true)
+                console.log("false")
+            }
+            else{
+              console.log(true)
+              setFormData({
+                site_id: response?.data[0]?.site_id || '',
+                state:response?.data[0]?.state || '',
+                city:response?.data[0]?.city || '',
+                location: response?.data[0]?.location || '',
+                category: response?.data[0]?.category || '',
+                media_format: response?.data[0]?.media_format|| '',
+                media_vehicle: response?.data[0]?.media_vehicle || '',
+                media_type: response?.data[0]?.media_type || '',
+                quantity: response?.data[0]?.quantity || '',
+                width:response?.data[0]?.width || '',
+                height:response?.data[0]?.height || '',
+                total_sq_ft: (response?.data[0]?.total_sq_ft).toFixed(2) || '',
+                campaign_start_date: moment(response?.data[0]?.campaign_start_date).format("YYYY-MM-DD")  || '',
+                campaign_end_date:moment(response?.data[0]?.campaign_end_date).format("YYYY-MM-DD")  || '',
+                campaign_duration: response?.data[0]?.campaign_duration || '',
+                display_cost_per_month: response?.data[0]?.display_cost_per_month || "0",
+                selling_price_as_per_duration: response?.data[0]?.selling_price_as_per_duration || "0",
+                final_client_po_cost: response?.data[0]?.final_client_po_cost || "0",
+                mounting_cost_per_sq_ft: response?.data[0]?.mounting_cost_per_sq_ft || "0",
+                mounting_cost: response?.data[0]?.mounting_cost || "0",
+                printing_cost_per_sq_ft: response?.data[0]?.printing_cost_per_sq_ft || "0",
+                printing_cost: response?.data[0]?.printing_cost || '0',
+                remarks: response?.data[0]?.remarks || '',
+              });
+            }
+        } catch (error) {
+            console.log(error)
+
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            }
+            else {
+                toast.error('Something went wrong!')
+            }
+        }
+    }
+}
 
 
   useEffect(() => {
     if (show && selectedSite) {
-      setFormData({
-        siteCode: selectedSite?.site_id || '',
-        state:selectedSite?.db_site?.db_state?.state_name || '',
-        city:selectedSite?.db_site?.db_city?.city_name || '',
-
-        location: selectedSite?.db_site?.location || '',
-        category: selectedSite?.db_site?.db_site_category?.site_cat_name || '',
-        mediaFormat: selectedSite?.db_site?.db_media_format?.m_f_name|| '',
-        mediaVehicle: selectedSite?.db_site?.db_media_vehicle?.m_v_name || '',
-        mediaType: selectedSite?.db_site?.db_media_type?.m_t_name || '',
-        quantity: selectedSite?.db_site.quantity || '',
-        width:selectedSite?.db_site.width || '',
-        height:selectedSite?.db_site.height || '',
-        total: (selectedSite?.db_site.width *selectedSite?.db_site.height).toFixed(2) || '',
-        campaignStartDate: selectedSite.campaignStartDate || '',
-        campaignEndDate: selectedSite.campaignEndDate || '',
-        campaignDuration: selectedSite.campaignDuration || '',
-        displayCostPerMonth: selectedSite.displayCostPerMonth || '',
-        sellingPriceAsPerDuration: selectedSite.sellingPriceAsPerDuration || '',
-        finalClientPOCost: selectedSite.finalClientPOCost || '',
-        mountingCostPerSqFt: selectedSite.mountingCostPerSqFt || '',
-        mountingCost: selectedSite.mountingCost || '',
-        printingCostPerSqFt: selectedSite.printingCostPerSqFt || '',
-        printingCost: selectedSite.printingCost || '',
-        remarks: selectedSite?.db_site?.remarks || '',
-      });
-    }
-    console.log("agjg",selectedSite)
+      getClientCostSheetInfoForParticularSite()
+    } 
   }, [show, selectedSite]);
 
   const handleChange = (e) => {
@@ -75,8 +125,8 @@ const ModelUpdateClientCostAsset = ({
 
     // Convert numeric values to numbers
     const parsedValue = name === 'width' || name === 'height' || name === 'quantity' ||
-                        name === 'finalClientPOCost' || name === 'mountingCostPerSqFt' ||
-                        name === 'printingCostPerSqFt'
+                        name === 'final_client_po_cost' || name === 'mounting_cost_per_sq_ft' ||
+                        name === 'printing_cost_per_sq_ft'
                         ? parseFloat(value) || ''
                         : value;
 
@@ -90,31 +140,93 @@ const ModelUpdateClientCostAsset = ({
     if (name === 'width' || name === 'height') {
       const width = parseFloat(newFormData.width) || 0;
       const height = parseFloat(newFormData.height) || 0;
-      newFormData.total = (width * height).toFixed(2); // Update total
+      newFormData.total_sq_ft = (width * height).toFixed(2); // Update total
     }
 
     setFormData(newFormData);
   };
 
-  const handleUpdate = async () => {
-    try {
-      const response = await fetch('https://dummyapi.com/update', {
-        method: 'POST',
+ 
+
+  const saveClientCostSheetAssetForParticularSite = async () => {
+    if (hasCookie("token")) {
+      setLoading(true)
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
         headers: {
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
         },
-        body: JSON.stringify(formData),
-      });
+      };
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+      try {
+        const response = await axios.post(
+          Baseurl +
+            `/db/media/costSheet/clientCostSheet/createAssetClientCostSheet`,
+          formData,
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          getAssetSites()
+          setFlag(false)
+          setLoading(false)
+          handleClose()
+        }
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setLoading(false)
       }
+    }
+  };
 
-      const data = await response.json();
-      console.log('Update successful:', data);
-      handleClose(); // Close the modal after successful update
-    } catch (error) {
-      console.error('Error updating data:', error);
+  const updateClientCostSheetAssetForParticularSite = async () => {
+    if (hasCookie("token")) {
+      setLoading(true)
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+
+      try {
+        const response = await axios.put(
+          Baseurl +
+            `/db/media/costSheet/clientCostSheet/updateAssetClientCostSheet`,
+         formData,
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          getAssetSites()
+          setFlag(false)
+          setLoading(false)
+          handleClose()
+        }
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setLoading(false)
+      }
     }
   };
 
@@ -127,28 +239,28 @@ const ModelUpdateClientCostAsset = ({
         <Modal.Body>
           <div className="add_user_form">
             <div className="row">
-              {[{label:'Site Code',name:'siteCode', type: 'number',disabled:true},
+              {[{label:'Site Code',name:'site_id', type: 'number',disabled:true},
               {label:'State',name:'state', disabled: true},
               {label:'City',name:'city', disabled: true},
               { label: 'Location', name: 'location', disabled: true },
               { label: 'Category', name: 'category', disabled: true },
-              { label: 'Media Format', name: 'mediaFormat', disabled: true },
-              { label: 'Media Vehicle', name: 'mediaVehicle', disabled: true },
-              { label: 'Media Type', name: 'mediaType', disabled: true },
+              { label: 'Media Format', name: 'media_format', disabled: true },
+              { label: 'Media Vehicle', name: 'media_vehicle', disabled: true },
+              { label: 'Media Type', name: 'media_type', disabled: true },
                 { label: 'Quantity', name: 'quantity', type: 'number' },
                 { label: 'Width (Ft.)', name: 'width', type: 'number' },
                 { label: 'Height (Ft.)', name: 'height', type: 'number' },
-                { label: 'Total (Sq. Ft.)', name: 'total', type: 'text', disabled: true },
-                { label: 'Campaign Start Date', name: 'campaignStartDate', type: 'date' },
-                { label: 'Campaign End Date', name: 'campaignEndDate', type: 'date' },
-                { label: 'Campaign Duration', name: 'campaignDuration', disabled:true },
-                { label: 'Display Cost / Month', name: 'displayCostPerMonth', disabled:true },
-                { label: 'Selling Price as per Duration', name: 'sellingPriceAsPerDuration', disabled:true },
-                { label: 'Final Client PO Cost', name: 'finalClientPOCost', type: 'number' },
-                { label: 'Mounting Cost / Sq. Ft.', name: 'mountingCostPerSqFt', type: 'number' },
-                { label: 'Mounting Cost', name: 'mountingCost', disabled: true  },
-                { label: 'Printing Cost / Sq. Ft.', name: 'printingCostPerSqFt', type: 'number' },
-                { label: 'Printing Cost', name: 'printingCost', disabled: true },
+                { label: 'Total (Sq. Ft.)', name: 'total_sq_ft', type: 'text', disabled: true },
+                { label: 'Campaign Start Date', name: 'campaign_start_date', type: 'date' },
+                { label: 'Campaign End Date', name: 'campaign_end_date', type: 'date' },
+                { label: 'Campaign Duration', name: 'campaign_duration', disabled:true },
+                { label: 'Display Cost / Month', name: 'display_cost_per_month', disabled:true },
+                { label: 'Selling Price as per Duration', name: 'selling_price_as_per_duration', disabled:true },
+                { label: 'Final Client PO Cost', name: 'final_client_po_cost', type: 'number' },
+                { label: 'Mounting Cost / Sq. Ft.', name: 'mounting_cost_per_sq_ft', type: 'number' },
+                { label: 'Mounting Cost', name: 'mounting_cost', disabled: true  },
+                { label: 'Printing Cost / Sq. Ft.', name: 'printing_cost_per_sq_ft', type: 'number' },
+                { label: 'Printing Cost', name: 'printing_cost', disabled: true },
                 { label: 'Remarks', name: 'remarks' }
               ].map((field, index) => (
                 <div key={index} className="col-xl-3 col-md-3 col-sm-12 col-12">
@@ -171,8 +283,10 @@ const ModelUpdateClientCostAsset = ({
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleUpdate}>
-            Update
+          <Button disabled={loading} variant="primary" onClick={()=>{
+            flag==false ? saveClientCostSheetAssetForParticularSite() :updateClientCostSheetAssetForParticularSite()
+          }}>
+            { flag==false ?  loading ? "Saving...":"Save":loading? "Updating...":"Update"}
           </Button>
         </Modal.Footer>
       </Modal>

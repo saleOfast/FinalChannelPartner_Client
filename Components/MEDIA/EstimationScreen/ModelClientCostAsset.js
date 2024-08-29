@@ -313,11 +313,7 @@ const ModelClientCostAsset = ({
             </div>
           </>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={getSiteList}>
-            SUBMIT
-          </Button>
-        </Modal.Footer>
+        
       </Modal>
     </>
   );

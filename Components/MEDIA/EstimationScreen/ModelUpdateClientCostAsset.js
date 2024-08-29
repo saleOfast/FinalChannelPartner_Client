@@ -3,7 +3,6 @@ import { Button, Modal } from 'react-bootstrap';
 import { hasCookie, getCookie } from "cookies-next";
 import { Baseurl } from "../../../Utils/Constants";
 import axios from "axios";
-import Select from 'react-select';
 import moment from 'moment/moment';
 import { toast } from 'react-toastify';
 
@@ -19,6 +18,7 @@ const ModelUpdateClientCostAsset = ({
   selectedSite,
   getAssetSites
 }) => {
+
   const [formData, setFormData] = useState({
     site_id: null,
     eab_id:null,
@@ -68,36 +68,64 @@ const ModelUpdateClientCostAsset = ({
           
             const response = await axios.get(Baseurl + `/db/media/costSheet/clientCostSheet/getAssetClientCostSheet?eab_id=${selectedSite?.eab_id}&site_id=${selectedSite?.site_id}`, header);
 
-            if((response?.status==200 || response?.status==201 )&& Object.values(response?.data)[2].length > 0){
+            if((response?.status==200 || response?.status==201 )&& response?.data?.data!==null){
                 setFlag(true)
+                
+                setFormData({...formData,
+                  ccs_id:response?.data?.data?.ccs_id || '',
+                  site_id: response?.data?.data?.site_id || '',
+                  state:response?.data?.data?.state || '',
+                  city:response?.data?.data?.city || '',
+                  location: response?.data?.data?.location || '',
+                  category: response?.data?.data?.category || '',
+                  media_format: response?.data?.data?.media_format|| '',
+                  media_vehicle: response?.data?.data?.media_vehicle || '',
+                  media_type: response?.data?.data?.media_type || '',
+                  quantity: response?.data?.data?.quantity || '',
+                  width:response?.data?.data?.width || '',
+                  height:response?.data?.data?.height || '',
+                  total_sq_ft: Number(response?.data?.data?.total_sq_ft).toFixed(2) || '',
+                  campaign_start_date: moment(response?.data?.data?.campaign_start_date).format("YYYY-MM-DD")  || '',
+                  campaign_end_date:moment(response?.data?.data?.campaign_end_date).format("YYYY-MM-DD")  || '',
+                  campaign_duration: response?.data?.data?.campaign_duration || '',
+                  display_cost_per_month: response?.data?.data?.display_cost_per_month || "0",
+                  selling_price_as_per_duration: response?.data?.data?.selling_price_as_per_duration || "0",
+                  final_client_po_cost: response?.data?.data?.final_client_po_cost || "0",
+                  mounting_cost_per_sq_ft: response?.data?.data?.mounting_cost_per_sq_ft || "0",
+                  mounting_cost: response?.data?.data?.mounting_cost || "0",
+                  printing_cost_per_sq_ft: response?.data?.data?.printing_cost_per_sq_ft || "0",
+                  printing_cost: response?.data?.data?.printing_cost || '0',
+                  remarks: response?.data?.data?.remarks || '',
+                });
                 console.log("false")
             }
             else{
               console.log(true)
               setFormData({
-                site_id: response?.data[0]?.site_id || '',
-                state:response?.data[0]?.state || '',
-                city:response?.data[0]?.city || '',
-                location: response?.data[0]?.location || '',
-                category: response?.data[0]?.category || '',
-                media_format: response?.data[0]?.media_format|| '',
-                media_vehicle: response?.data[0]?.media_vehicle || '',
-                media_type: response?.data[0]?.media_type || '',
-                quantity: response?.data[0]?.quantity || '',
-                width:response?.data[0]?.width || '',
-                height:response?.data[0]?.height || '',
-                total_sq_ft: (response?.data[0]?.total_sq_ft).toFixed(2) || '',
-                campaign_start_date: moment(response?.data[0]?.campaign_start_date).format("YYYY-MM-DD")  || '',
-                campaign_end_date:moment(response?.data[0]?.campaign_end_date).format("YYYY-MM-DD")  || '',
-                campaign_duration: response?.data[0]?.campaign_duration || '',
-                display_cost_per_month: response?.data[0]?.display_cost_per_month || "0",
-                selling_price_as_per_duration: response?.data[0]?.selling_price_as_per_duration || "0",
-                final_client_po_cost: response?.data[0]?.final_client_po_cost || "0",
-                mounting_cost_per_sq_ft: response?.data[0]?.mounting_cost_per_sq_ft || "0",
-                mounting_cost: response?.data[0]?.mounting_cost || "0",
-                printing_cost_per_sq_ft: response?.data[0]?.printing_cost_per_sq_ft || "0",
-                printing_cost: response?.data[0]?.printing_cost || '0',
-                remarks: response?.data[0]?.remarks || '',
+                site_id: selectedSite?.db_site?.site_id || '',
+                estimate_id:selectedSite?.estimate_id||"",
+                state:selectedSite?.db_site?.db_state?.state_name || '',
+                city:selectedSite?.db_site?.db_city?.city_name || '',
+                location: selectedSite?.db_site?.location || '',
+                category: selectedSite?.db_site?.db_site_category?.site_cat_name || '',
+                media_format: selectedSite?.db_site?.db_media_format?.m_f_name|| '',
+                media_vehicle: selectedSite?.db_site?.db_media_vehicle?.m_v_name || '',
+                media_type: selectedSite?.db_site?.db_media_type?.m_t_name || '',
+                quantity: selectedSite?.db_site?.quantity || '',
+                width:selectedSite?.db_site?.width || '',
+                height:selectedSite?.db_site?.height || '',
+                total_sq_ft: (selectedSite?.db_site?.width*selectedSite?.db_site?.height).toFixed(2) || '',
+                campaign_start_date: moment(selectedSite?.db_estimate?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")  || '',
+                campaign_end_date:moment(selectedSite?.db_estimate?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")  || '',
+                campaign_duration: selectedSite?.db_estimate?.db_media_campaign?.campaign_duration || '',
+                display_cost_per_month: selectedSite?.db_estimate?.display_cost_per_month || "0",
+                selling_price_as_per_duration: selectedSite?.db_estimate?.selling_price_as_per_duration || "0",
+                final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || "0",
+                mounting_cost_per_sq_ft:selectedSite?.db_estimate?.mounting_cost_per_sq_ft || "0",
+                mounting_cost:((selectedSite?.db_estimate?.mounting_cost_per_sq_ft|| 0)*selectedSite?.db_site?.width*selectedSite?.db_site?.height).toFixed(2) || "0",
+                printing_cost_per_sq_ft:selectedSite?.db_estimate?.printing_cost_per_sq_ft || '0',
+                printing_cost: ((selectedSite?.db_estimate?.printing_cost_per_sq_ft||0)*selectedSite?.db_site?.width*selectedSite?.db_site?.height).toFixed(2) || "0",
+                remarks: selectedSite?.db_site?.remarks || '',
               });
             }
         } catch (error) {
@@ -143,6 +171,20 @@ const ModelUpdateClientCostAsset = ({
       newFormData.total_sq_ft = (width * height).toFixed(2); // Update total
     }
 
+    if(name==="mounting_cost_per_sq_ft"){
+      const width = parseFloat(newFormData.width) || 0;
+      const height = parseFloat(newFormData.height) || 0;
+      const mounting_cost_per_sq_ft = parseFloat(newFormData.mounting_cost_per_sq_ft) || 0;
+      newFormData.mounting_cost = (width * height * mounting_cost_per_sq_ft).toFixed(2); // Update total
+    }
+
+    if(name==="printing_cost_per_sq_ft"){
+      const width = parseFloat(newFormData.width) || 0;
+      const height = parseFloat(newFormData.height) || 0;
+      const printing_cost_per_sq_ft = parseFloat(newFormData.printing_cost_per_sq_ft) || 0;
+      newFormData.printing_cost = (width * height * printing_cost_per_sq_ft).toFixed(2); // Update total
+    }
+
     setFormData(newFormData);
   };
 
@@ -162,20 +204,20 @@ const ModelUpdateClientCostAsset = ({
           pass: "pass",
         },
       };
-
+      const newData={...formData,site_id:selectedSite?.site_id,eab_id:selectedSite?.eab_id,campaign_id:selectedSite?.db_estimate?.campaign_id}
       try {
         const response = await axios.post(
           Baseurl +
             `/db/media/costSheet/clientCostSheet/createAssetClientCostSheet`,
-          formData,
+          newData,
           header
         );
         if (response.status === 204 || response.status === 200) {
           toast.success(response?.data?.message);
           getAssetSites()
-          setFlag(false)
           setLoading(false)
           handleClose()
+          setFlag(false)
         }
       } catch (error) {
         console.log(error);
@@ -203,20 +245,20 @@ const ModelUpdateClientCostAsset = ({
           pass: "pass",
         },
       };
-
+      const newData={...formData,site_id:selectedSite?.site_id,eab_id:selectedSite?.eab_id,campaign_id:selectedSite?.db_estimate?.campaign_id}
       try {
         const response = await axios.put(
           Baseurl +
             `/db/media/costSheet/clientCostSheet/updateAssetClientCostSheet`,
-         formData,
+          newData,
           header
         );
         if (response.status === 204 || response.status === 200) {
           toast.success(response?.data?.message);
           getAssetSites()
-          setFlag(false)
           setLoading(false)
           handleClose()
+          setFlag(false)
         }
       } catch (error) {
         console.log(error);
@@ -232,7 +274,10 @@ const ModelUpdateClientCostAsset = ({
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} size="xl">
+      <Modal show={show} onHide={()=>{
+        setFlag(false)
+        handleClose()
+      }} size="xl">
         <Modal.Header closeButton>
           <Modal.Title>Client Cost Sheet(Asset)</Modal.Title>
         </Modal.Header>

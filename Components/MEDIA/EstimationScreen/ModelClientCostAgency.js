@@ -35,6 +35,7 @@ const ModelClientCostAgency = ({
   const [show1,setShow1]=useState(false);
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [agencySiteLists, setAgencySiteLists] = useState([]);
+  const [selectedSite, setSelectedSite] = useState(null);
 
 
   const [userInfo, setUserInfo] = useState({
@@ -189,6 +190,8 @@ const ModelClientCostAgency = ({
         stateId={stateId}
         cityIds={cityIds}
         estimateId={estimateId}
+        getAgencySites={getAgencySites}
+        selectedSite={selectedSite}
       />
       {/* <ConfirmBox
         showConfirm={assetDeleteShowConfirm}
@@ -279,6 +282,7 @@ const ModelClientCostAgency = ({
                                 onClick={() => {
                                 //   setEstimationId(tableMeta?.rowData[3]);
                                   setShow1(true);
+                                  setSelectedSite(site)
                                 }}
                                 title="Client Cost Sheet Update"
                               >
@@ -315,11 +319,6 @@ const ModelClientCostAgency = ({
             </div>
           </>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={getSiteList}>
-            SUBMIT
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

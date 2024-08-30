@@ -371,6 +371,7 @@ import PlusIcon from "../../Svg/PlusIcon";
 import ModelClientCostAgency from "./ModelClientCostAgency";
 import ModelClientCostAsset from "./ModelClientCostAsset";
 import ModelVendorCostAsset from "./ModelVendorCostAsset";
+import StarIcon from "../../Svg/StarIcon";
 
 const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
   const [errorToast, setErrorToast] = useState({});
@@ -686,6 +687,16 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
                     <ViewIcon/>
                   </button></>
               )}
+              <button 
+              className="action_btn" 
+              title="Download Performa Invoice"
+              onClick={()=>{
+                
+              }}
+               
+              >
+                <StarIcon />
+              </button>
 
               {/* <button className="action_btn" title="Upload Site" onClick={()=>{setShow4(true)}}>
                   <EditIcon />

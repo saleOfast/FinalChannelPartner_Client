@@ -1,4 +1,4 @@
-// code without media
+// code with media
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import CameraIcon from "../Svg/CameraIcon";
@@ -113,13 +113,6 @@ useEffect(()=>{
     setiscollapse(true)
   };
 
-
-
-
-    
-
-
-  
   const getState = async (id) => {
     await fetchData(
       `/db/area/states?cnt_id=${id}`,
@@ -196,7 +189,8 @@ useEffect(()=>{
         isCRM:data1?.db_user_platforms[0].actions,
         isDMS:data1?.db_user_platforms[1].actions,
         isSALES:data1?.db_user_platforms[2].actions,
-        isCHANNEL:data1?.db_user_platforms[3].actions
+        isCHANNEL:data1?.db_user_platforms[3].actions,
+        isMEDIA:data1?.db_user_platforms[4].actions
       });
 
       setoldFiles({
@@ -214,7 +208,7 @@ useEffect(()=>{
   const addUserHandler = async () => {
     
     if (!hasCookie("token")) return;
-    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL){
+    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL && !userInfo?.isMEDIA){
      return toast.error("No App Permission Provided")
     }
     let data={...userInfo}
@@ -223,6 +217,7 @@ useEffect(()=>{
         isCRM:false,
         isSALES:false,
         isDMS:false,
+        isMEDIA:false
       }
     }
     if(userInfo?.role_id>3){
@@ -294,7 +289,7 @@ useEffect(()=>{
     if (!hasCookie("token")) return;
     
     let data={...userInfo}
-    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL){
+    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL && !userInfo?.isMEDIA){
       return toast.error("No App Permission Provided")
      }
     if(userInfo?.role_id=="1" || userInfo?.role_id=="2" || userInfo?.role_id=="3"){
@@ -302,6 +297,7 @@ useEffect(()=>{
         isCRM:false,
         isSALES:false,
         isDMS:false,
+        isMEDIA:false
       }
     }
     if(userInfo?.role_id>3){
@@ -857,6 +853,28 @@ useEffect(()=>{
                                       </label>
                                     </div>
                                   )}
+                                  {p === "media" && (
+                                    <div className="form-check" key="media">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        value="option4"
+                                        id="option4"
+                                        checked={userInfo?.isMEDIA || false}
+                                        onChange={(e) => {
+                                          if (userInfo.isMEDIA) {
+                                            setUserinfo({ ...userInfo, isMEDIA: e.target.checked });
+                                          } else {
+                                            checkLicense(e, "media", "isMEDIA");
+                                          }
+                                          setErrorData({ ...errorData, isMEDIA: "" });
+                                        }}
+                                      />
+                                      <label className="form-check-label" htmlFor="option4">
+                                        MEDIA
+                                      </label>
+                                    </div>
+                                  )}
                                   
                                 </>
                               );
@@ -913,17 +931,19 @@ useEffect(()=>{
                         name="name"
                         id="firstName"
                         className={
-                          errorData?.user
-                            ? "form-control is-invalid"
-                            : "form-control"
+                          errorData?.user ? "form-control is-invalid" : "form-control"
                         }
                         onChange={(e) => {
-                          setUserinfo({ ...userInfo, user: e.target.value });
-                          setErrorData({ ...errorData, user: "" });
+                          const value = e.target.value;
+                          if (/^[a-zA-Z]*$/.test(value)) {
+                            setUserinfo({ ...userInfo, user: value });
+                            setErrorData({ ...errorData, user: "" });
+                          }
                         }}
                         disabled={viewMode}
                         value={userInfo.user ? userInfo.user : ""}
                       />
+
                       <span className="errorText">
                         {" "}
                         {errorData?.user ? errorData.user : ""}
@@ -948,8 +968,12 @@ useEffect(()=>{
                             : "form-control"  
                         }
                         onChange={(e) => {
-                          setUserinfo({ ...userInfo, user_l_name: e.target.value });
+                          const value=e.target.value;
+                          if (/^[a-zA-Z]*$/.test(value)) {
+                            setUserinfo({ ...userInfo, user_l_name: value });
                           setErrorData({ ...errorData, user_l_name: "" });
+                          }
+                          
                         }}
                         disabled={viewMode}
                         value={userInfo.user_l_name ? userInfo.user_l_name : ""}
@@ -970,27 +994,28 @@ useEffect(()=>{
                     >
                       <label htmlFor="contact_no">Contact No </label>
                       <input
-                        type="number"
+                        type="text" // Use text to enforce custom validation
                         placeholder="Enter Contact No."
                         name="contact-no"
                         id="contact_no"
                         className={
-                          errorData?.contact_number
-                            ? "form-control is-invalid"
-                            : "form-control"
+                          errorData?.contact_number ? "form-control is-invalid" : "form-control"
                         }
                         disabled={viewMode}
                         onChange={(e) => {
-                          setUserinfo({
-                            ...userInfo,
-                            contact_number: e.target.value,
-                          });
-                          setErrorData({ ...errorData, contact_number: "" });
+                          const value = e.target.value;
+                          // Allow only numbers and limit to 10 digits
+                          if (/^\d{0,10}$/.test(value)) {
+                            setUserinfo({
+                              ...userInfo,
+                              contact_number: value,
+                            });
+                            setErrorData({ ...errorData, contact_number: "" });
+                          }
                         }}
-                        value={
-                          userInfo.contact_number ? userInfo.contact_number : ""
-                        }
+                        value={userInfo.contact_number ? userInfo.contact_number : ""}
                       />
+
                       <span className="errorText">
                         {" "}
                         {errorData?.contact_number
@@ -1922,6 +1947,7 @@ useEffect(()=>{
                 </div>
               </div>
             ) : null}
+
             <div className="text-end">
               <div className="submit_btn">
            {viewMode ? null : (

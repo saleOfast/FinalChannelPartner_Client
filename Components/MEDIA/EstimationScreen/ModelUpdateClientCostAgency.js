@@ -174,7 +174,7 @@ const ModelUpdateClientCostAgency = ({
     state:"",
     city:"",
     location: '',
-    category: '',
+    // category: '',
     media_format: '',
     media_vehicle: '',
     media_type: '',
@@ -196,7 +196,8 @@ const ModelUpdateClientCostAgency = ({
   });
 
   const [loading,setLoading]=useState(false)
-  const [flag,setFlag]= useState(false)
+  const [flag,setFlag]= useState(false);
+  const [errors,setErrors]=useState({});
 
   const getClientCostSheetInfoForParticularSite = async () => {
     
@@ -225,7 +226,7 @@ const ModelUpdateClientCostAgency = ({
                   state:response?.data?.data?.state || '',
                   city:response?.data?.data?.city || '',
                   location: response?.data?.data?.location || '',
-                  category: response?.data?.data?.category || '',
+                  // category: response?.data?.data?.category || '',
                   media_format: response?.data?.data?.media_format|| '',
                   media_vehicle: response?.data?.data?.media_vehicle || '',
                   media_type: response?.data?.data?.media_type || '',
@@ -255,7 +256,7 @@ const ModelUpdateClientCostAgency = ({
                 state:selectedSite?.state_id || '',
                 city:selectedSite?.city_id || '',
                 location: selectedSite?.location || '',
-                category: selectedSite?.site_cat_name || '',
+                // category: selectedSite?.site_cat_name || '',
                 media_format: selectedSite?.m_f_id|| '',
                 media_vehicle: selectedSite?.m_v_id || '',
                 media_type: selectedSite?.m_t_id || '',
@@ -336,9 +337,43 @@ const ModelUpdateClientCostAgency = ({
     setFormData(newFormData);
   };
 
- 
+
+  useEffect(() => {
+
+    setErrors({
+      
+    });
+  
+}, [show]);
+
+  const validate = () => {
+    const newErrors = {};
+    // Add required fields validation
+    const requiredFields = [
+      'quantity',
+      'width',
+      'height',
+      'campaign_start_date',
+      'campaign_end_date',
+      'final_client_po_cost',
+      'mounting_cost_per_sq_ft',
+      'printing_cost_per_sq_ft'
+    ];
+
+    requiredFields.forEach(field => {
+      if (!formData[field]) {
+        newErrors[field] = 'This field is required';
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
+
 
   const saveClientCostSheetAgencyForParticularSite = async () => {
+    if(validate()){
     if (hasCookie("token")) {
       setLoading(true)
       let token = getCookie("token");
@@ -376,10 +411,11 @@ const ModelUpdateClientCostAgency = ({
         }
         setLoading(false)
       }
-    }
+    }}
   };
 
   const updateClientCostSheetAgencyForParticularSite = async () => {
+    if(validate()){
     if (hasCookie("token")) {
       setLoading(true)
       let token = getCookie("token");
@@ -417,7 +453,7 @@ const ModelUpdateClientCostAgency = ({
         }
         setLoading(false)
       }
-    }
+    }}
   };
 
   return (
@@ -436,7 +472,7 @@ const ModelUpdateClientCostAgency = ({
               {label:'State',name:'state', disabled: true},
               {label:'City',name:'city', disabled: true},
               { label: 'Location', name: 'location', disabled: true },
-              { label: 'Category', name: 'category', disabled: true },
+              // { label: 'Category', name: 'category', disabled: true },
               { label: 'Media Format', name: 'media_format', disabled: true },
               { label: 'Media Vehicle', name: 'media_vehicle', disabled: true },
               { label: 'Media Type', name: 'media_type', disabled: true },
@@ -469,6 +505,11 @@ const ModelUpdateClientCostAgency = ({
                       value={formData[field.name] || ''}
                       disabled={field.disabled || false}
                     />
+      {errors[field.name] && (
+                  <div style={{ color: 'red', fontSize: '0.875em' }}>
+                    {errors[field.name]}
+                  </div>
+                )}
                   </div>
                 </div>
               ))}

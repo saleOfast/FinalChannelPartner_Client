@@ -16,7 +16,8 @@ const ModelUpdateClientCostAsset = ({
   stateId,
   cityIds,
   selectedSite,
-  getAssetSites
+  getAssetSites,
+  
 }) => {
 
   const [formData, setFormData] = useState({
@@ -49,6 +50,8 @@ const ModelUpdateClientCostAsset = ({
 
   const [loading,setLoading]=useState(false)
   const [flag,setFlag]= useState(false)
+  const [errors,setErrors]=useState({});
+
 
   const getClientCostSheetInfoForParticularSite = async () => {
     
@@ -141,6 +144,38 @@ const ModelUpdateClientCostAsset = ({
     }
 }
 
+useEffect(() => {
+
+    setErrors({
+      
+    });
+  
+}, [show]);
+
+const validate = () => {
+  const newErrors = {};
+  // Add required fields validation
+  const requiredFields = [
+    'quantity',
+    'width',
+    'height',
+    'campaign_start_date',
+    'campaign_end_date',
+    'final_client_po_cost',
+    'mounting_cost_per_sq_ft',
+    'printing_cost_per_sq_ft'
+  ];
+
+  requiredFields.forEach(field => {
+    if (!formData[field]) {
+      newErrors[field] = 'This field is required';
+    }
+  });
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
 
   useEffect(() => {
     if (show && selectedSite) {
@@ -191,6 +226,7 @@ const ModelUpdateClientCostAsset = ({
  
 
   const saveClientCostSheetAssetForParticularSite = async () => {
+    if(validate()){
     if (hasCookie("token")) {
       setLoading(true)
       let token = getCookie("token");
@@ -228,10 +264,11 @@ const ModelUpdateClientCostAsset = ({
         }
         setLoading(false)
       }
-    }
+    }}
   };
 
   const updateClientCostSheetAssetForParticularSite = async () => {
+    if(validate()){
     if (hasCookie("token")) {
       setLoading(true)
       let token = getCookie("token");
@@ -269,7 +306,7 @@ const ModelUpdateClientCostAsset = ({
         }
         setLoading(false)
       }
-    }
+    }}
   };
 
   return (
@@ -321,6 +358,11 @@ const ModelUpdateClientCostAsset = ({
                       value={formData[field.name] || ''}
                       disabled={field.disabled || false}
                     />
+                        {errors[field.name] && (
+                  <div style={{ color: 'red', fontSize: '0.875em' }}>
+                    {errors[field.name]}
+                  </div>
+                )}
                   </div>
                 </div>
               ))}

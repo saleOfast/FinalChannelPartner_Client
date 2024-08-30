@@ -56,7 +56,8 @@ const ModelAgencySiteSiteUpload = ({ show, handleClose, estimateId }) => {
     try {
       // Send file and estimateId to the server
       const response = await axios.post(`${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`, formData, { headers });
-      toast.success('File uploaded successfully.'); // Notify user of successful upload
+      toast.success('File uploaded successfully.'); 
+      console.log("response is ",response)// Notify user of successful upload
       setFile(null); // Clear the file input
     } catch (error) {
       // More detailed error logging

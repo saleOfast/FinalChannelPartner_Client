@@ -35,6 +35,10 @@ const ModelVendorCostAsset = ({
   const [isLoading, setisLoading] = useState(false);
   const [show1,setShow1]=useState(false);
   const [selectedSite, setSelectedSite] = useState(null);
+  const [printingCostList,setPrintingCostList]=useState([]);
+  const [loader,setLoader]=useState(false)
+
+  // const [initial,setInitial]=useState(show1==true && );
 
   const [userInfo, setUserInfo] = useState({
     estimate_type: "",
@@ -97,6 +101,49 @@ const ModelVendorCostAsset = ({
   };
 
 
+  const getPrintingCost = async () => {
+    setLoader(true);
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id: 320,
+        },
+      };
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/media/printingCost/getPrintingCost`,
+          header
+        );
+        if (response?.status == 200 || response?.status == 201) {
+        
+          setPrintingCostList(response.data.data);
+          // if(!printingCostList.length){
+          //   setPrintingCostList(response.data.data);
+          // }
+          console.log("answer 3 is",response?.data?.data,"printinigCostLIstData is",printingCostList);
+          setLoader(false);
+        }
+      } catch (error) {
+        setLoader(false);
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+
+  useEffect(()=>{
+    getPrintingCost()
+  },[show])
 
 
   const deleteAssetSite = async () => {
@@ -186,6 +233,10 @@ const ModelVendorCostAsset = ({
         cityIds={cityIds}
         estimateId={estimateId}
         selectedSite={selectedSite} 
+        printingCostList={printingCostList}
+        setPrintingCostList={setPrintingCostList}
+        // initial={initial}
+        // setInitial={setInitial}
       />
       {/* <ConfirmBox
         showConfirm={assetDeleteShowConfirm}

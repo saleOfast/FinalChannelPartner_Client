@@ -175,6 +175,7 @@ const EstimationScreen = () => {
                         </div>
                         <DynamicTable title='Estimations List'
                             accountsList={accountList}
+                            getContactList={getContactList}
                             loader={loader}
                             openConfirmBox={openConfirmBox}
                         />

@@ -8,12 +8,15 @@ import Select from "react-select";
 import { Baseurl } from "../../Utils/Constants";
 import { useRouter } from "next/router";
 
+
+
 const CommonSettingScreen = () => {
   const router = useRouter();
   const sideView = useSelector((state) => state.sideView.value);
   const [formData, setFormData] = useState([]);
   const [loader, setLoader] = useState(false);
   const [currencyList, setCurrencyList] = useState([]);
+  const [roleList, setRoleList] = useState([]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -133,10 +136,50 @@ const CommonSettingScreen = () => {
     }
   };
 
+  const getRoleList = async () => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          db: db_name,
+          pass:"pass"
+        },
+      };
+
+      try {
+        const { data } = await axios.get(
+          Baseurl + `/db/role`,
+          header
+        );
+        let mediaRoles=data?.data?.filter((item)=>item.role_id>3&&item.role_id<8)
+        const array=[]
+       for(let i=0;i<mediaRoles.length;i++){
+          let a={
+            value:mediaRoles[i].role_id,
+            label:mediaRoles[i].role_name
+          }
+          array.push(a)
+       }
+        setRoleList(array)
+        
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
   const updateCommonSettings = async (e, setting_id) => {
     e.preventDefault();
     const settingToUpdate = formData.find(item => item.setting_id === setting_id);
-
+    console.log(formData)
     if (settingToUpdate && hasCookie("token")) {
       const token = getCookie("token");
       const db_name = getCookie("db_name");
@@ -175,9 +218,24 @@ const CommonSettingScreen = () => {
     }
   };
 
+
+  const handleMultiSelectChange = (selectedOptions, setting_name) => {
+    
+    const selectedRoleIds = selectedOptions.map(option => option.value).join(",");
+    setFormData((prevFormData) =>
+      prevFormData.map((item) =>
+        item.setting_name === setting_name
+          ? { ...item, setting_value: selectedRoleIds }
+          : item
+      )
+    );
+  };
+ 
+
   useEffect(() => {
     getCommonSettings();
     getCurrencyList();
+    getRoleList();
   }, []);
 
   return (
@@ -238,9 +296,27 @@ const CommonSettingScreen = () => {
                             </option>
                           ))}
                         </select>
-                        
-                        
                         )}
+                        {
+                          data?.setting_name === "Required Approvals" && (
+                            <>
+                               <Select
+                            isMulti
+                            value={roleList.filter(role => data?.setting_value?.split(',').includes(role.value.toString()))}
+                            options={roleList.map((role) => ({
+                              value: role.value,
+                              label: role.label,
+                            }))}
+                            onChange={(selectedOptions) =>{
+                              
+                               handleMultiSelectChange(selectedOptions, data.setting_name)}}
+                            className="basic-multi-select mt-1 mt-md-0"
+                            classNamePrefix="select"
+                            placeholder={`Select ${data?.setting_name}`}
+                          />
+                            </>
+                          )
+                        }
                       </div>
                       <div className="" style={{ marginTop: "30px" }}>
                         <button

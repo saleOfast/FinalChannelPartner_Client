@@ -373,7 +373,7 @@ import ModelClientCostAsset from "./ModelClientCostAsset";
 import ModelVendorCostAsset from "./ModelVendorCostAsset";
 import StarIcon from "../../Svg/StarIcon";
 
-const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
+const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getContactList }) => {
   const [errorToast, setErrorToast] = useState({});
   const [busiessTypeList, setBusinessTypeList] = useState([]);
   const [stateList, setStatelist] = useState([]);
@@ -513,6 +513,89 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
       }
     }
   };
+
+  const sentForApproval = async (estimate_id) => {
+    if (hasCookie("token")) {
+      setisLoading(true);
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+
+      try {
+        const response = await axios.post(
+          Baseurl +
+            `/db/media/estimation/sendMailForApproval/`,
+          {
+            estimate_id: estimate_id,
+          },
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          getContactList()
+        }
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
+    }
+  };
+
+
+  const accept_rejectApproval = async (estimate_id,status) => {
+    if (hasCookie("token")) {
+      setisLoading(true);
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+
+      try {
+        const response = await axios.post(
+          Baseurl +
+            `/db/media/estimation/approveEstimate`,
+          {
+            estimate_id: estimate_id,
+            approval:status
+          },
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          getContactList()
+        }
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
+    }
+  };
+
 
   useEffect(() => {
     getBusinessTypeList();
@@ -697,6 +780,40 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader }) => {
               >
                 <StarIcon />
               </button>
+
+              <button 
+              className="action_btn" 
+              title="Sent For Approval"
+              onClick={()=>{
+                sentForApproval(value)
+              }}
+               
+              >
+                <StarIcon />
+              </button>
+
+              <button 
+              className="action_btn" 
+              title="Accept"
+              onClick={()=>{
+                accept_rejectApproval(value,"true")
+              }}
+               
+              >
+                <StarIcon />
+              </button>
+
+              <button 
+              className="action_btn" 
+              title="Reject"
+              onClick={()=>{
+                accept_rejectApproval(value,"false")
+              }}
+               
+              >
+                <StarIcon />
+              </button>
+
 
               {/* <button className="action_btn" title="Upload Site" onClick={()=>{setShow4(true)}}>
                   <EditIcon />

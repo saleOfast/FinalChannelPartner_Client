@@ -455,7 +455,7 @@ const ModelUpdateVendorCostAgency = ({
         if (error?.response?.data?.message) {
           toast.error(error?.response?.data?.message);
         } else {
-          toast.error("Something went wrong1!");
+          toast.error("Something went wrong!");
         }
         setLoading(false);
       }
@@ -476,7 +476,6 @@ const ModelUpdateVendorCostAgency = ({
         },
       };
       try {
-        // /api/v1/db/media/costSheet/vendorCostSheet/getAssetVendorCostSheet
         const response = await axios.get(
           Baseurl +
             `/db/media/costSheet/vendorCostSheet/getAgencyVendorCostSheet
@@ -722,7 +721,7 @@ const ModelUpdateVendorCostAgency = ({
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
-          toast.error("Something went wrong2!");
+          toast.error("Something went wrong!");
         }
       }
     }

@@ -184,7 +184,7 @@ const MountingCostManagementScreens = () => {
           <h3 className="content_head">Mounting Cost Management</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
-              <li className="breadcrumb-item"> <Link href='/crm'>Home   </Link></li>
+              <li className="breadcrumb-item"> <Link href='/media'>Home   </Link></li>
               <li className="breadcrumb-item active" aria-current="page">Mounting Cost List</li>
             </ol>
           </nav>

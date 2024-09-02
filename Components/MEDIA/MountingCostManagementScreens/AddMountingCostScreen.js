@@ -298,10 +298,10 @@ const AddMountingCostScreen = () => {
           <ol className="breadcrumb">
             <li className="breadcrumb-item fw-bolder">
               {" "}
-              <Link href="/crm">Home</Link>
+              <Link href="/media">Home</Link>
             </li>
             <li className="breadcrumb-item fw-bolder">
-              <Link href="/crm/TaskScreen"> Mounting Cost List </Link>
+              <Link href="/media/MountingCostManagement"> Mounting Cost List </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
               {viewMode ? 'View' : <>{editMode ? "Edit" : "Add"}</>} Mounting Cost

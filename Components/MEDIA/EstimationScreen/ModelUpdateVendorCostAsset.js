@@ -280,7 +280,7 @@ const ModelUpdateVendorCostAsset = ({
   useEffect(() => {
     if (formData.pr_m_id) {
       const selectedMaterial = printingMaterialData.find(
-        (item) => item.pr_m_id === formData.pr_m_id
+        (item) => item.pr_m_id === formData.pr_m_id && item.acc_id == formData. printing_vendor_id
       );
       if (selectedMaterial) {
         setFormData((prevData) => ({
@@ -653,6 +653,10 @@ const ModelUpdateVendorCostAsset = ({
               ).toFixed(2) || "0",
             remarks: selectedSite?.db_site?.remarks || "",
           });
+         
+          console.log("answer1 selectedSite",selectedSite);
+          console.log("asnwer 2 printingVendoer",printingVendorData)
+
 
           const filteredVendorData = printingVendorData.filter(
             (item) =>
@@ -722,9 +726,11 @@ const ModelUpdateVendorCostAsset = ({
   };
 
   useEffect(() => {
+
+    console.log("printingMaterialData data is ",printingMaterialData,"and selectd is ",selectedSite)
     if (formData.printing_vendor_id) {
       const fileterPrintingMdaterialData = printingMaterialData.filter(
-        (item) => item.acc_id == formData.printing_vendor_id
+        (item) => item.acc_id == formData. printing_vendor_id && item.m_t_id == selectedSite.db_site.db_media_type.m_t_id
       );
 
       const printingMaterial = fileterPrintingMdaterialData.map((item) => ({
@@ -764,16 +770,41 @@ const ModelUpdateVendorCostAsset = ({
   
   }, [formData.mounting_cost_per_sq_ft, formData.printing_cost_per_sq_ft, formData.total_sq_ft]);
   
-useEffect(()=>{
-if(formData.final_display_cost){
- const  calculate_display_cost_per_month = formData.final_display_cost /12;
- setFormData((prevData) => ({
-  ...prevData,
-   display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
- }));
-} 
+// useEffect(()=>{
+// if(formData.final_display_cost){
+//  const  calculate_display_cost_per_month = formData.final_display_cost /12;
+//  setFormData((prevData) => ({
+//   ...prevData,
+//    display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
+//  }));
+// } 
 
-},[formData.final_display_cost])
+// },[formData.final_display_cost])
+
+
+useEffect(() => {
+  if (formData.final_display_cost && !isNaN(formData.final_display_cost)) {
+    // Calculate the cost per month only if final_display_cost is a valid number
+    const calculate_display_cost_per_month = formData.final_display_cost / 12;
+    setFormData((prevData) => ({
+      ...prevData,
+      display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
+    }));
+  } else {
+    // Clear display_cost_per_month if final_display_cost is empty or invalid
+    setFormData((prevData) => ({
+      ...prevData,
+      display_cost_per_month: "",
+    }));
+  }
+}, [formData.final_display_cost]);
+
+
+
+useEffect(() => {
+  setErrors({}); 
+}, [show]);
+
 
   // useEffect(()=>{
   //   if(formData.pr_m_id){

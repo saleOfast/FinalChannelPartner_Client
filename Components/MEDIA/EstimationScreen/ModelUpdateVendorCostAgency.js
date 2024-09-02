@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { Baseurl } from "../../../Utils/Constants";
 import moment from "moment";
 import { responsiveFontSizes } from "@mui/material";
+import { ConnectingAirportsOutlined } from "@mui/icons-material";
 
 const formaArray = [
   {
@@ -322,7 +323,7 @@ const ModelUpdateVendorCostAgency = ({
   useEffect(() => {
     if (formData.pr_m_id) {
       const selectedMaterial = printingMaterialData.find(
-        (item) => item.pr_m_id === formData.pr_m_id
+        (item) => item.pr_m_id === formData.pr_m_id  && item.acc_id == formData. printing_vendor_id
       );
       if (selectedMaterial) {
         setFormData((prevData) => ({
@@ -406,7 +407,7 @@ const ModelUpdateVendorCostAgency = ({
         if (error?.response?.data?.message) {
           toast.error(error?.response?.data?.message);
         } else {
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong1!");
         }
         setLoading(false);
       }
@@ -455,7 +456,7 @@ const ModelUpdateVendorCostAgency = ({
         if (error?.response?.data?.message) {
           toast.error(error?.response?.data?.message);
         } else {
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong3!");
         }
         setLoading(false);
       }
@@ -536,11 +537,20 @@ const ModelUpdateVendorCostAgency = ({
             printing_cost_per_sq_ft:
               response?.data?.data?.printing_cost_per_sq_ft || "0",
           });
+
+          console.log("answer is 1 is  printingVendorData",printingVendorData,"other one is selectedSite",selectedSite)
+          // const filteredVendorData = printingVendorData.filter(
+          //   (item) =>
+          //     item.m_t_id ===
+          //       selectedSite.db_site.db_media_type.m_t_id &&
+          //     item.db_account.bill_state === selectedSite.db_site.db_state.state_id
+          // );
+
           const filteredVendorData = printingVendorData.filter(
             (item) =>
-              item.m_t_id ===
-                selectedSite.db_site.db_media_type.m_t_id &&
-              item.db_account.bill_state === selectedSite.db_site.db_state.state_id
+              item?.db_media_type?.m_t_name ==
+                selectedSite?.m_t_id &&
+                item?.db_account?.billState?.state_name == selectedSite?.state_id
           );
           const uniqueFilteredVendorData = filteredVendorData.reduce((acc, current) => {
             const x = acc.find(item => item.acc_id === current.acc_id);
@@ -559,12 +569,11 @@ const ModelUpdateVendorCostAgency = ({
 
           const filteredMountingVendorData = mountingVendorData.filter(
             (item) =>
-              item.db_media_type.m_t_id ===
-                selectedSite.db_site.db_media_type.m_t_id &&
-              item.db_account.bill_state ===
-                selectedSite.db_site.db_state.state_id
+              item.db_media_type.m_t_name ==
+                selectedSite.m_t_id &&
+              item.db_account.billState?.state_name ==
+                selectedSite.state_id
           );
-
           const uniqueFilteredMountingVendorData = filteredMountingVendorData.reduce((acc, current) => {
             const x = acc.find(item => item.acc_id === current.acc_id);
             if (!x) {
@@ -660,12 +669,22 @@ const ModelUpdateVendorCostAgency = ({
             remarks: selectedSite?.remarks || "",
           });
           
+          console.log("printing vendor data is ",printingVendorData,"and selected site is ",selectedSite)
           const filteredVendorData = printingVendorData.filter(
             (item) =>
               item?.db_media_type?.m_t_name ==
                 selectedSite?.m_t_id &&
-                item?.db_account?.bill_state?.state_name == selectedSite?.state_id
+                item?.db_account?.billState?.state_name == selectedSite?.state_id
           );
+
+          // const filteredVendorData = printingVendorData.filter(
+          //   (item) =>
+          //     item.m_t_id ===
+          //       selectedSite.db_site.db_media_type.m_t_id &&
+          //     item.db_account.bill_state === selectedSite.db_site.db_state.state_id
+          // );
+
+          console.log("fileterd data for printing si ",filteredVendorData)
 
           const uniqueFilteredVendorData = filteredVendorData.reduce((acc, current) => {
             const x = acc.find(item => item.acc_id == current.acc_id);
@@ -682,13 +701,18 @@ const ModelUpdateVendorCostAgency = ({
 
           setPrintingVendorList(printingVendorNames);
 
+          // console.log("anwer 1 mountingvendor",mountingVendorData,"and here selected siet is",selectedSite)
+          
+
           const filteredMountingVendorData = mountingVendorData.filter(
             (item) =>
-              item.db_media_type.m_t_id ==
+              item.db_media_type.m_t_name ==
                 selectedSite.m_t_id &&
-              item.db_account.bill_state?.state_name ==
+              item.db_account.billState?.state_name ==
                 selectedSite.state_id
           );
+
+          // console.log("answer 400 filteredMountingVendorData",filteredMountingVendorData)
 
           const uniqueFilteredMountingVendorData = filteredMountingVendorData.reduce((acc, current) => {
             const x = acc.find(item => item.acc_id == current.acc_id);
@@ -698,6 +722,8 @@ const ModelUpdateVendorCostAgency = ({
             return acc;
           }, []);
 
+
+
           const mountingVendorNames = uniqueFilteredMountingVendorData.map(
             (item) => ({
               value: item.acc_id,
@@ -706,7 +732,7 @@ const ModelUpdateVendorCostAgency = ({
             })
           );
           setMountingVendorList(mountingVendorNames);
-          console.log("mounting vendor data", filteredMountingVendorData);
+          // console.log("mounting vendor data", mountingVendorNames);
 
           console.log(
             "material",
@@ -721,23 +747,24 @@ const ModelUpdateVendorCostAgency = ({
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong2!");
         }
       }
     }
   };
 
   useEffect(() => {
+    console.log("printingMaterialData data is ",printingMaterialData)
     if (formData.printing_vendor_id) {
       const fileterPrintingMdaterialData = printingMaterialData.filter(
-        (item) => item.acc_id == formData.printing_vendor_id
+        (item) => item.acc_id == formData.printing_vendor_id && item.db_media_type.m_t_name ==  selectedSite.m_t_id
       );
 
       const printingMaterial = fileterPrintingMdaterialData.map((item) => ({
         value: item.pr_m_id,
         label: item.db_printing_material.pr_m_name,
       }));
-
+ 
       setPrintingMaterialList(printingMaterial);
       console.log(
         "material list",
@@ -748,38 +775,67 @@ const ModelUpdateVendorCostAgency = ({
     }
   }, [formData.printing_vendor_id]);
 
-//commetned
-  // useEffect(() => {
-  //   const mountingCostPerSqFt = parseFloat(formData.mounting_cost_per_sq_ft) || 0;
-  //   const printingCostPerSqFt = parseFloat(formData.printing_cost_per_sq_ft) || 0;
-  //   const total = parseFloat(formData.total_sq_ft) || 0;
+// commetned
+  useEffect(() => {
+    const mountingCostPerSqFt = parseFloat(formData.mounting_cost_per_sq_ft) || 0;
+    const printingCostPerSqFt = parseFloat(formData.printing_cost_per_sq_ft) || 0;
+    const total = parseFloat(formData.total_sq_ft) || 0;
   
-  //   let updatedData = { ...formData };
+    let updatedData = { ...formData };
   
-  //   if (formData.mounting_cost_per_sq_ft && formData.total_sq_ft) {
-  //     const TotalMountingCost = (mountingCostPerSqFt * total).toFixed(2);
-  //     updatedData.mounting_cost = TotalMountingCost;
-  //   }
+    if (formData.mounting_cost_per_sq_ft && formData.total_sq_ft) {
+      const TotalMountingCost = (mountingCostPerSqFt * total).toFixed(2);
+      updatedData.mounting_cost = TotalMountingCost;
+    }
   
-  //   if (formData.printing_cost_per_sq_ft && formData.total_sq_ft) {
-  //     const TotalPrintingCost = (printingCostPerSqFt * total).toFixed(2);
-  //     updatedData.printing_cost = TotalPrintingCost;
-  //   }
+    if (formData.printing_cost_per_sq_ft && formData.total_sq_ft) {
+      const TotalPrintingCost = (printingCostPerSqFt * total).toFixed(2);
+      updatedData.printing_cost = TotalPrintingCost;
+    }
   
-  //   setFormData(updatedData);
+    setFormData(updatedData);
   
-  // }, [formData.mounting_cost_per_sq_ft, formData.printing_cost_per_sq_ft, formData.total_sq_ft]);
+  }, [formData.mounting_cost_per_sq_ft, formData.printing_cost_per_sq_ft, formData.total_sq_ft]);
   
-useEffect(()=>{
-if(formData.final_display_cost){
- const  calculate_display_cost_per_month = formData.final_display_cost /12;
- setFormData((prevData) => ({
-  ...prevData,
-   display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
- }));
-} 
 
-},[formData.final_display_cost])
+
+// useEffect(()=>{
+// if(formData.final_display_cost){
+//  const  calculate_display_cost_per_month = formData.final_display_cost /12;
+//  setFormData((prevData) => ({
+//   ...prevData,
+//    display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
+//  }));
+// } 
+
+// },[formData.final_display_cost])
+
+useEffect(() => {
+  if (formData.final_display_cost && !isNaN(formData.final_display_cost)) {
+    // Calculate the cost per month only if final_display_cost is a valid number
+    const calculate_display_cost_per_month = formData.final_display_cost / 12;
+    setFormData((prevData) => ({
+      ...prevData,
+      display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
+    }));
+  } else {
+    // Clear display_cost_per_month if final_display_cost is empty or invalid
+    setFormData((prevData) => ({
+      ...prevData,
+      display_cost_per_month: "",
+    }));
+  }
+}, [formData.final_display_cost]);
+
+
+
+
+  useEffect(() => {
+    setErrors({}); 
+  }, [show]);
+
+
+
 
   // useEffect(()=>{
   //   if(formData.pr_m_id){
@@ -882,7 +938,11 @@ if(formData.final_display_cost){
                         disabled={field.disabled || false}
                       />
                     )}
-
+                       {errors[field.name] && (
+              <div style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+                {errors[field.name]}
+              </div>
+            )}
 
                   </div>
                 </div>

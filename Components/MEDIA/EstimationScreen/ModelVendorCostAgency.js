@@ -161,9 +161,10 @@ const ModeVendorCostAgency = ({
         );
   
       if (response?.status === 200 || response?.status === 201) {
+        setMountingVendorData(response?.data?.data)
         setLoader(false);
  
-        setMountingVendorData(response?.data?.data)
+        
       }
 
     
@@ -298,13 +299,17 @@ const ModeVendorCostAgency = ({
   }
 
   useEffect(() => {
-    getPrintingVendor();
-    getPrintingMaterial();
-    getMountingVendor();
 
     getAgencySites();
     getBusinessTypeList();
   }, [show]);
+
+  useEffect(()=>{
+    getPrintingVendor();
+    getPrintingMaterial();
+    getMountingVendor();
+
+  },[])
 
   return (
     <>

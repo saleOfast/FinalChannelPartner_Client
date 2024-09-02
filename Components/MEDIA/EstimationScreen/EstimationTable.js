@@ -371,6 +371,8 @@ import PlusIcon from "../../Svg/PlusIcon";
 import ModelClientCostAgency from "./ModelClientCostAgency";
 import ModelClientCostAsset from "./ModelClientCostAsset";
 import ModelVendorCostAsset from "./ModelVendorCostAsset";
+import ModelVendorCostAgency from "./ModelVendorCostAgency";
+
 import StarIcon from "../../Svg/StarIcon";
 
 const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getContactList }) => {
@@ -387,8 +389,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
   const [show4, setShow4] = useState(false);
   const [show5, setShow5] = useState(false);
   const [show6, setShow6] = useState(false);
-  const [showVendorAsset,setShowVendorAsset] = useState(false);
-  const [showVendorAgency,setShowVendorAgency] = useState(false);
+  const [showVendorAsset, setShowVendorAsset] = useState(false);
+  const [showVendorAgency, setShowVendorAgency] = useState(false);
 
   const [selectedSites, setSelectedSites] = useState([]);
   const [estimationId, setEstimationId] = useState(null);
@@ -418,10 +420,13 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
     setShow5(false);
   };
 
-
-  const handleVendorAssetClose =()=>{
+  const handleVendorAssetClose = () => {
     setShowVendorAsset(false);
-  }
+  };
+
+  const handleVendorAgencyClose = () => {
+    setShowVendorAgency(false);
+  };
   const getState = async () => {
     await fetchData(
       `/db/area/states?cnt_id=101`,
@@ -450,9 +455,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
   }
 
   const getSiteList = async () => {
-    if (!stateId) {
-      return toast.warning("Please Select State");
-    }
+    // if (!stateId) {
+    //   return toast.warning("Please Select State");
+    // }
     if (cityIds.length < 1) {
       return toast.warning("Please Select City");
     }
@@ -674,43 +679,38 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
               )?.cmpn_b_t_name === "Asset" && (
-             <>
-                <button
-                  className="action_btn"
-                  onClick={() => {
-                    setEstimationId(tableMeta?.rowData[3]);
-                    getState();
-                    setShow5(true);
-                  }}
-                  title="Client Cost Sheet Update"
-                >
-                  <PlusIcon />
-                </button> 
-                 </>
+                <>
+                  <button
+                    className="action_btn"
+                    onClick={() => {
+                      setEstimationId(tableMeta?.rowData[3]);
+                      getState();
+                      setShow5(true);
+                    }}
+                    title="Client Cost Sheet Update"
+                  >
+                    <PlusIcon />
+                  </button>
+                </>
               )}
 
-
-{busiessTypeList.find(
+              {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
               )?.cmpn_b_t_name === "Asset" && (
-             <>
-               
-                <button
-                  className="action_btn"
-                  onClick={() => {
-                    setEstimationId(tableMeta?.rowData[3]);
-                    getState();
-                    setShowVendorAsset(true);
-                  }}
-                  title="Vendor Cost Sheet Update"
-                >
-                  <ViewIcon/>
-                </button>
-                 </>
+                <>
+                  <button
+                    className="action_btn"
+                    onClick={() => {
+                      setEstimationId(tableMeta?.rowData[3]);
+                      getState();
+                      setShowVendorAsset(true);
+                    }}
+                    title="Vendor Cost Sheet Update"
+                  >
+                    <ViewIcon />
+                  </button>
+                </>
               )}
-
-
-
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
@@ -741,24 +741,13 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                 >
                   <EditIcon />
                 </button>
-
               )}
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && (<>
-                <button
-                  className="action_btn"
-                  onClick={() => {
-                    setEstimationId(tableMeta?.rowData[3]);
-                    getState();
-                    setShow6(true);
-                  }}
-                  title="Client Cost Sheet Update"
-                >
-                  <PlusIcon />
-                </button>
-                    <button
+              )?.cmpn_b_t_name === "Agency" && (
+                <>
+                  <button
                     className="action_btn"
                     onClick={() => {
                       setEstimationId(tableMeta?.rowData[3]);
@@ -767,16 +756,25 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                     }}
                     title="Client Cost Sheet Update"
                   >
-                    <ViewIcon/>
-                  </button></>
+                    <PlusIcon />
+                  </button>
+                  <button
+                    className="action_btn"
+                    onClick={() => {
+                      setEstimationId(tableMeta?.rowData[3]);
+                      getState();
+                      setShowVendorAgency(true);
+                    }}
+                    title="Vendor Cost Sheet Update"
+                  >
+                    <ViewIcon />
+                  </button>
+                </>
               )}
-              <button 
-              className="action_btn" 
-              title="Download Performa Invoice"
-              onClick={()=>{
-                
-              }}
-               
+              <button
+                className="action_btn"
+                title="Download Performa Invoice"
+                onClick={() => {}}
               >
                 <StarIcon />
               </button>
@@ -886,9 +884,22 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         estimateId={estimationId}
       />
 
-<ModelVendorCostAsset
+      <ModelVendorCostAsset
         show={showVendorAsset}
         handleClose={handleVendorAssetClose}
+        stateList={stateList}
+        setStateId={setStateId}
+        setCityIds={setCityIds}
+        cityList={cityList}
+        getSiteList={getSiteList}
+        stateId={stateId}
+        cityIds={cityIds}
+        estimateId={estimationId}
+      />
+
+      <ModelVendorCostAgency
+        show={showVendorAgency}
+        handleClose={handleVendorAgencyClose}
         stateList={stateList}
         setStateId={setStateId}
         setCityIds={setCityIds}

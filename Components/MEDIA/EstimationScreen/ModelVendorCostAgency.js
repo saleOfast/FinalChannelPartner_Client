@@ -8,14 +8,13 @@ import { fetchData } from "../../../Utils/getReq";
 import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import ViewIcon from "../../Svg/ViewIcon";
-import ModelUpdateClientCostAsset from "./ModelUpdateClientCostAsset";
+import ModelUpdateVendorCostAgency from "./ModelUpdateVendorCostAgency";
 import Link from "next/link";
 import { Baseurl } from "../../../Utils/Constants";
 import axios from "axios";
-import ModelUpdateVendorCostAsset from "./ModelUpdateVendorCostAsset";
 
 
-const ModelVendorCostAsset = ({
+const ModeVendorCostAgency = ({
   show,
   handleClose,
   stateList,
@@ -31,10 +30,17 @@ const ModelVendorCostAsset = ({
   const [assetDeleteShowConfirm, setAssetDeleteShowConfirm] = useState(false);
   const [busiessTypeList, setBusinessTypeList] = useState([]);
   const [errorToast, setErrorToast] = useState(false);
-  const [deleteSiteAssetId, setDeleteSiteAssetId] = useState("");
+  const [deleteSiteAgencyId, setDeleteSiteAgencyId] = useState("");
   const [isLoading, setisLoading] = useState(false);
   const [show1,setShow1]=useState(false);
+  const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
+  const [agencySiteLists, setAgencySiteLists] = useState([]);
   const [selectedSite, setSelectedSite] = useState(null);
+  const [printingVendorData,setPrintingVendorData]=useState([]);
+  const [mountingVendorData,setMountingVendorData]=useState([]);
+  const [printingMaterialData,setPrintingMaterialData]=useState([]);
+  const [loader,setLoader]=useState(false)
+
 
   const [userInfo, setUserInfo] = useState({
     estimate_type: "",
@@ -92,6 +98,130 @@ const ModelVendorCostAsset = ({
   });
 
 
+
+
+
+  const getPrintingVendor = async () => {
+    setLoader(true);
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id: 320,
+        },
+      };
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/media/printingCost/getPrintingCost`,
+          header
+        );
+        if (response?.status == 200 || response?.status == 201) {
+        
+       setPrintingVendorData(response?.data?.data);
+       console.log("response of printing vendor is ",response.data?.data)
+   
+          setLoader(false);
+        }
+      } catch (error) {
+        setLoader(false);
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+
+  const getMountingVendor = async () => {
+    setLoader(true);
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id: 14,
+        },
+      };
+
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/media/mountingCost/getMountingCost`,
+          header
+        );
+  
+      if (response?.status === 200 || response?.status === 201) {
+        setLoader(false);
+ 
+        setMountingVendorData(response?.data?.data)
+      }
+
+    
+      } catch (error) {
+        setLoader(false);
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+
+  const getPrintingMaterial = async () => {
+    setLoader(true);
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+  
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id: 320,
+        },
+      };
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/media/printingCost/getPrintingCost`,
+          header
+        );
+        if (response?.status == 200 || response?.status == 201) {
+        
+          setPrintingMaterialData(response.data.data);
+          // if(!printingCostList.length){
+          //   setPrintingCostList(response.data.data);
+          // }
+          console.log("answer 3 is",response?.data?.data,"printinigCostLIstData is");
+          setLoader(false);
+        }
+      } catch (error) {
+        setLoader(false);
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+
+
+
+
   const handleClose1= () => {
     setShow1(false);
   };
@@ -99,7 +229,27 @@ const ModelVendorCostAsset = ({
 
 
 
-  const deleteAssetSite = async () => {
+
+  async function getBusinessTypeList() {
+    await fetchData(
+      `/db/media/campaign/campaignBusinessType/getCampaignBusinessType`,
+      setBusinessTypeList,
+      errorToast,
+      setErrorToast
+    );
+  }
+
+  async function getAgencySites() {
+    await fetchData(
+      `/db/media/estimationAgencyBusiness/getSitesForAgencyEstimates?estimate_id=${estimateId}`,
+
+      setAgencySiteLists,
+      errorToast,
+      setErrorToast
+    );
+  }
+
+  const deleteAgencySite = async () => {
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -114,51 +264,33 @@ const ModelVendorCostAsset = ({
       };
 
       try {
-        const response = await axios.post(
+        const response = await axios.delete(
           Baseurl +
-            `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
-          {
-            estimate_id: estimateId,
-            sites: [
-              {
-                site_id: deleteSiteAssetId,
-                status: false,
-              },
-            ],
-          },
+            `/db/media/estimationAgencyBusiness/deleteSitesForAgencyEstimates?site_id=${deleteSiteAgencyId}`,
           header
         );
         if (response.status === 204 || response.status === 200) {
           toast.success(response?.data?.message);
-          setAssetDeleteShowConfirm(false);
-          getAssetSites();
+          getAgencySites();
+          setdeleteshowConfirm(false);
         }
       } catch (error) {
         console.log(error);
         if (error?.response?.data?.message) {
-            console.log("error",error.response?.data?.message);
           toast.error(error?.response?.data?.message);
-          setDeleteSiteAssetId('')
+          setDeleteSiteAgencyId("");
         } else {
           toast.error("Something went wrong!");
+          setdeleteshowConfirm(false);
         }
         setisLoading(false);
       }
     }
   };
 
-  async function getBusinessTypeList() {
-    await fetchData(
-      `/db/media/campaign/campaignBusinessType/getCampaignBusinessType`,
-      setBusinessTypeList,
-      errorToast,
-      setErrorToast
-    );
-  }
-
   async function getAssetSites() {
     await fetchData(
-      `/db/media/estimationAssetBusiness/getEstimationAssetBusiness?estimate_id=${estimateId}`,
+      `/db/media/estimationAgencyBusiness/getSitesForAgencyEstimates?estimate_id=${estimateId}`,
       setAssetSiteLists,
       errorToast,
       setErrorToast
@@ -166,7 +298,11 @@ const ModelVendorCostAsset = ({
   }
 
   useEffect(() => {
-    getAssetSites();
+    getPrintingVendor();
+    getPrintingMaterial();
+    getMountingVendor();
+
+    getAgencySites();
     getBusinessTypeList();
   }, [show]);
 
@@ -174,7 +310,7 @@ const ModelVendorCostAsset = ({
     <>
 
     
-<ModelUpdateVendorCostAsset
+<ModelUpdateVendorCostAgency
         show={show1}
         handleClose={handleClose1}
         stateList={stateList}
@@ -185,7 +321,12 @@ const ModelVendorCostAsset = ({
         stateId={stateId}
         cityIds={cityIds}
         estimateId={estimateId}
-        selectedSite={selectedSite} 
+        getAgencySites={getAgencySites}
+        selectedSite={selectedSite}
+        printingVendorData={printingVendorData}
+        setPrintingVendorData={setPrintingVendorData}
+        printingMaterialData={printingMaterialData}
+        mountingVendorData={mountingVendorData}
       />
       {/* <ConfirmBox
         showConfirm={assetDeleteShowConfirm}
@@ -196,22 +337,22 @@ const ModelVendorCostAsset = ({
       
       <Modal show={show} onHide={handleClose} size="xl">
         <Modal.Header closeButton>
-          <Modal.Title>Vendor Cost Sheet Update for Asset Business</Modal.Title>
+          <Modal.Title>Vendor Cost Sheet Update for Agency Business</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <>
-            <ConfirmBox
-              showConfirm={assetDeleteShowConfirm}
-              setshowConfirm={setAssetDeleteShowConfirm}
-              actionType={deleteAssetSite}
-              title={"Are You Sure you want to Delete ?"}
-            />
+          <ConfirmBox
+                      showConfirm={deleteshowConfirm}
+                      setshowConfirm={setdeleteshowConfirm}
+                      actionType={deleteAgencySite}
+                      title={"Are You Sure you want to Delete ?"}
+                    />
             <div className="add_screen_head">
-              <span className="text_bold">Asset Sites</span>
+              <span className="text_bold">Agency Sites</span>
             </div>
             <div className="add_user_form">
               <div className="row ">
-                {assetSiteLists?.filter((item) => item.status == true).length >
+                {agencySiteLists?.filter((item) => item.status == true).length >
                 0 ? (
                   <Table bordered hover responsive>
                     <thead>
@@ -220,7 +361,6 @@ const ModelVendorCostAsset = ({
                         <th>State</th>
                         <th>City</th>
                         <th>Location</th>
-                        <th>Category</th>
                         <th>Media Format</th>
                         <th>Media Vehicle</th>
                         <th>Media Type</th>
@@ -228,37 +368,65 @@ const ModelVendorCostAsset = ({
                         <th>Height (Ft.)</th>
                         <th>Width (Ft.)</th>
                         <th>Total Sq. Ft.</th>
+                        <th>Client Display Cost</th>
+                                <th>Client Mounting Cost / Sq. Ft.</th>
+                                <th>Client Printing Cost / Sq. Ft.</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {assetSiteLists
+                      {agencySiteLists
                         ?.filter((item) => item.status == true)
                         ?.map((site) => (
                           <tr key={site.site_id}>
-                            <td style={{ color: "blue", textDecoration: "underline", textDecorationColor: "blue" }}>
-                            <Link href={`/media/AddSites?id=${site.site_id}&vw=md`}>
+                            <td>
+                            
                                 {site.site_id}
-                            </Link>
+                        
                             </td>
 
-                            <td>{site?.db_site?.db_state?.state_name}</td>
-                            <td>{site?.db_site?.db_city?.city_name}</td>
-                            <td>{site?.db_site?.location}</td>
+                            <td>{site?.state_id}</td>
+                            <td>{site?.city_id}</td>
+                            <td>{site?.location}</td>
+                          
+                            <td>{site?.m_f_id}</td>
+                            <td>{site?.m_v_id}</td>
+                            <td>{site?.m_t_id}</td>
+                            <td>{site?.quantity}</td>
+                            <td>{site?.height}</td>
+                            <td>{site?.width}</td>
                             <td>
-                              {site?.db_site?.db_site_category?.site_cat_name}
+                              {site?.height * site?.width}
                             </td>
-                            <td>{site?.db_site?.db_media_format?.m_f_name}</td>
-                            <td>{site?.db_site?.db_media_vehicle?.m_v_name}</td>
-                            <td>{site?.db_site?.db_media_type?.m_t_name}</td>
-                            <td>{site?.db_site.quantity}</td>
-                            <td>{site?.db_site.height}</td>
-                            <td>{site?.db_site.width}</td>
-                            <td>
-                              {site?.db_site.height * site?.db_site.width}
-                            </td>
+                            <td>{site?.client_display_cost}</td>
+                                    <td>{site?.client_mounting_cost}</td>
+                                    <td>{site?.client_printing_cost}</td>
                             {/* {!viewMode ? ( */}
                             <td className="table_btns d-flex">
+                            <button
+                                          className="action_btn"
+                                          title="Delete"
+                                          onClick={() => {
+                                            setdeleteshowConfirm(true);
+                                            setDeleteSiteAgencyId(site.site_id);
+                                          }}
+                                        >
+                                          <DeleteIcon />
+                                        </button>
                               <button
+                                className="action_btn"
+                                onClick={() => {
+                                //   setEstimationId(tableMeta?.rowData[3]);
+                                  setShow1(true);
+                                  setSelectedSite(site)
+                                  console.log("selected site selected",selectedSite);
+                                }}
+                                title="Vendor Cost Sheet Update"
+                              >
+                                <ViewIcon />
+                              </button>
+                            </td>
+                            <td className="table_btns">
+                              {/* <button
                                 className="action_btn"
                                 title="Delete"
                                 onClick={() => {
@@ -267,26 +435,15 @@ const ModelVendorCostAsset = ({
                                   setDeleteSiteAssetId(site.site_id);
                                 }}
                               >
-                                <DeleteIcon />
-                              </button>
-                              <button
-                                className="action_btn"
-                                onClick={() => {
-                                    setSelectedSite(site);
-                                //   setEstimationId(tableMeta?.rowData[3]);
-                                  setShow1(true);
-                                }}
-                                title="Vendor Cost Sheet Update"
-                              >
                                 <ViewIcon />
-                              </button>
-                            </td>
-                            <td className="table_btns">
-                    
+                              </button> */}
+
                               
 
                             </td>
-                
+                            {/* ) : (
+                                      ""
+                                    )} */}
                           </tr>
                         ))}
                     </tbody>
@@ -298,14 +455,9 @@ const ModelVendorCostAsset = ({
             </div>
           </>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={getSiteList}>
-            SUBMIT
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );
 };
 
-export default ModelVendorCostAsset;
+export default ModeVendorCostAgency;

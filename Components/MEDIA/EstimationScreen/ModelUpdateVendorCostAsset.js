@@ -9,7 +9,7 @@ import { Baseurl } from "../../../Utils/Constants";
 import moment from "moment";
 import { responsiveFontSizes } from "@mui/material";
 
-const formaArray=[
+const formaArray = [
   {
     label: "Site Code",
     name: "site_id",
@@ -107,7 +107,6 @@ const formaArray=[
     name: "buying_price_as_per_duration",
     disabled: true,
     type: "text",
-    
   },
   {
     label: "Final Display Cost",
@@ -152,7 +151,7 @@ const formaArray=[
     type: "number",
   },
   { label: "Remarks", name: "remarks" },
-]
+];
 
 const ModelUpdateVendorCostAsset = ({
   show,
@@ -161,13 +160,36 @@ const ModelUpdateVendorCostAsset = ({
   setStateId,
   setCityIds,
   cityList,
+  getSiteList,
   stateId,
   cityIds,
-  estimateId,
   selectedSite,
-  printingCostList,
-  setPrintingCostList,
+  estimateId,
+  printingVendorData,
+  setPrintingVendorData,
+  printingMaterialData,
+  mountingVendorData,
 }) => {
+  const [printingVendor, setPrintingVendor] = useState([]);
+  const [loader, setLoader] = useState(false);
+  const [printingCostList, setPrintingCostList] = useState([]);
+  const [initialData, setInitialData] = useState([]);
+  const [printingVendorList, setPrintingVendorList] = useState([]);
+  const [printingMaterialList, setPrintingMaterialList] = useState([]);
+  const [mountingVendorList, setMountingVendorList] = useState([]);
+  const [accountsList, setAccountsList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [flag, setFlag] = useState(false);
+  const [getData, setGetData] = useState([]);
+  const [errors, setErrors] = useState({
+    final_display_cost: '',
+    mounting_vendor_id: '',
+    mounting_cost_per_sq_ft: '',
+    printing_vendor_id: '',
+    pr_m_id: '',
+    printing_cost_per_sq_ft: '',
+  
+  });
   const [formData, setFormData] = useState({
     site_id: "",
     location: "",
@@ -184,10 +206,10 @@ const ModelUpdateVendorCostAsset = ({
     campaign_duration: "",
     display_cost_per_month: "",
     buying_price_as_per_duration: "",
-    final_display_cost:"",
+    final_display_cost: "",
     finalClientPOCost: "",
     mounting_cost_per_sq_ft: "",
-    display_vender_cost:"",
+    display_vender_cost: "",
     mounting_cost: "",
     printing_cost_per_sq_ft: "",
     printing_cost: "",
@@ -197,25 +219,6 @@ const ModelUpdateVendorCostAsset = ({
     pr_m_id: "",
   });
 
-  const [assetSiteLists, setAssetSiteLists] = useState([]);
-  const [vendorOptions, setVendorOptions] = useState([]);
-  const [materialOptions, setMaterialOptions] = useState([]);
-  const [dataList, setDataList] = useState([]);
-  const [loader, setLoader] = useState(false);
-  const [errorToast, setErrorToast] = useState(false);
-  const [accountList, setAccountsList] = useState([]);
-  // const [printingCostList,setPrintingCostList]=useState([])
-  const [printingMaterialData, setPrintingMaterialData] = useState([]);
-  const [printingVendorData,setPrintingVendor]=useState([])
-  const [selectedParentMaterial, setSelectedParentMaterial] = useState({});
-  const [getVendorData,setGetVendorData]=useState([])
-  const [loading,setLoading]=useState(false)
-  const [flag,setFlag]= useState(false);
-  // const [initialPrintingVendor,setInitialPrintingVendor]=useState(false)
-  const [errors,setErrors]=useState({});
-
-
-  // Handle change in input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
     const parsedValue =
@@ -240,693 +243,221 @@ const ModelUpdateVendorCostAsset = ({
     }
 
     setFormData(newFormData);
+
   };
 
-  useEffect(()=>{
-    console.log("connsole log is ",formData.mounting_cost_per_sq_ft,"and other is ", formData.total_sq_ft )
 
-    if(formData.mounting_cost_per_sq_ft && formData.total_sq_ft ){
-      const mountingCostPerSqFt = parseFloat(formData.mounting_cost_per_sq_ft) || 0;
-      const total = parseFloat(formData.total_sq_ft) || 0;
-      const TotalMountingCost = (mountingCostPerSqFt * total).toFixed(2);
-
-
-
-      setFormData({
-        ...formData,mounting_cost:TotalMountingCost
-      }
-      )
-    }
  
-
-  },[formData.mounting_cost_per_sq_ft,formData.total_sq_ft])
-
-
-
-  useEffect(()=>{
-    if(formData.printing_cost_per_sq_ft && formData.total_sq_ft ){
-      const printingCostPerSqFt = parseFloat(formData.printing_cost_per_sq_ft) || 0;
-      const total = parseFloat(formData.total_sq_ft) || 0;
-      const TotalPrintingCost = (printingCostPerSqFt * total).toFixed(2);
-
-
-
-      setFormData({
-        ...formData,printing_cost:TotalPrintingCost
-      }
-      )
-    }
- 
-
-  },[formData.printing_cost_per_sq_ft,formData.total_sq_ft])
-
-  // Handle change in select fields
   const handleSelectChange = (name, selectedOption) => {
-    setFormData({
-      ...formData,
-      [name]: selectedOption ? selectedOption.value : "",
-    });
-  
-  };
+    // If the selected field is 'printing_vendor_id', clear 'pr_m_id' and reset related data
 
-
-  // const validate = () => {
-  //   const newErrors = {};
-  //   // Add required fields validation
-  //   const requiredFields = [
-  //     'quantity',
-  //     'width',
-  //     'height',
-  //     'campaign_start_date',
-  //     'campaign_end_date',
-  //     'final_client_po_cost',
-  //     'mounting_cost_per_sq_ft',
-  //     'printing_cost_per_sq_ft'
-  //   ];
-  
-  //   requiredFields.forEach(field => {
-  //     if (!formData[field]) {
-  //       newErrors[field] = 'This field is required';
-  //     }
-  //   });
-  
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
-
-  // useEffect(()=>{
-  //   setInitialPrintingVendor(true)
-  //   console.log("show is ",show)
-  // },[])
-
-
-  // Fetch asset sites
-  async function getAssetSites() {
-    await fetchData(
-      `/db/media/estimationAssetBusiness/getEstimationAssetBusiness?estimate_id=${estimateId}`,
-      setAssetSiteLists,
-      errorToast,
-      setErrorToast
-    );
-  }
-
-  // Update data on save
-  const handleUpdate = async () => {
-    try {
-      const response = await fetch("https://dummyapi.com/update", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+    if (name === "mounting_vendor_id") {
+      setFormData({
+        ...formData,
+        [name]: selectedOption ? selectedOption.value : "",
+        mo_c_id: "", // Clear 'mo_c_id' or any other related field
       });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      // console.log("Update successful:", data);
-      handleClose(); // Close the modal after successful update
-    } catch (error) {
-      // console.error("Error updating data:", error);
+    } else if (name === "printing_vendor_id") {
+      setFormData({
+        ...formData,
+        [name]: selectedOption ? selectedOption.value : "",
+        pr_m_id: "", // Clear 'pr_m_id'
+        printing_cost_per_sq_ft: "", // Optionally clear 'printing_cost_per_sq_ft'
+      });
+    } else if (name === "pr_m_id") {
+      setFormData({
+        ...formData,
+        [name]: selectedOption ? selectedOption.value : "",
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: selectedOption ? selectedOption.value : "",
+      });
     }
   };
 
-
-
-  const getClientCostSheetInfoForParticularSite = async () => {
-    
-    if (hasCookie('token')) {
-        let token = (getCookie('token'));
-        let db_name = (getCookie('db_name'));
-
-        let header = {
-            headers: {
-                Accept: "application/json",
-                Authorization: "Bearer ".concat(token),
-                db: db_name,
-                pass:"pass"
-            }
-        }
-        try {
-          // /api/v1/db/media/costSheet/vendorCostSheet/getAssetVendorCostSheet
-            const response = await axios.get(Baseurl + `/db/media/costSheet/vendorCostSheet/getAssetVendorCostSheet?eab_id=${selectedSite?.eab_id}&site_id=${selectedSite?.site_id}`, header);
-
-
-            console.log("response is ",response)
-            if((response?.status==200 || response?.status==201 )&& response?.data?.data!==null ){
-              getDataList();
-              getPrintingMaterial();
-              setGetVendorData(response?.data?.data)
-                setFlag(true)
-                
-                setFormData({...formData,
-                  ccs_id:response?.data?.data?.ccs_id || '',
-                  site_id: response?.data?.data?.site_id || '',
-                  state:response?.data?.data?.state || '',
-                  city:response?.data?.data?.city || '',
-                  location: response?.data?.data?.db_site?.location || '',
-                  category: response?.data?.data?.category || '',
-                  media_format: response?.data?.data?.media_format|| '',
-                  media_vehicle: response?.data?.data?.media_vehicle || '',
-                  media_type: response?.data?.data?.media_type || '',
-                  quantity: response?.data?.data?.db_site?.quantity || '',
-                  width:response?.data?.data?.db_site?.width || '',
-                  final_display_cost:response?.data?.data?.final_display_cost ||'',
-                  height:response?.data?.data?.db_site?.height || '',
-                  total_sq_ft: Number(response?.data?.data?.total_sq_ft).toFixed(2) || 0,
-                  campaign_start_date: moment(response?.data?.data?.campaign_start_date).format("YYYY-MM-DD")  || '',
-                  campaign_end_date:moment(response?.data?.data?.campaign_end_date).format("YYYY-MM-DD")  || '',
-                  campaign_duration: response?.data?.data?.db_media_campaign?.campaign_duration || '',
-                  display_cost_per_month: response?.data?.data?.display_cost_per_month || "0",
-                  display_vender_cost:response?.data?.data?.display_vender_cost || "0",
-                  buying_price_as_per_duration: response?.data?.data?.buying_price_as_per_duration || "0",
-                  // final_client_po_cost: response?.data?.data?.final_client_po_cost || "0",
-                  mounting_cost_per_sq_ft: response?.data?.data?.mounting_cost_per_sq_ft || "0",
-                  mounting_cost: response?.data?.data?.mounting_cost || "0",
-                  // printing_cost_per_sq_ft: response?.data?.data?.printing_cost_per_sq_ft || "0",
-                  printing_cost: response?.data?.data?.printing_cost || '0',
-                  remarks: response?.data?.data?.remarks || '',
-                  mounting_vendor_id:response?.data?.data?.mounting_vendor_id || '',
-                  pr_m_id:response?.data?.data?.pr_m_id || '',
-                  printing_vendor_id:printingVendorData?.find((item)=>item?.value==response?.data?.data?.printing_vendor_id) || '',
-
-
-         
-   
-});
-
-                    
-  if (formData.pr_m_id && printingMaterialData.length) {
-    const selectedVendor = printingMaterialData.find(
-      (item) => item?.pr_m_id === formData?.pr_m_id
-    );
-    if (selectedVendor) {
-    
-     
-      if(printingCostList){
-        // console.log("answer 2 is",printingCostList,"and selected data is ",selectedSite);
-
-if(getVendorData){
-
-  console.log("getVendorData is",getVendorData,"printingCostingList is ",printingCostList)
-  
-  const filteredDataPrinting =printingCostList.filter((item)=>
-    item.db_media_type.m_t_id == getVendorData.db_site?.m_t_id && item.db_account.bill_state == getVendorData.db_site?.state_id && item.pr_m_id == selectedVendor.pr_m_id
-    )
-
-    console.log("printing filtered data is ",filteredDataPrinting,"and selectedVendor is ",selectedVendor);
-    
-    const accNamesVendor = filteredDataPrinting.map((item) => ({
-      value: item.acc_id,
-      label: item.acc_name,
-    }));
-
-
-    setFormData((prevData) => ({
-      ...prevData,
-      printing_vendor_id:getVendorData? getVendorData.printing_vendor_id:'',
-      printing_cost_per_sq_ft:getVendorData.printing_cost_per_sq_ft,
-
-}))
-
-
-// setFormData((prevData) => ({
-//   ...prevData,
-//   printing_vendor_id:'',
-//   printing_cost_per_sq_ft:'',
-
-// }))
-
-    setPrintingVendor(accNamesVendor);
-    console.log("accvendor",accNamesVendor)
-}
-      }
-    }
-  }
-
-
-
-                // console.log("false")
-                // getDataList();
-                // getPrintingMaterial();
-                // // getContactList();
-                // getPrintingCost()
-            }
-            else{
-              console.log(true)
-              setFormData({
-                site_id: selectedSite?.db_site?.site_id || '',
-                estimate_id:selectedSite?.estimate_id||"",
-                state:selectedSite?.db_site?.db_state?.state_name || '',
-                city:selectedSite?.db_site?.db_city?.city_name || '',
-                location: selectedSite?.db_site?.location || '',
-                category: selectedSite?.db_site?.db_site_category?.site_cat_name || '',
-                media_format: selectedSite?.db_site?.db_media_format?.m_f_name|| '',
-                media_vehicle: selectedSite?.db_site?.db_media_vehicle?.m_v_name || '',
-                media_type: selectedSite?.db_site?.db_media_type?.m_t_name || '',
-                quantity: selectedSite?.db_site?.quantity || '',
-                width:selectedSite?.db_site?.width || '',
-                height:selectedSite?.db_site?.height || '',
-                total_sq_ft: (selectedSite?.db_site?.width*selectedSite?.db_site?.height).toFixed(2) || '',
-                campaign_start_date: moment(selectedSite?.db_estimate?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")  || '',
-                campaign_end_date:moment(selectedSite?.db_estimate?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")  || '',
-                campaign_duration: selectedSite?.db_estimate?.db_media_campaign?.campaign_duration || '',
-                display_vender_cost:selectedSite?.db_estimate?.display_vender_cost || "0",
-                display_cost_per_month: selectedSite?.db_estimate?.display_cost_per_month || "0",
-                buying_price_as_per_duration: selectedSite?.db_estimate?.buying_price_as_per_duration || "0",
-                // final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || "0",
-                mounting_cost_per_sq_ft:selectedSite?.db_estimate?.mounting_cost_per_sq_ft || "0",
-                mounting_cost:((selectedSite?.db_estimate?.mounting_cost_per_sq_ft|| 0)*selectedSite?.db_site?.width*selectedSite?.db_site?.height).toFixed(2) || "0",
-                printing_cost_per_sq_ft:selectedSite?.db_estimate?.printing_cost_per_sq_ft || '0',
-                printing_cost: ((selectedSite?.db_estimate?.printing_cost_per_sq_ft||0)*selectedSite?.db_site?.width*selectedSite?.db_site?.height).toFixed(2) || "0",
-                remarks: selectedSite?.db_site?.remarks || '',
-              });
-
-              // getDataList();
-              // getPrintingMaterial();
-              // // getContactList();
-              // getPrintingCost();
-            }
-    
-            // getContactList();
-            // getPrintingCost();
-        } catch (error) {
-            console.log(error)
-
-            if (error?.response?.data?.message) {
-                toast.error(error.response.data.message);
-            }
-            else {
-                toast.error('Something went wrong!')
-            }
-        }
-    }
-}
-
-
-
-
-const saveClientCostSheetAssetForParticularSite = async () => {
-  if (hasCookie("token")) {
-    setLoading(true)
-    let token = getCookie("token");
-    let db_name = getCookie("db_name");
-
-    let header = {
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer ".concat(token),
-        db: db_name,
-        pass: "pass",
-      },
-    };
-    const newData={...formData,site_id:selectedSite?.site_id,eab_id:selectedSite?.eab_id,campaign_id:selectedSite?.db_estimate?.campaign_id}
-    try {
-      const response = await axios.post(
-        Baseurl +
-          `/db/media/costSheet/vendorCostSheet/createAssetVendorCostSheet`,
-        newData,
-        header
+  useEffect(() => {
+    if (formData.pr_m_id) {
+      const selectedMaterial = printingMaterialData.find(
+        (item) => item.pr_m_id === formData.pr_m_id
       );
-      if (response.status === 204 || response.status === 200) {
-        toast.success(response?.data?.message);
-        getAssetSites()
-        setLoading(false)
-        handleClose()
-        setFlag(false)
-      }
-    } catch (error) {
-      console.log(error);
-      if (error?.response?.data?.message) {
-        toast.error(error?.response?.data?.message);
-      } else {
-        toast.error("Something went wrong!");
-      }
-      setLoading(false)
-    }
-  }
-};
-
-
-const updateClientCostSheetAssetForParticularSite = async () => {
-  if (hasCookie("token")) {
-    setLoading(true)
-    let token = getCookie("token");
-    let db_name = getCookie("db_name");
-
-    let header = {
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer ".concat(token),
-        db: db_name,
-        pass: "pass",
-      },
-    };
-    const newData={...formData,site_id:selectedSite?.site_id,eab_id:selectedSite?.eab_id,campaign_id:selectedSite?.db_estimate?.campaign_id,vcs_id:getVendorData.vcs_id}
-    try {
-      const response = await axios.put(
-        Baseurl +
-          `/db/media/costSheet/vendorCostSheet/updateAssetVendorCostSheets`,
-        newData,
-        header
-      );
-      if (response.status === 204 || response.status === 200) {
-        toast.success(response?.data?.message);
-        getAssetSites()
-        setLoading(false)
-        handleClose()
-        setFlag(false)
-      }
-    } catch (error) {
-      console.log(error);
-      if (error?.response?.data?.message) {
-        toast.error(error?.response?.data?.message);
-      } else {
-        toast.error("Something went wrong!");
-      }
-      setLoading(false)
-    }
-  }
-};
-
-
-
-useEffect(() => {
-  if (show && selectedSite) {
-    getClientCostSheetInfoForParticularSite()
-  } 
-}, [show, selectedSite]);
-
-
-
-
-
-  // Fetch mounting cost data
-  const getDataList = async () => {
-    setLoader(true);
-    if (hasCookie("token")) {
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
-
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          m_id: 14,
-        },
-      };
-
-      try {
-        const response = await axios.get(
-          Baseurl + `/db/media/mountingCost/getMountingCost`,
-          header
-        );
-    if(flag == false){
-      if (response?.status === 200 || response?.status === 201) {
-        setLoader(false);
-        const filteredData = response.data.data.filter(
-          (item) =>
-            item.db_media_type.m_t_id ===
-              selectedSite.db_site.db_media_type.m_t_id &&
-            item.db_account.bill_state ===
-              selectedSite.db_site.db_state.state_id
-        );
-
-        const accNames = filteredData.map((item) => ({
-          value: item.acc_id,
-          label: item.acc_name,
+      if (selectedMaterial) {
+        setFormData((prevData) => ({
+          ...prevData,
+          printing_cost_per_sq_ft: selectedMaterial.pr_c_cost || "",
         }));
-
-        // const vendorOptions = filteredData.map((item) => ({
-        //   value: item.vendor_id, // Vendor ID
-        //   label: item.acc_name,  // Vendor Name
-        // }));
-
-        setDataList(filteredData);
-        setVendorOptions(accNames);
       }
-    }else{
-      if (response?.status === 200 || response?.status === 201) {
-        setLoader(false);
-        const filteredData = response.data.data.filter(
-          (item) =>
-            item.db_media_type.m_t_id ===
-          getVendorData.db_site?.m_t_id &&
-            item.db_account.bill_state ===
-            getVendorData.db_site?.state_id
-        );
-
-        const accNames = filteredData.map((item) => ({
-          value: item.acc_id,
-          label: item.acc_name,
-        }));
-
-        // const vendorOptions = filteredData.map((item) => ({
-        //   value: item.vendor_id, // Vendor ID
-        //   label: item.acc_name,  // Vendor Name
-        // }));
-
-        setDataList(filteredData);
-        setVendorOptions(accNames);
-      }
-
+    } else {
+      // Optionally reset 'printing_cost_per_sq_ft' if 'pr_m_id' is cleared
+      setFormData((prevData) => ({
+        ...prevData,
+        printing_cost_per_sq_ft: "",
+      }));
     }
-      } catch (error) {
-        setLoader(false);
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-      }
-    }
-  };
-
-  // const getPrintingCost = async () => {
-  //   setLoader(true);
-  //   if (hasCookie("token")) {
-  //     let token = getCookie("token");
-  //     let db_name = getCookie("db_name");
-
-  //     let header = {
-  //       headers: {
-  //         Accept: "application/json",
-  //         Authorization: "Bearer ".concat(token),
-  //         db: db_name,
-  //         m_id: 320,
-  //       },
-  //     };
-  //     try {
-  //       const response = await axios.get(
-  //         Baseurl + `/db/media/printingCost/getPrintingCost`,
-  //         header
-  //       );
-  //       if (response?.status == 200 || response?.status == 201) {
-        
-  //         setPrintingCostList(response.data.data);
-  //         if(!printingCostList.length){
-  //           setPrintingCostList(response.data.data);
-  //         }
-  //         console.log("answer 3 is",response?.data?.data,"printinigCostLIstData is",printingCostList);
-  //         setLoader(false);
-  //       }
-  //     } catch (error) {
-  //       setLoader(false);
-  //       if (error?.response?.data?.message) {
-  //         toast.error(error.response.data.message);
-  //       } else {
-  //         toast.error("Something went wrong!");
-  //       }
-  //     }
-  //   }
-  // };
+  }, [formData.pr_m_id]);
 
   useEffect(() => {
-    console.log("Updated printingCostList:", printingCostList);
-  }, [printingCostList]);
-  useEffect(() => {
-
-    if (formData.mounting_vendor_id && dataList.length) {
-      const selectedVendor = dataList.find(
+    if (formData.mounting_vendor_id) {
+      const selectedMountingVendor = mountingVendorData.find(
         (item) => item.acc_id === formData.mounting_vendor_id
       );
-      if (selectedVendor) {
-        setFormData((prevData) => ({
-          ...prevData,
-          mounting_cost_per_sq_ft: selectedVendor.mo_c_cost || "",
-        }));
-      }
-      console.log("form data is ",formData)
-    }
 
-  }, [formData.mounting_vendor_id, dataList]);
-
-
-//   const getContactList = async () => {
-//     setLoader(true)
-//     if (hasCookie('token')) {
-//         let token = (getCookie('token'));
-//         let db_name = (getCookie('db_name'));
-
-//         let header = {
-//             headers: {
-//                 Accept: "application/json",
-//                 Authorization: "Bearer ".concat(token),
-//                 db: db_name,
-//                 m_id: 320,
-//             }
-//         }
-//         try {
-//             const response = await axios.get(Baseurl + `/db/media/printingCost/getPrintingCost`, header);
-//             if(response?.status==200 || response?.status==201){
-//                 setLoader(false)
-//                 setAccountsList(response?.data?.data);
-//             }
-//         } catch (error) {
-//             setLoader(false)
-//             if (error?.response?.data?.message) {
-//                 toast.error(error.response.data.message);
-//             }
-//             else {
-//                 toast.error('Something went wrong!')
-//             }
-//         }
-//     }
-// }
-
-
-  useEffect(() => {
-if(flag == false){
-  if (formData.pr_m_id && printingMaterialData.length) {
-    const selectedVendor = printingMaterialData.find(
-      (item) => item?.pr_m_id === formData?.pr_m_id
-    );
-    if (selectedVendor) {
-      // setFormData((prevData) => ({
-      //   ...prevData,
-      //   mountingCostPerSqFt: selectedVendor.mo_c_cost || "",
-      // }));
-     
-      if(printingCostList){
-        // console.log("answer 2 is",printingCostList,"and selected data is ",selectedSite);
-
-
-const filteredDataPrinting =printingCostList.filter((item)=>
-        item.db_media_type.m_t_id === selectedSite.db_site.db_media_type.m_t_id && item.db_account.bill_state === selectedSite.db_site.db_state.state_id && item.pr_m_id === selectedVendor.pr_m_id
-        )
-
-        // console.log("printing filtered data is ",filteredDataPrinting,"and selectedVendor is ",selectedVendor);
-
-
-
-        
-        const accNamesVendor = filteredDataPrinting.map((item) => ({
-          value: item.acc_id,
-          label: item.acc_name,
-        }));
-
-   
-
-
-        setFormData((prevData) => ({
-        ...prevData,
-        printing_vendor_id: "",
-        printing_cost_per_sq_ft:"",
-
-      }));
-        setPrintingVendor(accNamesVendor);
-
-        
-      }
-    }
-    
-
-    // console.log("answer is ",selectedVendor)
-  }
-}else{
-
-  debugger
-  if (formData.pr_m_id && printingMaterialData.length) {
-    const selectedVendor = printingMaterialData.find(
-      (item) => item?.pr_m_id === formData?.pr_m_id
-    );
-    if (selectedVendor) {
-    
-     
-      if(printingCostList){
-        // console.log("answer 2 is",printingCostList,"and selected data is ",selectedSite);
-
-if(getVendorData){
-
-  console.log("getVendorData is",getVendorData,"printingCostingList is ",printingCostList)
-  
-  const filteredDataPrinting =printingCostList.filter((item)=>
-    item.db_media_type.m_t_id == getVendorData.db_site?.m_t_id && item.db_account.bill_state == getVendorData.db_site?.state_id && item.pr_m_id == selectedVendor.pr_m_id
-    )
-
-    console.log("printing filtered data is ",filteredDataPrinting,"and selectedVendor is ",selectedVendor);
-    
-    const accNamesVendor = filteredDataPrinting.map((item) => ({
-      value: item.acc_id,
-      label: item.acc_name,
-    }));
-
-
-//     setFormData((prevData) => ({
-//       ...prevData,
-//       printing_vendor_id:getVendorData? getVendorData.printing_vendor_id:'',
-//       printing_cost_per_sq_ft:getVendorData.printing_cost_per_sq_ft,
-
-// }))
-
-
-setFormData((prevData) => ({
-  ...prevData,
-  printing_vendor_id:'',
-  printing_cost_per_sq_ft:'',
-
-}))
-
-    setPrintingVendor(accNamesVendor);
-    console.log("accvendor",accNamesVendor)
-}
-      }
-    }
-  }
-}
-  }, [formData.pr_m_id, printingMaterialData]);
-  
-  useEffect(()=>{
-if(!formData.printing_vendor_id){
-  setFormData((prevData) => ({
-   ...prevData,
-    printing_cost_per_sq_ft: "",
-  }));
-
-}
-  },[formData.printing_vendor_id])
-
-
-  useEffect(() => {
-    if (formData.printing_vendor_id && printingCostList.length) {
-      const selectedprintingVendor = printingCostList.find(
-        (item) => item.acc_id === formData.printing_vendor_id
+      console.log(
+        "selectedMountingVendor",
+        selectedMountingVendor,
+        "aggi",
+        formData.mounting_vendor_id
       );
-      if (selectedprintingVendor) {
+      if (selectedMountingVendor) {
         setFormData((prevData) => ({
           ...prevData,
-          printing_cost_per_sq_ft: selectedprintingVendor.pr_c_cost || "",
+          mounting_cost_per_sq_ft: selectedMountingVendor.mo_c_cost || "",
         }));
       }
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        mo_c_id: "",
+      }));
     }
-  }, [formData.printing_vendor_id,printingCostList]);
+  }, [formData.mounting_vendor_id]);
+
+  const updateVendorCostSheetAssetForParticularSite = async () => {
+    if(validate()){
+  
+    if (hasCookie("token")) {
+      setLoading(true);
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+      const newData = {
+        ...formData,
+        site_id: selectedSite?.site_id,
+        eab_id: selectedSite?.eab_id,
+        campaign_id: selectedSite?.db_estimate?.campaign_id,
+        vcs_id: getData.vcs_id,
+      };
+      try {
+        const response = await axios.put(
+          Baseurl +
+            `/db/media/costSheet/vendorCostSheet/updateAssetVendorCostSheet`,
+          newData,
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          setLoading(false);
+          handleClose();
+          setFlag(false);
+        }
+      } catch (error) {
+        console.log("errosdkthhfhkghkgjkhgjka",error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setLoading(false);
+      }
+    }}
+  };
 
 
-  const getPrintingMaterial = async () => {
-    setLoader(true);
+  const validate = () => {
+    let valid = true;
+    const newErrors = {};
+
+    if (!formData.final_display_cost) {
+      newErrors.final_display_cost = 'Final Display Cost is required.';
+      valid = false;
+    }
+    if (!formData.mounting_vendor_id) {
+      newErrors.mounting_vendor_id = 'Mounting Vendor is required.';
+      valid = false;
+    }
+    if (!formData.mounting_cost_per_sq_ft) {
+      newErrors.mounting_cost_per_sq_ft = 'Mounting Cost / Sq. Ft. is required.';
+      valid = false;
+    }
+
+    if (!formData.printing_vendor_id) {
+      newErrors.printing_vendor_id = 'Printing Vendor is required.';
+      valid = false;
+    }
+    if (!formData.pr_m_id) {
+      newErrors.pr_m_id = 'Printing Material is required.';
+      valid = false;
+    }
+    if (!formData.printing_cost_per_sq_ft) {
+      newErrors.printing_cost_per_sq_ft = 'Printing Cost / Sq. Ft. is required.';
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+
+  const saveVendorCostSheetAssetForParticularSite = async () => {
+    if(validate()){
+  
+    if (hasCookie("token")) {
+      setLoading(true);
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+      const newData = {
+        ...formData,
+        site_id: selectedSite?.site_id,
+        eab_id: selectedSite?.eab_id,
+        campaign_id: selectedSite?.db_estimate?.campaign_id,
+      };
+      try {
+        const response = await axios.post(
+          Baseurl +
+            `/db/media/costSheet/vendorCostSheet/createAssetVendorCostSheet`,
+          newData,
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+
+          // getAssetSites()
+          setLoading(false);
+          handleClose();
+          setFlag(false);
+        }
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong1!");
+        }
+        setLoading(false);
+      }
+    }
+  }
+  };
+
+  const getClientCostSheetInfoForParticularSite = async () => {
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -936,45 +467,346 @@ if(!formData.printing_vendor_id){
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 342,
+          pass: "pass",
         },
       };
-
       try {
+        // /api/v1/db/media/costSheet/vendorCostSheet/getAssetVendorCostSheet
         const response = await axios.get(
-          Baseurl + `/db/media/printingMaterial/getPrintingMaterial`,
+          Baseurl +
+            `/db/media/costSheet/vendorCostSheet/getAssetVendorCostSheet?eab_id=${selectedSite?.eab_id}&site_id=${selectedSite?.site_id}`,
           header
         );
-        if (response?.status == 200 || response?.status == 201) {
-          setLoader(false);
-          const materialOptions = response.data.data.map((item) => ({
-            value: item.pr_m_id,
-            label: item.pr_m_name,
-          }));
-          setMaterialOptions(materialOptions);
-          setPrintingMaterialData(response.data.data);
 
-          
+        console.log("response is ", response);
+        if (
+          (response?.status == 200 || response?.status == 201) &&
+          response?.data?.data !== null
+        ) {
+          setFlag(true);
+          setGetData(response?.data?.data);
+
+          setFormData({
+            ...formData,
+            ccs_id: response?.data?.data?.ccs_id || "",
+            site_id: response?.data?.data?.site_id || "",
+            state: response?.data?.data?.state || "",
+            city: response?.data?.data?.city || "",
+            location: response?.data?.data?.db_site?.location || "",
+            category: response?.data?.data?.category || "",
+            media_format: response?.data?.data?.media_format || "",
+            media_vehicle: response?.data?.data?.media_vehicle || "",
+            media_type: response?.data?.data?.media_type || "",
+            quantity: response?.data?.data?.db_site?.quantity || "",
+            width: response?.data?.data?.db_site?.width || "",
+            final_display_cost: response?.data?.data?.final_display_cost || "",
+            height: response?.data?.data?.db_site?.height || "",
+            total_sq_ft:
+              Number(response?.data?.data?.total_sq_ft).toFixed(2) || 0,
+            campaign_start_date:
+              moment(response?.data?.data?.campaign_start_date).format(
+                "YYYY-MM-DD"
+              ) || "",
+            campaign_end_date:
+              moment(response?.data?.data?.campaign_end_date).format(
+                "YYYY-MM-DD"
+              ) || "",
+            campaign_duration:
+              response?.data?.data?.db_media_campaign?.campaign_duration || "",
+            display_cost_per_month:
+              response?.data?.data?.display_cost_per_month || "0",
+            display_vender_cost:
+              response?.data?.data?.display_vender_cost || "",
+            buying_price_as_per_duration:
+              response?.data?.data?.buying_price_as_per_duration || "0",
+            // final_client_po_cost: response?.data?.data?.final_client_po_cost || "0",
+            mounting_cost_per_sq_ft:
+              response?.data?.data?.mounting_cost_per_sq_ft || "0",
+            mounting_cost: response?.data?.data?.mounting_cost || "0",
+            remarks: response?.data?.data?.remarks || "",
+            mounting_vendor_id: response?.data?.data?.mounting_vendor_id || "",
+            pr_m_id: response?.data?.data?.pr_m_id || "",
+            printing_vendor_id: response?.data?.data?.printing_vendor_id || "",
+            printing_cost_per_sq_ft:
+              response?.data?.data?.printing_cost_per_sq_ft || "0",
+          });
+          const filteredVendorData = printingVendorData.filter(
+            (item) =>
+              item.m_t_id ===
+                selectedSite.db_site.db_media_type.m_t_id &&
+              item.db_account.bill_state === selectedSite.db_site.db_state.state_id
+          );
+          const uniqueFilteredVendorData = filteredVendorData.reduce((acc, current) => {
+            const x = acc.find(item => item.acc_id === current.acc_id);
+            if (!x) {
+              acc.push(current);
+            }
+            return acc;
+          }, []);
+
+          const printingVendorNames = uniqueFilteredVendorData.map((item) => ({
+            value: item.acc_id,
+            label: item.acc_name,
+          }));
+
+          setPrintingVendorList(printingVendorNames);
+
+          const filteredMountingVendorData = mountingVendorData.filter(
+            (item) =>
+              item.db_media_type.m_t_id ===
+                selectedSite.db_site.db_media_type.m_t_id &&
+              item.db_account.bill_state ===
+                selectedSite.db_site.db_state.state_id
+          );
+
+          const uniqueFilteredMountingVendorData = filteredMountingVendorData.reduce((acc, current) => {
+            const x = acc.find(item => item.acc_id === current.acc_id);
+            if (!x) {
+              acc.push(current);
+            }
+            return acc;
+          }, []);
+
+          const mountingVendorNames = uniqueFilteredMountingVendorData.map(
+            (item) => ({
+              value: item.acc_id,
+              label: item.acc_name,
+              mo_c_id: item.mo_c_id,
+            })
+          );
+          setMountingVendorList(mountingVendorNames);
+          console.log("mounting vendor data", filteredMountingVendorData);
+
+          console.log(
+            "material",
+            printingMaterialData,
+            "and ",
+            formData.printing_vendor_id
+          );
+
+          console.log(
+            "formdata is",
+            formData,
+            "print",
+            printingVendorData,
+            "filer",
+            filteredVendorData,
+            "sec",
+            selectedSite
+          );
+        } else {
+          console.log("alhgljlgjljsejglajfhgogjflhaks  i ma ajrunningljlkf ");
+          setFormData({
+            site_id: selectedSite?.db_site?.site_id || "",
+            estimate_id: selectedSite?.estimate_id || "",
+            state: selectedSite?.db_site?.db_state?.state_name || "",
+            city: selectedSite?.db_site?.db_city?.city_name || "",
+            location: selectedSite?.db_site?.location || "",
+            category:
+              selectedSite?.db_site?.db_site_category?.site_cat_name || "",
+            media_format:
+              selectedSite?.db_site?.db_media_format?.m_f_name || "",
+            media_vehicle:
+              selectedSite?.db_site?.db_media_vehicle?.m_v_name || "",
+            media_type: selectedSite?.db_site?.db_media_type?.m_t_name || "",
+            quantity: selectedSite?.db_site?.quantity || "",
+            width: selectedSite?.db_site?.width || "",
+            height: selectedSite?.db_site?.height || "",
+            total_sq_ft:
+              (
+                selectedSite?.db_site?.width * selectedSite?.db_site?.height
+              ).toFixed(2) || "",
+            campaign_start_date:
+              moment(
+                selectedSite?.db_estimate?.db_media_campaign
+                  ?.campaign_start_date
+              ).format("YYYY-MM-DD") || "",
+            campaign_end_date:
+              moment(
+                selectedSite?.db_estimate?.db_media_campaign?.campaign_end_date
+              ).format("YYYY-MM-DD") || "",
+            campaign_duration:
+              selectedSite?.db_estimate?.db_media_campaign?.campaign_duration ||
+              "",
+            display_vender_cost:
+              selectedSite?.db_estimate?.display_vender_cost || "0",
+            display_cost_per_month:
+              selectedSite?.db_estimate?.display_cost_per_month || "0",
+            buying_price_as_per_duration:
+              selectedSite?.db_estimate?.buying_price_as_per_duration || "0",
+            // final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || "0",
+            mounting_cost_per_sq_ft:
+              selectedSite?.db_estimate?.mounting_cost_per_sq_ft || "0",
+            mounting_cost:
+              (
+                (selectedSite?.db_estimate?.mounting_cost_per_sq_ft || 0) *
+                selectedSite?.db_site?.width *
+                selectedSite?.db_site?.height
+              ).toFixed(2) || "0",
+            printing_cost_per_sq_ft:
+              selectedSite?.db_estimate?.printing_cost_per_sq_ft || "0",
+            printing_cost:
+              (
+                (selectedSite?.db_estimate?.printing_cost_per_sq_ft || 0) *
+                selectedSite?.db_site?.width *
+                selectedSite?.db_site?.height
+              ).toFixed(2) || "0",
+            remarks: selectedSite?.db_site?.remarks || "",
+          });
+
+          const filteredVendorData = printingVendorData.filter(
+            (item) =>
+              item.db_media_type.m_t_id ===
+                selectedSite.db_site.db_media_type.m_t_id &&
+                item.db_account.bill_state === selectedSite.db_site.db_state.state_id
+          );
+
+          const uniqueFilteredVendorData = filteredVendorData.reduce((acc, current) => {
+            const x = acc.find(item => item.acc_id === current.acc_id);
+            if (!x) {
+              acc.push(current);
+            }
+            return acc;
+          }, []);
+
+          const printingVendorNames = uniqueFilteredVendorData.map((item) => ({
+            value: item.acc_id,
+            label: item.acc_name,
+          }));
+
+          setPrintingVendorList(printingVendorNames);
+
+          const filteredMountingVendorData = mountingVendorData.filter(
+            (item) =>
+              item.db_media_type.m_t_id ===
+                selectedSite.db_site.db_media_type.m_t_id &&
+              item.db_account.bill_state ===
+                selectedSite.db_site.db_state.state_id
+          );
+
+          const uniqueFilteredMountingVendorData = filteredMountingVendorData.reduce((acc, current) => {
+            const x = acc.find(item => item.acc_id === current.acc_id);
+            if (!x) {
+              acc.push(current);
+            }
+            return acc;
+          }, []);
+
+          const mountingVendorNames = uniqueFilteredMountingVendorData.map(
+            (item) => ({
+              value: item.acc_id,
+              label: item.acc_name,
+              mo_c_id: item.mo_c_id,
+            })
+          );
+          setMountingVendorList(mountingVendorNames);
+          console.log("mounting vendor data", filteredMountingVendorData);
+
+          console.log(
+            "material",
+            printingMaterialData,
+            "and ",
+            formData.printing_vendor_id
+          );
         }
       } catch (error) {
-        setLoader(false);
+        console.log(error);
+
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong2!");
         }
       }
     }
   };
+
+  useEffect(() => {
+    if (formData.printing_vendor_id) {
+      const fileterPrintingMdaterialData = printingMaterialData.filter(
+        (item) => item.acc_id == formData.printing_vendor_id
+      );
+
+      const printingMaterial = fileterPrintingMdaterialData.map((item) => ({
+        value: item.pr_m_id,
+        label: item.db_printing_material.pr_m_name,
+      }));
+
+      setPrintingMaterialList(printingMaterial);
+      console.log(
+        "material list",
+        printingMaterial,
+        "vhgh",
+        fileterPrintingMdaterialData
+      );
+    }
+  }, [formData.printing_vendor_id]);
+
+
+  useEffect(() => {
+    const mountingCostPerSqFt = parseFloat(formData.mounting_cost_per_sq_ft) || 0;
+    const printingCostPerSqFt = parseFloat(formData.printing_cost_per_sq_ft) || 0;
+    const total = parseFloat(formData.total_sq_ft) || 0;
+  
+    let updatedData = { ...formData };
+  
+    if (formData.mounting_cost_per_sq_ft && formData.total_sq_ft) {
+      const TotalMountingCost = (mountingCostPerSqFt * total).toFixed(2);
+      updatedData.mounting_cost = TotalMountingCost;
+    }
+  
+    if (formData.printing_cost_per_sq_ft && formData.total_sq_ft) {
+      const TotalPrintingCost = (printingCostPerSqFt * total).toFixed(2);
+      updatedData.printing_cost = TotalPrintingCost;
+    }
+  
+    setFormData(updatedData);
+  
+  }, [formData.mounting_cost_per_sq_ft, formData.printing_cost_per_sq_ft, formData.total_sq_ft]);
+  
+useEffect(()=>{
+if(formData.final_display_cost){
+ const  calculate_display_cost_per_month = formData.final_display_cost /12;
+ setFormData((prevData) => ({
+  ...prevData,
+   display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
+ }));
+} 
+
+},[formData.final_display_cost])
+
+  // useEffect(()=>{
+  //   if(formData.pr_m_id){
+  //     const selectedMaterial = printingMaterialData.find(
+  //       (item) => item.db_printing_material.pr_m_id === formData.pr_m_id
+  //     );
+  //     console.log("selectedMaterial: " ,selectedMaterial)
+  //      setFormData((prevData) => ({
+  //       ...prevData,
+  //       printing_cost_per_sq_ft: selectedMaterial.pr_c_cost || "",
+  //     }));
+  //   }
+
+  // },[formData.pr_m_id])
+
+  useEffect(() => {
+    if (show && selectedSite) {
+      getClientCostSheetInfoForParticularSite();
+    }
+
+    // getPrintingCost()
+  }, [show, selectedSite]);
 
   return (
     <>
-      <Modal 
-      show={show} 
-      onHide={()=>{
-        setFlag(false)
-        handleClose()
-      }}  size="xl">
+      <Modal
+        size="xl"
+        show={show}
+        onHide={() => {
+          setFlag(false);
+          handleClose();
+        }}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Vendor Cost Sheet (Asset)</Modal.Title>
         </Modal.Header>
@@ -990,34 +822,43 @@ if(!formData.printing_vendor_id){
                         <Select
                           id={field.name}
                           name={field.name}
-
+                          // options={
+                          //   field.name === "mounting_vendor_id"
+                          //     ? vendorOptions
+                          //     : field.name === "printing_vendor_id"
+                          //     ? printingVendorList
+                          //     : field.name === "pr_m_id"
+                          //     ? materialOptions
+                          //     : []
+                          // }
                           options={
                             field.name === "mounting_vendor_id"
-                              ? vendorOptions
+                              ? mountingVendorList
                               : field.name === "printing_vendor_id"
-                              ? printingVendorData
+                              ? printingVendorList
                               : field.name === "pr_m_id"
-                              ? materialOptions
+                              ? printingMaterialList
                               : []
                           }
                           onChange={(selectedOption) =>
                             handleSelectChange(field.name, selectedOption)
                           }
-                          // value={
-                          //   (formData[field.name] && {
-                          //     value: formData[field.name],
-                          //     label: formData[field.name],
-                          //   }) ||
-                          //   null
-                          // }
-
                           value={
                             field.name === "mounting_vendor_id"
-                              ? vendorOptions.find(option => option.value === formData[field.name]) || null
+                              ? mountingVendorList.find(
+                                  (option) =>
+                                    option.value === formData[field.name]
+                                ) || null
                               : field.name === "printing_vendor_id"
-                              ? printingVendorData.find(option => option.value === formData[field.name]) || null
+                              ? printingVendorList.find(
+                                  (option) =>
+                                    option.value === formData[field.name]
+                                ) || null
                               : field.name === "pr_m_id"
-                              ? materialOptions.find(option => option.value === formData[field.name]) || null
+                              ? printingMaterialList.find(
+                                  (option) =>
+                                    option.value === formData[field.name]
+                                ) || null
                               : null
                           }
                           isDisabled={field.disabled || false}
@@ -1034,8 +875,13 @@ if(!formData.printing_vendor_id){
                         value={formData[field.name] || ""}
                         disabled={field.disabled || false}
                       />
-                 
                     )}
+    {errors[field.name] && (
+              <div style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+                {errors[field.name]}
+              </div>
+            )}
+
                   </div>
                 </div>
               ))}
@@ -1043,17 +889,26 @@ if(!formData.printing_vendor_id){
           </div>
         </Modal.Body>
         <Modal.Footer>
-          {/* <Button variant="primary" onClick={handleUpdate}>
-            Update
-          </Button>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
+          {/* <Button variant="primary" onClick={saveClientCostSheetAssetForParticularSite}>
+            SUBMIT
           </Button> */}
 
-<Button disabled={loading} variant="primary" onClick={()=>{
-            flag==false ? saveClientCostSheetAssetForParticularSite() :updateClientCostSheetAssetForParticularSite()
-          }}>
-            { flag==false ?  loading ? "Saving...":"Save":loading? "Updating...":"Update"}
+          <Button
+            disabled={loading}
+            variant="primary"
+            onClick={() => {
+              flag == false
+                ? saveVendorCostSheetAssetForParticularSite()
+                : updateVendorCostSheetAssetForParticularSite();
+            }}
+          >
+            {flag == false
+              ? loading
+                ? "Saving..."
+                : "Save"
+              : loading
+              ? "Updating..."
+              : "Update"}
           </Button>
         </Modal.Footer>
       </Modal>

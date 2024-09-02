@@ -35,7 +35,9 @@ const ModelVendorCostAsset = ({
   const [isLoading, setisLoading] = useState(false);
   const [show1,setShow1]=useState(false);
   const [selectedSite, setSelectedSite] = useState(null);
-  const [printingCostList,setPrintingCostList]=useState([]);
+  const [printingVendorData,setPrintingVendorData]=useState([]);
+  const [mountingVendorData,setMountingVendorData]=useState([]);
+  const [printingMaterialData,setPrintingMaterialData]=useState([]);
   const [loader,setLoader]=useState(false)
 
   // const [initial,setInitial]=useState(show1==true && );
@@ -101,7 +103,77 @@ const ModelVendorCostAsset = ({
   };
 
 
-  const getPrintingCost = async () => {
+  // const getPrintingVendor = async () => {
+  //   setLoader(true)
+  //   if (hasCookie('token')) {
+  //       let token = (getCookie('token'));
+  //       let db_name = (getCookie('db_name'));
+  
+  //       let header = {
+  //           headers: {
+  //               Accept: "application/json",
+  //               Authorization: "Bearer ".concat(token),
+  //               db: db_name,
+  //               m_id: 313
+  //           }
+  //       }
+  //       try {
+  //           const response = await axios.get(Baseurl + `/db/account?account_type_id=13`, header);
+  //           if(response?.status==200|| response?.status==201){
+  //               setLoader(false)
+  //               setPrintingVendorData(response?.data?.data);
+  //               console.log("response of printing vendor " )
+  //             }
+  //       } catch (error) {
+  //         console.log("error is here",error)
+  //           setLoader(false)
+  //           if (error?.response?.data?.message) {
+  //               toast.error(error.response.data.message);
+  //           }
+  //           else {
+  //               toast.error('Something went wrong7!')
+  //           }
+  //       }
+  //   }
+  // }
+
+
+
+  // const getMountingVendor = async () => {
+  //   setLoader(true)
+  //   if (hasCookie('token')) {
+  //       let token = (getCookie('token'));
+  //       let db_name = (getCookie('db_name'));
+  
+  //       let header = {
+  //           headers: {
+  //               Accept: "application/json",
+  //               Authorization: "Bearer ".concat(token),
+  //               db: db_name,
+  //               m_id: 313
+  //           }
+  //       }
+  //       try {
+  //           const response = await axios.get(Baseurl + `/db/account?account_type_id=14`, header);
+  //           if(response?.status==200|| response?.status==201){
+  //               setLoader(false)
+  //               setPrintingVendorData(response?.data?.data);
+  //               console.log("res",response?.data?.data)
+  //             }
+  //       } catch (error) {
+  //           setLoader(false)
+  //           if (error?.response?.data?.message) {
+  //               toast.error(error.response.data.message);
+  //           }
+  //           else {
+  //               toast.error('Something went wrong!')
+  //           }
+  //       }
+  //   }
+  // }
+
+
+    const getPrintingVendor = async () => {
     setLoader(true);
     if (hasCookie("token")) {
       let token = getCookie("token");
@@ -122,11 +194,9 @@ const ModelVendorCostAsset = ({
         );
         if (response?.status == 200 || response?.status == 201) {
         
-          setPrintingCostList(response.data.data);
-          // if(!printingCostList.length){
-          //   setPrintingCostList(response.data.data);
-          // }
-          console.log("answer 3 is",response?.data?.data,"printinigCostLIstData is",printingCostList);
+       setPrintingVendorData(response?.data?.data);
+       console.log("response of printing vendor is ",response.data?.data)
+   
           setLoader(false);
         }
       } catch (error) {
@@ -141,8 +211,89 @@ const ModelVendorCostAsset = ({
   };
 
 
+  const getMountingVendor = async () => {
+    setLoader(true);
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id: 14,
+        },
+      };
+
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/media/mountingCost/getMountingCost`,
+          header
+        );
+  
+      if (response?.status === 200 || response?.status === 201) {
+        setLoader(false);
+ 
+        setMountingVendorData(response?.data?.data)
+      }
+
+    
+      } catch (error) {
+        setLoader(false);
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+
+  const getPrintingMaterial = async () => {
+    setLoader(true);
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+  
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id: 320,
+        },
+      };
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/media/printingCost/getPrintingCost`,
+          header
+        );
+        if (response?.status == 200 || response?.status == 201) {
+        
+          setPrintingMaterialData(response.data.data);
+          // if(!printingCostList.length){
+          //   setPrintingCostList(response.data.data);
+          // }
+          console.log("answer 3 is",response?.data?.data,"printinigCostLIstData is");
+          setLoader(false);
+        }
+      } catch (error) {
+        setLoader(false);
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
   useEffect(()=>{
-    getPrintingCost()
+    getPrintingVendor();
+    getPrintingMaterial();
+    getMountingVendor();
   },[show])
 
 
@@ -233,10 +384,10 @@ const ModelVendorCostAsset = ({
         cityIds={cityIds}
         estimateId={estimateId}
         selectedSite={selectedSite} 
-        printingCostList={printingCostList}
-        setPrintingCostList={setPrintingCostList}
-        // initial={initial}
-        // setInitial={setInitial}
+        printingVendorData={printingVendorData}
+        setPrintingVendorData={setPrintingVendorData}
+        printingMaterialData={printingMaterialData}
+        mountingVendorData={mountingVendorData}
       />
       {/* <ConfirmBox
         showConfirm={assetDeleteShowConfirm}

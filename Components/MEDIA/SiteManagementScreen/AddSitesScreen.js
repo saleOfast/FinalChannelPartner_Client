@@ -20,7 +20,8 @@ const AddSitesScreen = () => {
   const [citylist, setCitylist] = useState([]);
   const [isLoading, setisLoading] = useState(false)
   const [editMode, setEditMode] = useState(false);
-  const [viewMode, setViewMode] = useState(false)
+  const [viewMode, setViewMode] = useState(false);
+  const [leasedShow,setLeasedShow]=useState(false);
   const [userInfo,setUserInfo]=useState({
     site_code:"",
     acc_id:"",
@@ -91,6 +92,16 @@ const AddSitesScreen = () => {
 
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DD");
 
+
+  useEffect(()=>{
+    if(userInfo.site_cat_id == 2){
+      setLeasedShow(true)
+    }else{
+      setLeasedShow(false)
+    }
+
+  },[userInfo.site_cat_id])
+
   async function fetchData(url, setData) {
     const token = getCookie('token');
     const db_name = getCookie('db_name');
@@ -116,7 +127,37 @@ const AddSitesScreen = () => {
   const AddFieldsFunc = (e) => {
     e.preventDefault();
     setiscollapse(true);
-  };
+  }
+    // const [userInfo, setUserInfo] = useState({
+    //   lease_from: '',
+    //   lease_to: '',
+    //   lease_period: ''
+    // });
+  
+    // Function to calculate the number of days between two dates
+    const calculateLeasePeriod = (fromDate, toDate) => {
+      if (fromDate && toDate) {
+        // Parse dates using moment.js
+        const start = moment(fromDate);
+        const end = moment(toDate);
+        // Calculate the difference in days
+        return end.diff(start, 'days');
+      }
+      return '';
+    };
+  
+    useEffect(() => {
+      // Calculate lease period when either lease_from or lease_to changes
+      const period = calculateLeasePeriod(userInfo.lease_from, userInfo.lease_to);
+      setUserInfo(prevState => ({
+        ...prevState,
+        lease_period: period
+      }));
+    }, [userInfo.lease_from, userInfo.lease_to]);
+
+
+
+
 
   const createInputField = (e) => {
     e.preventDefault();
@@ -127,27 +168,6 @@ const AddSitesScreen = () => {
       toast.error(errorMessage);
     };
 
-    const validateField = () => {
-      if (!field_lable) {
-        showError("Please enter the Field Name");
-        return false;
-      } else if (!input_type) {
-        showError("Please select the Input Type");
-        return false;
-      } else if (input_type === "input" && !field_type) {
-        showError("Please select the Field Type");
-        return false;
-      }
-      // else if (input_type === 'input' && !field_size  && field_type !== 'checkbox' && field_type !== 'date') {
-      //   showError('Please Enter Field Size');
-      //   return false;
-      // }
-      else if (input_type === "select" && !option) {
-        showError("Please select input Options");
-        return false;
-      }
-      return true;
-    };
 
     if (validateField()) {
       const inputReq = {
@@ -316,7 +336,79 @@ const AddSitesScreen = () => {
 
   const minDate = new Date().toISOString().slice(0, 10);
 
+  const validateField = () => {
+    if (!field_lable) {
+      showError("Please enter the Field Name");
+      return false;
+    } 
+   // else if (!input_type) {
+    //   showError("Please select the Input Type");
+    //   return false;
+    // } else if (input_type === "input" && !field_type) {
+    //   showError("Please select the Field Type");
+    //   return false;
+    // }
+  
+    // else if (input_type === "select" && !option) {
+    //   showError("Please select input Options");
+    //   return false;
+    // }
+    return true;
+  };
+
   const submitHandler = async () => {
+    const errors = {};
+
+    // Validation for required fields
+    if (!userInfo.acc_id) {
+      errors.acc_id = "Vendor is required";
+    }
+  
+    if (!userInfo.site_cat_id) {
+      errors.site_cat_id = "Site Category is required";
+    }
+  
+    if (!userInfo.country_id) {
+      errors.country_id = "Country is required";
+    }
+  
+    if (!userInfo.state_id) {
+      errors.state_id = "State is required";
+    }
+  
+    if (!userInfo.city_id) {
+      errors.city_id = "City is required";
+    }
+  
+    if (!userInfo.m_f_id) {
+      errors.m_f_id = "Media Format is required";
+    }
+  
+    if (!userInfo.m_v_id) {
+      errors.m_v_id = "Media Vehicle is required";
+    }
+  
+    if (!userInfo.m_t_id) {
+      errors.m_t_id = "Media Type is required";
+    }
+  
+    if (!userInfo.s_s_id) {
+      errors.s_s_id = "Site Status is required";
+    }
+  
+    if (!userInfo.rating_id) {
+      errors.rating_id = "Rating is required";
+    }
+  
+    if (!userInfo.a_s_id) {
+      errors.a_s_id = "Availability Status is required";
+    }
+  
+    // If there are validation errors, set them and stop submission
+    if (Object.keys(errors).length > 0) {
+      setErrorData(errors);
+      return;
+    }
     if (hasCookie("token")) {
       setisLoading(true)
       let token = getCookie("token");
@@ -636,11 +728,9 @@ const AddSitesScreen = () => {
                               setErrorData({ ...errorData, site_cat_id: "" });
                             }}
                           />
-                          <span className="errorText">
-                            {errorData?.site_category
-                              ? errorData.site_category
-                              : ""}
-                          </span>
+                      <span className="errorText">
+      {errorData?.site_cat_id || ""}
+    </span>
                         </div>
                       </div>
 
@@ -1198,6 +1288,9 @@ const AddSitesScreen = () => {
                       </div>
                     </div>
                   </div>
+
+                { leasedShow &&(
+                  <>
                   <div className="add_screen_head">
                     <span className="text_bold">Lease Details</span>
                   </div>
@@ -1307,7 +1400,9 @@ const AddSitesScreen = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div></>)
+                  }
+
                   <div className="add_screen_head">
                     <span className="text_bold">Measurement Information</span>
                   </div>

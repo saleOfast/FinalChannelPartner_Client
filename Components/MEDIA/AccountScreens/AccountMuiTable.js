@@ -53,6 +53,18 @@ const AccountMuiTable = ({ accountsList, openConfirmBox,loader }) => {
                     )
                 }
             }
+        },
+        {
+            name: 'db_account_type',
+            label: "Account Type",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <>{value ? value : ''}</>
+                    )
+                }
+            }
         }, 
         {
             name: 'lead_count',
@@ -100,6 +112,7 @@ const AccountMuiTable = ({ accountsList, openConfirmBox,loader }) => {
         acc_name:list?.acc_name,
         acc_code:list?.acc_code,
         website:list?.website,
+        db_account_type:list?.db_account_type?.account_type_name,
         account_owner:list?.account_owner?.user,
         parent_name:list?.parent_name,
         lead_count:list?.lead_count,

@@ -383,7 +383,7 @@ const ModelUpdateVendorCostAgency = ({
       const newData = {
         ...formData,
         site_id: selectedSite?.site_id,
-        eab_id: selectedSite?.eab_id,
+        estimate_id: selectedSite?.estimate_id,
         campaign_id: selectedSite?.db_estimate?.campaign_id,
         vcs_id: getData.vcs_id,
       };
@@ -431,7 +431,7 @@ const ModelUpdateVendorCostAgency = ({
       const newData = {
         ...formData,
         site_id: selectedSite?.site_id,
-        eab_id: selectedSite?.eab_id,
+        estimate_id: selectedSite?.estimate_id,
         campaign_id: selectedSite?.db_estimate?.campaign_id,
       };
       try {
@@ -479,7 +479,7 @@ const ModelUpdateVendorCostAgency = ({
         const response = await axios.get(
           Baseurl +
             `/db/media/costSheet/vendorCostSheet/getAgencyVendorCostSheet
-?eab_id=${selectedSite?.eab_id}&site_id=${selectedSite?.site_id}`,
+?estimate_id=${selectedSite?.estimate_id}&site_id=${selectedSite?.site_id}`,
           header
         );
         
@@ -603,24 +603,24 @@ const ModelUpdateVendorCostAgency = ({
         } else {
           console.log("alhgljlgjljsejglajfhgogjflhaks  i ma ajrunningljlkf ");
           setFormData({
-            site_id: selectedSite?.db_site?.site_id || "",
+            site_id: selectedSite?.site_id || "",
             estimate_id: selectedSite?.estimate_id || "",
-            state: selectedSite?.db_site?.db_state?.state_name || "",
-            city: selectedSite?.db_site?.db_city?.city_name || "",
-            location: selectedSite?.db_site?.location || "",
+            state: selectedSite?.state_id || "",
+            city: selectedSite?.city_id || "",
+            location: selectedSite?.location || "",
             category:
-              selectedSite?.db_site?.db_site_category?.site_cat_name || "",
+              selectedSite?.site_cat_name || "",
             media_format:
-              selectedSite?.db_site?.db_media_format?.m_f_name || "",
+              selectedSite?.m_f_id || "",
             media_vehicle:
-              selectedSite?.db_site?.db_media_vehicle?.m_v_name || "",
-            media_type: selectedSite?.db_site?.db_media_type?.m_t_name || "",
-            quantity: selectedSite?.db_site?.quantity || "",
-            width: selectedSite?.db_site?.width || "",
-            height: selectedSite?.db_site?.height || "",
+              selectedSite?.m_v_id || "",
+            media_type: selectedSite?.m_t_id || "",
+            quantity: selectedSite?.quantity || "",
+            width: selectedSite?.width || "",
+            height: selectedSite?.height || "",
             total_sq_ft:
               (
-                selectedSite?.db_site?.width * selectedSite?.db_site?.height
+                selectedSite?.width * selectedSite?.height
               ).toFixed(2) || "",
             campaign_start_date:
               moment(
@@ -646,29 +646,29 @@ const ModelUpdateVendorCostAgency = ({
             mounting_cost:
               (
                 (selectedSite?.db_estimate?.mounting_cost_per_sq_ft || 0) *
-                selectedSite?.db_site?.width *
-                selectedSite?.db_site?.height
+                selectedSite?.width *
+                selectedSite?.height
               ).toFixed(2) || "0",
             printing_cost_per_sq_ft:
               selectedSite?.db_estimate?.printing_cost_per_sq_ft || "0",
             printing_cost:
               (
                 (selectedSite?.db_estimate?.printing_cost_per_sq_ft || 0) *
-                selectedSite?.db_site?.width *
-                selectedSite?.db_site?.height
+                selectedSite?.width *
+                selectedSite?.height
               ).toFixed(2) || "0",
-            remarks: selectedSite?.db_site?.remarks || "",
+            remarks: selectedSite?.remarks || "",
           });
-
+          
           const filteredVendorData = printingVendorData.filter(
             (item) =>
-              item.db_media_type.m_t_id ===
-                selectedSite.db_site.db_media_type.m_t_id &&
-                item.db_account.bill_state === selectedSite.db_site.db_state.state_id
+              item?.db_media_type?.m_t_name ==
+                selectedSite?.m_t_id &&
+                item?.db_account?.bill_state?.state_name == selectedSite?.state_id
           );
 
           const uniqueFilteredVendorData = filteredVendorData.reduce((acc, current) => {
-            const x = acc.find(item => item.acc_id === current.acc_id);
+            const x = acc.find(item => item.acc_id == current.acc_id);
             if (!x) {
               acc.push(current);
             }
@@ -684,14 +684,14 @@ const ModelUpdateVendorCostAgency = ({
 
           const filteredMountingVendorData = mountingVendorData.filter(
             (item) =>
-              item.db_media_type.m_t_id ===
-                selectedSite.db_site.db_media_type.m_t_id &&
-              item.db_account.bill_state ===
-                selectedSite.db_site.db_state.state_id
+              item.db_media_type.m_t_id ==
+                selectedSite.m_t_id &&
+              item.db_account.bill_state?.state_name ==
+                selectedSite.state_id
           );
 
           const uniqueFilteredMountingVendorData = filteredMountingVendorData.reduce((acc, current) => {
-            const x = acc.find(item => item.acc_id === current.acc_id);
+            const x = acc.find(item => item.acc_id == current.acc_id);
             if (!x) {
               acc.push(current);
             }

@@ -73,7 +73,7 @@ const PrintingMatMgmtScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 342
+          pass:"pass"
         }
       }
 

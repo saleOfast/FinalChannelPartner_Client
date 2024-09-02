@@ -298,7 +298,7 @@ const CommonSettingScreen = () => {
                         </select>
                         )}
                         {
-                          data?.setting_name === "Required Approvals" && (
+                          data?.setting_name === "Roles For Approval of Estimates" && (
                             <>
                                <Select
                             isMulti

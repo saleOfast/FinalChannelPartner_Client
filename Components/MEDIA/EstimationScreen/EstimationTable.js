@@ -771,13 +771,15 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   </button>
                 </>
               )}
+              <Link href={`/media/PorformaInvoice?est_id=${value}`}>
               <button
                 className="action_btn"
                 title="Download Performa Invoice"
-                onClick={() => {}}
               >
                 <StarIcon />
               </button>
+              </Link>
+              
 
               <button 
               className="action_btn" 

@@ -5,18 +5,23 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { Baseurl } from "../../../Utils/Constants";
 import { useSelector } from "react-redux";
-
-
 import generatePDF, { Options } from 'react-to-pdf';
 import Loader from "../../Loader/Loader";
+import { useRouter } from "next/router";
 
 
 const PerformaInvoiceScreen = () => {
+    const router=useRouter()
+    const {est_id}=router.query;
     const sideView = useSelector((state) => state.sideView.value);
     const [performaInfo, setPerformInfo] = useState([]);
     const[loader,setLoader]=useState(false)
+    const [total,setTotal]=useState();
+    const [grandTotal,setGrandTotal]=useState()
+    
 
-    const PerformaInfo = async () => {
+
+    const getPerformaInfo = async () => {
         setLoader(true)
         if (hasCookie('token')) {
             let token = (getCookie('token'));
@@ -31,10 +36,11 @@ const PerformaInvoiceScreen = () => {
                 }
             }
             try {
-                const response = await axios.get(Baseurl + `/db/media/estimation/getEstimation`, header);
+                const response = await axios.get(Baseurl + `/db/media/estimation/proformaInvoice?estimate_id=${est_id}`, header);
                 if(response?.status==200 || response?.status==201){
-                    setLoader(false)
-                    setPerformInfo(response?.data?.data);
+                  setPerformInfo(response?.data?.data);
+
+                  setLoader(false)
                 }
             } catch (error) {
                 console.log(error)
@@ -66,8 +72,11 @@ const PerformaInvoiceScreen = () => {
     
 
     useEffect(() => {
-        // PerformaInfo();
-    }, []);
+      if(est_id){
+         getPerformaInfo();
+      }
+       
+    }, [est_id]);
     return (
 
         <>

@@ -25,12 +25,12 @@ const formaArray = [
     disabled: true,
     type: "text",
   },
-  {
-    label: "Category",
-    name: "category",
-    disabled: true,
-    type: "text",
-  },
+  // {
+  //   label: "Category",
+  //   name: "category",
+  //   disabled: true,
+  //   type: "text",
+  // },
   {
     label: "Media Format",
     name: "media_format",
@@ -499,15 +499,15 @@ const ModelUpdateVendorCostAgency = ({
             site_id: response?.data?.data?.site_id || "",
             state: response?.data?.data?.state || "",
             city: response?.data?.data?.city || "",
-            location: response?.data?.data?.db_site?.location || "",
+            location: response?.data?.data?.db_sites_agency?.location || "",
             category: response?.data?.data?.category || "",
             media_format: response?.data?.data?.media_format || "",
             media_vehicle: response?.data?.data?.media_vehicle || "",
             media_type: response?.data?.data?.media_type || "",
-            quantity: response?.data?.data?.db_site?.quantity || "",
-            width: response?.data?.data?.db_site?.width || "",
+            quantity: response?.data?.data?.quantity || "",
+            width: response?.data?.data?.width || "",
             final_display_cost: response?.data?.data?.final_display_cost || "",
-            height: response?.data?.data?.db_site?.height || "",
+            height: response?.data?.data?.height || "",
             total_sq_ft:
               Number(response?.data?.data?.total_sq_ft).toFixed(2) || 0,
             campaign_start_date:

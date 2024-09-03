@@ -374,6 +374,8 @@ import ModelVendorCostAsset from "./ModelVendorCostAsset";
 import ModelVendorCostAgency from "./ModelVendorCostAgency";
 
 import StarIcon from "../../Svg/StarIcon";
+import AcceptIcon from "../../Svg/AcceptIcon";
+import RejectIcon from "../../Svg/RejectIcon";
 
 const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getContactList }) => {
   const [errorToast, setErrorToast] = useState({});
@@ -664,7 +666,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
               )?.cmpn_b_t_name === "Asset" && (
                 <button
-                  className="action_btn"
+                  className=""
+                  style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
                   onClick={() => {
                     setEstimationId(tableMeta?.rowData[3]);
                     getState();
@@ -672,7 +675,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   }}
                   title="Offer Asset Site"
                 >
-                  <DisableIcon />
+                  Offer Site
                 </button>
               )}
 
@@ -681,7 +684,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               )?.cmpn_b_t_name === "Asset" && (
                 <>
                   <button
-                    className="action_btn"
+                    className=""
+                    style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
                     onClick={() => {
                       setEstimationId(tableMeta?.rowData[3]);
                       getState();
@@ -689,7 +693,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                     }}
                     title="Client Cost Sheet Update"
                   >
-                    <PlusIcon />
+                    Client Cost Sheet 
                   </button>
                 </>
               )}
@@ -699,7 +703,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               )?.cmpn_b_t_name === "Asset" && (
                 <>
                   <button
-                    className="action_btn"
+                    className=""
+                    style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
                     onClick={() => {
                       setEstimationId(tableMeta?.rowData[3]);
                       getState();
@@ -707,7 +712,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                     }}
                     title="Vendor Cost Sheet Update"
                   >
-                    <ViewIcon />
+                    Vendor Cost Sheet
                   </button>
                 </>
               )}
@@ -716,7 +721,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
               )?.cmpn_b_t_name === "Agency" && (
                 <button
-                  className="action_btn"
+                  className=""
+                  style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
                   onClick={() => {
                     setEstimationId(tableMeta?.rowData[3]);
 
@@ -724,14 +730,15 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   }}
                   title="Offer Agency Site"
                 >
-                  <DisableIcon />
+                  Offer Site
                 </button>
               )}
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
               )?.cmpn_b_t_name === "Agency" && (
                 <button
-                  className="action_btn"
+                  className=""
+                  style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
                   onClick={() => {
                     setEstimationId(tableMeta?.rowData[3]);
 
@@ -739,7 +746,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   }}
                   title="Upload Site"
                 >
-                  <EditIcon />
+                  Upload Site
                 </button>
               )}
 
@@ -748,7 +755,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               )?.cmpn_b_t_name === "Agency" && (
                 <>
                   <button
-                    className="action_btn"
+                    className=""
+                    style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
                     onClick={() => {
                       setEstimationId(tableMeta?.rowData[3]);
                       getState();
@@ -756,10 +764,11 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                     }}
                     title="Client Cost Sheet Update"
                   >
-                    <PlusIcon />
+                    Client Cost Sheet
                   </button>
                   <button
-                    className="action_btn"
+                    className=""
+                    style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
                     onClick={() => {
                       setEstimationId(tableMeta?.rowData[3]);
                       getState();
@@ -767,29 +776,23 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                     }}
                     title="Vendor Cost Sheet Update"
                   >
-                    <ViewIcon />
+                    Vendor Cost Sheet
                   </button>
                 </>
               )}
-              <Link href={`/media/PorformaInvoice?est_id=${value}`}>
-              <button
-                className="action_btn"
-                title="Download Performa Invoice"
-              >
-                <StarIcon />
-              </button>
-              </Link>
+              
               
 
               <button 
-              className="action_btn" 
+              className="" 
+              style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
               title="Sent For Approval"
               onClick={()=>{
                 sentForApproval(value)
               }}
                
               >
-                <StarIcon />
+                Sent For Approval
               </button>
 
               <button 
@@ -800,7 +803,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               }}
                
               >
-                <StarIcon />
+                <AcceptIcon/>
               </button>
 
               <button 
@@ -811,8 +814,17 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               }}
                
               >
-                <StarIcon />
+                <RejectIcon />
               </button>
+              <Link href={`/media/PorformaInvoice?est_id=${value}`}>
+              <button
+                className=""
+                style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
+                title="Download Performa Invoice"
+              >
+                Invoice
+              </button>
+              </Link>
 
 
               {/* <button className="action_btn" title="Upload Site" onClick={()=>{setShow4(true)}}>

@@ -10,7 +10,7 @@ import { getCookie } from "cookies-next";
 const ModelAgencySite = ({
   show,
   handleClose3,
-  getSiteList,
+  // getSiteList,
   userInfo,
   estimateId,
 }) => {
@@ -234,7 +234,7 @@ const ModelAgencySite = ({
 
       if (response.status === 200) {
         toast.success("Data saved successfully!");
-        getSiteList();
+        // getSiteList();
         handleClose3();
       } else {
         toast.error("Failed to save data. Please try again.");

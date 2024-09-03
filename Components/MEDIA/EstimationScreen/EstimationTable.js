@@ -457,9 +457,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
   }
 
   const getSiteList = async () => {
-    // if (!stateId) {
-    //   return toast.warning("Please Select State");
-    // }
+    if (!stateId) {
+      return toast.warning("Please Select State");
+    }
     if (cityIds.length < 1) {
       return toast.warning("Please Select City");
     }
@@ -617,7 +617,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
       name: "campaign_name",
       label: "Campaign Name",
       options: { filter: true },
-    },
+    },  
     {
       name: "estimate_type",
       label: "Estimated Type",

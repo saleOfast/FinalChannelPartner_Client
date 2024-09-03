@@ -764,7 +764,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                     }}
                     title="Client Cost Sheet Update"
                   >
-                    Client Cost Sheets
+                    Client Cost Sheet
                   </button>
                   <button
                     className=""

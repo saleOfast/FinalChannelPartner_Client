@@ -112,6 +112,14 @@ const CP_NavBar_Admin = () => {
     }
   }, []);
 
+  const deleteCookieOnRouteChange=()=>{
+    const cookieNames = ["BookingsFilter", "BrokerageFilter", "Channel_PartnerFilter", "LeadsFilter", "VisitsFilter", "cp_selected"]
+    
+    cookieNames.forEach((cookie)=>{
+      deleteCookie(cookie)
+    })
+  }
+
   return (
     <>
       <ConfirmBox
@@ -137,6 +145,7 @@ const CP_NavBar_Admin = () => {
                       hasCookie("channel") &&  (
                       // hasCookie("channel") && allowedpermission?.length>1 && (
                         <li className='nav-item cursor-pointer pt-2' onClick={()=>{
+                          deleteCookieOnRouteChange()
                           deleteCookie("channel")
                           dispatch(clearValue())
                           router.push("/")
@@ -146,6 +155,7 @@ const CP_NavBar_Admin = () => {
         <li className="nav-item">
         <Link className={`nav-link ${isActive('/partner')}`} href="/partner"
                   onClick={()=>{
+                    deleteCookieOnRouteChange()
                     dispatch(setActiveLink("/partner"))
                     setCookie("activeLink","/partner")
                   }}
@@ -154,6 +164,7 @@ const CP_NavBar_Admin = () => {
         <li className="nav-item">
         <Link className={`nav-link ${isActive('/partner/CPRegisterLeads')}`} href="/partner/CPRegisterLeads"
                   onClick={()=>{
+                    deleteCookieOnRouteChange()
                     dispatch(setActiveLink("/partner/CPRegisterLeads"))
                     setCookie("activeLink","/partner/CPRegisterLeads")
                   }}
@@ -162,6 +173,7 @@ const CP_NavBar_Admin = () => {
         <li className="nav-item">
         <Link className={`nav-link ${isActive('/partner/ActivePartners')}`} href="/partner/ActivePartners"
                   onClick={()=>{
+                    router.pathname=="/partner/ChannelPartnersDetails" || router.pathname=="/partner/EditActiveUsers" ||router.pathname=="/partner/ActivePartners"   ? "" : deleteCookieOnRouteChange()
                     dispatch(setActiveLink("/partner/ActivePartners"))
                     setCookie("activeLink","/partner/ActivePartners")
                   }}
@@ -171,6 +183,7 @@ const CP_NavBar_Admin = () => {
         <li className="nav-item">
         <Link className={`nav-link ${isActive('/partner/PendingRequests')}`} 
                   onClick={()=>{
+                    deleteCookieOnRouteChange()
                     dispatch(setActiveLink("/partner/PendingRequests"))
                     setCookie("activeLink","/partner/PendingRequests")
                   }}
@@ -183,6 +196,7 @@ const CP_NavBar_Admin = () => {
                     )}`}
                     href="/partner/Leads"
                     onClick={()=>{
+                      router.pathname=="/partner/Leads" || router.pathname=="/partner/LeadDetails" ? "" : deleteCookieOnRouteChange()
                       dispatch(setActiveLink("/partner/Leads"))
                       setCookie("activeLink","/partner/Leads")
                     }}
@@ -197,6 +211,7 @@ const CP_NavBar_Admin = () => {
                     )}`}
                     href="/partner/Visits"
                     onClick={()=>{
+                      router.pathname=="/partner/Visits" || router.pathname=="/partner/VisitDetails" ? "" : deleteCookieOnRouteChange()
                       dispatch(setActiveLink("/partner/Visits"))
                       setCookie("activeLink","/partner/Visits")
                     }}
@@ -211,6 +226,7 @@ const CP_NavBar_Admin = () => {
                     )}`}
                     href="/partner/Bookings"
                     onClick={()=>{
+                      router.pathname=="/partner/Bookings" || router.pathname=="/partner/BookingDetails" ? "" : deleteCookieOnRouteChange()
                       dispatch(setActiveLink("/partner/Bookings"))
                       setCookie("activeLink","/partner/Bookings")
                     }}
@@ -226,6 +242,7 @@ const CP_NavBar_Admin = () => {
                     )}`}
                     href="/partner/Brokerage"
                     onClick={()=>{
+                      router.pathname=="/partner/Brokerage"  ? "" : deleteCookieOnRouteChange()
                       dispatch(setActiveLink("/partner/Brokerage"))
                       setCookie("activeLink","/partner/Brokerage")
                     }}
@@ -236,6 +253,7 @@ const CP_NavBar_Admin = () => {
         <li className="nav-item">
                 <Link className={`nav-link ${isActive('/partner/CampaignAdmin')}`} 
                   onClick={()=>{
+                    deleteCookieOnRouteChange()
                     dispatch(setActiveLink("/partner/CampaignAdmin"))
                     setCookie("activeLink","/partner/CampaignAdmin")
                   }}
@@ -270,6 +288,7 @@ const CP_NavBar_Admin = () => {
                   <Dropdown.Menu  >
                     <Link href={"/partner/ChannelProfile"}>
                       <Dropdown.Item className='d-flex align-items-center' onClick={()=>{
+                         deleteCookieOnRouteChange()
                         router.push("/partner/ChannelProfile")
                         dispatch(setActiveLink("/partner/ChannelProfileAdmin"))
                         setCookie("activeLink","/partner/ChannelProfileAdmin")

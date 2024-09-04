@@ -60,7 +60,7 @@ const ChannelProfileScreen = () => {
               Baseurl + `/db/users?id=${id}`,
               header
             );
-            setuserInfo(response.data.data);
+            setuserInfo(response?.data?.data);
           } catch (error) {
             console.log(error)
             if (
@@ -188,15 +188,17 @@ const ChannelProfileScreen = () => {
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Worker Type</span>
-                                            <span className="list-right">-</span>
+                                            <span className="list-right">{userInfo?.db_user_profile?.db_division
+?.divison|| "-"}</span>
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Department</span>
-                                            <span className="list-right">-</span>
+                                            <span className="list-right">{userInfo?.db_user_profile?.db_department?.department|| "-"}</span>
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Job Title</span>
-                                            <span className="list-right">-</span>
+                                            <span className="list-right">{userInfo?.db_user_profile?.db_designation?.designation
+|| "-"}</span>
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Joining Date</span>
@@ -204,7 +206,7 @@ const ChannelProfileScreen = () => {
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Reporting Manager</span>
-                                            <span className="list-right">-</span>
+                                            <span className="list-right">{userInfo?.reportToUser?.user|| "-"}</span>
                                         </li>
                                         <li className="list-group-item list-group-item-action d-flex justify-content-between">
                                             <span className="list-left">Location</span>

@@ -112,6 +112,8 @@ const LeadDetailsScreen = () => {
               p_visit_time: leads?.data?.data?.p_visit_time, 
               project_id:leads?.data?.data?.sales_project_id,
               project_name:leads?.data?.data?.sales_project_name,
+              created_on:leads?.data?.data?.created_on.split("T"),
+              createdBy:leads?.data?.data?.leadOwner?.user || ""
             });
             setProjectList(projects?.data?.data?.records);
             setLocationList(locations?.data?.data)
@@ -280,6 +282,20 @@ function formatDate(date) {
                           </div>
                         </div>
                       </div>
+                      <div className="row">
+                        <div className="col-5 col-md-5">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-left">Created At</span>
+                          </div>
+                        </div>
+                        <div className="col-7 col-md-6">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-right">
+                              {formatDate(lead?.created_on)=="NaN/NaN/NaN"? "":formatDate(lead?.created_on)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className="col-12 col-lg-6">
@@ -338,6 +354,22 @@ function formatDate(date) {
                               {lead?.p_visit_time
                                 ? formatTime(lead?.p_visit_time)
                                 : ""}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-5 col-md-5">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-left">
+                            Created By
+                            </span>
+                          </div>
+                        </div>
+                        <div className="col-7 col-md-6">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-right">
+                              {lead?.createdBy? lead?.createdBy: "----------"}
                             </span>
                           </div>
                         </div>

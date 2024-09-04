@@ -6,12 +6,15 @@ import React, { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { Baseurl } from '../../../../Utils/Constants'
 import { toast } from 'react-toastify'
+import VisitHistoryModel from './VisitHistoryModel'
 
 const VisitDetailsScreen = () => { 
   const router=useRouter()
   const{id}=router.query;
   const[visitData,setVisitData]=useState([])
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+  const [show,setShow] = useState(false)
+  const [visitHistory,setVisitHiistory] =useState([])
 
   function formatTime(timeString) {
     const timeParts = (timeString || '').split(':');
@@ -63,9 +66,44 @@ const VisitDetailsScreen = () => {
       getDataListById()
     }
   },[id])
+
+
+  const getVisitsHistoryById = async () => {
+    if (hasCookie('token')) {
+        let token = (getCookie('token'));
+        let db_name = (getCookie('db_name'));
+  
+        let header = {
+            headers: {
+                Accept: "application/json",
+                Authorization: "Bearer ".concat(token),
+                db: db_name,
+                pass:"pass"
+            }
+        }
+  
+        try {
+            const {data} = await axios.get(Baseurl + `/db/channel/visit?revisit_id=${id}`, header);
+            setVisitHiistory(data?.data)
+            
+        } catch (error) {
+            if (error?.response?.data?.message) {
+                toast.error(error?.response?.data?.message);
+            } else {
+                toast.error("Something went wrong!");
+            }
+        }
+    }
+  }
+
+  useEffect(()=>{
+    if(id){
+      getVisitsHistoryById()
+    }
+  },[id])
   
   return (
-    <div className='w-100 bg-white overflow-auto pb-5'>
+    <div className='w-100 overflow-auto pb-5'>
        <section className="Channel-profile  Visit-Details pt-4 pb-2">
   <div className="container  mt-4 mb-4">
     <div className="row gx-4">
@@ -187,6 +225,42 @@ const VisitDetailsScreen = () => {
                 </div>
               </div>
             </div>
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Visit Remark</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">{visitData?.status}</span>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Created At</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">{formatDate(visitData?.createdAt?.split("T"))}</span>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-6 col-md-5">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-left">Created By</span>
+                </div>
+              </div>
+              <div className="col-6 col-md-6">
+                <div className="list-group-item list-group-item-action p-0 border-0">
+                  <span className="list-right">{visitData?.leadData?.leadOwner?.user ?visitData?.leadData?.leadOwner?.user :"---------"}</span>
+                </div>
+              </div>
+            </div>
             {
               visitData?.revisit_date && (
                 <div className="row">
@@ -222,16 +296,31 @@ const VisitDetailsScreen = () => {
             }
             
           </ul></div>
-        <Link href={'/partner/Visits'} className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
+        <div className="details-btn d-flex justify-content-center gap-4 mt-4 mt-md-5">
           <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0"
             style={{background:`${clientBtnColor}`}}
+            onClick={()=>{
+              router.push("/partner/Visits")
+            }}
           >Back to Visits</button>
-        </Link>
+          <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0"
+            style={{background:`${clientBtnColor}`}}
+            onClick={()=>{
+              setShow(true)
+            }}
+          >Visit History</button>
+        </div>
+        
+        
       </div>  
     </div>
   </div>
 </section>
-
+    <VisitHistoryModel
+        show={show}
+        setShow={setShow}
+        visitHistory={visitHistory}
+    />
 
     </div>
 

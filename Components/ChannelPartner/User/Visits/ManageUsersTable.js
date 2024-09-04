@@ -31,7 +31,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   const getCurrentWeekDates = () => {
     const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
       const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
-    return { startDate, endDate };
+      if(hasCookie("VisitsFilter")){
+          
+        let data=JSON.parse(getCookie("VisitsFilter"))
+         return {startDate:data?.f_date,endDate:data?.t_date}
+       }
+       else{
+         return { startDate, endDate };
+       }
   };
 
 const [value, setValue] = useState(getCurrentWeekDates());
@@ -280,7 +287,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <DateRange value={value} setValue={setValue} getData={getVisitList} />
+                <DateRange value={value} setValue={setValue} getData={getVisitList} filterType={title} />
                 {/* <button className='btn' style={{background:`${clientBtnColor}`, color:"white"}} onClick={()=>setShowDateFilter(true)}> Custom </button> */}
             </div>
         );

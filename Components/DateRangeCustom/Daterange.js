@@ -1,7 +1,8 @@
+import { setCookie } from "cookies-next";
 import React, { useEffect, useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 
-const DateRange = ({value,setValue,getData}) => {
+const DateRange = ({value,setValue,getData,filterType}) => {
 
 
 
@@ -11,6 +12,7 @@ const DateRange = ({value,setValue,getData}) => {
       f_date:newValue.startDate,
       t_date:newValue.endDate,
     }
+    setCookie(`${filterType}Filter`,queryObjLeads)
     getData(queryObjLeads)
 
   }

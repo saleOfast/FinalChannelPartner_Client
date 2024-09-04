@@ -6,7 +6,7 @@ import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
 import { Baseurl } from '../../../../Utils/Constants';
-import { getCookie, hasCookie } from 'cookies-next';
+import { getCookie, hasCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import Loader from '../../../Loader/Loader';
@@ -27,7 +27,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
   const getCurrentWeekDates = () => {
     const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
       const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
-    return { startDate, endDate };
+      if(hasCookie("Channel_PartnerFilter")){
+        let data=JSON.parse(getCookie("Channel_PartnerFilter"))
+         return {startDate:data?.f_date,endDate:data?.t_date}
+       }
+       else{
+         return { startDate, endDate };
+       }
+
   };
 
   const [value, setValue] = useState(getCurrentWeekDates());
@@ -164,7 +171,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     return (
                         <div className='status_box fw-bold' style={{color:"#293790"}}>
                             {/* {value && <span  >{value.user}</span>} */}
-                            {value && <span  >{value}</span>}
+                            {/* {value && <span  >{value}</span>} */}
+                            {userInfo?.user==value ? "" : value}
                         </div>
                     )
                 }
@@ -269,7 +277,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <DateRange value={value} setValue={setValue} getData={getDataList} />
+                <DateRange value={value} setValue={setValue} getData={getDataList} filterType={"Channel_Partner"} />
                {
                 hasCookie("channel") &&(userInfo?.role_id==null || userInfo?.role_id==3) &&(
                     <div style={{ marginBottom: '0' }}>
@@ -305,6 +313,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     }
     const handleChange = (event) => {
         const value = event.target.value;
+        setCookie("cp_selected",value)
         setSelectedOption(value);
         console.log(`Selected option: ${value}`);
         // Add any additional logic you want to handle on selection change

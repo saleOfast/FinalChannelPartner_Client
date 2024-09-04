@@ -148,12 +148,15 @@ const VisitsScreen = () => {
 
     }
     
-
-
-    useEffect(() => {
-        getVisitList();
-        
-    }, [])
+    const visitsFilter=hasCookie("VisitsFilter") ? JSON.parse(getCookie("VisitsFilter")) : null;
+    useEffect(()=>{
+      if(visitsFilter){
+        getVisitList(visitsFilter)
+      }
+      else{
+        getVisitList()
+      }
+    },[])
 
     return (
       <>

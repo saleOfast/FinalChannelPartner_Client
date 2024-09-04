@@ -48,7 +48,7 @@ const ActivePartnersScreen = () => {
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
   const [loader,setLoader]=useState(false);
-  const [selectedOption, setSelectedOption] = useState('Channel Partner');
+  const [selectedOption, setSelectedOption] = useState(hasCookie("cp_selected") ? getCookie("cp_selected"):'Channel Partner');
 
   
 
@@ -248,6 +248,8 @@ const ActivePartnersScreen = () => {
         }
 
     }
+
+    const channelPartnerFilter=hasCookie("Channel_PartnerFilter") ? JSON.parse(getCookie("Channel_PartnerFilter")) : null;
     const updateUserhandler = async () => {
         if (!hasCookie("token")) return;
         const token = getCookie("token");
@@ -274,7 +276,15 @@ const ActivePartnersScreen = () => {
             setoldAssignTo('')
             setShowAssignTo('')
             toast.success(response.message)
-            getDataList();
+            if(channelPartnerFilter){
+                // if(hasCookie("cp_selected")){
+                //     setSelectedOption(getCookie("cp_selected"))
+                // }
+                getDataList(channelPartnerFilter)
+              }
+              else{
+                getDataList()
+              }
           }
         } catch (error) {
           if (error?.response?.data?.status === 422) {
@@ -295,12 +305,12 @@ const ActivePartnersScreen = () => {
         // getDataList()
     }, [selectedOption])
 
-    const channelPartnerFilter=hasCookie("Channel_PartnerFilter") ? JSON.parse(getCookie("Channel_PartnerFilter")) : null;
+    
     useEffect(()=>{
       if(channelPartnerFilter){
-        if(hasCookie("cp_selected")){
-            setSelectedOption(getCookie("cp_selected"))
-        }
+        // if(hasCookie("cp_selected")){
+        //     setSelectedOption(getCookie("cp_selected"))
+        // }
         getDataList(channelPartnerFilter)
       }
       else{
@@ -392,13 +402,13 @@ const ActivePartnersScreen = () => {
                                         <Select
                                             id="select"
                                             defaultValue={""}
-                                            options={usersList?.filter(user => user.role_id === 2).map((data) => {
+                                            options={[{ value: userInfo?.user_id, label: "N.A" },...usersList?.filter(user => user.role_id === 2).map((data) => {
                                                 return {
                                                     value: data?.user_id,
                                                     label: data?.user,
                                                 };
-                                            })}
-                                            value={usersList?.map((data, index) => {
+                                            })]}
+                                            value={usersList?.filter(user => user.role_id === 2)?.map((data, index) => {
                                             if (oldAssignTo === data.user_id) {
                                                 return {
                                                 value: data?.user_id,

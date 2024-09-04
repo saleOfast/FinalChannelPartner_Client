@@ -396,7 +396,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
   const [selectedSites, setSelectedSites] = useState([]);
   const [estimationId, setEstimationId] = useState(null);
-
+  const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
   const [isLoading, setisLoading] = useState(false);
   const handleClose = () => {
     setShow(false);
@@ -664,7 +664,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               </button>
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && (
+              )?.cmpn_b_t_name === "Asset" && userInfo?.role_id==5 && (
                 <button
                   className=""
                   style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -681,7 +681,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && (
+              )?.cmpn_b_t_name === "Asset" && userInfo?.role_id==5 && (
                 <>
                   <button
                     className=""
@@ -700,7 +700,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && (
+              )?.cmpn_b_t_name === "Asset" && userInfo?.role_id==6 && (
                 <>
                   <button
                     className=""
@@ -719,7 +719,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && (
+              )?.cmpn_b_t_name === "Agency" && userInfo?.role_id==5 && (
                 <button
                   className=""
                   style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -733,9 +733,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   Offer Site
                 </button>
               )}
-              {busiessTypeList.find(
+              {/* {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && (
+              )?.cmpn_b_t_name === "Agency" && userInfo?.role_id==5 (
                 <button
                   className=""
                   style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -748,11 +748,11 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                 >
                   Upload Site
                 </button>
-              )}
+              )} */}
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && (
+              )?.cmpn_b_t_name === "Agency" && userInfo?.role_id==5 && (
                 <>
                   <button
                     className=""
@@ -766,6 +766,13 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   >
                     Client Cost Sheet
                   </button>
+                </>
+              )}
+
+{busiessTypeList.find(
+                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
+              )?.cmpn_b_t_name === "Agency" && userInfo?.role_id==6 && (
+                <>
                   <button
                     className=""
                     style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -782,7 +789,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               )}
               
               
-
+              {
+                userInfo?.role_id==5 && (
               <button 
               className="" 
               style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -794,7 +802,12 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               >
                 Sent For Approval
               </button>
-
+                )
+              }
+              {
+                userInfo?.role_id==4 || userInfo?.role_id==7 && (
+                  <>
+                  
               <button 
               className="action_btn" 
               title="Accept"
@@ -816,6 +829,11 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               >
                 <RejectIcon />
               </button>
+                  </>
+                )
+              }
+              {
+                userInfo?.role_id==5 && (
               <Link href={`/media/PorformaInvoice?est_id=${value}`}>
               <button
                 className=""
@@ -825,6 +843,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                 Invoice
               </button>
               </Link>
+                )
+              }
 
 
               {/* <button className="action_btn" title="Upload Site" onClick={()=>{setShow4(true)}}>

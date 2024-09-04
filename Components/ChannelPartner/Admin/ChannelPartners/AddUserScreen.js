@@ -851,16 +851,16 @@ const AddUserScreen = () => {
                     options={[
                       { value: userInfoCheck?.user_id, label: "N.A" }, // Add the "None" option at the top
                       ...usersList
-                        ?.filter((user) => user.role_id === 2)
+                        ?.filter((user) => user.role_id == 2)
                         ?.map((data) => ({
                           value: data?.user_id,
                           label: data?.user,
                         })),
                     ]}
                     value={usersList
-                      ?.filter((user) => user.role_id === 2)
+                      ?.filter((user) => user.role_id == 2)
                       ?.map((data, index) => {
-                      if (userInfo.report_to === data.user_id) {
+                      if (userInfo.report_to == data.user_id) {
                         return {
                           value: data?.user_id,
                           label: data?.user,

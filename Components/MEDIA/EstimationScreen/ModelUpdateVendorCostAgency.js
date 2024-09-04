@@ -645,8 +645,7 @@ const ModelUpdateVendorCostAgency = ({
               "",
             display_vender_cost:
               selectedSite?.db_estimate?.display_vender_cost || "0",
-            display_cost_per_month:
-              selectedSite?.db_estimate?.display_cost_per_month || "0",
+              display_cost_per_month: selectedSite?.db_estimate?.display_selling_cost || "0",
             buying_price_as_per_duration:
               selectedSite?.db_estimate?.buying_price_as_per_duration || "0",
             // final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || "0",

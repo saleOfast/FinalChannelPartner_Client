@@ -805,7 +805,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                 )
               }
               {
-                userInfo?.role_id==4 || userInfo?.role_id==7 && (
+                (userInfo?.role_id==4 || userInfo?.role_id==7) && (
                   <>
                   
               <button 

@@ -33,7 +33,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     const getCurrentWeekDates = () => {
       const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
         const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
-      return { startDate, endDate };
+        if(hasCookie("BrokerageFilter")){
+          
+          let data=JSON.parse(getCookie("BrokerageFilter"))
+           return {startDate:data?.f_date,endDate:data?.t_date}
+         }
+         else{
+           return { startDate, endDate };
+         }
     };
   
   const [value, setValue] = useState(getCurrentWeekDates());
@@ -376,7 +383,7 @@ const updateBrokerageBill =  async() => {
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <DateRange value={value} setValue={setValue} getData={getDataList} />
+                <DateRange value={value} setValue={setValue} getData={getDataList} filterType={title} />
             </div>
         );
     }

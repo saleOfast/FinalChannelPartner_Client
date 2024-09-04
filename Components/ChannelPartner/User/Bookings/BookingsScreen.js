@@ -280,9 +280,16 @@ const BookingsScreen = () => {
     };
 
 
-    useEffect(() => {
-        getDataList();
-    }, [])
+    const bookingsFilter=hasCookie("BookingsFilter") ? JSON.parse(getCookie("BookingsFilter")) : null;
+    useEffect(()=>{
+      if(bookingsFilter){
+        getDataList(bookingsFilter)
+      }
+      else{
+        getDataList()
+      }
+    },[])
+
 
     return (
       <>

@@ -206,9 +206,15 @@ const BookingsScreen = () => {
     };
 
 
-    useEffect(() => {
-        getDataList();
-    }, [])
+    const brokerageFilter=hasCookie("BrokerageFilter") ? JSON.parse(getCookie("BrokerageFilter")) : null;
+    useEffect(()=>{
+      if(brokerageFilter){
+        getDataList(brokerageFilter)
+      }
+      else{
+        getDataList()
+      }
+    },[])
 
     return (
       <>

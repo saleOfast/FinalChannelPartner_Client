@@ -26,18 +26,18 @@ const BookingDetailsScreen = () => {
                 Accept: "application/json",
                 Authorization: "Bearer ".concat(token),
                 db: db_name,
-                m_id: 76,
+                pass:"pass"
             }
         }
 
         try {
             const response = await axios.get(Baseurl + `/db/channel/booking?booking_id=${id}`, header);
             console.log(response.data.data);
-            setBookingData(response.data.data);
+            setBookingData(response?.data?.data);
         } catch (error) {
           console.log(error)
             if (error?.response?.data?.message) {
-                toast.error(error.response.data.message);
+                toast.error(error?.response?.data?.message);
             } else {
                 toast.error("Something went wrong!");
             }
@@ -160,6 +160,60 @@ function formatDate(date) {
                           </div>
                         </div>
                       </div>
+                      <div className="row">
+                        <div className="col-5 col-md-5">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-left">Created At</span>
+                          </div>
+                        </div>
+                        <div className="col-7 col-md-6">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-right">{formatDate(bookingData?.createdAt?.split("T"))}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-5 col-md-5">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-left">Received Date</span>
+                          </div>
+                        </div>
+                        <div className="col-7 col-md-6">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-right">{
+                            bookingData?.recieved_date ?formatDate(bookingData?.recieved_date) :"---------"
+                            }</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-5 col-md-5">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-left">Flat No.</span>
+                          </div>
+                        </div>
+                        <div className="col-7 col-md-6">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-right">{bookingData?.flat_number ? bookingData?.flat_number :"---------"}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-5 col-md-5">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-left">Buyer ID</span>
+                          </div>
+                        </div>
+                        <div className="col-7 col-md-6">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-right">{bookingData?.buyer_id ? bookingData?.buyer_id :"---------"}</span>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                   <div className="col-12 col-lg-6">
@@ -198,7 +252,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{bookingData?.visit_remarks} </span>
+                            <span className="list-right">{bookingData?.visit_remarks ? bookingData?.visit_remarks :"---------"} </span>
                           </div>
                         </div>
                       </div>
@@ -210,7 +264,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{bookingData?.revisit_remarks} </span>
+                            <span className="list-right">{bookingData?.revisit_remarks  ? bookingData?.revisit_remarks :"---------"} </span>
                           </div>
                         </div>
                       </div>
@@ -222,7 +276,7 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{bookingData?.revisit_done_date===null ? "":formatDate(bookingData?.revisit_done_date)}</span>
+                            <span className="list-right">{bookingData?.revisit_done_date===null ? "---------":formatDate(bookingData?.revisit_done_date)}</span>
                           </div>
                         </div>
                       </div>
@@ -234,10 +288,55 @@ function formatDate(date) {
                         </div>
                         <div className="col-7 col-md-7 col-lg-8">
                           <div className="list-group-item list-group-item-action p-0 border-0">
-                            <span className="list-right">{bookingData?.revisit_done_time===null?"":formatTime(bookingData?.revisit_done_time)}</span>
+                            <span className="list-right">{bookingData?.revisit_done_time===null?"---------":formatTime(bookingData?.revisit_done_time)}</span>
                           </div>
                         </div>
                       </div>
+                      <div className="row">
+                        <div className="col-5 col-md-5">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-left">Created By</span>
+                          </div>
+                        </div>
+                        <div className="col-7 col-md-6">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-right">{bookingData?.BookingleadData?.leadOwner?.user ? bookingData?.BookingleadData?.leadOwner?.user :"---------"}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="row">
+                        <div className="col-5 col-md-5">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-left">Received Time</span>
+                          </div>
+                        </div>
+                        <div className="col-7 col-md-6">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-right">{
+                            bookingData?.recieved_time ?formatDate(bookingData?.recieved_time) :"---------"
+                            }</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-5 col-md-5">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-left">Block No.</span>
+                          </div>
+                        </div>
+                        <div className="col-7 col-md-6">
+                          <div className="list-group-item list-group-item-action p-0 border-0">
+                            <span className="list-right">{bookingData?.block_number ? bookingData?.block_number :"---------"}</span>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      
+
+                      
                     </div>
                   </div>
                 </div>

@@ -16,6 +16,7 @@ import {
   dms,
   sales,
   channel,
+  media
 } from "../../store/permissionSlice";
 import { startLoading, stopLoading } from "../../store/loaderSlice";  
 import {
@@ -74,7 +75,7 @@ export default function SignInScreen({ setLoggedIn }) {
     
     e.preventDefault();
     dispatch(startLoading());
-    const type=router.pathname==="/crm" ? "crm": router.pathname==="/dms" ? "dms": router.pathname==="/sales"? "sales": router.pathname==="/partner" ? "partner": "common"
+    const type=router.pathname==="/crm" ? "crm": router.pathname==="/dms" ? "dms": router.pathname==="/sales"? "sales": router.pathname==="/partner" ? "partner": router.pathname==="/media" ? "media": "common"
     if (userForm.email === "" || userForm.email.length < 1) {
       toast.error("Email is Empty");
       dispatch(stopLoading())
@@ -149,7 +150,14 @@ export default function SignInScreen({ setLoggedIn }) {
           }
           else if(router.pathname==="/partner"){
             dispatch(channel())
-            router.push("/partner")
+              if(res?.data?.userData?.role_id===2){
+                setCookie("activeLink","/partner/ActivePartners")
+                router.push("/partner/ActivePartners")
+              }
+              else{
+                setCookie("activeLink","/partner")
+                router.push("/partner");
+              }
           }
           else if(router.pathname==="/dms"){
             dispatch(dms())
@@ -158,6 +166,10 @@ export default function SignInScreen({ setLoggedIn }) {
           else if(router.pathname==="/sales"){
             dispatch(sales())
             router.push("/sales")
+          }
+          else if(router.pathname==="/media"){
+            dispatch(media())
+            router.push("/media")
           }
           else{
             router.push("/")

@@ -848,13 +848,18 @@ const AddUserScreen = () => {
                     id={userInfo.des_id}
                     defaultValue={""}
                     isDisabled={viewMode}
-                    options={usersList?.filter(user => user.role_id === 2)?.map((data, index) => {
-                      return {
-                        value: data?.user_id,
-                        label: data?.user,
-                      };
-                    })}
-                    value={usersList?.map((data, index) => {
+                    options={[
+                      { value: userInfoCheck?.user_id, label: "N.A" }, // Add the "None" option at the top
+                      ...usersList
+                        ?.filter((user) => user.role_id === 2)
+                        ?.map((data) => ({
+                          value: data?.user_id,
+                          label: data?.user,
+                        })),
+                    ]}
+                    value={usersList
+                      ?.filter((user) => user.role_id === 2)
+                      ?.map((data, index) => {
                       if (userInfo.report_to === data.user_id) {
                         return {
                           value: data?.user_id,
@@ -1194,6 +1199,106 @@ const AddUserScreen = () => {
                     />
                   </div>
                 </div>
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div
+                  className={
+                    errorData?.lead_id ? "input_box errorBox" : "input_box"
+                  }
+                >
+                  <label htmlFor="task_name"> Worker Type(Division)</label>
+                  <Select
+                    // id={contactInfo.lead_id}
+                    defaultValue={""}
+                    isDisabled={viewMode}
+                    options={divisionList?.map((data, index) => {
+                      return {
+                        value: data?.div_id,
+                        label: data?.divison,
+                      };
+                    })}
+                    value={divisionList?.map((data, index) => {
+                      if (userInfo.div_id === data.div_id) {
+                        return {
+                          value: data?.div_id,
+                          label: data?.divison,
+                        };
+                      }
+                    })}
+                    onChange={(e) =>
+                      setUserinfo({ ...userInfo, div_id: e.value })
+                    }
+                  />
+                  <span className="errorText">
+                    {" "}
+                    {errorData?.div_id ? errorData.div_id : ""}
+                  </span>
+                </div>
+              </div>
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div
+                  className={
+                    errorData?.lead_id ? "input_box errorBox" : "input_box"
+                  }
+                >
+                  <label htmlFor="task_name">Department</label>
+                  <Select
+                    id={userInfo.dep_id}
+                    defaultValue={""}
+                    isDisabled={viewMode}
+                    options={departMentList?.map((data, index) => {
+                      return {
+                        value: data?.dep_id,
+                        label: data?.department,
+                      };
+                    })}
+                    value={departMentList?.map((data, index) => {
+                      if (userInfo.dep_id === data.dep_id) {
+                        return {
+                          value: data?.dep_id,
+                          label: data?.department,
+                        };
+                      }
+                    })}
+                    onChange={(e) =>
+                      setUserinfo({ ...userInfo, dep_id: e.value })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div
+                  className={
+                    errorData?.des_id ? "input_box errorBox" : "input_box"
+                  }
+                >
+                  <label htmlFor="task_name">Job Title(Designation)</label>
+                  <Select
+                    id={userInfo.des_id}
+                    defaultValue={""}
+                    isDisabled={viewMode}
+                    options={designationList?.map((data, index) => {
+                      return {
+                        value: data?.des_id,
+                        label: data?.designation,
+                      };
+                    })}
+                    value={designationList?.map((data, index) => {
+                      if (userInfo.des_id === data.des_id) {
+                        return {
+                          value: data?.des_id,
+                          label: data?.designation,
+                        };
+                      }
+                    })}
+                    onChange={(e) =>
+                      setUserinfo({ ...userInfo, des_id: e.value })
+                    }
+                  />
+                </div>
+              </div>
+
             </div>
             
             

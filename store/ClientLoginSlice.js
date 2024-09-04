@@ -84,7 +84,24 @@ export const ClientLoginSlice = createSlice({
             if (hasCookie("sidecolor")) {
                 deleteCookie('sidecolor')
             }
-            
+            if (hasCookie("LeadsFilter")) {
+                deleteCookie('LeadsFilter')
+            }
+            if (hasCookie("VisitsFilter")) {
+                deleteCookie('VisitsFilter')
+            }
+            if (hasCookie("BookingsFilter")) {
+                deleteCookie('BookingsFilter')
+            }
+            if (hasCookie("BrokerageFilter")) {
+                deleteCookie('BrokerageFilter')
+            }
+            if (hasCookie("Channel_PartnerFilter")) {
+                deleteCookie('Channel_PartnerFilter')
+            }
+            if (hasCookie("cp_selected")) {
+                deleteCookie('cp_selected')
+            }
           
         }
     },

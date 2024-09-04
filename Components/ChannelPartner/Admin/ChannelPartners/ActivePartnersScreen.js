@@ -50,8 +50,6 @@ const ActivePartnersScreen = () => {
   const [loader,setLoader]=useState(false);
   const [selectedOption, setSelectedOption] = useState('Channel Partner');
 
- 
-
   
 
     function disableConfirm(value, type) {
@@ -293,9 +291,22 @@ const ActivePartnersScreen = () => {
 
 
     useEffect(() => {
-        getDataList();
         getUsersList();
+        // getDataList()
     }, [selectedOption])
+
+    const channelPartnerFilter=hasCookie("Channel_PartnerFilter") ? JSON.parse(getCookie("Channel_PartnerFilter")) : null;
+    useEffect(()=>{
+      if(channelPartnerFilter){
+        if(hasCookie("cp_selected")){
+            setSelectedOption(getCookie("cp_selected"))
+        }
+        getDataList(channelPartnerFilter)
+      }
+      else{
+        getDataList()
+      }
+    },[selectedOption])
 
     return (
         <>

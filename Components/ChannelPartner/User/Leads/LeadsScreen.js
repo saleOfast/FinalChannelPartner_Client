@@ -343,9 +343,19 @@ const LeadsScreen = () => {
     };
 
     useEffect(() => {
-        getDataList();
         getMaxDate()
     }, [])
+    
+    const leadsFilter=hasCookie("LeadsFilter") ? JSON.parse(getCookie("LeadsFilter")) : null;
+    useEffect(()=>{
+      if(leadsFilter){
+        getDataList(leadsFilter)
+      }
+      else{
+        getDataList()
+      }
+    },[])
+
     useEffect(() => {
       getLocationList();
   }, [])

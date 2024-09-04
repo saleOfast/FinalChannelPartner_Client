@@ -1124,6 +1124,26 @@ const AddEstimationScreen = () => {
                               campaign_end_date: campaign?.campaign_end_date,
                               campaign_duration: campaign?.campaign_duration,
                               cmpn_b_t_id: campaign?.cmpn_b_t_id,
+                              display_selling_cost:campaign?.client_display_cost,
+                              printing_selling_cost:campaign?.client_printing_cost,
+                              mounting_selling_cost:campaign?.client_mounting_cost,
+                              total_selling_cost:campaign?.client_printing_cost+campaign?.client_mounting_cost+campaign?.client_display_cost,
+
+                              display_buying_cost:campaign?.total_vendor_display_cost,
+                              printing_buying_cost:campaign?.total_vendor_printing_cost,
+                              mounting_buying_cost:campaign?.total_vendor_mounting_cost,
+                              total_buying_cost:campaign?.total_vendor_printing_cost+campaign?.total_vendor_mounting_cost+campaign?.total_vendor_display_cost,
+
+                              overall_margin:campaign?.overall_margin,
+                              display_margin:campaign?.display_margin,
+                              mounting_margin:campaign?.mounting_margin,
+                              printing_margin:campaign?.printing_margin,
+
+                              overall_margin_percentage:campaign?.overall_margin_percentage,
+                              display_margin_percentage:campaign?.display_margin_percentage,
+                              mounting_margin_percentage:campaign?.mounting_margin_percentage,
+                              printing_margin_percentage:campaign?.printing_margin_percentage,
+
                             });
                             setErrorData({ ...errorData, campaign_id: "" });
                           }}

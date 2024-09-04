@@ -788,9 +788,43 @@ const AddCampaignScreen = () => {
 
         // Calculate Total Client Cost
         updatedInfo.total_client_cost =
-          parseFloat(updatedInfo.client_display_cost || 0) +
-          parseFloat(updatedInfo.client_mounting_cost || 0) +
-          parseFloat(updatedInfo.client_printing_cost || 0);
+  parseFloat(updatedInfo.client_display_cost || 0) +
+  parseFloat(updatedInfo.client_mounting_cost || 0) +
+  parseFloat(updatedInfo.client_printing_cost || 0);
+
+updatedInfo.total_vendor_cost =
+  parseFloat(updatedInfo.total_vendor_display_cost || 0) +
+  parseFloat(updatedInfo.total_vendor_mounting_cost || 0) +
+  parseFloat(updatedInfo.total_vendor_printing_cost || 0);
+
+updatedInfo.overall_margin =
+  parseFloat(updatedInfo.total_client_cost || 0) -
+  parseFloat(updatedInfo.total_vendor_cost || 0);
+
+updatedInfo.display_margin =
+  parseFloat(updatedInfo.client_display_cost || 0) -
+  parseFloat(updatedInfo.total_vendor_display_cost || 0);
+
+updatedInfo.mounting_margin =
+  parseFloat(updatedInfo.client_mounting_cost || 0) -
+  parseFloat(updatedInfo.total_vendor_mounting_cost || 0);
+
+updatedInfo.printing_margin =
+  parseFloat(updatedInfo.client_printing_cost || 0) -
+  parseFloat(updatedInfo.total_vendor_printing_cost || 0);
+
+// Calculate margin percentages
+updatedInfo.overall_margin_percentage =
+  (updatedInfo.overall_margin / updatedInfo.total_client_cost) * 100;
+
+updatedInfo.display_margin_percentage =
+  (updatedInfo.display_margin / updatedInfo.client_display_cost) * 100;
+
+updatedInfo.mounting_margin_percentage =
+  (updatedInfo.mounting_margin / updatedInfo.client_mounting_cost) * 100;
+
+updatedInfo.printing_margin_percentage =
+  (updatedInfo.printing_margin / updatedInfo.client_printing_cost) * 100;
 
         return updatedInfo;
       });
@@ -1283,7 +1317,8 @@ const AddCampaignScreen = () => {
                           className="form-control"
                           // disabled={item?.id==="total_client_cost"}
                           disabled={
-                            viewMode || item?.id === "total_client_cost"
+                            viewMode || item?.id === "total_client_cost" ||
+                            item?.id === "total_vendor_cost"
                           }
                           placeholder={`Enter ${item?.label}`}
                           value={userInfo?.[item?.id]}
@@ -1322,7 +1357,7 @@ const AddCampaignScreen = () => {
                           type="number"
                           id={item?.id}
                           className="form-control"
-                          disabled={viewMode}
+                          disabled={true}
                           placeholder={`Enter ${item?.label}`}
                           value={userInfo?.[item?.id]}
                           onChange={(e) =>

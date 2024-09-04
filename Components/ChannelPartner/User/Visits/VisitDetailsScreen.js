@@ -83,7 +83,7 @@ const VisitDetailsScreen = () => {
         }
   
         try {
-            const {data} = await axios.get(Baseurl + `/db/channel/visit?revisit_id=${id}`, header);
+            const {data} = await axios.get(Baseurl + `/db/channel/visit/getRevisitHistory?visit_id=${id}`, header);
             setVisitHiistory(data?.data)
             
         } catch (error) {

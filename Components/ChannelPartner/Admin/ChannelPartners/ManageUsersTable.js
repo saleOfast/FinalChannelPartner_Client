@@ -158,7 +158,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
-            name: 'reportToUser.user',
+            name: 'reportToUser',
             label: "Assigned to",
             options: {
                 filter: true,
@@ -172,7 +172,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                         <div className='status_box fw-bold' style={{color:"#293790"}}>
                             {/* {value && <span  >{value.user}</span>} */}
                             {/* {value && <span  >{value}</span>} */}
-                            {userInfo?.user==value ? "" : value}
+                            {userInfo?.user==value?.user ? "" : value?.user}
                         </div>
                     )
                 }

@@ -121,7 +121,7 @@ const ModelUpdateClientCostAsset = ({
                 campaign_start_date: moment(selectedSite?.db_estimate?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")  || '',
                 campaign_end_date:moment(selectedSite?.db_estimate?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")  || '',
                 campaign_duration: selectedSite?.db_estimate?.db_media_campaign?.campaign_duration || '',
-                display_cost_per_month: selectedSite?.db_estimate?.display_cost_per_month || "0",
+                display_cost_per_month: selectedSite?.db_estimate?.display_selling_cost || "0",
                 selling_price_as_per_duration: selectedSite?.db_estimate?.selling_price_as_per_duration || "0",
                 final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || "0",
                 mounting_cost_per_sq_ft:selectedSite?.db_estimate?.mounting_cost_per_sq_ft || "0",

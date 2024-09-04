@@ -657,3 +657,14 @@ font-size: 15px;
 line-height: 15px;
 color: #000;
 }
+
+
+.table-compact {
+  border-collapse: collapse; /* Removes cell spacing */
+  font-size: 12px; /* Sets font size */
+}
+
+.table-compact th,
+.table-compact td {
+  padding: 2px; /* Sets padding for table cells */
+}

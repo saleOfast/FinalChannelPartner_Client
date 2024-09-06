@@ -26,6 +26,7 @@ const ModelVendorCostAsset = ({
   stateId,
   cityIds,
   estimateId,
+  getContactList
 }) => {
   const [assetSiteLists, setAssetSiteLists] = useState([]);
   const [assetDeleteShowConfirm, setAssetDeleteShowConfirm] = useState(false);
@@ -184,7 +185,7 @@ const ModelVendorCostAsset = ({
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 320,
+          pass:"pass"
         },
       };
       try {
@@ -222,7 +223,7 @@ const ModelVendorCostAsset = ({
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 14,
+          pass:"pass"
         },
       };
 
@@ -262,7 +263,7 @@ const ModelVendorCostAsset = ({
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 320,
+          pass:"pass"
         },
       };
       try {
@@ -388,6 +389,7 @@ const ModelVendorCostAsset = ({
         setPrintingVendorData={setPrintingVendorData}
         printingMaterialData={printingMaterialData}
         mountingVendorData={mountingVendorData}
+        getContactList={getContactList}
       />
       {/* <ConfirmBox
         showConfirm={assetDeleteShowConfirm}

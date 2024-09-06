@@ -86,7 +86,7 @@ const PrintingMatMgmtTab = ({ deleteConfirm, disableConfirm, dataList, openEdtMd
   const options = {
     selectableRows: 'none',
     responsive: "standard",
-    downloadOptions: { filename: "LeadIndustryList.csv" }
+    downloadOptions: { filename: "PrintingMaterialList.csv" }
   };
 
   return (

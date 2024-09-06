@@ -267,7 +267,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
           db: db_name,
-          m_id: 76,
+          pass:"pass"
         },
       };
 
@@ -636,6 +636,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         stateId={stateId}
         cityIds={cityIds}
         estimateId={estimationId}
+        getContactList={getContactList}
       />
 
       <ModelVendorCostAgency
@@ -649,6 +650,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         stateId={stateId}
         cityIds={cityIds}
         estimateId={estimationId}
+        getContactList={getContactList}
       />
 
       <ModelClientCostAgency

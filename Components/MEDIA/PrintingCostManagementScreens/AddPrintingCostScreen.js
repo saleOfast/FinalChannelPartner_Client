@@ -190,7 +190,7 @@ const AddPrintingCostScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 29,
+          m_id: 418,
         },
       };
 
@@ -238,7 +238,7 @@ const AddPrintingCostScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 319,
+          m_id: 417,
         },
       };
 
@@ -350,7 +350,7 @@ const AddPrintingCostScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 321,
+          m_id: 419,
         },
       };
 

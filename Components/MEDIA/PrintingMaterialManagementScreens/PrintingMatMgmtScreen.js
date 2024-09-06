@@ -73,7 +73,7 @@ const PrintingMatMgmtScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass:"pass"
+          m_id: 424,
         }
       }
 
@@ -112,7 +112,7 @@ const PrintingMatMgmtScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 343
+          pass:"pass"
         }
       }
 
@@ -145,7 +145,7 @@ const PrintingMatMgmtScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 344
+          m_id: 426
         }
       }
 
@@ -182,7 +182,7 @@ const PrintingMatMgmtScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id: 341
+            m_id: 423
 
           }
         }
@@ -220,7 +220,7 @@ const PrintingMatMgmtScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id: 343
+            m_id: 425
           }
         }
 

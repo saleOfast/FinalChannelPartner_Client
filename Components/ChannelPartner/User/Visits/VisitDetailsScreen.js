@@ -225,18 +225,22 @@ const VisitDetailsScreen = () => {
                 </div>
               </div>
             </div>
-            <div className="row">
-              <div className="col-6 col-md-5">
-                <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-left">Visit Remark</span>
+            {
+              visitData?.visit_remark && (
+                <div className="row">
+                <div className="col-6 col-md-5">
+                  <div className="list-group-item list-group-item-action p-0 border-0">
+                    <span className="list-left">Visit Remark</span>
+                  </div>
+                </div>
+                <div className="col-6 col-md-6">
+                  <div className="list-group-item list-group-item-action p-0 border-0">
+                    <span className="list-right">{visitData?.visit_remark ? visitData?.visit_remark :"---------"}</span>
+                  </div>
                 </div>
               </div>
-              <div className="col-6 col-md-6">
-                <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-right">{visitData?.status}</span>
-                </div>
-              </div>
-            </div>
+              )
+            }
             <div className="row">
               <div className="col-6 col-md-5">
                 <div className="list-group-item list-group-item-action p-0 border-0">

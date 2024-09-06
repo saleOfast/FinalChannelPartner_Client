@@ -288,7 +288,7 @@ const AddCampaignScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 29,
+          m_id: 430,
         },
       };
 
@@ -357,7 +357,7 @@ const AddCampaignScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id: 319,
+            m_id: 429,
           },
         };
 
@@ -476,7 +476,7 @@ const AddCampaignScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id: 321,
+            m_id: 431,
           },
         };
   

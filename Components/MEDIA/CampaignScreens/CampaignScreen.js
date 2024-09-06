@@ -32,7 +32,7 @@ const CampaignScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id: 320,
+                    m_id: 430,
                 }
             }
             try {
@@ -68,7 +68,7 @@ const CampaignScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id: 322,
+                    m_id: 432,
                 }
             }
 
@@ -166,10 +166,10 @@ const CampaignScreen = () => {
                                         ADD Campaigns
                                     </button>
                                 </Link>
-                                <button className="btn btn-primary Add_btn " onClick={handleDownload}>
+                                {/* <button className="btn btn-primary Add_btn " onClick={handleDownload}>
                                     <DownloadIcon />
                                     EXPORT
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                         <DynamicTable title='Campaigns List'

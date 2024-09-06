@@ -33,7 +33,8 @@ const SiteManagementScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 378,
+          // m_id: 378,
+          pass:"pass"
         },
       };
 
@@ -68,7 +69,8 @@ const SiteManagementScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 380,
+          // m_id: 380,
+          pass:"pass"
         },
       };
 
@@ -133,7 +135,8 @@ const SiteManagementScreen = () => {
           Accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 17
+          // m_id: 17
+          pass:"pass"
         },
         responseType: "blob",
       };

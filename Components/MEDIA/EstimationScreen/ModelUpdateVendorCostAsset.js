@@ -169,6 +169,7 @@ const ModelUpdateVendorCostAsset = ({
   setPrintingVendorData,
   printingMaterialData,
   mountingVendorData,
+  getContactList
 }) => {
   const [printingVendor, setPrintingVendor] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -358,6 +359,7 @@ const ModelUpdateVendorCostAsset = ({
           setLoading(false);
           handleClose();
           setFlag(false);
+          getContactList()
         }
       } catch (error) {
         console.log("errosdkthhfhkghkgjkhgjka",error);
@@ -443,6 +445,7 @@ const ModelUpdateVendorCostAsset = ({
           setLoading(false);
           handleClose();
           setFlag(false);
+          getContactList()
         }
       } catch (error) {
         console.log(error);

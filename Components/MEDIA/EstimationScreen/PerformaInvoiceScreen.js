@@ -258,7 +258,7 @@ const ProformaInvoiceScreen = () => {
                         </div>
                         <div className="col-12 col-md-4 text-md-end">
                           <p className="">
-                            PI No.: CE024/06/24-25
+                            PI No.:{ proformaInfo?.estimation_code}
                             <br />
                             Date: {moment().format('DD/MM/YYYY')}
                             <br />

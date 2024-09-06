@@ -210,13 +210,15 @@ const AddUserScreen = () => {
     const db_name = getCookie("db_name");
     setisLoading(true);
     const token = getCookie("token");
-    const reqOptions = { ...userInfo, db_name };
-
+    let reqOptions = { ...userInfo, db_name };
+    if(userInfo?.role_id=="2" || userInfo?.role_id=="3"){
+      reqOptions = { ...userInfo, report_to:userInfoCheck?.user_id }
+    }
     const header = {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
-        m_id: 77,
+        pass:"pass"
       },
     };
 
@@ -287,6 +289,9 @@ const AddUserScreen = () => {
 
     try {
       let updatedInfo={...userInfo,isAssigned:true}
+      if(userInfo?.role_id=="2" || userInfo?.role_id=="3"){
+        updatedInfo = { ...userInfo, report_to:userInfoCheck?.user_id }
+      }
       const response = await axios.put(`${Baseurl}/db/users`, updatedInfo, header);
       if (response.status === 200 || response.status === 201) {
         toast.success(response?.data?.message);
@@ -509,7 +514,7 @@ const AddUserScreen = () => {
                         value={userInfo.role_id ? userInfo.role_id : ""}
                       >
                         <option value="">Select User Profile </option>
-                        {userroles?.map(({ role_id, role_name }) => {
+                        {userroles?.filter(item=>item?.role_id<4)?.map(({ role_id, role_name }) => {
                           return (
                             <option key={role_id} value={role_id}>
                               {role_name}
@@ -836,48 +841,52 @@ const AddUserScreen = () => {
                     />
                   </div>
                 </div>
-
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div
-                  className={
-                    errorData?.report_to ? "input_box errorBox" : "input_box"
+                  {
+                    (userInfo?.role_id=="1" ) && (
+                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                      <div
+                        className={
+                          errorData?.report_to ? "input_box errorBox" : "input_box"
+                        }
+                      >
+                        <label htmlFor="task_name">Report/Assign To  </label>
+                        <Select
+                          id={userInfo.des_id}
+                          defaultValue={""}
+                          isDisabled={viewMode}
+                          options={[
+                            { value: userInfoCheck?.user_id, label: "N.A" }, // Add the "None" option at the top
+                            ...usersList
+                              ?.filter((user) => user.role_id == 2)
+                              ?.map((data) => ({
+                                value: data?.user_id,
+                                label: data?.user,
+                              })),
+                          ]}
+                          value={usersList
+                            ?.filter((user) => user.role_id == 2)
+                            ?.map((data, index) => {
+                            if (userInfo.report_to == data.user_id) {
+                              return {
+                                value: data?.user_id,
+                                label: data?.user,
+                              };
+                            }
+                          })}
+                          onChange={(e) => {
+                            setUserinfo({ ...userInfo, report_to: e.value });
+                            setErrorData({ ...errorData, report_to: "" });
+                          }}
+                        />
+                        <span className="errorText">
+                          {" "}
+                          {errorData?.report_to ? errorData.report_to : ""}
+                        </span>
+                      </div>
+                    </div>
+                    )
                   }
-                >
-                  <label htmlFor="task_name">Report/Assign To  </label>
-                  <Select
-                    id={userInfo.des_id}
-                    defaultValue={""}
-                    isDisabled={viewMode}
-                    options={[
-                      { value: userInfoCheck?.user_id, label: "N.A" }, // Add the "None" option at the top
-                      ...usersList
-                        ?.filter((user) => user.role_id == 2)
-                        ?.map((data) => ({
-                          value: data?.user_id,
-                          label: data?.user,
-                        })),
-                    ]}
-                    value={usersList
-                      ?.filter((user) => user.role_id == 2)
-                      ?.map((data, index) => {
-                      if (userInfo.report_to == data.user_id) {
-                        return {
-                          value: data?.user_id,
-                          label: data?.user,
-                        };
-                      }
-                    })}
-                    onChange={(e) => {
-                      setUserinfo({ ...userInfo, report_to: e.value });
-                      setErrorData({ ...errorData, report_to: "" });
-                    }}
-                  />
-                  <span className="errorText">
-                    {" "}
-                    {errorData?.report_to ? errorData.report_to : ""}
-                  </span>
-                </div>
-              </div>
+                
 
                 </div>
               </div>

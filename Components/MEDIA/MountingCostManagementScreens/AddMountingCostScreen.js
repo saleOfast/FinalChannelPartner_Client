@@ -132,7 +132,7 @@ const AddMountingCostScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 13,
+          m_id: 383,
         },
       };
 
@@ -185,7 +185,7 @@ const AddMountingCostScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 15,
+          m_id: 385,
         },
       };
       let userInfoCopy = { ...userInfo };
@@ -241,7 +241,7 @@ const AddMountingCostScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 15
+          m_id: 384
         },
       };
       try {

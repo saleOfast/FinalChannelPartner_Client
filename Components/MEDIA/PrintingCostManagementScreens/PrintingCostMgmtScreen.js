@@ -32,7 +32,7 @@ const PrintingCostMgmtScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id: 320,
+                    m_id: 418,
                 }
             }
             try {
@@ -68,7 +68,7 @@ const PrintingCostMgmtScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id: 322,
+                    m_id: 420,
                 }
             }
 
@@ -166,10 +166,10 @@ const PrintingCostMgmtScreen = () => {
                                         ADD Printing Cost
                                     </button>
                                 </Link>
-                                <button className="btn btn-primary Add_btn " onClick={handleDownload}>
+                                {/* <button className="btn btn-primary Add_btn " onClick={handleDownload}>
                                     <DownloadIcon />
                                     EXPORT
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                         <DynamicTable title='Printing Cost List'

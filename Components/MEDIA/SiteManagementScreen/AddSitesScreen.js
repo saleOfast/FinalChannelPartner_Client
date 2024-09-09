@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import Select from 'react-select';
 import { Table } from "react-bootstrap";
 
-const bookingHistoryData = [
+const bookingHistory = [
   {
     id: 1,
     siteId: 'Site A',
@@ -23,76 +23,6 @@ const bookingHistoryData = [
     clientCost: 1000,
     vendorCost: 800,
     margin: 200,
-    marginPercentage: '20%',
-  },
-  {
-    id: 2,
-    siteId: 'Site B',
-    campaignId: 'Campaign 2',
-    startDate: '2024-02-01',
-    endDate: '2024-02-15',
-    totalDays: 14,
-    status: 'Ongoing',
-    estimateId: 'Estimate 002',
-    clientCost: 1500,
-    vendorCost: 1200,
-    margin: 300,
-    marginPercentage: '20%',
-  },
-  {
-    id: 3,
-    siteId: 'Site A',
-    campaignId: 'Campaign 1',
-    startDate: '2024-01-01',
-    endDate: '2024-01-10',
-    totalDays: 10,
-    status: 'Completed',
-    estimateId: 'Estimate 001',
-    clientCost: 1000,
-    vendorCost: 800,
-    margin: 200,
-    marginPercentage: '20%',
-  },
-  {
-    id: 4,
-    siteId: 'Site B',
-    campaignId: 'Campaign 2',
-    startDate: '2024-02-01',
-    endDate: '2024-02-15',
-    totalDays: 14,
-    status: 'Ongoing',
-    estimateId: 'Estimate 002',
-    clientCost: 1500,
-    vendorCost: 1200,
-    margin: 300,
-    marginPercentage: '20%',
-  },
-  {
-    id: 5,
-    siteId: 'Site A',
-    campaignId: 'Campaign 1',
-    startDate: '2024-01-01',
-    endDate: '2024-01-10',
-    totalDays: 10,
-    status: 'Completed',
-    estimateId: 'Estimate 001',
-    clientCost: 1000,
-    vendorCost: 800,
-    margin: 200,
-    marginPercentage: '20%',
-  },
-  {
-    id: 6,
-    siteId: 'Site B',
-    campaignId: 'Campaign 2',
-    startDate: '2024-02-01',
-    endDate: '2024-02-15',
-    totalDays: 14,
-    status: 'Ongoing',
-    estimateId: 'Estimate 002',
-    clientCost: 1500,
-    vendorCost: 1200,
-    margin: 300,
     marginPercentage: '20%',
   },
 
@@ -177,6 +107,16 @@ const AddSitesScreen = () => {
   const [siteStatuses,setSiteStatuses]=useState([])
   const [ratings,setRatings]=useState([])
   const [availabilitySatuses,setAvailabilitySatuses]=useState([])
+  const [bookingHistory,setBookingHistory] =useState([])
+
+  async function getBookingHistory() {
+    await fetchData(
+      `/db/media/estimation/getSiteBookingHistory?site_id=${id}`,
+      setBookingHistory,
+      errorToast,
+      setErrorToast
+    );
+  }
   
 
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DD");
@@ -507,8 +447,8 @@ const AddSitesScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          // m_id: 377,
-          pass:"pass"
+          m_id: 377,
+          // pass:"pass"
         },
       };
 
@@ -559,8 +499,8 @@ const AddSitesScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          // m_id: 379,
-          pass:"pass"
+          m_id: 379,
+          // pass:"pass"
         },
       };
       const formData=new FormData();
@@ -670,6 +610,12 @@ const AddSitesScreen = () => {
       setViewMode(true)
     ]
   }, [router.isReady, id]);
+
+  useEffect(()=>{
+    if(id){
+      getBookingHistory()
+    }
+  },[id])
 
   return (
     <div className={`main_Box  ${sideView}`}>
@@ -2032,57 +1978,56 @@ const AddSitesScreen = () => {
                   <div className="add_user_form">
                     <div className="row">
                     <div
-      style={{
-        maxHeight: '400px', // Set the maximum height for the table
-        overflowY: 'auto',   // Enable vertical scrolling
-        marginBottom: '20px', // Add some space below the table
-      }}
-    >
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>Booking History ID</th>
-            <th>Site ID</th>
-            <th>Campaign ID</th>
-            <th>Campaign Start Date</th>
-            <th>Campaign End Date</th>
-            <th>Campaign Total Days</th>
-            <th>Campaign Status</th>
-            <th>Estimate ID</th>
-            <th>Client Cost</th>
-            <th>Vendor Cost</th>
-            <th>Margin</th>
-            <th>Margin %</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bookingHistoryData.map((booking) => (
-            <tr key={booking.id}>
-              <td>{booking.id}</td>
-              <td>
-                <a href={`/sites/${booking.siteId}`}>{booking.siteId}</a>
-              </td>
-              <td>
-                <a href={`/campaigns/${booking.campaignId}`}>{booking.campaignId}</a>
-              </td>
-              <td>{booking.startDate}</td>
-              <td>{booking.endDate}</td>
-              <td>{booking.totalDays}</td>
-              <td>{booking.status}</td>
-              <td>
-                <a href={`/estimates/${booking.estimateId}`}>{booking.estimateId}</a>
-              </td>
-              <td>${booking.clientCost.toFixed(2)}</td>
-              <td>${booking.vendorCost.toFixed(2)}</td>
-              <td>${booking.margin.toFixed(2)}</td>
-              <td>{booking.marginPercentage}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
+                      style={{
+                        maxHeight: '350px', // Set the maximum height for the table
+                        overflowY: 'auto',   // Enable vertical scrolling
+                        marginBottom: '20px', // Add some space below the table
+                      }}
+                    >
+                      <Table striped bordered hover responsive>
+                        <thead>
+                          <tr>
+                            <th>Booking History ID</th>
+
+                            <th>Campaign ID</th>
+                            <th>Campaign Start Date</th>
+                            <th>Campaign End Date</th>
+                            <th>Campaign Total Days</th>
+                            <th>Campaign Status</th>
+                            <th>Estimate ID</th>
+                            <th>Client Cost</th>
+                            <th>Vendor Cost</th>
+                            <th>Margin</th>
+                            <th>Margin %</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {bookingHistory.map((booking,index) => (
+                            <tr key={index}>
+                              <td>{booking?.sb_code}</td>
+                              <td>
+                                <Link href={`/campaigns/${booking}`}>{booking?.db_media_campaign?.campaign_id}</Link>
+                              </td>
+                              <td>{moment(booking?.db_media_campaign?.campaign_start_date).format("DD/MM/YYYY")
+                              }</td>
+                              <td>{moment(booking?.db_media_campaign?.campaign_end_date).format("DD/MM/YYYY")
+                              }</td>
+                              <td>{booking?.db_media_campaign?.campaign_duration}</td>
+                              <td>{booking?.db_media_campaign?.db_campaign_status?.cmpn_s_name}</td>
+                              <td>
+                                <Link href={`/estimates/${booking}`}>{booking?.estimate_id}</Link>
+                              </td>
+                              <td>{booking?.db_asset_client_cost_sheet?.final_client_po_cost?.toFixed(2)}</td>
+                              <td>{(booking.db_asset_vendor_cost_sheet?.mounting_cost+booking.db_asset_vendor_cost_sheet?.printing_cost+booking.db_asset_vendor_cost_sheet?.final_display_cost).toFixed(2)}</td>
+                              <td>{booking?.db_media_campaign?.overall_margin}</td>
+                              <td>{booking?.db_media_campaign?.overall_margin_percentage}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
                     </div>
-                  </div>
+                    </div>
+                    </div>
                   {/* code for add field */}
                   <div className="add_user_form">
                     

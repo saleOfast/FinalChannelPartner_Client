@@ -129,13 +129,14 @@ const ClientsMuiTable = ({ clientList, openEnableBox, renewSubscription, title, 
                                 <button
                                     className="action_btn"
                                     title='Disable'
-                                    onClick={() => opnCnfrmBox(value)}>
+                                    onClick={() => opnCnfrmBox(value,tableMeta.rowData[6])}>
                                     <DisableIcon />
                                 </button> :
                                 <button
                                     className="action_btn x2"
                                     title='enable'
-                                    onClick={() => openEnableBox(value)}>
+                                    // onClick={() => openEnableBox(value)}>
+                                    onClick={() => opnCnfrmBox(value,tableMeta.rowData[6])}>
                                     <CheckIcon />
                                 </button>
                             }

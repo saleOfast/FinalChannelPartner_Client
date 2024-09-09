@@ -111,7 +111,7 @@ const ManageUserScreens = () => {
 
     async function disableHandler() {
 
-        const reqInfo = { user_code: currObj.id, user_status: currObj.action == 1 ? true : false }
+        const reqInfo = { user_code: currObj.id, user_status: currObj.action == 1 ? true : false,isAssigned:true }
 
         if (hasCookie('token')) {
             let token = (getCookie('token'));

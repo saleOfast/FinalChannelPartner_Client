@@ -217,8 +217,9 @@ export default function AdminDashboard() {
       router.push(`/AdminPermissions?id=${id}`)
     }
   }
-
-  function opnCnfrmBox(value) {
+  const [flag,setFlag]=useState()
+  function opnCnfrmBox(value,status) {
+    setFlag(status)
     setcurrObj(value);
     setshowConfirm(!showConfirm)
   }
@@ -290,7 +291,8 @@ export default function AdminDashboard() {
         showConfirm={showConfirm}
         setshowConfirm={setshowConfirm}
         actionType={deleteHandler}
-        title={"Are you sure to Disable?"} />
+        // title={"Are you sure to Disable?"} />
+        title={`Are you sure to ${flag ? "Enable":"Disable"}`} />
       <ConfirmBox
         showConfirm={enableconfirm}
         setshowConfirm={setenableconfirm}

@@ -1894,7 +1894,6 @@ const AddClientScreen = () => {
                   
 
                 {/* country state city  and app permission on add */}
-               
                 {editMode ? null : (
                   <>
                     

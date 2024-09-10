@@ -155,7 +155,7 @@ const CommonSettingScreen = () => {
           Baseurl + `/db/role`,
           header
         );
-        let mediaRoles=data?.data?.filter((item)=>item.role_id>3&&item.role_id<8)
+        let mediaRoles=data?.data?.filter((item)=>item.role_id==4 || item.role_id==7)
         const array=[]
        for(let i=0;i<mediaRoles.length;i++){
           let a={
@@ -282,7 +282,7 @@ const CommonSettingScreen = () => {
                             required
                           />
                         )}
-                        {data?.setting_name === "currency" && (
+                        {data?.setting_name === "Currency" && (
                           <select
                           id={data?.setting_name}
                           className="form-select mt-1 mt-md-0"
@@ -310,7 +310,7 @@ const CommonSettingScreen = () => {
                             onChange={(selectedOptions) =>{
                               
                                handleMultiSelectChange(selectedOptions, data.setting_name)}}
-                            className="basic-multi-select mt-1 mt-md-0"
+                            className="basic-multi-select mt-1 mt-md-0" 
                             classNamePrefix="select"
                             placeholder={`Select ${data?.setting_name}`}
                           />

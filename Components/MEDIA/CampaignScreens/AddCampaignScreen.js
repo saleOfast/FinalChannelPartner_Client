@@ -212,7 +212,7 @@ const AddCampaignScreen = () => {
 
   async function getAccountsList() {
     await fetchData(
-      `/db/account?platform_id=5`,
+      `/db/account?platform_id=5&all=true`,
       setAccountsList,
       errorToast,
       setErrorToast

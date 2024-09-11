@@ -97,6 +97,9 @@ export default function AdminDashboard() {
               case 4:
                 setUserInfo((prev)=>({...prev, isCHANNEL: element.actions}))
               break;
+              case 5:
+                setUserInfo((prev)=>({...prev, isMEDIA: element.actions}))
+              break;
           
             default:
               break;
@@ -163,6 +166,13 @@ export default function AdminDashboard() {
       }
     }
 
+    if(userInfo?.isMEDIA){
+      
+      if(userInfo?.subscription_start_date_media==null || userInfo?.subscription_end_date_media==null ||userInfo?.no_of_media_license==0){
+        return toast.error('Please fill the Mandatory fields')
+      }
+    }
+
 
     try {
       const res = await axios.put(Baseurl + `/db/admin`, userInfo, header);
@@ -198,7 +208,7 @@ export default function AdminDashboard() {
         }
       } catch (error) {
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message);
         }
         else {
           toast.error('Something went wrong!')
@@ -217,8 +227,9 @@ export default function AdminDashboard() {
       router.push(`/AdminPermissions?id=${id}`)
     }
   }
-
-  function opnCnfrmBox(value) {
+  const [flag,setFlag]=useState()
+  function opnCnfrmBox(value,status) {
+    setFlag(status)
     setcurrObj(value);
     setshowConfirm(!showConfirm)
   }
@@ -290,7 +301,8 @@ export default function AdminDashboard() {
         showConfirm={showConfirm}
         setshowConfirm={setshowConfirm}
         actionType={deleteHandler}
-        title={"Are you sure to Disable?"} />
+        // title={"Are you sure to Disable?"} />
+        title={`Are you sure to ${flag ? "Enable":"Disable"}`} />
       <ConfirmBox
         showConfirm={enableconfirm}
         setshowConfirm={setenableconfirm}
@@ -481,8 +493,8 @@ className={
             <input
               className="form-check-input text-nowrap"
               type="checkbox"
-              value="option1"
-              id="option1"
+              value="option2"
+              id="option2"
               checked={userInfo.isCHANNEL}
               onChange={(e) => {
                 setUserInfo({
@@ -494,7 +506,7 @@ className={
             />
             <label
               className="form-check-label"
-              htmlFor="option1"
+              htmlFor="option2"
             >
               Channel Partner
             </label>
@@ -599,8 +611,8 @@ className={
             <input
               className="form-check-input"
               type="checkbox"
-              value="option1"
-              id="option1"
+              value="option3"
+              id="option3"
               checked={userInfo.isDMS}
               onChange={(e) => {
                 setUserInfo({
@@ -612,7 +624,7 @@ className={
             />
             <label
               className="form-check-label"
-              htmlFor="option1"
+              htmlFor="option3"
             >
               DMS
             </label>
@@ -717,8 +729,8 @@ className={
             <input
               className="form-check-input"
               type="checkbox"
-              value="option1"
-              id="option1"
+              value="option4"
+              id="option4"
               checked={userInfo.isSALES}
               onChange={(e) => {
                 setUserInfo({
@@ -730,7 +742,7 @@ className={
             />
             <label
               className="form-check-label"
-              htmlFor="option1"
+              htmlFor="option4"
             >
               Sales App
             </label>
@@ -817,6 +829,124 @@ className={
               value={
                 userInfo.subscription_end_date_sales
                   ? userInfo.subscription_end_date_sales
+                  : ""
+              }
+            />
+          </div>
+    </div>
+    </>
+      
+    : <></> }
+  </div>
+  
+</div>
+
+<div className="col-xl-12 col-md-12 col-sm-12 mb-3">
+<div className='d-flex flex-column flex-md-row gap-2 gap-md-5  justify-content-between'>
+<div className="form-check col-xl-2 col-md-2 col-sm-12 col-12">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              value="option5"
+              id="option5"
+              checked={userInfo.isMEDIA}
+              onChange={(e) => {
+                setUserInfo({
+                  ...userInfo,
+                  isMEDIA: e.target.checked ? 1 : 0,
+                });
+                
+              }}
+            />
+            <label
+              className="form-check-label"
+              htmlFor="option5"
+            >
+              MEDIA
+            </label>
+    </div>
+    {userInfo.isMEDIA ?
+    <>
+      <div className="input_box m-0 col-xl-2 col-md-3 col-sm-12 col-12">
+      <label>Number of Licenses*</label>
+        <input
+        type="number"
+        placeholder="Enter Licence"
+        name="no_of_license"
+        id="no_of_license"
+        className={
+         "form-control"
+        }
+        onChange={(e) => {
+          setUserInfo({
+            ...userInfo,
+            no_of_media_license: e.target.value,
+          });
+          
+        }}
+        value={
+          userInfo.no_of_media_license ? userInfo.no_of_media_license : ""
+        }
+      />
+      
+      </div>
+      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+        <div
+          className={
+            "input_box"
+          }
+        >
+          <label htmlFor="subscription_start_date">
+            Subscription Start Date *
+          </label>
+          <input
+            type="date"
+            name="subscription_start_date"
+            id="subscription_start_date"
+            min={moment()
+              .subtract(7, "days")
+              .format("YYYY-MM-DD[T]HH:mm:ss")}
+            className={
+           "form-control"
+            }
+            onChange={(e) => {
+              setUserInfo({
+                ...userInfo,
+                subscription_start_date_media: e.target.value,
+              });
+             
+            }}
+            value={
+              userInfo.subscription_start_date_media
+                ? userInfo.subscription_start_date_media
+                : ""
+            }
+          />
+         
+        </div>
+    </div>
+    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+          <div className="input_box">
+            <label htmlFor="subscription_start_date">
+              Subscription End Date *
+            </label>
+            <input
+              type="date"
+              name="subscription_start_date"
+              id="subscription_start_date"
+              className={
+              "form-control"
+              }
+              onChange={(e) => {
+                setUserInfo({
+                  ...userInfo,
+                  subscription_end_date_media: e.target.value,
+                });
+                
+              }}
+              value={
+                userInfo.subscription_end_date_media
+                  ? userInfo.subscription_end_date_media
                   : ""
               }
             />

@@ -180,42 +180,157 @@ const ModelAgencySite = ({
     }
   }, [show]);
 
+  // const handleSubmit = async () => {
+  //   setLoading(true);
+  //   setError("");
+
+  //   const token = getCookie("token");
+  //   const db_name = getCookie("db_name");
+
+  //   const headers = {
+  //     Accept: "application/json",
+  //     Authorization: `Bearer ${token}`,
+  //     db: db_name,
+  //     m_id:439,
+  //     "Content-Type": "application/json",
+  //   };
+
+  //   // Transform rows to include values instead of IDs
+  //   const transformedRows = rows.map((row) => ({
+  //     country_id: "India",
+  //     estimate_id: estimateId,
+  //     state_id: row.state_name,
+  //     // state_name: row.state_name,
+  //     city_id: row.city_name,
+  //     // city_name: row.city_name,
+  //     location: row.location,
+  //     m_f_id:
+  //       mediaFormats.find((option) => option.value === row.mediaFormat)
+  //         ?.label || "",
+
+  //     m_v_id:
+  //       mediaVehicles.find((option) => option.value === row.mediaVehicle)
+  //         ?.label || "",
+
+  //     m_t_id:
+  //       mediaTypes.find((option) => option.value === row.mediaType)?.label ||
+  //       "",
+
+  //     quantity: row.quantity,
+  //     height: row.height,
+  //     width: row.width,
+  //     total_sqft: row.totalSqFt,
+  //     client_display_cost: row.clientDisplayCost,
+  //     client_mounting_cost: row.clientMountingCost,
+  //     client_printing_cost: row.clientPrintingCost,
+  //   }));
+
+  //   try {
+  //     const response = await axios.post(
+  //       `${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`,
+  //       { sites: transformedRows },
+  //       { headers }
+  //     );
+
+  //     if (response.status === 200) {
+  //       toast.success("Data saved successfully!");
+  //       // getSiteList();
+  //       handleClose3();
+  //     } else {
+  //       toast.error("Failed to save data. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     setError(error?.response?.data?.message || "Something went wrong!");
+  //     toast.error(error?.response?.data?.message || "Something went wrong!");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
+
   const handleSubmit = async () => {
     setLoading(true);
-    setError("");
-
+    let hasError = false;
+    const newError = {};
+  
+    // Loop through each row to check if required fields are filled
+    rows.forEach((row, index) => {
+      if (!row.state) {
+        newError[`state-${index}`] = "State is required";
+        hasError = true;
+      }
+      if (!row.city) {
+        newError[`city-${index}`] = "City is required";
+        hasError = true;
+      }
+      if (!row.location) {
+        newError[`location-${index}`] = "Location is required";
+        hasError = true;
+      }
+      if (!row.mediaFormat) {
+        newError[`mediaFormat-${index}`] = "Media Format is required";
+        hasError = true;
+      }
+      if (!row.mediaVehicle) {
+        newError[`mediaVehicle-${index}`] = "Media Vehicle is required";
+        hasError = true;
+      }
+      if (!row.mediaType) {
+        newError[`mediaType-${index}`] = "Media Type is required";
+        hasError = true;
+      }
+      if (!row.quantity) {
+        newError[`quantity-${index}`] = "Quantity is required";
+        hasError = true;
+      }
+      if (!row.height) {
+        newError[`height-${index}`] = "Height is required";
+        hasError = true;
+      }
+      if (!row.width) {
+        newError[`width-${index}`] = "Width is required";
+        hasError = true;
+      }
+      if (!row.clientDisplayCost) {
+        newError[`clientDisplayCost-${index}`] = "Display Cost is required";
+        hasError = true;
+      }
+      if (!row.clientMountingCost) {
+        newError[`clientMountingCost-${index}`] = "Mounting Cost is required";
+        hasError = true;
+      }
+      if (!row.clientPrintingCost) {
+        newError[`clientPrintingCost-${index}`] = "Printing Cost is required";
+        hasError = true;
+      }
+    });
+  
+    if (hasError) {
+      setError(newError);
+      toast.error("Please fill all required fields");
+      setLoading(false);
+      return;
+    }
+  
+    // Proceed with submission if no errors
     const token = getCookie("token");
     const db_name = getCookie("db_name");
-
+  
     const headers = {
       Accept: "application/json",
       Authorization: `Bearer ${token}`,
       db: db_name,
-      pass: "pass",
       "Content-Type": "application/json",
     };
-
-    // Transform rows to include values instead of IDs
+  
     const transformedRows = rows.map((row) => ({
-      country_id: "India",
+      country_id: "India", 
       estimate_id: estimateId,
       state_id: row.state_name,
-      // state_name: row.state_name,
       city_id: row.city_name,
-      // city_name: row.city_name,
       location: row.location,
-      m_f_id:
-        mediaFormats.find((option) => option.value === row.mediaFormat)
-          ?.label || "",
-
-      m_v_id:
-        mediaVehicles.find((option) => option.value === row.mediaVehicle)
-          ?.label || "",
-
-      m_t_id:
-        mediaTypes.find((option) => option.value === row.mediaType)?.label ||
-        "",
-
+      m_f_id: mediaFormats.find((option) => option.value === row.mediaFormat)?.label || "",
+      m_v_id: mediaVehicles.find((option) => option.value === row.mediaVehicle)?.label || "",
+      m_t_id: mediaTypes.find((option) => option.value === row.mediaType)?.label || "",
       quantity: row.quantity,
       height: row.height,
       width: row.width,
@@ -225,16 +340,16 @@ const ModelAgencySite = ({
       client_printing_cost: row.clientPrintingCost,
     }));
 
+  
     try {
       const response = await axios.post(
         `${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`,
         { sites: transformedRows },
         { headers }
       );
-
+  
       if (response.status === 200) {
         toast.success("Data saved successfully!");
-        // getSiteList();
         handleClose3();
       } else {
         toast.error("Failed to save data. Please try again.");
@@ -245,7 +360,7 @@ const ModelAgencySite = ({
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const handleInputChange = (index, event) => {
     const { name, value } = event.target;
@@ -341,7 +456,7 @@ const ModelAgencySite = ({
                     <div className="d-flex flex-nowrap">
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
-                          <label htmlFor={`state-${index}`}>State</label>
+                          <label htmlFor={`state-${index}`}>State*</label>
                           <Select
                             id={`state-${index}`}
                             isClearable
@@ -360,6 +475,7 @@ const ModelAgencySite = ({
                               }),
                             }}
                           />
+                          {error[`state-${index}`] && <span className="text-danger">{error[`state-${index}`]}</span>}
                         </div>
                       </div>
                       {/* <input
@@ -371,7 +487,7 @@ const ModelAgencySite = ({
 
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
-                          <label htmlFor={`city-${index}`}>City</label>
+                          <label htmlFor={`city-${index}`}>City*</label>
                           <Select
                             id={`city-${index}`}
                             isDisabled={!row.state}
@@ -391,12 +507,13 @@ const ModelAgencySite = ({
                               }),
                             }}
                           />
+                          {error[`city-${index}`] && <span className="text-danger">{error[`city-${index}`]}</span>}
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
-                          <label htmlFor={`location-${index}`}>Location</label>
+                          <label htmlFor={`location-${index}`}>Location*</label>
                           <input
                             type="text"
                             className="form-control"
@@ -407,13 +524,14 @@ const ModelAgencySite = ({
                               handleInputChange(index, event)
                             }
                           />
+                          {error[`location-${index}`] && <span className="text-danger">{error[`location-${index}`]}</span>}
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
                           <label htmlFor={`mediaFormat-${index}`}>
-                            Media Format
+                            Media Format*
                           </label>
                           <Select
                             id={`mediaFormat-${index}`}
@@ -433,13 +551,14 @@ const ModelAgencySite = ({
                               }),
                             }}
                           />
+                          {error[`mediaFormat-${index}`] && <span className="text-danger">{error[`mediaFormat-${index}`]}</span>}
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
                           <label htmlFor={`mediaVehicle-${index}`}>
-                            Media Vehicle
+                            Media Vehicle*
                           </label>
                           <Select
                             id={`mediaVehicle-${index}`}
@@ -459,12 +578,13 @@ const ModelAgencySite = ({
                               }),
                             }}
                           />
+                          {error[`mediaVehicle-${index}`] && <span className="text-danger">{error[`mediaVehicle-${index}`]}</span>}
                         </div>
                       </div>
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
                           <label htmlFor={`mediaType-${index}`}>
-                            Media Type
+                            Media Type*
                           </label>
                           <Select
                             id={`mediaType-${index}`}
@@ -484,12 +604,13 @@ const ModelAgencySite = ({
                               }),
                             }}
                           />
+                          {error[`mediaType-${index}`] && <span className="text-danger">{error[`mediaType-${index}`]}</span>}
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
-                          <label htmlFor={`quantity-${index}`}>Quantity</label>
+                          <label htmlFor={`quantity-${index}`}>Quantity*</label>
                           <input
                             type="number"
                             className="form-control"
@@ -500,12 +621,13 @@ const ModelAgencySite = ({
                               handleInputChange(index, event)
                             }
                           />
+                          {error[`quantity-${index}`] && <span className="text-danger">{error[`quantity-${index}`]}</span>}
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
-                          <label htmlFor={`height-${index}`}>Height</label>
+                          <label htmlFor={`height-${index}`}>Height*</label>
                           <input
                             type="number"
                             className="form-control"
@@ -516,12 +638,13 @@ const ModelAgencySite = ({
                               handleInputChange(index, event)
                             }
                           />
+                          {error[`height-${index}`] && <span className="text-danger">{error[`height-${index}`]}</span>}
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
-                          <label htmlFor={`width-${index}`}>Width</label>
+                          <label htmlFor={`width-${index}`}>Width*</label>
                           <input
                             type="number"
                             className="form-control"
@@ -532,13 +655,14 @@ const ModelAgencySite = ({
                               handleInputChange(index, event)
                             }
                           />
+                          {error[`width-${index}`] && <span className="text-danger">{error[`width-${index}`]}</span>}
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
                           <label htmlFor={`totalSqFt-${index}`}>
-                            Total Sq Ft
+                            Total Sq Ft*
                           </label>
                           <input
                             type="text"
@@ -549,13 +673,14 @@ const ModelAgencySite = ({
                             disabled
                             readOnly
                           />
+                          {error[`totalSqFt-${index}`] && <span className="text-danger">{error[`totalSqFt-${index}`]}</span>}
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
                           <label htmlFor={`clientDisplayCost-${index}`}>
-                            Client Display Cost
+                            Client Display Cost*
                           </label>
                           <input
                             type="number"
@@ -567,13 +692,14 @@ const ModelAgencySite = ({
                               handleInputChange(index, event)
                             }
                           />
+                          {error[`clientDisplayCost-${index}`] && <span className="text-danger">{error[`clientDisplayCost-${index}`]}</span>}
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
                           <label htmlFor={`clientMountingCost-${index}`}>
-                            Client Mounting Cost
+                            Client Mounting Cost*
                           </label>
                           <input
                             type="number"
@@ -585,13 +711,14 @@ const ModelAgencySite = ({
                               handleInputChange(index, event)
                             }
                           />
+                          {error[`clientMountingCost-${index}`] && <span className="text-danger">{error[`clientMountingCost-${index}`]}</span>}
                         </div>
                       </div>
 
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
                           <label htmlFor={`clientPrintingCost-${index}`}>
-                            Client Printing Cost
+                            Client Printing Cost*
                           </label>
                           <input
                             type="number"
@@ -603,6 +730,7 @@ const ModelAgencySite = ({
                               handleInputChange(index, event)
                             }
                           />
+                          {error[`clientPrintingCost-${index}`] && <span className="text-danger">{error[`clientPrintingCost-${index}`]}</span>}
                         </div>
                       </div>
                       {index !== 0 && (

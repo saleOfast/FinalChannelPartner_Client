@@ -51,6 +51,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
   const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
   const [isLoading, setisLoading] = useState(false);
   const [estimateApprovals, setEstimateApprovals] = useState();
+  const [ mediaSidebarInfo,setmediaSidebarInfo]=useState([])
+
   const handleClose = () => {
     setShow(false);
     setStateId("");
@@ -86,6 +88,17 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
     await fetchData(
       `/db/area/states?cnt_id=101`,
       setStatelist,
+      errorToast,
+      setErrorToast
+    );
+  };
+
+  
+
+  const getSidebarInfo = async () => {
+    await fetchData(
+      `/db/permission?id=${userInfo?.role_id}&pf=MEDIA`,
+      setmediaSidebarInfo,
       errorToast,
       setErrorToast
     );
@@ -142,7 +155,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass: "pass",
+          m_id:439
         },
       };
 
@@ -185,7 +198,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass: "pass",
+          m_id:443
         },
       };
 
@@ -226,7 +239,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          pass: "pass",
+          m_id:444
         },
       };
 
@@ -298,6 +311,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
   useEffect(() => {
     getBusinessTypeList();
+    getSidebarInfo()
     getEstimateApprovals()
   }, []);
 
@@ -369,7 +383,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               </button>
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && userInfo?.role_id==5 && (
+              // )?.cmpn_b_t_name === "Asset" && userInfo?.role_id==5  &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )&& (
+              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[4]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )   && (
                 <button
                   className=""
                   style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -386,7 +401,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && userInfo?.role_id==5 && (
+              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[5]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )   && (
                 <>
                   <button
                     className=""
@@ -405,7 +420,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && userInfo?.role_id==6 && (
+              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[6]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <>
                   <button
                     className=""
@@ -424,13 +439,12 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && userInfo?.role_id==5 && (
+              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[4]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <button
                   className=""
                   style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
                   onClick={() => {
                     setEstimationId(tableMeta?.rowData[4]);
-
                     setShow3(true);
                   }}
                   title="Offer Agency Site"
@@ -440,7 +454,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               )}
               {/* {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && userInfo?.role_id==5 (
+              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[10]?.actions==1 (
                 <button
                   className=""
                   style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -457,7 +471,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && userInfo?.role_id==5 && (
+              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[5]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <>
                   <button
                     className=""
@@ -476,7 +490,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
 {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && userInfo?.role_id==6 && (
+              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[6]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <>
                   <button
                     className=""
@@ -495,7 +509,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               
               
               {
-                userInfo?.role_id==5 && tableMeta.rowData[3]=="NEGOTIATION COMPLETED" &&  (
+               mediaSidebarInfo[0]?.children[9]?.children[0]?.children[9]?.actions==1 && tableMeta.rowData[3]=="NEGOTIATION COMPLETED" &&  (
               <button 
               className="" 
               style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -505,13 +519,13 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               }}
                
               >
-                Sent For Approval
+                Send For Approval
               </button>
                 )
               }
               {
-                ((userInfo?.role_id === 4 && estimateApprovals?.indexOf(userInfo?.role_id) !== -1) && tableMeta.rowData[3]=="PENDING"  || 
-                (userInfo?.role_id === 7 && estimateApprovals?.indexOf(userInfo?.role_id) !== -1) && tableMeta.rowData[3]=="PENDING") && (
+                ((mediaSidebarInfo[0]?.children[9]?.children[0]?.children[8]?.actions==1 && estimateApprovals?.indexOf(userInfo?.role_id) !== -1) && tableMeta.rowData[3]=="PENDING"  || 
+                (mediaSidebarInfo[0]?.children[9]?.children[0]?.children[8]?.actions==1 && estimateApprovals?.indexOf(userInfo?.role_id) !== -1) && tableMeta.rowData[3]=="PENDING") && (
                   <>
                   
               <button 
@@ -539,7 +553,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                 )
               }
               {
-                userInfo?.role_id==5 && tableMeta.rowData[3]=="NEGOTIATION COMPLETED" && (
+                mediaSidebarInfo[0]?.children[9]?.children[0]?.children[7]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATION COMPLETED" || tableMeta.rowData[3]=="PENDING" || tableMeta.rowData[3]=="REJECTED")&& (
               <Link href={`/media/PorformaInvoice?est_id=${value}`}>
               <button
                 className=""

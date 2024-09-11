@@ -159,7 +159,7 @@ const marginInfoArray = [
     fieldType: "percentage",
   },
 ];
-
+ 
 
 const AddEstimationScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);

@@ -44,7 +44,7 @@ const Layout = ({Component, pageProps}) => {
       }else if(hasCookie("dms")){
         setSidebarMode("dms")
         setTopnavPermission("dms")
-      }    //Temporary
+      } 
       else if(hasCookie("media")){
         setSidebarMode("media")
         setTopnavPermission("media")
@@ -112,7 +112,6 @@ const Layout = ({Component, pageProps}) => {
             
                   <div className="content_wrapper">
                       {sidebarMode==="crm" && <SideBar />}
-                      {/* //Temporary */}
 
                       {sidebarMode==="media" && <MediaSideBar />}
 

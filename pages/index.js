@@ -28,7 +28,9 @@ export default mainIndexHOC(
       ? JSON.parse(getCookie("allowedpermissions"))
       : "";
   
-    
+      const subscriptionInfo = hasCookie("subscriptionInfo")
+      ? JSON.parse(getCookie("subscriptionInfo"))
+      : null;
 
     const onClickCommon = () => {
       dispatch(crm())
@@ -40,12 +42,7 @@ export default mainIndexHOC(
       // toast.info(`Switched to ${mode} Mode`);
       router.push("/crm");  
     };
-    
-    
-
-    const subscriptionInfo = hasCookie("subscriptionInfo")
-      ? JSON.parse(getCookie("subscriptionInfo"))
-      : null;
+        
   
     const checkDashboard = () => {
       if (hasCookie("crm")) {

@@ -100,14 +100,6 @@ export const dbPermissionModeSlice = createSlice({
             setCookie('allowedpermissions', action.payload);
            
         },
-
-        //temp
-        // allowpermissions: (state, action) => {
-        //     const permissions = new Set(action.payload);
-        //     permissions.add('media');
-        //     state.allowedPermissions = Array.from(permissions);
-        //     setCookie('allowedpermissions', state.allowedPermissions);
-        // },
         clearValue:(state,action)=>{
             state.value=null
         }

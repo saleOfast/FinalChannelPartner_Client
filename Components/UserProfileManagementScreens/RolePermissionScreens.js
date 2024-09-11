@@ -76,7 +76,8 @@ const RolePermissionScreens = () => {
                 }
             }
             try {
-                const response = await axios.get(`${Baseurl}/db/permission?id=${id}&pf=${selectedPermission.toUpperCase()}`, header);
+                const response =selectedPermission==="COMMON" ?await axios.get(`${Baseurl}/db/permission?id=${id}&pf=CRM`, header) : await axios.get(`${Baseurl}/db/permission?id=${id}&pf=${selectedPermission.toUpperCase()}`, header)
+
                 setpermissionView(response.data.data);
             } catch (error) {
                 if (error?.response?.data?.message) {
@@ -190,7 +191,9 @@ const RolePermissionScreens = () => {
     function renderMenu(menus) {
         return menus.map((menu,index) => {
             const hasChildren = menu.children && menu.children.length > 0;
-            if(menu.menu_id===173) return null
+            
+            if(selectedPermission!=="COMMON" &&menu.menu_id===173) return null
+            if(selectedPermission==="COMMON" && menu.menu_id===172) return null
             return (
                 <div className={hasChildren ? 'parent-divs' : 'col-xl-3 col-md-3 col-sm-12 col-12 mrgn-Btn'} key={menu.menu_id} >
                     <div
@@ -311,6 +314,7 @@ const RolePermissionScreens = () => {
                                         <option key={i}>{item.toUpperCase()}</option>
                                     ))
                                 }
+                                <option>COMMON</option>
                             </Form.Control>
                         </Form.Group>
                     </div>

@@ -769,7 +769,7 @@ const AddClientScreen = () => {
                   >
                     <label htmlFor="contact">Contact Number *</label>
                     <input
-                      type="number"
+                      type="text"
                       placeholder="Enter Contact Number"
                       name="contact"
                       id="contact"
@@ -778,17 +778,23 @@ const AddClientScreen = () => {
                           ? "form-control is-invalid"
                           : "form-control"
                       }
+                      maxLength="10"
                       onChange={(e) => {
+                        const value = e.target.value;
+                        // Remove non-digit characters
+                        const numericValue = value.replace(/\D/g, '');
+                        // Limit to 10 digits
+                        const truncatedValue = numericValue.slice(0, 10);
+                        
                         setUserInfo({
                           ...userInfo,
-                          contact_number: e.target.value,
+                          contact_number: truncatedValue,
                         });
                         setErrorData({ ...errorData, contact_number: "" });
                       }}
-                      value={
-                        userInfo.contact_number ? userInfo.contact_number : ""
-                      }
+                      value={userInfo.contact_number || ""}
                     />
+
                     <span className="errorText">
                       {" "}
                       {errorData?.contact_number

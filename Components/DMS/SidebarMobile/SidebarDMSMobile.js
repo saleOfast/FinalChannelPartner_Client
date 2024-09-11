@@ -14,7 +14,7 @@ import { LoggedOut } from "../../../store/adMinLoginSlice";
 import { userLogOut } from "../../../store/ClientLoginSlice";
 import { Baseurl } from "../../../Utils/Constants";
 
-const SidebarDMS = ({}) => {
+const SidebarDMSMobile = ({}) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [currActiveLink, setcurrActiveLink] = useState("");
@@ -320,4 +320,4 @@ const SidebarDMS = ({}) => {
   );
 };
 
-export default SidebarDMS;
+export default SidebarDMSMobile;

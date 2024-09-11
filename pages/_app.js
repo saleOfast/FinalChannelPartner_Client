@@ -28,16 +28,17 @@ function App({ Component, pageProps }) {
                   position="top-right"
                   autoClose={500}
                   limit={1}
-                  newestOnTop={false}
+                  newestOnTop={false} 
                   closeOnClick
                   rtl={false}
                   pauseOnFocusLoss
                   draggable
                   pauseOnHover
                   theme="light" />
-      {hasCookie("dms") ? <Kloudmart/>  : <Fragment></Fragment> }  
+      {/* {hasCookie("dms") ? <Kloudmart/>  : <Fragment></Fragment> }   */} 
         <Layout Component={Component} pageProps={pageProps}  />
-      {hasCookie("dms") ? <Tabs/>  : <Fragment></Fragment> }  
+      {/* {hasCookie("dms") ? <Tabs/>  : <Fragment></Fragment> }   */}
+      {/* the kloudmart and tabs component will come according to role (distributor) */}
         </SSRProvider>
       </Provider>
   </>

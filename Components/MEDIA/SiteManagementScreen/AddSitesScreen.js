@@ -10,23 +10,6 @@ import { useSelector } from "react-redux";
 import Select from 'react-select';
 import { Table } from "react-bootstrap";
 
-const bookingHistory = [
-  {
-    id: 1,
-    siteId: 'Site A',
-    campaignId: 'Campaign 1',
-    startDate: '2024-01-01',
-    endDate: '2024-01-10',
-    totalDays: 10,
-    status: 'Completed',
-    estimateId: 'Estimate 001',
-    clientCost: 1000,
-    vendorCost: 800,
-    margin: 200,
-    marginPercentage: '20%',
-  },
-
-];
 
 const AddSitesScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);

@@ -13,6 +13,7 @@ import axios from "axios";
 import moment from "moment";
 import mainIndexHOC from "../HOC/mainIndexHOC ";
 import { masterMode, userMode } from "../store/dbModeSlice";
+import { fetchData } from "../Utils/getReq";
 
 export default mainIndexHOC(
   function Home() {
@@ -23,12 +24,17 @@ export default mainIndexHOC(
     const isLoading = useSelector((state) => state.loader.isLoading);
     const [clientData, setClientData] = useState();
     const [dashbarMode, setDashboardMode] = useState();
+    const [sidebarInfo,setSidebarInfo] = useState([])
+    const [errorToast,setErrorToast] = useState([])
+    const [loader,setLoader] =useState(false)
     const dispatch = useDispatch();
     const allowedpermission = hasCookie("allowedpermissions")
       ? JSON.parse(getCookie("allowedpermissions"))
       : "";
   
-    
+      const subscriptionInfo = hasCookie("subscriptionInfo")
+      ? JSON.parse(getCookie("subscriptionInfo"))
+      : null;
 
     const onClickCommon = () => {
       dispatch(crm())
@@ -41,11 +47,48 @@ export default mainIndexHOC(
       router.push("/crm");  
     };
     
-    
+    // const getSidebarInfo = async () => {
+    //   await fetchData(
+    //     `/db/permission?id=${userInfo?.role_id}&pf=CRM`,
+    //     setSidebarInfo,
+    //     errorToast,
+    //     setErrorToast
+    //   );
+    // };
 
-    const subscriptionInfo = hasCookie("subscriptionInfo")
-      ? JSON.parse(getCookie("subscriptionInfo"))
-      : null;
+    const getSidebarInfo = async () => {
+      setLoader(true)
+      if (hasCookie('token')) {
+          let token = (getCookie('token'));
+          let db_name = (getCookie('db_name'));
+
+          let header = {
+              headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer ".concat(token),
+                  db: db_name,
+                  pass:"pass"
+              }
+          }
+          try {
+              const response = await axios.get(Baseurl + `/db/permission?id=${userInfo?.role_id}&pf=CRM`, header);
+              if(response?.status==200 || response?.status==201){
+                  setLoader(false)
+                  setSidebarInfo(response?.data?.data);
+              }
+          } catch (error) {
+              console.log(error)
+              setLoader(false)
+              if (error?.response?.data?.message) {
+                  toast.error(error.response.data.message);
+              }
+              else {
+                  toast.error('Something went wrong!')
+              }
+          }
+      }
+  }
+
   
     const checkDashboard = () => {
       if (hasCookie("crm")) {
@@ -65,6 +108,9 @@ export default mainIndexHOC(
       checkDashboard();
     }, [permission]);
   
+    useEffect(()=>{
+      getSidebarInfo()
+    },[])
   
     const handleClick = (permission) => {
       if (permission === "crm") {
@@ -146,7 +192,7 @@ export default mainIndexHOC(
       '/images/platform/COMMON.png',
       '/images/platform/CHANNEL.png',
       '/images/platform/DMS.png',
-      "/images/platform/MEDIA.png",
+      "/images/platform/MEDIA.jpg",
 
     ]
 
@@ -181,85 +227,111 @@ export default mainIndexHOC(
       <div className="h-100 w-100" >
         {isLoading ? (
           <Loader />
-        ) : (
+        )  : (
           <>
-            {user ? (
-              <div className="NewLoginScreen bg-white w-100  overflow-auto">
-                <div className="row m-0 login">
-                  <div className="col-12 col-lg-6 m-0 p-0">
-                    <div className="form-left d-flex flex-column justify-content-between">
-                      <img
-                        src="/images/Ellipse26.png"
-                        alt="Background One"
-                        className="image-one"
-                      />{
-                      clientData?.logo ? <img
-                        src={
-                          clientData?.logo &&
-                          `${filesUrl}` + `/logo/images${clientData?.logo}`
+            {user ?  (
+              <>
+              {
+                loader ? <Loader/> :(
+                  <div className="NewLoginScreen bg-white w-100  overflow-auto">
+                  <div className="row m-0 login">
+                    <div className="col-12 col-lg-6 m-0 p-0">
+                      <div className="form-left d-flex flex-column justify-content-between">
+                        <img
+                          src="/images/Ellipse26.png"
+                          alt="Background One"
+                          className="image-one"
+                        />{
+                        clientData?.logo ? <img
+                          src={
+                            clientData?.logo &&
+                            `${filesUrl}` + `/logo/images${clientData?.logo}`
+                          }
+                          alt="Logo"
+                          className=" mx-auto"
+                        /> : ""
                         }
-                        alt="Logo"
-                        className=" mx-auto"
-                      /> : ""
+                        <img
+                          src="/images/Ellipse27.png"
+                          alt="Background Two"
+                          className="image-two d-none d-lg-block"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-12 col-lg-6 d-flex align-items-center mt-5 mt-md-0 justify-content-center" style={{ marginTop: '0%' }}>
+                    <div className="row w-100 pb-5">
+                      {allowedpermission?.map((permission, i) => (
+                        <div
+                          key={i}
+                          className="col-12 col-md-6 p-3  d-flex flex-column gap-2 align-items-center justify-content-end "
+                          onClick={() => {
+                            handleClick(permission);
+                          }}
+                        >
+                          <img
+                            src={getPlatformFunc(permission)}
+                            alt={permission}
+                            style={{ width: '30%' }}
+                            className=" cursor-pointer"
+                          />
+                          <b className="fw-3 text-center cursor-pointer ">{permission.toUpperCase()}</b>
+                        </div>
+                      ))}
+  
+                      {
+                        userInfo && userInfo?.role_id ==null && userInfo?.isDB==true && (
+                          <div
+                          className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end "
+                          onClick={() => {
+                            onClickCommon();
+                          }}
+                        >
+                          <img
+                            src="/images/platform/COMMON.png"
+                            alt="COMMON"
+                            style={{ width: '30%' }}
+                            className=" cursor-pointer"
+                          />
+                          <b className="fw-3 text-center cursor-pointer">COMMON</b>
+                        </div>
+                        )
                       }
-                      <img
-                        src="/images/Ellipse27.png"
-                        alt="Background Two"
-                        className="image-two d-none d-lg-block"
-                      />
+                      {
+                        userInfo && userInfo?.role_id !==null && sidebarInfo[1]?.actions===1 &&  (
+                          <div
+                          className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end "
+                          onClick={() => {
+                            onClickCommon();
+                          }}
+                        >
+                          <img
+                            src="/images/platform/COMMON.png"
+                            alt="COMMON"
+                            style={{ width: '30%' }}
+                            className=" cursor-pointer"
+                          />
+                          <b className="fw-3 text-center cursor-pointer">COMMON</b>
+                        </div>
+                        )
+                      }
+  
+                      
+                      {/* If the number of icons is odd, add an empty div to balance the last row */}
+                      {((allowedpermission.length + 1) % 2 !== 0) && (
+                        <div
+                          className="col-12 col-md-6 p-3"
+                          style={{ visibility: 'hidden' }}
+                        />
+                      )}
                     </div>
                   </div>
-                  <div className="col-12 col-lg-6 d-flex align-items-center mt-5 mt-md-0 justify-content-center" style={{ marginTop: '0%' }}>
-                  <div className="row w-100 pb-5">
-                    {allowedpermission?.map((permission, i) => (
-                      <div
-                        key={i}
-                        className="col-12 col-md-6 p-3  d-flex flex-column gap-2 align-items-center justify-content-end "
-                        onClick={() => {
-                          handleClick(permission);
-                        }}
-                      >
-                        <img
-                          src={getPlatformFunc(permission)}
-                          alt={permission}
-                          style={{ width: '30%' }}
-                          className=" cursor-pointer"
-                        />
-                        <b className="fw-3 text-center cursor-pointer ">{permission.toUpperCase()}</b>
-                      </div>
-                    ))}
-
-                    {
-                      userInfo && userInfo?.role_id ==null && userInfo?.isDB==true && (
-                        <div
-                        className="col-12 col-md-6 p-3 d-flex flex-column gap-2 align-items-center justify-content-end "
-                        onClick={() => {
-                          onClickCommon();
-                        }}
-                      >
-                        <img
-                          src="/images/platform/COMMON.png"
-                          alt="COMMON"
-                          style={{ width: '30%' }}
-                          className=" cursor-pointer"
-                        />
-                        <b className="fw-3 text-center cursor-pointer">COMMON</b>
-                      </div>
-                      )
-                    }
-
-                    
-                    {/* If the number of icons is odd, add an empty div to balance the last row */}
-                    {((allowedpermission.length + 1) % 2 !== 0) && (
-                      <div
-                        className="col-12 col-md-6 p-3"
-                        style={{ visibility: 'hidden' }}
-                      />
-                    )}
                   </div>
                 </div>
-                </div>
-              </div>
+                )
+              }
+                  
+              </>
+              
             ) : (
               <SignInScreen />
             )}

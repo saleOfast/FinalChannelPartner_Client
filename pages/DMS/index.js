@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import { UserLogIN, userLogOut } from '../../store/ClientLoginSlice';
 import dmsIndexHOC from '../../HOC/dmsIndexHOC';
+import ReportsAndDashboardScreen from '../../Components/DMS/ReportsAndDashboard/ReportsAndDashboardScreen';
 
 const Index = () => {
 const userInfo=hasCookie("userInfo") ? true:false;
@@ -24,7 +25,12 @@ useEffect(() => {
   return (
     <>
       {
-        userInfo ? <LandingPageDMS/> : <SignInScreen/>
+        // landing page will change according to user's role
+        userInfo ? 
+        // <LandingPageDMS/> 
+        <ReportsAndDashboardScreen/>
+        : 
+        <SignInScreen/>
       }
     </>
     

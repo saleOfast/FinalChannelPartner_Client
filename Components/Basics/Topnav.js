@@ -22,6 +22,7 @@ import CP_Navbar_Admin from "../ChannelPartner/Admin/CP_NavBar_Admin/CP_NavBar_A
 import CP_Navbar_User from "../ChannelPartner/User/CP_NavBar_User/CP_NavBar_User"
 import { clearTheme } from "../../store/themeSlice";
 import TopnavMedia from "../MEDIA/Topnav/TopnavMedia";
+import TopnavDMS from "../DMS/Topnav/TopnavDMS";
 
 const Topnav = ({  topnavPermission }) => {
   const router = useRouter();
@@ -179,6 +180,12 @@ const Topnav = ({  topnavPermission }) => {
         {
             hasCookie("media") && (
               <TopnavMedia/>
+            )
+        }
+
+        {
+            hasCookie("dms") && (
+              <TopnavDMS/>
             )
         }
         

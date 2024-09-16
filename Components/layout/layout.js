@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Topnav from '../Basics/Topnav';
 import MediaSideBar from '../Basics/MediaSideBar';
-import SidebarDMS from '../DMS/Sidebar/SidebarDMS';
+import SidebarDMSMobile from '../DMS/SidebarMobile/SidebarDMSMobile';
 import SideBarChannel from '../Basics/SideBarChannel';
 import Loader from '../Loader/Loader';
 import SideBarSales from '../Basics/SideBarSales';
@@ -10,6 +10,7 @@ import { getCookie, hasCookie } from 'cookies-next';
 import Tabs from '../DMS/Tabs/Tabs';
 import { setSidebarColor, setTopNavColor, setbuttonColor } from '../../store/themeSlice';
 import SideBar from '../Basics/SideBar';
+import SideBarDMSWeb from '../DMS/SidebarWeb/SideBarDMSWeb';
 
 const Layout = ({Component, pageProps}) => {
     const userLogin = useSelector((state) => state.userLogin.value);
@@ -44,7 +45,7 @@ const Layout = ({Component, pageProps}) => {
       }else if(hasCookie("dms")){
         setSidebarMode("dms")
         setTopnavPermission("dms")
-      }    //Temporary
+      } 
       else if(hasCookie("media")){
         setSidebarMode("media")
         setTopnavPermission("media")
@@ -112,11 +113,14 @@ const Layout = ({Component, pageProps}) => {
             
                   <div className="content_wrapper">
                       {sidebarMode==="crm" && <SideBar />}
-                      {/* //Temporary */}
 
                       {sidebarMode==="media" && <MediaSideBar />}
 
-                      {/* {sidebarMode==="dms" && <SidebarDMS/> } */}
+                      {/* sidebar of dms will change according to role */}
+                      {sidebarMode==="dms" &&
+                      //  <SidebarDMSMobile/>
+                      <SideBarDMSWeb/>
+                        } 
                       {/* {sidebarMode==="channel" && <SideBarChannel    />} */}
                       {sidebarMode==="sales" && <SideBarSales    />}
                       <Component {...pageProps} />

@@ -383,8 +383,10 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               </button>
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              // )?.cmpn_b_t_name === "Asset" && userInfo?.role_id==5  &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )&& (
-              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[4]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )   && (
+              )?.cmpn_b_t_name === "Asset" && 
+              mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[4]?.actions==1
+
+              &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )   && (
                 <button
                   className=""
                   style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -401,7 +403,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[5]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )   && (
+              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[5]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )   && (
                 <>
                   <button
                     className=""
@@ -420,7 +422,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[6]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
+              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[6]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <>
                   <button
                     className=""
@@ -439,7 +441,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[4]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
+              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[4]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <button
                   className=""
                   style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -454,7 +456,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               )}
               {/* {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[10]?.actions==1 (
+              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[10]?.actions==1 && ( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <button
                   className=""
                   style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -468,10 +470,22 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   Upload Site
                 </button>
               )} */}
+              <button
+                  className=""
+                  style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
+                  onClick={() => {
+                    setEstimationId(tableMeta?.rowData[4]);
+
+                    setShow4(true);
+                  }}
+                  title="Upload Site"
+                >
+                  Upload Site
+                </button>
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[5]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
+              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[5]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <>
                   <button
                     className=""
@@ -490,7 +504,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
 {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children[9]?.children[0]?.children[6]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
+              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[6]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <>
                   <button
                     className=""
@@ -509,7 +523,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               
               
               {
-               mediaSidebarInfo[0]?.children[9]?.children[0]?.children[9]?.actions==1 && tableMeta.rowData[3]=="NEGOTIATION COMPLETED" &&  (
+               mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[9]?.actions==1 && tableMeta.rowData[3]=="NEGOTIATION COMPLETED" &&  (
               <button 
               className="" 
               style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
@@ -524,8 +538,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                 )
               }
               {
-                ((mediaSidebarInfo[0]?.children[9]?.children[0]?.children[8]?.actions==1 && estimateApprovals?.indexOf(userInfo?.role_id) !== -1) && tableMeta.rowData[3]=="PENDING"  || 
-                (mediaSidebarInfo[0]?.children[9]?.children[0]?.children[8]?.actions==1 && estimateApprovals?.indexOf(userInfo?.role_id) !== -1) && tableMeta.rowData[3]=="PENDING") && (
+                ((mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[8]?.actions==1 && estimateApprovals?.indexOf(userInfo?.role_id) !== -1) && tableMeta.rowData[3]=="PENDING"  || 
+                (mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[8]?.actions==1 && estimateApprovals?.indexOf(userInfo?.role_id) !== -1) && tableMeta.rowData[3]=="PENDING") && (
                   <>
                   
               <button 
@@ -553,7 +567,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                 )
               }
               {
-                mediaSidebarInfo[0]?.children[9]?.children[0]?.children[7]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATION COMPLETED" || tableMeta.rowData[3]=="PENDING" || tableMeta.rowData[3]=="REJECTED")&& (
+                (mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[7]?.actions==1 &&( tableMeta.rowData[3]=="APPROVED"))||( userInfo?.isDB==true && tableMeta.rowData[3]=="APPROVED")&& (
               <Link href={`/media/PorformaInvoice?est_id=${value}`}>
               <button
                 className=""

@@ -97,6 +97,12 @@ useEffect(()=>{
     );
   }
 
+  const AddFieldsFunc = (e) => {
+    e.preventDefault();
+    setiscollapse(true)
+  };
+
+
   const getCountryList = async () => {
     await fetchData(
       `/db/area/country?country_id=1`,
@@ -104,14 +110,7 @@ useEffect(()=>{
       errorToast,
       setErrorToast
     );
-  };
-
-
-  
-  const AddFieldsFunc = (e) => {
-    e.preventDefault();
-    setiscollapse(true)
-  };
+  };  
 
   const getState = async (id) => {
     await fetchData(

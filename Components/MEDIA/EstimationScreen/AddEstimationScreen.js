@@ -447,6 +447,7 @@ const AddEstimationScreen = () => {
 
         let oppBody = { ...userInfo };
         oppBody.contact_owner = loginDetails.user_id;
+        oppBody.submitted_date=new Date().toISOString().split("T")[0]
         try {
           const response = await axios.post(
             Baseurl + `/db/media/estimation/addEstimation`,
@@ -1706,8 +1707,10 @@ const AddEstimationScreen = () => {
                     )}
                   </div>
                 </div>
-
-                <div className="add_screen_head">
+                    {
+                      viewMode && (
+                        <>
+                            <div className="add_screen_head">
                   <span className="text_bold">Approval Details </span>
                 </div>
                 <div className="add_user_form">
@@ -1721,11 +1724,11 @@ const AddEstimationScreen = () => {
                         }
                       >
                         <label htmlFor="submitted_date">Submitted Date </label>
-                        <input
+                        {/* <input
                           type="date"
                           id="submitted_date"
                           className="form-control"
-                          disabled={viewMode}
+                          disabled={true}
                           min={new Date().toISOString().split("T")[0]}
                           onPaste={(e) => e.preventDefault()}
                           onKeyDown={(e) => e.preventDefault()}
@@ -1742,7 +1745,28 @@ const AddEstimationScreen = () => {
                               submitted_date: e.target.value,
                             })
                           }
+                        /> */}
+                        <input
+                          type="date"
+                          id="submitted_date"
+                          className="form-control"
+                          disabled={true}
+                          min={new Date().toISOString().split("T")[0]} // Ensure min date is today's date
+                          onPaste={(e) => e.preventDefault()}
+                          onKeyDown={(e) => e.preventDefault()}
+                          value={
+                            userInfo?.submitted_date
+                              ? moment(userInfo?.submitted_date).format("YYYY-MM-DD")
+                              : new Date().toISOString().split("T")[0] // Set today's date as the default value
+                          }
+                          onChange={(e) =>
+                            setUserInfo({
+                              ...userInfo,
+                              submitted_date: e.target.value,
+                            })
+                          }
                         />
+
                         <span className="errorText">
                           {errorData?.submitted_date
                             ? errorData.submitted_date
@@ -1940,6 +1964,10 @@ const AddEstimationScreen = () => {
                     </div>
                   </div>
                 </div>
+                        </>
+                      )
+                    }
+                
 
                 <div className="add_screen_head">
                   <span className="text_bold">

@@ -192,7 +192,7 @@ export default mainIndexHOC(
       '/images/platform/COMMON.png',
       '/images/platform/CHANNEL.png',
       '/images/platform/DMS.png',
-      "/images/platform/MEDIA.png",
+      "/images/platform/MEDIA.jpg",
 
     ]
 

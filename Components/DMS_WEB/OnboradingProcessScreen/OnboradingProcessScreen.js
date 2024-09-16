@@ -235,6 +235,112 @@ const [clientData,setClientData] = useState()
         console.log(distributorInfo)
       }
 
+      useEffect(() => {
+        const { token } = router.query;
+        if (token) {
+          verifyToken(token);
+        }
+      }, [router.query.token]);
+    
+      const verifyToken = async (token) => {
+        try {
+          const { data } = await axios.post(
+            Baseurl + `/db/users/cp/registrationToken/verification`,
+            { token }
+          );
+          if (data.status === 200) {
+            if (data?.data?.doc_verification === 0) {
+              toast.success(data.message);
+              setDistributorInfo({
+                ...formFields,
+                name: data?.data?.user || "",
+                user_l_name: data?.data?.user_l_name || "",
+                mobile: data?.data?.contact_number || "",
+                email: data?.data?.email || "",
+                id: data?.data?.user_id,
+                token: token,
+                isTokenVerified: true,
+              });
+            }else if (data?.data?.doc_verification === 1) {
+              toast.success("Pending for verification");
+              setDistributorInfo({
+                ...formFields,
+                name: data?.data?.user || "",
+                user_l_name: data?.data?.user_l_name || "",
+                mobile: data?.data?.contact_number || "",
+                email: data?.data?.email || "",
+                pan: data?.data?.db_user_profile?.pan_file || null,
+                aadhar: data?.data?.db_user_profile?.aadhar_file || null,
+                rera: data?.data?.db_user_profile?.rera_file || null,
+                cheque: data?.data?.db_user_profile?.c_cheque_file || null,
+                isTokenVerified: true,
+                isUploadVerified: true,
+                organisation: data?.data?.organisation || "",
+                state_id: data?.data?.state_id || "",
+                city_id: data?.data?.city_id || "",
+                address: data?.data?.address || "",
+                gst: data?.data?.gst || "",
+              });
+              setInterval(()=>{
+                router.push("/")
+              },[1500])
+            }else if (data?.data?.doc_verification === 2) {
+              toast.success("Documents Verified");
+              setDistributorInfo({
+                ...formFields,
+                name: data?.data?.user || "",
+                user_l_name: data?.data?.user_l_name || "",
+                mobile: data?.data?.contact_number || "",
+                email: data?.data?.email || "",
+                pan: data?.data?.db_user_profile?.pan_file || null,
+                aadhar: data?.data?.db_user_profile?.aadhar_file || null,
+                rera: data?.data?.db_user_profile?.rera_file || null,
+                cheque: data?.data?.db_user_profile?.c_cheque_file || null,
+                isTokenVerified: true,
+                isUploadVerified: true,
+                organisation: data?.data?.organisation || "",
+                state_id: data?.data?.state_id || "",
+                city_id: data?.data?.city_id || "",
+                address: data?.data?.address || "",
+                gst: data?.data?.gst || "",
+              });
+              setInterval(()=>{
+                router.push("/")
+              },[1500])
+            } else{
+              toast.success("Documents Rejected");
+              setFormFields({
+                ...formFields,
+                name: data?.data?.user || "",
+                user_l_name: data?.data?.user_l_name || "",
+                mobile: data?.data?.contact_number || "",
+                email: data?.data?.email || "",
+                pan: data?.data?.db_user_profile?.pan_file || null,
+                aadhar: data?.data?.db_user_profile?.aadhar_file || null,
+                rera: data?.data?.db_user_profile?.rera_file || null,
+                cheque: data?.data?.db_user_profile?.c_cheque_file || null,
+                isTokenVerified: true,
+                isUploadVerified: true,
+                organisation: data?.data?.organisation || "",
+                state_id: data?.data?.state_id || "",
+                city_id: data?.data?.city_id || "",
+                address: data?.data?.address || "",
+                gst: data?.data?.gst || "",
+              });
+              setInterval(()=>{
+                router.push("/")
+              },[1500])
+            }
+            
+          }
+        } catch (error) {
+          console.log(error)
+          const errorMessage =
+            error?.response?.data?.message || "Something went wrong!";
+          toast.error(errorMessage);
+        }
+      };
+
   return (
     <div className={`main_Box bg-white p-4 `}>
       <div className="bread_head">

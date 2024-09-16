@@ -12,7 +12,7 @@ const paymentOptions = [
   ];
 
 const bankingDetailsArray = [
-    { label: "Business PAN Card", id: "business_pan",preview:"business_pan_preview" },
+    { label: "Business PAN Card", id: "pan_file",preview:"pan_file_preview" },
     { label: "Certificate of Incorporation", id: "incorporation_certificate",preview:"incorporation_certificate_preview" },
     { label: "Address Proof", id: "address_proof",preview:"address_proof_preview" },
     { label: "GST Registration Certificate", id: "gst_registration",preview:"gst_registration_preview" },
@@ -61,7 +61,7 @@ const bankingDetailsArray = [
   };
 
 
-const MainContent = ({ distributorInfo, setDistributorInfo, handleSubmit, updateHandler,viewMode,errorData,editMode,isLoading }) => {
+const MainContent = ({ distributorInfo, setDistributorInfo, handleSubmit, updateHandler,viewMode,errorData,editMode,isLoading,setViewMode }) => {
 
 const [countryList, setcountrylist] = useState([]);
 const [stateList, setStatelist] = useState([]);
@@ -419,7 +419,11 @@ const [errorToast, setErrorToast] = useState([]);
         </div>
         </div>
 
-        <div className="add_screen_head">
+
+            {
+              (editMode || viewMode )  && (
+                <>  
+                      <div className="add_screen_head">
           <span className="text_bold">KYC Documents</span>
         </div>
         {bankingDetailsArray.map((item, index) => (
@@ -458,26 +462,22 @@ const [errorToast, setErrorToast] = useState([]);
               />
                     </>
                 }
-              {/* <label htmlFor={item?.id}>{item?.label}</label>
-              <input
-                type="file"
-                id={item?.id}
-                className="form-control"
-                accept=".pdf,.jpg,.jpeg,.png"
-                disabled={viewMode}
-                onChange={(e) => handleFileUpload(e, `${item?.id}`, `${item?.preview}`)}
-              /> */}
+              
               {errorData[item?.id] && (
                 <span className="error-text">{errorData[item?.id]}</span>
               )}
             </div>
           </div>
         ))}
+                </>
+              )
+            }
+        
 
         <div className="btn-box text-end mt-4">
           {viewMode ? (
             <>
-              <Link href={`/media/AddEvent/?id=${router.query.id}`}>
+              <Link href={`/dms/AddDistributorManagement/?id=${router.query.id}`}>
                 <button
                   className="btn btn-primary"
                   onClick={() => setViewMode(!viewMode)}

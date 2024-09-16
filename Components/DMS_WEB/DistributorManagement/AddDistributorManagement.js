@@ -24,6 +24,7 @@ const AddDistributorManagement = () => {
   const [isLoading, setisLoading] = useState(false);
 
   const [distributorInfo, setDistributorInfo] = useState({
+    role_id:10,
     distributor_name: "",
     contact_person: "",
     phone_number: "",
@@ -34,8 +35,8 @@ const AddDistributorManagement = () => {
     country_id: "",
     credit_limit: "",
     payment_method: "",
-    business_pan: "",
-    business_pan_preview: "",
+    pan_file: "",
+    pan_file_preview: "",
     incorporation_certificate: "",
     incorporation_certificate_preview: "",
     address_proof: "",
@@ -44,7 +45,44 @@ const AddDistributorManagement = () => {
     gst_registration_preview: "",
     banking_details: "",
     banking_details_preview: "",
+    tier:""
   });
+  const [updtUId, setUpdtUId] = useState("");
+
+  const AddUploadPicture = async (id, path, file, name) => {
+    if (!hasCookie("token")) return;
+
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+
+    const formdata = new FormData();
+    formdata.append("path", path);
+    formdata.append("user_id", id);
+    formdata.append("file", file);
+    formdata.append("_imageName", name || 0);
+
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        db: db_name,
+      },
+      body: formdata,
+      redirect: "follow",
+    };
+
+    try {
+      const response = await fetch(
+        `${Baseurl}/db/users/uploads`,
+        requestOptions
+      );
+      const result = await response.text();
+      toast.info(result.message);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   const validateForm = () => {
     const errors = {};
@@ -59,7 +97,7 @@ const AddDistributorManagement = () => {
       country_id: "Country is required",
       credit_limit: "Credit Limit is required",
       payment_method: "Payment method is required",
-      // business_pan: "Business PAN card is required",
+      // pan_file: "Business PAN card is required",
       // incorporation_certificate: "Certificate of Incorporation is required",
       // address_proof: "Address proof is required",
       // gst_registration: "GST Registration Certificate is required",
@@ -98,7 +136,7 @@ const AddDistributorManagement = () => {
   const handleSubmit = async () => {
     if (!validateForm()) return;
     if (hasCookie("token")) {
-      // setisLoading(true);
+      setisLoading(true);
       let token = getCookie("token");
       let db_name = getCookie("db_name");
       let header = {
@@ -112,35 +150,35 @@ const AddDistributorManagement = () => {
 
       let reqOptions = { ...distributorInfo };
       console.log(reqOptions);
-      // try {
-      //   const response = await axios.post(
-      //     Baseurl + `/db/leads/calls`,
-      //     reqOptions,
-      //     header
-      //   );
-      //   if (response.status === 204 || response.status === 200) {
-      //     toast.success(response.data.message);
-      //     setisLoading(false);
-      //     router.push("/media/EventScreen");
-      //   }
-      // } catch (error) {
-      //   if (error?.response?.data?.status === 422) {
-      //     const taskObject = {};
-      //     const array = error?.response?.data?.data;
-      //     for (let i = 0; i < array.length; i++) {
-      //       const key = Object.keys(array[i])[0];
-      //       const value = Object.values(array[i])[0];
-      //       taskObject[key] = value;
-      //     }
-      //     setErrorData(taskObject);
-      //   }
-      //   if (error?.response?.data?.message) {
-      //     toast.error(error.response.data.message);
-      //   } else {
-      //     toast.error("Something went wrong!");
-      //   }
-      //   setisLoading(false);
-      // }
+      try {
+        const response = await axios.post(
+          Baseurl + `/db/leads/calls`,
+          reqOptions,
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response.data.message);
+          setisLoading(false);
+          router.push("/dms/AddDistributorManagement");
+        }
+      } catch (error) {
+        if (error?.response?.data?.status === 422) {
+          const taskObject = {};
+          const array = error?.response?.data?.data;
+          for (let i = 0; i < array.length; i++) {
+            const key = Object.keys(array[i])[0];
+            const value = Object.values(array[i])[0];
+            taskObject[key] = value;
+          }
+          setErrorData(taskObject);
+        }
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
     }
   };
 
@@ -167,10 +205,19 @@ const AddDistributorManagement = () => {
           reqOptions,
           header
         );
+
         if (response.status === 204 || response.status === 200) {
+          
+          // if (distributorInfo?.pan_file)
+          //   AddUploadPicture(
+          //     updtUId,
+          //     "adh",
+          //     uploadDocs.aadhar[0],
+          //     oldFiles.aadhar
+          //   );
           toast.success(response.data.message);
           setisLoading(false);
-          router.push("/media/EventScreen");
+          router.push("/dms/AddDistributorManagement");
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -211,7 +258,8 @@ const AddDistributorManagement = () => {
           Baseurl + `/db/leads/single?event_id=${id}`,
           header
         );
-        setDistributorInfo(response.data.data);
+        setUpdtUId(response?.data?.data?.db_user_profile?.user_id);
+        setDistributorInfo(response?.data?.data);
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -267,6 +315,7 @@ const AddDistributorManagement = () => {
         errorData={errorData}
         editMode={editMode}
         isLoading={isLoading}
+        setViewMode={setViewMode}
       />
     </div>
   );

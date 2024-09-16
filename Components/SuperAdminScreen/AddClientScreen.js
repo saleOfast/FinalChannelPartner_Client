@@ -216,8 +216,29 @@ const AddClientScreen = () => {
     }
 
     async function addClientHandler() {
+      // const urlRegex = /^(https?:\/\/)?([^\s$.?#].[^\s]*)$/i; 
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  //     if (!userInfo?.client_url || !urlRegex.test(userInfo?.client_url)) {
+  //       setErrorData({ ...errorData, client_url: 'Please enter a valid Client URL' });
+  //       return toast.error('Please fill the Mandatory fields')
+  //   }
+
+  //   if (!userInfo?.host_name || !urlRegex.test(userInfo?.host_name)) {
+  //     setErrorData({ ...errorData, client_url: 'Please enter a valid Host Name' });
+  //     return toast.error('Please fill the Mandatory fields')
+  // }
+
+      if (!emailRegex.test(userInfo?.email)) {
+          setErrorData({ ...errorData, email: 'Please enter a valid email address' });
+          return toast.error('Please enter a valid email address');
+      }
       if(userInfo?.host_name==""){
         setErrorData({ ...errorData, host_name: 'Please enter Salesforce Host URL' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(userInfo?.client_url==""){
+        setErrorData({ ...errorData, client_url: 'Please enter Client URL' })
         return toast.error('Please fill the Mandatory fields')
       }
       if(!userInfo?.isCRM && !userInfo?.isCHANNEL && !userInfo?.isDMS && !userInfo?.isSALES && !userInfo?.isMEDIA){
@@ -354,7 +375,11 @@ const AddClientScreen = () => {
     };
 
     async function updateHandler() {
-      
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(userInfo?.email)) {
+          setErrorData({ ...errorData, email: 'Please enter a valid email address' });
+          return toast.error('Please enter a valid email address');
+      }
       if(userInfo?.host_name==""){
         setErrorData({ ...errorData, host_name: 'Please enter Salesforce Host URL' })
         return toast.error('Please fill the Mandatory fields')
@@ -1030,7 +1055,7 @@ const AddClientScreen = () => {
                         <>
                               <div className="input_box m-0 col-xl-3 col-md-3 col-sm-12 col-12">
                           <label>Number of Licenses*</label>
-                          <input
+                        <input
                           type="number"
                           placeholder="Enter Licence"
                           name="no_of_license"
@@ -1041,16 +1066,21 @@ const AddClientScreen = () => {
                               : "form-control"
                           }
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              no_of_license: e.target.value,
-                            });
-                            setErrorData({ ...errorData, no_of_license: "" });
+                            const value = e.target.value;
+                            // Ensure that the value is a number and does not exceed 10 digits
+                            if (/^\d{0,10}$/.test(value)) {
+                              setUserInfo({
+                                ...userInfo,
+                                no_of_license: value,
+                              });
+                              setErrorData({ ...errorData, no_of_license: "" });
+                            } else {
+                              setErrorData({ ...errorData, no_of_license: "Only up to 10 digits are allowed" });
+                            }
                           }}
-                          value={
-                            userInfo.no_of_license ? userInfo.no_of_license : ""
-                          }
+                          value={userInfo.no_of_license ? userInfo.no_of_license : ""}
                         />
+
                         <span className="errorText">
                           {" "}
                           {errorData?.no_of_license ? errorData.no_of_license : ""}
@@ -1071,14 +1101,14 @@ const AddClientScreen = () => {
                       type="date"
                       name="subscription_start_date"
                       id="subscription_start_date"
-                      min={moment()
-                        .subtract(7, "days")
-                        .format("YYYY-MM-DD[T]HH:mm:ss")}
+                      min={moment().format("YYYY-MM-DD")}
                       className={
                         errorData?.subscription_start_date
                           ? "form-control is-invalid"
                           : "form-control"
                       }
+                      onKeyDown={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
                       onChange={(e) => {
                         setUserInfo({
                           ...userInfo,
@@ -1112,11 +1142,14 @@ const AddClientScreen = () => {
                                   type="date"
                                   name="subscription_start_date"
                                   id="subscription_start_date"
+                                  min={moment().format("YYYY-MM-DD")}
                                   className={
                                     errorData?.subscription_end_date
                                       ? "form-control is-invalid"
                                       : "form-control"
                                   }
+                                  onKeyDown={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
                                   onChange={(e) => {
                                     setUserInfo({
                                       ...userInfo,
@@ -1182,11 +1215,17 @@ const AddClientScreen = () => {
                               : "form-control"
                           }
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              no_of_channel_license: e.target.value,
-                            });
-                            setErrorData({ ...errorData, no_of_channel_license: "" });
+                            const value = e.target.value;
+                            // Ensure that the value is a number and does not exceed 10 digits
+                            if (/^\d{0,10}$/.test(value)) {
+                              setUserInfo({
+                                ...userInfo,
+                                no_of_channel_license: value,
+                              });
+                              setErrorData({ ...errorData, no_of_channel_license: "" });
+                            } else {
+                              setErrorData({ ...errorData, no_of_channel_license: "Only up to 10 digits are allowed" });
+                            }
                           }}
                           value={
                             userInfo.no_of_channel_license ? userInfo.no_of_channel_license : ""
@@ -1212,14 +1251,14 @@ const AddClientScreen = () => {
                                 type="date"
                                 name="subscription_start_date"
                                 id="subscription_start_date"
-                                min={moment()
-                                  .subtract(7, "days")
-                                  .format("YYYY-MM-DD[T]HH:mm:ss")}
+                                min={moment().format("YYYY-MM-DD")}
                                 className={
                                   errorData?.subscription_start_date_channel
                                     ? "form-control is-invalid"
                                     : "form-control"
                                 }
+                                onKeyDown={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
                                 onChange={(e) => {
                                   setUserInfo({
                                     ...userInfo,
@@ -1253,11 +1292,14 @@ const AddClientScreen = () => {
                                   type="date"
                                   name="subscription_start_date"
                                   id="subscription_start_date"
+                                  min={moment().format("YYYY-MM-DD")}
                                   className={
                                     errorData?.subscription_end_date_channel
                                       ? "form-control is-invalid"
                                       : "form-control"
                                   }
+                                  onKeyDown={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
                                   onChange={(e) => {
                                     setUserInfo({
                                       ...userInfo,
@@ -1322,11 +1364,17 @@ const AddClientScreen = () => {
                               : "form-control"
                           }
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              no_of_dms_license: e.target.value,
-                            });
-                            setErrorData({ ...errorData, no_of_dms_license: "" });
+                            const value = e.target.value;
+                            // Ensure that the value is a number and does not exceed 10 digits
+                            if (/^\d{0,10}$/.test(value)) {
+                              setUserInfo({
+                                ...userInfo,
+                                no_of_dms_license: value,
+                              });
+                              setErrorData({ ...errorData, no_of_dms_license: "" });
+                            } else {
+                              setErrorData({ ...errorData, no_of_dms_license: "Only up to 10 digits are allowed" });
+                            }
                           }}
                           value={
                             userInfo.no_of_dms_license ? userInfo.no_of_dms_license : ""
@@ -1352,14 +1400,14 @@ const AddClientScreen = () => {
                                 type="date"
                                 name="subscription_start_date"
                                 id="subscription_start_date"
-                                min={moment()
-                                  .subtract(7, "days")
-                                  .format("YYYY-MM-DD[T]HH:mm:ss")}
+                                min={moment().format("YYYY-MM-DD")}
                                 className={
                                   errorData?.subscription_start_date_dms
                                     ? "form-control is-invalid"
                                     : "form-control"
                                 }
+                                onKeyDown={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
                                 onChange={(e) => {
                                   setUserInfo({
                                     ...userInfo,
@@ -1393,11 +1441,14 @@ const AddClientScreen = () => {
                                   type="date"
                                   name="subscription_start_date"
                                   id="subscription_start_date"
+                                  min={moment().format("YYYY-MM-DD")}
                                   className={
                                     errorData?.subscription_end_date_dms
                                       ? "form-control is-invalid"
                                       : "form-control"
                                   }
+                                  onKeyDown={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
                                   onChange={(e) => {
                                     setUserInfo({
                                       ...userInfo,
@@ -1462,11 +1513,17 @@ const AddClientScreen = () => {
                                 : "form-control"
                             }
                             onChange={(e) => {
+                              const value = e.target.value;
+                            // Ensure that the value is a number and does not exceed 10 digits
+                            if (/^\d{0,10}$/.test(value)) {
                               setUserInfo({
                                 ...userInfo,
-                                no_of_sales_license: e.target.value,
+                                no_of_sales_license: value,
                               });
                               setErrorData({ ...errorData, no_of_sales_license: "" });
+                            } else {
+                              setErrorData({ ...errorData, no_of_sales_license: "Only up to 10 digits are allowed" });
+                            }
                             }}
                             value={
                               userInfo.no_of_sales_license ? userInfo.no_of_sales_license : ""
@@ -1492,14 +1549,14 @@ const AddClientScreen = () => {
                                 type="date"
                                 name="subscription_start_date"
                                 id="subscription_start_date"
-                                min={moment()
-                                  .subtract(7, "days")
-                                  .format("YYYY-MM-DD[T]HH:mm:ss")}
+                                min={moment().format("YYYY-MM-DD")}
                                 className={
                                   errorData?.subscription_start_date_sales
                                     ? "form-control is-invalid"
                                     : "form-control"
                                 }
+                                onKeyDown={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
                                 onChange={(e) => {
                                   setUserInfo({
                                     ...userInfo,
@@ -1533,11 +1590,14 @@ const AddClientScreen = () => {
                                   type="date"
                                   name="subscription_start_date"
                                   id="subscription_start_date"
+                                  min={moment().format("YYYY-MM-DD")}
                                   className={
                                     errorData?.subscription_end_date_sales
                                       ? "form-control is-invalid"
                                       : "form-control"
                                   }
+                                  onKeyDown={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
                                   onChange={(e) => {
                                     setUserInfo({
                                       ...userInfo,
@@ -1605,11 +1665,17 @@ const AddClientScreen = () => {
                               : "form-control"
                           }
                           onChange={(e) => {
-                            setUserInfo({
-                              ...userInfo,
-                              no_of_media_license: e.target.value,
-                            });
-                            setErrorData({ ...errorData, no_of_media_license: "" });
+                            const value = e.target.value;
+                            // Ensure that the value is a number and does not exceed 10 digits
+                            if (/^\d{0,10}$/.test(value)) {
+                              setUserInfo({
+                                ...userInfo,
+                                no_of_media_license: value,
+                              });
+                              setErrorData({ ...errorData, no_of_media_license: "" });
+                            } else {
+                              setErrorData({ ...errorData, no_of_media_license: "Only up to 10 digits are allowed" });
+                            }
                           }}
                           value={
                             userInfo.no_of_media_license ? userInfo.no_of_media_license : ""
@@ -1635,14 +1701,14 @@ const AddClientScreen = () => {
                       type="date"
                       name="subscription_start_date"
                       id="subscription_start_date"
-                      min={moment()
-                        .subtract(7, "days")
-                        .format("YYYY-MM-DD[T]HH:mm:ss")}
+                      min={moment().format("YYYY-MM-DD")}
                       className={
                         errorData?.subscription_start_date_media
                           ? "form-control is-invalid"
                           : "form-control"
                       }
+                      onKeyDown={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
                       onChange={(e) => {
                         setUserInfo({
                           ...userInfo,
@@ -1676,11 +1742,14 @@ const AddClientScreen = () => {
                                   type="date"
                                   name="subscription_start_date"
                                   id="subscription_start_date"
+                                  min={moment().format("YYYY-MM-DD")}
                                   className={
                                     errorData?.subscription_end_date_media
                                       ? "form-control is-invalid"
                                       : "form-control"
                                   }
+                                  onKeyDown={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
                                   onChange={(e) => {
                                     setUserInfo({
                                       ...userInfo,

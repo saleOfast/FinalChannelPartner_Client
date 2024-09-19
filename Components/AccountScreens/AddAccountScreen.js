@@ -108,7 +108,6 @@ const AddAccountScreen = () => {
 
 
   const submitHandler = async () => {
-
     if (hasCookie('token')) {
       setisLoading(true)
       let token = (getCookie('token'));
@@ -312,7 +311,7 @@ const AddAccountScreen = () => {
       try {
         const response = await axios.post(Baseurl + `/db/account/field`, data, header);
         if (response.status === 204 || response.status === 200) {
-          toast.success(response.data.message);
+          // toast.success(response.data.message);
           setisLoading(false)
         }
       } catch (error) {
@@ -621,25 +620,8 @@ const AddAccountScreen = () => {
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div className={errorData?.acc_name ? 'input_box errorBox' : 'input_box'}>
                       <div className="input_box">
-                        <label htmlFor="acc_name"> Name *</label>
-                        {/* <input
-                          type="text"
-                          placeholder="Enter Account Name"
-                          name="name"
-                          disabled={viewMode}
-                          id="acc_name"
-                          className={errorData?.acc_name ? 'form-control is-invalid' : 'form-control'}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            const regex = /^[a-zA-Z]*$/; // Regular expression to allow only alphabets
-                            if (regex.test(value)) {
-                              setUserInfo({ ...userInfo, acc_name: value });
-                              setErrorData({ ...errorData, acc_name: '' });
-                            }
-                          }}
-                          value={userInfo.acc_name ? userInfo.acc_name : ''}
-                        /> */}
-                        <input
+                        <label htmlFor="acc_name"> Account Name *</label>
+                          <input
                             type="text"
                             placeholder="Enter Account Name"
                             name="name"
@@ -648,7 +630,9 @@ const AddAccountScreen = () => {
                             className={errorData?.acc_name ? 'form-control is-invalid' : 'form-control'}
                             onChange={(e) => {
                               const value = e.target.value;
-                              const regex = /^[a-zA-Z]*$/; // Regular expression to allow only alphabets
+                              const regex = /^[a-zA-Z\s]*$/; // Allow alphabets and spaces
+
+                              // Check if the last character entered is a space
                               if (regex.test(value)) {
                                 setUserInfo({ ...userInfo, acc_name: value });
                                 setErrorData({ ...errorData, acc_name: '' });
@@ -656,8 +640,6 @@ const AddAccountScreen = () => {
                             }}
                             value={userInfo.acc_name ? userInfo.acc_name : ''}
                           />
-
-
                         <span className="errorText"> {errorData?.acc_name ? errorData.acc_name : ''}</span>
                       </div>
 

@@ -25,11 +25,12 @@ const AddDistributorManagement = () => {
 
   const [distributorInfo, setDistributorInfo] = useState({
     role_id:10,
-    distributor_name: "",
+    user:"",
+    user_l_name:"",
     contact_person: "",
-    phone_number: "",
+    contact_number: "",
     email: "",
-    physical_address: "",
+    address: "",
     city_id: "",
     state_id: "",
     country_id: "",
@@ -87,11 +88,12 @@ const AddDistributorManagement = () => {
   const validateForm = () => {
     const errors = {};
     const requiredFields = {
-      distributor_name: "Distributor name is required",
+      user: "First Name is required",
+      user_l_name: "Last Name is required",
       contact_person: "Contact person is required",
-      phone_number: "Invalid phone number",
+      contact_number: "Invalid phone number",
       email: "Email is required",
-      physical_address: "Physical address is required",
+      address: "Physical address is required",
       city_id: "City is required",
       state_id: "State is required",
       country_id: "Country is required",
@@ -112,10 +114,10 @@ const AddDistributorManagement = () => {
 
     // Validate phone number length
     if (
-      distributorInfo.phone_number &&
-      distributorInfo.phone_number.length !== 10
+      distributorInfo.contact_number &&
+      distributorInfo.contact_number.length !== 10
     ) {
-      errors.phone_number = "Invalid phone number";
+      errors.contact_number = "Invalid phone number";
     }
 
     // Validate email format
@@ -152,14 +154,14 @@ const AddDistributorManagement = () => {
       console.log(reqOptions);
       try {
         const response = await axios.post(
-          Baseurl + `/db/leads/calls`,
+          Baseurl + `/db/users`,
           reqOptions,
           header
         );
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message);
           setisLoading(false);
-          router.push("/dms/AddDistributorManagement");
+          router.push("/dms/DistributorManagement");
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -207,14 +209,6 @@ const AddDistributorManagement = () => {
         );
 
         if (response.status === 204 || response.status === 200) {
-          
-          // if (distributorInfo?.pan_file)
-          //   AddUploadPicture(
-          //     updtUId,
-          //     "adh",
-          //     uploadDocs.aadhar[0],
-          //     oldFiles.aadhar
-          //   );
           toast.success(response.data.message);
           setisLoading(false);
           router.push("/dms/AddDistributorManagement");
@@ -255,11 +249,12 @@ const AddDistributorManagement = () => {
       };
       try {
         const response = await axios.get(
-          Baseurl + `/db/leads/single?event_id=${id}`,
+          Baseurl + `/db/users?id=${id}`,
           header
         );
         setUpdtUId(response?.data?.data?.db_user_profile?.user_id);
-        setDistributorInfo(response?.data?.data);
+
+        // setDistributorInfo(response?.data?.data);
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);

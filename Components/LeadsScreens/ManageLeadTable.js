@@ -62,6 +62,16 @@ const ManageLeadTable = ({
       },
     },
     {
+      name: "db_lead_source",
+      label: "Source",
+      options: {
+        filter: true,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return <>{value} </>;
+        },
+      },
+    },
+    {
       name: "db_user",
       label: "Assign Name",
       options: {
@@ -83,7 +93,7 @@ const ManageLeadTable = ({
           return (
             <div className="status_box">
               {/* <span className={`status${value?.lead_status_id} status_btn`}>{value?.lead_status_id ? value?.status_name : ""}</span> */}
-              <span className={`status${tableMeta?.rowData[8]} status_btn`}>{ value}</span>
+              <span className={`status${tableMeta?.rowData[9]} status_btn`}>{ value}</span>
             </div>
           );
         },
@@ -107,7 +117,7 @@ const ManageLeadTable = ({
               
               {
                   // tableMeta?.rowData[6]?.lead_status_id == 3 || tableMeta?.rowData[6]?.lead_status_id == 4  
-                  tableMeta?.rowData[8] == 3 || tableMeta?.rowData[8] == 4  
+                  tableMeta?.rowData[9] == 3 || tableMeta?.rowData[9] == 4  
                   ?
                   null : (
                     <>
@@ -129,7 +139,7 @@ const ManageLeadTable = ({
               
               {
               // tableMeta?.rowData[6]?.lead_status_id == 1 || tableMeta?.rowData[6]?.lead_status_id == 2 
-              tableMeta?.rowData[8] == 1 || tableMeta?.rowData[8] == 2 
+              tableMeta?.rowData[9] == 1 || tableMeta?.rowData[9] == 2 
               ?
                 <button
                   onClick={() =>{ 
@@ -175,7 +185,8 @@ const ManageLeadTable = ({
     db_user:list?.db_user?.user,
     db_lead_status:list?.db_lead_status?.status_name,
     lead_id:list?.lead_id,
-    lead_status_id:list?.db_lead_status?.lead_status_id
+    lead_status_id:list?.db_lead_status?.lead_status_id,
+    db_lead_source:list?.db_lead_source?.source
   }))
 
   return (

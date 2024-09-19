@@ -44,7 +44,9 @@ export default mainIndexHOC(
       deleteCookie(`side${isAdmin ? "User" : "Admin"}`);
       dispatch(isAdmin ? masterMode() : userMode());
       // toast.info(`Switched to ${mode} Mode`);
-      router.push("/crm");  
+      // router.push("/crm");  
+      router.push("/setting");  
+
     };
     
     // const getSidebarInfo = async () => {
@@ -71,7 +73,7 @@ export default mainIndexHOC(
               }
           }
           try {
-              const response = await axios.get(Baseurl + `/db/permission?id=${userInfo?.role_id}&pf=CRM`, header);
+              const response = await axios.get(Baseurl + `/db/permission/roleWise?id=${userInfo?.role_id}&pf=CRM&db_name=${db_name}`, header);
               if(response?.status==200 || response?.status==201){
                   setLoader(false)
                   setSidebarInfo(response?.data?.data);
@@ -192,7 +194,7 @@ export default mainIndexHOC(
       '/images/platform/COMMON.png',
       '/images/platform/CHANNEL.png',
       '/images/platform/DMS.png',
-      "/images/platform/MEDIA.jpg",
+      "/images/platform/MEDIA.png",
 
     ]
 
@@ -274,7 +276,7 @@ export default mainIndexHOC(
                             style={{ width: '30%' }}
                             className=" cursor-pointer"
                           />
-                          <b className="fw-3 text-center cursor-pointer ">{permission.toUpperCase()}</b>
+                          {/* <b className="fw-3 text-center cursor-pointer ">{permission.toUpperCase()}</b> */}
                         </div>
                       ))}
   
@@ -292,7 +294,7 @@ export default mainIndexHOC(
                             style={{ width: '30%' }}
                             className=" cursor-pointer"
                           />
-                          <b className="fw-3 text-center cursor-pointer">COMMON</b>
+                          {/* <b className="fw-3 text-center cursor-pointer">COMMON</b> */}
                         </div>
                         )
                       }
@@ -310,7 +312,7 @@ export default mainIndexHOC(
                             style={{ width: '30%' }}
                             className=" cursor-pointer"
                           />
-                          <b className="fw-3 text-center cursor-pointer">COMMON</b>
+                          {/* <b className="fw-3 text-center cursor-pointer">COMMON</b> */}
                         </div>
                         )
                       }

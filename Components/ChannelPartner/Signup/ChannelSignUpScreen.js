@@ -9,6 +9,7 @@ import { Baseurl, filesUrl } from "../../../Utils/Constants";
 import { setCookie } from "cookies-next";
 import { useDispatch, useSelector } from "react-redux";
 import { startButtonLoading, stopButtonLoading } from "../../../store/buttonLoaderSlice";
+import Loader from "../../Loader/Loader";
 
 
 const ChannelSignUpScreen = () => {
@@ -38,6 +39,7 @@ const ChannelSignUpScreen = () => {
   const[clientData,setClientData]=useState();
   const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
   const dispatch=useDispatch()
+  const [tokenLoading,setTokenLoading] =useState(false)
 
   const router = useRouter();
 
@@ -50,12 +52,14 @@ const ChannelSignUpScreen = () => {
 
   const verifyToken = async (token) => {
     try {
+      setTokenLoading(true)
       const { data } = await axios.post(
         Baseurl + `/db/users/cp/registrationToken/verification`,
         { token }
       );
       if (data.status === 200) {
         if (data?.data?.doc_verification === 0) {
+          setTokenLoading(false)
           toast.success(data.message);
           setFormFields({
             ...formFields,
@@ -68,6 +72,7 @@ const ChannelSignUpScreen = () => {
             isTokenVerified: true,
           });
         }else if (data?.data?.doc_verification === 1) {
+          setTokenLoading(false)
           toast.success("Pending for verification");
           setFormFields({
             ...formFields,
@@ -91,6 +96,7 @@ const ChannelSignUpScreen = () => {
             router.push("/partner")
           },[1500])
         }else if (data?.data?.doc_verification === 2) {
+          setTokenLoading(false)
           toast.success("Documents Verified");
           setFormFields({
             ...formFields,
@@ -114,6 +120,7 @@ const ChannelSignUpScreen = () => {
             router.push("/partner")
           },[1500])
         } else{
+          setTokenLoading(false)
           toast.success("Documents Rejected");
           setFormFields({
             ...formFields,
@@ -140,6 +147,7 @@ const ChannelSignUpScreen = () => {
         
       }
     } catch (error) {
+      setTokenLoading(false)
       console.log(error)
       const errorMessage =
         error?.response?.data?.message || "Something went wrong!";
@@ -279,7 +287,10 @@ const ChannelSignUpScreen = () => {
 
   return (
     <>
-      <section className="Sign-Up pt-4" style={{padding:'0 16px'}}>
+    {
+      tokenLoading ? <Loader/> :
+      ( 
+        <section className="Sign-Up pt-4" style={{padding:'0 16px'}}>
         <div className="container">
           <div className="row">
             <div className="col-12 col-md-7">
@@ -767,6 +778,9 @@ const ChannelSignUpScreen = () => {
           </div>
         </div>
       </section>
+      )
+    }
+      
     </>
   );
 };

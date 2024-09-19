@@ -291,7 +291,7 @@ const AccountTypeScreen = () => {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <Link href="/crm">Home</Link>
+                <Link href="/setting">Home</Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
                 Account Type Master

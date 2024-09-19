@@ -24,18 +24,19 @@ const PendingApprovalInfoScreen = () => {
   const [isLoading, setisLoading] = useState(false);
 
   const [distributorInfo, setDistributorInfo] = useState({
-    distributor_name: "",
+    user:"",
+    user_l_name:"",
     contact_person: "",
-    phone_number: "",
+    contact_number: "",
     email: "",
-    physical_address: "",
+    address: "",
     city_id: "",
     state_id: "",
     country_id: "",
     credit_limit: "",
     payment_method: "",
-    business_pan: "",
-    business_pan_preview: "",
+    pan_file: "",
+    pan_file_preview: "",
     incorporation_certificate: "",
     incorporation_certificate_preview: "",
     address_proof: "",
@@ -49,11 +50,12 @@ const PendingApprovalInfoScreen = () => {
   const validateForm = () => {
     const errors = {};
     const requiredFields = {
-      distributor_name: "Distributor name is required",
+      user: "First Name is required",
+      user_l_name: "Last Name is required",
       contact_person: "Contact person is required",
-      phone_number: "Invalid phone number",
+      contact_number: "Invalid phone number",
       email: "Email is required",
-      physical_address: "Physical address is required",
+      address: "Physical address is required",
       city_id: "City is required",
       state_id: "State is required",
       country_id: "Country is required",

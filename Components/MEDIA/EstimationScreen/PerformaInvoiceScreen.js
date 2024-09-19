@@ -332,7 +332,7 @@ const ProformaInvoiceScreen = () => {
                                     subTotal += totalCost;
                                     return (
                                       <tr key={_siteIndex}>
-                                        <th scope="row">1</th>
+                                        <th scope="row">{_siteIndex+1}</th>
                                         <td>{_site?.media_vehicle}</td>
                                         <td>{_site?.state}</td>
                                         <td>{_site?.city}</td>

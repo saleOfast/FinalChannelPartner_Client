@@ -1201,7 +1201,7 @@ const AddLeadsScreen = () => {
                           }
                         >
                           <label htmlFor="profilelevel">Name *</label>
-                          <input
+                          {/* <input
                             type="text"
                             placeholder="Enter Lead Name"
                             name=""
@@ -1220,7 +1220,35 @@ const AddLeadsScreen = () => {
                               setErrorData({ ...errorData, lead_name: "" });
                             }}
                             value={userInfo.lead_name ? userInfo.lead_name : ""}
+                          /> */}
+                          <input
+                            type="text"
+                            placeholder="Enter Lead Name"
+                            name="lead_name"
+                            id="lead_name"
+                            disabled={viewMode}
+                            className={
+                              errorData?.lead_name
+                                ? "form-control is-invalid"
+                                : "form-control"
+                            }
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Only allow alphabets and spaces
+                              const regex = /^[A-Za-z\s]*$/;
+
+                              if (regex.test(value)) {
+                                setUserInfo({
+                                  ...userInfo,
+                                  lead_name: value,
+                                });
+                                setErrorData({ ...errorData, lead_name: "" });
+                              }
+                            }}
+                            value={userInfo.lead_name ? userInfo.lead_name : ""}
                           />
+
+
                           <span className="errorText">
                             {" "}
                             {errorData?.lead_name ? errorData.lead_name : ""}

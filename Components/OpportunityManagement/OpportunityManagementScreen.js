@@ -263,7 +263,7 @@ const OpportuntyManagementScreen = () => {
                     <h3 className="content_head">OPPORTUNITY STAGE MASTER</h3>
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"> <Link href='/crm'>Home</Link></li>
+                            <li className="breadcrumb-item"> <Link href='/setting'>Home</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">Opportunity Stage Master</li>
                         </ol>
                     </nav>

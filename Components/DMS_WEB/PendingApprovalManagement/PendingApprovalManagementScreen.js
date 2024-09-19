@@ -39,7 +39,7 @@ export default function PendingApprovalManagementScreen() {
       };
 
       try {
-        const response = await axios.get(Baseurl + `/db/leads/calls`, header);
+        const response = await axios.get(Baseurl + `/db/users/dms/getPendingVerificationDistrubutors`, header);
         if(response?.status==200|| response?.status==201){
           setLoader(false)
           setDataList(response?.data?.data);

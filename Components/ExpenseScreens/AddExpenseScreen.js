@@ -200,7 +200,6 @@ const AddLeave = () => {
         }
     }
 
-    console.log(policyHeadList);
 
     function disTanceTotalCalc(e) {
         let value = e.target.value
@@ -448,17 +447,24 @@ const AddLeave = () => {
                                 <div className={errorData?.from_location ? 'input_box errorBox' : 'input_box'}>
                                     <label htmlFor="from_location">{isTravel ? "Start Location" : "Location"} </label>
                                     <input
-                                        type="text"
-                                        name="from_location"
-                                        placeholder="Start Location"
-                                        id="from_location "
-                                        className={errorData?.from_location ? 'form-control is-invalid' : 'form-control'}
-                                        onChange={(e) => {
-                                            setUserInfo({ ...userInfo, from_location: e.target.value })
-                                            setErrorData({ ...errorData, from_location: '' })
-                                        }}
-                                        value={userInfo.from_location ? userInfo.from_location : ""}
+                                    type="text"
+                                    name="from_location"
+                                    placeholder="Start Location"
+                                    id="from_location"
+                                    className={errorData?.from_location ? 'form-control is-invalid' : 'form-control'}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        // Only allow alphabets and spaces
+                                        const regex = /^[A-Za-z\s]*$/;
+
+                                        if (regex.test(value)) {
+                                        setUserInfo({ ...userInfo, from_location: value });
+                                        setErrorData({ ...errorData, from_location: '' });
+                                        }
+                                    }}
+                                    value={userInfo.from_location ? userInfo.from_location : ""}
                                     />
+
                                     <span className="errorText"> {errorData?.from_location ? errorData.from_location : ''}</span>
                                 </div>
                             </div>
@@ -466,17 +472,25 @@ const AddLeave = () => {
                                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                     <div className={errorData?.to_location ? 'input_box errorBox' : 'input_box'}>
                                         <label htmlFor="to_location">End Location </label>
-                                        <input
+                                            <input
                                             type="text"
                                             name="to_location"
                                             placeholder="End Location"
-                                            id="to_location "
+                                            id="to_location"
                                             className={errorData?.to_location ? 'form-control is-invalid' : 'form-control'}
                                             onChange={(e) => {
-                                                setUserInfo({ ...userInfo, to_location: e.target.value })
-                                                setErrorData({ ...errorData, to_location: '' })
+                                                const value = e.target.value;
+                                                // Only allow alphabets and spaces
+                                                const regex = /^[A-Za-z\s]*$/;
+
+                                                if (regex.test(value)) {
+                                                setUserInfo({ ...userInfo, to_location: value });
+                                                setErrorData({ ...errorData, to_location: '' });
+                                                }
                                             }}
-                                            value={userInfo.to_location ? userInfo.to_location : ""} />
+                                            value={userInfo.to_location ? userInfo.to_location : ""}
+                                            />
+
                                         <span className="errorText"> {errorData?.to_location ? errorData.to_location : ''}</span>
                                     </div>
                                 </div> : ""}

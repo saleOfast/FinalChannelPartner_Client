@@ -306,7 +306,7 @@ const ManageMediaVehicleScreen = () => {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <Link href="/crm">Home </Link>
+                <Link href="/setting">Home </Link>
               </li>
               <li className="breadcrumb-item"> Media Vehicle Master</li>
             </ol>

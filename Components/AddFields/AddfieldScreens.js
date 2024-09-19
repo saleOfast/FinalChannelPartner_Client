@@ -215,7 +215,7 @@ export default function AddfieldScreens() {
                     <h3 className="content_head"> {userInfo.navigate_type ? userInfo.navigate_type: "Dynamic Fields"}</h3>
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"> <Link href='/crm'>Dashboard  </Link></li>
+                            <li className="breadcrumb-item"> <Link href='/setting'>Dashboard  </Link></li>
                             <li className="breadcrumb-item" > Manage {userInfo.navigate_type ? userInfo.navigate_type : "Dynamic Fields"}</li>
                         </ol>
                     </nav>

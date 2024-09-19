@@ -720,8 +720,8 @@ const AddOpportunityScreen = () => {
                     errorData?.opp_name ? "input_box errorBox" : "input_box"
                   }
                 >
-                  <label htmlFor="task_name">Name *</label>
-                  <input
+                  <label htmlFor="task_name">Opportunity Name *</label>
+                  {/* <input
                     type="text"
                     placeholder="Enter Opportunity Name"
                     name="task_name"
@@ -734,6 +734,24 @@ const AddOpportunityScreen = () => {
                       setErrorData({ ...errorData, opp_name: "" });
                     }}
                     value={userInfo.opp_name ? userInfo.opp_name : ""}
+                  /> */}
+                  <input
+                    type="text"
+                    placeholder="Enter Opportunity Name"
+                    name="task_name"
+                    id="task_name"
+                    className={`form-control ${errorData?.opp_name ? " is-invalid" : ""}`}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Only allow alphabets and spaces
+                      const regex = /^[A-Za-z\s]*$/;
+
+                      if (regex.test(value)) {
+                        setUserInfo({ ...userInfo, opp_name: value });
+                        setErrorData({ ...errorData, opp_name: "" });
+                      }
+                    }}
+                    value={userInfo.opp_name ? userInfo.opp_name : ""}
                   />
                   <span className="errorText">
                     {" "}
@@ -741,7 +759,7 @@ const AddOpportunityScreen = () => {
                   </span>
                 </div>
               </div>
-              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+              {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                 <div
                   className={
                     errorData?.opp_owner ? "input_box errorBox" : "input_box"
@@ -774,7 +792,7 @@ const AddOpportunityScreen = () => {
                     {errorData?.opp_owner ? errorData.opp_owner : ""}
                   </span>
                 </div>
-              </div>
+              </div> */}
 
               <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                 <div
@@ -901,6 +919,41 @@ const AddOpportunityScreen = () => {
               <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                 <div
                   className={
+                    errorData?.opp_owner ? "input_box errorBox" : "input_box"
+                  }
+                >
+                  <label htmlFor="oppr_ownr">Owner *</label>
+                  {loginDetails?.isDB == true ? (
+                    <input
+                      type="text"
+                      name="opp_owner"
+                      disabled
+                      placeholder="Contact Owner Name"
+                      id="opp_owner"
+                      className="form-control"
+                      value={loginDetails.user ? loginDetails.user : ""}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      name="opp_owner"
+                      disabled
+                      placeholder="Contact Owner Name"
+                      id="opp_owner"
+                      className="form-control"
+                      value={loginDetails.user ? loginDetails.user : ""}
+                    />
+                  )}
+                  <span className="errorText">
+                    {" "}
+                    {errorData?.opp_owner ? errorData.opp_owner : ""}
+                  </span>
+                </div>
+              </div>
+
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div
+                  className={
                     errorData?.opportunity_type_id
                       ? "input_box errorBox"
                       : "input_box"
@@ -950,7 +1003,7 @@ const AddOpportunityScreen = () => {
                     errorData?.amount ? "input_box errorBox" : "input_box"
                   }
                 >
-                  <label htmlFor="Amount">Amount *</label>
+                  <label htmlFor="Amount">Amount/Value *</label>
                   <input
                     type="number"
                     name="Amount"
@@ -973,6 +1026,8 @@ const AddOpportunityScreen = () => {
                   </span>
                 </div>
               </div>
+
+              
               {editMode ? (
                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div

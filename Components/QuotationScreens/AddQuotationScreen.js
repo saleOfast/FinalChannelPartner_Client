@@ -60,8 +60,8 @@ const AddQuotationScreen = () => {
     "ship_pincode": "",
     "ship_address": "",
     "assigned_to": "",
-    "product_scat": ""
-
+    "product_scat": "",
+    "updatedAt":""
   })
   const [relatedOpportunityId, setRelatedOpportunityId] = useState("");
   const [relatedAccountId, setRelatedAccountId] = useState("");
@@ -166,7 +166,9 @@ const AddQuotationScreen = () => {
           "valid_till": masterRes?.valid_till,
           "assigned_to": masterRes?.assigned_to,
           "genrated_date": masterRes?.genrated_date,
-          "product_scat": masterRes?.product_scat
+          "product_scat": masterRes?.product_scat,
+          "updatedAt":masterRes?.updatedAt,
+          "createdAt":masterRes?.createdAt,
         })
         setFormValues(response.data.data?.quatProductData)
         setTaxData(response.data.data?.quatTaxData)
@@ -1371,6 +1373,54 @@ const AddQuotationScreen = () => {
               </div>
             </div>
           </Collapse>
+
+          <div className="add_screen_head">
+                                <span className="text_bold">System Information </span>
+                            </div>
+
+                            <div className="add_user_form">
+                                <div className="row">
+                                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                        <div className="input_box">
+                                            <label htmlFor="created_on">Created On</label>
+                                            <input
+                                                type="datetime-local"
+                                                name="per_cont"
+                                                id="per_cont"
+                                                disabled
+                                                className="form-control"
+                                                onChange={(e) =>
+                                                    setUserInfo({
+                                                        ...userInfo,
+                                                        created_on: e.target.value,
+                                                    })
+                                                }
+                                                value={moment(userInfo?.createdAt).format("YYYY-MM-DDTHH:mm")}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                        <div className="input_box">
+                                            <label htmlFor="last_modified">Last Modified On</label>
+                                            <input
+                                                type="datetime-local"
+                                                name="per_cont"
+                                                id="per_cont"
+                                                disabled
+                                                className="form-control"
+                                                onChange={(e) =>
+                                                    setUserInfo({
+                                                        ...userInfo,
+                                                        updated_on: e.target.value,
+                                                    })
+                                                }
+                                                value={moment(userInfo?.updatedAt).format("YYYY-MM-DDTHH:mm")}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
           <div className="text-end">
             <div className="submit_btn p-3">

@@ -276,7 +276,7 @@ const AddTaxPage = () => {
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 {" "}
-                <Link href="/crm">Home</Link>
+                <Link href="/setting">Home</Link>
               </li>
               <li className="breadcrumb-item">
                 <Link href="/TaxScreen"> Manage Tax </Link>

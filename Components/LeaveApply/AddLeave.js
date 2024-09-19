@@ -320,7 +320,6 @@ const AddLeave = () => {
                                         type="date"
                                         name="From_date "
                                         id="From_date "
-                                        min={minDate}
                                         className={errorData?.from_date ? 'form-control is-invalid' : 'form-control'}
                                         onChange={(e) =>{ setUserInfo({ ...userInfo, from_date: e.target.value })
                                         setErrorData({ ...errorData, from_date: '' })

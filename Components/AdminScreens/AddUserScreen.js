@@ -697,7 +697,7 @@ useEffect(()=>{
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               {" "}
-              <Link href="/crm">Dashboard </Link>
+              <Link href="/setting">Dashboard </Link>
             </li>
             <li className="breadcrumb-item">
               <Link href="/ManageUsers"> Manage User</Link>

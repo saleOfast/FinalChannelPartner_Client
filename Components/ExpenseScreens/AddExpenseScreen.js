@@ -455,7 +455,7 @@ const AddLeave = () => {
                                     onChange={(e) => {
                                         const value = e.target.value;
                                         // Only allow alphabets and spaces
-                                        const regex = /^[A-Za-z\s]*$/;
+                                        const regex = /^[A-Za-z0-9\s]*$/;
 
                                         if (regex.test(value)) {
                                         setUserInfo({ ...userInfo, from_location: value });
@@ -481,7 +481,7 @@ const AddLeave = () => {
                                             onChange={(e) => {
                                                 const value = e.target.value;
                                                 // Only allow alphabets and spaces
-                                                const regex = /^[A-Za-z\s]*$/;
+                                                const regex = /^[A-Za-z0-9\s]*$/;
 
                                                 if (regex.test(value)) {
                                                 setUserInfo({ ...userInfo, to_location: value });

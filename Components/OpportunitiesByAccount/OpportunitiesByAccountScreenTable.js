@@ -134,7 +134,8 @@ const OpportunitiesByAccountScreenTable = ({ dataList, title, openConfirmBox, lo
         downloadOptions:{
             filename:"OpportunityList.csv"
         },
-        enableNestedDataAccess:"."
+        enableNestedDataAccess:".",
+        filterType:'multiselect'
     
     };
 

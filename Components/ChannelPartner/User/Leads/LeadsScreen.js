@@ -455,6 +455,7 @@ const LeadsScreen = () => {
            if(isButtonLoading==false){
             setShowAssignTo("") 
             setLead("")
+            setErrorData({})
            }
           }}
           size='xl'
@@ -654,6 +655,7 @@ const LeadsScreen = () => {
                               className='btn btn-danger rounded-5' 
                               onClick={() => {setShowAssignTo("")
                               setLead("")
+                              setErrorData({})
                               }}
                               
                               >Cancel</button>

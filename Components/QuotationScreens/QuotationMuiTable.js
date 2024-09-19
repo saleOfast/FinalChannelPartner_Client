@@ -105,20 +105,20 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
                 filter: true,
                 download:false,
                 customBodyRender: (value, tableMeta, updateValue) => {
+                    console.log(tableMeta?.rowData)
                     return (
                         <div className="table_btns">
-                            <Link href={`/crm/AddQuotations?id=${value}`}>
+                            {
+                               ( tableMeta?.rowData[5] !== "Approved" && tableMeta?.rowData[5] !== "Rejected" )&&(
+                                        <>
+                                            <Link href={`/crm/AddQuotations?id=${value}`}>
                                 <button
                                     className="action_btn"
                                     title='Edit'>
                                     <EditIcon />
                                 </button>
                             </Link>
-                            <Link href={`/crm/QuotationView?id=${value}`}>
-                                <button className="action_btn" title="View">
-                                    <ViewIcon />
-                                </button>
-                            </Link>
+                            
 
                             <button
                                 onClick={() => openConfirmBox(value)}
@@ -126,6 +126,15 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
                                 title='Delete'>
                                 <DeleteIcon />
                             </button>
+                                        </>
+                               )
+                            }
+                            <Link href={`/crm/QuotationView?id=${value}`}>
+                                <button className="action_btn" title="View">
+                                    <ViewIcon />
+                                </button>
+                            </Link>
+                            
                         </div>
                     )
                 }
@@ -136,7 +145,8 @@ const QuationMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfirmB
     const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions:{filename:"QuotationList.csv"}
+        downloadOptions:{filename:"QuotationList.csv"},
+        filterType:'multiselect'
     };
 
     const mappedDataList=dataList?.map(list=>({

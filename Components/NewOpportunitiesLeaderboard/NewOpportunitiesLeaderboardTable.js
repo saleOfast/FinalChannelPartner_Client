@@ -34,7 +34,7 @@ const NewOpportunitiesLeaderboardTable = ({ dataList, title, openConfirmBox, loa
         downloadOptions:{
             filename:"OpportunityList.csv"
         },
-    
+        filterType:'multiselect'
     };
 
     

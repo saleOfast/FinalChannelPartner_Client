@@ -721,20 +721,6 @@ const AddOpportunityScreen = () => {
                   }
                 >
                   <label htmlFor="task_name">Opportunity Name *</label>
-                  {/* <input
-                    type="text"
-                    placeholder="Enter Opportunity Name"
-                    name="task_name"
-                    id="task_name"
-                    className={`form-control ${
-                      errorData?.opp_name ? " is-invalid" : ""
-                    }`}
-                    onChange={(e) => {
-                      setUserInfo({ ...userInfo, opp_name: e.target.value });
-                      setErrorData({ ...errorData, opp_name: "" });
-                    }}
-                    value={userInfo.opp_name ? userInfo.opp_name : ""}
-                  /> */}
                   <input
                     type="text"
                     placeholder="Enter Opportunity Name"
@@ -744,7 +730,7 @@ const AddOpportunityScreen = () => {
                     onChange={(e) => {
                       const value = e.target.value;
                       // Only allow alphabets and spaces
-                      const regex = /^[A-Za-z\s]*$/;
+                      const regex = /^[A-Za-z0-9\s]*$/;
 
                       if (regex.test(value)) {
                         setUserInfo({ ...userInfo, opp_name: value });

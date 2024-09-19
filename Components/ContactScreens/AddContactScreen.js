@@ -193,9 +193,6 @@ const AddContactScreen = () => {
             errors.contact_no = "A valid 10-digit contact number is required";
         }
     
-        if (!userInfo.email_id || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userInfo.email_id)) {
-            errors.email_id = "A valid email address is required";
-        }
     
         if (!userInfo.account_name) {
             errors.account_name = "Please Enter A Valid Account Owner";
@@ -865,7 +862,7 @@ const AddContactScreen = () => {
 
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                         <div className={errorData?.email_id ? 'input_box errorBox' : 'input_box'}>
-                                            <label htmlFor="Email">Email Id*</label>
+                                            <label htmlFor="Email">Email Id</label>
                                             <input
                                                 type="email"
                                                 name="email"
@@ -1311,7 +1308,10 @@ const AddContactScreen = () => {
                                                 })}
                                             </ul>
                                         </div>
-                                        <div className="card_footer">
+                                        <div className="card_footer d-flex justify-content-between">
+                                        <Link href={`/crm/AddLeads?ac_id=${userInfo?.account_name}`}>
+                                        <div className="text_more">create</div>
+                                        </Link>
                                             <Link href='/crm/ManageLeads'>
                                                 <div className="text_more">view more</div>
                                             </Link>

@@ -134,7 +134,8 @@ const PipelineDueToCloseTable = ({ dataList, title, openConfirmBox, loader }) =>
         downloadOptions:{
             filename:"OpportunityList.csv"
         },
-        enableNestedDataAccess:"."
+        enableNestedDataAccess:".",
+        filterType:'multiselect'
     
     };
 

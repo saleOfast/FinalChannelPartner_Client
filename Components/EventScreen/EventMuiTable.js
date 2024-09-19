@@ -214,7 +214,8 @@ const EventMuiTable = ({
   const options = {
     selectableRows: 'none',
     responsive: "standard",
-    downloadOptions:{filename:"EventsList.csv"}
+    downloadOptions:{filename:"EventsList.csv"},
+    filterType:'multiselect'
   };
 
   const mappedDataList=dataList.map(list=>({

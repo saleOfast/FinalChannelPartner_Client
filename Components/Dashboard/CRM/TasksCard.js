@@ -22,11 +22,11 @@ const TasksCard = ({ dataList }) => {
                         </Link>
                     </div>
                     <ol type='number' className="tasks_list">
-                        {dataList?.latestTasks?.map(({ task_name, days_left }, i) => {
+                        {dataList?.latestTasks?.map(({ task_name, days_left,task_id }, i) => {
                             return (
                                 <li key={i} className="list-item">
                                     <div className="task_box">
-                                        <div className="task">{task_name}  </div>
+                                       <Link href={`/crm/AddTask/?id=${task_id}&vw=md`}><div className="task">{task_name}  </div></Link> 
                                         <div className={days_left && days_left >= 0 ? 'green days_left' : 'days_left red'}>
                                             {days_left + " days due"}
                                         </div>

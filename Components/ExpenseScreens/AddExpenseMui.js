@@ -138,7 +138,8 @@ const AddExpenseMui = ({ policyAppList, viewRemark, title , isTravel  }) => {
 
     const options = {
         selectableRows: 'none',
-        responsive: 'standard'
+        responsive: 'standard',
+        filterType:'multiselect'
 
     };
 

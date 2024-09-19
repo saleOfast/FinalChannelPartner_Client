@@ -134,7 +134,8 @@ const ClosedWonOpportunitiesByOwnerTable = ({ dataList, title, openConfirmBox, l
         downloadOptions:{
             filename:"OpportunityList.csv"
         },
-        enableNestedDataAccess:"."
+        enableNestedDataAccess:".",
+        filterType:'multiselect'
     
     };
 

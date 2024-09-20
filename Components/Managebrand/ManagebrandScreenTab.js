@@ -31,7 +31,8 @@ const ManagebrandScreenTab = ({
         customBodyRender: (value, tableMeta, updateValue) => {
                 return (
                   <div>
-                    <img
+                    {
+                      value ?<img
                       src={`${filesUrl}`+`/brand/images${value}`}
                       alt="Preview"
                       style={{
@@ -39,7 +40,9 @@ const ManagebrandScreenTab = ({
                         height: "60px",
                         
                       }}
-                    />
+                    /> :""
+                    }
+                    
                   </div>
                 );
               },

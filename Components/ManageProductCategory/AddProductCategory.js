@@ -87,9 +87,9 @@ export default function AddProductCategory() {
     if (userInfo.p_cat_name == '') {
       return toast.error('Please enter the Product Category Name')
     }
-    if (userInfo.image == '') {
-      return toast.error('Please Upload Image')
-    }
+    // if (userInfo.image == '') {
+    //   return toast.error('Please Upload Image')
+    // }
   
     const formData = new FormData();
   

@@ -134,9 +134,9 @@ const ManagebrandScreen = () => {
     if (brandInfo.brand_name == "") {
       return toast.error("Please enter the brand name");
     }
-    if (brandInfo.file == null) {
-      return toast.error("Please Upload an image");
-    }
+    // if (brandInfo.file == null) {
+    //   return toast.error("Please Upload an image");
+    // }
 
     if (hasCookie("token")) {
       let token = getCookie("token");
@@ -317,7 +317,7 @@ const ManagebrandScreen = () => {
               </div>
               <div className="col-xl-12 col-md-12 col-sm-12 col-12">
                 <div className="input_box">
-                  <label htmlFor="image">Upload Image *</label>
+                  <label htmlFor="image">Upload Image </label>
                   <input
                     class="form-control"
                     name="image"

@@ -32,7 +32,7 @@ export default function AddDynamicFieldScreen() {
         field_type: null,
         field_size: null,
         option: null,
-    }); 
+    });  
 
     /*     async function fieldTypeChangeHandler(e) {
             const selvalue = e.target.value;

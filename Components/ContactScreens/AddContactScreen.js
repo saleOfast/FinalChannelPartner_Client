@@ -120,14 +120,6 @@ const AddContactScreen = () => {
             try {
                 const response = await axios.get(Baseurl + `/db/account?acc_id=${acc_id}`, header);
                 setSingleAccount(response?.data?.data)
-                // setUserInfo({
-                //     ...userInfo,
-                //     mailing_cont: response?.data?.data?.ship_cont,
-                //     mailing_state: response? .data?.data?.ship_state,
-                //     mailing_city: response? .data?.data?.ship_city,
-                //     mailing_address: response? .data?.data?.ship_address,
-                //     mailing_pincode: response? .data?.data?.ship_pincode,
-                // })
                 setUserInfo((prevUserInfo) => ({
                     ...prevUserInfo,
                     account_name: response?.data?.data?.acc_id,
@@ -186,8 +178,36 @@ const AddContactScreen = () => {
         }
     };
 
+    const validateFields = () => {
+        let errors = {};
+    
+        if (!userInfo.first_name || userInfo.first_name.trim() === "") {
+            errors.first_name = "Please Enter Contact Name";
+        }
+    
+        if (!userInfo.last_name || userInfo.last_name.trim() === "") {
+            errors.last_name = "Please Enter Contact Name";
+        }
+    
+        if (!userInfo.contact_no || !/^\d{10}$/.test(userInfo.contact_no)) {
+            errors.contact_no = "A valid 10-digit contact number is required";
+        }
+    
+    
+        if (!userInfo.account_name) {
+            errors.account_name = "Please Enter A Valid Account Owner";
+        }
+    
+        return errors;
+    }
+
     const submitHandler = async () => {
-        
+        const errors = validateFields();
+    if (Object.keys(errors).length > 0) {
+        setErrorData(errors);
+        toast.error("Please fill the mandatory fields correctly");
+        return;
+    }
         
         if (hasCookie("token")) {
             setisLoading(true)
@@ -243,7 +263,12 @@ const AddContactScreen = () => {
     }
 
     const UpdateHandler = async () => {
-
+        const errors = validateFields();
+    if (Object.keys(errors).length > 0) {
+        setErrorData(errors);
+        toast.error("Please fill the mandatory fields correctly");
+        return;
+    }
         if (hasCookie("token")) {
             setisLoading(true)
             let token = getCookie("token");
@@ -689,19 +714,6 @@ const AddContactScreen = () => {
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                         <div className={errorData?.first_name ? 'input_box errorBox' : 'input_box'}>
                                             <label htmlFor="first_name">First Name *</label>
-                                            {/* <input
-                                                type="text"
-                                                placeholder="Enter First Name"
-                                                name="first_name"
-                                                id="first_name"
-                                                disabled={viewMode}
-                                                className={errorData?.first_name ? 'form-control is-invalid' : 'form-control'}
-                                                onChange={(e) => {
-                                                    setUserInfo({ ...userInfo, first_name: e.target.value })
-                                                    setErrorData({ ...errorData, first_name: '' })
-                                                }}
-                                                value={userInfo.first_name ? userInfo.first_name : ""}
-                                            /> */}
                                             <input
                                                 type="text"
                                                 placeholder="Enter First Name"
@@ -712,7 +724,7 @@ const AddContactScreen = () => {
                                                 onChange={(e) => {
                                                     const value = e.target.value;
                                                     // Regular expression to allow only alphabetical characters
-                                                    const regex = /^[a-zA-Z]*$/;
+                                                    const regex = /^[a-zA-Z\s]*$/;
 
                                                     if (regex.test(value)) {
                                                         setUserInfo({ ...userInfo, first_name: value });
@@ -729,18 +741,6 @@ const AddContactScreen = () => {
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                         <div className="input_box">
                                             <label htmlFor="task_name">Middle Name </label>
-                                            {/* <input
-                                                type="text"
-                                                placeholder="Enter Middle Name "
-                                                name="task_name"
-                                                disabled={viewMode}
-                                                id="task_name"
-                                                className="form-control"
-                                                onChange={(e) =>
-                                                    setUserInfo({ ...userInfo, middle_name: e.target.value })
-                                                }
-                                                value={userInfo.middle_name ? userInfo.middle_name : ""}
-                                            /> */}
                                             <input
                                                 type="text"
                                                 placeholder="Enter Middle Name"
@@ -751,7 +751,7 @@ const AddContactScreen = () => {
                                                 onChange={(e) => {
                                                     const value = e.target.value;
                                                     // Regular expression to allow only alphabetical characters
-                                                    const regex = /^[a-zA-Z]*$/;
+                                                    const regex = /^[a-zA-Z\s]*$/;
 
                                                     if (regex.test(value)) {
                                                         setUserInfo({ ...userInfo, middle_name: value });
@@ -766,19 +766,6 @@ const AddContactScreen = () => {
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                         <div className={errorData?.last_name ? 'input_box errorBox' : 'input_box'}>
                                             <label htmlFor="last_name">Last Name * </label>
-                                            {/* <input
-                                                type="text"
-                                                placeholder="Enter Last Name "
-                                                name="last_name"
-                                                id="last_name"
-                                                disabled={viewMode}
-                                                className={errorData?.last_name ? 'form-control is-invalid' : 'form-control'}
-                                                onChange={(e) => {
-                                                    setUserInfo({ ...userInfo, last_name: e.target.value })
-                                                    setErrorData({ ...errorData, last_name: '' })
-                                                }}
-                                                value={userInfo.last_name ? userInfo.last_name : ""}
-                                            /> */}
                                             <input
                                                 type="text"
                                                 placeholder="Enter Last Name"
@@ -789,7 +776,7 @@ const AddContactScreen = () => {
                                                 onChange={(e) => {
                                                     const value = e.target.value;
                                                     // Regular expression to allow only alphabetical characters
-                                                    const regex = /^[a-zA-Z]*$/;
+                                                    const regex = /^[a-zA-Z\s]*$/;
                                                     if (regex.test(value)) {
                                                         setUserInfo({ ...userInfo, last_name: value });
                                                         setErrorData({ ...errorData, last_name: '' });
@@ -853,25 +840,13 @@ const AddContactScreen = () => {
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                         <div className={errorData?.contact_no ? 'input_box errorBox' : 'input_box'}>
                                             <label htmlFor="Contact">Contact No*</label>
-                                            {/* <input
-                                                type="number"
-                                                name="contact"
-                                                placeholder="Enter Contact No. "
-                                                id="Contact"
-                                                disabled={viewMode}
-                                                className={contError?.contact_no ? 'form-control is-invalid' : 'form-control'}
-                                                onChange={(e) => {
-                                                    setUserInfo({ ...userInfo, contact_no: e.target.value })
-                                                }}
-                                                value={userInfo.contact_no ? userInfo.contact_no : ""}
-                                            /> */}
                                             <input
                                                 type="number"
                                                 name="contact"
                                                 placeholder="Enter Contact No."
                                                 id="Contact"
                                                 disabled={viewMode}
-                                                className={contError?.contact_no ? 'form-control is-invalid' : 'form-control'}
+                                                className={errorData?.contact_no ? 'form-control is-invalid' : 'form-control'}
                                                 onChange={(e) => {
                                                     const value = e.target.value;
                                                     if (value.length <= 10) {
@@ -886,7 +861,7 @@ const AddContactScreen = () => {
                                     </div>
 
                                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                        <div className={contError?.email_id ? 'input_box errorBox' : 'input_box'}>
+                                        <div className={errorData?.email_id ? 'input_box errorBox' : 'input_box'}>
                                             <label htmlFor="Email">Email Id</label>
                                             <input
                                                 type="email"
@@ -894,13 +869,13 @@ const AddContactScreen = () => {
                                                 disabled={viewMode}
                                                 placeholder="Enter Email Id"
                                                 id="Email"
-                                                className={contError?.email_id ? 'form-control is-invalid' : 'form-control'}
+                                                className={errorData?.email_id ? 'form-control is-invalid' : 'form-control'}
                                                 onChange={(e) =>
                                                     setUserInfo({ ...userInfo, email_id: e.target.value })
                                                 }
                                                 value={userInfo.email_id ? userInfo.email_id : ""}
                                             />
-                                            <span className="errorText"> {contError?.email_id ? contError.email_id : ''}</span>
+                                            <span className="errorText"> {errorData?.email_id ? errorData.email_id : ''}</span>
                                         </div>
                                     </div>
 
@@ -1333,7 +1308,10 @@ const AddContactScreen = () => {
                                                 })}
                                             </ul>
                                         </div>
-                                        <div className="card_footer">
+                                        <div className="card_footer d-flex justify-content-between">
+                                        <Link href={`/crm/AddLeads?ac_id=${userInfo?.account_name}`}>
+                                        <div className="text_more">create</div>
+                                        </Link>
                                             <Link href='/crm/ManageLeads'>
                                                 <div className="text_more">view more</div>
                                             </Link>
@@ -1396,7 +1374,10 @@ const AddContactScreen = () => {
                                                 ))}
                                             </ul>
                                         </div>
-                                        <div className="card_footer">
+                                        <div className="card_footer d-flex justify-content-between">
+                                        <Link href={`/crm/AddOpportunity?ac_id=${userInfo?.account_name}`}>
+                                        <div className="text_more">create</div>
+                                        </Link>
                                             <Link href='/crm/Opportunity'>
                                                 <div className="text_more">view more</div>
                                             </Link>

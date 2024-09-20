@@ -171,6 +171,13 @@ const AddAccountScreen = () => {
   }
 
   const submitHandler = async () => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!userInfo?.email_id || !emailPattern.test(userInfo.email_id)) {
+    toast.error("Invalid email address");
+    return; 
+  }
+
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -228,6 +235,12 @@ const AddAccountScreen = () => {
   };
 
   const UpdateHandler = async () => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!userInfo?.email_id || !emailPattern.test(userInfo.email_id)) {
+      toast.error("Invalid email address");
+      return; 
+    }
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -381,7 +394,7 @@ const AddAccountScreen = () => {
           header
         );
         if (response.status === 204 || response.status === 200) {
-          toast.success(response.data.message);
+          // toast.success(response.data.message);
           setisLoading(false);
         }
       } catch (error) {

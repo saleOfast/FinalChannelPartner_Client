@@ -136,8 +136,31 @@ const AddLeave = () => {
         }
     };
 
-    const submitHandler = async () => {
+    // const calculateDays = (value) => {
+    //     const from_date = new Date(userInfo.from_date);
+    //     const to_date = new Date(value);
+    
+    //     if (from_date && to_date) {
+    //         const diffInMs = Math.abs(from_date - to_date);
+    //         const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+    
+    //         // Validate that the selected number of days is not greater than the remaining leaves
+    //         if (diffInDays > noOfDays.remainingCount) {
+    //             toast.error(`You cannot take more than ${noOfDays.remainingCount} days of leave.`);
+    //         } else {
+    //             setNoOfDays({ ...noOfDays, totalCount: diffInDays });
+    //         }
+    //     }
+    // };
+    
 
+    const submitHandler = async () => {
+        const remaining=Number(noOfDays.remainingCount)
+        if (noOfDays.totalCount >remaining) {
+            toast.error("You cannot apply for more days than your remaining leaves");
+            return;
+        }
+    
         
             if (hasCookie("token")) {
                 setisLoading(true)
@@ -320,7 +343,6 @@ const AddLeave = () => {
                                         type="date"
                                         name="From_date "
                                         id="From_date "
-                                        min={minDate}
                                         className={errorData?.from_date ? 'form-control is-invalid' : 'form-control'}
                                         onChange={(e) =>{ setUserInfo({ ...userInfo, from_date: e.target.value })
                                         setErrorData({ ...errorData, from_date: '' })

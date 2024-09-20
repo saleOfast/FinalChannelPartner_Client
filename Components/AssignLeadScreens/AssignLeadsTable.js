@@ -109,7 +109,8 @@ const AssignLeadsTable = ({ dataList, changeHandler, usersList, title, assignCon
     ];
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        filterType:'multiselect'
     };
 
     return (

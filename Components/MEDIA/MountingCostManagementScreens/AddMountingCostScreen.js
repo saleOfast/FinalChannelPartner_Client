@@ -366,7 +366,8 @@ const AddMountingCostScreen = () => {
                             id="media_owner"
                             isDisabled={viewMode}
                             options={
-                              accountList?.filter((item)=>(item?.db_account_type?.platform_id==5))?.map((item)=>{
+                              accountList?.filter((item)=>(item?.db_account_type?.platform_id==5 && item?.db_account_type?.account_type_name==
+                                "Mounting Vendors"))?.map((item)=>{
                                 return{
                                   value:item.acc_id,
                                   label:item.acc_name

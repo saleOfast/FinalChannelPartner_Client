@@ -48,7 +48,109 @@ const CPRegisterLeadsTable = ({
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return `${date.getDate()}/${months[date.getMonth()]}/${date.getFullYear()}`;
 };
+  
 
+
+const addUserHandler = async (id) => {
+  const object=dataList?.find((item)=>item?.cpl_id==id)
+  const db_name = getCookie("db_name");
+  const token = getCookie("token");
+  const payload={
+    contact_number:object?.contact,
+    cpt_id:1,
+    db_name:db_name,
+    email:object?.email,
+    role_id:1,
+    user:object?.first_name,
+    user_l_name:object?.last_name
+  }
+  if (!hasCookie("token")) return;
+ 
+  const header = {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+      pass:"pass"
+    },
+  };
+
+  try {
+    
+    const response = await axios.post(
+      `${Baseurl}/db/users`,
+      payload,
+      header
+    );
+    if (response.status === 200 || response.status === 201) {
+      let onBoradStage=true ;
+      updateUserhandler(onBoradStage)
+      toast.success("Mail Sent for Onboarding");
+    }
+  } catch (error) {
+    if (error?.response?.data?.status === 422) {
+      const taskObject = error.response.data.data.reduce((obj, item) => {
+        const [key, value] = Object.entries(item)[0];
+        obj[key] = value;
+        return obj;
+      }, {});
+      setErrorData(taskObject);
+    }
+    if (error?.response?.data?.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("Something went wrong!");
+    }
+    setisLoading(false);
+  }
+};
+
+
+const updateUserhandler = async (onBoradStage=false) => {
+  const newErrors = validateForm();
+  if (Object.keys(newErrors).length === 0) {
+    if (!hasCookie("token")) return;
+  
+  const token = getCookie("token");
+  const db_name = getCookie("db_name");
+  const header = {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+      pass: "pass",
+    },
+  };
+  let newFormData;
+  if(onBoradStage){
+     newFormData={...formData,db_name:db_name,stage:"LINK SENT"}
+  }
+  else{
+     newFormData={...formData,db_name:db_name}
+  }
+  // const newFormData={...formData,db_name:db_name,}
+  try {
+    const response = await axios.put(
+      `${Baseurl}/db/channelPartnerLeads`,
+      newFormData,
+      header
+    );
+    if (response.status === 200 || response.status === 201) {
+      // toast.success(response?.data?.message);
+      getDataList()
+    }
+  } catch (error) {
+    if (error?.response?.data?.message) {
+      toast.error(error?.response?.data?.message);
+    } else {
+      toast.error("Something went wrong!");
+    }
+  }
+    console.log('Form data submitted:', formData);
+    setShowModal(false);
+  } else {
+    setErrors(newErrors);
+  }
+  
+};
 
   const columns = [
     {
@@ -207,7 +309,10 @@ const CPRegisterLeadsTable = ({
           return (
               <>
                   <div className="table_btns">
-                  <button
+                    {
+                      tableMeta?.rowData[5]!=="LINK SENT" && (
+                        <>
+                              <button
                     className="action_btn"
                     title="Edit"
                     onClick={() => {
@@ -224,6 +329,23 @@ const CPRegisterLeadsTable = ({
                      }} title='Remove'>
                         <DeleteIcon />
                   </button>
+                        </>
+                      )
+                    }
+                  
+                  {
+                    tableMeta?.rowData[5]=="CONTACTED" && (
+                      <button 
+                      className="btn text-white rounded-5"  style={{backgroundColor: clientBtnColor ? clientBtnColor : "#61E25E"}}
+                       onClick={() =>{
+                        let newData = dataList?.find((item) => item?.cpl_id == value);
+                        setFormData(newData)
+                            addUserHandler(value)
+                         }} title='Onboard For Channel Partner'>
+                            Onboard
+                      </button>
+                    )
+                  }
 
                   </div>
               </>
@@ -250,46 +372,6 @@ const CPRegisterLeadsTable = ({
     return newErrors;
   };
 
-  const updateUserhandler = async (event) => {
-    event.preventDefault();
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length === 0) {
-      if (!hasCookie("token")) return;
-    
-    const token = getCookie("token");
-    const db_name = getCookie("db_name");
-    const header = {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-        pass: "pass",
-      },
-    };
-    const newFormData={...formData,db_name:db_name,}
-    try {
-      const response = await axios.put(
-        `${Baseurl}/db/channelPartnerLeads`,
-        newFormData,
-        header
-      );
-      if (response.status === 200 || response.status === 201) {
-        toast.success(response?.data?.message);
-        getDataList()
-      }
-    } catch (error) {
-      if (error?.response?.data?.message) {
-        toast.error(error?.response?.data?.message);
-      } else {
-        toast.error("Something went wrong!");
-      }
-    }
-      console.log('Form data submitted:', formData);
-      setShowModal(false);
-    } else {
-      setErrors(newErrors);
-    }
-    
-  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -331,12 +413,16 @@ const CPRegisterLeadsTable = ({
           <Modal.Title>Update Info</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={updateUserhandler}>
+          <Form onSubmit={(e)=>{
+            e.preventDefault()
+            updateUserhandler()
+          }}>
             <Form.Group controlId="firstName">
               <Form.Label>First Name</Form.Label>
               <Form.Control
                 type="text"
                 name="first_name"
+                disabled={true}
                 value={formData.first_name}
                 onChange={(e) => {
                   // Allow only alphabetic characters
@@ -356,6 +442,7 @@ const CPRegisterLeadsTable = ({
               <Form.Control
                 type="text"
                 name="last_name"
+                disabled={true}
                 value={formData.last_name}
                 onChange={(e) => {
                   // Allow only alphabetic characters
@@ -375,6 +462,7 @@ const CPRegisterLeadsTable = ({
               <Form.Control
                 type="text"
                 name="contact"
+                disabled={true}
                 value={formData.contact}
                 onChange={(e) => {
                   // Allow only numeric characters and limit to 10 digits
@@ -395,6 +483,7 @@ const CPRegisterLeadsTable = ({
               <Form.Control
                 type="email"
                 name="email"
+                disabled={true}
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Enter email"
@@ -412,6 +501,7 @@ const CPRegisterLeadsTable = ({
               >
                 <option value="OPEN">OPEN</option>
                 <option value="CONTACTED">CONTACTED</option>
+                <option hidden value="LINK SENT">LINK SENT</option>
               </Form.Control>
             </Form.Group>
 

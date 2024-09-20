@@ -151,7 +151,8 @@ const LeaveSubmitTab = ({ leaveLists,viewRemark, openConfirmBox, title }) => {
     ];
       const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        filterType:'multiselect'
     };
 
     return (

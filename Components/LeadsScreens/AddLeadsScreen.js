@@ -60,6 +60,7 @@ const AddLeadsScreen = () => {
     company_name: "",
     lead_detail: "",
     email_id: "",
+    contact_name:"",
     p_contact_no: null,
     whatsapp_no: null,
     official_no: null,
@@ -152,13 +153,52 @@ const AddLeadsScreen = () => {
     await fetchData(`/db/loss`, setlossLists, errorToast, setErrorToast);
   };
 
-  const getSingleData = async (id) => {
+  const getSingleDat1a = async (id) => {
     await fetchData(
       `/db/leads?l_id=${id}`,
       setUserInfo,
       errorToast,
       setErrorToast
     );
+  };
+
+  const getSingleData = async (id) => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/leads?l_id=${id}`,
+          header
+        );
+        let data = response?.data?.data;
+      
+      let updatedData = {
+        ...data,
+        opp_name: data?.lead_name ?? "",
+        first_name: data?.contact_name ?? "",
+        acc_name: data?.company_name ?? ""
+      };
+      
+      setUserInfo(updatedData);
+        // checkAccountMatch(name);
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
   };
 
   const getsource = async () => {
@@ -1204,8 +1244,8 @@ const AddLeadsScreen = () => {
                           <input
                             type="text"
                             placeholder="Enter Lead Name"
-                            name=""
-                            id=""
+                            name="lead_name"
+                            id="lead_name"
                             disabled={viewMode}
                             className={
                               errorData?.lead_name
@@ -1213,14 +1253,22 @@ const AddLeadsScreen = () => {
                                 : "form-control"
                             }
                             onChange={(e) => {
-                              setUserInfo({
-                                ...userInfo,
-                                lead_name: e.target.value,
-                              });
-                              setErrorData({ ...errorData, lead_name: "" });
+                              const value = e.target.value;
+                              // Only allow alphabets and spaces
+                              const regex = /^[A-Za-z0-9\s]*$/;
+
+                              if (regex.test(value)) {
+                                setUserInfo({
+                                  ...userInfo,
+                                  lead_name: value,
+                                });
+                                setErrorData({ ...errorData, lead_name: "" });
+                              }
                             }}
                             value={userInfo.lead_name ? userInfo.lead_name : ""}
                           />
+
+
                           <span className="errorText">
                             {" "}
                             {errorData?.lead_name ? errorData.lead_name : ""}
@@ -1477,6 +1525,40 @@ const AddLeadsScreen = () => {
                   </div>
                   <div className="add_user_form">
                     <div className="row">
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div
+                          className={
+                            contError?.contact_name
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
+                          <label htmlFor="email">Contact Name </label>
+                          <input
+                            type="text"
+                            placeholder="Enter Contact Name"
+                            name="contact_name"
+                            id="contact_name"
+                            disabled={viewMode}
+                            className={
+                              contError?.contact_name
+                                ? "form-control is-invalid"
+                                : "form-control"
+                            }
+                            onChange={(e) =>
+                              setUserInfo({
+                                ...userInfo,
+                                contact_name: e.target.value,
+                              })
+                            }
+                            value={userInfo.contact_name ? userInfo.contact_name : ""}
+                          />
+                          <span className="errorText">
+                            {" "}
+                            {contError?.contact_name ? contError.contact_name : ""}
+                          </span>
+                        </div>
+                      </div>
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                         <div
                           className={
@@ -1528,17 +1610,17 @@ const AddLeadsScreen = () => {
                             name="per_cont"
                             id="per_cont"
                             disabled={viewMode}
-                            className={
-                              contError?.p_contact_no
-                                ? "form-control is-invalid"
-                                : "form-control"
-                            }
-                            onChange={(e) =>
-                              setUserInfo({
-                                ...userInfo,
-                                p_contact_no: e.target.value,
-                              })
-                            }
+                            className={contError?.p_contact_no ? "form-control is-invalid" : "form-control"}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Only allow numbers and limit to 10 digits
+                              if (/^\d{0,10}$/.test(value)) {
+                                setUserInfo({
+                                  ...userInfo,
+                                  p_contact_no: value,
+                                });
+                              }
+                            }}
                             value={
                               userInfo?.p_contact_no
                                 ? userInfo.p_contact_no
@@ -1547,6 +1629,7 @@ const AddLeadsScreen = () => {
                                 : ""
                             }
                           />
+
                           <span className="errorText">
                             {" "}
                             {contError?.p_contact_no
@@ -1575,12 +1658,16 @@ const AddLeadsScreen = () => {
                                 ? "form-control is-invalid"
                                 : "form-control"
                             }
-                            onChange={(e) =>
-                              setUserInfo({
-                                ...userInfo,
-                                whatsapp_no: e.target.value,
-                              })
-                            }
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Only allow numbers and limit to 10 digits
+                              if (/^\d{0,10}$/.test(value)) {
+                                setUserInfo({
+                                  ...userInfo,
+                                  whatsapp_no: value,
+                                });
+                              }
+                            }}
                             value={
                               userInfo.whatsapp_no ? userInfo.whatsapp_no : ""
                             }
@@ -1613,12 +1700,16 @@ const AddLeadsScreen = () => {
                                 ? "form-control is-invalid"
                                 : "form-control"
                             }
-                            onChange={(e) =>
-                              setUserInfo({
-                                ...userInfo,
-                                official_no: e.target.value,
-                              })
-                            }
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Only allow numbers and limit to 10 digits
+                              if (/^\d{0,10}$/.test(value)) {
+                                setUserInfo({
+                                  ...userInfo,
+                                  official_no: value,
+                                });
+                              }
+                            }}
                             value={
                               userInfo.official_no ? userInfo.official_no : ""
                             }

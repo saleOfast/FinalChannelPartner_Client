@@ -81,7 +81,8 @@ const AttendenceMuiTable = ({ deleteConfirm, disableConfirm, dataList, openConfi
 
     const options = {
         selectableRows: 'none',
-        responsive: "standard"
+        responsive: "standard",
+        filterType:'multiselect'
     };
 
     return (

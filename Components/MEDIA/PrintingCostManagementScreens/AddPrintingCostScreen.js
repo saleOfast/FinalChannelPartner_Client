@@ -740,7 +740,8 @@ const AddPrintingCostScreen = () => {
       id={userInfo.task_status_id}
       defaultValue=""
       isDisabled={viewMode}
-      options={accountsList?.map((data) => {
+      options={accountsList?.filter((item)=>(item?.db_account_type?.platform_id==5 && item?.db_account_type?.account_type_name==
+        "Printing Vendors"))?.map((data) => {
         return {
           value: data?.acc_id,
           label: data?.acc_name,

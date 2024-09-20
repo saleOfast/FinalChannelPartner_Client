@@ -99,7 +99,7 @@ const [errorToast, setErrorToast] = useState([]);
         const value = e.target.value;
         const isNumeric = /^[0-9]*$/;
         if (isNumeric.test(value) && value.length <= 10) {
-          setDistributorInfo({ ...distributorInfo, phone_number: value });
+          setDistributorInfo({ ...distributorInfo, contact_number: value });
         }
       };
 
@@ -164,19 +164,39 @@ const [errorToast, setErrorToast] = useState([]);
       <div className="row add_user_form">
         <div className="col-xl-4 col-md-4 col-sm-12 col-12">
           <div className="input_box">
-            <label htmlFor="distributorName">Distributor Name*</label>
+            <label htmlFor="firstName">First Name*</label>
             <input
               type="text"
-              id="distributorName"
+              id="firstName"
               className="form-control"
               disabled={viewMode}
-              value={distributorInfo?.distributor_name}
-              placeholder="Enter Distributor's Name"
-              onChange={(e) => handleTextChange(e, "distributor_name")}
+              value={distributorInfo?.user}
+              placeholder="Enter Distributor's First Name"
+              onChange={(e) => handleTextChange(e, "user")}
             />
-            {errorData?.distributor_name && (
+            {errorData?.user && (
               <span className="error-text">
-                {errorData?.distributor_name}
+                {errorData?.user}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+          <div className="input_box">
+            <label htmlFor="lastName">Last Name*</label>
+            <input
+              type="text"
+              id="lastName"
+              className="form-control"
+              disabled={viewMode}
+              value={distributorInfo?.user_l_name}
+              placeholder="Enter Distributor's Last Name"
+              onChange={(e) => handleTextChange(e, "user_l_name")}
+            />
+            {errorData?.user_l_name && (
+              <span className="error-text">
+                {errorData?.user_l_name}
               </span>
             )}
           </div>
@@ -211,11 +231,11 @@ const [errorToast, setErrorToast] = useState([]);
               className="form-control"
               placeholder="Enter Phone Number"
               disabled={viewMode}
-              value={distributorInfo?.phone_number}
+              value={distributorInfo?.contact_number}
               onChange={handlePhoneChange}
             />
-            {errorData?.phone_number && (
-              <span className="error-text">{errorData?.phone_number}</span>
+            {errorData?.contact_number && (
+              <span className="error-text">{errorData?.contact_number}</span>
             )}
           </div>
         </div>
@@ -252,17 +272,17 @@ const [errorToast, setErrorToast] = useState([]);
               className="form-control"
               placeholder="Enter Physical Address"
               disabled={viewMode}
-              value={distributorInfo?.physical_address || ""}
+              value={distributorInfo?.address || ""}
               onChange={(e) =>
                 setDistributorInfo({
                   ...distributorInfo,
-                  physical_address: e.target.value,
+                  address: e.target.value,
                 })
               }
             />
-            {errorData?.physical_address && (
+            {errorData?.address && (
               <span className="error-text">
-                {errorData?.physical_address}
+                {errorData?.address}
               </span>
             )}
           </div>

@@ -112,7 +112,16 @@ const ManageLeadScreen = () => {
           Baseurl + `/db/leads?l_id=${id}`,
           header
         );
-        setUserInfo(response.data.data);
+        let data = response?.data?.data;
+      
+      let updatedData = {
+        ...data,
+        opp_name: data?.lead_name ?? "",
+        first_name: data?.contact_name ?? "",
+        acc_name: data?.company_name ?? ""
+      };
+      
+      setUserInfo(updatedData);
         checkAccountMatch(name);
       } catch (error) {
         if (error?.response?.data?.message) {
@@ -430,6 +439,7 @@ const ManageLeadScreen = () => {
   };
 
   function openCloseConvert(value, name) {
+    
     handleShow();
     setL_id(value);
     getSingleData(value, name);
@@ -691,6 +701,7 @@ const ManageLeadScreen = () => {
                         onChange={(e) =>
                           setUserInfo({ ...userInfo, acc_name: e.target.value })
                         }
+                        value={userInfo?.acc_name}
                       />
                     </div>
                   </div>
@@ -732,10 +743,11 @@ const ManageLeadScreen = () => {
                       <label htmlFor="loss_reson">Contact Name</label>
                       <input
                         type="text"
-                        placeholder="Account Name"
+                        placeholder="Contact Name"
                         name="account name"
                         id="account name"
                         className="form-control"
+                        value={userInfo?.first_name}
                         onChange={(e) =>
                           setUserInfo({
                             ...userInfo,
@@ -784,6 +796,7 @@ const ManageLeadScreen = () => {
                         name="opportunity name"
                         id="opportunity name"
                         className="form-control"
+                        value={userInfo?.opp_name}
                         onChange={(e) =>
                           setUserInfo({ ...userInfo, opp_name: e.target.value })
                         }

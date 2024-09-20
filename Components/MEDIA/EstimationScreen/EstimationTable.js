@@ -198,7 +198,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:443
+          m_id:444
         },
       };
 
@@ -239,7 +239,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:444
+          m_id:443
         },
       };
 
@@ -454,34 +454,22 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   Offer Site
                 </button>
               )}
-              {/* {busiessTypeList.find(
+              {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[10]?.actions==1 && ( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
+              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[4]?.actions==1 && ( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <button
                   className=""
                   style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
                   onClick={() => {
                     setEstimationId(tableMeta?.rowData[4]);
-
                     setShow4(true);
                   }}
                   title="Upload Site"
                 >
                   Upload Site
                 </button>
-              )} */}
-              <button
-                  className=""
-                  style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-                  onClick={() => {
-                    setEstimationId(tableMeta?.rowData[4]);
-
-                    setShow4(true);
-                  }}
-                  title="Upload Site"
-                >
-                  Upload Site
-                </button>
+              )}
+              
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
@@ -579,6 +567,21 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               </Link>
                 )
               }
+              {
+                (mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[7]?.actions==1 &&( tableMeta.rowData[3]=="APPROVED"))&& (
+              <Link href={`/media/PorformaInvoice?est_id=${value}`}>
+              <button
+                className=""
+                style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
+                title="Download Performa Invoice"
+              >
+                Invoice
+              </button>
+              </Link>
+                )
+              }
+
+              
 
 
               {/* <button className="action_btn" title="Upload Site" onClick={()=>{setShow4(true)}}>

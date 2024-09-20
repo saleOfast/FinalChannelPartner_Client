@@ -697,7 +697,7 @@ useEffect(()=>{
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               {" "}
-              <Link href="/crm">Dashboard </Link>
+              <Link href="/setting">Dashboard </Link>
             </li>
             <li className="breadcrumb-item">
               <Link href="/ManageUsers"> Manage User</Link>
@@ -934,7 +934,7 @@ useEffect(()=>{
                         }
                         onChange={(e) => {
                           const value = e.target.value;
-                          if (/^[a-zA-Z]*$/.test(value)) {
+                          if (/^[a-zA-Z\s]*$/.test(value)) {
                             setUserinfo({ ...userInfo, user: value });
                             setErrorData({ ...errorData, user: "" });
                           }
@@ -968,7 +968,7 @@ useEffect(()=>{
                         }
                         onChange={(e) => {
                           const value=e.target.value;
-                          if (/^[a-zA-Z]*$/.test(value)) {
+                          if (/^[a-zA-Z\s]*$/.test(value)) {
                             setUserinfo({ ...userInfo, user_l_name: value });
                           setErrorData({ ...errorData, user_l_name: "" });
                           }

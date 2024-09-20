@@ -266,7 +266,7 @@ const PolicyHeadScreen = () => {
                     <h3 className="content_head">POLICY HEAD MASTER</h3>
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"> <Link href='/crm'>Home</Link></li>
+                            <li className="breadcrumb-item"> <Link href='/setting'>Home</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">Policy Head Master</li>
                         </ol>
                     </nav>

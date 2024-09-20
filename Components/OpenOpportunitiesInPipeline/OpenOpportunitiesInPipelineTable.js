@@ -134,7 +134,8 @@ const OpenOpportunitiesInPipelineTable = ({ dataList, title, openConfirmBox, loa
         downloadOptions:{
             filename:"OpportunityList.csv"
         },
-        enableNestedDataAccess:"."
+        enableNestedDataAccess:".",
+        filterType:'multiselect'
     
     };
 

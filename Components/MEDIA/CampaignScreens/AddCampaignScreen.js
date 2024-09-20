@@ -1210,7 +1210,7 @@ updatedInfo.printing_margin_percentage =
                     </div>
                   </div>
 
-                  {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
                       className={
                         errorData?.proof_attachment
@@ -1249,7 +1249,7 @@ updatedInfo.printing_margin_percentage =
                           : ""}
                       </span>
                     </div>
-                  </div> */}
+                  </div> 
 
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div

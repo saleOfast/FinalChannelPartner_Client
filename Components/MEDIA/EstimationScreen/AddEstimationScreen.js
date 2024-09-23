@@ -17,148 +17,7 @@ import { Table } from "react-bootstrap";
 import DeleteIcon from "../../Svg/DeleteIcon";
 import EditIcon from "../../Svg/EditIcon";
 import ModelEditAgencySite from "./ModelEditAgencySite";
-
-const DMPCArray = [
-  {
-    label: "Display Selling Cost",
-    id: "display_selling_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Mounting Selling Cost",
-    id: "mounting_selling_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Printing Selling Cost",
-    id: "printing_selling_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Selling Cost",
-    id: "total_selling_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Display Buying Cost",
-    id: "display_buying_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Mounting Buying Cost",
-    id: "mounting_buying_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Printing Buying Cost",
-    id: "printing_buying_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Buying Cost",
-    id: "total_buying_cost",
-    fieldType: "currency",
-  },
-];
-
-const additionalInfoArray = [
-  {
-    label: "Sales Order Value",
-    id: "sales_order_value",
-    fieldType: "currency",
-  },
-  {
-    label: "Sales Order Value without Tax",
-    id: "sales_order_value_without_tax",
-    fieldType: "currency",
-  },
-  { label: "Invoice Value", id: "invoice_value", fieldType: "currency" },
-  {
-    label: "Purchase Order Value",
-    id: "purchase_order_value",
-    fieldType: "currency",
-  },
-  {
-    label: "Receipt from Customer Value",
-    id: "receipt_from_customer_value",
-    fieldType: "currency",
-  },
-  {
-    label: "Client Outstanding",
-    id: "client_outstanding",
-    fieldType: "currency",
-  },
-  {
-    label: "Credit Note Value",
-    id: "credit_note_value",
-    fieldType: "currency",
-  },
-  { label: "Debit Note Value", id: "debit_note_value", fieldType: "currency" },
-  {
-    label: "Vendor Payment Value",
-    id: "vendor_payment_value",
-    fieldType: "currency",
-  },
-  { label: "Total NDP Days", id: "total_ndp_days", fieldType: "number" },
-  { label: "Total NDP Value", id: "total_ndp_value", fieldType: "currency" },
-  {
-    label: "Vendor Outstanding",
-    id: "vendor_outstanding",
-    fieldType: "currency",
-  },
-];
-
-const TotalCostArray = [
-  {
-    label: "Total Client Cost without Tax",
-    id: "total_client_cost_without_tax",
-    fieldType: "currency",
-  },
-  { label: "Client Tax", id: "client_tax", fieldType: "currency" },
-  {
-    label: "Total Client Cost with Tax",
-    id: "total_client_cost_with_tax",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Vendor Cost without Tax",
-    id: "total_vendor_cost_without_tax",
-    fieldType: "currency",
-  },
-  { label: "Vendor Tax", id: "vendor_tax", fieldType: "currency" },
-  {
-    label: "Total Vendor Cost with Tax",
-    id: "total_vendor_cost_with_tax",
-    fieldType: "currency",
-  },
-];
-
-const marginInfoArray = [
-  { label: "Overall Margin", id: "overall_margin", fieldType: "currency" },
-  { label: "Display Margin", id: "display_margin", fieldType: "currency" },
-  { label: "Mounting Margin", id: "mounting_margin", fieldType: "currency" },
-  { label: "Printing Margin", id: "printing_margin", fieldType: "currency" },
-  {
-    label: "Overall Margin %",
-    id: "overall_margin_percentage",
-    fieldType: "percentage",
-  },
-  {
-    label: "Display Margin %",
-    id: "display_margin_percentage",
-    fieldType: "percentage",
-  },
-  {
-    label: "Mounting Margin %",
-    id: "mounting_margin_percentage",
-    fieldType: "percentage",
-  },
-  {
-    label: "Printing Margin %",
-    id: "printing_margin_percentage",
-    fieldType: "percentage",
-  },
-];
+import { DMPCArray,additionalInfoArray,TotalCostArray1,TotalCostArray2,marginInfoArray } from "./Array";
  
 
 const AddEstimationScreen = () => {
@@ -1707,6 +1566,7 @@ const AddEstimationScreen = () => {
                     )}
                   </div>
                 </div>
+
                     {
                       viewMode && (
                         <>
@@ -1967,9 +1827,11 @@ const AddEstimationScreen = () => {
                         </>
                       )
                     }
-                
+                {
+                  id ?(
+                    <>
 
-                <div className="add_screen_head">
+<div className="add_screen_head">
                   <span className="text_bold">
                     Display, Mounting and Printing Cost{" "}
                   </span>
@@ -2018,7 +1880,45 @@ const AddEstimationScreen = () => {
                 </div>
                 <div className="add_user_form">
                   <div className="row ">
-                    {TotalCostArray?.map((item) => (
+                    {TotalCostArray1?.map((item) => (
+                      <div
+                        className="col-xl-3 col-md-3 col-sm-12 col-12"
+                        key={item.id}
+                      >
+                        <div
+                          className={
+                            errorData?.[item?.id]
+                              ? "input_box errorBox"
+                              : "input_box"
+                          }
+                        >
+                          <label htmlFor="campaign_brand">{item?.label} </label>
+                          <input
+                            type="number"
+                            id={item?.id}
+                            className="form-control"
+                            disabled={
+                              viewMode ||
+                              item?.id === "total_vendor_cost_with_tax" ||
+                              item?.id === "total_client_cost_with_tax"
+                            }
+                            placeholder={`Enter ${item?.label}`}
+                            value={userInfo?.[item?.id]}
+                            onChange={(e) =>
+                              handleTotalCostInfoChange(e, item?.fieldType)
+                            }
+                          />
+                          <span className="errorText">
+                            {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="add_user_form">
+                  <div className="row ">
+                    {TotalCostArray2?.map((item) => (
                       <div
                         className="col-xl-3 col-md-3 col-sm-12 col-12"
                         key={item.id}
@@ -2092,7 +1992,6 @@ const AddEstimationScreen = () => {
                     ))}
                   </div>
                 </div>
-
                 <div className="add_screen_head">
                   <span className="text_bold">Margin Information </span>
                 </div>
@@ -2130,6 +2029,14 @@ const AddEstimationScreen = () => {
                     ))}
                   </div>
                 </div>
+                    </>
+
+                  ) :null
+                }
+
+                
+
+               
 
                 {busiessTypeList?.find(
                   (item) =>
@@ -2228,6 +2135,61 @@ const AddEstimationScreen = () => {
                           <p>No sites available</p>
                         )}
                       </div>
+                    </div>
+                    <div className="add_screen_head">
+                    <span className="text_bold">Site Booking History</span>
+                  </div>
+                  <div className="add_user_form">
+                    <div className="row">
+                    <div
+                      style={{
+                        maxHeight: '350px', // Set the maximum height for the table
+                        overflowY: 'auto',   // Enable vertical scrolling
+                        marginBottom: '20px', // Add some space below the table
+                      }}
+                    >
+                      <Table striped bordered hover responsive>
+                        <thead>
+                          <tr>
+                            <th>Booking History ID</th>
+                            <th>Site ID</th>
+                            <th>Campaign ID</th>
+                            <th>Campaign Start Date</th>
+                            <th>Campaign End Date</th>
+                            <th>Campaign Total Days</th>
+                            <th>Campaign Status</th>
+                            <th>Client Cost</th>
+                            <th>Vendor Cost</th>
+                            <th>Margin</th>
+                            <th>Margin %</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {bookingHistory.map((booking,index) => (
+                            <tr key={index}>
+                              <td>{booking?.sb_code}</td>
+                              <td>
+                                <Link href={`/sites/${booking}`}>{booking?.db_site?.site_id}</Link>
+                              </td>
+                              <td>
+                                <Link href={`/campaigns/${booking}`}>{booking?.db_media_campaign?.campaign_id}</Link>
+                              </td>
+                              <td>{moment(booking?.db_media_campaign?.campaign_start_date).format("DD/MM/YYYY")
+                              }</td>
+                              <td>{moment(booking?.db_media_campaign?.campaign_end_date).format("DD/MM/YYYY")
+                              }</td>
+                              <td>{booking?.db_media_campaign?.campaign_duration}</td>
+                              <td>{booking?.db_media_campaign?.db_campaign_status?.cmpn_s_name}</td>
+                              <td>{booking?.db_asset_client_cost_sheet?.final_client_po_cost?.toFixed(2)}</td>
+                              <td>{(booking.db_asset_vendor_cost_sheet?.mounting_cost+booking.db_asset_vendor_cost_sheet?.printing_cost+booking.db_asset_vendor_cost_sheet?.final_display_cost).toFixed(2)}</td>
+                              <td>{booking?.db_media_campaign?.overall_margin}</td>
+                              <td>{booking?.db_media_campaign?.overall_margin_percentage}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </div>
+                    </div>
                     </div>
                   </>
                 )}
@@ -2351,61 +2313,7 @@ const AddEstimationScreen = () => {
                   </>
                 )}
 
-                  <div className="add_screen_head">
-                    <span className="text_bold">Site Booking History</span>
-                  </div>
-                  <div className="add_user_form">
-                    <div className="row">
-                    <div
-                      style={{
-                        maxHeight: '350px', // Set the maximum height for the table
-                        overflowY: 'auto',   // Enable vertical scrolling
-                        marginBottom: '20px', // Add some space below the table
-                      }}
-                    >
-                      <Table striped bordered hover responsive>
-                        <thead>
-                          <tr>
-                            <th>Booking History ID</th>
-                            <th>Site ID</th>
-                            <th>Campaign ID</th>
-                            <th>Campaign Start Date</th>
-                            <th>Campaign End Date</th>
-                            <th>Campaign Total Days</th>
-                            <th>Campaign Status</th>
-                            <th>Client Cost</th>
-                            <th>Vendor Cost</th>
-                            <th>Margin</th>
-                            <th>Margin %</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {bookingHistory.map((booking,index) => (
-                            <tr key={index}>
-                              <td>{booking?.sb_code}</td>
-                              <td>
-                                <Link href={`/sites/${booking}`}>{booking?.db_site?.site_id}</Link>
-                              </td>
-                              <td>
-                                <Link href={`/campaigns/${booking}`}>{booking?.db_media_campaign?.campaign_id}</Link>
-                              </td>
-                              <td>{moment(booking?.db_media_campaign?.campaign_start_date).format("DD/MM/YYYY")
-                              }</td>
-                              <td>{moment(booking?.db_media_campaign?.campaign_end_date).format("DD/MM/YYYY")
-                              }</td>
-                              <td>{booking?.db_media_campaign?.campaign_duration}</td>
-                              <td>{booking?.db_media_campaign?.db_campaign_status?.cmpn_s_name}</td>
-                              <td>{booking?.db_asset_client_cost_sheet?.final_client_po_cost?.toFixed(2)}</td>
-                              <td>{(booking.db_asset_vendor_cost_sheet?.mounting_cost+booking.db_asset_vendor_cost_sheet?.printing_cost+booking.db_asset_vendor_cost_sheet?.final_display_cost).toFixed(2)}</td>
-                              <td>{booking?.db_media_campaign?.overall_margin}</td>
-                              <td>{booking?.db_media_campaign?.overall_margin_percentage}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </Table>
-                    </div>
-                    </div>
-                    </div>
+                  
 
                 <div className="add_screen_head">
                   <span className="text_bold">System Information </span>

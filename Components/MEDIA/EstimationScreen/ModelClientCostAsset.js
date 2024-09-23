@@ -12,6 +12,7 @@ import ModelUpdateClientCostAsset from "./ModelUpdateClientCostAsset";
 import Link from "next/link";
 import { Baseurl } from "../../../Utils/Constants";
 import axios from "axios";
+import moment from "moment";
 
 
 const ModelClientCostAsset = ({
@@ -218,25 +219,40 @@ const ModelClientCostAsset = ({
                   <Table bordered hover responsive>
                     <thead>
                       <tr>
+                        <th>SN</th>
                         <th>Site ID</th>
                         <th>State</th>
                         <th>City</th>
                         <th>Location</th>
-                        <th>Category</th>
                         <th>Media Format</th>
                         <th>Media Vehicle</th>
                         <th>Media Type</th>
                         <th>Quantity</th>
-                        <th>Height (Ft.)</th>
                         <th>Width (Ft.)</th>
-                        <th>Total Sq. Ft.</th>
+                        <th>Height (Ft.)</th>
+                        <th>Total (Sq. Ft.)</th>
+                        <th>Campaign Start Date</th>
+                        <th>Campaign End Date</th>
+                        <th>Campaign Duration</th>
+                        <th>Display Cost / Month</th>
+                        <th>Selling Price as per Duration</th>
+                        <th>Final Client PO Cost</th>
+                        <th>Mounting Cost / Sq. Ft.</th>
+                        <th>Mounting Cost</th>
+                        <th>Printing Cost / Sq. Ft.</th>
+                        <th>Printing Cost</th>
+                        <th>Remarks</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {assetSiteLists
                         ?.filter((item) => item.status == true)
-                        ?.map((site) => (
+                        ?.map((site,index) => (
                           <tr key={site.site_id}>
+                            <td style={{ color: "blue", textDecoration: "underline", textDecorationColor: "blue" }}>
+                            {index+1}
+                            </td>
                             <td style={{ color: "blue", textDecoration: "underline", textDecorationColor: "blue" }}>
                             <Link href={`/media/AddSites?id=${site.site_id}&vw=md`}>
                                 {site.site_id}
@@ -246,17 +262,36 @@ const ModelClientCostAsset = ({
                             <td>{site?.db_site?.db_state?.state_name}</td>
                             <td>{site?.db_site?.db_city?.city_name}</td>
                             <td>{site?.db_site?.location}</td>
-                            <td>
+                            {/* <td>
                               {site?.db_site?.db_site_category?.site_cat_name}
-                            </td>
+                            </td> */}
                             <td>{site?.db_site?.db_media_format?.m_f_name}</td>
                             <td>{site?.db_site?.db_media_vehicle?.m_v_name}</td>
                             <td>{site?.db_site?.db_media_type?.m_t_name}</td>
                             <td>{site?.db_site.quantity}</td>
                             <td>{site?.db_site.height}</td>
                             <td>{site?.db_site.width}</td>
+                            <td>{site?.db_site.width*site?.db_site.height}</td>
                             <td>
-                              {site?.db_site.height * site?.db_site.width}
+                              {moment(site?.db_estimate?.db_media_campaign?.campaign_start_date).format("DD/MM/YYYY")}
+                            </td>
+                            <td>
+                              {moment(site?.db_estimate?.db_media_campaign?.campaign_end_date).format("DD/MM/YYYY")}
+                            </td>
+                            <td>
+                              {site?.db_estimate?.db_media_campaign?.campaign_duration}
+                            </td>
+                            <td>
+                              {site?.db_site?.selling_cost}
+                            </td>
+                            <td>
+                              {0}
+                            </td>
+                            <td>
+                              {0}
+                            </td>
+                            <td>
+                              {site?.db_site?.selling_cost}
                             </td>
                             {/* {!viewMode ? ( */}
                             <td className="table_btns d-flex">

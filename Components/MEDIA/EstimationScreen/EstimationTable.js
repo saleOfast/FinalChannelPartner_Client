@@ -403,7 +403,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[5]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )   && (
+              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[5]?.actions==0 &&( tableMeta.rowData[3]=="APPROVED" || tableMeta.rowData[3]=="REJECTED" )   && (
                 <>
                   <button
                     className=""
@@ -422,7 +422,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[6]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
+              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[6]?.actions==0 &&( tableMeta.rowData[3]=="APPROVED" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <>
                   <button
                     className=""
@@ -473,7 +473,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[5]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
+              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[5]?.actions==0 &&( tableMeta.rowData[3]=="NEGOTIATION COMPLETED" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <>
                   <button
                     className=""
@@ -492,7 +492,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
 {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[6]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
+              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[6]?.actions==0 &&( tableMeta.rowData[3]=="NEGOTIATION COMPLETED" || tableMeta.rowData[3]=="REJECTED" )  && (
                 <>
                   <button
                     className=""

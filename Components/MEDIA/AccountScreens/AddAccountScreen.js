@@ -758,7 +758,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="acc_name"> Name *</label>
+                        <label htmlFor="acc_name">Account Name *</label>
                         <input
                           type="text"
                           placeholder="Enter Account Name"
@@ -770,13 +770,6 @@ const AddAccountScreen = () => {
                               ? "form-control is-invalid"
                               : "form-control"
                           }
-                          // onChange={(e) => {
-                          //   setUserInfo({
-                          //     ...userInfo,
-                          //     acc_name: e.target.value,
-                          //   });
-                          //   setErrorData({ ...errorData, acc_name: "" });
-                          // }}
                           onChange={(e) => {
                             const value = e.target.value;
                             const isValid = /^[a-zA-Z\s]*$/.test(value); 

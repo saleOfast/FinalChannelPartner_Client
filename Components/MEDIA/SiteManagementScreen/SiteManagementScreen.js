@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import dynamic from 'next/dynamic'
 import DownloadIcon from "../../Svg/DownloadIcon";
 const DynamicTable = dynamic(
-  () => import('./TasksMuiTable'),
+  () => import('./TasksMuiTable'), 
   { ssr: false }
 )
 

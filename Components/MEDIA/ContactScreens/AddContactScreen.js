@@ -204,7 +204,36 @@ const AddContactScreen = () => {
     }
   };
 
+  const validateFields = () => {
+    let errors = {};
+
+    if (!userInfo.first_name || userInfo.first_name.trim() === "") {
+        errors.first_name = "Please Enter Contact Name";
+    }
+
+    if (!userInfo.last_name || userInfo.last_name.trim() === "") {
+        errors.last_name = "Please Enter Contact Name";
+    }
+
+    if (!userInfo.contact_no || !/^\d{10}$/.test(userInfo.contact_no)) {
+        errors.contact_no = "A valid 10-digit contact number is required";
+    }
+
+
+    if (!userInfo.account_name) {
+        errors.account_name = "Please Enter A Valid Account Owner";
+    }
+
+    return errors;
+}
+
   const submitHandler = async () => {
+    const errors = validateFields();
+    if (Object.keys(errors).length > 0) {
+        setErrorData(errors);
+        toast.error("Please fill the mandatory fields correctly");
+        return;
+    }
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -260,6 +289,12 @@ const AddContactScreen = () => {
   };
 
   const UpdateHandler = async () => {
+    const errors = validateFields();
+    if (Object.keys(errors).length > 0) {
+        setErrorData(errors);
+        toast.error("Please fill the mandatory fields correctly");
+        return;
+    }
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -922,12 +957,12 @@ const AddContactScreen = () => {
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
                       className={
-                        contError?.contact_no
+                        errorData?.contact_no
                           ? "input_box errorBox"
                           : "input_box"
                       }
                     >
-                      <label htmlFor="Contact">Contact No</label>
+                      <label htmlFor="Contact">Contact No*</label>
                       <input
                         type="number"
                         name="contact"
@@ -935,48 +970,21 @@ const AddContactScreen = () => {
                         id="Contact"
                         disabled={viewMode}
                         className={
-                          contError?.contact_no
+                          errorData?.contact_no
                             ? "form-control is-invalid"
                             : "form-control"
                         }
-                        // onChange={(e) => {
-                        //   setUserInfo({
-                        //     ...userInfo,
-                        //     contact_no: e.target.value,
-                        //   });
-                        // }}
-                        // onChange={(e) => {
-                        //     const newValue = e.target.value;
-                        //     // Allow only digits and limit length to 10 digits
-                        //     if (/^\d{0,10}$/.test(newValue)) {
-                        //       setUserInfo({
-                        //         ...userInfo,
-                        //         contact_no: newValue,
-                        //       });
-                        //     }
-                        //   }}
-
                         onChange={(e) => {
-                          const newValue = e.target.value.replace(/[^0-9]/g, ''); // Remove non-digit characters
-                          if (newValue.length <= 10) {
-                            setUserInfo({
-                              ...userInfo,
-                              contact_no: newValue,
-                            });
-                            setContError({ ...contError, contact_no: "" }); // Clear any previous error message
-                          } else {
-                            setContError({ ...contError, contact_no: "Contact number cannot exceed 10 digits." });
+                          const value = e.target.value;
+                          if (value.length <= 10) {
+                              setUserInfo({ ...userInfo, contact_no: value });
                           }
-                  
-                          if (e.target.value !== newValue) {
-                            setContError({ ...contError, contact_no: "Contact number can only contain digits." });
-                          }
-                        }}
+                      }}
                         value={userInfo.contact_no ? userInfo.contact_no : ""}
                       />
                       <span className="errorText">
                         {" "}
-                        {contError?.contact_no ? contError.contact_no : ""}
+                        {errorData?.contact_no ? errorData.contact_no : ""}
                       </span>
                     </div>
                   </div>

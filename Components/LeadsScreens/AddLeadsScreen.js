@@ -153,14 +153,14 @@ const AddLeadsScreen = () => {
     await fetchData(`/db/loss`, setlossLists, errorToast, setErrorToast);
   };
 
-  const getSingleDat1a = async (id) => {
-    await fetchData(
-      `/db/leads?l_id=${id}`,
-      setUserInfo,
-      errorToast,
-      setErrorToast
-    );
-  };
+  // const getSingleDat1a = async (id) => {
+  //   await fetchData(
+  //     `/db/leads?l_id=${id}`,
+  //     setUserInfo,
+  //     errorToast,
+  //     setErrorToast
+  //   );
+  // };
 
   const getSingleData = async (id) => {
     if (hasCookie("token")) {
@@ -184,9 +184,9 @@ const AddLeadsScreen = () => {
       
       let updatedData = {
         ...data,
-        opp_name: data?.lead_name ?? "",
-        first_name: data?.contact_name ?? "",
-        acc_name: data?.company_name ?? ""
+        opp_name: data?.lead_name || "",
+        first_name: data?.contact_name || "",
+        acc_name: data?.company_name || ""
       };
       
       setUserInfo(updatedData);
@@ -1122,6 +1122,66 @@ const AddLeadsScreen = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id]);
+
+  useEffect(()=>{
+    if(userInfo?.contact_id!=="" && userInfo?.contact_id!==null){
+      const getAccountsList = async () => {
+        if (hasCookie("token")) {
+          let token = getCookie("token");
+          let db_name = getCookie("db_name");
+    
+          let header = {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer ".concat(token),
+              db: db_name,
+              pass: "pass",
+            },
+          };
+          try {
+            const response = await axios.get(Baseurl + `/db/account`, header);
+            const filteredAccountList=response?.data?.data.filter((item)=>item?.acc_id==userInfo?.contact_id)
+           setAccountsList(filteredAccountList);
+          } catch (error) {
+            if (error?.response?.data?.message) {
+              toast.error(error.response.data.message);
+            } else {
+              toast.error("Something went wrong!");
+            }
+          }
+        }
+      };
+        getAccountsList()
+    }
+  },[userInfo?.contact_id])
+
+  useEffect(()=>{
+    if(userInfo?.acc_id!=="" && userInfo?.acc_id!==null){
+      const getContactList = async () => {
+        if (hasCookie("token")) {
+          let token = getCookie("token");
+          let db_name = getCookie("db_name");
+    
+          let header = {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer ".concat(token),
+              db: db_name,
+              pass: "pass",
+            },
+          };
+          try {
+            const response = await axios.get(Baseurl + `/db/contacts`, header);
+            const filteredContactList=response?.data?.data.filter((item)=>item?.account_name==userInfo?.acc_id)
+            setContactList(filteredContactList);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      };
+      getContactList()
+    }
+  },[userInfo?.acc_id])
 
   return (
     <>
@@ -2918,7 +2978,7 @@ const AddLeadsScreen = () => {
           {userInfo.lead_status_id == 3 ? (
             <Modal.Title> Add Loss Reason </Modal.Title>
           ) : (
-            <Modal.Title> converted Lead </Modal.Title>
+            <Modal.Title> Convert Lead </Modal.Title>
           )}
         </Modal.Header>
         {userInfo.lead_status_id == 3 ? (
@@ -2994,6 +3054,7 @@ const AddLeadsScreen = () => {
                           name="account name"
                           id="account name"
                           className="form-control"
+                          value={userInfo?.acc_name}
                           onChange={(e) =>
                             setUserInfo({
                               ...userInfo,
@@ -3049,6 +3110,7 @@ const AddLeadsScreen = () => {
                           name="account name"
                           id="account name"
                           className="form-control"
+                          value={userInfo?.first_name}
                           onChange={(e) =>
                             setUserInfo({
                               ...userInfo,
@@ -3097,6 +3159,7 @@ const AddLeadsScreen = () => {
                           name="opportunity name"
                           id="opportunity name"
                           className="form-control"
+                          value={userInfo?.opp_name}
                           onChange={(e) =>
                             setUserInfo({
                               ...userInfo,

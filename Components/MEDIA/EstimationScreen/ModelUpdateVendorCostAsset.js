@@ -8,150 +8,7 @@ import { toast } from "react-toastify";
 import { Baseurl } from "../../../Utils/Constants";
 import moment from "moment";
 import { responsiveFontSizes } from "@mui/material";
-
-const formaArray = [
-  {
-    label: "Site Code",
-    name: "site_id",
-    type: "number",
-    disabled: true,
-  },
-  { label: "State", name: "state", disabled: true, type: "text" },
-  { label: "City", name: "city", disabled: true, type: "text" },
-  {
-    label: "Location",
-    name: "location",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Category",
-    name: "category",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Media Format",
-    name: "media_format",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Media Vehicle",
-    name: "media_vehicle",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Media Type",
-    name: "media_type",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Quantity",
-    name: "quantity",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Width (Ft.)",
-    name: "width",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Height (Ft.)",
-    name: "height",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Total (Sq. Ft.)",
-    name: "total_sq_ft",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Campaign Start Date",
-    name: "campaign_start_date",
-    type: "date",
-    disabled: true,
-  },
-  {
-    label: "Campaign End Date",
-    name: "campaign_end_date",
-    type: "date",
-    disabled: true,
-  },
-  {
-    label: "Campaign Duration",
-    name: "campaign_duration",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Display Vendor Name",
-    name: "display_vender_cost",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Display Cost / Month",
-    name: "display_cost_per_month",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Buying Price as Per Duration",
-    name: "buying_price_as_per_duration",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Final Display Cost",
-    name: "final_display_cost",
-    type: "number",
-  },
-  {
-    label: "Mounting Vendor",
-    name: "mounting_vendor_id",
-    type: "select",
-  },
-  {
-    label: "Mounting Cost / Sq. Ft.",
-    name: "mounting_cost_per_sq_ft",
-    type: "number",
-  },
-  {
-    label: "Mounting Cost",
-    name: "mounting_cost",
-    disabled: true,
-    type: "number",
-  },
-  {
-    label: "Printing Vendor",
-    name: "printing_vendor_id",
-    type: "select",
-  },
-  {
-    label: "Printing Material",
-    name: "pr_m_id",
-    type: "select",
-  },
-  {
-    label: "Printing Cost / Sq. Ft.",
-    name: "printing_cost_per_sq_ft",
-    type: "number",
-  },
-  {
-    label: "Printing Cost",
-    name: "printing_cost",
-    disabled: true,
-    type: "number",
-  },
-  { label: "Remarks", name: "remarks" },
-];
+import { formaArray } from "./Array";
 
 const ModelUpdateVendorCostAsset = ({
   show,
@@ -278,51 +135,7 @@ const ModelUpdateVendorCostAsset = ({
     }
   };
 
-  useEffect(() => {
-    if (formData.pr_m_id) {
-      const selectedMaterial = printingMaterialData.find(
-        (item) => item.pr_m_id === formData.pr_m_id && item.acc_id == formData. printing_vendor_id
-      );
-      if (selectedMaterial) {
-        setFormData((prevData) => ({
-          ...prevData,
-          printing_cost_per_sq_ft: selectedMaterial.pr_c_cost || "",
-        }));
-      }
-    } else {
-      // Optionally reset 'printing_cost_per_sq_ft' if 'pr_m_id' is cleared
-      setFormData((prevData) => ({
-        ...prevData,
-        printing_cost_per_sq_ft: "",
-      }));
-    }
-  }, [formData.pr_m_id]);
-
-  useEffect(() => {
-    if (formData.mounting_vendor_id) {
-      const selectedMountingVendor = mountingVendorData.find(
-        (item) => item.acc_id === formData.mounting_vendor_id
-      );
-
-      console.log(
-        "selectedMountingVendor",
-        selectedMountingVendor,
-        "aggi",
-        formData.mounting_vendor_id
-      );
-      if (selectedMountingVendor) {
-        setFormData((prevData) => ({
-          ...prevData,
-          mounting_cost_per_sq_ft: selectedMountingVendor.mo_c_cost || "",
-        }));
-      }
-    } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        mo_c_id: "",
-      }));
-    }
-  }, [formData.mounting_vendor_id]);
+  
 
   const updateVendorCostSheetAssetForParticularSite = async () => {
     if(validate()){
@@ -771,6 +584,70 @@ const ModelUpdateVendorCostAsset = ({
     setFormData(updatedData);
   
   }, [formData.mounting_cost_per_sq_ft, formData.printing_cost_per_sq_ft, formData.total_sq_ft]);
+
+
+  useEffect(() => {
+    if (formData.pr_m_id) {
+      const selectedMaterial = printingMaterialData.find(
+        (item) => item.pr_m_id === formData.pr_m_id && item.acc_id == formData. printing_vendor_id
+      );
+      if (selectedMaterial) {
+        setFormData((prevData) => ({
+          ...prevData,
+          printing_cost_per_sq_ft: selectedMaterial.pr_c_cost || "",
+        }));
+      }
+    } else {
+      // Optionally reset 'printing_cost_per_sq_ft' if 'pr_m_id' is cleared
+      setFormData((prevData) => ({
+        ...prevData,
+        printing_cost_per_sq_ft: "",
+      }));
+    }
+  }, [formData.pr_m_id]);
+
+  useEffect(() => {
+    if (formData.mounting_vendor_id) {
+      const selectedMountingVendor = mountingVendorData.find(
+        (item) => item.acc_id === formData.mounting_vendor_id
+      );
+
+      console.log(
+        "selectedMountingVendor",
+        selectedMountingVendor,
+        "aggi",
+        formData.mounting_vendor_id
+      );
+      if (selectedMountingVendor) {
+        setFormData((prevData) => ({
+          ...prevData,
+          mounting_cost_per_sq_ft: selectedMountingVendor.mo_c_cost || "",
+        }));
+      }
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        mo_c_id: "",
+      }));
+    }
+  }, [formData.mounting_vendor_id]);
+
+  useEffect(() => {
+    if (formData.final_display_cost && !isNaN(formData.final_display_cost)) {
+      // Calculate the cost per month only if final_display_cost is a valid number
+      const calculate_display_cost_per_month = formData.final_display_cost / 12;
+      setFormData((prevData) => ({
+        ...prevData,
+        display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
+      }));
+    } else {
+      // Clear display_cost_per_month if final_display_cost is empty or invalid
+      setFormData((prevData) => ({
+        ...prevData,
+        display_cost_per_month: "",
+      }));
+    }
+  }, [formData.final_display_cost]);
   
 // useEffect(()=>{
 // if(formData.final_display_cost){
@@ -784,22 +661,7 @@ const ModelUpdateVendorCostAsset = ({
 // },[formData.final_display_cost])
 
 
-useEffect(() => {
-  if (formData.final_display_cost && !isNaN(formData.final_display_cost)) {
-    // Calculate the cost per month only if final_display_cost is a valid number
-    const calculate_display_cost_per_month = formData.final_display_cost / 12;
-    setFormData((prevData) => ({
-      ...prevData,
-      display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
-    }));
-  } else {
-    // Clear display_cost_per_month if final_display_cost is empty or invalid
-    setFormData((prevData) => ({
-      ...prevData,
-      display_cost_per_month: "",
-    }));
-  }
-}, [formData.final_display_cost]);
+
 
 
 

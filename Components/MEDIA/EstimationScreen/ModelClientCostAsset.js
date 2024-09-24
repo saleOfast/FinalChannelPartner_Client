@@ -159,7 +159,7 @@ const ModelClientCostAsset = ({
 
   async function getAssetSites() {
     await fetchData(
-      `/db/media/estimationAssetBusiness/getEstimationAssetBusiness?estimate_id=${estimateId}`,
+      `/db/media/costSheet/clientCostSheet/getCostSheetsData?estimate_id=${estimateId}`,
       setAssetSiteLists,
       errorToast,
       setErrorToast
@@ -167,9 +167,22 @@ const ModelClientCostAsset = ({
   }
 
   useEffect(() => {
-    getAssetSites();
-    getBusinessTypeList();
+    if(show)
+    {
+      getAssetSites();
+      getBusinessTypeList();
+    }
   }, [show]);
+
+  const totals = assetSiteLists.reduce(
+    (acc, site) => {
+      acc.display += site.selling_price_as_per_duration || 0;
+      acc.printing += site.printing_cost || 0;
+      acc.mounting += site.mounting_cost || 0;
+      return acc;
+    },
+    { display: 0, printing: 0, mounting: 0 }
+  );
 
   return (
     <>
@@ -209,21 +222,22 @@ const ModelClientCostAsset = ({
               actionType={deleteAssetSite}
               title={"Are You Sure you want to Delete ?"}
             />
-            <div className="add_screen_head">
-              <span className="text_bold">Asset Sites</span>
+            <div className="add_screen_head" >
+              <span className="text_bold" >Asset Sites</span>
             </div>
             <div className="add_user_form">
-              <div className="row ">
-                {assetSiteLists?.filter((item) => item.status == true).length >
+              <div className="row " style={{ overflowX: "auto" }}>
+                {assetSiteLists.length >
                 0 ? (
-                  <Table bordered hover responsive>
+                  <Table  responsive bordered  style={{ minWidth: "800px" }}>
                     <thead>
                       <tr>
                         <th>SN</th>
-                        <th>Site ID</th>
+                        <th>Site Code</th>
                         <th>State</th>
                         <th>City</th>
                         <th>Location</th>
+                        <th>Category</th>
                         <th>Media Format</th>
                         <th>Media Vehicle</th>
                         <th>Media Type</th>
@@ -247,51 +261,60 @@ const ModelClientCostAsset = ({
                     </thead>
                     <tbody>
                       {assetSiteLists
-                        ?.filter((item) => item.status == true)
                         ?.map((site,index) => (
                           <tr key={site.site_id}>
-                            <td style={{ color: "blue", textDecoration: "underline", textDecorationColor: "blue" }}>
+                            <td>
                             {index+1}
                             </td>
                             <td style={{ color: "blue", textDecoration: "underline", textDecorationColor: "blue" }}>
                             <Link href={`/media/AddSites?id=${site.site_id}&vw=md`}>
-                                {site.site_id}
+                                {site?.site_code}
                             </Link>
                             </td>
 
-                            <td>{site?.db_site?.db_state?.state_name}</td>
-                            <td>{site?.db_site?.db_city?.city_name}</td>
-                            <td>{site?.db_site?.location}</td>
-                            {/* <td>
-                              {site?.db_site?.db_site_category?.site_cat_name}
-                            </td> */}
-                            <td>{site?.db_site?.db_media_format?.m_f_name}</td>
-                            <td>{site?.db_site?.db_media_vehicle?.m_v_name}</td>
-                            <td>{site?.db_site?.db_media_type?.m_t_name}</td>
-                            <td>{site?.db_site.quantity}</td>
-                            <td>{site?.db_site.height}</td>
-                            <td>{site?.db_site.width}</td>
-                            <td>{site?.db_site.width*site?.db_site.height}</td>
+                            <td>{site?.state}</td>
+                            <td>{site?.city}</td>
+                            <td>{site?.location}</td>
+                            <td>{site?.category}</td>
+                            <td>{site?.media_format}</td>
+                            <td>{site?.media_vehicle}</td>
+                            <td>{site?.media_type}</td>
+                            <td>{site?.quantity}</td>
+                            <td>{site?.height}</td>
+                            <td>{site?.width}</td>
+                            <td>{site?.total_sq_ft}</td>
                             <td>
-                              {moment(site?.db_estimate?.db_media_campaign?.campaign_start_date).format("DD/MM/YYYY")}
+                              {moment(site?.campaign_start_date).format("DD/MM/YYYY")}
                             </td>
                             <td>
-                              {moment(site?.db_estimate?.db_media_campaign?.campaign_end_date).format("DD/MM/YYYY")}
+                              {moment(site?.campaign_end_date).format("DD/MM/YYYY")}
                             </td>
                             <td>
-                              {site?.db_estimate?.db_media_campaign?.campaign_duration}
+                              {moment(site?.campaign_end_date).diff(moment(site?.campaign_start_date), 'days')}
                             </td>
                             <td>
-                              {site?.db_site?.selling_cost}
+                              {site?.display_cost_per_month}
                             </td>
                             <td>
-                              {0}
+                            {Number(site?.selling_price_as_per_duration).toFixed(2)}
                             </td>
                             <td>
-                              {0}
+                            {site?.final_client_po_cost}
                             </td>
                             <td>
-                              {site?.db_site?.selling_cost}
+                            {site?.mounting_cost_per_sq_ft}
+                            </td>
+                            <td>
+                            {Number(site?.mounting_cost).toFixed(2)}
+                            </td>
+                            <td>
+                            {site?.printing_cost_per_sq_ft}
+                            </td>
+                            <td>
+                            {Number(site?.printing_cost).toFixed(2)}
+                            </td>
+                            <td>
+                            {site?.remarks}
                             </td>
                             {/* {!viewMode ? ( */}
                             <td className="table_btns d-flex">
@@ -340,6 +363,17 @@ const ModelClientCostAsset = ({
                           </tr>
                         ))}
                     </tbody>
+                    <tfoot>
+                <tr style={{ fontWeight: "bold" }}>
+                  <td colSpan={16}></td>
+                  <td >Total</td>
+                  <td>{totals.display.toFixed(2)}</td>
+                  <td colSpan={2}></td>
+                  <td>{totals.mounting.toFixed(2)}</td>
+                  <td colSpan={1}></td>
+                  <td>{totals.printing.toFixed(2)}</td>
+                </tr>
+              </tfoot>
                   </Table>
                 ) : (
                   <p>No sites available</p>

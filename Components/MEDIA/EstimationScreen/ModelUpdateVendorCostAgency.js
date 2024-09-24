@@ -9,150 +9,9 @@ import { Baseurl } from "../../../Utils/Constants";
 import moment from "moment";
 import { responsiveFontSizes } from "@mui/material";
 import { ConnectingAirportsOutlined } from "@mui/icons-material";
+import { formaArray1 } from "./Array";
 
-const formaArray = [
-  {
-    label: "Site Code",
-    name: "site_id",
-    type: "number",
-    disabled: true,
-  },
-  { label: "State", name: "state", disabled: true, type: "text" },
-  { label: "City", name: "city", disabled: true, type: "text" },
-  {
-    label: "Location",
-    name: "location",
-    disabled: true,
-    type: "text",
-  },
-  // {
-  //   label: "Category",
-  //   name: "category",
-  //   disabled: true,
-  //   type: "text",
-  // },
-  {
-    label: "Media Format",
-    name: "media_format",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Media Vehicle",
-    name: "media_vehicle",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Media Type",
-    name: "media_type",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Quantity",
-    name: "quantity",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Width (Ft.)",
-    name: "width",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Height (Ft.)",
-    name: "height",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Total (Sq. Ft.)",
-    name: "total_sq_ft",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Campaign Start Date",
-    name: "campaign_start_date",
-    type: "date",
-    disabled: true,
-  },
-  {
-    label: "Campaign End Date",
-    name: "campaign_end_date",
-    type: "date",
-    disabled: true,
-  },
-  {
-    label: "Campaign Duration",
-    name: "campaign_duration",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Display Vendor Name",
-    name: "display_vender_cost",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Display Cost / Month",
-    name: "display_cost_per_month",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Buying Price as Per Duration",
-    name: "buying_price_as_per_duration",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Final Display Cost",
-    name: "final_display_cost",
-    type: "number",
-  },
-  {
-    label: "Mounting Vendor",
-    name: "mounting_vendor_id",
-    type: "select",
-  },
-  {
-    label: "Mounting Cost / Sq. Ft.",
-    name: "mounting_cost_per_sq_ft",
-    type: "number",
-  },
-  {
-    label: "Mounting Cost",
-    name: "mounting_cost",
-    disabled: true,
-    type: "number",
-  },
-  {
-    label: "Printing Vendor",
-    name: "printing_vendor_id",
-    type: "select",
-  },
-  {
-    label: "Printing Material",
-    name: "pr_m_id",
-    type: "select",
-  },
-  {
-    label: "Printing Cost / Sq. Ft.",
-    name: "printing_cost_per_sq_ft",
-    type: "number",
-  },
-  {
-    label: "Printing Cost",
-    name: "printing_cost",
-    disabled: true,
-    type: "number",
-  },
-  { label: "Remarks", name: "remarks" },
-];
+
 
 const ModelUpdateVendorCostAgency = ({
   show,
@@ -877,7 +736,7 @@ useEffect(() => {
         <Modal.Body>
           <div className="add_user_form">
             <div className="row">
-              {formaArray.map((field, index) => (
+              {formaArray1.map((field, index) => (
                 <div key={index} className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div className="input_box">
                     <label htmlFor={field.name}>{field.label}</label>

@@ -438,18 +438,6 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   </button>
                 </>
               )}
-              <button
-                    className=""
-                    style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-                    onClick={() => {
-                      setEstimationId(tableMeta?.rowData[4]);
-                      getState();
-                      setShowVendorAsset(true);
-                    }}
-                    title="Vendor Cost Sheet Update"
-                  >
-                    Vendor Cost Sheet
-                  </button>
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
@@ -466,6 +454,18 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   Offer Site
                 </button>
               )}
+              <button
+                  className=""
+                  style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
+                  onClick={() => {
+                    setEstimationId(tableMeta?.rowData[4]);
+                    setShow3(true);
+                  }}
+                  title="Offer Agency Site"
+                >
+                  Offer Site
+                </button>
+              
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
               )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[4]?.actions==1 && ( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
@@ -501,6 +501,18 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   </button>
                 </>
               )}
+              <button
+                    className=""
+                    style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
+                    onClick={() => {
+                      setEstimationId(tableMeta?.rowData[4]);
+                      getState();
+                      setShow6(true);
+                    }}
+                    title="Client Cost Sheet Update"
+                  >
+                    Client Cost Sheet
+                  </button>
 
 {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
@@ -520,7 +532,18 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   </button>
                 </>
               )}
-              
+              <button
+                    className=""
+                    style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
+                    onClick={() => {
+                      setEstimationId(tableMeta?.rowData[4]);
+                      getState();
+                      setShowVendorAgency(true);
+                    }}
+                    title="Vendor Cost Sheet Update"
+                  >
+                    Vendor Cost Sheet
+                  </button>
               
               {
                mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[9]?.actions==1 && tableMeta.rowData[3]=="NEGOTIATION COMPLETED" &&  (
@@ -707,6 +730,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         stateId={stateId}
         cityIds={cityIds}
         estimateId={estimationId}
+        getContactList={getContactList}
       />
 
       <ModelAgencySiteUpload

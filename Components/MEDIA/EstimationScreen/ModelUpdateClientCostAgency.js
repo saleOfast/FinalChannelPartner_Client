@@ -17,7 +17,8 @@ const ModelUpdateClientCostAgency = ({
   stateId,
   cityIds,
   selectedSite,
-  getAgencySites
+  getAgencySites,
+  getContactList
 }) => {
 
   const [formData, setFormData] = useState({
@@ -39,7 +40,7 @@ const ModelUpdateClientCostAgency = ({
     campaign_duration: '',
     display_cost_per_month: '',
     selling_price_as_per_duration: '',
-    final_client_po_cost: '',
+    _client_po_cost: '',
     mounting_cost_per_sq_ft: '',
     mounting_cost: '',
     printing_cost_per_sq_ft: 0,
@@ -92,7 +93,7 @@ const ModelUpdateClientCostAgency = ({
                   campaign_duration: response?.data?.data?.campaign_duration || '',
                   display_cost_per_month: response?.data?.data?.display_cost_per_month || "0",
                   selling_price_as_per_duration: response?.data?.data?.selling_price_as_per_duration || "0",
-                  final_client_po_cost: response?.data?.data?.final_client_po_cost || "0",
+                  _client_po_cost: response?.data?.data?._client_po_cost || "0",
                   mounting_cost_per_sq_ft: response?.data?.data?.mounting_cost_per_sq_ft || "0",
                   mounting_cost: response?.data?.data?.mounting_cost || "0",
                   printing_cost_per_sq_ft: response?.data?.data?.printing_cost_per_sq_ft || "0",
@@ -106,27 +107,27 @@ const ModelUpdateClientCostAgency = ({
               setFormData({
                 site_id: selectedSite?.site_id || '',
                 estimate_id:selectedSite?.estimate_id||"",
-                state:selectedSite?.state_id || '',
-                city:selectedSite?.city_id || '',
+                state:selectedSite?.state || '',
+                city:selectedSite?.city || '',
                 location: selectedSite?.location || '',
                 // category: selectedSite?.site_cat_name || '',
-                media_format: selectedSite?.m_f_id|| '',
-                media_vehicle: selectedSite?.m_v_id || '',
-                media_type: selectedSite?.m_t_id || '',
+                media_format: selectedSite?.media_format|| '',
+                media_vehicle: selectedSite?.media_vehicle || '',
+                media_type: selectedSite?.media_type || '',
                 quantity: selectedSite?.quantity || '',
                 width:selectedSite?.width || '',
                 height:selectedSite?.height || '',
-                total_sq_ft: (selectedSite?.width*selectedSite?.height).toFixed(2) || '',
-                campaign_start_date: moment(selectedSite?.db_estimate?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")  || '',
-                campaign_end_date:moment(selectedSite?.db_estimate?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")  || '',
-                campaign_duration: selectedSite?.db_estimate?.db_media_campaign?.campaign_duration || '',
-                display_cost_per_month: selectedSite?.db_estimate?.display_selling_cost || "0",
+                total_sq_ft: (selectedSite?.total_sq_ft).toFixed(2) || '',
+                campaign_start_date: moment(selectedSite?.campaign_start_date).format("YYYY-MM-DD")  || '',
+                campaign_end_date:moment(selectedSite?.campaign_end_date).format("YYYY-MM-DD")  || '',
+                campaign_duration: moment(selectedSite?.campaign_end_date).diff(moment(selectedSite?.campaign_start_date), 'days') || '',
+                display_cost_per_month: selectedSite?.display_cost_per_month || "0",
                 selling_price_as_per_duration: selectedSite?.selling_price_as_per_duration || "0",
-                final_client_po_cost: selectedSite?.final_client_po_cost || "0",
+                _client_po_cost: selectedSite?._client_po_cost || "0",
                 mounting_cost_per_sq_ft:selectedSite?.mounting_cost_per_sq_ft || "0",
-                mounting_cost:((selectedSite?.mounting_cost_per_sq_ft|| 0)*selectedSite?.width*selectedSite?.height).toFixed(2) || "0",
+                mounting_cost:Number(selectedSite?.mounting_cost).toFixed(2) || "0",
                 printing_cost_per_sq_ft:selectedSite?.printing_cost_per_sq_ft || '0',
-                printing_cost: ((selectedSite?.printing_cost_per_sq_ft||0)*selectedSite?.width*selectedSite?.height).toFixed(2) || "0",
+                printing_cost: Number(selectedSite?.printing_cost).toFixed(2) || "0",
                 remarks: selectedSite?.remarks || '',
               });
             }
@@ -155,7 +156,7 @@ const ModelUpdateClientCostAgency = ({
 
     // Convert numeric values to numbers
     const parsedValue = name === 'width' || name === 'height' || name === 'quantity' ||
-                        name === 'final_client_po_cost' || name === 'mounting_cost_per_sq_ft' ||
+                        name === '_client_po_cost' || name === 'mounting_cost_per_sq_ft' ||
                         name === 'printing_cost_per_sq_ft'
                         ? parseFloat(value) || ''
                         : value;
@@ -208,7 +209,7 @@ const ModelUpdateClientCostAgency = ({
       'height',
       'campaign_start_date',
       'campaign_end_date',
-      'final_client_po_cost',
+      '_client_po_cost',
       'mounting_cost_per_sq_ft',
       'printing_cost_per_sq_ft'
     ];
@@ -240,7 +241,7 @@ const ModelUpdateClientCostAgency = ({
           pass: "pass",
         },
       };
-      const newData={...formData,site_id:selectedSite?.site_id,campaign_id:selectedSite?.db_estimate?.campaign_id}
+      const newData={...formData,site_id:selectedSite?.site_id,campaign_id:selectedSite?.campaign_id}
       try {
         const response = await axios.post(
           Baseurl +
@@ -254,6 +255,7 @@ const ModelUpdateClientCostAgency = ({
           setLoading(false)
           handleClose()
           setFlag(false)
+          getContactList()
         }
       } catch (error) {
         console.log(error);
@@ -282,7 +284,7 @@ const ModelUpdateClientCostAgency = ({
           pass: "pass",
         },
       };
-      const newData={...formData,site_id:selectedSite?.site_id,campaign_id:selectedSite?.db_estimate?.campaign_id}
+      const newData={...formData,site_id:selectedSite?.site_id,campaign_id:selectedSite?.campaign_id}
       try {
         const response = await axios.put(
           Baseurl +
@@ -296,6 +298,7 @@ const ModelUpdateClientCostAgency = ({
           setLoading(false)
           handleClose()
           setFlag(false)
+          getContactList()
         }
       } catch (error) {
         console.log(error);

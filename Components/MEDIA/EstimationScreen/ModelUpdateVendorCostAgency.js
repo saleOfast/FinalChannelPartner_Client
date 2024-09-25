@@ -29,7 +29,8 @@ const ModelUpdateVendorCostAgency = ({
   setPrintingVendorData,
   printingMaterialData,
   mountingVendorData,
-  getContactList
+  getContactList,
+  getAgencySites
 }) => {
   const [printingVendor, setPrintingVendor] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -245,7 +246,7 @@ const ModelUpdateVendorCostAgency = ({
         ...formData,
         site_id: selectedSite?.site_id,
         estimate_id: selectedSite?.estimate_id,
-        campaign_id: selectedSite?.db_estimate?.campaign_id,
+        campaign_id: selectedSite?.campaign_id,
         vcs_id: getData.vcs_id,
       };
       try {
@@ -261,6 +262,7 @@ const ModelUpdateVendorCostAgency = ({
           setLoading(false);
           handleClose();
           setFlag(false);
+          getAgencySites()
           getContactList()
         }
       } catch (error) {
@@ -294,7 +296,7 @@ const ModelUpdateVendorCostAgency = ({
         ...formData,
         site_id: selectedSite?.site_id,
         estimate_id: selectedSite?.estimate_id,
-        campaign_id: selectedSite?.db_estimate?.campaign_id,
+        campaign_id: selectedSite?.campaign_id,
       };
       try {
         const response = await axios.post(
@@ -311,6 +313,7 @@ const ModelUpdateVendorCostAgency = ({
           setLoading(false);
           handleClose();
           setFlag(false);
+          getAgencySites()
           getContactList()
         }
       } catch (error) {
@@ -411,8 +414,8 @@ const ModelUpdateVendorCostAgency = ({
           const filteredVendorData = printingVendorData.filter(
             (item) =>
               item?.db_media_type?.m_t_name ==
-                selectedSite?.m_t_id &&
-                item?.db_account?.billState?.state_name == selectedSite?.state_id
+                selectedSite?.media_type &&
+                item?.db_account?.billState?.state_name == selectedSite?.state
           );
           const uniqueFilteredVendorData = filteredVendorData.reduce((acc, current) => {
             const x = acc.find(item => item.acc_id === current.acc_id);
@@ -432,9 +435,9 @@ const ModelUpdateVendorCostAgency = ({
           const filteredMountingVendorData = mountingVendorData.filter(
             (item) =>
               item.db_media_type.m_t_name ==
-                selectedSite.m_t_id &&
+                selectedSite.media_type &&
               item.db_account.billState?.state_name ==
-                selectedSite.state_id
+                selectedSite.state
           );
           const uniqueFilteredMountingVendorData = filteredMountingVendorData.reduce((acc, current) => {
             const x = acc.find(item => item.acc_id === current.acc_id);
@@ -474,59 +477,47 @@ const ModelUpdateVendorCostAgency = ({
         } else {
           console.log("alhgljlgjljsejglajfhgogjflhaks  i ma ajrunningljlkf ");
           setFormData({
-            site_id: selectedSite?.site_id || "",
+            site_id: selectedSite?.site || "",
             estimate_id: selectedSite?.estimate_id || "",
-            state: selectedSite?.state_id || "",
-            city: selectedSite?.city_id || "",
+            state: selectedSite?.state || "",
+            city: selectedSite?.city || "",
             location: selectedSite?.location || "",
-            category:
-              selectedSite?.site_cat_name || "",
+            // category:
+            //   selectedSite?.site_cat_name || "",
             media_format:
-              selectedSite?.m_f_id || "",
+              selectedSite?.media_format || "",
             media_vehicle:
-              selectedSite?.m_v_id || "",
-            media_type: selectedSite?.m_t_id || "",
+              selectedSite?.media_vehicle || "",
+            media_type: selectedSite?.media_type || "",
             quantity: selectedSite?.quantity || "",
             width: selectedSite?.width || "",
             height: selectedSite?.height || "",
-            total_sq_ft:
-              (
-                selectedSite?.width * selectedSite?.height
-              ).toFixed(2) || "",
+            total_sq_ft:selectedSite?.total_sq_ft.toFixed(2) || "",
             campaign_start_date:
               moment(
-                selectedSite?.db_estimate?.db_media_campaign
-                  ?.campaign_start_date
+                selectedSite?.campaign_start_date
               ).format("YYYY-MM-DD") || "",
             campaign_end_date:
               moment(
-                selectedSite?.db_estimate?.db_media_campaign?.campaign_end_date
+                selectedSite?.campaign_end_date
               ).format("YYYY-MM-DD") || "",
             campaign_duration:
-              selectedSite?.db_estimate?.db_media_campaign?.campaign_duration ||
+            moment(selectedSite?.campaign_end_date).diff(moment(selectedSite?.campaign_start_date), 'days') ||
               "",
-            display_vender_cost:
-              selectedSite?.db_estimate?.display_vender_cost || "0",
-              display_cost_per_month: selectedSite?.db_estimate?.display_selling_cost || "0",
-            buying_price_as_per_duration:
-              selectedSite?.db_estimate?.buying_price_as_per_duration || "0",
+            display_vender_name:
+              selectedSite?.display_vendor_name || "0",
+              display_cost_per_month:
+              selectedSite?.display_cost_per_month || "0",
+              display_cost_per_month: selectedSite?.display_selling_cost || "0",
+              buying_price_as_per_duration:
+              selectedSite?.buying_price_as_per_duration || "0",
             // final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || "0",
             mounting_cost_per_sq_ft:
-              selectedSite?.db_estimate?.mounting_cost_per_sq_ft || "0",
-            mounting_cost:
-              (
-                (selectedSite?.db_estimate?.mounting_cost_per_sq_ft || 0) *
-                selectedSite?.width *
-                selectedSite?.height
-              ).toFixed(2) || "0",
+              selectedSite?.mounting_cost_per_sq_ft || "0",
+            mounting_cost:Number(selectedSite?.mounting_cost).toFixed(2) || "0",
             printing_cost_per_sq_ft:
-              selectedSite?.db_estimate?.printing_cost_per_sq_ft || "0",
-            printing_cost:
-              (
-                (selectedSite?.db_estimate?.printing_cost_per_sq_ft || 0) *
-                selectedSite?.width *
-                selectedSite?.height
-              ).toFixed(2) || "0",
+              selectedSite?.printing_cost_per_sq_ft || "0",
+            printing_cost:Number(selectedSite?.printing_cost).toFixed(2) || "0",
             remarks: selectedSite?.remarks || "",
           });
           
@@ -534,8 +525,8 @@ const ModelUpdateVendorCostAgency = ({
           const filteredVendorData = printingVendorData.filter(
             (item) =>
               item?.db_media_type?.m_t_name ==
-                selectedSite?.m_t_id &&
-                item?.db_account?.billState?.state_name == selectedSite?.state_id
+                selectedSite?.media_type &&
+                item?.db_account?.billState?.state_name == selectedSite?.state
           );
 
           // const filteredVendorData = printingVendorData.filter(
@@ -568,9 +559,9 @@ const ModelUpdateVendorCostAgency = ({
           const filteredMountingVendorData = mountingVendorData.filter(
             (item) =>
               item.db_media_type.m_t_name ==
-                selectedSite.m_t_id &&
+                selectedSite.media_type &&
               item.db_account.billState?.state_name ==
-                selectedSite.state_id
+                selectedSite.state
           );
 
           // console.log("answer 400 filteredMountingVendorData",filteredMountingVendorData)
@@ -618,7 +609,7 @@ const ModelUpdateVendorCostAgency = ({
     console.log("printingMaterialData data is ",printingMaterialData)
     if (formData.printing_vendor_id) {
       const fileterPrintingMdaterialData = printingMaterialData.filter(
-        (item) => item.acc_id == formData.printing_vendor_id && item.db_media_type.m_t_name ==  selectedSite.m_t_id
+        (item) => item.acc_id == formData.printing_vendor_id && item.db_media_type.m_t_name ==  selectedSite.media_type
       );
 
       const printingMaterial = fileterPrintingMdaterialData.map((item) => ({
@@ -671,22 +662,22 @@ const ModelUpdateVendorCostAgency = ({
 
 // },[formData.final_display_cost])
 
-useEffect(() => {
-  if (formData.final_display_cost && !isNaN(formData.final_display_cost)) {
-    // Calculate the cost per month only if final_display_cost is a valid number
-    const calculate_display_cost_per_month = formData.final_display_cost / 12;
-    setFormData((prevData) => ({
-      ...prevData,
-      display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
-    }));
-  } else {
-    // Clear display_cost_per_month if final_display_cost is empty or invalid
-    setFormData((prevData) => ({
-      ...prevData,
-      display_cost_per_month: "",
-    }));
-  }
-}, [formData.final_display_cost]);
+// useEffect(() => {
+//   if (formData.final_display_cost && !isNaN(formData.final_display_cost)) {
+//     // Calculate the cost per month only if final_display_cost is a valid number
+//     const calculate_display_cost_per_month = formData.final_display_cost / 12;
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
+//     }));
+//   } else {
+//     // Clear display_cost_per_month if final_display_cost is empty or invalid
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       display_cost_per_month: "",
+//     }));
+//   }
+// }, [formData.final_display_cost]);
 
 
 

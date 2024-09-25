@@ -12,6 +12,7 @@ import ModelUpdateVendorCostAgency from "./ModelUpdateVendorCostAgency";
 import Link from "next/link";
 import { Baseurl } from "../../../Utils/Constants";
 import axios from "axios";
+import moment from "moment";
 
 
 const ModeVendorCostAgency = ({
@@ -243,7 +244,7 @@ const ModeVendorCostAgency = ({
 
   async function getAgencySites() {
     await fetchData(
-      `/db/media/estimationAgencyBusiness/getSitesForAgencyEstimates?estimate_id=${estimateId}`,
+      `/db/media/costSheet/vendorCostSheet/getAgencyCostSheetsData?estimate_id=${estimateId}`,
 
       setAgencySiteLists,
       errorToast,
@@ -310,7 +311,17 @@ const ModeVendorCostAgency = ({
     getPrintingMaterial();
     getMountingVendor();
 
-  },[])
+  },[show])
+
+  const totals = agencySiteLists?.reduce(
+    (acc, site) => {
+      acc.display += site.selling_price_as_per_duration || 0;
+      acc.printing += site.printing_cost || 0;
+      acc.mounting += site.mounting_cost || 0;
+      return acc;
+    },
+    { display: 0, printing: 0, mounting: 0 }
+  );
 
   return (
     <>
@@ -359,54 +370,110 @@ const ModeVendorCostAgency = ({
             </div>
             <div className="add_user_form">
               <div className="row ">
-                {agencySiteLists?.filter((item) => item.status == true).length >
+                {agencySiteLists?.length >
                 0 ? (
                   <Table bordered hover responsive>
                     <thead>
                       <tr>
-                        <th>Site ID</th>
+                      <th>SN</th>
+                        <th>Site Code</th>
                         <th>State</th>
                         <th>City</th>
                         <th>Location</th>
+                        {/* <th>Category</th> */}
                         <th>Media Format</th>
                         <th>Media Vehicle</th>
                         <th>Media Type</th>
                         <th>Quantity</th>
-                        <th>Height (Ft.)</th>
                         <th>Width (Ft.)</th>
-                        <th>Total Sq. Ft.</th>
-                        <th>Client Display Cost</th>
-                                <th>Client Mounting Cost / Sq. Ft.</th>
-                                <th>Client Printing Cost / Sq. Ft.</th>
+                        <th>Height (Ft.)</th>
+                        <th>Total (Sq. Ft.)</th>
+                        <th>Campaign Start Date</th>
+                        <th>Campaign End Date</th>
+                        <th>Campaign Duration</th>
+                        <th>Display Vendor Name </th>
+                        <th>Display Cost / Month</th>
+                        <th>Buying Price as per Duration</th>
+                        <th>Final Display Cost </th>
+                        <th>Mounting Vendor </th>
+                        <th>Mounting Cost / Sq. Ft.</th>
+                        <th>Mounting Cost</th>
+                        <th>Printing Vendor </th>
+                        <th>Printing Material </th>
+                        <th>Printing Cost / Sq. Ft.</th>
+                        <th>Printing Cost</th>
+                        <th>Remarks</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {agencySiteLists
-                        ?.filter((item) => item.status == true)
-                        ?.map((site) => (
+                      {agencySiteLists?.map((site,index) => (
                           <tr key={site.site_id}>
                             <td>
-                            
-                                {site.site_id}
-                        
+                            {index+1}
+                            </td>
+                            <td style={{ color: "blue", textDecoration: "underline", textDecorationColor: "blue" }}>
+                            <Link href={`/media/AddSites?id=${site.site_id}&vw=md`}>
+                                {site?.site_code}
+                            </Link>
                             </td>
 
-                            <td>{site?.state_id}</td>
-                            <td>{site?.city_id}</td>
+                            <td>{site?.state}</td>
+                            <td>{site?.city}</td>
                             <td>{site?.location}</td>
-                          
-                            <td>{site?.m_f_id}</td>
-                            <td>{site?.m_v_id}</td>
-                            <td>{site?.m_t_id}</td>
+                            {/* <td>{site?.category}</td> */}
+                            <td>{site?.media_format}</td>
+                            <td>{site?.media_vehicle}</td>
+                            <td>{site?.media_type}</td>
                             <td>{site?.quantity}</td>
                             <td>{site?.height}</td>
                             <td>{site?.width}</td>
+                            <td>{site?.total_sq_ft}</td>
                             <td>
-                              {site?.height * site?.width}
+                              {moment(site?.campaign_start_date).format("DD/MM/YYYY")}
                             </td>
-                            <td>{site?.client_display_cost}</td>
-                                    <td>{site?.client_mounting_cost}</td>
-                                    <td>{site?.client_printing_cost}</td>
+                            <td>
+                              {moment(site?.campaign_end_date).format("DD/MM/YYYY")}
+                            </td>
+                            <td>
+                              {moment(site?.campaign_end_date).diff(moment(site?.campaign_start_date), 'days')}
+                            </td>
+                            <td>
+                              {site?.display_vendor_name}
+                            </td>
+                            <td>
+                              {site?.display_cost_per_month}
+                            </td>
+                            <td>
+                            {Number(site?.selling_price_as_per_duration).toFixed(2)}
+                            </td>
+                            <td>
+                            {site?.final_display_cost}
+                            </td>
+                            <td>
+                            {site?.mounting_vendor_name}
+                            </td>
+                            <td>
+                            {site?.mounting_cost_per_sq_ft}
+                            </td>
+                            <td>
+                            {Number(site?.mounting_cost).toFixed(2)}
+                            </td>
+                            <td>
+                            {site?.printing_vendor_name}
+                            </td>
+                            <td>
+                            {site?.pr_m_name}
+                            </td>
+                            <td>
+                            {site?.printing_cost_per_sq_ft}
+                            </td>
+                            <td>
+                            {Number(site?.printing_cost).toFixed(2)}
+                            </td>
+                            <td>
+                            {site?.remarks}
+                            </td>
                             {/* {!viewMode ? ( */}
                             <td className="table_btns d-flex">
                             <button
@@ -454,6 +521,17 @@ const ModeVendorCostAgency = ({
                           </tr>
                         ))}
                     </tbody>
+                    <tfoot>
+                <tr style={{ fontWeight: "bold" }}>
+                  <td colSpan={16}></td>
+                  <td >Total</td>
+                  <td>{totals.display.toFixed(2)}</td>
+                  <td colSpan={3}></td>
+                  <td>{totals.mounting.toFixed(2)}</td>
+                  <td colSpan={3}></td>
+                  <td>{totals.printing.toFixed(2)}</td>
+                </tr>
+              </tfoot>
                   </Table>
                 ) : (
                   <p>No sites available</p>

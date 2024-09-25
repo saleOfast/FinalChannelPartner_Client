@@ -105,76 +105,6 @@ const ModelVendorCostAsset = ({
   };
 
 
-  // const getPrintingVendor = async () => {
-  //   setLoader(true)
-  //   if (hasCookie('token')) {
-  //       let token = (getCookie('token'));
-  //       let db_name = (getCookie('db_name'));
-  
-  //       let header = {
-  //           headers: {
-  //               Accept: "application/json",
-  //               Authorization: "Bearer ".concat(token),
-  //               db: db_name,
-  //               m_id: 313
-  //           }
-  //       }
-  //       try {
-  //           const response = await axios.get(Baseurl + `/db/account?account_type_id=13`, header);
-  //           if(response?.status==200|| response?.status==201){
-  //               setLoader(false)
-  //               setPrintingVendorData(response?.data?.data);
-  //               console.log("response of printing vendor " )
-  //             }
-  //       } catch (error) {
-  //         console.log("error is here",error)
-  //           setLoader(false)
-  //           if (error?.response?.data?.message) {
-  //               toast.error(error.response.data.message);
-  //           }
-  //           else {
-  //               toast.error('Something went wrong7!')
-  //           }
-  //       }
-  //   }
-  // }
-
-
-
-  // const getMountingVendor = async () => {
-  //   setLoader(true)
-  //   if (hasCookie('token')) {
-  //       let token = (getCookie('token'));
-  //       let db_name = (getCookie('db_name'));
-  
-  //       let header = {
-  //           headers: {
-  //               Accept: "application/json",
-  //               Authorization: "Bearer ".concat(token),
-  //               db: db_name,
-  //               m_id: 313
-  //           }
-  //       }
-  //       try {
-  //           const response = await axios.get(Baseurl + `/db/account?account_type_id=14`, header);
-  //           if(response?.status==200|| response?.status==201){
-  //               setLoader(false)
-  //               setPrintingVendorData(response?.data?.data);
-  //               console.log("res",response?.data?.data)
-  //             }
-  //       } catch (error) {
-  //           setLoader(false)
-  //           if (error?.response?.data?.message) {
-  //               toast.error(error.response.data.message);
-  //           }
-  //           else {
-  //               toast.error('Something went wrong!')
-  //           }
-  //       }
-  //   }
-  // }
-
-
     const getPrintingVendor = async () => {
     setLoader(true);
     if (hasCookie("token")) {
@@ -373,7 +303,7 @@ const ModelVendorCostAsset = ({
     getBusinessTypeList();
   }, [show]);
 
-  const totals = assetSiteLists.reduce(
+  const totals = assetSiteLists?.reduce(
     (acc, site) => {
       acc.display += site.buying_price_as_per_duration || 0;
       acc.printing += site.printing_cost || 0;
@@ -403,6 +333,7 @@ const ModelVendorCostAsset = ({
         setPrintingVendorData={setPrintingVendorData}
         printingMaterialData={printingMaterialData}
         mountingVendorData={mountingVendorData}
+        getAssetSites={getAssetSites}
         getContactList={getContactList}
       />
       {/* <ConfirmBox
@@ -571,12 +502,12 @@ const ModelVendorCostAsset = ({
                     </tbody>
                     <tfoot>
                 <tr style={{ fontWeight: "bold" }}>
-                  <td colSpan={16}></td>
+                  <td colSpan={17}></td>
                   <td >Total</td>
                   <td>{totals.display.toFixed(2)}</td>
-                  <td colSpan={2}></td>
+                  <td colSpan={3}></td>
                   <td>{totals.mounting.toFixed(2)}</td>
-                  <td colSpan={1}></td>
+                  <td colSpan={3}></td>
                   <td>{totals.printing.toFixed(2)}</td>
                 </tr>
               </tfoot>

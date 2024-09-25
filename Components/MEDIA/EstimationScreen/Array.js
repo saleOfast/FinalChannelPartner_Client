@@ -226,7 +226,7 @@ export const formaArray = [
   },
   {
     label: "Display Vendor Name",
-    name: "display_vender_cost",
+    name: "display_vendor_name",
     disabled: true,
     type: "text",
   },
@@ -371,7 +371,7 @@ export const updateClientCostAgencyArray = [
   },
   {
     label: "Final Client PO Cost",
-    name: "final_client_po_cost",
+    name: "_client_po_cost",
     type: "number",
   },
   {
@@ -472,7 +472,7 @@ export const formaArray1 = [
   },
   {
     label: "Display Vendor Name",
-    name: "display_vender_cost",
+    name: "display_vender_name",
     disabled: true,
     type: "text",
   },

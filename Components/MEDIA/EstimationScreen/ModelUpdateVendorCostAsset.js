@@ -333,21 +333,21 @@ const ModelUpdateVendorCostAsset = ({
               response?.data?.data?.db_media_campaign?.campaign_duration || "",
               display_vendor_name:selectedSite?.display_vendor_name,
             display_cost_per_month:
-              response?.data?.data?.display_cost_per_month || "0",
+              response?.data?.data?.display_cost_per_month || 0,
             display_vender_cost:
               response?.data?.data?.display_vender_cost || "",
             buying_price_as_per_duration:
-              response?.data?.data?.buying_price_as_per_duration || "0",
-            // final_client_po_cost: response?.data?.data?.final_client_po_cost || "0",
+              response?.data?.data?.buying_price_as_per_duration || 0,
+            // final_client_po_cost: response?.data?.data?.final_client_po_cost || 0,
             mounting_cost_per_sq_ft:
-              response?.data?.data?.mounting_cost_per_sq_ft || "0",
-            mounting_cost: response?.data?.data?.mounting_cost || "0",
+              response?.data?.data?.mounting_cost_per_sq_ft || 0,
+            mounting_cost: response?.data?.data?.mounting_cost || 0,
             remarks: response?.data?.data?.remarks || "",
             mounting_vendor_id: response?.data?.data?.mounting_vendor_id || "",
             pr_m_id: response?.data?.data?.pr_m_id || "",
             printing_vendor_id: response?.data?.data?.printing_vendor_id || "",
             printing_cost_per_sq_ft:
-              response?.data?.data?.printing_cost_per_sq_ft || "0",
+              response?.data?.data?.printing_cost_per_sq_ft || 0,
           });
           const filteredVendorData = printingVendorData.filter(
             (item) =>
@@ -448,16 +448,16 @@ const ModelUpdateVendorCostAsset = ({
               "",
               display_vendor_name:selectedSite?.display_vendor_name,
               display_cost_per_month:
-              selectedSite?.display_cost_per_month || "0",
+              selectedSite?.display_cost_per_month || 0,
             buying_price_as_per_duration:
-              selectedSite?.buying_price_as_per_duration || "0",
-            // final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || "0",
+              selectedSite?.buying_price_as_per_duration || 0,
+            // final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || 0,
             mounting_cost_per_sq_ft:
-              selectedSite?.mounting_cost_per_sq_ft || "0",
-            mounting_cost:Number(selectedSite?.mounting_cost).toFixed(2) || "0",
+              selectedSite?.mounting_cost_per_sq_ft || 0,
+            mounting_cost:Number(selectedSite?.mounting_cost).toFixed(2) || 0,
             printing_cost_per_sq_ft:
-              selectedSite?.printing_cost_per_sq_ft || "0",
-            printing_cost:Number(selectedSite?.printing_cost).toFixed(2) || "0",
+              selectedSite?.printing_cost_per_sq_ft || 0,
+            printing_cost:Number(selectedSite?.printing_cost).toFixed(2) || 0,
             remarks: selectedSite?.remarks || "",
           });
          

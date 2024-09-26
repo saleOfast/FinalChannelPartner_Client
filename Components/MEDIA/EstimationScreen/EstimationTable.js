@@ -400,6 +400,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   Offer Site
                 </button>
               )}
+              
+              
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
@@ -418,7 +420,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                     Client Cost Sheet 
                   </button>
                 </>
-              )}
+              )}  
+
+
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
@@ -438,6 +442,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                   </button>
                 </>
               )}
+             
 
               {busiessTypeList.find(
                 (item) => item.cmpn_b_t_id === tableMeta.rowData[2]

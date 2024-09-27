@@ -336,7 +336,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         responsive: "simple",
         onRowSelectionChange : handleRowClick,
         downloadOptions:{filename:"ChannelPartnerList"},
-        enableNestedDataAccess:"."
+        enableNestedDataAccess:".",
+        filterType:'multiselect'
     };
 
    
@@ -368,7 +369,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             
             if (response.status === 200 || response.status === 201) {
                 if (!toastShown) { 
-                    toast.success(response.data.message);
+                    toast.success(response?.data?.message,{autoClose:2500});
                     toastShown = true; 
                 }
               setoldAssignTo('');
@@ -380,17 +381,17 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             console.log(error)
             if (error?.response?.data?.status === 422) {
                 if (!toastShown) { 
-                    toast.error(error.response.data.message);
+                    toast.error(error?.response?.data?.message,{autoClose:2500});
                     toastShown = true; 
                 }
             } else if (error?.response?.data?.message) {
                 if (!toastShown) { 
-                    toast.error(error.response.data.message);
+                    toast.error(error?.response?.data?.message,{autoClose:2500});
                     toastShown = true; 
                 }
             } else {
                 if (!toastShown) { 
-                    toast.error("Something went wrong!");
+                    toast.error("Something went wrong!",{autoClose:2500});
                     toastShown = true; 
                 }
             }

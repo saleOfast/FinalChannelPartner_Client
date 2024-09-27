@@ -28,10 +28,7 @@ const CPRegisterLeadsTable = ({
   const [actionMode, setActionMode] =  useState('')
   const [showModal, setShowModal] =  useState(false)
   const[id,setId]=useState("")
-  const [userInfo, setUserInfo ] =  useState({
-    user_code: '',
-    reject_reason: ''
-  })
+  const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -84,7 +81,7 @@ const addUserHandler = async (id) => {
     if (response.status === 200 || response.status === 201) {
       let onBoradStage=true ;
       updateUserhandler(onBoradStage)
-      toast.success("Mail Sent for Onboarding");
+      toast.success("Mail Sent for Onboarding",{autoClose:2500});
     }
   } catch (error) {
     if (error?.response?.data?.status === 422) {
@@ -96,9 +93,9 @@ const addUserHandler = async (id) => {
       setErrorData(taskObject);
     }
     if (error?.response?.data?.message) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message,{autoClose:2500});
     } else {
-      toast.error("Something went wrong!");
+      toast.error("Something went wrong!",{autoClose:2500});
     }
     setisLoading(false);
   }
@@ -134,14 +131,14 @@ const updateUserhandler = async (onBoradStage=false) => {
       header
     );
     if (response.status === 200 || response.status === 201) {
-      // toast.success(response?.data?.message);
+      // toast.success(response?.data?.message,{autoClose:2500});
       getDataList()
     }
   } catch (error) {
     if (error?.response?.data?.message) {
-      toast.error(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message,{autoClose:2500});
     } else {
-      toast.error("Something went wrong!");
+      toast.error("Something went wrong!",{autoClose:2500});
     }
   }
     console.log('Form data submitted:', formData);
@@ -292,6 +289,31 @@ const updateUserhandler = async (onBoradStage=false) => {
       },
     },
     {
+      name: "user",
+      label: "Assigned To",
+      options: {
+        filter: true,
+        display:userInfo?.isDB ? true:false,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
+            {columnMeta.label}
+          </th>
+        ),
+
+        customBodyRender: (value, tableMeta, updateValue) => {
+          console.log(tableMeta)
+          return (
+          <span
+          className="fw-bold"
+          style={{color: '#293790'}}
+          >
+            {value}
+        </span>
+          )
+        },
+      },
+    },
+    {
       name: "cpl_id",
       label: "Action",
       options: {
@@ -360,7 +382,8 @@ const updateUserhandler = async (onBoradStage=false) => {
   const options = {
     selectableRows: 'none',
     responsive: "simple",
-    downloadOptions:{filename:"CPRegistrationList"}
+    downloadOptions:{filename:"CPRegistrationList"},
+    filterType:'multiselect'
   };
 
   const validateForm = () => {

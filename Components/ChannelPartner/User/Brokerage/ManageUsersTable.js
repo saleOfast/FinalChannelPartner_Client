@@ -106,9 +106,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             })
         } catch (error) {
             if (error?.response?.data?.message) {
-                toast.error(error.response.data.message);
+                toast.error(error?.response?.data?.message,{autoClose:2500});
             } else {
-                toast.error("Something went wrong!");
+                toast.error("Something went wrong!",{autoClose:2500});
             }
         }
     }
@@ -129,7 +129,7 @@ useEffect(() => {
 
 const updateBrokerageBill =  async() => {
   if(updateBill?.status=="Payment Rejected" && updateBill?.reject_remark==""){
-    return toast.warning("Please Enter Reject Remark")
+    return toast.warning("Please Enter Reject Remark",{autoClose:2500})
   }
     if (!hasCookie("token")) return;
     const token = getCookie("token");
@@ -150,7 +150,7 @@ const updateBrokerageBill =  async() => {
     try {
       const response = await axios.put(`${Baseurl}/db/channel/brokerage`,formData, header);
       if (response.status === 200 || response.status === 201) {
-        toast.success(response.data.message);
+        toast.success(response?.data?.message,{autoClose:2500});
         setShowModal2(false)
         resetUpdateData()
         getDataList()
@@ -159,13 +159,13 @@ const updateBrokerageBill =  async() => {
     } catch (error) {
       console.log(error)
       if (error?.response?.data?.status === 422) {
-            toast.error(error?.response?.data?.message)
+            toast.error(error?.response?.data?.message,{autoClose:2500})
             
       }
       if (error?.response?.data?.message) {
-        toast.error(error.response.data.message);
+        toast.error(error?.response?.data?.message,{autoClose:2500});
       } else {
-        toast.error("Something went wrong!");
+        toast.error("Something went wrong!",{autoClose:2500});
       }
     }
 };
@@ -400,7 +400,8 @@ const updateBrokerageBill =  async() => {
         selectableRows: 'none',
         responsive: "simple",
         onRowSelectionChange : handleRowClick,
-        downloadOptions:{filename:"ChannelBrokerage"}
+        downloadOptions:{filename:"ChannelBrokerage"},
+        filterType:'multiselect'
     };
 
     function formatDate(date) {

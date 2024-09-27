@@ -101,10 +101,10 @@ const PendingRequestsScreen = () => {
             } catch (error) {
                 if (error?.response?.data?.message) {
                     setLoader(false);
-                    toast.error(error.response.data.message);
+                    toast.error(error?.response?.data?.message,{autoClose:2500});
                 } else {
                     setLoader(false);
-                    toast.error("Something went wrong!");
+                    toast.error("Something went wrong!",{autoClose:2500});
                 }
             }
         }
@@ -130,7 +130,7 @@ const PendingRequestsScreen = () => {
             try {
                 const response = await axios.put(Baseurl + `/db/users`, reqInfo, header);
                 if (response.status === 204 || response.status === 200) {
-                    toast.success(response.data.message)
+                    toast.success(response?.data?.message,{autoClose:2500})
                     setdisableShowConfirm(false)
                     setcurrObj({
                         id: '',
@@ -139,7 +139,7 @@ const PendingRequestsScreen = () => {
                     getDataList();
                 }
             } catch (error) {
-                toast.error(error.response.data.message);
+                toast.error(error?.response?.data?.message,{autoClose:2500});
             }
         }
     }
@@ -163,7 +163,7 @@ const PendingRequestsScreen = () => {
             try {
                 const response = await axios.delete(Baseurl + `/db/users?id=${currObj.id}`, header);
                 if (response.status === 204 || response.status === 200) {
-                    toast.success(response.data.message)
+                    toast.success(response?.data?.message,{autoClose:2500})
                     setdeleteshowConfirm(false)
                     setcurrObj({
                         id: '',
@@ -172,7 +172,7 @@ const PendingRequestsScreen = () => {
                     getDataList();
                 }
             } catch (error) {
-                toast.error(error.response.data.message)
+                toast.error(error?.response?.data?.message,{autoClose:2500})
             }
         }
 
@@ -180,7 +180,7 @@ const PendingRequestsScreen = () => {
 
     async function csvSubmitHandler() {
         if (excelData.length <= 0) {
-            toast.error('No Data Found Please Check and try Again')
+            toast.error('No Data Found Please Check and try Again',{autoClose:2500})
         } else {
             if (hasCookie("token")) {
                 let token = getCookie("token");
@@ -197,15 +197,15 @@ const PendingRequestsScreen = () => {
                 try {
                     const response = await axios.post(Baseurl + `/db/users/owner`, excelData, header);
                     if (response.status === 204 || response.status === 200) {
-                        toast.success(response.data.message);
+                        toast.success(response?.data?.message,{autoClose:2500});
                         getDataList();
                         handleClose();
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                        toast.error(error.response.data.message);
+                        toast.error(error?.response?.data?.message,{autoClose:2500});
                     } else {
-                        toast.error("Something went wrong!");
+                        toast.error("Something went wrong!",{autoClose:2500});
                     }
                 }
             }

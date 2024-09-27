@@ -101,10 +101,10 @@ const CPRegisterLeadsScreen = () => {
             } catch (error) {
                 if (error?.response?.data?.message) {
                     setLoader(false);
-                    toast.error(error.response.data.message);
+                    toast.error(error?.response?.data?.message,{autoClose:2500});
                 } else {
                     setLoader(false);
-                    toast.error("Something went wrong!");
+                    toast.error("Something went wrong!",{autoClose:2500});
                 }
             }
         }
@@ -112,7 +112,7 @@ const CPRegisterLeadsScreen = () => {
 
     async function csvSubmitHandler() {
         if (excelData.length <= 0) {
-            toast.error('No Data Found Please Check and try Again')
+            toast.error('No Data Found Please Check and try Again',{autoClose:2500})
         } else {
             if (hasCookie("token")) {
                 let token = getCookie("token");
@@ -129,15 +129,15 @@ const CPRegisterLeadsScreen = () => {
                 try {
                     const response = await axios.post(Baseurl + `/db/users/owner`, excelData, header);
                     if (response.status === 204 || response.status === 200) {
-                        toast.success(response.data.message);
+                        toast.success(response?.data?.message,{autoClose:2500});
                         getDataList();
                         handleClose();
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                        toast.error(error.response.data.message);
+                        toast.error(error?.response?.data?.message,{autoClose:2500});
                     } else {
-                        toast.error("Something went wrong!");
+                        toast.error("Something went wrong!",{autoClose:2500});
                     }
                 }
             }
@@ -163,7 +163,7 @@ const CPRegisterLeadsScreen = () => {
             try {
                 const response = await axios.delete(Baseurl + `/db/channelPartnerLeads?cpl_id=${currObj.cpl_id}&db_name=${db_name}`, header);
                 if (response.status === 204 || response.status === 200) {
-                    toast.success(response.data.message)
+                    toast.success(response?.data?.message,{autoClose:2500})
                     setdeleteshowConfirm(false)
                     setcurrObj({
                         cpl_id: '',
@@ -172,7 +172,7 @@ const CPRegisterLeadsScreen = () => {
                     getDataList();
                 }
             } catch (error) {
-                toast.error(error.response.data.message)
+                toast.error(error?.response?.data?.message,{autoClose:2500})
             }
         }
 

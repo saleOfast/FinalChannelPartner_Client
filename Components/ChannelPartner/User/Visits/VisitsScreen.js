@@ -95,15 +95,15 @@ const VisitsScreen = () => {
                 const response = await axios.get(Baseurl + `/db/channel/visit`, {...header,params:queryObjLeads});
                 if(response?.status === 200 || response?.status === 201){
                   setLoader(false)
-                setDataList(response.data.data);
+                setDataList(response?.data?.data);
                 }
             } catch (error) {
                 if (error?.response?.data?.message) {
                   setLoader(false)
-                    toast.error(error.response.data.message);
+                    toast.error(error?.response?.data?.message,{autoClose:2500});
                 } else {
                   setLoader(false)
-                    toast.error("Something went wrong!");
+                    toast.error("Something went wrong!",{autoClose:2500});
                 }
             }
         }
@@ -115,7 +115,7 @@ const VisitsScreen = () => {
 
     async function csvSubmitHandler() {
         if (excelData.length <= 0) {
-            toast.error('No Data Found Please Check and try Again')
+            toast.error('No Data Found Please Check and try Again',{autoClose:2500})
         } else {
             if (hasCookie("token")) {
                 let token = getCookie("token");
@@ -132,15 +132,15 @@ const VisitsScreen = () => {
                 try {
                     const response = await axios.post(Baseurl + `/db/users/owner`, excelData, header);
                     if (response.status === 204 || response.status === 200) {
-                        toast.success(response.data.message);
+                        toast.success(response?.data?.message,{autoClose:2500});
                         getVisitList();
                         handleClose();
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                        toast.error(error.response.data.message);
+                        toast.error(error?.response?.data?.message,{autoClose:2500});
                     } else {
-                        toast.error("Something went wrong!");
+                        toast.error("Something went wrong!",{autoClose:2500});
                     }
                 }
             }

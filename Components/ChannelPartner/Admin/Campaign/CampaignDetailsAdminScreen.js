@@ -118,10 +118,10 @@ const CampaignDetailsAdminScreen = () => {
             console.log(error)
             if (error?.response?.data?.message) {
               setLoader(false)
-              toast.error(error?.response?.data?.message);
+              toast.error(error?.response?.data?.message,{autoClose:2500});
             } else {
               setLoader(false)
-              toast.error("Something went wrong!");
+              toast.error("Something went wrong!",{autoClose:2500});
             }
           }
         }
@@ -129,10 +129,10 @@ const CampaignDetailsAdminScreen = () => {
 
     const updateProject=  async() => {
       if(projectData?.contact_no?.toString().length!==10){
-        return toast.warning("contact no should be of 10 digit")
+        return toast.warning("contact no should be of 10 digit",{autoClose:2500})
        }
        if(projectData?.project=="" || projectData?.property_size=="" || projectData?.location=="" || projectData?.unit_area=="" || projectData?.contact_no=="" || projectData?.price==""){
-        return toast.warning("Pls Fill Mandatory Fields")
+        return toast.warning("Pls Fill Mandatory Fields",{autoClose:2500})
        }
         if (!hasCookie("token")) return;
         const token = getCookie("token");
@@ -155,7 +155,7 @@ const CampaignDetailsAdminScreen = () => {
           dispatch(startButtonLoading())
           const response = await axios.put(`${Baseurl}/db/channel/project`,formData, header);
           if (response.status === 200 || response.status === 201) {
-            toast.success(response.data.message);
+            toast.success(response?.data?.message,{autoClose:2500});
             dispatch(stopButtonLoading())
             setShowModal(false)
             getCampaignById();
@@ -164,15 +164,15 @@ const CampaignDetailsAdminScreen = () => {
           console.log(error)
           if (error?.response?.data?.status === 422) {
             dispatch(stopButtonLoading())
-                toast.error(error?.response?.data?.message)
+                toast.error(error?.response?.data?.message,{autoClose:2500})
                 
           }
           if (error?.response?.data?.message) {
             dispatch(stopButtonLoading())
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message,{autoClose:2500});
           } else {
             dispatch(stopButtonLoading())
-            toast.error("Something went wrong!");
+            toast.error("Something went wrong!",{autoClose:2500});
           }
         }
     };
@@ -202,7 +202,7 @@ const CampaignDetailsAdminScreen = () => {
       } else {
         // toast.warning(`Invalid file type. Please upload ${allowedTypes.join(', ')}.`);
         const allowedExtensions = field === "template" ? ".html, .htm" : ".jpg, .jpeg, .png";
-      toast.warning(`Invalid file type. Please upload ${allowedExtensions}.`,{autoClose:1500});
+      toast.warning(`Invalid file type. Please upload ${allowedExtensions}.`,{autoClose:2500});
       }
     
       // Reset the input value to ensure the change event is fired even if the same file is selected

@@ -39,7 +39,7 @@ const ChannelPartnerRegisterScreen = () => {
       );
       if (data.status === 200) {
         if (data.data.doc_verification === 0) {
-          toast.success(data.message);
+          toast.success(data?.message,{autoClose:2500});
           setFormFields({
             ...formFields,
             name: data.data.user || "",
@@ -50,7 +50,7 @@ const ChannelPartnerRegisterScreen = () => {
             isTokenVerified: true,
           });
         }else if (data.data.doc_verification === 1) {
-          toast.success("Pending for verification");
+          toast.success("Pending for verification",{autoClose:2500});
           setFormFields({
             ...formFields,
             name: data.data.user || "",
@@ -64,7 +64,7 @@ const ChannelPartnerRegisterScreen = () => {
             isUploadVerified: true,
           });
         }else if (data.data.doc_verification === 2) {
-          toast.success("Documents Verified");
+          toast.success("Documents Verified",{autoClose:2500});
           setFormFields({
             ...formFields,
             name: data.data.user || "",
@@ -81,7 +81,7 @@ const ChannelPartnerRegisterScreen = () => {
             router.push("/")
           },[1000])
         } else{
-          toast.success("Documents Rejected");
+          toast.success("Documents Rejected",{autoClose:2500});
           setFormFields({
             ...formFields,
             name: data.data.user || "",
@@ -104,7 +104,7 @@ const ChannelPartnerRegisterScreen = () => {
       
       const errorMessage =
         error?.response?.data?.message || "Something went wrong!";
-      toast.error(errorMessage);
+      toast.error(errorMessage,{autoClose:2500});
     }
   };
 
@@ -120,7 +120,7 @@ const ChannelPartnerRegisterScreen = () => {
     event.preventDefault();
     try {
       if (!formFields.aadhar || !formFields.pan || !formFields.rera) {
-        toast.error("Aadhar, PAN, and RERA are required.");
+        toast.error("Aadhar, PAN, and RERA are required.",{autoClose:2500});
         return;
       }
       const formData = new FormData();
@@ -143,14 +143,14 @@ const ChannelPartnerRegisterScreen = () => {
         formData
       );
       if (data.status === 200) {
-        toast.success(data.message);
+        toast.success(data?.message,{autoClose:2500});
         router.push("/ChannelPartnerRegister_Next");
       }
     } catch (error) {
       console.log(error.response.data);
       const errorMessage =
         error?.response?.data?.message || "Something went wrong!";
-      toast.error(errorMessage);
+      toast.error(errorMessage,{autoClose:2500});
     }
   };
 

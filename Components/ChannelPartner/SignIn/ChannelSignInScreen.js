@@ -67,13 +67,13 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
     e.preventDefault();
     dispatch(startLoading())
     if (userForm.email === "" || userForm.email.length < 1) {
-      toast.error("Email is Empty");
+      toast.error("Email is Empty",{autoClose:2500});
         dispatch(stopLoading())
     } else if (!validEmail.test(userForm.email.toLowerCase().trim())) {
-      toast.error("Email is not Valid");
+      toast.error("Email is not Valid",{autoClose:2500});
       dispatch(stopLoading())
     } else if (userForm.password === "" || userForm.password.length < 1) {
-      toast.error("password is Empty");
+      toast.error("password is Empty",{autoClose:2500});
       dispatch(stopLoading())
     } else {
       try {
@@ -101,7 +101,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
           dispatch(setTopNavColor(res.data.userData.top_nav_color || '#405189'))
           initialPermission("CHANNEL")
           assignPermission(res.data.platformData);
-          toast.success("Logged in SuccessFully");  
+          toast.success("Logged in SuccessFully",{autoClose:2500});  
           dispatch(stopLoading())
           // router.push("/");
           if(res?.data?.userData?.role_id===2){
@@ -116,9 +116,9 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
       } catch (error) {
         dispatch(stopLoading())
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message,{autoClose:2500});
         } else {
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong!",{autoClose:2500});
         }
       }
     }

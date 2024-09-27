@@ -101,9 +101,9 @@ const LeadsScreen = () => {
           setMaxDate(moment().add(Number(data?.data[0]?.setting_value), 'days').format('YYYY-MM-DD')); 
         } catch (error) {
           if (error?.response?.data?.message) {
-            toast.error(error?.response?.data?.message);
+            toast.error(error?.response?.data?.message,{autoClose:2500});
           } else {
-            toast.error("Something went wrong!");
+            toast.error("Something went wrong!",{autoClose:2500});
           }
         }
       }
@@ -186,10 +186,10 @@ const LeadsScreen = () => {
             } catch (error) {
                 if (error?.response?.data?.message) {
                   setLoader(false)
-                    toast.error(error.response.data.message);
+                    toast.error(error?.response?.data?.message,{autoClose:2500});
                 } else {
                   setLoader(false)
-                    toast.error("Something went wrong!");
+                    toast.error("Something went wrong!",{autoClose:2500});
                 }
             }
         }
@@ -216,9 +216,9 @@ const LeadsScreen = () => {
               setProjectList(projects?.data?.data?.records);
           } catch (error) {
               if (error?.response?.data?.message) {
-                  toast.error(error.response.data.message);
+                  toast.error(error?.response?.data?.message,{autoClose:2500});
               } else {
-                  toast.error("Something went wrong!");
+                  toast.error("Something went wrong!",{autoClose:2500});
               }
           }
       }
@@ -244,9 +244,9 @@ const LeadsScreen = () => {
             setLocationList(locations?.data?.data)
         } catch (error) {
             if (error?.response?.data?.message) {
-                toast.error(error.response.data.message);
+                toast.error(error?.response?.data?.message,{autoClose:2500});
             } else {
-                toast.error("Something went wrong!");
+                toast.error("Something went wrong!",{autoClose:2500});
             }
         }
     }
@@ -256,7 +256,7 @@ const LeadsScreen = () => {
 
     async function csvSubmitHandler() {
         if (excelData.length <= 0) {
-            toast.error('No Data Found Please Check and try Again')
+            toast.error('No Data Found Please Check and try Again',{autoClose:2500})
         } else {
             if (hasCookie("token")) {
                 let token = getCookie("token");
@@ -273,15 +273,15 @@ const LeadsScreen = () => {
                 try {
                     const response = await axios.post(Baseurl + `/db/users/owner`, excelData, header);
                     if (response.status === 204 || response.status === 200) {
-                        toast.success(response.data.message);
+                        toast.success(response?.data?.message,{autoClose:2500});
                         getDataList();
                         handleClose();
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                        toast.error(error.response.data.message);
+                        toast.error(error?.response?.data?.message,{autoClose:2500});
                     } else {
-                        toast.error("Something went wrong!");
+                        toast.error("Something went wrong!",{autoClose:2500});
                     }
                 }
             }
@@ -291,7 +291,7 @@ const LeadsScreen = () => {
 
     const createLead =  async() => {
       if(lead.project_id===""){
-        return toast.error("Pls Select Project")
+        return toast.error("Pls Select Project",{autoClose:2500})
       }
         if (!hasCookie("token")) return;
         const token = getCookie("token");
@@ -311,9 +311,9 @@ const LeadsScreen = () => {
           const response = await axios.post(`${Baseurl}/db/channel/lead`,lead, header);
           if (response.status === 200 || response.status === 201) {
             dispatch(stopButtonLoading())
-            toast.success(response.data.message);
+            toast.success(response?.data?.message,{autoClose:2500});
             setShowAssignTo(false)
-            toast.success(response.message)
+            toast.success(response?.message,{autoClose:2500})
             setLead("")
             getDataList();
           }
@@ -322,7 +322,7 @@ const LeadsScreen = () => {
           console.log(error)
           if (error?.response?.data?.status === 422) {
             dispatch(stopButtonLoading())
-                // toast.error(error?.response?.data?.message)
+                // toast.error(error?.response?.data?.message,{autoClose:2500})
                 const taskObject = {}
              const array = error?.response?.data?.data;
              for (let i = 0; i < array.length; i++) {
@@ -334,10 +334,10 @@ const LeadsScreen = () => {
           }
           if (error?.response?.data?.message) {
             dispatch(stopButtonLoading())
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message,{autoClose:2500});
           } else {
             dispatch(stopButtonLoading())
-            toast.error("Something went wrong!");
+            toast.error("Something went wrong!",{autoClose:2500});
           }
         }
     };

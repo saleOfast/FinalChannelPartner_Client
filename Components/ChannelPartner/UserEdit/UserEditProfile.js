@@ -42,7 +42,7 @@ export default function UserEditProfile({ setEditMode, userData }) {
             setuserImage(files);
             setImgFile(ImagesArray);
         } else {
-            toast.error('Please upload a valid image file (PNG, JPG, JPEG)');
+            toast.error('Please upload a valid image file (PNG, JPG, JPEG)',{autoClose:2500});
         }
     };
 
@@ -83,7 +83,7 @@ export default function UserEditProfile({ setEditMode, userData }) {
                 dispatch(startButtonLoading())
                 const res = await axios.put(Baseurl + `/db/users/owner`, userInfo, header);
                 if (res.status === 200 || res.status === 204) {
-                    toast.success('Profile Updated Successfully')
+                    toast.success('Profile Updated Successfully',{autoClose:2500})
                     dispatch(stopButtonLoading())
                     router.push("/partner/ChannelProfile/")
                     console.log(userImage);
@@ -108,11 +108,11 @@ export default function UserEditProfile({ setEditMode, userData }) {
                     setErrorData(taskObject);
                 }
                 if (error?.response?.data?.message) {
-                    toast.error(error.response.data.message);
+                    toast.error(error?.response?.data?.message,{autoClose:2500});
                     dispatch(stopButtonLoading())
                 }
                 else {
-                    toast.error('Something went wrong!')
+                    toast.error('Something went wrong!',{autoClose:2500})
                     dispatch(stopButtonLoading())
                 }
 
@@ -152,7 +152,7 @@ export default function UserEditProfile({ setEditMode, userData }) {
             fetch(Baseurl + `/db/users/uploads`, requestOptions)
                 .then(response => response.text())
                 .then(result => {
-                    toast.info(result.message)
+                    toast.info(result?.message,{autoClose:2500})
                 })
                 .catch(error => console.log('error', error));
         }

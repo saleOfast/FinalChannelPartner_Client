@@ -305,7 +305,8 @@ const [value, setValue] = useState(getCurrentWeekDates());
         selectableRows: 'none',
         responsive: "simple",
         onRowSelectionChange : handleRowClick,
-        downloadOptions:{filename:"ChannelVisits"}
+        downloadOptions:{filename:"ChannelVisits"},
+        filterType:'multiselect'
     };
 
     const mappedDataList=dataList?.map(list=>({

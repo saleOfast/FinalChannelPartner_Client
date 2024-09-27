@@ -23,6 +23,7 @@ const ManageOrgInfoScreen = () => {
         state_id: '',
         city_id: '',
         address: '',
+        pincode:""
     });
     const router=useRouter();
     const [countries, setCountries] = useState([]);
@@ -55,6 +56,13 @@ const ManageOrgInfoScreen = () => {
         } else if (!emailRegex.test(userInfo.email)) {
             newErrors.email = 'Email is not valid.';
         }
+        
+        const pincodeRegex = /^[0-9]{6}$/;
+    if (!userInfo.pincode) {
+        newErrors.pincode = 'Pincode is required.';
+    } else if (!pincodeRegex.test(userInfo.pincode)) {
+        newErrors.pincode = 'Pincode must be exactly 6 digits.';
+    }
     
         const websiteRegex = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/;
         if (!userInfo.website) {
@@ -155,6 +163,7 @@ const ManageOrgInfoScreen = () => {
                     setLoader(false)
                     toast.success(response.data.message);
                     router.push("/OrganizationInformation");
+                    getData()
                 }
             } catch (error) {
                 setLoader(false)
@@ -206,6 +215,7 @@ const ManageOrgInfoScreen = () => {
                     setLoader(false)
                     toast.success(response.data.message);
                     router.push("/OrganizationInformation");
+                    getData()
                 }
             } catch (error) {
                 setLoader(false)
@@ -271,27 +281,6 @@ const ManageOrgInfoScreen = () => {
                 <div className="main_content p-5  ">
                     <form onSubmit={userInfo?.organisation_info_id!=null ?handleUpdate :handleSubmit} style={{border:"1px solid #A7AFC9",borderRadius:"10px",padding:"10px",boxShadow:"1px 1px 4px #A7AFC9",borderTop:"0px",borderLeft:"0px"}} className='w-75 m-auto'>
                         <div className="add_user_form" >
-                       {/* {
-                        array?.map(({id,label,placeholder},index)=>(
-                            <div className="row p-2" key={index}>
-                                <div className="col-xl-12">
-                                    <div className="input_box">
-                                        <label htmlFor="company_name" className=' fw-semibold mb-1'>{label} *</label>
-                                        <input
-                                            type="text"
-                                            placeholder={placeholder}
-                                            name={id}
-                                            id={id}
-                                            className="form-control"
-                                            onChange={(e) => setUserInfo({ ...userInfo, [id]: e.target.value })}
-                                            value={userInfo[id]}
-                                        />
-                                        {errors[id] && <span className="error">{errors[id]}</span>}
-                                    </div>
-                                </div>
-                            </div>
-                        ))
-                       } */}
 
                     <div className="row p-2">
                                 <div className="col-xl-12">
@@ -375,6 +364,23 @@ const ManageOrgInfoScreen = () => {
                                             value={userInfo?.address}
                                         />
                                         {errors.address && <span className="error">{errors.address}</span>}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row p-2">
+                                <div className="col-xl-12">
+                                    <div className="input_box">
+                                        <label htmlFor="pincode" className=' fw-semibold mb-1'>Pincode *</label>
+                                        <input
+                                            type="text"
+                                            placeholder='Enter Pincode'
+                                            name="pincode"
+                                            id="pincode"
+                                            className="form-control"
+                                            onChange={(e) => setUserInfo({ ...userInfo, pincode: e.target.value })}
+                                            value={userInfo?.pincode}
+                                        />
+                                        {errors.pincode && <span className="error">{errors.pincode}</span>}
                                     </div>
                                 </div>
                             </div> 

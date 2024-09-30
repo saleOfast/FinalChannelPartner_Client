@@ -298,7 +298,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             accu.push(dataList[value.dataIndex].user_code);
             return accu; // Return the accumulator
         }, []);
-        setUserData([...data]);
+        setUserData([...data]); 
     };
 
     const options = {

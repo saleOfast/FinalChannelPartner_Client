@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Baseurl } from "../../../Utils/Constants";
 import axios from "axios";
 import ModelUpdateVendorCostAsset from "./ModelUpdateVendorCostAsset";
+import moment from "moment";
 
 
 const ModelVendorCostAsset = ({
@@ -102,76 +103,6 @@ const ModelVendorCostAsset = ({
   const handleClose1= () => {
     setShow1(false);
   };
-
-
-  // const getPrintingVendor = async () => {
-  //   setLoader(true)
-  //   if (hasCookie('token')) {
-  //       let token = (getCookie('token'));
-  //       let db_name = (getCookie('db_name'));
-  
-  //       let header = {
-  //           headers: {
-  //               Accept: "application/json",
-  //               Authorization: "Bearer ".concat(token),
-  //               db: db_name,
-  //               m_id: 313
-  //           }
-  //       }
-  //       try {
-  //           const response = await axios.get(Baseurl + `/db/account?account_type_id=13`, header);
-  //           if(response?.status==200|| response?.status==201){
-  //               setLoader(false)
-  //               setPrintingVendorData(response?.data?.data);
-  //               console.log("response of printing vendor " )
-  //             }
-  //       } catch (error) {
-  //         console.log("error is here",error)
-  //           setLoader(false)
-  //           if (error?.response?.data?.message) {
-  //               toast.error(error.response.data.message);
-  //           }
-  //           else {
-  //               toast.error('Something went wrong7!')
-  //           }
-  //       }
-  //   }
-  // }
-
-
-
-  // const getMountingVendor = async () => {
-  //   setLoader(true)
-  //   if (hasCookie('token')) {
-  //       let token = (getCookie('token'));
-  //       let db_name = (getCookie('db_name'));
-  
-  //       let header = {
-  //           headers: {
-  //               Accept: "application/json",
-  //               Authorization: "Bearer ".concat(token),
-  //               db: db_name,
-  //               m_id: 313
-  //           }
-  //       }
-  //       try {
-  //           const response = await axios.get(Baseurl + `/db/account?account_type_id=14`, header);
-  //           if(response?.status==200|| response?.status==201){
-  //               setLoader(false)
-  //               setPrintingVendorData(response?.data?.data);
-  //               console.log("res",response?.data?.data)
-  //             }
-  //       } catch (error) {
-  //           setLoader(false)
-  //           if (error?.response?.data?.message) {
-  //               toast.error(error.response.data.message);
-  //           }
-  //           else {
-  //               toast.error('Something went wrong!')
-  //           }
-  //       }
-  //   }
-  // }
 
 
     const getPrintingVendor = async () => {
@@ -292,9 +223,12 @@ const ModelVendorCostAsset = ({
   };
 
   useEffect(()=>{
-    getPrintingVendor();
-    getPrintingMaterial();
-    getMountingVendor();
+    if(show){
+      getPrintingVendor();
+      getPrintingMaterial();
+      getMountingVendor();
+    }
+   
   },[show])
 
 
@@ -357,7 +291,7 @@ const ModelVendorCostAsset = ({
 
   async function getAssetSites() {
     await fetchData(
-      `/db/media/estimationAssetBusiness/getEstimationAssetBusiness?estimate_id=${estimateId}`,
+      `/db/media/costSheet/vendorCostSheet/getCostSheetsData?estimate_id=${estimateId}`,
       setAssetSiteLists,
       errorToast,
       setErrorToast
@@ -368,6 +302,16 @@ const ModelVendorCostAsset = ({
     getAssetSites();
     getBusinessTypeList();
   }, [show]);
+
+  const totals = assetSiteLists?.reduce(
+    (acc, site) => {
+      acc.display += site.buying_price_as_per_duration || 0;
+      acc.printing += site.printing_cost || 0;
+      acc.mounting += site.mounting_cost || 0;
+      return acc;
+    },
+    { display: 0, printing: 0, mounting: 0 }
+  );
 
   return (
     <>
@@ -389,6 +333,7 @@ const ModelVendorCostAsset = ({
         setPrintingVendorData={setPrintingVendorData}
         printingMaterialData={printingMaterialData}
         mountingVendorData={mountingVendorData}
+        getAssetSites={getAssetSites}
         getContactList={getContactList}
       />
       {/* <ConfirmBox
@@ -415,12 +360,13 @@ const ModelVendorCostAsset = ({
             </div>
             <div className="add_user_form">
               <div className="row ">
-                {assetSiteLists?.filter((item) => item.status == true).length >
+                {assetSiteLists?.length >
                 0 ? (
                   <Table bordered hover responsive>
                     <thead>
                       <tr>
-                        <th>Site ID</th>
+                      <th>SN</th>
+                        <th>Site Code</th>
                         <th>State</th>
                         <th>City</th>
                         <th>Location</th>
@@ -429,36 +375,96 @@ const ModelVendorCostAsset = ({
                         <th>Media Vehicle</th>
                         <th>Media Type</th>
                         <th>Quantity</th>
-                        <th>Height (Ft.)</th>
                         <th>Width (Ft.)</th>
-                        <th>Total Sq. Ft.</th>
+                        <th>Height (Ft.)</th>
+                        <th>Total (Sq. Ft.)</th>
+                        <th>Campaign Start Date</th>
+                        <th>Campaign End Date</th>
+                        <th>Campaign Duration</th>
+                        <th>Display Vendor Name </th>
+                        <th>Display Cost / Month</th>
+                        <th>Buying Price as per Duration</th>
+                        <th>Final Display Cost </th>
+                        <th>Mounting Vendor </th>
+                        <th>Mounting Cost / Sq. Ft.</th>
+                        <th>Mounting Cost</th>
+                        <th>Printing Vendor </th>
+                        <th>Printing Material </th>
+                        <th>Printing Cost / Sq. Ft.</th>
+                        <th>Printing Cost</th>
+                        <th>Remarks</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {assetSiteLists
-                        ?.filter((item) => item.status == true)
-                        ?.map((site) => (
+                        
+                        ?.map((site,index) => (
                           <tr key={site.site_id}>
+                            <td>
+                            {index+1}
+                            </td>
                             <td style={{ color: "blue", textDecoration: "underline", textDecorationColor: "blue" }}>
                             <Link href={`/media/AddSites?id=${site.site_id}&vw=md`}>
-                                {site.site_id}
+                                {site?.site_code}
                             </Link>
                             </td>
 
-                            <td>{site?.db_site?.db_state?.state_name}</td>
-                            <td>{site?.db_site?.db_city?.city_name}</td>
-                            <td>{site?.db_site?.location}</td>
+                            <td>{site?.state}</td>
+                            <td>{site?.city}</td>
+                            <td>{site?.location}</td>
+                            <td>{site?.category}</td>
+                            <td>{site?.media_format}</td>
+                            <td>{site?.media_vehicle}</td>
+                            <td>{site?.media_type}</td>
+                            <td>{site?.quantity}</td>
+                            <td>{site?.height}</td>
+                            <td>{site?.width}</td>
+                            <td>{site?.total_sq_ft}</td>
                             <td>
-                              {site?.db_site?.db_site_category?.site_cat_name}
+                              {moment(site?.campaign_start_date).format("DD/MM/YYYY")}
                             </td>
-                            <td>{site?.db_site?.db_media_format?.m_f_name}</td>
-                            <td>{site?.db_site?.db_media_vehicle?.m_v_name}</td>
-                            <td>{site?.db_site?.db_media_type?.m_t_name}</td>
-                            <td>{site?.db_site.quantity}</td>
-                            <td>{site?.db_site.height}</td>
-                            <td>{site?.db_site.width}</td>
                             <td>
-                              {site?.db_site.height * site?.db_site.width}
+                              {moment(site?.campaign_end_date).format("DD/MM/YYYY")}
+                            </td>
+                            <td>
+                              {moment(site?.campaign_end_date).diff(moment(site?.campaign_start_date), 'days')}
+                            </td>
+                            <td>
+                              {site?.display_vendor_name}
+                            </td>
+                            <td>
+                              {site?.display_cost_per_month}
+                            </td>
+                            <td>
+                            {Number(site?.buying_price_as_per_duration).toFixed(2)}
+                            </td>
+                            <td>
+                            {site?.final_display_cost}
+                            </td>
+                            <td>
+                            {site?.mounting_vendor_name}
+                            </td>
+                            <td>
+                            {site?.mounting_cost_per_sq_ft}
+                            </td>
+                            <td>
+                            {Number(site?.mounting_cost).toFixed(2)}
+                            </td>
+                            <td>
+                            {site?.printing_vendor_name}
+                            </td>
+                            <td>
+                            {site?.pr_m_name}
+                            </td>
+                            <td>
+                            {site?.printing_cost_per_sq_ft}
+                            </td>
+                            <td>
+                            {Number(site?.printing_cost).toFixed(2)}
+                            </td>
+                            <td>
+                            {site?.remarks}
                             </td>
                             {/* {!viewMode ? ( */}
                             <td className="table_btns d-flex">
@@ -494,6 +500,17 @@ const ModelVendorCostAsset = ({
                           </tr>
                         ))}
                     </tbody>
+                    <tfoot>
+                <tr style={{ fontWeight: "bold" }}>
+                  <td colSpan={17}></td>
+                  <td >Total</td>
+                  <td>{totals.display.toFixed(2)}</td>
+                  <td colSpan={3}></td>
+                  <td>{totals.mounting.toFixed(2)}</td>
+                  <td colSpan={3}></td>
+                  <td>{totals.printing.toFixed(2)}</td>
+                </tr>
+              </tfoot>
                   </Table>
                 ) : (
                   <p>No sites available</p>

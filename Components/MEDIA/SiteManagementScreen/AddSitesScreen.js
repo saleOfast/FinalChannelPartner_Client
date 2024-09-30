@@ -9,6 +9,7 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 import Select from 'react-select';
 import { Table } from "react-bootstrap";
+import { leaseFields, requiredFields } from "./Arrays";
 
 
 const AddSitesScreen = () => {
@@ -23,7 +24,6 @@ const AddSitesScreen = () => {
   const [isLoading, setisLoading] = useState(false)
   const [editMode, setEditMode] = useState(false);
   const [viewMode, setViewMode] = useState(false);
-  const [leasedShow,setLeasedShow]=useState(false);
   const [userInfo,setUserInfo]=useState({
     site_code:"",
     acc_id:"",
@@ -103,16 +103,6 @@ const AddSitesScreen = () => {
   
 
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DD");
-
- 
-  useEffect(()=>{
-    if(userInfo.site_cat_id == 2){
-      setLeasedShow(true)
-    }else{
-      setLeasedShow(false)
-    }
-
-  },[userInfo.site_cat_id])
 
   async function fetchData(url, setData) {
     const token = getCookie('token');
@@ -368,111 +358,81 @@ const AddSitesScreen = () => {
     return true;
   };
 
+  const validateFields = (fields, userInfo) => {
+    return fields.reduce((errors, field) => {
+      if (!userInfo[field.key]) {
+        errors[field.key] = `${field.label} is required`;
+      }
+      return errors;
+    }, {});
+  };
+  
   const submitHandler = async () => {
-    const errors = {};
-
-    // Validation for required fields
-    if (!userInfo.acc_id) {
-      errors.acc_id = "Vendor is required";
+    let errors = validateFields(requiredFields, userInfo);
+  
+    if (userInfo.site_cat_id === 2) {
+      errors = { ...errors, ...validateFields(leaseFields, userInfo) };
     }
   
-    if (!userInfo.site_cat_id) {
-      errors.site_cat_id = "Site Category is required";
-    }
-  
-    if (!userInfo.country_id) {
-      errors.country_id = "Country is required";
-    }
-  
-    if (!userInfo.state_id) {
-      errors.state_id = "State is required";
-    }
-  
-    if (!userInfo.city_id) {
-      errors.city_id = "City is required";
-    }
-  
-    if (!userInfo.m_f_id) {
-      errors.m_f_id = "Media Format is required";
-    }
-  
-    if (!userInfo.m_v_id) {
-      errors.m_v_id = "Media Vehicle is required";
-    }
-  
-    if (!userInfo.m_t_id) {
-      errors.m_t_id = "Media Type is required";
-    }
-  
-    if (!userInfo.s_s_id) {
-      errors.s_s_id = "Site Status is required";
-    }
-  
-    if (!userInfo.rating_id) {
-      errors.rating_id = "Rating is required";
-    }
-  
-    if (!userInfo.a_s_id) {
-      errors.a_s_id = "Availability Status is required";
-    }
-  
-    // If there are validation errors, set them and stop submission
     if (Object.keys(errors).length > 0) {
       setErrorData(errors);
+      toast.warn("Pls Fill Mandatory Fields")
       return;
     }
+  
     if (hasCookie("token")) {
-      setisLoading(true)
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
-      let header = {
+      setisLoading(true);
+      const token = getCookie("token");
+      const db_name = getCookie("db_name");
+      const header = {
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
+          Authorization: `Bearer ${token}`,
           db: db_name,
           m_id: 377,
-          // pass:"pass"
         },
       };
-
-      const formData=new FormData();
-            for (const [key, value] of Object.entries(userInfo)) {
-              formData.append(key, value);
-            }
-
-
+  
+      const formData = new FormData();
+      Object.entries(userInfo).forEach(([key, value]) => formData.append(key, value));
+  
       try {
         const response = await axios.post(Baseurl + `/db/media/siteManagement/addSite`, formData, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response?.data?.message);
-          setisLoading(false)
-          router.push('/media/SiteManagement')
+          setisLoading(false);
+          router.push('/media/SiteManagement');
         }
-
       } catch (error) {
+        const taskObject = error?.response?.data?.data?.reduce((acc, curr) => {
+          const [key, value] = Object.entries(curr)[0];
+          acc[key] = value;
+          return acc;
+        }, {});
+        
         if (error?.response?.data?.status === 422) {
-          const taskObject = {}
-          const array = error?.response?.data?.data;
-
-          for (let i = 0; i < array.length; i++) {
-            const key = Object.keys(array[i])[0];
-            const value = Object.values(array[i])[0];
-            taskObject[key] = value;
-          }
-
           setErrorData(taskObject);
         }
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-        setisLoading(false)
+        
+        const errorMessage = error?.response?.data?.message || "Something went wrong!";
+        toast.error(errorMessage);
+        setisLoading(false);
       }
     }
   };
 
   const updateHandler = async () => {
+    let errors = validateFields(requiredFields, userInfo);
+  
+    if (userInfo.site_cat_id === 2) {
+      errors = { ...errors, ...validateFields(leaseFields, userInfo) };
+    }
+  
+    if (Object.keys(errors).length > 0) {
+      setErrorData(errors);
+      toast.warn("Pls Fill Mandatory Fields")
+      return;
+    }
     if (hasCookie("token")) {
       setisLoading(true)
       let token = getCookie("token");
@@ -683,7 +643,7 @@ const AddSitesScreen = () => {
                             id="media_owner"
                             isDisabled={viewMode}
                             options={
-                              accountList?.filter((item)=>(item?.db_account_type?.platform_id==5))?.map((item)=>{
+                              accountList?.filter((item)=>(item?.db_account_type?.platform_id==5 && item?.db_account_type?.account_type_name=="Sites Owner" ))?.map((item)=>{
                                 return{
                                   value:item.acc_id,
                                   label:item.acc_name
@@ -893,6 +853,10 @@ const AddSitesScreen = () => {
                             }
                             value={userInfo?.location ? userInfo.location : ""}
                           />
+                           <span className="errorText">
+                            {" "}
+                            {errorData?.location ? errorData.location : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1085,6 +1049,11 @@ const AddSitesScreen = () => {
                             }
                             value={userInfo?.traffic_from ? userInfo.traffic_from : ""}
                           />
+                          <span className="errorText">
+                            {errorData?.traffic_from
+                              ? errorData.traffic_from
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1106,6 +1075,11 @@ const AddSitesScreen = () => {
                             }
                             value={userInfo?.traffic_to ? userInfo.traffic_to : ""}
                           />
+                          <span className="errorText">
+                            {errorData?.traffic_to
+                              ? errorData.traffic_to
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1127,6 +1101,11 @@ const AddSitesScreen = () => {
                             }
                             value={userInfo?.position_of_site ? userInfo.position_of_site : ""}
                           />
+                          <span className="errorText">
+                            {errorData?.position_of_site
+                              ? errorData.position_of_site
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1148,6 +1127,11 @@ const AddSitesScreen = () => {
                             }
                             value={userInfo?.lat_long ? userInfo.lat_long : ""}
                           />
+                          <span className="errorText">
+                            {errorData?.lat_long
+                              ? errorData.lat_long
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1236,8 +1220,12 @@ const AddSitesScreen = () => {
                           </span>
                         </div>
                       </div>
-
-                      <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                      
+                      
+                    {
+                      userInfo.site_cat_id == 2 && (
+                        <>
+                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                         <div className="input_box">
                           <label htmlFor="available_from">Available From </label>
                           <input
@@ -1259,9 +1247,13 @@ const AddSitesScreen = () => {
                               "YYYY-MM-DD"
                             )}
                           />
+                          <span className="errorText">
+                            {errorData?.available_from
+                              ? errorData.available_from
+                              : ""}
+                          </span>
                         </div>
                       </div>
-
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                         <div className="input_box">
                           <label htmlFor="available_to">Available To </label>
@@ -1284,8 +1276,17 @@ const AddSitesScreen = () => {
                               "YYYY-MM-DD"
                             )}
                           />
+                          <span className="errorText">
+                            {errorData?.available_to
+                              ? errorData.available_to
+                              : ""}
+                          </span>
                         </div>
                       </div>
+                        </>
+                      )
+                    }
+                      
 
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                         <div className="input_box">
@@ -1305,12 +1306,17 @@ const AddSitesScreen = () => {
                             }
                             value={userInfo?.remarks ? userInfo.remarks : ""}
                           />
+                          <span className="errorText">
+                            {errorData?.remarks
+                              ? errorData.remarks
+                              : ""}
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                { leasedShow &&(
+                { userInfo.site_cat_id == 2 &&(
                   <>
                   <div className="add_screen_head">
                     <span className="text_bold">Lease Details</span>
@@ -1339,6 +1345,11 @@ const AddSitesScreen = () => {
                               "YYYY-MM-DD"
                             )}
                           />
+                          <span className="errorText">
+                            {errorData?.lease_from
+                              ? errorData.lease_from
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1364,6 +1375,11 @@ const AddSitesScreen = () => {
                               "YYYY-MM-DD"
                             )}
                           />
+                          <span className="errorText">
+                            {errorData?.lease_to
+                              ? errorData.lease_to
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1389,7 +1405,11 @@ const AddSitesScreen = () => {
                             }}
                             value={ userInfo?.lease_period ? userInfo.lease_period : ""  }
                           />
-
+                            <span className="errorText">
+                            {errorData?.lease_period
+                              ? errorData.lease_period
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1417,7 +1437,11 @@ const AddSitesScreen = () => {
                             }}
                             value={ userInfo?.lease_cost ? userInfo.lease_cost : "" }
                           />
-
+                          <span className="errorText">
+                            {errorData?.lease_cost
+                              ? errorData.lease_cost
+                              : ""}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -1452,7 +1476,11 @@ const AddSitesScreen = () => {
                             }}
                             value={userInfo?.width ? userInfo.width : ""}
                           />
-
+                          <span className="errorText">
+                            {errorData?.width
+                              ? errorData.width
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1479,7 +1507,11 @@ const AddSitesScreen = () => {
                             }}
                             value={userInfo?.height ? userInfo.height : ""}
                           />
-
+                          <span className="errorText">
+                            {errorData?.height
+                              ? errorData.height
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1505,7 +1537,11 @@ const AddSitesScreen = () => {
                               }}
                               value={userInfo?.quantity ? userInfo.quantity : ""}
                             />
-
+                            <span className="errorText">
+                            {errorData?.quantity
+                              ? errorData.quantity
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1564,7 +1600,11 @@ const AddSitesScreen = () => {
                             }}
                             value={userInfo?.selling_cost ? userInfo.selling_cost : "" }
                           />
-
+                          <span className="errorText">
+                            {errorData?.selling_cost
+                              ? errorData.selling_cost
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1594,7 +1634,11 @@ const AddSitesScreen = () => {
                               }}
                               value={ userInfo?.buying_cost ? userInfo.buying_cost : "" }
                             />
-
+                            <span className="errorText">
+                            {errorData?.buying_cost
+                              ? errorData.buying_cost
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1624,7 +1668,11 @@ const AddSitesScreen = () => {
                             }}
                             value={ userInfo?.leased_cost ? userInfo.leased_cost : "" }
                           />
-
+                            <span className="errorText">
+                            {errorData?.leased_cost
+                              ? errorData.leased_cost
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1654,7 +1702,11 @@ const AddSitesScreen = () => {
                               }}
                               value={ userInfo?.card_rate ? userInfo.card_rate: "" }
                             />
-
+                            <span className="errorText">
+                            {errorData?.card_rate
+                              ? errorData.card_rate
+                              : ""}
+                          </span>
                         </div>
                       </div>
 
@@ -1890,6 +1942,11 @@ const AddSitesScreen = () => {
                             accept=".jpeg, .jpg, .png"
                             onChange={(e) => handleImageChange(e,"p_close_shot","p_close_shot_preview")}
                           />
+                          <span className="errorText">
+                            {errorData?.p_close_shot
+                              ? errorData.p_close_shot
+                              : ""}
+                          </span>
                           {userInfo?.p_close_shot_preview!=="" && (
                             <img
                               src={userInfo?.p_close_shot_preview}
@@ -1915,6 +1972,11 @@ const AddSitesScreen = () => {
                             className="form-control"
                             onChange={(e) => handleImageChange(e,"p_long_shot","p_long_shot_preview")}
                           />
+                          <span className="errorText">
+                            {errorData?.p_long_shot
+                              ? errorData.p_long_shot
+                              : ""}
+                          </span>
                           {userInfo?.p_long_shot_preview!=="" && (
                             <img
                               src={userInfo?.p_long_shot_preview}
@@ -1940,6 +2002,11 @@ const AddSitesScreen = () => {
                             className="form-control"
                             onChange={(e) => handleImageChange(e,"p_night_shot","p_night_shot_preview")}
                           />
+                          <span className="errorText">
+                            {errorData?.p_night_shot
+                              ? errorData.p_night_shot
+                              : ""}
+                          </span>
                           {userInfo?.p_night_shot_preview!=="" && (
                             <img
                               src={userInfo?.p_night_shot_preview}

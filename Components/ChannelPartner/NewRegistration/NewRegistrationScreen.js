@@ -32,21 +32,21 @@ const NewRegistrationScreen = () => {
     // Basic validations for mandatory fields
     if (!first_name || !last_name || !email || !contact) {
       dispatch(stopButtonLoading());
-      return toast.warning("Please fill all mandatory fields");
+      return toast.warning("Please fill all mandatory fields",{autoClose:2500});
     }
   
     // Validate contact number for 10 digits
     const contactRegex = /^\d{10}$/;
     if (!contactRegex.test(contact)) {
       dispatch(stopButtonLoading());
-      return toast.warning("Contact number must be a 10-digit number");
+      return toast.warning("Contact number must be a 10-digit number",{autoClose:2500});
     }
   
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       dispatch(stopButtonLoading());
-      return toast.warning("Please enter a valid email address");
+      return toast.warning("Please enter a valid email address",{autoClose:2500});
     }
 
     let newFormfields={...formFields,db_name:clientData?.db_name}
@@ -60,14 +60,16 @@ const NewRegistrationScreen = () => {
   
       if (data.status === 200) {
         dispatch(stopButtonLoading());
-        toast.success(data.message);
-        router.push("/partner");
+        toast.success(data?.message,{autoClose:2500});
+        setTimeout(() => {
+          router.push("/partner");
+        }, 2500);        
       }
     } catch (error) {
       dispatch(stopButtonLoading());
       console.log(error?.response?.data);
       const errorMessage = error?.response?.data?.message || "Something went wrong!";
-      toast.error(errorMessage);
+      toast.error(errorMessage,{autoClose:2500});
     }
   };
   

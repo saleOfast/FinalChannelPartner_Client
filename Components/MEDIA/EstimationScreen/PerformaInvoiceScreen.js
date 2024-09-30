@@ -21,6 +21,7 @@ const ProformaInvoiceScreen = () => {
   const [grandTotal, setGrandTotal] = useState(0);
   const [clientState,setClientState] = useState(null);
   const [primaryCompanyState,setPrimaryCompanyState] = useState(null);
+  const [oranizationInfo,setOrganizationInfo] = useState([])
   let subTotal = 0;
   const toWords = new ToWords();
 
@@ -90,7 +91,7 @@ const ProformaInvoiceScreen = () => {
       try {
         let baseUrl = window.location.origin;
         if (baseUrl === "http://localhost:3000") {
-          baseUrl = "http://192.168.1.38:3000";
+          baseUrl = "https://media.saleofast.com";
         }
         // const { data } = await axios.post(Baseurl + "/db/admin/url", {client_url: `${baseUrl}`});
         if (hasCookie("token")) {
@@ -117,6 +118,40 @@ const ProformaInvoiceScreen = () => {
     };
     getSignInData();
   }, []);
+
+  const getData = async () => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          db: db_name,
+          pass:"pass"
+        },
+      };
+
+      try {
+        const { data } = await axios.get(
+          Baseurl + `/db/organisation/getOrganisation`,
+          header
+        );
+        setOrganizationInfo(data?.data[0]);
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+useEffect(()=>{
+    getData()
+},[])
   return (
     <>
       {loader ? (
@@ -148,7 +183,7 @@ const ProformaInvoiceScreen = () => {
                 <div className="main_content bg-transparent">
                   <div className="text-end d-flex justify-content-end bg-white shadow-sm">
                     <button className="btn btn-outline-secondary m-2 btn-sm">
-                      <Link href={"/media/Estimations"}>Back</Link>
+                      <div onClick={()=>router.push("/media/Estimations")} >Back</div>
                     </button>
                     <button
                       className="btn btn-outline-primary m-2 btn-sm"
@@ -177,22 +212,22 @@ const ProformaInvoiceScreen = () => {
                               className="text-dark mb-0"
                               style={{ fontWeight: 500 }}
                             >
-                              {primaryCompany?.user}
+                              {oranizationInfo?.company_name}
                             </p>
                             <p className="text-dark mb-0">
-                            {primaryCompany?.address},
+                            {oranizationInfo?.address},
                               <br />
                               
-                              {primaryCompany?.db_city?.city_name},{primaryCompany?.db_state?.state_name} - {primaryCompany?.pincode}, {primaryCompany?.db_country?.country_name}
+                              {oranizationInfo?.db_city?.city_name||"New Delhi"},{oranizationInfo?.db_state?.state_name||"Delhi"} - {oranizationInfo?.pincode||"110044"}, {oranizationInfo?.db_country?.country_name||"India"}
                             </p>
                             <p className="text-dark mb-0">
-                              Mobile: {primaryCompany?.contact_number}
+                              Mobile: {oranizationInfo?.mobile}
                             </p>
                             <p className="text-dark mb-0">
-                              Email: {primaryCompany?.email}
+                              Email: {oranizationInfo?.email}
                             </p>
                             <p className="text-dark mb-0">
-                              Website: {primaryCompany?.domain}
+                              Website: {oranizationInfo?.website}
                               
                             </p>
                           </>

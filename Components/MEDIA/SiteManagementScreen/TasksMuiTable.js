@@ -15,7 +15,7 @@ const TasksMuiTable = ({
   openEdtMdl,
   title,
   loader
-
+ 
 }) => {
   const columns = [
     {

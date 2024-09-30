@@ -216,28 +216,16 @@ const AddClientScreen = () => {
     }
 
     async function addClientHandler() {
-      // const urlRegex = /^(https?:\/\/)?([^\s$.?#].[^\s]*)$/i; 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  //     if (!userInfo?.client_url || !urlRegex.test(userInfo?.client_url)) {
-  //       setErrorData({ ...errorData, client_url: 'Please enter a valid Client URL' });
-  //       return toast.error('Please fill the Mandatory fields')
-  //   }
-
-  //   if (!userInfo?.host_name || !urlRegex.test(userInfo?.host_name)) {
-  //     setErrorData({ ...errorData, client_url: 'Please enter a valid Host Name' });
-  //     return toast.error('Please fill the Mandatory fields')
-  // }
-
       if (!emailRegex.test(userInfo?.email)) {
           setErrorData({ ...errorData, email: 'Please enter a valid email address' });
           return toast.error('Please enter a valid email address');
       }
-      if(userInfo?.host_name==""){
+      if(userInfo?.host_name==""|| userInfo?.host_name==null){
         setErrorData({ ...errorData, host_name: 'Please enter Salesforce Host URL' })
         return toast.error('Please fill the Mandatory fields')
       }
-      if(userInfo?.client_url==""){
+      if(userInfo?.client_url=="" || userInfo?.client_url==null){
         setErrorData({ ...errorData, client_url: 'Please enter Client URL' })
         return toast.error('Please fill the Mandatory fields')
       }
@@ -251,10 +239,10 @@ const AddClientScreen = () => {
         if(userInfo?.subscription_end_date==null){
            setErrorData({ ...errorData, subscription_end_date: 'Please enter subscription end date' })
         }
-        if(userInfo?.no_of_license==0){
+        if(userInfo?.no_of_license==0|| userInfo?.no_of_license==null){
            setErrorData({ ...errorData, no_of_license: 'Please enter no of licenses ' })
         }
-        if(userInfo?.subscription_start_date==null || userInfo?.subscription_end_date==null ||userInfo?.no_of_license==0){
+        if(userInfo?.subscription_start_date==null || userInfo?.subscription_end_date==null ||userInfo?.no_of_license==0|| userInfo?.no_of_license==null){
           return toast.error('Please fill the Mandatory fields')
         }
       }
@@ -265,10 +253,10 @@ const AddClientScreen = () => {
         if(userInfo?.subscription_end_date_media==null){
            setErrorData({ ...errorData, subscription_end_date_media: 'Please enter subscription end date' })
         }
-        if(userInfo?.no_of_media_license==0){
+        if(userInfo?.no_of_media_license==0 || userInfo?.no_of_media_license==null){
            setErrorData({ ...errorData, no_of_media_license: 'Please enter no of licenses ' })
         }
-        if(userInfo?.subscription_start_date_media==null || userInfo?.subscription_end_date_media==null ||userInfo?.no_of_media_license==0){
+        if(userInfo?.subscription_start_date_media==null || userInfo?.subscription_end_date_media==null ||userInfo?.no_of_media_license==0 || userInfo?.no_of_media_license==null){
           return toast.error('Please fill the Mandatory fields')
         }
       }
@@ -279,10 +267,10 @@ const AddClientScreen = () => {
         if(userInfo?.subscription_end_date_channel==null){
            setErrorData({ ...errorData, subscription_end_date_channel: 'Please enter subscription end date' })
         }
-        if(userInfo?.no_of_channel_license==0){
+        if(userInfo?.no_of_channel_license==0 || userInfo?.no_of_channel_license==null){
            setErrorData({ ...errorData, no_of_channel_license: 'Please enter no of licenses ' })
         }
-        if(userInfo?.subscription_start_date_channel==null || userInfo?.subscription_end_date_channel==null ||userInfo?.no_of_channel_license==0){
+        if(userInfo?.subscription_start_date_channel==null || userInfo?.subscription_end_date_channel==null ||userInfo?.no_of_channel_license==0 ||userInfo?.no_of_channel_license==null){
           return toast.error('Please fill the Mandatory fields')
         }
       }
@@ -293,10 +281,10 @@ const AddClientScreen = () => {
         if(userInfo?.subscription_end_date_dms==null){
            setErrorData({ ...errorData, subscription_end_date_dms: 'Please enter subscription end date' })
         }
-        if(userInfo?.no_of_dms_license==0){
+        if(userInfo?.no_of_dms_license==0 || userInfo?.no_of_dms_license==null){
            setErrorData({ ...errorData, no_of_dms_license: 'Please enter no of licenses ' })
         }
-        if(userInfo?.subscription_start_date_dms==null || userInfo?.subscription_end_date_dms==null ||userInfo?.no_of_dms_license==0){
+        if(userInfo?.subscription_start_date_dms==null || userInfo?.subscription_end_date_dms==null ||userInfo?.no_of_dms_license==0 || userInfo?.no_of_dms_license==null){
           return toast.error('Please fill the Mandatory fields')
         }
       }
@@ -307,10 +295,10 @@ const AddClientScreen = () => {
         if(userInfo?.subscription_end_date_sales==null){
            setErrorData({ ...errorData, subscription_end_date_sales: 'Please enter subscription end date' })
         }
-        if(userInfo?.no_of_sales_license==0){
+        if(userInfo?.no_of_sales_license==0 || userInfo?.no_of_sales_license==null){
            setErrorData({ ...errorData, no_of_sales_license: 'Please enter no of licenses ' })
         }
-        if(userInfo?.subscription_start_date_sales==null || userInfo?.subscription_end_date_sales==null ||userInfo?.no_of_sales_license==0){
+        if(userInfo?.subscription_start_date_sales==null || userInfo?.subscription_end_date_sales==null ||userInfo?.no_of_sales_license==0 || userInfo?.no_of_sales_license==null){
           return toast.error('Please fill the Mandatory fields')
         }
       }
@@ -380,8 +368,12 @@ const AddClientScreen = () => {
           setErrorData({ ...errorData, email: 'Please enter a valid email address' });
           return toast.error('Please enter a valid email address');
       }
-      if(userInfo?.host_name==""){
+      if(userInfo?.host_name=="" || userInfo?.host_name==null){
         setErrorData({ ...errorData, host_name: 'Please enter Salesforce Host URL' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(userInfo?.client_url==""|| userInfo?.client_url==null){
+        setErrorData({ ...errorData, client_url: 'Please enter Client URL' })
         return toast.error('Please fill the Mandatory fields')
       }
       if(!userInfo?.isCRM && !userInfo?.isCHANNEL && !userInfo?.isDMS && !userInfo?.isSALES &&!userInfo?.isMEDIA){
@@ -394,10 +386,10 @@ const AddClientScreen = () => {
         if(userInfo?.subscription_end_date==null){
            setErrorData({ ...errorData, subscription_end_date: 'Please enter subscription end date' })
         }
-        if(userInfo?.no_of_license==0){
+        if(userInfo?.no_of_license==0 || userInfo?.no_of_license==null){
            setErrorData({ ...errorData, no_of_license: 'Please enter no of licenses ' })
         }
-        if(userInfo?.subscription_start_date==null || userInfo?.subscription_end_date==null ||userInfo?.no_of_license==0){
+        if(userInfo?.subscription_start_date==null || userInfo?.subscription_end_date==null ||userInfo?.no_of_license==0|| userInfo?.no_of_license==null){
           return toast.error('Please fill the Mandatory fields')
         }
       }
@@ -408,11 +400,11 @@ const AddClientScreen = () => {
         if(userInfo?.subscription_end_date_media==null){
            setErrorData({ ...errorData, subscription_end_date_media: 'Please enter subscription end date' })
         }
-        if(userInfo?.no_of_media_license==0){
+        if(userInfo?.no_of_media_license==0 || userInfo?.no_of_media_license==null){
            setErrorData({ ...errorData, no_of_media_license: 'Please enter no of licenses ' })
         }
         if(userInfo?.subscription_start_date_media==null || userInfo?.subscription_end_date_media==null ||userInfo?.no_of_media_license
-          ==0){
+          ==0 || userInfo?.no_of_media_license==null){
           return toast.error('Please fill the Mandatory fields')
         }
       }
@@ -423,10 +415,10 @@ const AddClientScreen = () => {
         if(userInfo?.subscription_end_date_channel==null){
            setErrorData({ ...errorData, subscription_end_date_channel: 'Please enter subscription end date' })
         }
-        if(userInfo?.no_of_channel_license==0){
+        if(userInfo?.no_of_channel_license==0 || userInfo?.no_of_channel_license==null){
            setErrorData({ ...errorData, no_of_channel_license: 'Please enter no of licenses ' })
         }
-        if(userInfo?.subscription_start_date_channel==null || userInfo?.subscription_end_date_channel==null ||userInfo?.no_of_channel_license==0){
+        if(userInfo?.subscription_start_date_channel==null || userInfo?.subscription_end_date_channel==null ||userInfo?.no_of_channel_license==0 ||userInfo?.no_of_channel_license==null){
           return toast.error('Please fill the Mandatory fields')
         }
       }
@@ -437,10 +429,10 @@ const AddClientScreen = () => {
         if(userInfo?.subscription_end_date_dms==null){
            setErrorData({ ...errorData, subscription_end_date_dms: 'Please enter subscription end date' })
         }
-        if(userInfo?.no_of_dms_license==0){
+        if(userInfo?.no_of_dms_license==0 || userInfo?.no_of_dms_license==null){
            setErrorData({ ...errorData, no_of_dms_license: 'Please enter no of licenses ' })
         }
-        if(userInfo?.subscription_start_date_dms==null || userInfo?.subscription_end_date_dms==null ||userInfo?.no_of_dms_license==0){
+        if(userInfo?.subscription_start_date_dms==null || userInfo?.subscription_end_date_dms==null || userInfo?.no_of_dms_license==0 || userInfo?.no_of_dms_license==null){
           return toast.error('Please fill the Mandatory fields')
         }
       }
@@ -451,10 +443,10 @@ const AddClientScreen = () => {
         if(userInfo?.subscription_end_date_sales==null){
            setErrorData({ ...errorData, subscription_end_date_sales: 'Please enter subscription end date' })
         }
-        if(userInfo?.no_of_sales_license==0){
+        if(userInfo?.no_of_sales_license==0 || userInfo?.no_of_sales_license==null){
            setErrorData({ ...errorData, no_of_sales_license: 'Please enter no of licenses ' })
         }
-        if(userInfo?.subscription_start_date_sales==null || userInfo?.subscription_end_date_sales==null ||userInfo?.no_of_sales_license==0){
+        if(userInfo?.subscription_start_date_sales==null || userInfo?.subscription_end_date_sales==null || userInfo?.no_of_sales_license==0 || userInfo?.no_of_sales_license==null){
           return toast.error('Please fill the Mandatory fields')
         }
       }

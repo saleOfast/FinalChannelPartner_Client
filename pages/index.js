@@ -273,7 +273,7 @@ export default mainIndexHOC(
                           <img
                             src={getPlatformFunc(permission)}
                             alt={permission}
-                            style={{ width: '30%' }}
+                            style={{ width: '35%' }}
                             className=" cursor-pointer"
                           />
                           {/* <b className="fw-3 text-center cursor-pointer ">{permission.toUpperCase()}</b> */}
@@ -291,7 +291,7 @@ export default mainIndexHOC(
                           <img
                             src="/images/platform/COMMON.png"
                             alt="COMMON"
-                            style={{ width: '30%' }}
+                            style={{ width: '35%' }}
                             className=" cursor-pointer"
                           />
                           {/* <b className="fw-3 text-center cursor-pointer">COMMON</b> */}
@@ -309,7 +309,7 @@ export default mainIndexHOC(
                           <img
                             src="/images/platform/COMMON.png"
                             alt="COMMON"
-                            style={{ width: '30%' }}
+                            style={{ width: '35%' }}
                             className=" cursor-pointer"
                           />
                           {/* <b className="fw-3 text-center cursor-pointer">COMMON</b> */}

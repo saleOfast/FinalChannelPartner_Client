@@ -121,10 +121,10 @@ const BookingsScreen = () => {
             } catch (error) {
                 if (error?.response?.data?.message) {
                   setLoader(false)
-                    toast.error(error.response.data.message);
+                    toast.error(error?.response?.data?.message,{autoClose:2500});
                 } else {
                   setLoader(false)
-                    toast.error("Something went wrong!");
+                    toast.error("Something went wrong!",{autoClose:2500});
                 }
             }
         }
@@ -132,7 +132,7 @@ const BookingsScreen = () => {
 
     async function csvSubmitHandler() {
         if (excelData.length <= 0) {
-            toast.error('No Data Found Please Check and try Again')
+            toast.error('No Data Found Please Check and try Again',{autoClose:2500})
         } else {
             if (hasCookie("token")) {
                 let token = getCookie("token");
@@ -149,15 +149,15 @@ const BookingsScreen = () => {
                 try {
                     const response = await axios.post(Baseurl + `/db/users/owner`, excelData, header);
                     if (response.status === 204 || response.status === 200) {
-                        toast.success(response.data.message);
+                        toast.success(response?.data?.message,{autoClose:2500});
                         getDataList();
                         handleClose();
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                        toast.error(error.response.data.message);
+                        toast.error(error?.response?.data?.message,{autoClose:2500});
                     } else {
-                        toast.error("Something went wrong!");
+                        toast.error("Something went wrong!",{autoClose:2500});
                     }
                 }
             }
@@ -186,21 +186,21 @@ const BookingsScreen = () => {
             report_to: oldAssignTo,
           }, header);
           if (response.status === 200 || response.status === 201) {
-            toast.success(response.data.message);
+            toast.success(response?.data?.message,{autoClose:2500});
             setoldAssignTo('')
             setShowAssignTo('')
-            toast.success(response.message)
+            toast.success(response?.message,{autoClose:2500})
             getDataList();
           }
         } catch (error) {
           if (error?.response?.data?.status === 422) {
-                toast.error(error?.response?.data?.message)
+                toast.error(error?.response?.data?.message,{autoClose:2500})
                 
           }
           if (error?.response?.data?.message) {
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message,{autoClose:2500});
           } else {
-            toast.error("Something went wrong!");
+            toast.error("Something went wrong!",{autoClose:2500});
           }
         }
     };

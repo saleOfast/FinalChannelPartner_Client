@@ -132,7 +132,7 @@ const DashboardAdmin = () => {
                         setisLoading(false);
                     }
                 } else {
-                    toast.error("Something went wrong!");
+                    toast.error("Something went wrong!",{autoClose:2500});
                 }
             }
         }
@@ -147,7 +147,7 @@ const DashboardAdmin = () => {
             "end_date": nextDay,
         }
         if (!userDetails.lat) {
-            toast.error('Please Allow Location Permissions')
+            toast.error('Please Allow Location Permissions',{autoClose:2500})
         } else {
             if (hasCookie("token")) {
                 let token = getCookie("token");
@@ -165,14 +165,14 @@ const DashboardAdmin = () => {
                 try {
                     const response = await axios.post(Baseurl + `/db/checkin`, reqInfo, header);
                     if (response.status === 204 || response.status === 200) {
-                        toast.success(response.data.message);
+                        toast.success(response?.data?.message,{autoClose:2500});
                         getAttndncData();
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                        toast.error(error.response.data.message);
+                        toast.error(error?.response?.data?.message,{autoClose:2500});
                     } else {
-                        toast.error("Something went wrong!");
+                        toast.error("Something went wrong!",{autoClose:2500});
                     }
                 }
             }
@@ -187,7 +187,7 @@ const DashboardAdmin = () => {
             "end_date": nextDay,
         }
         if (!userDetails.lat) {
-            toast.error('Please Allow Location Permissions')
+            toast.error('Please Allow Location Permissions',{autoClose:2500})
         } else {
             if (hasCookie("token")) {
                 let token = getCookie("token");
@@ -205,14 +205,14 @@ const DashboardAdmin = () => {
                 try {
                     const response = await axios.put(Baseurl + `/db/checkin`, reqInfo, header);
                     if (response.status === 204 || response.status === 200) {
-                        toast.success(response.data.message);
+                        toast.success(response?.data?.message,{autoClose:2500});
                         getAttndncData();
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                        toast.error(error.response.data.message);
+                        toast.error(error?.response?.data?.message,{autoClose:2500});
                     } else {
-                        toast.error("Something went wrong!");
+                        toast.error("Something went wrong!",{autoClose:2500});
                     }
                 }
             }
@@ -266,7 +266,7 @@ const DashboardAdmin = () => {
             } catch (error) {
                 setLoader(false)
                 console.log(error);
-                toast.error("Something went wrong!");
+                toast.error("Something went wrong!",{autoClose:2500});
             }
         }
     };

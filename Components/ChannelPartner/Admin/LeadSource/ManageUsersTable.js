@@ -53,9 +53,9 @@ const getVisitInfo=async(visitId)=>{
             setVisitTime(data?.data?.p_visit_time)
         } catch (error) {
             if (error?.response?.data?.message) {
-                toast.error(error.response.data.message);
+                toast.error(error?.response?.data?.message,{autoClose:2500});
             } else {
-                toast.error("Something went wrong!");
+                toast.error("Something went wrong!",{autoClose:2500});
             }
         }
     }
@@ -301,7 +301,8 @@ const getVisitInfo=async(visitId)=>{
         selectableRows: 'none',
         responsive: "simple",
         // onRowSelectionChange : handleRowClick,
-        downloadOptions:{filename:"ChannelLeads"}
+        downloadOptions:{filename:"ChannelLeads"},
+        filterType:'multiselect'
     };
 
     
@@ -330,20 +331,20 @@ const getVisitInfo=async(visitId)=>{
                 current_date:getCurrentDateTime()
               }, header);
             if (response.status === 200 || response.status === 201) {
-              toast.success(response.data.message);
+              toast.success(response?.data?.message,{autoClose:2500});
               setShowModal(false)
-              toast.success(response.message)
+              toast.success(response?.message,{autoClose:2500})
               getDataList()
             }
           } catch (error) {
             if (error?.response?.data?.status === 422) {
-                  toast.error(error?.response?.data?.message)
+                  toast.error(error?.response?.data?.message,{autoClose:2500})
                   
             }
             if (error?.response?.data?.message) {
-              toast.error(error.response.data.message);
+              toast.error(error?.response?.data?.message,{autoClose:2500});
             } else {
-              toast.error("Something went wrong!");
+              toast.error("Something went wrong!",{autoClose:2500});
             }
           }
       

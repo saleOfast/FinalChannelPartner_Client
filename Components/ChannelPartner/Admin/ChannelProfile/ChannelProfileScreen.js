@@ -38,7 +38,7 @@ const ChannelProfileScreen = () => {
         }
         dispatch(isAdminMode ? LoggedOut() : userLogOut());
         dispatch(stopLoading())
-        toast.success("Logged Out Successfully");
+        toast.success("Logged Out Successfully",{autoClose:2500});
       };
 
 
@@ -66,11 +66,11 @@ const ChannelProfileScreen = () => {
             if (
               error?.response?.data?.message === "please login again token expired"
             ) {
-              toast.error(error.response.data.message);
+              toast.error(error?.response?.data?.message,{autoClose:2500});
               dispatch(userLogOut());
               router.push("/");
             } else {
-              toast.error("Something went wrong!");
+              toast.error("Something went wrong!",{autoClose:2500});
             }
           }
         }

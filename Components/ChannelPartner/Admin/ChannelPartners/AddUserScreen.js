@@ -192,7 +192,7 @@ const AddUserScreen = () => {
         cheque: data2?.c_cheque_file,
       });
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message,{autoClose:2500});
     }
   }
 
@@ -230,7 +230,7 @@ const AddUserScreen = () => {
       );
       const userId = response?.data?.data?.userProfileData?.user_id;
       if (response.status === 200 || response.status === 201) {
-        toast.success(response?.data?.message);
+        toast.success(response?.data?.message,{autoClose:2500});
         if (uploadDocs.aadhar_card)
           AddUploadPicture(userId, "adh", uploadDocs.aadhar[0], 0);
         if (uploadDocs.pan_card)
@@ -253,9 +253,9 @@ const AddUserScreen = () => {
         setErrorData(taskObject);
       }
       if (error?.response?.data?.message) {
-        toast.error(error.response.data.message);
+        toast.error(error?.response?.data?.message,{autoClose:2500});
       } else {
-        toast.error("Something went wrong!");
+        toast.error("Something went wrong!",{autoClose:2500});
       }
       setisLoading(false);
     }
@@ -265,7 +265,7 @@ const AddUserScreen = () => {
     if (!hasCookie("token")) return;
     
     if (userInfo?.user === "") {
-      toast.error("Please Enter the Name");
+      toast.error("Please Enter the Name",{autoClose:2500});
       return;
     }
 
@@ -294,7 +294,7 @@ const AddUserScreen = () => {
       }
       const response = await axios.put(`${Baseurl}/db/users`, updatedInfo, header);
       if (response.status === 200 || response.status === 201) {
-        toast.success(response?.data?.message);
+        toast.success(response?.data?.message,{autoClose:2500});
         if (uploadDocs.aadhar)
           AddUploadPicture(
             updtUId,
@@ -334,9 +334,9 @@ const AddUserScreen = () => {
         setErrorData(taskObject);
       }
       if (error?.response?.data?.message) {
-        toast.error(error.response.data.message);
+        toast.error(error?.response?.data?.message,{autoClose:2500});
       } else {
-        toast.error("Something went wrong!");
+        toast.error("Something went wrong!",{autoClose:2500});
       }
       setisLoading(false);
     }
@@ -371,7 +371,7 @@ const AddUserScreen = () => {
         requestOptions
       );
       const result = await response.text();
-      toast.info(result.message);
+      toast.info(result?.message,{autoClose:2500});
     } catch (error) {
       console.log("error", error);
     }
@@ -398,7 +398,7 @@ const AddUserScreen = () => {
         setuserImage(files);
         setImgFile(ImagesArray);
     } else {
-        toast.error('Please upload a valid image file (PNG, JPG, JPEG)');
+        toast.error('Please upload a valid image file (PNG, JPG, JPEG)',{autoClose:2500});
     }
 };
 

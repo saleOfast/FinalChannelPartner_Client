@@ -194,7 +194,11 @@ const TasksMuiTable = ({
                   <ViewIcon />
                 </button>
               </Link>
-              <Link href={`/media/AddTask?id=${value}`}>
+              {
+                tableMeta?.rowData[7]!=="close" && (
+                  <>
+                         
+                         <Link href={`/media/AddTask?id=${value}`}>
                 <button className="action_btn" title="Edit">
                   <EditIcon />
                 </button>
@@ -205,6 +209,10 @@ const TasksMuiTable = ({
                 title="Disable" >
                 <DeleteIcon />
               </button>
+                  </>
+                )
+              }
+              
             </div>
           );
         },
@@ -234,7 +242,8 @@ const TasksMuiTable = ({
  const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions:{filename:"TasksList.csv"}
+        downloadOptions:{filename:"TasksList.csv"},
+        filterType:'multiselect'
     };
 
   const mappedDataList=dataList?.map(list=>({

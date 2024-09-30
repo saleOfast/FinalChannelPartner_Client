@@ -8,150 +8,7 @@ import { toast } from "react-toastify";
 import { Baseurl } from "../../../Utils/Constants";
 import moment from "moment";
 import { responsiveFontSizes } from "@mui/material";
-
-const formaArray = [
-  {
-    label: "Site Code",
-    name: "site_id",
-    type: "number",
-    disabled: true,
-  },
-  { label: "State", name: "state", disabled: true, type: "text" },
-  { label: "City", name: "city", disabled: true, type: "text" },
-  {
-    label: "Location",
-    name: "location",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Category",
-    name: "category",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Media Format",
-    name: "media_format",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Media Vehicle",
-    name: "media_vehicle",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Media Type",
-    name: "media_type",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Quantity",
-    name: "quantity",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Width (Ft.)",
-    name: "width",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Height (Ft.)",
-    name: "height",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Total (Sq. Ft.)",
-    name: "total_sq_ft",
-    type: "text",
-    disabled: true,
-  },
-  {
-    label: "Campaign Start Date",
-    name: "campaign_start_date",
-    type: "date",
-    disabled: true,
-  },
-  {
-    label: "Campaign End Date",
-    name: "campaign_end_date",
-    type: "date",
-    disabled: true,
-  },
-  {
-    label: "Campaign Duration",
-    name: "campaign_duration",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Display Vendor Name",
-    name: "display_vender_cost",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Display Cost / Month",
-    name: "display_cost_per_month",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Buying Price as Per Duration",
-    name: "buying_price_as_per_duration",
-    disabled: true,
-    type: "text",
-  },
-  {
-    label: "Final Display Cost",
-    name: "final_display_cost",
-    type: "number",
-  },
-  {
-    label: "Mounting Vendor",
-    name: "mounting_vendor_id",
-    type: "select",
-  },
-  {
-    label: "Mounting Cost / Sq. Ft.",
-    name: "mounting_cost_per_sq_ft",
-    type: "number",
-  },
-  {
-    label: "Mounting Cost",
-    name: "mounting_cost",
-    disabled: true,
-    type: "number",
-  },
-  {
-    label: "Printing Vendor",
-    name: "printing_vendor_id",
-    type: "select",
-  },
-  {
-    label: "Printing Material",
-    name: "pr_m_id",
-    type: "select",
-  },
-  {
-    label: "Printing Cost / Sq. Ft.",
-    name: "printing_cost_per_sq_ft",
-    type: "number",
-  },
-  {
-    label: "Printing Cost",
-    name: "printing_cost",
-    disabled: true,
-    type: "number",
-  },
-  { label: "Remarks", name: "remarks" },
-];
+import { formaArray } from "./Array";
 
 const ModelUpdateVendorCostAsset = ({
   show,
@@ -169,7 +26,8 @@ const ModelUpdateVendorCostAsset = ({
   setPrintingVendorData,
   printingMaterialData,
   mountingVendorData,
-  getContactList
+  getContactList,
+  getAssetSites
 }) => {
   const [printingVendor, setPrintingVendor] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -278,51 +136,7 @@ const ModelUpdateVendorCostAsset = ({
     }
   };
 
-  useEffect(() => {
-    if (formData.pr_m_id) {
-      const selectedMaterial = printingMaterialData.find(
-        (item) => item.pr_m_id === formData.pr_m_id && item.acc_id == formData. printing_vendor_id
-      );
-      if (selectedMaterial) {
-        setFormData((prevData) => ({
-          ...prevData,
-          printing_cost_per_sq_ft: selectedMaterial.pr_c_cost || "",
-        }));
-      }
-    } else {
-      // Optionally reset 'printing_cost_per_sq_ft' if 'pr_m_id' is cleared
-      setFormData((prevData) => ({
-        ...prevData,
-        printing_cost_per_sq_ft: "",
-      }));
-    }
-  }, [formData.pr_m_id]);
-
-  useEffect(() => {
-    if (formData.mounting_vendor_id) {
-      const selectedMountingVendor = mountingVendorData.find(
-        (item) => item.acc_id === formData.mounting_vendor_id
-      );
-
-      console.log(
-        "selectedMountingVendor",
-        selectedMountingVendor,
-        "aggi",
-        formData.mounting_vendor_id
-      );
-      if (selectedMountingVendor) {
-        setFormData((prevData) => ({
-          ...prevData,
-          mounting_cost_per_sq_ft: selectedMountingVendor.mo_c_cost || "",
-        }));
-      }
-    } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        mo_c_id: "",
-      }));
-    }
-  }, [formData.mounting_vendor_id]);
+  
 
   const updateVendorCostSheetAssetForParticularSite = async () => {
     if(validate()){
@@ -344,7 +158,7 @@ const ModelUpdateVendorCostAsset = ({
         ...formData,
         site_id: selectedSite?.site_id,
         eab_id: selectedSite?.eab_id,
-        campaign_id: selectedSite?.db_estimate?.campaign_id,
+        campaign_id: selectedSite?.campaign_id,
         vcs_id: getData.vcs_id,
       };
       try {
@@ -359,6 +173,7 @@ const ModelUpdateVendorCostAsset = ({
           setLoading(false);
           handleClose();
           setFlag(false);
+          getAssetSites()
           getContactList()
         }
       } catch (error) {
@@ -429,7 +244,7 @@ const ModelUpdateVendorCostAsset = ({
         ...formData,
         site_id: selectedSite?.site_id,
         eab_id: selectedSite?.eab_id,
-        campaign_id: selectedSite?.db_estimate?.campaign_id,
+        campaign_id: selectedSite?.campaign_id,
       };
       try {
         const response = await axios.post(
@@ -441,7 +256,7 @@ const ModelUpdateVendorCostAsset = ({
         if (response.status === 204 || response.status === 200) {
           toast.success(response?.data?.message);
 
-          // getAssetSites()
+          getAssetSites()
           setLoading(false);
           handleClose();
           setFlag(false);
@@ -516,28 +331,29 @@ const ModelUpdateVendorCostAsset = ({
               ) || "",
             campaign_duration:
               response?.data?.data?.db_media_campaign?.campaign_duration || "",
+              display_vendor_name:selectedSite?.display_vendor_name,
             display_cost_per_month:
-              response?.data?.data?.display_cost_per_month || "0",
+              response?.data?.data?.display_cost_per_month || 0,
             display_vender_cost:
               response?.data?.data?.display_vender_cost || "",
             buying_price_as_per_duration:
-              response?.data?.data?.buying_price_as_per_duration || "0",
-            // final_client_po_cost: response?.data?.data?.final_client_po_cost || "0",
+              response?.data?.data?.buying_price_as_per_duration || 0,
+            // final_client_po_cost: response?.data?.data?.final_client_po_cost || 0,
             mounting_cost_per_sq_ft:
-              response?.data?.data?.mounting_cost_per_sq_ft || "0",
-            mounting_cost: response?.data?.data?.mounting_cost || "0",
+              response?.data?.data?.mounting_cost_per_sq_ft || 0,
+            mounting_cost: response?.data?.data?.mounting_cost || 0,
             remarks: response?.data?.data?.remarks || "",
             mounting_vendor_id: response?.data?.data?.mounting_vendor_id || "",
             pr_m_id: response?.data?.data?.pr_m_id || "",
             printing_vendor_id: response?.data?.data?.printing_vendor_id || "",
             printing_cost_per_sq_ft:
-              response?.data?.data?.printing_cost_per_sq_ft || "0",
+              response?.data?.data?.printing_cost_per_sq_ft || 0,
           });
           const filteredVendorData = printingVendorData.filter(
             (item) =>
               item.m_t_id ===
-                selectedSite.db_site.db_media_type.m_t_id &&
-              item.db_account.bill_state === selectedSite.db_site.db_state.state_id
+                selectedSite?.m_t_id &&
+              item.db_account.bill_state === selectedSite?.state_id
           );
           const uniqueFilteredVendorData = filteredVendorData.reduce((acc, current) => {
             const x = acc.find(item => item.acc_id === current.acc_id);
@@ -557,9 +373,9 @@ const ModelUpdateVendorCostAsset = ({
           const filteredMountingVendorData = mountingVendorData.filter(
             (item) =>
               item.db_media_type.m_t_id ===
-                selectedSite.db_site.db_media_type.m_t_id &&
+                selectedSite?.m_t_id &&
               item.db_account.bill_state ===
-                selectedSite.db_site.db_state.state_id
+                selectedSite?.state_id
           );
 
           const uniqueFilteredMountingVendorData = filteredMountingVendorData.reduce((acc, current) => {
@@ -600,60 +416,49 @@ const ModelUpdateVendorCostAsset = ({
         } else {
           console.log("alhgljlgjljsejglajfhgogjflhaks  i ma ajrunningljlkf ");
           setFormData({
-            site_id: selectedSite?.db_site?.site_id || "",
+            site_id: selectedSite?.site_id || "",
             estimate_id: selectedSite?.estimate_id || "",
-            state: selectedSite?.db_site?.db_state?.state_name || "",
-            city: selectedSite?.db_site?.db_city?.city_name || "",
-            location: selectedSite?.db_site?.location || "",
+            state: selectedSite?.state || "",
+            city: selectedSite?.city || "",
+            location: selectedSite?.location || "",
             category:
-              selectedSite?.db_site?.db_site_category?.site_cat_name || "",
+              selectedSite?.category || "",
             media_format:
-              selectedSite?.db_site?.db_media_format?.m_f_name || "",
+              selectedSite?.media_format || "",
             media_vehicle:
-              selectedSite?.db_site?.db_media_vehicle?.m_v_name || "",
-            media_type: selectedSite?.db_site?.db_media_type?.m_t_name || "",
-            quantity: selectedSite?.db_site?.quantity || "",
-            width: selectedSite?.db_site?.width || "",
-            height: selectedSite?.db_site?.height || "",
+              selectedSite?.media_vehicle || "",
+            media_type: selectedSite?.media_type || "",
+            quantity: selectedSite?.quantity || "",
+            width: selectedSite?.width || "",
+            height: selectedSite?.height || "",
             total_sq_ft:
               (
-                selectedSite?.db_site?.width * selectedSite?.db_site?.height
+                selectedSite?.total_sq_ft
               ).toFixed(2) || "",
             campaign_start_date:
               moment(
-                selectedSite?.db_estimate?.db_media_campaign
-                  ?.campaign_start_date
+                selectedSite?.campaign_start_date
               ).format("YYYY-MM-DD") || "",
             campaign_end_date:
               moment(
-                selectedSite?.db_estimate?.db_media_campaign?.campaign_end_date
+                selectedSite?.campaign_end_date
               ).format("YYYY-MM-DD") || "",
             campaign_duration:
-              selectedSite?.db_estimate?.db_media_campaign?.campaign_duration ||
+            moment(selectedSite?.campaign_end_date).diff(moment(selectedSite?.campaign_start_date), 'days') ||
               "",
-            display_vender_cost:
-              selectedSite?.db_estimate?.display_vender_cost || "0",
-              display_cost_per_month: selectedSite?.db_estimate?.display_selling_cost || "0",
+              display_vendor_name:selectedSite?.display_vendor_name,
+              display_cost_per_month:
+              selectedSite?.display_cost_per_month || 0,
             buying_price_as_per_duration:
-              selectedSite?.db_estimate?.buying_price_as_per_duration || "0",
-            // final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || "0",
+              selectedSite?.buying_price_as_per_duration || 0,
+            // final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || 0,
             mounting_cost_per_sq_ft:
-              selectedSite?.db_estimate?.mounting_cost_per_sq_ft || "0",
-            mounting_cost:
-              (
-                (selectedSite?.db_estimate?.mounting_cost_per_sq_ft || 0) *
-                selectedSite?.db_site?.width *
-                selectedSite?.db_site?.height
-              ).toFixed(2) || "0",
+              selectedSite?.mounting_cost_per_sq_ft || 0,
+            mounting_cost:Number(selectedSite?.mounting_cost).toFixed(2) || 0,
             printing_cost_per_sq_ft:
-              selectedSite?.db_estimate?.printing_cost_per_sq_ft || "0",
-            printing_cost:
-              (
-                (selectedSite?.db_estimate?.printing_cost_per_sq_ft || 0) *
-                selectedSite?.db_site?.width *
-                selectedSite?.db_site?.height
-              ).toFixed(2) || "0",
-            remarks: selectedSite?.db_site?.remarks || "",
+              selectedSite?.printing_cost_per_sq_ft || 0,
+            printing_cost:Number(selectedSite?.printing_cost).toFixed(2) || 0,
+            remarks: selectedSite?.remarks || "",
           });
          
           console.log("answer1 selectedSite",selectedSite);
@@ -663,8 +468,8 @@ const ModelUpdateVendorCostAsset = ({
           const filteredVendorData = printingVendorData.filter(
             (item) =>
               item.db_media_type.m_t_id ===
-                selectedSite.db_site.db_media_type.m_t_id &&
-                item.db_account.bill_state === selectedSite.db_site.db_state.state_id
+                selectedSite?.m_t_id &&
+                item.db_account.bill_state === selectedSite?.state_id
           );
 
           const uniqueFilteredVendorData = filteredVendorData.reduce((acc, current) => {
@@ -685,9 +490,9 @@ const ModelUpdateVendorCostAsset = ({
           const filteredMountingVendorData = mountingVendorData.filter(
             (item) =>
               item.db_media_type.m_t_id ===
-                selectedSite.db_site.db_media_type.m_t_id &&
+                selectedSite?.m_t_id &&
               item.db_account.bill_state ===
-                selectedSite.db_site.db_state.state_id
+                selectedSite?.state_id
           );
 
           const uniqueFilteredMountingVendorData = filteredMountingVendorData.reduce((acc, current) => {
@@ -732,7 +537,7 @@ const ModelUpdateVendorCostAsset = ({
     console.log("printingMaterialData data is ",printingMaterialData,"and selectd is ",selectedSite)
     if (formData.printing_vendor_id) {
       const fileterPrintingMdaterialData = printingMaterialData.filter(
-        (item) => item.acc_id == formData. printing_vendor_id && item.m_t_id == selectedSite.db_site.db_media_type.m_t_id
+        (item) => item.acc_id == formData. printing_vendor_id && item.m_t_id == selectedSite?.m_t_id
       );
 
       const printingMaterial = fileterPrintingMdaterialData.map((item) => ({
@@ -771,35 +576,75 @@ const ModelUpdateVendorCostAsset = ({
     setFormData(updatedData);
   
   }, [formData.mounting_cost_per_sq_ft, formData.printing_cost_per_sq_ft, formData.total_sq_ft]);
+
+
+  useEffect(() => {
+    if (formData.pr_m_id) {
+      const selectedMaterial = printingMaterialData.find(
+        (item) => item.pr_m_id === formData.pr_m_id && item.acc_id == formData. printing_vendor_id
+      );
+      if (selectedMaterial) {
+        setFormData((prevData) => ({
+          ...prevData,
+          printing_cost_per_sq_ft: selectedMaterial.pr_c_cost || "",
+        }));
+      }
+    } else {
+      // Optionally reset 'printing_cost_per_sq_ft' if 'pr_m_id' is cleared
+      setFormData((prevData) => ({
+        ...prevData,
+        printing_cost_per_sq_ft: "",
+      }));
+    }
+  }, [formData.pr_m_id]);
+
+  useEffect(() => {
+    if (formData.mounting_vendor_id) {
+      const selectedMountingVendor = mountingVendorData.find(
+        (item) => item.acc_id === formData.mounting_vendor_id
+      );
+
+      console.log(
+        "selectedMountingVendor",
+        selectedMountingVendor,
+        "aggi",
+        formData.mounting_vendor_id
+      );
+      if (selectedMountingVendor) {
+        setFormData((prevData) => ({
+          ...prevData,
+          mounting_cost_per_sq_ft: selectedMountingVendor.mo_c_cost || "",
+        }));
+      }
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        mo_c_id: "",
+      }));
+    }
+  }, [formData.mounting_vendor_id]);
+
+  // useEffect(() => {
+  //   if (formData.final_display_cost && !isNaN(formData.final_display_cost)) {
+  //     // Calculate the cost per month only if final_display_cost is a valid number
+  //     const calculate_display_cost_per_month = formData.final_display_cost / 12;
+  //     setFormData((prevData) => ({
+  //       ...prevData,
+  //       display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
+  //     }));
+  //   } else {
+  //     // Clear display_cost_per_month if final_display_cost is empty or invalid
+  //     setFormData((prevData) => ({
+  //       ...prevData,
+  //       display_cost_per_month: "",
+  //     }));
+  //   }
+  // }, [formData.final_display_cost]);
   
-// useEffect(()=>{
-// if(formData.final_display_cost){
-//  const  calculate_display_cost_per_month = formData.final_display_cost /12;
-//  setFormData((prevData) => ({
-//   ...prevData,
-//    display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
-//  }));
-// } 
-
-// },[formData.final_display_cost])
 
 
-useEffect(() => {
-  if (formData.final_display_cost && !isNaN(formData.final_display_cost)) {
-    // Calculate the cost per month only if final_display_cost is a valid number
-    const calculate_display_cost_per_month = formData.final_display_cost / 12;
-    setFormData((prevData) => ({
-      ...prevData,
-      display_cost_per_month: calculate_display_cost_per_month.toFixed(2),
-    }));
-  } else {
-    // Clear display_cost_per_month if final_display_cost is empty or invalid
-    setFormData((prevData) => ({
-      ...prevData,
-      display_cost_per_month: "",
-    }));
-  }
-}, [formData.final_display_cost]);
+
+
 
 
 

@@ -130,9 +130,9 @@ const SideBar = ({}) => {
   }
 
   useEffect(() => {
-    if (window.innerWidth <= 500) {
-      dispatch(closedView());
-    }
+    // if (window.innerWidth <= 500) {
+    // }
+    dispatch(closedView());
   }, []);
 
   useEffect(()=>{

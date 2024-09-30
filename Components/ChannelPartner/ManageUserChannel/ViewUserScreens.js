@@ -35,9 +35,9 @@ const ViewUserScreens = () => {
                 setDataList(response.data.data);
             } catch (error) {
                 if (error?.response?.data?.message) {
-                    toast.error(error.response.data.message);
+                    toast.error(error?.response?.data?.message,{autoClose:2500});
                 } else {
-                    toast.error("Something went wrong!");
+                    toast.error("Something went wrong!",{autoClose:2500});
                 }
             }
         }

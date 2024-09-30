@@ -127,7 +127,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions: { filename: "ChannelPartnerList.csv" }
+        downloadOptions: { filename: "ChannelPartnerList.csv" },
+        filterType:'multiselect'
     };
 
     return (

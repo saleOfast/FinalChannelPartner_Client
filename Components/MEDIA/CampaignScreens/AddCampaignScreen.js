@@ -11,123 +11,8 @@ import { useSelector } from "react-redux";
 import { fetchData } from "../../../Utils/getReq";
 import Select from "react-select";
 import { Delete } from "@mui/icons-material";
+import { costingDetailArray1,costingDetailArray2,marginInfoArray } from "./Array";
 
-const costingDetailArray = [
-  {
-    label: "Client Display Cost",
-    id: "client_display_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Client Mounting Cost",
-    id: "client_mounting_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Client Printing Cost",
-    id: "client_printing_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Client Cost",
-    id: "total_client_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Sales Order Value",
-    id: "total_sales_order_value",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Credit Note Value",
-    id: "total_credit_note_value",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Receipt from Client",
-    id: "total_receipt_from_client",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Client Outstanding",
-    id: "total_client_outstanding",
-    fieldType: "currency",
-  },
-  { label: "Total NDP Days", id: "total_ndp_days", fieldType: "number" },
-  {
-    label: "Total Sales Invoice Value",
-    id: "total_sales_invoice_value",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Vendor Display Cost",
-    id: "total_vendor_display_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Vendor Mounting Cost",
-    id: "total_vendor_mounting_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Vendor Printing Cost",
-    id: "total_vendor_printing_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Vendor Cost",
-    id: "total_vendor_cost",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Purchase Order Value",
-    id: "total_purchase_order_value",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Debit Note Value",
-    id: "total_debit_note_value",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Vendor Payment",
-    id: "total_vendor_payment",
-    fieldType: "currency",
-  },
-  {
-    label: "Total Vendor Outstanding",
-    id: "total_vendor_outstanding",
-    fieldType: "currency",
-  },
-  { label: "Total NDP Value", id: "total_ndp_value", fieldType: "currency" },
-];
-
-const marginInfoArray = [
-  { label: "Overall Margin", id: "overall_margin", fieldType: "currency" },
-  { label: "Display Margin", id: "display_margin", fieldType: "currency" },
-  { label: "Mounting Margin", id: "mounting_margin", fieldType: "currency" },
-  { label: "Printing Margin", id: "printing_margin", fieldType: "currency" },
-  {
-    label: "Overall Margin %",
-    id: "overall_margin_percentage",
-    fieldType: "percentage",
-  },
-  {
-    label: "Display Margin %",
-    id: "display_margin_percentage",
-    fieldType: "percentage",
-  },
-  {
-    label: "Mounting Margin %",
-    id: "mounting_margin_percentage",
-    fieldType: "percentage",
-  },
-  {
-    label: "Printing Margin %",
-    id: "printing_margin_percentage",
-    fieldType: "percentage",
-  },
-];
 
 const AddCampaignScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
@@ -174,7 +59,7 @@ const AddCampaignScreen = () => {
     campaign_end_date: "",
     campaign_duration: 0,
     cmpn_p_id: null,
-    // proof_attachment: null,
+    proof_attachment: null,
     cmpn_b_t_id: null,
     client_display_cost: 0,
     client_mounting_cost: 0,
@@ -953,7 +838,7 @@ updatedInfo.printing_margin_percentage =
                         defaultValue={""}
                         placeholder="Enter Client Name"
                         isDisabled={viewMode}
-                        options={accountsList?.map((data, index) => {
+                        options={accountsList?.filter((item)=>item?.db_account_type?.account_type_name=="Direct Clients")?.map((data, index) => {
                           return {
                             value: data?.acc_id,
                             label: data?.acc_name,
@@ -1292,13 +1177,15 @@ updatedInfo.printing_margin_percentage =
                   </div>
                 </div>
               </div>
-
-              <div className="add_screen_head">
+            {
+              id ?(
+                <>
+                      <div className="add_screen_head">
                 <span className="text_bold">Costing Details </span>
               </div>
               <div className="add_user_form">
                 <div className="row ">
-                  {costingDetailArray?.map((item) => (
+                  {costingDetailArray1?.map((item) => (
                     <div
                       className="col-xl-3 col-md-3 col-sm-12 col-12"
                       key={item.id}
@@ -1310,7 +1197,7 @@ updatedInfo.printing_margin_percentage =
                             : "input_box"
                         }
                       >
-                        <label htmlFor="campaign_brand">{item?.label} </label>
+                        <label htmlFor={item?.id}>{item?.label} </label>
                         <input
                           type="text"
                           id={item?.id}
@@ -1334,7 +1221,44 @@ updatedInfo.printing_margin_percentage =
                   ))}
                 </div>
               </div>
-
+              <div className="add_user_form">
+                <div className="row ">
+                  {costingDetailArray2?.map((item) => (
+                    <div
+                      className="col-xl-3 col-md-3 col-sm-12 col-12"
+                      key={item.id}
+                    >
+                      <div
+                        className={
+                          errorData?.[item?.id]
+                            ? "input_box errorBox"
+                            : "input_box"
+                        }
+                      >
+                        <label htmlFor={item?.id}>{item?.label} </label>
+                        <input
+                          type="text"
+                          id={item?.id}
+                          className="form-control"
+                          // disabled={item?.id==="total_client_cost"}
+                          disabled={
+                            viewMode || item?.id === "total_client_cost" ||
+                            item?.id === "total_vendor_cost"
+                          }
+                          placeholder={`Enter ${item?.label}`}
+                          value={userInfo?.[item?.id]}
+                          onChange={(e) =>
+                            handleCostingInputChange(e, item?.fieldType)
+                          }
+                        />
+                        <span className="errorText">
+                          {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
               <div className="add_screen_head">
                 <span className="text_bold">Margin Information </span>
               </div>
@@ -1372,6 +1296,12 @@ updatedInfo.printing_margin_percentage =
                   ))}
                 </div>
               </div>
+                </>
+              ) : null
+            }
+              
+
+              
 
               <div className="add_screen_head">
                 <span className="text_bold">System Information </span>

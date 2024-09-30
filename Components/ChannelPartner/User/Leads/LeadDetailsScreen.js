@@ -65,9 +65,9 @@ const LeadDetailsScreen = () => {
           setMaxDate(moment().add(Number(data?.data[0]?.setting_value), 'days').format('YYYY-MM-DD')); 
         } catch (error) {
           if (error?.response?.data?.message) {
-            toast.error(error?.response?.data?.message);
+            toast.error(error?.response?.data?.message,{autoClose:2500});
           } else {
-            toast.error("Something went wrong!");
+            toast.error("Something went wrong!",{autoClose:2500});
           }
         }
       }
@@ -120,9 +120,9 @@ const LeadDetailsScreen = () => {
         } catch (error) {
           console.log(error)
             if (error?.response?.data?.message) {
-                toast.error(error.response.data.message);
+                toast.error(error?.response?.data?.message,{autoClose:2500});
             } else {
-                toast.error("Something went wrong!");
+                toast.error("Something went wrong!",{autoClose:2500});
             }
         }
     }
@@ -148,16 +148,16 @@ const LeadDetailsScreen = () => {
       dispatch(startButtonLoading())
        const response = await axios.put(`${Baseurl}/db/channel/lead`,updatedLeads, header);
        if (response.status === 200 || response.status === 201) {
-         toast.success(response.data.message);
+         toast.success(response?.data?.message,{autoClose:2500});
         dispatch(stopButtonLoading())
          setShowAssignTo(false)
-         toast.success(response.message)
+         toast.success(response?.message,{autoClose:2500})
          getDataListById();
        }
      } catch (error) {
       console.log(error)
        if (error?.response?.data?.status === 422) {
-            //  toast.error(error?.response?.data?.message)
+            //  toast.error(error?.response?.data?.message,{autoClose:2500})
              const taskObject = {}
              const array = error?.response?.data?.data;
              for (let i = 0; i < array.length; i++) {
@@ -170,10 +170,10 @@ const LeadDetailsScreen = () => {
        }
        if (error?.response?.data?.message) {
         dispatch(stopButtonLoading())
-         toast.error(error.response.data.message);
+         toast.error(error?.response?.data?.message,{autoClose:2500});
        } else {
         dispatch(stopButtonLoading())
-         toast.error("Something went wrong!");
+         toast.error("Something went wrong!",{autoClose:2500});
        }
      }
  };

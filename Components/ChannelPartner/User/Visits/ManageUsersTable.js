@@ -298,14 +298,15 @@ const [value, setValue] = useState(getCurrentWeekDates());
             accu.push(dataList[value.dataIndex].user_code);
             return accu; // Return the accumulator
         }, []);
-        setUserData([...data]);
+        setUserData([...data]); 
     };
 
     const options = {
         selectableRows: 'none',
         responsive: "simple",
         onRowSelectionChange : handleRowClick,
-        downloadOptions:{filename:"ChannelVisits"}
+        downloadOptions:{filename:"ChannelVisits"},
+        filterType:'multiselect'
     };
 
     const mappedDataList=dataList?.map(list=>({

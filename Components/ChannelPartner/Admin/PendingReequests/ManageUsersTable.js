@@ -86,18 +86,18 @@ const ManageUsersTable = ({
           user_id:id
         }, header);
         if (response.status === 200 || response.status === 201) {
-          toast.success(response?.data?.message);
+          toast.success(response?.data?.message,{autoClose:2500});
           getDataList()
         }
       } catch (error) {
         console.log(error)
         if (error?.response?.data?.status === 422) {
-              toast.error(error?.response?.data?.message)  
+              toast.error(error?.response?.data?.message,{autoClose:2500})  
         }
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message,{autoClose:2500});
         } else {
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong!",{autoClose:2500});
         }
       }
   };
@@ -359,14 +359,15 @@ const ManageUsersTable = ({
     selectableRows: 'multiple',
     responsive: "simple",
     onRowSelectionChange : handleRowClick,
-    downloadOptions:{filename:"PendingRequestList"}
+    downloadOptions:{filename:"PendingRequestList"},
+    filterType:'multiselect'
   };
 
   const updateUserhandler = async () => {
 
     if (!hasCookie("token")) return;
     if (actionMode !== 'Accept' && userInfo.reject_reason === "") {
-      return toast.error("Please enter a reason");
+      return toast.error("Please enter a reason",{autoClose:2500});
     }
     const token = getCookie("token");
     const db_name = getCookie("db_name");
@@ -390,14 +391,14 @@ const ManageUsersTable = ({
         header
       );
       if (response.status === 200 || response.status === 201) {
-        toast.success(response?.data?.message);
+        toast.success(response?.data?.message,{autoClose:2500});
         getDataList()
       }
     } catch (error) {
       if (error?.response?.data?.message) {
-        toast.error(error?.response?.data?.message);
+        toast.error(error?.response?.data?.message,{autoClose:2500});
       } else {
-        toast.error("Something went wrong!");
+        toast.error("Something went wrong!",{autoClose:2500});
       }
     }
   };
@@ -409,7 +410,7 @@ const ManageUsersTable = ({
 
       if (!hasCookie("token")) return;
       if (actionMode !== 'Accept' && userInfo.reject_reason === "") {
-        return toast.error("Please enter a reason");
+        return toast.error("Please enter a reason",{autoClose:2500});
       }
       const token = getCookie("token");
       const db_name = getCookie("db_name");
@@ -434,7 +435,7 @@ const ManageUsersTable = ({
       );
       if (response.status === 200 || response.status === 201) {
         if (!toastShown) {
-          toast.success(response.data.message);
+          toast.success(response?.data?.message,{autoClose:2500});
           toastShown = true;
         }
         getDataList()
@@ -442,12 +443,12 @@ const ManageUsersTable = ({
     } catch (error) {
       if (error?.response?.data?.message) {
         if(!toastShown){
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message,{autoClose:2500});
           toastShown=true
         }
       } else {
         if(!toastShown){
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong!",{autoClose:2500});
           toastShown=true
         }
       }

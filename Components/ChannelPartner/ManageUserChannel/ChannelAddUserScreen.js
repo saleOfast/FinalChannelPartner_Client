@@ -184,7 +184,7 @@ const ChannelAddUserScreen = () => {
         reject_reason:data1?.reject_reason
       });
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message,{autoClose:2500});
     }
   }
 
@@ -212,7 +212,7 @@ const ChannelAddUserScreen = () => {
       );
       const userId = response.data.data.userProfileData.user_id;
       if (response.status === 200 || response.status === 201) {
-        toast.success(response.data.message);
+        toast.success(response?.data?.message,{autoClose:2500});
         if (uploadDocs.aadhar_card)
           AddUploadPicture(userId, "adh", uploadDocs.aadhar_card[0], 0);
         if (uploadDocs.pan_card)
@@ -233,9 +233,9 @@ const ChannelAddUserScreen = () => {
         setErrorData(taskObject);
       }
       if (error?.response?.data?.message) {
-        toast.error(error.response.data.message);
+        toast.error(error?.response?.data?.message,{autoClose:2500});
       } else {
-        toast.error("Something went wrong!");
+        toast.error("Something went wrong!",{autoClose:2500});
       }
       setisLoading(false);
     }
@@ -245,7 +245,7 @@ const ChannelAddUserScreen = () => {
     
     if (!hasCookie("token")) return;
     if (doc_verify === 3 && updateInfo.reject_reason === "") {
-      return toast.error("Please enter a reason");
+      return toast.error("Please enter a reason",{autoClose:2500});
     }
 
     setisLoading(true);
@@ -270,7 +270,7 @@ const ChannelAddUserScreen = () => {
         header
       );
       if (response.status === 200 || response.status === 201) {
-        toast.success(response.data.message);
+        toast.success(response?.data?.message,{autoClose:2500});
         setisLoading(false);
         router.push("/ManageChannerPartner");
       }
@@ -285,9 +285,9 @@ const ChannelAddUserScreen = () => {
         setErrorData(taskObject);
       }
       if (error?.response?.data?.message) {
-        toast.error(error.response.data.message);
+        toast.error(error?.response?.data?.message,{autoClose:2500});
       } else {
-        toast.error("Something went wrong!");
+        toast.error("Something went wrong!",{autoClose:2500});
       }
       setisLoading(false);
     }
@@ -322,7 +322,7 @@ const ChannelAddUserScreen = () => {
         requestOptions
       );
       const result = await response.text();
-      toast.info(result.message);
+      toast.info(result?.message,{autoClose:2500});
     } catch (error) {
       console.log("error", error);
     }

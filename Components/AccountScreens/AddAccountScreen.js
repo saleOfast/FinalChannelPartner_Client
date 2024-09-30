@@ -14,7 +14,7 @@ import moment from "moment";
 const AddAccountScreen = () => {
   const router = useRouter();
   const { id } = router.query;
-
+  const {ad_id}=router.query;
   const sideView = useSelector((state) => state.sideView.value);
 
   const [countrylist, setcountrylist] = useState([]);
@@ -130,7 +130,12 @@ const AddAccountScreen = () => {
           await postFieldsFunc(response.data.data.acc_id, oppBody.db_acc_fields)
           toast.success(response.data.message)
           setisLoading(false)
-          router.push('/crm/Accounts');
+          if(ad_id){
+            router.push('/crm/AddOpportunity/?ad_id=y')
+          }
+          else{
+            router.push('/crm/Accounts');
+          }
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -786,20 +791,6 @@ const AddAccountScreen = () => {
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div className={errorData?.contact_no ? 'input_box errorBox' : 'input_box'}>
                       <label htmlFor="contact_no">Contact No *</label>
-                      {/* <input
-                        type="number"
-                        name="contact-no"
-                        placeholder="Enter Contact No."
-                        id="contact_no"
-                        disabled={viewMode}
-                        className={errorData?.contact_no ? 'form-control is-invalid' : 'form-control'}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, contact_no: e.target.value })
-                          setErrorData({ ...errorData, contact_no: '' })
-
-                        }}
-                        value={userInfo.contact_no ? userInfo.contact_no : ''}
-                      /> */}
                       <input
                           type="text"
                           name="contact-no"
@@ -857,8 +848,8 @@ const AddAccountScreen = () => {
 
 
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                    <div className="input_box">
-                      <label htmlFor="Employee">Employee</label>
+                    <div className={errorData?.emp_name ? 'input_box errorBox' : 'input_box'}>
+                      <label htmlFor="Employee">Employee *</label>
                       <input
                         type="text"
                         name="Employee"
@@ -869,6 +860,7 @@ const AddAccountScreen = () => {
                         onChange={(e) => setUserInfo({ ...userInfo, emp_name: e.target.value })}
                         value={userInfo.emp_name ? userInfo.emp_name : ''}
                       />
+                      <span className="errorText"> {errorData?.emp_name ? errorData.emp_name : ''}</span>
                     </div>
                   </div>
 

@@ -60,7 +60,7 @@ const ChannelSignUpScreen = () => {
       if (data.status === 200) {
         if (data?.data?.doc_verification === 0) {
           setTokenLoading(false)
-          toast.success(data.message);
+          toast.success(data?.message,{autoClose:2500});
           setFormFields({
             ...formFields,
             name: data?.data?.user || "",
@@ -73,7 +73,7 @@ const ChannelSignUpScreen = () => {
           });
         }else if (data?.data?.doc_verification === 1) {
           setTokenLoading(false)
-          toast.success("Pending for verification");
+          toast.success("Pending for verification",{autoClose:2500});
           setFormFields({
             ...formFields,
             name: data?.data?.user || "",
@@ -97,7 +97,7 @@ const ChannelSignUpScreen = () => {
           },[1500])
         }else if (data?.data?.doc_verification === 2) {
           setTokenLoading(false)
-          toast.success("Documents Verified");
+          toast.success("Documents Verified",{autoClose:2500});
           setFormFields({
             ...formFields,
             name: data?.data?.user || "",
@@ -121,7 +121,7 @@ const ChannelSignUpScreen = () => {
           },[1500])
         } else{
           setTokenLoading(false)
-          toast.success("Documents Rejected");
+          toast.success("Documents Rejected",{autoClose:2500});
           setFormFields({
             ...formFields,
             name: data?.data?.user || "",
@@ -151,7 +151,7 @@ const ChannelSignUpScreen = () => {
       console.log(error)
       const errorMessage =
         error?.response?.data?.message || "Something went wrong!";
-      toast.error(errorMessage);
+      toast.error(errorMessage,{autoClose:2500});
     }
   };
 
@@ -164,7 +164,7 @@ const ChannelSignUpScreen = () => {
     event.preventDefault();
     if(formFields?.name=="" || formFields.user_l_name=="" || formFields.organisation=="" || formFields.mobile=="" || formFields.email=="" || formFields.state_id=="" || formFields.city_id=="" || formFields.address==""  || formFields.aadhar=="" || formFields.pan=="" || formFields.rera=="" || formFields.cheque==""){
       dispatch(stopButtonLoading())
-        return  toast.warning("Pls Fill All Mandatory Fields");
+        return  toast.warning("Pls Fill All Mandatory Fields",{autoClose:2500});
     }
     if (
       !isValidFileType(formFields.aadhar) ||
@@ -173,13 +173,13 @@ const ChannelSignUpScreen = () => {
       (formFields.cheque && !isValidFileType(formFields.cheque))
     ) {
       dispatch(stopButtonLoading());
-      return toast.warning("Please upload files in PNG or JPEG format.");
+      return toast.warning("Please upload files in PNG or JPEG format.",{autoClose:2500});
     }
     
     try {
       dispatch(startButtonLoading())
       if (!formFields.aadhar || !formFields.pan || !formFields.rera) {
-        toast.error("Aadhar, PAN, and RERA are required.");
+        toast.error("Aadhar, PAN, and RERA are required.",{autoClose:2500});
         dispatch(stopButtonLoading())
         return;
       }
@@ -211,7 +211,7 @@ const ChannelSignUpScreen = () => {
       );
       if (data.status === 200) {
         dispatch(stopButtonLoading())
-        toast.success(data.message);
+        toast.success(data?.message,{autoClose:2500});
         setFormFields({ ...formFields, isSubmitted: true });
         router.push("/ChannelPartnerRegister_Next");
       }
@@ -220,7 +220,7 @@ const ChannelSignUpScreen = () => {
       console.log(error?.response?.data);
       const errorMessage =
         error?.response?.data?.message || "Something went wrong!";
-      toast.error(errorMessage);
+      toast.error(errorMessage,{autoClose:2500});
     }
   };
 

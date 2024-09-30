@@ -5,6 +5,7 @@ import { Baseurl } from "../../../Utils/Constants";
 import axios from "axios";
 import moment from 'moment/moment';
 import { toast } from 'react-toastify';
+import {  updateClientCostAssetArray } from './Array';
 
 const ModelUpdateClientCostAsset = ({
   show,
@@ -91,12 +92,12 @@ const ModelUpdateClientCostAsset = ({
                   campaign_start_date: moment(response?.data?.data?.campaign_start_date).format("YYYY-MM-DD")  || '',
                   campaign_end_date:moment(response?.data?.data?.campaign_end_date).format("YYYY-MM-DD")  || '',
                   campaign_duration: response?.data?.data?.campaign_duration || '',
-                  display_cost_per_month: response?.data?.data?.display_cost_per_month || "0",
-                  selling_price_as_per_duration: response?.data?.data?.selling_price_as_per_duration || "0",
-                  final_client_po_cost: response?.data?.data?.final_client_po_cost || "0",
-                  mounting_cost_per_sq_ft: response?.data?.data?.mounting_cost_per_sq_ft || "0",
-                  mounting_cost: response?.data?.data?.mounting_cost || "0",
-                  printing_cost_per_sq_ft: response?.data?.data?.printing_cost_per_sq_ft || "0",
+                  display_cost_per_month: response?.data?.data?.db_site?.selling_cost || 0,
+                  selling_price_as_per_duration: response?.data?.data?.selling_price_as_per_duration || 0,
+                  final_client_po_cost: response?.data?.data?.final_client_po_cost || 0,
+                  mounting_cost_per_sq_ft: response?.data?.data?.mounting_cost_per_sq_ft || 0,
+                  mounting_cost: response?.data?.data?.mounting_cost || 0,
+                  printing_cost_per_sq_ft: response?.data?.data?.printing_cost_per_sq_ft || 0,
                   printing_cost: response?.data?.data?.printing_cost || '0',
                   remarks: response?.data?.data?.remarks || '',
                 });
@@ -105,30 +106,30 @@ const ModelUpdateClientCostAsset = ({
             else{
               console.log(true)
               setFormData({
-                site_id: selectedSite?.db_site?.site_id || '',
+                site_id: selectedSite?.site_id || '',
                 estimate_id:selectedSite?.estimate_id||"",
-                state:selectedSite?.db_site?.db_state?.state_name || '',
-                city:selectedSite?.db_site?.db_city?.city_name || '',
-                location: selectedSite?.db_site?.location || '',
-                category: selectedSite?.db_site?.db_site_category?.site_cat_name || '',
-                media_format: selectedSite?.db_site?.db_media_format?.m_f_name|| '',
-                media_vehicle: selectedSite?.db_site?.db_media_vehicle?.m_v_name || '',
-                media_type: selectedSite?.db_site?.db_media_type?.m_t_name || '',
-                quantity: selectedSite?.db_site?.quantity || '',
-                width:selectedSite?.db_site?.width || '',
-                height:selectedSite?.db_site?.height || '',
-                total_sq_ft: (selectedSite?.db_site?.width*selectedSite?.db_site?.height).toFixed(2) || '',
-                campaign_start_date: moment(selectedSite?.db_estimate?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")  || '',
-                campaign_end_date:moment(selectedSite?.db_estimate?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")  || '',
-                campaign_duration: selectedSite?.db_estimate?.db_media_campaign?.campaign_duration || '',
-                display_cost_per_month: selectedSite?.db_estimate?.display_selling_cost || "0",
-                selling_price_as_per_duration: selectedSite?.db_estimate?.selling_price_as_per_duration || "0",
-                final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || "0",
-                mounting_cost_per_sq_ft:selectedSite?.db_estimate?.mounting_cost_per_sq_ft || "0",
-                mounting_cost:((selectedSite?.db_estimate?.mounting_cost_per_sq_ft|| 0)*selectedSite?.db_site?.width*selectedSite?.db_site?.height).toFixed(2) || "0",
-                printing_cost_per_sq_ft:selectedSite?.db_estimate?.printing_cost_per_sq_ft || '0',
-                printing_cost: ((selectedSite?.db_estimate?.printing_cost_per_sq_ft||0)*selectedSite?.db_site?.width*selectedSite?.db_site?.height).toFixed(2) || "0",
-                remarks: selectedSite?.db_site?.remarks || '',
+                state:selectedSite?.state || '',
+                city:selectedSite?.city || '',
+                location: selectedSite?.location || '',
+                category: selectedSite?.category || '',
+                media_format: selectedSite?.media_format|| '',
+                media_vehicle: selectedSite?.media_vehicle || '',
+                media_type: selectedSite?.media_type || '',
+                quantity: selectedSite?.quantity || '',
+                width:selectedSite?.width || '',
+                height:selectedSite?.height || '',
+                total_sq_ft: (selectedSite?.total_sq_ft).toFixed(2) || '',
+                campaign_start_date: moment(selectedSite?.campaign_start_date).format("YYYY-MM-DD")  || '',
+                campaign_end_date:moment(selectedSite?.campaign_end_date).format("YYYY-MM-DD")  || '',
+                campaign_duration: moment(selectedSite?.campaign_end_date).diff(moment(selectedSite?.campaign_start_date), 'days') || '',
+                display_cost_per_month: selectedSite?.display_cost_per_month || 0,
+                selling_price_as_per_duration: selectedSite?.selling_price_as_per_duration|| 0,
+                final_client_po_cost: selectedSite?.final_client_po_cost || 0,
+                mounting_cost_per_sq_ft:selectedSite?.mounting_cost_per_sq_ft || 0,
+                mounting_cost:Number(selectedSite?.mounting_cost).toFixed(2) || 0,
+                printing_cost_per_sq_ft:selectedSite?.printing_cost_per_sq_ft || '0',
+                printing_cost: Number(selectedSite?.printing_cost).toFixed(2) || 0,
+                remarks: selectedSite?.remarks || '',
               });
             }
         } catch (error) {
@@ -240,7 +241,7 @@ const validate = () => {
           pass: "pass",
         },
       };
-      const newData={...formData,site_id:selectedSite?.site_id,eab_id:selectedSite?.eab_id,campaign_id:selectedSite?.db_estimate?.campaign_id}
+      const newData={...formData,site_id:selectedSite?.site_id,eab_id:selectedSite?.eab_id,campaign_id:selectedSite.campaign_id}
       try {
         const response = await axios.post(
           Baseurl +
@@ -282,7 +283,7 @@ const validate = () => {
           pass: "pass",
         },
       };
-      const newData={...formData,site_id:selectedSite?.site_id,eab_id:selectedSite?.eab_id,campaign_id:selectedSite?.db_estimate?.campaign_id}
+      const newData={...formData,site_id:selectedSite?.site_id,eab_id:selectedSite?.eab_id,campaign_id:selectedSite?.campaign_id}
       try {
         const response = await axios.put(
           Baseurl +
@@ -321,30 +322,7 @@ const validate = () => {
         <Modal.Body>
           <div className="add_user_form">
             <div className="row">
-              {[{label:'Site Code',name:'site_id', type: 'number',disabled:true},
-              {label:'State',name:'state', disabled: true},
-              {label:'City',name:'city', disabled: true},
-              { label: 'Location', name: 'location', disabled: true },
-              { label: 'Category', name: 'category', disabled: true },
-              { label: 'Media Format', name: 'media_format', disabled: true },
-              { label: 'Media Vehicle', name: 'media_vehicle', disabled: true },
-              { label: 'Media Type', name: 'media_type', disabled: true },
-                { label: 'Quantity', name: 'quantity', type: 'number' },
-                { label: 'Width (Ft.)', name: 'width', type: 'number' },
-                { label: 'Height (Ft.)', name: 'height', type: 'number' },
-                { label: 'Total (Sq. Ft.)', name: 'total_sq_ft', type: 'text', disabled: true },
-                { label: 'Campaign Start Date', name: 'campaign_start_date', type: 'date' },
-                { label: 'Campaign End Date', name: 'campaign_end_date', type: 'date' },
-                { label: 'Campaign Duration', name: 'campaign_duration', disabled:true },
-                { label: 'Display Cost / Month', name: 'display_cost_per_month', disabled:true },
-                { label: 'Selling Price as per Duration', name: 'selling_price_as_per_duration', disabled:true },
-                { label: 'Final Client PO Cost', name: 'final_client_po_cost', type: 'number' },
-                { label: 'Mounting Cost / Sq. Ft.', name: 'mounting_cost_per_sq_ft', type: 'number' },
-                { label: 'Mounting Cost', name: 'mounting_cost', disabled: true  },
-                { label: 'Printing Cost / Sq. Ft.', name: 'printing_cost_per_sq_ft', type: 'number' },
-                { label: 'Printing Cost', name: 'printing_cost', disabled: true },
-                { label: 'Remarks', name: 'remarks' }
-              ].map((field, index) => (
+              {updateClientCostAssetArray.map((field, index) => (
                 <div key={index} className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div className="input_box">
                     <label htmlFor={field.name}>{field.label}</label>

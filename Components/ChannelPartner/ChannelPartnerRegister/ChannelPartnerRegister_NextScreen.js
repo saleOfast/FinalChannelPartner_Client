@@ -16,6 +16,7 @@ const ChannelPartnerRegister_NextScreen = () => {
                 <div className="card-header pb-0 bg-white">
                   <div className="row">
                     <div className="col-12">
+                      <div className=" text-center fw-semibold ">Thank You For Submitting The Documents</div>
                       <h5 className="font-weight-bold mt-2 ">
                       Your document verification is currently under process
                       </h5>

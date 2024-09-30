@@ -312,11 +312,11 @@ const [value, setValue] = useState(getCurrentWeekDates());
 
   const createBrokerageBill =  async() => {
     if(brokerageBill.file==null){
-      return toast.error("Pls Upload Bill")
+      return toast.error("Pls Upload Bill",{autoClose:2500})
     }
    
     if (!isValidPdfFile(brokerageBill.file)) {
-      return toast.error("Please upload Bill in PDF", { autoClose: 1000 }); 
+      return toast.error("Please upload Bill in PDF", { autoClose: 2500 }); 
     }
    
       if (!hasCookie("token")) return;
@@ -339,7 +339,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
         dispatch(startButtonLoading())
         const response = await axios.post(`${Baseurl}/db/channel/brokerage`,formData, header);
         if (response.status === 200 || response.status === 201) {
-          toast.success(response.data.message);
+          toast.success(response?.data?.message,{autoClose:2500});
           dispatch(stopButtonLoading())
           setBrokerageBill("")
           setShowModal(false)
@@ -349,26 +349,26 @@ const [value, setValue] = useState(getCurrentWeekDates());
         console.log(error)
         if (error?.response?.data?.status === 422) {
           dispatch(stopButtonLoading())
-              toast.error(error?.response?.data?.message)
+              toast.error(error?.response?.data?.message,{autoClose:2500})
               
         }
         if (error?.response?.data?.message) {
           dispatch(stopButtonLoading())
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message,{autoClose:2500});
         } else {
           dispatch(stopButtonLoading())
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong!",{autoClose:2500});
         }
       }
   }
 
   const updateBrokerageBill =  async() => {
     if(brokerageBill.file==null){
-      return toast.error("Pls Upload Bill")
+      return toast.error("Pls Upload Bill",{autoClose:2500})
     }
    
     if (!isValidPdfFile(brokerageBill.file)) {
-      return toast.error("Please upload Bill in PDF", { autoClose: 1000 }); 
+      return toast.error("Please upload Bill in PDF", { autoClose: 2500 }); 
     }
    
       if (!hasCookie("token")) return;
@@ -398,7 +398,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
         dispatch(startButtonLoading())
         const response = await axios.put(`${Baseurl}/db/channel/brokerage`,formData, header);
         if (response.status === 200 || response.status === 201) {
-          toast.success(response.data.message);
+          toast.success(response?.data?.message,{autoClose:2500});
           dispatch(stopButtonLoading())
           setBrokerageBill("")
           setShowModal(false)
@@ -408,15 +408,15 @@ const [value, setValue] = useState(getCurrentWeekDates());
         console.log(error)
         if (error?.response?.data?.status === 422) {
           dispatch(stopButtonLoading())
-              toast.error(error?.response?.data?.message)
+              toast.error(error?.response?.data?.message,{autoClose:2500})
               
         }
         if (error?.response?.data?.message) {
           dispatch(stopButtonLoading())
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message,{autoClose:2500});
         } else {
           dispatch(stopButtonLoading())
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong!",{autoClose:2500});
         }
       }
   }
@@ -425,7 +425,8 @@ const [value, setValue] = useState(getCurrentWeekDates());
     selectableRows: 'none',
     responsive: "simple",
     onRowSelectionChange: handleRowClick,
-    downloadOptions:{filename:"ChannelBookings"}
+    downloadOptions:{filename:"ChannelBookings"},
+    filterType:'multiselect'
   };
 
   const mappedDataList=dataList?.map(list=>({

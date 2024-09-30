@@ -68,31 +68,7 @@ const ManageLeadScreen = () => {
     }
   };
 
-  const getAccountsList = async () => {
-    if (hasCookie("token")) {
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
-
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          pass: "pass",
-        },
-      };
-      try {
-        const response = await axios.get(Baseurl + `/db/account`, header);
-        setAccountsList(response.data.data);
-      } catch (error) {
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-      }
-    }
-  };
+ 
 
   const getSingleData = async (id, name) => {
     if (hasCookie("token")) {
@@ -123,6 +99,32 @@ const ManageLeadScreen = () => {
       
       setUserInfo(updatedData);
         checkAccountMatch(name);
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+  const getAccountsList = async () => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+      try {
+        const response = await axios.get(Baseurl + `/db/account`, header);
+        setAccountsList(response.data.data);
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -440,9 +442,15 @@ const ManageLeadScreen = () => {
 
   function openCloseConvert(value, name) {
     
-    handleShow();
+    
     setL_id(value);
     getSingleData(value, name);
+    getAccountsList();
+    getContactList();
+    getOppurtunityList();
+    handleShow();
+    console.log(userInfo?.acc_id)
+    console.log(userInfo?.contact_id)
     // checkAccountMatch(name)
   }
 
@@ -486,42 +494,6 @@ const ManageLeadScreen = () => {
     }
   }
 
-  // const handleDownload = () => {
-  //   if (hasCookie("token")) {
-  //     let token = getCookie("token");
-  //     let db_name = getCookie("db_name");
-
-  //     let header = {
-  //       headers: {
-  //         Accept:
-  //           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Change the Accept type to Excel
-  //         Authorization: "Bearer ".concat(token),
-  //         db: db_name,
-  //         m_id:17
-  //       },
-  //       responseType: "blob", // set the response type as blob
-  //     };
-
-  //     axios
-  //       .get(Baseurl + `/db/leads/download`, header)
-  //       .then((response) => {
-  //         const file = new Blob([response.data], {
-  //           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  //         }); // change the content type to Excel
-  //         const fileUrl = URL.createObjectURL(file);
-  //         // programmatically create and trigger the download link
-  //         const downloadLink = document.createElement("a");
-  //         downloadLink.href = fileUrl;
-  //         downloadLink.setAttribute("download", "Leads.xlsx"); // specify the file name
-  //         document.body.appendChild(downloadLink);
-  //         downloadLink.click();
-  //         document.body.removeChild(downloadLink);
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //       });
-  //   }
-  // };
 
   const handleDownload = async () => {
       if (hasCookie("token")) {
@@ -592,17 +564,77 @@ const ManageLeadScreen = () => {
     // return selectedId;
   };
 
-  // useEffect(() => {
-
-  //   checkAccountMatch();
-  // }, []);
+ 
 
   useEffect(() => {
     getDataList();
-    getAccountsList();
-    getContactList();
-    getOppurtunityList();
+    // getAccountsList();
+    // getContactList();
+    // getOppurtunityList();
   }, []);
+
+  useEffect(()=>{
+    if(userInfo?.contact_id!=="" && userInfo?.contact_id!==null){
+      const getAccountsList = async () => {
+        if (hasCookie("token")) {
+          let token = getCookie("token");
+          let db_name = getCookie("db_name");
+    
+          let header = {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer ".concat(token),
+              db: db_name,
+              pass: "pass",
+            },
+          };
+          try {
+            const response = await axios.get(Baseurl + `/db/account`, header);
+            const filteredAccountList=response?.data?.data.filter((item)=>item?.acc_id==userInfo?.contact_id)
+           setAccountsList(filteredAccountList);
+          } catch (error) {
+            if (error?.response?.data?.message) {
+              toast.error(error.response.data.message);
+            } else {
+              toast.error("Something went wrong!");
+            }
+          }
+        }
+      };
+        getAccountsList()
+    }
+  },[userInfo?.contact_id])
+
+  useEffect(()=>{
+    if(userInfo?.acc_id!=="" && userInfo?.acc_id!==null){
+      const getContactList = async () => {
+        if (hasCookie("token")) {
+          let token = getCookie("token");
+          let db_name = getCookie("db_name");
+    
+          let header = {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer ".concat(token),
+              db: db_name,
+              pass: "pass",
+            },
+          };
+          try {
+            const response = await axios.get(Baseurl + `/db/contacts`, header);
+            const filteredContactList=response?.data?.data.filter((item)=>item?.account_name==userInfo?.acc_id)
+            setContactList(filteredContactList);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      };
+      getContactList()
+    }
+  },[userInfo?.acc_id])
+
+
+
   return (
     <>
       <ConfirmBox
@@ -657,7 +689,7 @@ const ManageLeadScreen = () => {
       </div>
       <Modal className="commonModal" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title> converted Lead </Modal.Title>
+          <Modal.Title> Convert Lead </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="add_user_form">

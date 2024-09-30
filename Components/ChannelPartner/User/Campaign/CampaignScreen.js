@@ -69,10 +69,10 @@ const CampaignScreen = () => {
       } catch (error) {
         if (error?.response?.data?.message) {
           setLoader(false)
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message,{autoClose:2500});
         } else {
           setLoader(false)
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong!",{autoClose:2500});
         }
       }
     }
@@ -117,9 +117,9 @@ const CampaignScreen = () => {
       } catch (error) {
         console.log(error)
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message,{autoClose:2500});
         } else {
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong!",{autoClose:2500});
         }
       }
     }
@@ -154,7 +154,7 @@ const CampaignScreen = () => {
     } else {
       // toast.warning(`Invalid file type. Please upload ${allowedTypes.join(', ')}.`);
       const allowedExtensions = field === "template" ? ".html, .htm" : ".jpg, .jpeg, .png";
-      toast.warning(`Invalid file type. Please upload ${allowedExtensions}.`,{autoClose:1500});
+      toast.warning(`Invalid file type. Please upload ${allowedExtensions}.`,{autoClose:2500});
     }
   
     // Reset the input value to ensure the change event is fired even if the same file is selected
@@ -187,10 +187,10 @@ const CampaignScreen = () => {
   
   const createProject=  async() => {
     if(projectData?.contact_no?.toString().length!==10){
-      return toast.warning("contact no should be of 10 digit")
+      return toast.warning("contact no should be of 10 digit",{autoClose:2500})
      }
      if( projectData?.contact_no==""){
-      return toast.warning("Pls Fill Mandatory Fields")
+      return toast.warning("Pls Fill Mandatory Fields",{autoClose:2500})
      }
   //   if(!projectData.project) return toast.warning("please enter project name")
   //  if(!projectData.file) return toast.warning("please upload cover image")
@@ -214,20 +214,20 @@ const CampaignScreen = () => {
       try {
         const response = await axios.post(`${Baseurl}/db/channel/project`,formData, header);
         if (response.status === 200 || response.status === 201) {
-          toast.success(response.data.message);
+          toast.success(response?.data?.message,{autoClose:2500});
           setShowModal(false)
           getDataList();
         }
       } catch (error) {
         console.log(error)
         if (error?.response?.data?.status === 422) {
-              toast.error(error?.response?.data?.message)
+              toast.error(error?.response?.data?.message,{autoClose:2500})
               
         }
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message);
         } else {
-          toast.error("Something went wrong!");
+          toast.error("Something went wrong!",{autoClose:2500});
         }
       }
   };
@@ -235,10 +235,10 @@ const CampaignScreen = () => {
   const updateProject=  async() => {
     
     if(projectData?.contact_no?.toString().length!==10){
-      return toast.warning("contact no should be of 10 digit")
+      return toast.warning("contact no should be of 10 digit",{autoClose:2500})
      }
      if( projectData?.contact_no=="" ){
-      return toast.warning("Pls Fill Mandatory Fields")
+      return toast.warning("Pls Fill Mandatory Fields",{autoClose:2500})
      }
     if (!hasCookie("token")) return;
     const token = getCookie("token");
@@ -261,7 +261,7 @@ const CampaignScreen = () => {
       dispatch(startButtonLoading())
       const response = await axios.post(`${Baseurl}/db/channel/project/usertemplate`,formData, header);
       if (response.status === 200 || response.status === 201) {
-        toast.success(response.data.message);
+        toast.success(response?.data?.message,{autoClose:2500});
         dispatch(stopButtonLoading())
         setEditMode(false)
         setShowModal(false)
@@ -272,15 +272,15 @@ const CampaignScreen = () => {
       console.log(error)
       if (error?.response?.data?.status === 422) {
         dispatch(stopButtonLoading())
-            toast.error(error?.response?.data?.message)
+            toast.error(error?.response?.data?.message,{autoClose:2500})
             
       }
       if (error?.response?.data?.message) {
         dispatch(stopButtonLoading())
-        toast.error(error.response.data.message);
+        toast.error(error?.response?.data?.message,{autoClose:2500});
       } else {
         dispatch(stopButtonLoading())
-        toast.error("Something went wrong!");
+        toast.error("Something went wrong!",{autoClose:2500});
       }
     }
 };

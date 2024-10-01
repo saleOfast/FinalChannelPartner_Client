@@ -278,7 +278,8 @@ const CostManagementTable = ({
  const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions:{filename:"TasksList.csv"}
+        downloadOptions:{filename:"TasksList.csv"},
+        filterType:'multiselect'
     };
 
   const mappedDataList=dataList?.map(list=>({

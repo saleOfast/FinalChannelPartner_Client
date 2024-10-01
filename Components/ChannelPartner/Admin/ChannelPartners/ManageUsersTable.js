@@ -16,7 +16,7 @@ import { fetchData } from '../../../../Utils/getReq';
 
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader,selectedOption,setSelectedOption }) => {
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader,selectedOption,setSelectedOption,channelPartnerFilter }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -170,9 +170,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box fw-bold' style={{color:"#293790"}}>
-                            {/* {value && <span  >{value.user}</span>} */}
+                            {value && <span  >{value.user}</span>}
                             {/* {value && <span  >{value}</span>} */}
-                            {userInfo?.user==value?.user ? "" : value?.user}
+                            {/* {userInfo?.user==value?.user ? "" : value?.user} */}
                         </div>
                     )
                 }
@@ -224,7 +224,9 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: false,
                 download:false,
-                display:(userInfo?.role_id==null || userInfo?.role_id==3 ) && selectedOption=="Channel Partner" ? true:false,
+                viewColumns:false,
+                // display:(userInfo?.role_id==null || userInfo?.role_id==3 ) && (selectedOption=="Channel Partner"|| (selectedOption=="BST" && userInfo?.role_id==null )) ? true:false,
+                display:(userInfo?.role_id==null || userInfo?.role_id==3 ) && (selectedOption=="Channel Partner") ? true:false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -355,7 +357,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
               Accept: "application/json",
               Authorization: `Bearer ${token}`,
               db: db_name,
-              m_id: 79,
+              pass:"pass"
             },
           };
       
@@ -375,7 +377,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
               setoldAssignTo('');
               setShowModal(false);
               setUserData([])
-              getDataList();
+              if(channelPartnerFilter){
+                getDataList(channelPartnerFilter)
+              }
+              else{
+
+                  getDataList();
+              }
             }
           } catch (error) {
             console.log(error)
@@ -447,7 +455,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         
             <Modal className="commonModal"  show={showModal}   onHide={()=>{setShowModal(false)}} style={{}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>  Assign to </Modal.Title>
+                    <Modal.Title>  Assign To </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="add_user_form">
@@ -458,12 +466,18 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                         <Select
                                             id="select"
                                             defaultValue={""}
-                                            options={usersList?.filter(user => user.role_id === 2).map((data) => {
+                                            // options={usersList?.filter(user => user.role_id === 2).map((data) => {
+                                            //     return {
+                                            //         value: data?.user_id,
+                                            //         label: data?.user,
+                                            //     };
+                                            // })}
+                                            options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
                                                 return {
                                                     value: data?.user_id,
                                                     label: data?.user,
                                                 };
-                                            })}
+                                            })]}
                                             value={usersList?.map((data, index) => {
                                             if (oldAssignTo === data.user_id) {
                                                 return {

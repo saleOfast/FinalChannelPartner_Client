@@ -187,10 +187,9 @@ const TasksMuiTable = ({
         download:false,
         viewColumns:false,
         customBodyRender: (value, tableMeta, updateValue) => {
-          console.log(tableMeta)
           return (
             <div className="table_btns">
-               <Link href={`/crm/AddTask?id=${value}&vw=md`}>
+              <Link   href={`/crm/AddTask?id=${value}&vw=md`}>
                 <button className="action_btn" title="View">
                   <ViewIcon />
                 </button>
@@ -199,7 +198,7 @@ const TasksMuiTable = ({
                 tableMeta?.rowData[7]!=="close" && (
                   <>
                          
-              <Link href={`/crm/AddTask?id=${value}`}>
+              <Link   href={`/crm/AddTask?id=${value}`}>
                 <button className="action_btn" title="Edit">
                   <EditIcon />
                 </button>

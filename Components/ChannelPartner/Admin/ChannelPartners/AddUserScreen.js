@@ -854,15 +854,12 @@ const AddUserScreen = () => {
                           id={userInfo.des_id}
                           defaultValue={""}
                           isDisabled={viewMode}
-                          options={[
-                            { value: userInfoCheck?.user_id, label: "N.A" }, // Add the "None" option at the top
-                            ...usersList
-                              ?.filter((user) => user.role_id == 2)
-                              ?.map((data) => ({
+                          options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
+                            return {
                                 value: data?.user_id,
                                 label: data?.user,
-                              })),
-                          ]}
+                            };
+                        })]}
                           value={usersList
                             ?.filter((user) => user.role_id == 2)
                             ?.map((data, index) => {

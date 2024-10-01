@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Baseurl } from "../../../Utils/Constants";
-import { hasCookie, getCookie } from "cookies-next";
+import { hasCookie, getCookie, setCookie, deleteCookie } from "cookies-next";
 import axios from "axios";
 import Collapse from "react-bootstrap/Collapse";
 import { useRouter } from "next/router";
@@ -20,7 +20,7 @@ const AddOpportunityScreen = () => {
     const router = useRouter();
     const { id } = router.query;
     const { ac_id } = router.query;
-
+    const { ad_id } = router.query;
 
     const [userInfo, setUserInfo] = useState({
         opp_name: "",
@@ -64,6 +64,7 @@ const AddOpportunityScreen = () => {
     const [isLoading, setisLoading] = useState(false)
     const [lossLists, setlossLists] = useState([])
     const [iscollapse, setiscollapse] = useState(false);
+    const [ContactList,setContactList] =useState([])
 
   
 
@@ -314,6 +315,11 @@ const AddOpportunityScreen = () => {
                     await productSubmit(formValues, response.data.data.opp_id,oppBody.db_opportunity_fields)
                     await postFieldsFunc(response.data.data.opp_id,oppBody.db_opportunity_fields);
                     setisLoading(false)
+                    if(ad_id){
+                        deleteCookie("newFields")
+                        deleteCookie("oppFormData")
+                        deleteCookie("productForm")
+                      }
                     router.push("/media/Opportunity");
                 }
             } catch (error) {
@@ -688,6 +694,43 @@ async function postFieldsFunc(id, data) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.isReady, id]);
+
+    useEffect(() => {
+        if(ad_id){
+          setUserInfo(JSON.parse(getCookie("oppFormData")))
+       setFormValues(JSON.parse(getCookie("productForm")))
+       setNewFields(JSON.parse(getCookie("newFields")))
+        }
+      }, []);
+      useEffect(()=>{
+        if(userInfo?.account_name!==null && userInfo?.account_name!==""){
+          const getContactList = async () => {
+            if (hasCookie("token")) {
+              let token = getCookie("token");
+              let db_name = getCookie("db_name");
+        
+              let header = {
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer ".concat(token),
+                  db: db_name,
+                  pass: "pass",
+                },
+              };
+              try {
+                const response = await axios.get(Baseurl + `/db/contacts`, header);
+                const filteredContactList=response?.data?.data?.filter((item)=>item?.account_name==userInfo?.account_name)
+                setContactList(filteredContactList);
+              } catch (error) {
+                console.log(error);
+              }
+            }
+          };
+          getContactList()
+        }
+        
+      },[userInfo?.account_name])
+
     return (
         <div className={`main_Box  ${sideView}`}>
             <div className="bread_head">
@@ -719,7 +762,7 @@ async function postFieldsFunc(id, data) {
                         <div className="row">
                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className={errorData?.opp_name ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="task_name">Name *</label>
+                                    <label htmlFor="task_name">Opportunity Name *</label>
                                     <input
                                         type="text"
                                         placeholder="Enter Opportunity Name"
@@ -735,34 +778,7 @@ async function postFieldsFunc(id, data) {
                                     <span className="errorText"> {errorData?.opp_name ? errorData.opp_name : ''}</span>
                                 </div>
                             </div>
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                <div className={errorData?.opp_owner ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="oppr_ownr">Owner *</label>
-                                    {loginDetails?.isDB == true ? (
-                                        <input
-                                            type="text"
-                                            name="opp_owner"
-                                            disabled
-                                            placeholder="Contact Owner Name"
-                                            id="opp_owner"
-                                            className="form-control"
-                                            value={loginDetails.user ? loginDetails.user : ""}
-                                        />
-                                    ) : (
-                                        <input
-                                            type="text"
-                                            name="opp_owner"
-                                            disabled
-                                            placeholder="Contact Owner Name"
-                                            id="opp_owner"
-                                            className="form-control"
-                                            value={loginDetails.user ? loginDetails.user : ""}
-                                        />
-
-                                    )}
-                                    <span className="errorText"> {errorData?.opp_owner ? errorData.opp_owner : ''}</span>
-                                </div>
-                            </div>
+                            
 
                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className={errorData?.account_name ? 'input_box errorBox' : 'input_box'}>
@@ -791,10 +807,67 @@ async function postFieldsFunc(id, data) {
                                             setErrorData({ ...errorData, account_name: '' })
                                         }}
                                     />
-                                    {!editMode ? null : <p className="label_link">  <Link href="/media/AddAccount">+ Add New</Link></p>}
+                                    {/* {!editMode ? null : <p className="label_link">  <Link href="/media/AddAccount">+ Add New</Link></p>} */}
+                                    {!editMode ?  (
+                                        <p className="label_link">
+                                        {" "}
+                                        <div style={{color:"blue",cursor:"pointer",fontWeight:"600"}}  onClick={()=>{
+                                            setCookie("oppFormData",userInfo)
+                                            setCookie("productForm",formValues)
+                                            setCookie("newFields",newFields)
+                                            
+                                            router.push("/media/AddAccount/?ad_id=y")
+                                        }}>+ Add New</div>
+                                        </p>
+                                    ):null}
                                     <span className="errorText"> {errorData?.account_name ? errorData.account_name : ''}</span>
                                 </div>
                             </div>
+
+                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div
+                  className={
+                    errorData?.contact_id
+                      ? "input_box errorBox"
+                      : "input_box"
+                  }
+                >
+                  <label htmlFor="task_name">Contact Name *</label>
+                  <Select
+                    id={userInfo.contact_id}
+                    defaultValue={""}
+                    options={ContactList?.map((data, index) => {
+                      return {
+                        value: data?.contact_id,
+                        label: data?.first_name,
+                      };
+                    })}
+                    value={ContactList?.map((data, index) => {
+                      if (
+                        userInfo.contact_id === data.contact_id
+                      ) {
+                        return {
+                          value: data?.contact_id,
+                          label: data?.first_name,
+                        };
+                      }
+                    })}
+                    onChange={(e) => {
+                      setUserInfo({
+                        ...userInfo,
+                        contact_id: e.value,
+                      });
+                      setErrorData({ ...errorData, contact_id: "" });
+                    }}
+                  />
+                  <span className="errorText">
+                    {" "}
+                    {errorData?.contact_id
+                      ? errorData.contact_id
+                      : ""}
+                  </span>
+                </div>
+              </div>
 
 
 
@@ -854,6 +927,36 @@ async function postFieldsFunc(id, data) {
                                         }}
                                     />
                                     <span className="errorText"> {errorData?.opportunity_stg_id ? errorData.opportunity_stg_id : ''}</span>
+                                </div>
+                            </div>
+
+
+                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className={errorData?.opp_owner ? 'input_box errorBox' : 'input_box'}>
+                                    <label htmlFor="oppr_ownr">Owner *</label>
+                                    {loginDetails?.isDB == true ? (
+                                        <input
+                                            type="text"
+                                            name="opp_owner"
+                                            disabled
+                                            placeholder="Contact Owner Name"
+                                            id="opp_owner"
+                                            className="form-control"
+                                            value={loginDetails.user ? loginDetails.user : ""}
+                                        />
+                                    ) : (
+                                        <input
+                                            type="text"
+                                            name="opp_owner"
+                                            disabled
+                                            placeholder="Contact Owner Name"
+                                            id="opp_owner"
+                                            className="form-control"
+                                            value={loginDetails.user ? loginDetails.user : ""}
+                                        />
+
+                                    )}
+                                    <span className="errorText"> {errorData?.opp_owner ? errorData.opp_owner : ''}</span>
                                 </div>
                             </div>
 

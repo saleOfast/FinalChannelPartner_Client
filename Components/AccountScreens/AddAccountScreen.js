@@ -857,7 +857,14 @@ const AddAccountScreen = () => {
                         disabled={viewMode}
                         placeholder="Enter Employee"
                         className='form-control'
-                        onChange={(e) => setUserInfo({ ...userInfo, emp_name: e.target.value })}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Regular expression to allow only alphabets and spaces
+                          if (/^[A-Za-z\s]*$/.test(value)) {
+                            setUserInfo({ ...userInfo, emp_name: value });
+                          }
+                        }}
+                        
                         value={userInfo.emp_name ? userInfo.emp_name : ''}
                       />
                       <span className="errorText"> {errorData?.emp_name ? errorData.emp_name : ''}</span>
@@ -1080,18 +1087,6 @@ const AddAccountScreen = () => {
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div className={errorData?.bill_pincode ? 'input_box errorBox' : 'input_box'}>
                       <label htmlFor="offc_no">Zip / Postal Code *</label>
-                      {/* <input
-                        type="number"
-                        placeholder="Zip / Postal Code"
-                        name="pin-code"
-                        disabled={viewMode}
-                        id="offc_no"
-                        className={errorData?.bill_pincode ? 'form-control is-invalid' : 'form-control'}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, bill_pincode: e.target.value })
-                          setErrorData({ ...errorData, bill_pincode: '' })
-                        }}
-                        value={userInfo.bill_pincode ? userInfo.bill_pincode : ""} /> */}
                         <input
                           type="text"
                           placeholder="Zip / Postal Code"
@@ -1252,9 +1247,12 @@ const AddAccountScreen = () => {
                         id="zip_add"
                         className={errorData?.ship_pincode ? 'form-control is-invalid' : 'form-control'}
                         onChange={(e) => {
-                          setUserInfo({ ...userInfo, ship_pincode: e.target.value })
-                          setErrorData({ ...errorData, ship_pincode: '' })
-
+                          const value = e.target.value;
+                          const regex = /^\d{0,6}$/; // Regular expression to allow only up to 6 digits
+                          if (regex.test(value)) {
+                            setUserInfo({ ...userInfo, ship_pincode: value });
+                            setErrorData({ ...errorData, ship_pincode: '' });
+                          }
                         }}
                         value={userInfo.ship_pincode ? userInfo.ship_pincode : ""}
                       />

@@ -102,6 +102,15 @@ export const ClientLoginSlice = createSlice({
             if (hasCookie("cp_selected")) {
                 deleteCookie('cp_selected')
             }
+            if (hasCookie("oppFormData")) {
+                deleteCookie('oppFormData')
+            }
+            if (hasCookie("productForm")) {
+                deleteCookie('productForm')
+            }
+            if (hasCookie("newFields")) {
+                deleteCookie('newFields')
+            }
           
         }
     },

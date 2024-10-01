@@ -307,6 +307,7 @@ const getVisitInfo=async(visitId)=>{
                 filter: false,
                 download:false,
                 display:userInfo?.role_id==1? true:false,
+                viewColumns:false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -376,8 +377,14 @@ const getVisitInfo=async(visitId)=>{
         selectableRows: 'none',
         responsive: "simple",
         // onRowSelectionChange : handleRowClick,
-        downloadOptions:{filename:"ChannelLeads"},
-        filterType:'multiselect'
+        downloadOptions:{
+          filename:"ChannelLeads",
+          // filterOptions:{
+          //   useDisplayedColumnsOnly:true,
+          //   useDisplayedRowsOnly:true
+          // }
+        },
+        filterType:'multiselect',
     };
 
     

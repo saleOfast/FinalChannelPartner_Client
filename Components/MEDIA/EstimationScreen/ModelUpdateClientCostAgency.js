@@ -18,7 +18,8 @@ const ModelUpdateClientCostAgency = ({
   cityIds,
   selectedSite,
   getAgencySites,
-  getContactList
+  getContactList,
+  estimationTotals
 }) => {
 
   const [formData, setFormData] = useState({
@@ -242,11 +243,14 @@ const ModelUpdateClientCostAgency = ({
         },
       };
       const newData={...formData,site_id:selectedSite?.site_id,campaign_id:selectedSite?.campaign_id}
+      const datas={
+        ...newData,totals:estimationTotals
+      }
       try {
         const response = await axios.post(
           Baseurl +
             `/db/media/costSheet/clientCostSheet/createAgencyClientCostSheet`,
-          newData,
+            datas,
           header
         );
         if (response.status === 204 || response.status === 200) {
@@ -285,11 +289,14 @@ const ModelUpdateClientCostAgency = ({
         },
       };
       const newData={...formData,site_id:selectedSite?.site_id,campaign_id:selectedSite?.campaign_id}
+      const datas={
+        ...newData,totals:estimationTotals
+      }
       try {
         const response = await axios.put(
           Baseurl +
             `/db/media/costSheet/clientCostSheet/updateAgencyClientCostSheet`,
-          newData,
+            datas,
           header
         );
         if (response.status === 204 || response.status === 200) {

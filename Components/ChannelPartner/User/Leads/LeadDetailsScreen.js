@@ -112,7 +112,7 @@ const LeadDetailsScreen = () => {
               p_visit_time: leads?.data?.data?.p_visit_time, 
               project_id:leads?.data?.data?.sales_project_id,
               project_name:leads?.data?.data?.sales_project_name,
-              created_on:leads?.data?.data?.created_on.split("T"),
+              created_on:leads?.data?.data?.createdAt?.split("T"),
               createdBy:leads?.data?.data?.leadOwner?.user || ""
             });
             setProjectList(projects?.data?.data?.records);

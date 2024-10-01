@@ -38,63 +38,7 @@ const ModelClientCostAgency = ({
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
   const [agencySiteLists, setAgencySiteLists] = useState([]);
   const [selectedSite, setSelectedSite] = useState(null);
-
-
-  const [userInfo, setUserInfo] = useState({
-    estimate_type: "",
-    campaign_id: null,
-    campaign_name: "",
-    acc_id: "",
-    package_offer: "",
-    contact: "",
-    campaign_brand: "",
-    cmpn_s_id: null,
-    campaign_start_date: "",
-    campaign_end_date: "",
-    campaign_duration: 0,
-    cmpn_p_id: null,
-    proof_attachment: null,
-    cmpn_b_t_id: null,
-    package_cost_display: 0,
-    package_cost_printing: 0,
-    package_cost_mounting: 0,
-    // client_display_cost: 0,
-    total_agency_commision: 0,
-    // client_mounting_cost: 0,
-    // client_printing_cost: 0,
-    agency_commission_mounting: 0,
-    total_client_cost: 0,
-    total_sales_order_value: 0,
-    total_credit_note_value: 0,
-    total_receipt_from_client: 0,
-    total_client_outstanding: 0,
-    agency_commission_display: 0,
-    total_ndp_days: 0,
-    total_sales_invoice_value: 0,
-    total_vendor_display_cost: 0,
-    total_vendor_mounting_cost: 0,
-    total_vendor_printing_cost: 0,
-    total_vendor_cost: 0,
-    total_purchase_order_value: 0,
-    agency_commission_printing: 0,
-    total_debit_note_value: 0,
-    total_vendor_payment: 0,
-    total_vendor_outstanding: 0,
-    total_ndp_value: 0,
-    overall_margin: 0,
-    display_margin: 0,
-    mounting_margin: 0,
-    printing_margin: 0,
-    overall_margin_percentage: 0,
-    display_margin_percentage: 0,
-    mounting_margin_percentage: 0,
-    printing_margin_percentage: 0,
-
-    gst: false,
-    cgst: false,
-    sgst: false,
-  });
-
+  const [estimationTotals,setEstimationTotals] =useState({})
 
   const handleClose1= () => {
     setShow1(false);
@@ -113,7 +57,7 @@ const ModelClientCostAgency = ({
     );
   }
 
-  async function getAgencySites() {
+  async function getAgencySites1() {
     await fetchData(
       `/db/media/costSheet/clientCostSheet/getAgencyCostSheetsData?estimate_id=${estimateId}`,
       setAgencySiteLists,
@@ -121,6 +65,35 @@ const ModelClientCostAgency = ({
       setErrorToast
     );
   }
+
+  const getAgencySites = async () => {
+    if (hasCookie('token')) {
+        let token = (getCookie('token'));
+        let db_name = (getCookie('db_name'));
+
+        let header = {
+            headers: {
+                Accept: "application/json",
+                Authorization: "Bearer ".concat(token),
+                db: db_name,
+                pass:"pass"
+            }
+        }
+        try {
+            const response = await axios.get(Baseurl + `/db/media/costSheet/clientCostSheet/getAgencyCostSheetsData?estimate_id=${estimateId}`, header);
+            setAgencySiteLists(response?.data?.data);
+            setEstimationTotals(response?.data?.totals)
+        } catch (error) {
+            console.log(error)
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            }
+            else {
+                toast.error('Something went wrong!')
+            }
+        }
+    }
+}
 
   const deleteAgencySite = async () => {
     if (hasCookie("token")) {
@@ -205,6 +178,7 @@ const ModelClientCostAgency = ({
         getAgencySites={getAgencySites}
         selectedSite={selectedSite}
         getContactList={getContactList}
+        estimationTotals={estimationTotals}
       />
       {/* <ConfirmBox
         showConfirm={assetDeleteShowConfirm}

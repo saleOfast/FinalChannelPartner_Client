@@ -250,6 +250,7 @@ const ActivePartnersScreen = () => {
     }
 
     const channelPartnerFilter=hasCookie("Channel_PartnerFilter") ? JSON.parse(getCookie("Channel_PartnerFilter")) : null;
+
     const updateUserhandler = async () => {
         if (!hasCookie("token")) return;
         const token = getCookie("token");
@@ -259,18 +260,25 @@ const ActivePartnersScreen = () => {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
             db: db_name,
-            m_id: 79,
+            pass:"pass"
           },
         };
-    
-       
-        try {
-          const response = await axios.put(`${Baseurl}/db/users`, {
+        
+        let payload = oldAssignTo==null ? 
+        {
+            db_name: db_name,
+            user_code: showAssignTo,
+            isAssigned: true
+        } :
+        {
             db_name: db_name,
             user_code: showAssignTo,
             report_to: oldAssignTo,
             isAssigned: true
-          }, header);
+        }
+       
+        try {
+          const response = await axios.put(`${Baseurl}/db/users`, payload, header);
           if (response.status === 200 || response.status === 201) {
             toast.success(response?.data?.message,{autoClose:2500});
             setoldAssignTo('')
@@ -297,6 +305,28 @@ const ActivePartnersScreen = () => {
             toast.error("Something went wrong!",{autoClose:2500});
           }
         }
+    };
+
+
+    const userListFilterBasisOfRole = (selectedOption, usersList) => {
+        if (selectedOption === "Channel Partner") {
+            return [{ value: userInfo?.user_id, label: "N.A" },...usersList
+                ?.filter(user => user.role_id === 2 || user.role_id === 3)
+                ?.map(data => ({
+                    value: data?.user_id,
+                    label: data?.user,
+                }))];
+        }
+        if (selectedOption === "BST") {
+            return [{ value: userInfo?.user_id, label: "N.A" },...usersList
+                ?.filter(user => user.role_id === 3)
+                ?.map(data => ({
+                    value: data?.user_id,
+                    label: data?.user,
+                }))];
+        }
+        // If no match, return an empty array
+        return [];
     };
 
 
@@ -351,6 +381,7 @@ const ActivePartnersScreen = () => {
                           getDataList={getDataList}
                           selectedOption={selectedOption}
                           setSelectedOption={setSelectedOption}
+                          channelPartnerFilter={channelPartnerFilter}
                       />
                   </div>
               </div>
@@ -391,7 +422,7 @@ const ActivePartnersScreen = () => {
 
             <Modal className="commonModal"  show={!showAssignTo? false: true }   onHide={()=>setShowAssignTo("")} style={{}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>  Assign to </Modal.Title>
+                    <Modal.Title>  Assign To </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="add_user_form">
@@ -402,13 +433,13 @@ const ActivePartnersScreen = () => {
                                         <Select
                                             id="select"
                                             defaultValue={""}
-                                            options={[{ value: userInfo?.user_id, label: "N.A" },...usersList?.filter(user => user.role_id === 2).map((data) => {
+                                            options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
                                                 return {
                                                     value: data?.user_id,
                                                     label: data?.user,
                                                 };
                                             })]}
-                                            value={usersList?.filter(user => user.role_id === 2)?.map((data, index) => {
+                                            value={usersList?.map((data, index) => {
                                             if (oldAssignTo === data.user_id) {
                                                 return {
                                                 value: data?.user_id,
@@ -416,6 +447,7 @@ const ActivePartnersScreen = () => {
                                                 };
                                             }
                                             })}
+                                            // options={userListFilterBasisOfRole(selectedOption,usersList)}
                                             onChange={(e) => {
                                             setoldAssignTo(e.value)
                                             

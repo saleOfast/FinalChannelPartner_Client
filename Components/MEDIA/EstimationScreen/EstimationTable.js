@@ -611,6 +611,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
     selectableRows: "none",
     responsive: "standard",
     downloadOptions: { filename: "ContactList.csv" },
+    filterType:'multiselect'
   };
 
   const mappedDataList = accountsList?.map((list) => ({

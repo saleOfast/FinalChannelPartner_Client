@@ -78,7 +78,11 @@ const AddClientScreen = () => {
         client_image_3_preview:null,
         client_image_4:null,
         client_image_4_preview:null,
-        host_name:""
+        host_name:"",
+        salesforce_client_id:"",
+        salesforce_client_pwd:"",
+        grant_type:"",
+        salesforce_url:""
     })
 
     const minDate = new Date().toISOString().slice(0, 16);
@@ -103,7 +107,7 @@ const AddClientScreen = () => {
             }
             try {
                 const response = await axios.get(Baseurl + `/db/admin?id=${id}`, header);
-                const tempDate = response.data.data
+                const tempDate = response?.data?.data
                 setUserInfo({
                   user: tempDate.user,
                   email: tempDate.email,
@@ -164,13 +168,17 @@ const AddClientScreen = () => {
                   client_image_3_preview: `${filesUrl}`+`/clientdoc/images${tempDate?.client_image_3}`,
                   client_image_4_preview: `${filesUrl}`+`/clientdoc/images${tempDate?.client_image_4}`,
                   client_url:tempDate?.client_url,
-                  no_of_channel_license: tempDate.no_of_channel_license,
-                  no_of_dms_license: tempDate.no_of_dms_license,
-                  no_of_sales_license: tempDate.no_of_sales_license,
-                  button_color: tempDate.button_color,
-                  sidebar_color: tempDate.sidebar_color,
-                  top_nav_color: tempDate.top_nav_color,
-                  host_name:tempDate.host_name
+                  no_of_channel_license: tempDate?.no_of_channel_license,
+                  no_of_dms_license: tempDate?.no_of_dms_license,
+                  no_of_sales_license: tempDate?.no_of_sales_license,
+                  button_color: tempDate?.button_color,
+                  sidebar_color: tempDate?.sidebar_color,
+                  top_nav_color: tempDate?.top_nav_color,
+                  host_name:tempDate?.host_name,
+                  salesforce_client_id:tempDate?.salesforce_client_id,
+                  salesforce_client_pwd:tempDate?.salesforce_client_pwd,
+                  grant_type:tempDate?.grant_type,
+                  salesforce_url:tempDate?.salesforce_url,
                 });
 
                 setSideColor(tempDate.sidebar_color)
@@ -223,6 +231,22 @@ const AddClientScreen = () => {
       }
       if(userInfo?.host_name==""|| userInfo?.host_name==null){
         setErrorData({ ...errorData, host_name: 'Please enter Salesforce Host URL' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(userInfo?.salesforce_client_id==""|| userInfo?.salesforce_client_id==null){
+        setErrorData({ ...errorData, salesforce_client_id: 'Please enter Salesforce Client ID' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(userInfo?.salesforce_client_pwd==""|| userInfo?.salesforce_client_pwd==null){
+        setErrorData({ ...errorData, salesforce_client_pwd: 'Please enter Salesforce Client Password' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(userInfo?.grant_type==""|| userInfo?.grant_type==null){
+        setErrorData({ ...errorData, grant_type: 'Please enter Grant Type' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(userInfo?.salesforce_url==""|| userInfo?.salesforce_url==null){
+        setErrorData({ ...errorData, salesforce_url: 'Please enter Salesforce Request URL' })
         return toast.error('Please fill the Mandatory fields')
       }
       if(userInfo?.client_url=="" || userInfo?.client_url==null){
@@ -360,7 +384,7 @@ const AddClientScreen = () => {
                 }
             }
         }
-    };
+    }  
 
     async function updateHandler() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -370,6 +394,22 @@ const AddClientScreen = () => {
       }
       if(userInfo?.host_name=="" || userInfo?.host_name==null){
         setErrorData({ ...errorData, host_name: 'Please enter Salesforce Host URL' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(userInfo?.salesforce_client_id==""|| userInfo?.salesforce_client_id==null){
+        setErrorData({ ...errorData, salesforce_client_id: 'Please enter Salesforce Client ID' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(userInfo?.salesforce_client_pwd==""|| userInfo?.salesforce_client_pwd==null){
+        setErrorData({ ...errorData, salesforce_client_pwd: 'Please enter Salesforce Client Password' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(userInfo?.grant_type==""|| userInfo?.grant_type==null){
+        setErrorData({ ...errorData, grant_type: 'Please enter Grant Type' })
+        return toast.error('Please fill the Mandatory fields')
+      }
+      if(userInfo?.salesforce_url==""|| userInfo?.salesforce_url==null){
+        setErrorData({ ...errorData, salesforce_url: 'Please enter Salesforce Request URL' })
         return toast.error('Please fill the Mandatory fields')
       }
       if(userInfo?.client_url==""|| userInfo?.client_url==null){
@@ -860,7 +900,7 @@ const AddClientScreen = () => {
                       errorData?.host_name ? "input_box errorBox" : "input_box"
                     }
                   >
-                    <label htmlFor="Name">Salesforce Host URL *</label>
+                    <label htmlFor="Name">Salesforce Token URL *</label>
                     <input
                       type="text"
                       placeholder="Salesforce Host URL"
@@ -880,6 +920,126 @@ const AddClientScreen = () => {
                     <span className="errorText">
                       {" "}
                       {errorData?.host_name ? errorData.host_name : ""}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.host_name ? "input_box errorBox" : "input_box"
+                    }
+                  >
+                    <label htmlFor="Name">Salesforce Request URL *</label>
+                    <input
+                      type="text"
+                      placeholder="Salesforce Request URL"
+                      name="salesforce_url"
+                      id="salesforce_url"
+                      className={
+                        errorData?.host_name
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, salesforce_url: e.target.value });
+                        setErrorData({ ...errorData, salesforce_url: "" });
+                      }}
+                      value={userInfo.salesforce_url ? userInfo.salesforce_url : ""}
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.salesforce_url ? errorData.salesforce_url : ""}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.host_name ? "input_box errorBox" : "input_box"
+                    }
+                  >
+                    <label htmlFor="Name">Salesforce Client ID *</label>
+                    <input
+                      type="text"
+                      placeholder="Salesforce Client ID"
+                      name="salesforce_client_id"
+                      id="salesforce_client_id"
+                      className={
+                        errorData?.host_name
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, salesforce_client_id: e.target.value });
+                        setErrorData({ ...errorData, salesforce_client_id: "" });
+                      }}
+                      value={userInfo.salesforce_client_id ? userInfo.salesforce_client_id : ""}
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.salesforce_client_id ? errorData.salesforce_client_id : ""}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.host_name ? "input_box errorBox" : "input_box"
+                    }
+                  >
+                    <label htmlFor="Name">Salesforce Client Password *</label>
+                    <input
+                      type="text"
+                      placeholder="Salesforce Client Password"
+                      name="salesforce_client_pwd"
+                      id="salesforce_client_pwd"
+                      className={
+                        errorData?.host_name
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, salesforce_client_pwd: e.target.value });
+                        setErrorData({ ...errorData, salesforce_client_pwd: "" });
+                      }}
+                      value={userInfo.salesforce_client_pwd ? userInfo.salesforce_client_pwd : ""}
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.salesforce_client_pwd ? errorData.salesforce_client_pwd : ""}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div
+                    className={
+                      errorData?.host_name ? "input_box errorBox" : "input_box"
+                    }
+                  >
+                    <label htmlFor="Name">Grant Type *</label>
+                    <input
+                      type="text"
+                      placeholder="Grant Type"
+                      name="grant_type"
+                      id="grant_type"
+                      className={
+                        errorData?.host_name
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, grant_type: e.target.value });
+                        setErrorData({ ...errorData, grant_type: "" });
+                      }}
+                      value={userInfo.grant_type ? userInfo.grant_type : ""}
+                    />
+                    <span className="errorText">
+                      {" "}
+                      {errorData?.grant_type ? errorData.grant_type : ""}
                     </span>
                   </div>
                 </div>

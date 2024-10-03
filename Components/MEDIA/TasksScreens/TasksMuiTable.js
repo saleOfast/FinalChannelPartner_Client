@@ -198,7 +198,7 @@ const TasksMuiTable = ({
                 tableMeta?.rowData[7]!=="close" && (
                   <>
                          
-                         <Link href={`/media/AddTask?id=${value}`}>
+              <Link href={`/media/AddTask?id=${value}`}>
                 <button className="action_btn" title="Edit">
                   <EditIcon />
                 </button>

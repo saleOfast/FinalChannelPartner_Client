@@ -1554,7 +1554,10 @@ const AddContactScreen = () => {
                         )}
                       </ul>
                     </div>
-                    <div className="card_footer">
+                    <div className="card_footer d-flex justify-content-between">
+                      <Link href={`/media/AddLeads?ac_id=${userInfo?.account_name}`}>
+                          <div className="text_more">create</div>
+                      </Link>
                       <Link href="/media/ManageLeads">
                         <div className="text_more">view more</div>
                       </Link>
@@ -1637,7 +1640,10 @@ const AddContactScreen = () => {
                           ))}
                       </ul>
                     </div>
-                    <div className="card_footer">
+                    <div className="card_footer d-flex justify-content-between">
+                      <Link href={`/media/AddOpportunity?ac_id=${userInfo?.account_name}`}>
+                        <div className="text_more">create</div>
+                      </Link>
                       <Link href="/media/Opportunity">
                         <div className="text_more">view more</div>
                       </Link>

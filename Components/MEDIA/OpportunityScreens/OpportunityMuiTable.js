@@ -117,6 +117,7 @@ const OpportunityMuiTable = ({ dataList, title, openConfirmBox, loader }) => {
         downloadOptions:{
             filename:"OpportunityList.csv"
         },
+        filterType:'multiselect'
     
     };
 

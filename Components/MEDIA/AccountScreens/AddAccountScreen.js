@@ -16,7 +16,7 @@ import moment from "moment";
 const AddAccountScreen = () => {
   const router = useRouter();
   const { id } = router.query;
-
+  const {ad_id}=router.query;
   const sideView = useSelector((state) => state.sideView.value);
 
   const [countrylist, setcountrylist] = useState([]);
@@ -207,7 +207,12 @@ const AddAccountScreen = () => {
           );
           toast.success(response.data.message);
           setisLoading(false);
-          router.push("/media/Accounts");
+          if(ad_id){
+            router.push('/media/AddOpportunity/?ad_id=y')
+          }
+          else{
+            router.push("/media/Accounts");
+          }
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -3097,7 +3102,6 @@ const AddAccountScreen = () => {
                   </div>
 
                   <div className="row">
-                    {console.log("userInfo", userInfo)}
                     {userInfo.db_acc_fields?.map(
                       (
                         {

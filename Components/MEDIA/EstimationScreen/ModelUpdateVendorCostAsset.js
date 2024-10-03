@@ -27,7 +27,8 @@ const ModelUpdateVendorCostAsset = ({
   printingMaterialData,
   mountingVendorData,
   getContactList,
-  getAssetSites
+  getAssetSites,
+  estimationTotals
 }) => {
   const [printingVendor, setPrintingVendor] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -161,11 +162,14 @@ const ModelUpdateVendorCostAsset = ({
         campaign_id: selectedSite?.campaign_id,
         vcs_id: getData.vcs_id,
       };
+      const datas={
+        ...newData,totals:estimationTotals
+      }
       try {
         const response = await axios.put(
           Baseurl +
             `/db/media/costSheet/vendorCostSheet/updateAssetVendorCostSheet`,
-          newData,
+            datas,
           header
         );
         if (response.status === 204 || response.status === 200) {
@@ -246,11 +250,14 @@ const ModelUpdateVendorCostAsset = ({
         eab_id: selectedSite?.eab_id,
         campaign_id: selectedSite?.campaign_id,
       };
+      const datas={
+        ...newData,totals:estimationTotals
+      }
       try {
         const response = await axios.post(
           Baseurl +
             `/db/media/costSheet/vendorCostSheet/createAssetVendorCostSheet`,
-          newData,
+            datas,
           header
         );
         if (response.status === 204 || response.status === 200) {

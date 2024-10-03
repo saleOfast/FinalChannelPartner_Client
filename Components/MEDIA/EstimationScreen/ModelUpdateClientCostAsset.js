@@ -18,7 +18,7 @@ const ModelUpdateClientCostAsset = ({
   cityIds,
   selectedSite,
   getAssetSites,
-  
+  estimationTotals
 }) => {
 
   const [formData, setFormData] = useState({
@@ -242,11 +242,14 @@ const validate = () => {
         },
       };
       const newData={...formData,site_id:selectedSite?.site_id,eab_id:selectedSite?.eab_id,campaign_id:selectedSite.campaign_id}
+      const datas={
+        ...newData,totals:estimationTotals
+      }
       try {
         const response = await axios.post(
           Baseurl +
             `/db/media/costSheet/clientCostSheet/createAssetClientCostSheet`,
-          newData,
+            datas,
           header
         );
         if (response.status === 204 || response.status === 200) {
@@ -284,11 +287,14 @@ const validate = () => {
         },
       };
       const newData={...formData,site_id:selectedSite?.site_id,eab_id:selectedSite?.eab_id,campaign_id:selectedSite?.campaign_id}
+      const datas={
+        ...newData,totals:estimationTotals
+      }
       try {
         const response = await axios.put(
           Baseurl +
             `/db/media/costSheet/clientCostSheet/updateAssetClientCostSheet`,
-          newData,
+            datas,
           header
         );
         if (response.status === 204 || response.status === 200) {

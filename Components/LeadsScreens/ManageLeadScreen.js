@@ -387,7 +387,7 @@ const ManageLeadScreen = () => {
             reqObj.contact_id = response.data.data.contact_id;
             setUserInfo({
               ...userInfo,
-              contact_id: response.data.data.contact_id,
+              contact_id: response?.data?.data?.contact_id,
               first_name: "",
             });
           }

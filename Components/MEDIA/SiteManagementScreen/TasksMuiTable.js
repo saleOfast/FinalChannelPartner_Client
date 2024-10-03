@@ -161,7 +161,8 @@ const TasksMuiTable = ({
         selectableRows: 'none',
         responsive: "standard",
         downloadOptions:{filename:"TasksList.csv"},
-        enableNestedDataAccess:"."
+        enableNestedDataAccess:".",
+        filterType:'multiselect'
     };
 
   // const mappedDataList=dataList?.map(list=>({

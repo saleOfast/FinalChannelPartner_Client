@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Baseurl } from "../../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../../Utils/Constants";
 import { hasCookie, getCookie } from "cookies-next";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -115,7 +115,7 @@ const AddDistributorManagement = () => {
     // Validate phone number length
     if (
       distributorInfo.contact_number &&
-      distributorInfo.contact_number.length !== 10
+      distributorInfo.contact_number.toString().length !== 10
     ) {
       errors.contact_number = "Invalid phone number";
     }
@@ -203,7 +203,7 @@ const AddDistributorManagement = () => {
 
       try {
         const response = await axios.put(
-          Baseurl + `/db/leads/single?event_id=${router.query.id}`,
+          Baseurl + `/db/users`,
           reqOptions,
           header
         );
@@ -211,7 +211,7 @@ const AddDistributorManagement = () => {
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message);
           setisLoading(false);
-          router.push("/dms/AddDistributorManagement");
+          router.push("/dms/DistributorManagement");
         }
       } catch (error) {
         if (error?.response?.data?.status === 422) {
@@ -253,8 +253,23 @@ const AddDistributorManagement = () => {
           header
         );
         setUpdtUId(response?.data?.data?.db_user_profile?.user_id);
-
-        // setDistributorInfo(response?.data?.data);
+        const data={...response?.data?.data}
+        setDistributorInfo({
+          ...data,
+          contact_person:data?.db_user_profile?.contact_person,
+          credit_limit:data?.db_user_profile?.credit_limit,
+          payment_method:data?.db_user_profile?.payment_method,
+          pan_file:data?.db_user_profile?.pan_file,
+          pan_file_preview: `${filesUrl}/pan/images${data?.db_user_profile?.pan_file}`,
+          incorporation_certificate:data?.db_user_profile?.incorporation_certificate,
+          incorporation_certificate_preview: `${filesUrl}/incorporation_certificate/images${data?.db_user_profile?.incorporation_certificate}`,
+          gst_registration:data?.db_user_profile?.gst_registration,
+          gst_registration_preview: `${filesUrl}/gst_registration/images${data?.db_user_profile?.gst_registration}`,
+          address_proof:data?.db_user_profile?.address_proof,
+          address_proof_preview: `${filesUrl}/address_proof/images${data?.db_user_profile?.address_proof}`,
+          banking_details:data?.db_user_profile?.banking_details,
+          banking_details_preview: `${filesUrl}/pan/images${data?.db_user_profile?.banking_details}`,
+        });
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -311,6 +326,7 @@ const AddDistributorManagement = () => {
         editMode={editMode}
         isLoading={isLoading}
         setViewMode={setViewMode}
+        id={id}
       />
     </div>
   );

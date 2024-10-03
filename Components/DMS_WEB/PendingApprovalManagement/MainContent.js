@@ -12,7 +12,7 @@ const paymentOptions = [
   ];
 
 const bankingDetailsArray = [
-    { label: "Business PAN Card", id: "business_pan",preview:"business_pan_preview" },
+    { label: "Business PAN Card", id: "pan_file",preview:"pan_file_preview" },
     { label: "Certificate of Incorporation", id: "incorporation_certificate",preview:"incorporation_certificate_preview" },
     { label: "Address Proof", id: "address_proof",preview:"address_proof_preview" },
     { label: "GST Registration Certificate", id: "gst_registration",preview:"gst_registration_preview" },

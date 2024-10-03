@@ -8,7 +8,7 @@ import moment from "moment";
 import DeleteIcon from "../Svg/DeleteIcon";
 
 
-const AddExpenseMui = ({ policyAppList, viewRemark, title , isTravel  }) => {
+const AddExpenseMui = ({ policyAppList, viewRemark, title , isTravel  }) => { 
 
     const columns = [
         {

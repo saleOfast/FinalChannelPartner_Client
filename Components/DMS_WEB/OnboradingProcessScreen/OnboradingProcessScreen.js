@@ -271,7 +271,7 @@ const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
           if (data.status === 200) {
             dispatch(stopButtonLoading())
             toast.success(data.message);
-            router.push("/DistributorRegister_Next");
+            router.push("/dms/DistributorRegister_Next");
           }
         } catch (error) {
           dispatch(stopButtonLoading())

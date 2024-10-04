@@ -269,6 +269,31 @@ const PendingApprovalManagementTable = ({
       },
     },
     {
+      name: "db_user_profile",
+      label: "Banking Details",
+      options: {
+        download:false,
+        filter: false,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th >
+            {columnMeta.label}
+          </th>
+        ),
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+          <Link
+          className="text-decoration-underline"
+          style={{color: '#293790'}}
+          target="_blank"
+          href={`${filesUrl}/banking_details/images${value?.banking_details}`}
+          >
+            {value?.address_proof ? 'Banking Details': ''}
+        </Link>
+          )
+        },
+      },
+    },
+    {
       name: "doc_verification",
       label: "Status",
       options: {
@@ -285,6 +310,7 @@ const PendingApprovalManagementTable = ({
         },
       },
     },
+    
     {
       name: "user_code",
       label: "Action",
@@ -307,7 +333,7 @@ const PendingApprovalManagementTable = ({
                 Resend
               </button>
               )} */}
-              {tableMeta?.rowData[7]===1 ?
+              {tableMeta?.rowData[8]===1 ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({

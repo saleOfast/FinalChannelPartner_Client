@@ -22,6 +22,7 @@ const AddDistributorManagement = () => {
   const [editMode, setEditMode] = useState(false);
   const [errorData, setErrorData] = useState({});
   const [isLoading, setisLoading] = useState(false);
+  const userInfo=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) :null
 
   const [distributorInfo, setDistributorInfo] = useState({
     role_id:10,
@@ -146,11 +147,11 @@ const AddDistributorManagement = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 236,
+          pass:'pass'
         },
       };
 
-      let reqOptions = { ...distributorInfo };
+      let reqOptions = { ...distributorInfo,report_to:userInfo?.user_id };
       console.log(reqOptions);
       try {
         const response = await axios.post(
@@ -195,11 +196,11 @@ const AddDistributorManagement = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 238,
+          pass:"pass"
         },
       };
 
-      let reqOptions = { ...distributorInfo };
+      let reqOptions = { ...distributorInfo,report_to:userInfo?.user_id };
 
       try {
         const response = await axios.put(

@@ -31,7 +31,8 @@ const ModelUpdateVendorCostAgency = ({
   mountingVendorData,
   getContactList,
   getAgencySites,
-  estimationTotals
+  estimationTotals,
+  displayVendorsList
 }) => {
   const [printingVendor, setPrintingVendor] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -40,6 +41,7 @@ const ModelUpdateVendorCostAgency = ({
   const [printingVendorList, setPrintingVendorList] = useState([]);
   const [printingMaterialList, setPrintingMaterialList] = useState([]);
   const [mountingVendorList, setMountingVendorList] = useState([]);
+  const [displayVendors,setDisplayVendors] = useState([]);
   const [accountsList, setAccountsList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [flag, setFlag] = useState(false);
@@ -84,9 +86,6 @@ const ModelUpdateVendorCostAgency = ({
     pr_m_id: "",
   });
 
-  useEffect(()=>{
-    console.log("selectedSite respose i s",selectedSite)
-  },[show])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -134,6 +133,11 @@ const ModelUpdateVendorCostAgency = ({
         printing_cost_per_sq_ft: "", // Optionally clear 'printing_cost_per_sq_ft'
       });
     } else if (name === "pr_m_id") {
+      setFormData({
+        ...formData,
+        [name]: selectedOption ? selectedOption.value : "",
+      });
+    } else if (name === "display_vender_name") {
       setFormData({
         ...formData,
         [name]: selectedOption ? selectedOption.value : "",
@@ -208,12 +212,6 @@ const ModelUpdateVendorCostAgency = ({
         (item) => item.acc_id === formData.mounting_vendor_id
       );
 
-      console.log(
-        "selectedMountingVendor",
-        selectedMountingVendor,
-        "aggi",
-        formData.mounting_vendor_id
-      );
       if (selectedMountingVendor) {
         setFormData((prevData) => ({
           ...prevData,
@@ -410,13 +408,16 @@ const ModelUpdateVendorCostAgency = ({
               response?.data?.data?.printing_cost_per_sq_ft || 0,
           });
 
-          console.log("answer is 1 is  printingVendorData",printingVendorData,"other one is selectedSite",selectedSite)
-          // const filteredVendorData = printingVendorData.filter(
-          //   (item) =>
-          //     item.m_t_id ===
-          //       selectedSite.db_site.db_media_type.m_t_id &&
-          //     item.db_account.bill_state === selectedSite.db_site.db_state.state_id
-          // );
+          let filteredDisplayVendor = displayVendorsList.filter(
+            (item) =>
+                item?.billState?.state_name == selectedSite?.state
+          );
+
+          filteredDisplayVendor = filteredDisplayVendor?.map((item)=>({
+            value: item.acc_id,
+            label: item.acc_name,
+          }))
+          setDisplayVendors(filteredDisplayVendor)
 
           const filteredVendorData = printingVendorData.filter(
             (item) =>
@@ -462,27 +463,8 @@ const ModelUpdateVendorCostAgency = ({
             })
           );
           setMountingVendorList(mountingVendorNames);
-          console.log("mounting vendor data", filteredMountingVendorData);
-
-          console.log(
-            "material",
-            printingMaterialData,
-            "and ",
-            formData.printing_vendor_id
-          );
-
-          console.log(
-            "formdata is",
-            formData,
-            "print",
-            printingVendorData,
-            "filer",
-            filteredVendorData,
-            "sec",
-            selectedSite
-          );
+          
         } else {
-          console.log("alhgljlgjljsejglajfhgogjflhaks  i ma ajrunningljlkf ");
           setFormData({
             site_id: selectedSite?.site || "",
             estimate_id: selectedSite?.estimate_id || "",
@@ -591,20 +573,13 @@ const ModelUpdateVendorCostAgency = ({
             })
           );
           setMountingVendorList(mountingVendorNames);
-          // console.log("mounting vendor data", mountingVendorNames);
 
-          console.log(
-            "material",
-            printingMaterialData,
-            "and ",
-            formData.printing_vendor_id
-          );
         }
       } catch (error) {
         console.log(error);
 
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message);
         } else {
           toast.error("Something went wrong!");
         }
@@ -613,7 +588,6 @@ const ModelUpdateVendorCostAgency = ({
   };
 
   useEffect(() => {
-    console.log("printingMaterialData data is ",printingMaterialData)
     if (formData.printing_vendor_id) {
       const fileterPrintingMdaterialData = printingMaterialData.filter(
         (item) => item.acc_id == formData.printing_vendor_id && item.db_media_type.m_t_name ==  selectedSite.media_type
@@ -625,12 +599,6 @@ const ModelUpdateVendorCostAgency = ({
       }));
  
       setPrintingMaterialList(printingMaterial);
-      console.log(
-        "material list",
-        printingMaterial,
-        "vhgh",
-        fileterPrintingMdaterialData
-      );
     }
   }, [formData.printing_vendor_id]);
 
@@ -759,6 +727,8 @@ const ModelUpdateVendorCostAgency = ({
                               ? printingVendorList
                               : field.name === "pr_m_id"
                               ? printingMaterialList
+                              : field.name === "display_vender_name"
+                              ? displayVendors 
                               : []
                           }
                           onChange={(selectedOption) =>
@@ -780,6 +750,11 @@ const ModelUpdateVendorCostAgency = ({
                                   (option) =>
                                     option.value === formData[field.name]
                                 ) || null
+                                : field.name === "display_vender_name"
+                              ? displayVendors.find(
+                                  (option) =>
+                                    option.value === formData[field.name]
+                              ) || null
                               : null
                           }
                           isDisabled={field.disabled || false}

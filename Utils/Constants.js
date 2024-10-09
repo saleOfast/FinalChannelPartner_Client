@@ -2,7 +2,7 @@
 // /*  -----------------uat links------------- */
  
 export const Baseurl = 'https://crm.saleofast.com/support/api/v1';
-export const filesUrl = 'https://crm.saleofast.com/support/images';
+export const filesUrl = 'https://crm.saleofast.com/support/images'; 
 
 /*  -----------------iis links------------- */
 

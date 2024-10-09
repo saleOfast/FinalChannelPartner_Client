@@ -171,6 +171,15 @@ const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
           true
         );
       };
+      // const getState = async (id) => {
+      //   await fetchData(
+      //     `/db/area/states?cnt_id=${id}`,
+      //     setStatelist,
+      //     errorToast,
+      //     setErrorToast,
+      //     true
+      //   );
+      // };
     
       const getcity = async (id) => {
         await fetchData(
@@ -262,7 +271,7 @@ const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
           if (data.status === 200) {
             dispatch(stopButtonLoading())
             toast.success(data.message);
-            router.push("/ChannelPartnerRegister_Next");
+            router.push("/dms/DistributorRegister_Next");
           }
         } catch (error) {
           dispatch(stopButtonLoading())
@@ -298,6 +307,9 @@ const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
                 contact_number: data?.data?.contact_number || "",
                 email: data?.data?.email || "",
                 address:data?.data?.address || "",
+                contact_person:data?.data?.db_user_profile?.contact_person,
+                credit_limit:data?.data?.db_user_profile?.credit_limit,
+                payment_method:data?.data?.db_user_profile?.payment_method,
                 country_id:data?.data?.country_id || "",
                 state_id:data?.data?.state_id || "",
                 city_id:data?.data?.city_id || "",
@@ -314,6 +326,9 @@ const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
                 contact_number: data?.data?.contact_number || "",
                 email: data?.data?.email || "",
                 address:data?.data?.address || "",
+                contact_person:data?.data?.db_user_profile?.contact_person,
+                credit_limit:data?.data?.db_user_profile?.credit_limit,
+                payment_method:data?.data?.db_user_profile?.payment_method,
                 country_id:data?.data?.country_id || "",
                 state_id:data?.data?.state_id || "",
                 city_id:data?.data?.city_id || "",
@@ -324,7 +339,7 @@ const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
               });
               setInterval(()=>{
                 router.push("/")
-              },[1000])
+              },[500])
             }else if (data?.data?.doc_verification === 2) {
               toast.success("Documents Verified");
               setDistributorInfo({
@@ -334,6 +349,9 @@ const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
                 contact_number: data?.data?.contact_number || "",
                 email: data?.data?.email || "",
                 address:data?.data?.address || "",
+                contact_person:data?.data?.db_user_profile?.contact_person,
+                credit_limit:data?.data?.db_user_profile?.credit_limit,
+                payment_method:data?.data?.db_user_profile?.payment_method,
                 country_id:data?.data?.country_id || "",
                 state_id:data?.data?.state_id || "",
                 city_id:data?.data?.city_id || "",
@@ -344,7 +362,7 @@ const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
               });
               setInterval(()=>{
                 router.push("/")
-              },[1000])
+              },[500])
             } else{
               toast.success("Documents Rejected");
               setFormFields({
@@ -354,6 +372,9 @@ const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
                 contact_number: data?.data?.contact_number || "",
                 email: data?.data?.email || "",
                 address:data?.data?.address || "",
+                contact_person:data?.data?.db_user_profile?.contact_person,
+                credit_limit:data?.data?.db_user_profile?.credit_limit,
+                payment_method:data?.data?.db_user_profile?.payment_method,
                 country_id:data?.data?.country_id || "",
                 state_id:data?.data?.state_id || "",
                 city_id:data?.data?.city_id || "",
@@ -364,7 +385,7 @@ const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
               });
               setInterval(()=>{
                 router.push("/")
-              },[1000])
+              },[500])
             }
             
           }

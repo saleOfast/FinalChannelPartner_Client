@@ -1567,7 +1567,7 @@ const AddAccountScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="task_name">Billing City *</label>
+                      <label htmlFor="task_name">Billing City </label>
                       <Select
                         id={userInfo.state_id}
                         defaultValue={""}
@@ -2724,7 +2724,7 @@ const AddAccountScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="task_name">Billing City *</label>
+                      <label htmlFor="task_name">Billing City </label>
                       <Select
                         id={userInfo.state_id}
                         defaultValue={""}
@@ -2922,7 +2922,7 @@ const AddAccountScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="task_name">Shipping City *</label>
+                      <label htmlFor="task_name">Shipping City </label>
                       <Select
                         id={userInfo.ship_state}
                         defaultValue={""}

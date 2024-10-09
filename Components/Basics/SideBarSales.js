@@ -48,27 +48,27 @@ const SideBarSales = ({}) => {
 
   const handleClick = debounce(sideToggle, 500);
 
-  const getUserInfo = async (id) => {
-    if (hasCookie('token')) {
-      const token = getCookie('token');
-      const db_name = getCookie('db_name');
-      const header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-          db: db_name,
-          pass: 'pass'
-        }
-      };
+  // const getUserInfo = async (id) => {
+  //   if (hasCookie('token')) {
+  //     const token = getCookie('token');
+  //     const db_name = getCookie('db_name');
+  //     const header = {
+  //       headers: {
+  //         Accept: "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //         db: db_name,
+  //         pass: 'pass'
+  //       }
+  //     };
 
-      try {
-        const response = await axios.get(`${Baseurl}/db/users?id=${id}`, header);
-        setUserData(response.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }
+  //     try {
+  //       const response = await axios.get(`${Baseurl}/db/users?id=${id}`, header);
+  //       setUserData(response.data.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  // }
 
   const getSidebarInfo = async (navLink) => {
     if (!hasCookie('token')) {
@@ -104,7 +104,7 @@ const SideBarSales = ({}) => {
     const isUserOrMasterMode = dbMode === "user" || dbMode === "master";
 
     if (isAdminMode && (!hasCookie("Admin") || !hasCookie("SaLsUsr") || !hasCookie("saLsTkn"))) {
-      router.push("/Admin");
+      router.push("/admin");
       dispatch(LoggedOut());
       toast.error("Please Login To Continue");
     } else if (isUserOrMasterMode) {
@@ -150,7 +150,7 @@ const SideBarSales = ({}) => {
     if (userInfoCookie) {
       const userInfo = JSON.parse(getCookie('userInfo'));
       setUserInfo(userInfo);
-      getUserInfo(userInfo.user_code);
+      // getUserInfo(userInfo.user_code);
     } else if (saLsUsrCookie) {
       const userInfo = JSON.parse(getCookie('SaLsUsr'));
       setUserInfo(userInfo);
@@ -238,7 +238,7 @@ const SideBarSales = ({}) => {
 
       {dbMode === "admin" && (
         <ul className="sidebar-list">
-          <Link href="/Admin">
+          <Link href="/admin">
             <li title="Dashboard" className={`list-item ${isactive === "dashboard" ? "active" : ""}`}>
               <div className="linkBox">
                 <div className="svg_icon">

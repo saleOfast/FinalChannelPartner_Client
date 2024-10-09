@@ -30,10 +30,10 @@ const ChannelProfileScreen = () => {
         setshowConfirm(!showConfirm);
         dispatch(clearMode());
         if (hasCookie("channel")) {
-          router.push(isAdminMode ? "/Admin" : "/partner")
+          router.push(isAdminMode ? "/admin" : "/partner")
 
         } else {
-          router.push(isAdminMode ? "/Admin" : "/")
+          router.push(isAdminMode ? "/admin" : "/")
 
         }
         dispatch(isAdminMode ? LoggedOut() : userLogOut());

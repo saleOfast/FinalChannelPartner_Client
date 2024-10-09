@@ -210,7 +210,7 @@ const PendingApprovalInfoScreen = () => {
       };
       try {
         const response = await axios.get(
-          Baseurl + `/db/leads/single?event_id=${id}`,
+          Baseurl + `/db/users/dms/getPendingVerificationDistrubutors?id=${id}`,
           header
         );
         setDistributorInfo(response.data.data);

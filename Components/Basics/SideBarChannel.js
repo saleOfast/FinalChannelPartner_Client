@@ -104,7 +104,7 @@ const SideBarChannel = ({}) => {
     const isUserOrMasterMode = dbMode === "user" || dbMode === "master";
 
     if (isAdminMode && (!hasCookie("Admin") || !hasCookie("SaLsUsr") || !hasCookie("saLsTkn"))) {
-      router.push("/Admin");
+      router.push("/admin");
       dispatch(LoggedOut());
       toast.error("Please Login To Continue");
     } else if (isUserOrMasterMode) {
@@ -238,7 +238,7 @@ const SideBarChannel = ({}) => {
 
       {dbMode === "admin" && (
         <ul className="sidebar-list">
-          <Link href="/Admin">
+          <Link href="/admin">
             <li title="Dashboard" className={`list-item ${isactive === "dashboard" ? "active" : ""}`}>
               <div className="linkBox">
                 <div className="svg_icon">

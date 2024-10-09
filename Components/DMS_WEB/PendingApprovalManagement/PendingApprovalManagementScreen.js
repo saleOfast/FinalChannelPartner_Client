@@ -34,7 +34,7 @@ export default function PendingApprovalManagementScreen() {
           Authorization: "Bearer ".concat(token),
           db: db_name,
           m_id: 237,
-
+          
         },
       };
 
@@ -47,7 +47,7 @@ export default function PendingApprovalManagementScreen() {
       } catch (error) {
         setLoader(false)
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message);
         } else {
           toast.error("Something went wrong!");
         }
@@ -84,7 +84,7 @@ export default function PendingApprovalManagementScreen() {
         }
       } catch (error) {
         if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
+          toast.error(error?.response?.data?.message);
         } else {
           toast.error("Something went wrong!");
         }
@@ -164,6 +164,7 @@ export default function PendingApprovalManagementScreen() {
               dataList={dataList}
               disableConfirm={disableConfirm}
               loader={loader}
+              getDataList={getDataList}
             />
           </div>
         </div>

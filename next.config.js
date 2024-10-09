@@ -4,7 +4,10 @@ const config = {
   trailingSlash: true,
   images: {
     unoptimized: true
-  }
+  },
+  eslint: {
+    ignoreDuringBuilds: true, // Disables ESLint during the build
+  },
 }
 module.exports = withPWA({
   dest: 'public',

@@ -31,6 +31,8 @@ const OpportunityViewScreen = () => {
   const [sideTab, setSideTab] = useState("task");
   const [userList, setUserList] = useState([]);
   const [productList, setProductList] = useState([])
+  const [statusList, setStatusList] = useState([]);
+  const [priorityList, setPriorityList] = useState([]);
   const [errorToast, setErrorToast] = useState(false)
   const [userInfo, setUserInfo] = useState({
     task_name: "",
@@ -38,6 +40,8 @@ const OpportunityViewScreen = () => {
     lead_id: "",
     contact_person_name: "",
     related_to: "",
+    task_status_id:"",
+    task_priority_id:""
   });
   const [formValues, setFormValues] = useState(
     [{ p_id: null, qty: 0, price: 0 }])
@@ -47,6 +51,7 @@ const OpportunityViewScreen = () => {
     comments: "",
     relate_to: "",
     contact_person_name: "",
+    event_date:""
   });
 
   const getDataList = async (id) => {
@@ -151,8 +156,6 @@ const OpportunityViewScreen = () => {
     }
   };
 
-  console.log(dataList)
-
   const getCallsInLead = async (id) => {
     if (hasCookie("token")) {
       let token = getCookie("token");
@@ -193,7 +196,11 @@ const OpportunityViewScreen = () => {
       toast.error("Please enter the contact Person Name");
     } else if (userInfo.related_to == "") {
       toast.error("Please enter the related person Name ");
-    } else {
+    } else if (userInfo.task_status_id == "") {
+      toast.error("Please enter the Status ");
+    } else if (userInfo.task_priority_id == "") {
+      toast.error("Please enter the Priority ");
+    }else {
       if (hasCookie("token")) {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
@@ -221,7 +228,9 @@ const OpportunityViewScreen = () => {
               due_date: "",
               lead_id: "",
               contact_person_name: "",
-              related_to: ""
+              related_to: "",
+              task_status_id:"",
+              task_priority_id:""
             })
           }
         } catch (error) {
@@ -242,7 +251,9 @@ const OpportunityViewScreen = () => {
       toast.error("Please enter the Comments");
     } else if (contactInfo.relate_to == "") {
       toast.error("Please enter related person");
-    } else {
+    } else if (contactInfo.event_date == "") {
+      toast.error("Please enter Event Date");
+    }else {
       if (hasCookie("token")) {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
@@ -270,6 +281,7 @@ const OpportunityViewScreen = () => {
               comments: "",
               relate_to: "",
               contact_person_name: "",
+              event_date:""
             })
           }
         } catch (error) {
@@ -317,6 +329,14 @@ const getProductList = async () => {
   await fetchData(`/db/product`, setProductList, errorToast, setErrorToast)
 }
 
+async function getStatusList() {
+  await fetchData('/db/subtask/status', setStatusList)
+}
+
+async function getPriorityList() {
+  await fetchData('/db/subtask/priority', setPriorityList)
+}
+
   useEffect(() => {
     if (!router.isReady) return;
     if (router.query.id) {
@@ -332,6 +352,8 @@ const getProductList = async () => {
   useEffect(() => {
     getUserList();
     getProductList()
+    getStatusList()
+    getPriorityList()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -795,6 +817,64 @@ const getProductList = async () => {
                             </div>
                           </div>
 
+                          <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                  <div className={'input_box'}>
+                    <label htmlFor="task_name">Status *</label>
+                    <Select
+                      id={userInfo.task_status_id}
+                      defaultValue={""}
+                      options={statusList?.map((data, index) => {
+                        return {
+                          value: data?.task_status_id,
+                          label: data?.task_status_name,
+
+                        }
+                      })}
+                      value={statusList?.map((data, index) => {
+                        if (userInfo.task_status_id === data.task_status_id) {
+                          return {
+                            value: data?.task_status_id,
+                            label: data?.task_status_name,
+
+                          }
+                        }
+                      })}
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, task_status_id: e.value })
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                  <div className={'input_box'}>
+                    <label htmlFor="task_name">Priority *</label>
+                    <Select
+                      id={userInfo.task_priority_id}
+                      defaultValue={""}
+                      options={priorityList?.map((data, index) => {
+                        return {
+                          value: data?.task_priority_id,
+                          label: data?.task_priority_name,
+
+                        }
+                      })}
+                      value={priorityList?.map((data, index) => {
+                        if (userInfo.task_priority_id === data.task_priority_id) {
+                          return {
+                            value: data?.task_priority_id,
+                            label: data?.task_priority_name,
+
+                          }
+                        }
+                      })}
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, task_priority_id: e.value })
+                      }}
+                    />
+                  </div>
+                </div>
+
                           <div className="btn-box text-end">
                             <button
                               className="btn btn-primary"
@@ -905,6 +985,28 @@ const getProductList = async () => {
                                 name="task_sub"
                                 id="task_sub"
                                 className="form-control" />
+                            </div>
+                          </div>
+                          <div className="col-xl-12 col-md-12 col-sm-12 col-12">
+                            <div className="input_box">
+                              <label htmlFor="due_date">Event Date *</label>
+                              <input
+                                type="date"
+                                placeholder="Select Date"
+                                name="due_date"
+                                min={new Date().toISOString().slice(0, 10)}
+                                id="due_date"
+                                onKeyDown={(e)=>e.preventDefault()}
+                                onPaste={(e)=>e.preventDefault()}
+                                className={'form-control'}
+                                onChange={(e) => {
+                                  seContactInfo({
+                                    ...contactInfo,
+                                    event_date: e.target.value,
+                                  })
+                                }}
+                                value={contactInfo?.event_date ? moment(contactInfo?.event_date).format("YYYY-MM-DD") : ''}
+                              />
                             </div>
                           </div>
                           <div className="btn-box text-end">

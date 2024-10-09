@@ -115,7 +115,7 @@ const TopnavMedia = ({  topnavPermission }) => {
         if (error?.response?.data?.mesage === "token not valid") {
           toast.error(error.response.data.mesage);
           dispatch(LoggedOut());
-          router.push("/Admin");
+          router.push("/admin");
         } else {
           toast.error("Something went wrong!");
         }

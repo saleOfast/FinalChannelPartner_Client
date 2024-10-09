@@ -102,7 +102,7 @@ const SidebarCopy= ({ isactive, mode }) => {
     if (isAdminMode) {
       const adminCookieMissing = !hasCookie("Admin") || !hasCookie("SaLsUsr") || !hasCookie("saLsTkn");
       if (adminCookieMissing) {
-        router.push("/Admin");
+        router.push("/admin");
         dispatch(LoggedOut());
         toast.error("Please Login To Continue");
       }
@@ -738,7 +738,7 @@ const SidebarCopy= ({ isactive, mode }) => {
 
         {dbMode === "admin" ? (
           <ul className="sidebar-list">
-            <Link href="/Admin">
+            <Link href="/admin">
               <li title="Dashboard" className={isactive === "dashboard" ? "list-item active" : "list-item"} >
                 <div className="linkBox ">
                   <div className="svg_icon">

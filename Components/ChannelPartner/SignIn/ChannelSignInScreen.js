@@ -77,10 +77,15 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
       dispatch(stopLoading())
     } else {
       try {
+        let baseUrl = window.location.origin;
+        if(baseUrl==="http://localhost:3000"){
+          baseUrl = "https://nkrealtors.saleofast.com/"
+        }
         const res = await axios.post(Baseurl + "/db/login", {
           email: userForm.email.toLowerCase(),
           password: userForm.password,
-          type:"partner"
+          type:"partner",
+          client_url:baseUrl
         });
 
         if (res.status === 200) {

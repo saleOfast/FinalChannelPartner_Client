@@ -39,7 +39,7 @@ export default function DistributorManagementScreen() {
       };
 
       try {
-        const response = await axios.get(Baseurl + `/db/leads/calls`, header);
+        const response = await axios.get(Baseurl + `/db/users/rolewise?role_id=10`, header);
         if(response?.status==200|| response?.status==201){
           setLoader(false)
           setDataList(response?.data?.data);

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 import Select from "react-select";
 import { fetchData } from "../../../Utils/getReq";
+import { filesUrl } from '../../../Utils/Constants';
 
 
 
@@ -12,11 +13,11 @@ const paymentOptions = [
   ];
 
 const bankingDetailsArray = [
-    { label: "Business PAN Card", id: "pan_file",preview:"pan_file_preview" },
-    { label: "Certificate of Incorporation", id: "incorporation_certificate",preview:"incorporation_certificate_preview" },
-    { label: "Address Proof", id: "address_proof",preview:"address_proof_preview" },
-    { label: "GST Registration Certificate", id: "gst_registration",preview:"gst_registration_preview" },
-    { label: "Banking Details", id: "banking_details",preview:"banking_details_preview" },
+    { label: "Business PAN Card", id: "pan_file",preview:"pan_file_preview",href:"pan" },
+    { label: "Certificate of Incorporation", id: "incorporation_certificate",preview:"incorporation_certificate_preview",href:"incorporation_certificate" },
+    { label: "Address Proof", id: "address_proof",preview:"address_proof_preview",href:"address_proof" },
+    { label: "GST Registration Certificate", id: "gst_registration",preview:"gst_registration_preview",href:"gst_registration" },
+    { label: "Banking Details", id: "banking_details",preview:"banking_details_preview",href:"banking_details" },
   ];
 
   const fileDisplayStyle = {
@@ -61,7 +62,7 @@ const bankingDetailsArray = [
   };
 
 
-const MainContent = ({ distributorInfo, setDistributorInfo, handleSubmit, updateHandler,viewMode,errorData,editMode,isLoading,setViewMode }) => {
+const MainContent = ({ distributorInfo, setDistributorInfo, handleSubmit, updateHandler,viewMode,errorData,editMode,isLoading,setViewMode,id }) => {
 
 const [countryList, setcountrylist] = useState([]);
 const [stateList, setStatelist] = useState([]);
@@ -456,7 +457,9 @@ const [errorToast, setErrorToast] = useState([]);
                         <div style={fileDisplayStyle}>
                             
                         <span style={fileNameStyle}>
-                            {distributorInfo[item?.preview] || 'No file selected'}
+                          <a target="_blank" href={`${filesUrl}/${item?.href}/images${distributorInfo[item?.id]}`}>
+                          {distributorInfo[item?.id] || 'No file selected'}
+                          </a>
                         </span>
                         <button
                             type="button"
@@ -497,7 +500,7 @@ const [errorToast, setErrorToast] = useState([]);
         <div className="btn-box text-end mt-4">
           {viewMode ? (
             <>
-              <Link href={`/dms/AddDistributorManagement/?id=${router.query.id}`}>
+              <Link href={`/dms/AddDistributor/?id=${id}`}>
                 <button
                   className="btn btn-primary"
                   onClick={() => setViewMode(!viewMode)}
@@ -508,7 +511,7 @@ const [errorToast, setErrorToast] = useState([]);
             </>
           ) : (
             <>
-              <Link href="/media/EventScreen">
+              <Link href="/dms/DistributorManagement">
                 <button className="btn btn-cancel m-3 ">Cancel</button>
               </Link>
               {editMode ? (

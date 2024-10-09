@@ -253,17 +253,10 @@ const AddEstimationScreen = () => {
 
   const validate = () => {
     const errors = {};
-    // if (!userInfo.campaign_start_date.trim()) errors.campaign_start_date = "Campaign Start Date is required";
     if (userInfo.campaign_id === null || userInfo.campaign_id === "") {
       errors.campaign_id = "Campaign Name is required";
     }
-    // if (!userInfo.campaign_end_date.trim()) errors.campaign_end_date = "Campaign End Date is required";
-    if (!userInfo.package_cost_display)
-      errors.package_cost_display = "Package cost display is required";
-    if (!userInfo.package_cost_mounting)
-      errors.package_cost_mounting = "Package cost mounting  is required";
-    if (!userInfo.package_cost_printing)
-      errors.package_cost_printing = "Package cost printing  is required";
+   
     if (isAgency) {
       if (!userInfo.agency_commission_display)
         errors.agency_commission_display =
@@ -277,8 +270,16 @@ const AddEstimationScreen = () => {
     }
     if (!userInfo.package_offer)
       errors.package_offer = "Package offer is required";
-    // if (!userInfo.campaign_duration) errors.campaign_duration = "Campaign Duration is required";
-    // if (!userInfo.cmpn_b_t_id) errors.cmpn_b_t_id = "Business Type is required";
+
+    if(userInfo.package_offer=="Yes"){
+      if (!userInfo.package_cost_display)
+        errors.package_cost_display = "Package cost display is required";
+      if (!userInfo.package_cost_mounting)
+        errors.package_cost_mounting = "Package cost mounting  is required";
+      if (!userInfo.package_cost_printing)
+        errors.package_cost_printing = "Package cost printing  is required";
+    }
+   
     if (!userInfo.estimate_date)
       errors.estimate_date = "Estimate Date is required";
     if (!userInfo.estimate_type.trim())
@@ -1231,7 +1232,7 @@ const AddEstimationScreen = () => {
                             : "input_box"
                         }
                       >
-                        <label htmlFor="package_offer">Package Offer</label>
+                        <label htmlFor="package_offer">Package Offer *</label>
                         <Select
                           id="package_offer"
                           className="react-select"
@@ -1266,7 +1267,10 @@ const AddEstimationScreen = () => {
                       </div>
                     </div>
 
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    {
+                      userInfo?.package_offer =="Yes" && (
+                          <>
+                              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                       <div
                         className={
                           errorData?.package_cost_display
@@ -1396,6 +1400,11 @@ const AddEstimationScreen = () => {
                         </span>
                       </div>
                     </div>
+                          </>
+                      )
+                    }
+
+                    
 
                     {isAgency && (
                       <>

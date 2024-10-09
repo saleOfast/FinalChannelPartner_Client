@@ -87,11 +87,26 @@ export default function SignInScreen({ setLoggedIn }) {
       dispatch(stopLoading())
     } else {
       try {
-        const res = await axios.post(Baseurl + "/db/login", {
+        let baseUrl = window.location.origin;
+        if(baseUrl==="http://localhost:3000"){
+          baseUrl = "https://media.saleofast.com/"
+        }
+        let payload={};
+        if(baseUrl==="http://localhost:3000"){
+          payload={
+            email: userForm.email.toLowerCase(),
+          password: userForm.password,
+          type:type,
+          }
+        }else{
+          payload={
           email: userForm.email.toLowerCase(),
           password: userForm.password,
-          type:type
-        });
+          type:type,
+          client_url:baseUrl
+          }
+        }
+        const res = await axios.post(Baseurl + "/db/login", payload);
 
         if (res.status === 200) {
           dispatch(stopLoading());

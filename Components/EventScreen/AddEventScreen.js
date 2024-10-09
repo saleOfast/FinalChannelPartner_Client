@@ -72,7 +72,7 @@ const AddEventScreen = () => {
       try {
         const response = await axios.post(Baseurl + `/db/leads/calls`, reqOptions, header);
         if (response.status === 204 || response.status === 200) {
-          toast.success(response.data.message)
+          toast.success(response?.data?.message)
           setisLoading(false)
           router.push('/crm/EventScreen')
         }

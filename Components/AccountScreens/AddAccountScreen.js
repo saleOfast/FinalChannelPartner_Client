@@ -1050,7 +1050,7 @@ const AddAccountScreen = () => {
 
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div className={errorData?.bill_city ? 'input_box errorBox' : 'input_box'}>
-                      <label htmlFor="task_name">Billing City *</label>
+                      <label htmlFor="task_name">Billing City </label>
                       <Select
                         id={userInfo.state_id}
                         defaultValue={""}
@@ -1203,7 +1203,7 @@ const AddAccountScreen = () => {
 
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div className={errorData?.ship_state ? 'input_box errorBox' : 'input_box'}>
-                      <label htmlFor="task_name">Shipping City *</label>
+                      <label htmlFor="task_name">Shipping City </label>
                       <Select
                         id={userInfo.ship_state}
                         defaultValue={""}

@@ -106,7 +106,7 @@ const SidebarDMSMobile = ({}) => {
       isAdminMode &&
       (!hasCookie("Admin") || !hasCookie("SaLsUsr") || !hasCookie("saLsTkn"))
     ) {
-      router.push("/Admin");
+      router.push("/admin");
       dispatch(LoggedOut());
       toast.error("Please Login To Continue");
     } else if (isUserOrMasterMode) {

@@ -279,7 +279,36 @@ const AddLeadsScreen = () => {
     }
   }, [ac_id]);
 
+  const validate = () => {
+    let value = false;
+    let errors = {}; 
+    
+    if (!userInfo?.lead_name) {
+      errors.lead_name = "Please Enter A Valid Lead Name";
+      value = true;
+    } else if (/^\d+$/.test(userInfo.lead_name)) {
+      errors.lead_name = "Lead Name cannot be only digits";
+      value = true;
+    }
+  
+    if (!userInfo?.company_name) {
+      errors.company_name = "Please Enter Organization Name";
+      value = true;
+    } else if (/^\d+$/.test(userInfo.company_name)) {
+      errors.company_name = "Company Name cannot be only digits";
+      value = true;
+    }
+  
+    setErrorData({ ...errorData, ...errors });
+  
+    return value;
+  };
+  
+
   const submitHandler = async () => {
+    if(validate()){
+      return toast.error("Pls Fill Mandatory Fields")
+    }
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -653,6 +682,9 @@ const AddLeadsScreen = () => {
   };
 
   async function updateHandler() {
+    if(validate()){
+      return toast.error("Pls Fill Mandatory Fields")
+    }
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");

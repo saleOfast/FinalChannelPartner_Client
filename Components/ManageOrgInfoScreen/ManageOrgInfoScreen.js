@@ -73,7 +73,7 @@ const ManageOrgInfoScreen = () => {
     
         if (!userInfo.country_id) newErrors.country_id = 'Country is required.';
         if (!userInfo.state_id) newErrors.state_id = 'State is required.';
-        if (!userInfo.city_id) newErrors.city_id = 'City is required.';
+        // if (!userInfo.city_id) newErrors.city_id = 'City is required.';
         if (!userInfo.address) newErrors.address = 'Address is required.';
     
         setErrors(newErrors);
@@ -443,7 +443,7 @@ const ManageOrgInfoScreen = () => {
                             <div className="row p-2">
                                 <div className="col-xl-12">
                                     <div className="input_box">
-                                        <label htmlFor="city" className=' fw-semibold mb-1'>City *</label>
+                                        <label htmlFor="city" className=' fw-semibold mb-1'>City </label>
                                         <Select
                                             id="city"
                                             value={cities?.map((data)=>{

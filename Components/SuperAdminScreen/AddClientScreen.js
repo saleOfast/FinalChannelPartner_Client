@@ -1130,7 +1130,7 @@ const AddClientScreen = () => {
                             : "input_box"
                         }
                       >
-                        <label htmlFor="task_name">City *</label>
+                        <label htmlFor="task_name">City </label>
                         <Select
                           id={userInfo.state_id}
                           defaultValue={""}

@@ -39,7 +39,7 @@ const ManageLeadTable = ({
     },
     {
       name: "company_name",
-      label: "Company Name",
+      label: "Organization Name",
       options: {
         filter: true,
       },

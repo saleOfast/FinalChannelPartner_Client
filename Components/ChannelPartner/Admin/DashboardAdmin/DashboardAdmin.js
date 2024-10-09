@@ -281,21 +281,21 @@ const DashboardAdmin = () => {
         }
     }, [router.isReady, id, startDate]);
 
-    useEffect(() => {
-        const location = window.navigator && window.navigator.geolocation
-        if (location) {
-            location.getCurrentPosition((position) => {
-                setUserDetails({
-                    ...userDetails,
-                    lat: position.coords.latitude,
-                    lon: position.coords.longitude,
-                })
-            }, (error) => {
-                setUserDetails({ ...userDetails, lat: null, lon: null })
-            })
-        }
-        getAttndncData();
-    }, [])
+    // useEffect(() => {
+    //     const location = window.navigator && window.navigator.geolocation
+    //     if (location) {
+    //         location.getCurrentPosition((position) => {
+    //             setUserDetails({
+    //                 ...userDetails,
+    //                 lat: position.coords.latitude,
+    //                 lon: position.coords.longitude,
+    //             })
+    //         }, (error) => {
+    //             setUserDetails({ ...userDetails, lat: null, lon: null })
+    //         })
+    //     }
+    //     getAttndncData();
+    // }, [])
 
     return (
         <>

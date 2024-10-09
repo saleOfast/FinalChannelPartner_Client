@@ -274,7 +274,35 @@ const AddLeadsScreen = () => {
     }
   }, [ac_id]);
 
+  const validate = () => {
+    let value = false;
+    let errors = {}; 
+    
+    if (!userInfo?.lead_name) {
+      errors.lead_name = "Please Enter A Valid Lead Name";
+      value = true;
+    } else if (/^\d+$/.test(userInfo.lead_name)) {
+      errors.lead_name = "Lead Name cannot be only digits";
+      value = true;
+    }
+  
+    if (!userInfo?.company_name) {
+      errors.company_name = "Please Enter Organization Name";
+      value = true;
+    } else if (/^\d+$/.test(userInfo.company_name)) {
+      errors.company_name = "Company Name cannot be only digits";
+      value = true;
+    }
+  
+    setErrorData({ ...errorData, ...errors });
+  
+    return value;
+  };
+
   const submitHandler = async () => {
+    if(validate()){
+      return toast.error("Pls Fill Mandatory Fields")
+    }
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -648,6 +676,9 @@ const AddLeadsScreen = () => {
   };
 
   async function updateHandler() {
+    if(validate()){
+      return toast.error("Pls Fill Mandatory Fields")
+    }
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -1306,29 +1337,17 @@ const AddLeadsScreen = () => {
                                 ? "form-control is-invalid"
                                 : "form-control"
                             }
-                            // onChange={(e) => {
-                            //   setUserInfo({
-                            //     ...userInfo,
-                            //     lead_name: e.target.value,
-                            //   });
-                            //   setErrorData({ ...errorData, lead_name: "" });
-                            // }}
                             onChange={(e) => {
                               const value = e.target.value;
-                              // Inline regex to validate alphabetic characters and spaces
-                              const isValidName = /^[a-zA-Z\s]*$/.test(value);
-                              
-                              if (isValidName || value === "") { // Allow empty value
+                              // Only allow alphabets and spaces
+                              const regex = /^[A-Za-z0-9\s]*$/;
+
+                              if (regex.test(value)) {
                                 setUserInfo({
                                   ...userInfo,
                                   lead_name: value,
                                 });
                                 setErrorData({ ...errorData, lead_name: "" });
-                              } else {
-                                setErrorData({
-                                  ...errorData,
-                                  lead_name: "Name can only contain letters and spaces",
-                                });
                               }
                             }}
                             value={userInfo.lead_name ? userInfo.lead_name : ""}
@@ -1450,30 +1469,12 @@ const AddLeadsScreen = () => {
                                 ? "form-control is-invalid"
                                 : "form-control"
                             }
-                            // onChange={(e) => {
-                            //   setUserInfo({
-                            //     ...userInfo,
-                            //     company_name: e.target.value,
-                            //   });
-                            //   setErrorData({ ...errorData, company_name: "" });
-                            // }}
                             onChange={(e) => {
-                              const value = e.target.value;
-                              // Inline regex to validate alphabetic characters and spaces
-                              const isValidName = /^[a-zA-Z\s]*$/.test(value);
-                  
-                              if (isValidName || value === "") { // Allow empty value
-                                setUserInfo({
-                                  ...userInfo,
-                                  company_name: value,
-                                });
-                                setErrorData({ ...errorData, company_name: "" });
-                              } else {
-                                setErrorData({
-                                  ...errorData,
-                                  company_name: "Organization name can only contain letters and spaces",
-                                });
-                              }
+                              setUserInfo({
+                                ...userInfo,
+                                company_name: e.target.value,
+                              });
+                              setErrorData({ ...errorData, company_name: "" });
                             }}
                             value={
                               userInfo.company_name ? userInfo.company_name : ""

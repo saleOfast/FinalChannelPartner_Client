@@ -301,7 +301,7 @@ const LeadsScreen = () => {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
             db: db_name,
-            m_id: 79,
+            pass:"pass"
           },
         };
         
@@ -563,9 +563,14 @@ const LeadsScreen = () => {
                                       <label htmlFor="name" className="pb-1">Contact No<span className="star text-danger">*</span></label>
                                     </div>
                                     <div className="col-9">
-                                      <input autofocus  value={lead?.p_contact_no} onChange={(e)=>{
-                                        setLead({...lead,p_contact_no:e.target.value})
-                                      }} type="number" name="name" className="input-field" placeholder required />
+                                      <input autofocus  value={lead?.p_contact_no} onChange={(e) => {
+                                          const value = e.target.value;
+                                          // Only allow digits and limit to 10 characters
+                                          if (/^\d{0,10}$/.test(value)) {
+                                            setLead({ ...lead, p_contact_no: value });
+                                          }
+                                        }}
+                                        type="number" name="name" className="input-field" placeholder required />
                                       <span className='errorText text-danger'>
                                           {errorData?.p_contact_no ? errorData.p_contact_no:""}
                                       </span>

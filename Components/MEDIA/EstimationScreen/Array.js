@@ -470,12 +470,12 @@ export const formaArray1 = [
     disabled: true,
     type: "text",
   },
-  // {
-  //   label: "Display Vendor Name",
-  //   name: "display_vender_name",
-  //   disabled: true,
-  //   type: "text",
-  // },
+  {
+    label: "Display Vendor Name",
+    name: "display_vender_name",
+    disabled: false,
+    type: "select",
+  },
   {
     label: "Display Cost / Month",
     name: "display_cost_per_month",

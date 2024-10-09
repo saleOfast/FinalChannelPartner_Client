@@ -5,7 +5,8 @@ import { setIsActive } from "../store/isActiveSidebarSlice";
 import WithUserhoc_COMMON from "../HOC/WithUserhoc_COMMON"
 import TempMgmtScreen from "../Components/TemplateManagement/TempMgmtScreen";
 
-export default WithUserhoc_COMMON (function TemplateManagement() {
+export default WithUserhoc_COMMON (function TemplateManagement() 
+{
   const dispatch = useDispatch()
     useEffect(() => {
         setCookie('isActive', 'TemplateManagement')

@@ -43,7 +43,7 @@ const ModeVendorCostAgency = ({
   const [printingMaterialData,setPrintingMaterialData]=useState([]);
   const [loader,setLoader]=useState(false)
   const [estimationTotals,setEstimationTotals] =useState({})
-
+  const [displayVendorsList,setDisplayVendorsList] =useState([])
 
 
 
@@ -152,6 +152,42 @@ const ModeVendorCostAgency = ({
           //   setPrintingCostList(response.data.data);
           // }
           console.log("answer 3 is",response?.data?.data,"printinigCostLIstData is");
+          setLoader(false);
+        }
+      } catch (error) {
+        setLoader(false);
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+  const getDisplayVendors = async () => {
+    setLoader(true);
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+  
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass:"pass"
+        },
+      };
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/account`,
+          header
+        );
+        if (response?.status == 200 || response?.status == 201) {
+          const data=response?.data?.data?.filter((item)=>item?.db_account_type?.account_type_name=="OOH Agencies")
+          setDisplayVendorsList(data);
+          console.log(data)
           setLoader(false);
         }
       } catch (error) {
@@ -283,6 +319,7 @@ const ModeVendorCostAgency = ({
     getPrintingVendor();
     getPrintingMaterial();
     getMountingVendor();
+    getDisplayVendors()
 
   },[show])
 
@@ -319,6 +356,7 @@ const ModeVendorCostAgency = ({
         mountingVendorData={mountingVendorData}
         getContactList={getContactList}
         estimationTotals={estimationTotals}
+        displayVendorsList={displayVendorsList}
       />
       {/* <ConfirmBox
         showConfirm={assetDeleteShowConfirm}

@@ -117,15 +117,10 @@ export const TotalCostArray2 = [
 ];
 
 export const marginInfoArray = [
-  { label: "Overall Margin", id: "overall_margin", fieldType: "currency" },
   { label: "Display Margin", id: "display_margin", fieldType: "currency" },
   { label: "Mounting Margin", id: "mounting_margin", fieldType: "currency" },
   { label: "Printing Margin", id: "printing_margin", fieldType: "currency" },
-  {
-    label: "Overall Margin %",
-    id: "overall_margin_percentage",
-    fieldType: "percentage",
-  },
+  { label: "Overall Margin", id: "overall_margin", fieldType: "currency" },
   {
     label: "Display Margin %",
     id: "display_margin_percentage",
@@ -139,6 +134,11 @@ export const marginInfoArray = [
   {
     label: "Printing Margin %",
     id: "printing_margin_percentage",
+    fieldType: "percentage",
+  },
+  {
+    label: "Overall Margin %",
+    id: "overall_margin_percentage",
     fieldType: "percentage",
   },
 ];
@@ -370,11 +370,7 @@ export const updateClientCostAgencyArray = [
     name: "selling_price_as_per_duration",
     disabled: true,
   },
-  {
-    label: "Final Client PO Cost",
-    name: "_client_po_cost",
-    type: "number",
-  },
+  
   {
     label: "Mounting Cost / Sq. Ft.",
     name: "mounting_cost_per_sq_ft",
@@ -388,12 +384,17 @@ export const updateClientCostAgencyArray = [
   },
   { label: "Printing Cost", name: "printing_cost", disabled: true },
   { label: "Remarks", name: "remarks" },
+  {
+    label: "Final Client PO Cost",
+    name: "_client_po_cost",
+    type: "number",
+  },
 ];
 
 export const formaArray1 = [
   {
     label: "Site Code",
-    name: "site_id",
+    name: "site_code",
     type: "number",
     disabled: true,
   },
@@ -473,7 +474,7 @@ export const formaArray1 = [
   },
   {
     label: "Display Vendor Name",
-    name: "display_vender_name",
+    name: "display_vendor_id",
     disabled: false,
     type: "select",
   },

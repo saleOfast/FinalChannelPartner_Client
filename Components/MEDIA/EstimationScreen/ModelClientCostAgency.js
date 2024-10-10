@@ -232,6 +232,7 @@ const ModelClientCostAgency = ({
                         <th>Printing Cost / Sq. Ft.</th>
                         <th>Printing Cost</th>
                         <th>Remarks</th>
+                        
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -291,6 +292,7 @@ const ModelClientCostAgency = ({
                             <td>
                             {site?.remarks}
                             </td>
+                            
                             {/* {!viewMode ? ( */}
                             <td className="table_btns d-flex">
                             <button

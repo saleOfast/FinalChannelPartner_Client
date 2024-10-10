@@ -681,7 +681,7 @@ const ModelAgencySite = ({
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
                           <label htmlFor={`clientDisplayCost-${index}`}>
-                            Client Display Cost*
+                            Client Display Cost / Sq. Ft*
                           </label>
                           <input
                             type="number"
@@ -700,7 +700,7 @@ const ModelAgencySite = ({
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
                           <label htmlFor={`clientMountingCost-${index}`}>
-                            Client Mounting Cost*
+                            Client Mounting Cost / Sq. Ft*
                           </label>
                           <input
                             type="number"
@@ -719,7 +719,7 @@ const ModelAgencySite = ({
                       <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
                         <div className="input_box">
                           <label htmlFor={`clientPrintingCost-${index}`}>
-                            Client Printing Cost*
+                            Client Printing Cost / Sq. Ft*
                           </label>
                           <input
                             type="number"

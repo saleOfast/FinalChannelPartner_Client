@@ -44,6 +44,7 @@ const AddEstimationScreen = () => {
   const [assetSiteLists, setAssetSiteLists] = useState([]);
   const [agencySiteLists, setAgencySiteLists] = useState([]);
   const [agencySiteData, setAgencySiteData] = useState([]);
+  const [estimateStatusList, setEstimateStatusList] = useState([]);
   const [getAgencyData, setGetAgencyData] = useState(false);
 
   const [deleteSiteAgencyId, setDeleteSiteAgencyId] = useState("");
@@ -66,6 +67,7 @@ const AddEstimationScreen = () => {
   const [userInfo, setUserInfo] = useState({
     estimate_type: "",
     campaign_id: null,
+    est_s_id:null,
     campaign_name: "",
     acc_id: "",
     package_offer: "",
@@ -182,6 +184,15 @@ const AddEstimationScreen = () => {
     );
   }
 
+  async function getEstimateStatusList() {
+    await fetchData(
+      `/db/media/campaign/campaignBusinessType/getCampaignBusinessType`,
+      setEstimateStatusList,
+      errorToast,
+      setErrorToast
+    );
+  }
+
   async function getAssetSites() {
     await fetchData(
       `/db/media/estimationAssetBusiness/getEstimationAssetBusiness?estimate_id=${id}`,
@@ -256,15 +267,20 @@ const AddEstimationScreen = () => {
     if (userInfo.campaign_id === null || userInfo.campaign_id === "") {
       errors.campaign_id = "Campaign Name is required";
     }
+
+    // if(!userInfo.est_s_id){
+    //   errors.est_s_id = "Enter Estimate Approval Status";
+    // }
    
     if (isAgency) {
-      if (!userInfo.agency_commission_display)
+      console.log(userInfo)
+      if (userInfo.agency_commission_display==null)
         errors.agency_commission_display =
           "Agency commission display is required";
-      if (!userInfo.agency_commission_mounting)
+      if (userInfo.agency_commission_mounting==null  )
         errors.agency_commission_mounting =
           "Agency commission mounting is required";
-      if (!userInfo.agency_commission_printing)
+      if (userInfo.agency_commission_printing==null )
         errors.agency_commission_printing =
           "Agency commission printing is required";
     }
@@ -272,11 +288,11 @@ const AddEstimationScreen = () => {
       errors.package_offer = "Package offer is required";
 
     if(userInfo.package_offer=="Yes"){
-      if (!userInfo.package_cost_display)
+      if (userInfo.package_cost_display==null )
         errors.package_cost_display = "Package cost display is required";
-      if (!userInfo.package_cost_mounting)
+      if (userInfo.package_cost_mounting==null )
         errors.package_cost_mounting = "Package cost mounting  is required";
-      if (!userInfo.package_cost_printing)
+      if (userInfo.package_cost_printing==null )
         errors.package_cost_printing = "Package cost printing  is required";
     }
    
@@ -672,6 +688,7 @@ const AddEstimationScreen = () => {
 
   useEffect(() => {
     getBusinessTypeList();
+    // getEstimateStatusList()
     getAccountsList();
     checkLogin();
     getusersList();
@@ -944,22 +961,30 @@ const AddEstimationScreen = () => {
                     {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                 <div className={errorData?.estimate_approval_status ? "input_box errorBox" : "input_box"}>
                   <label htmlFor="estimate_approval_status">Estimate Approval Status *</label>
-                  <input
-                    type="text"
-                    id="estimate_approval_status"
-                    className="form-control"
-                    disabled={viewMode}
-                    placeholder="Enter Approval status"
-                    value={userInfo?.estimate_approval_status}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      // Allow only alphabetic characters
-                      if (/^[a-zA-Z\s]*$/.test(value)) {
-                        setUserInfo({ ...userInfo, estimate_approval_status: value });
-                      }
-                    }}
-                  />
-                  <span className="errorText">{errorData?.estimate_approval_status ? errorData.estimate_approval_status : ""}</span>
+                  <Select
+                          id="client_name"
+                          defaultValue={""}
+                          placeholder="Select Estimate Approval Status  "
+                          options={estimateStatusList?.map((data, index) => {
+                            return {
+                              value: data?.est_s_id,
+                              label: data?.est_s_name,
+                            };
+                          })}
+                          value={estimateStatusList?.map((data, index) => {
+                            if (userInfo.est_s_id === data.est_s_id) {
+                              return {
+                                value: data?.est_s_id,
+                                label: data?.est_s_name,
+                              };
+                            }
+                          })}
+                          onChange={(e) => {
+                            setUserInfo({ ...userInfo, est_s_id: e.value });
+                            setErrorData({ ...errorData, est_s_id: "" });
+                          }}
+                        />
+                  <span className="errorText">{errorData?.est_s_id ? errorData.est_s_id : ""}</span>
                 </div>
                 </div> */}
 
@@ -2236,7 +2261,7 @@ const AddEstimationScreen = () => {
                                 <th>Height (Ft.)</th>
                                 <th>Width (Ft.)</th>
                                 <th>Total Sq. Ft.</th>
-                                <th>Client Display Cost</th>
+                                <th>Client Display Cost / Sq. Ft.</th>
                                 <th>Client Mounting Cost / Sq. Ft.</th>
                                 <th>Client Printing Cost / Sq. Ft.</th>
                                 {!viewMode && (

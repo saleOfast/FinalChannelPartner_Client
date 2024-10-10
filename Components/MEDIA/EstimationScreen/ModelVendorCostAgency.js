@@ -403,7 +403,7 @@ const ModeVendorCostAgency = ({
                         <th>Campaign Start Date</th>
                         <th>Campaign End Date</th>
                         <th>Campaign Duration</th>
-                        {/* <th>Display Vendor Name </th> */}
+                        <th>Display Vendor Name </th>
                         <th>Display Cost / Month</th>
                         <th>Buying Price as per Duration</th>
                         <th>Final Display Cost </th>
@@ -450,20 +450,20 @@ const ModeVendorCostAgency = ({
                             <td>
                               {moment(site?.campaign_end_date).diff(moment(site?.campaign_start_date), 'days')}
                             </td>
-                            {/* <td>
+                            <td>
                               {site?.display_vendor_name}
-                            </td> */}
+                            </td>
                             <td>
                               {site?.display_cost_per_month}
                             </td>
                             <td>
-                            {Number(site?.selling_price_as_per_duration).toFixed(2)}
+                            {Number(site?.buying_price_as_per_duration).toFixed(2)}
                             </td>
                             <td>
-                            {site?.final_display_cost}
+                            {Number(site?.buying_price_as_per_duration).toFixed(2)}
                             </td>
                             <td>
-                            {site?.mounting_vendor_name}
+                            {site?.mounting_vendor_id}
                             </td>
                             <td>
                             {site?.mounting_cost_per_sq_ft}

@@ -124,12 +124,12 @@ const ModelUpdateClientCostAgency = ({
                 campaign_duration: moment(selectedSite?.campaign_end_date).diff(moment(selectedSite?.campaign_start_date), 'days') || '',
                 display_cost_per_month: selectedSite?.display_cost_per_month || 0,
                 selling_price_as_per_duration: selectedSite?.selling_price_as_per_duration || 0,
-                _client_po_cost: selectedSite?._client_po_cost || 0,
                 mounting_cost_per_sq_ft:selectedSite?.mounting_cost_per_sq_ft || 0,
                 mounting_cost:Number(selectedSite?.mounting_cost).toFixed(2) || 0,
                 printing_cost_per_sq_ft:selectedSite?.printing_cost_per_sq_ft || '0',
                 printing_cost: Number(selectedSite?.printing_cost).toFixed(2) || 0,
                 remarks: selectedSite?.remarks || '',
+                _client_po_cost:  Number(selectedSite?._client_po_cost).toFixed(2) || 0,
               });
             }
         } catch (error) {
@@ -172,7 +172,12 @@ const ModelUpdateClientCostAgency = ({
     if (name === 'width' || name === 'height') {
       const width = parseFloat(newFormData.width) || 0;
       const height = parseFloat(newFormData.height) || 0;
+      const mounting_cost_per_sq_ft = parseFloat(newFormData.mounting_cost_per_sq_ft) || 0;
+      const printing_cost_per_sq_ft = parseFloat(newFormData.printing_cost_per_sq_ft) || 0;
+      newFormData.printing_cost = (width * height * printing_cost_per_sq_ft).toFixed(2); // Update total
+      newFormData.mounting_cost = (width * height * mounting_cost_per_sq_ft).toFixed(2); // Update total
       newFormData.total_sq_ft = (width * height).toFixed(2); // Update total
+      newFormData._client_po_cost = parseFloat(newFormData.selling_price_as_per_duration)+parseFloat(newFormData.printing_cost)+parseFloat(newFormData.mounting_cost)
     }
 
     if(name==="mounting_cost_per_sq_ft"){
@@ -180,6 +185,7 @@ const ModelUpdateClientCostAgency = ({
       const height = parseFloat(newFormData.height) || 0;
       const mounting_cost_per_sq_ft = parseFloat(newFormData.mounting_cost_per_sq_ft) || 0;
       newFormData.mounting_cost = (width * height * mounting_cost_per_sq_ft).toFixed(2); // Update total
+      newFormData._client_po_cost = parseFloat(newFormData.selling_price_as_per_duration)+parseFloat(newFormData.printing_cost)+parseFloat(newFormData.mounting_cost)
     }
 
     if(name==="printing_cost_per_sq_ft"){
@@ -187,6 +193,12 @@ const ModelUpdateClientCostAgency = ({
       const height = parseFloat(newFormData.height) || 0;
       const printing_cost_per_sq_ft = parseFloat(newFormData.printing_cost_per_sq_ft) || 0;
       newFormData.printing_cost = (width * height * printing_cost_per_sq_ft).toFixed(2); // Update total
+      newFormData._client_po_cost = parseFloat(newFormData.selling_price_as_per_duration)+parseFloat(newFormData.printing_cost)+parseFloat(newFormData.mounting_cost)
+    }
+
+    if(name==="campaign_start_date" || name==="campaign_end_date"){
+      newFormData.campaign_duration=moment(newFormData?.campaign_end_date).diff(moment(newFormData?.campaign_start_date), 'days')
+      newFormData.selling_price_as_per_duration=(parseFloat(newFormData.display_cost_per_month)/30)*newFormData.campaign_duration
     }
 
     setFormData(newFormData);

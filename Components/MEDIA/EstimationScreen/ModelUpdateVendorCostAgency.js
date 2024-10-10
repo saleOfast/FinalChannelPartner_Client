@@ -59,6 +59,7 @@ const ModelUpdateVendorCostAgency = ({
 
   const [formData, setFormData] = useState({
     site_id: "",
+    site_code: "",
     location: "",
     category: "",
     media_format: "",
@@ -137,7 +138,7 @@ const ModelUpdateVendorCostAgency = ({
         ...formData,
         [name]: selectedOption ? selectedOption.value : "",
       });
-    } else if (name === "display_vender_name") {
+    } else if (name === "display_vendor_id") {
       setFormData({
         ...formData,
         [name]: selectedOption ? selectedOption.value : "",
@@ -390,8 +391,8 @@ const ModelUpdateVendorCostAgency = ({
               ) || "",
             campaign_duration:
               response?.data?.data?.db_media_campaign?.campaign_duration || "",
-              // display_vender_name:
-              // selectedSite?.display_vendor_name || 0,
+              display_vendor_id:
+              response?.data?.data?.display_vendor_id || 0,
             display_cost_per_month:
               response?.data?.data?.display_cost_per_month || 0,
             display_vender_cost:
@@ -468,7 +469,8 @@ const ModelUpdateVendorCostAgency = ({
           
         } else {
           setFormData({
-            site_id: selectedSite?.site || "",
+            site_id: selectedSite?.site_id || "",
+            site_code: selectedSite?.site_code || "",
             estimate_id: selectedSite?.estimate_id || "",
             state: selectedSite?.state || "",
             city: selectedSite?.city || "",
@@ -495,14 +497,15 @@ const ModelUpdateVendorCostAgency = ({
             campaign_duration:
             moment(selectedSite?.campaign_end_date).diff(moment(selectedSite?.campaign_start_date), 'days') ||
               "",
-            display_vender_name:
-              selectedSite?.display_vendor_name || 0,
+            display_vendor_id:
+              selectedSite?.display_vendor_id || 0,
               display_cost_per_month:
               selectedSite?.display_cost_per_month || 0,
               // display_cost_per_month: selectedSite?.display_selling_cost || 0,
               buying_price_as_per_duration:
-              selectedSite?.selling_price_as_per_duration || 0,
+              selectedSite?.buying_price_as_per_duration || 0,
             // final_client_po_cost: selectedSite?.db_estimate?.final_client_po_cost || 0,
+            final_display_cost: selectedSite?.buying_price_as_per_duration || 0,
             mounting_cost_per_sq_ft:
               selectedSite?.mounting_cost_per_sq_ft || 0,
             mounting_cost:Number(selectedSite?.mounting_cost).toFixed(2) || 0,
@@ -511,6 +514,17 @@ const ModelUpdateVendorCostAgency = ({
             printing_cost:Number(selectedSite?.printing_cost).toFixed(2) || 0,
             remarks: selectedSite?.remarks || "",
           });
+
+          let filteredDisplayVendor = displayVendorsList.filter(
+            (item) =>
+                item?.billState?.state_name == selectedSite?.state
+          );
+
+          filteredDisplayVendor = filteredDisplayVendor?.map((item)=>({
+            value: item.acc_id,
+            label: item.acc_name,
+          }))
+          setDisplayVendors(filteredDisplayVendor)
           
           console.log("printing vendor data is ",printingVendorData,"and selected site is ",selectedSite)
           const filteredVendorData = printingVendorData.filter(
@@ -729,7 +743,7 @@ const ModelUpdateVendorCostAgency = ({
                               ? printingVendorList
                               : field.name === "pr_m_id"
                               ? printingMaterialList
-                              : field.name === "display_vender_name"
+                              : field.name === "display_vendor_id"
                               ? displayVendors 
                               : []
                           }
@@ -752,7 +766,7 @@ const ModelUpdateVendorCostAgency = ({
                                   (option) =>
                                     option.value === formData[field.name]
                                 ) || null
-                                : field.name === "display_vender_name"
+                                : field.name === "display_vendor_id"
                               ? displayVendors.find(
                                   (option) =>
                                     option.value === formData[field.name]

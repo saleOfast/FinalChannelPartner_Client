@@ -437,6 +437,7 @@ const ModelUpdateVendorCostAsset = ({
             media_type: selectedSite?.media_type || "",
             quantity: selectedSite?.quantity || "",
             width: selectedSite?.width || "",
+            final_display_cost: selectedSite?.buying_price_as_per_duration || 0,
             height: selectedSite?.height || "",
             total_sq_ft:
               (

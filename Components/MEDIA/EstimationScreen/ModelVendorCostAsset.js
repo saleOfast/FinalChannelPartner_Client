@@ -417,7 +417,8 @@ const ModelVendorCostAsset = ({
                             {Number(site?.buying_price_as_per_duration).toFixed(2)}
                             </td>
                             <td>
-                            {site?.final_display_cost}
+                            {/* {site?.final_display_cost} */}
+                            {Number(site?.buying_price_as_per_duration).toFixed(2)}
                             </td>
                             <td>
                             {site?.mounting_vendor_name}

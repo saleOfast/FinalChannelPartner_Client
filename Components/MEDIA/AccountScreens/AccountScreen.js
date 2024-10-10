@@ -42,6 +42,7 @@ const AccountScreen = () => {
                   }
             } catch (error) {
                 setLoader(false)
+                setLoader(false)
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
                 }

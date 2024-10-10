@@ -230,6 +230,7 @@ const validate = () => {
 
     if(name==="campaign_start_date" || name==="campaign_end_date"){
       newFormData.campaign_duration=moment(newFormData?.campaign_end_date).diff(moment(newFormData?.campaign_start_date), 'days')
+      newFormData.selling_price_as_per_duration=(parseFloat(newFormData.display_cost_per_month)/30)*newFormData.campaign_duration
     }
 
     

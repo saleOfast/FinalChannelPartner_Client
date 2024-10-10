@@ -318,11 +318,7 @@ export const updateClientCostAssetArray = [
     name: "selling_price_as_per_duration",
     disabled: true,
   },
-  {
-    label: "Final Client PO Cost",
-    name: "final_client_po_cost",
-    type: "number",
-  },
+ 
   {
     label: "Mounting Cost / Sq. Ft.",
     name: "mounting_cost_per_sq_ft",
@@ -336,6 +332,11 @@ export const updateClientCostAssetArray = [
   },
   { label: "Printing Cost", name: "printing_cost", disabled: true },
   { label: "Remarks", name: "remarks" },
+  {
+    label: "Final Client PO Cost",
+    name: "final_client_po_cost",
+    type: "number",
+  },
 ];
 
 export const updateClientCostAgencyArray = [

@@ -204,7 +204,12 @@ const validate = () => {
     if (name === 'width' || name === 'height') {
       const width = parseFloat(newFormData.width) || 0;
       const height = parseFloat(newFormData.height) || 0;
+      const mounting_cost_per_sq_ft = parseFloat(newFormData.mounting_cost_per_sq_ft) || 0;
+      const printing_cost_per_sq_ft = parseFloat(newFormData.printing_cost_per_sq_ft) || 0;
+      newFormData.printing_cost = (width * height * printing_cost_per_sq_ft).toFixed(2); // Update total
       newFormData.total_sq_ft = (width * height).toFixed(2); // Update total
+      newFormData.mounting_cost = (width * height * mounting_cost_per_sq_ft).toFixed(2); // Update total
+      newFormData.final_client_po_cost = parseFloat(newFormData.selling_price_as_per_duration)+parseFloat(newFormData.printing_cost)+parseFloat(newFormData.mounting_cost)
     }
 
     if(name==="mounting_cost_per_sq_ft"){
@@ -212,6 +217,7 @@ const validate = () => {
       const height = parseFloat(newFormData.height) || 0;
       const mounting_cost_per_sq_ft = parseFloat(newFormData.mounting_cost_per_sq_ft) || 0;
       newFormData.mounting_cost = (width * height * mounting_cost_per_sq_ft).toFixed(2); // Update total
+      newFormData.final_client_po_cost = parseFloat(newFormData.selling_price_as_per_duration)+parseFloat(newFormData.printing_cost)+parseFloat(newFormData.mounting_cost)
     }
 
     if(name==="printing_cost_per_sq_ft"){
@@ -219,7 +225,10 @@ const validate = () => {
       const height = parseFloat(newFormData.height) || 0;
       const printing_cost_per_sq_ft = parseFloat(newFormData.printing_cost_per_sq_ft) || 0;
       newFormData.printing_cost = (width * height * printing_cost_per_sq_ft).toFixed(2); // Update total
+      newFormData.final_client_po_cost = parseFloat(newFormData.selling_price_as_per_duration)+parseFloat(newFormData.printing_cost)+parseFloat(newFormData.mounting_cost)
     }
+    
+    
 
     setFormData(newFormData);
   };

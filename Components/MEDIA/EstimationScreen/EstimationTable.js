@@ -364,6 +364,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         filter: false,
         download: false,
         customBodyRender: (value, tableMeta) => {
+          console.log(tableMeta)
           return (
             <div className="table_btns">
               <Link href={`/media/AddEstimations?id=${value}&vw=mds`}>
@@ -383,183 +384,6 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               >
                 <DeleteIcon />
               </button>
-              
-              {/* {busiessTypeList.find(
-                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && 
-              mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[4]?.actions==1
-
-              &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )   && (
-                <button
-                  className=""
-                  style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-                  onClick={() => {
-                    setEstimationId(tableMeta?.rowData[4]);
-                    getState();
-                    setShow(true);
-                  }}
-                  title="Offer Asset Site"
-                >
-                  Offer Site
-                </button>
-              )}
-              
-              
-
-              {busiessTypeList.find(
-                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[5]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )   && (
-                <>
-                  <button
-                    className=""
-                    style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-                    onClick={() => {
-                      setEstimationId(tableMeta?.rowData[4]);
-                      getState();
-                      setShow5(true);
-                    }}
-                    title="Client Cost Sheet Update"
-                  >
-                    Client Cost Sheet 
-                  </button>
-                </>
-              )}  
-
-
-
-              {busiessTypeList.find(
-                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Asset" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[6]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
-                <>
-                  <button
-                    className=""
-                    style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-                    onClick={() => {
-                      setEstimationId(tableMeta?.rowData[4]);
-                      getState();
-                      setShowVendorAsset(true);
-                    }}
-                    title="Vendor Cost Sheet Update"
-                  >
-                    Vendor Cost Sheet
-                  </button>
-                </>
-              )}
-             
-
-              {busiessTypeList.find(
-                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[4]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
-                <button
-                  className=""
-                  style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-                  onClick={() => {
-                    setEstimationId(tableMeta?.rowData[4]);
-                    setShow3(true);
-                  }}
-                  title="Offer Agency Site"
-                >
-                  Offer Site
-                </button>
-              )}
-              
-              {busiessTypeList.find(
-                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[4]?.actions==1 && ( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
-                <button
-                  className=""
-                  style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-                  onClick={() => {
-                    setEstimationId(tableMeta?.rowData[4]);
-                    setShow4(true);
-                  }}
-                  title="Upload Site"
-                >
-                  Upload Site
-                </button>
-              )}
-              
-
-              {busiessTypeList.find(
-                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[5]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
-                <>
-                  <button
-                    className=""
-                    style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-                    onClick={() => {
-                      setEstimationId(tableMeta?.rowData[4]);
-                      getState();
-                      setShow6(true);
-                    }}
-                    title="Client Cost Sheet Update"
-                  >
-                    Client Cost Sheet
-                  </button>
-                </>
-              )}   
-
-            {busiessTypeList.find(
-                (item) => item.cmpn_b_t_id === tableMeta.rowData[2]
-              )?.cmpn_b_t_name === "Agency" && mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[6]?.actions==1 &&( tableMeta.rowData[3]=="NEGOTIATING" || tableMeta.rowData[3]=="REJECTED" )  && (
-                <>
-                  <button
-                    className=""
-                    style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-                    onClick={() => {
-                      setEstimationId(tableMeta?.rowData[4]);
-                      getState();
-                      setShowVendorAgency(true);
-                    }}
-                    title="Vendor Cost Sheet Update"
-                  >
-                    Vendor Cost Sheet
-                  </button>
-                </>
-              )}   
-              
-              {
-               mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[9]?.actions==1 && tableMeta.rowData[3]=="NEGOTIATION COMPLETED" &&  (
-              <button 
-              className="" 
-              style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-              title="Sent For Approval"
-              onClick={()=>{
-                sentForApproval(value)
-              }}
-               
-              >
-                Send For Approval
-              </button>
-                )
-              }
-              
-              {
-                ( userInfo?.isDB==true && tableMeta.rowData[3]=="APPROVED")&& (
-              <Link href={`/media/PorformaInvoice?est_id=${value}`}>
-              <button
-                className=""
-                style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-                title="Download Performa Invoice"
-              >
-                Invoice
-              </button>
-              </Link>
-                )
-              }
-              {
-                (mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[7]?.actions==1 &&( tableMeta.rowData[3]=="APPROVED"))&& (
-              <Link href={`/media/PorformaInvoice?est_id=${value}`}>
-              <button
-                className=""
-                style={{height:"fit-content",width:"fit-content",border:"2px solid #d2ddff",backgroundColor:"#e9eefe",marginRight:"7px"}}
-                title="Download Performa Invoice"
-              >
-                Invoice
-              </button>
-              </Link>
-                )
-              } */}
 
 {
                 ((mediaSidebarInfo[0]?.children?.find((item)=>item?.menu_id==433)?.children[0]?.children[8]?.actions==1 && estimateApprovals?.indexOf(userInfo?.role_id) !== -1) && tableMeta.rowData[3]=="PENDING"  || 
@@ -758,7 +582,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
       mediaSidebarInfo[0]?.children?.find((item) => item?.menu_id == 433)
         ?.children[0]?.children[4]?.actions == 1 &&
       (tableMeta.rowData[3] === "NEGOTIATING" ||
-        tableMeta.rowData[3] === "REJECTED")
+        tableMeta.rowData[3] === "REJECTED") 
     ) {
       items.push(
         <Dropdown.Item
@@ -1003,7 +827,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
     selectableRows: "none",
     responsive: "standard",
     downloadOptions: { filename: "ContactList.csv" },
-    filterType:'multiselect'
+    filterType:'multiselect',
+    tableBodyHeight:"360px"
   };
 
   const mappedDataList = accountsList?.map((list) => ({
@@ -1013,6 +838,12 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
     business_type: list?.db_media_campaign?.cmpn_b_t_id,
     approval_status:list?.approval_status,
   }));
+
+  // let a=[]
+
+  // for(let i=0;i<10;i++){
+
+  // }
 
   return (
     <>

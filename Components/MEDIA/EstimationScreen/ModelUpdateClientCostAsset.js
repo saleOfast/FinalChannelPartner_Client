@@ -227,6 +227,11 @@ const validate = () => {
       newFormData.printing_cost = (width * height * printing_cost_per_sq_ft).toFixed(2); // Update total
       newFormData.final_client_po_cost = parseFloat(newFormData.selling_price_as_per_duration)+parseFloat(newFormData.printing_cost)+parseFloat(newFormData.mounting_cost)
     }
+
+    if(name==="campaign_start_date" || name==="campaign_end_date"){
+      newFormData.campaign_duration=moment(newFormData?.campaign_end_date).diff(moment(newFormData?.campaign_start_date), 'days')
+    }
+
     
     
 

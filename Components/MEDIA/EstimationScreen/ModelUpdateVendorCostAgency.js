@@ -390,6 +390,8 @@ const ModelUpdateVendorCostAgency = ({
               ) || "",
             campaign_duration:
               response?.data?.data?.db_media_campaign?.campaign_duration || "",
+              // display_vender_name:
+              // selectedSite?.display_vendor_name || 0,
             display_cost_per_month:
               response?.data?.data?.display_cost_per_month || 0,
             display_vender_cost:

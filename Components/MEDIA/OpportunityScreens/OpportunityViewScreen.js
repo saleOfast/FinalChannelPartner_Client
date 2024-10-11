@@ -1142,7 +1142,7 @@ async function getPriorityList() {
                     </div>
                   </div>
 
-                  <div className="col-xl-12 col-md-12 col-sm-12 col-12 sideCardAdd">
+                  {/* <div className="col-xl-12 col-md-12 col-sm-12 col-12 sideCardAdd">
                             <div className="opertunity_box">
                                 <div className="task_card mb-4">
                                     <div className="task_head">Quotations List</div>
@@ -1168,7 +1168,7 @@ async function getPriorityList() {
                                     </div>
                                 </div>
                                 </div>
-                                </div>
+                                </div> */}
                             <div className="col-xl-12 col-md-12 col-sm-12 col-12 sideCardAdd">
                             <div className="opertunity_box">
                                 <div className="task_card mb-4">

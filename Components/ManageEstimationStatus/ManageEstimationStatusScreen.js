@@ -78,7 +78,7 @@ const ManageEstimationStatusScreen = () => {
       }
 
       try {
-        const response = await axios.get(Baseurl + `/db/media/campaign/campaignStatus/getCampaignStatus`, header);
+        const response = await axios.get(Baseurl + `/db/media/estimationStatus/getEstimationStatus`, header);
         if (response?.status == 200 || response?.status == 201) {
           setLoader(false)
           setDataList(response.data.data);
@@ -117,7 +117,7 @@ const ManageEstimationStatusScreen = () => {
       }
 
       try {
-        const response = await axios.put(Baseurl + `/db/media/campaign/campaignStatus/updateCampaignStatus`, reqInfo, header);
+        const response = await axios.put(Baseurl + `/db/media/estimationStatus/updateEstimationStatus`, reqInfo, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setdisableShowConfirm(false)
@@ -150,7 +150,7 @@ const ManageEstimationStatusScreen = () => {
       }
 
       try {
-        const response = await axios.delete(Baseurl + `/db/media/campaign/campaignStatus/deleteCampaignStatus?est_s_id=${currObj}`, header);
+        const response = await axios.delete(Baseurl + `/db/media/estimationStatus/deleteEstimationStatus?est_s_id=${currObj}`, header);
         if (response.status === 204 || response.status === 200) {
           toast.success(response.data.message)
           setdeleteshowConfirm(false)
@@ -188,7 +188,7 @@ const ManageEstimationStatusScreen = () => {
         }
 
         try {
-          const response = await axios.post(Baseurl + `/db/media/campaign/campaignStatus/addCampaignStatus`, userInfo, header);
+          const response = await axios.post(Baseurl + `/db/media/estimationStatus/addEstimationStatus`, userInfo, header);
           if (response.status === 204 || response.status === 200) {
             toast.success(response.data.message)
             handleClose();
@@ -225,7 +225,7 @@ const ManageEstimationStatusScreen = () => {
         }
 
         try {
-          const response = await axios.put(Baseurl + `/db/media/campaign/campaignStatus/updateCampaignStatus`, userInfo, header);
+          const response = await axios.put(Baseurl + `/db/media/estimationStatus/updateEstimationStatus`, userInfo, header);
           if (response.status === 204 || response.status === 200) {
             toast.success(response.data.message)
             handleClose();

@@ -244,9 +244,9 @@ const ModelClientCostAgency = ({
                             {index+1}
                             </td>
                             <td style={{ color: "blue", textDecoration: "underline", textDecorationColor: "blue" }}>
-                            <Link href={`/media/AddSites?id=${site.site_id}&vw=md`}>
+                            {/* <Link href={`/media/AddSites?id=${site.site_id}&vw=md`}> */}
                                 {site?.site_code}
-                            </Link>
+                            {/* </Link> */}
                             </td>
 
                             <td>{site?.state}</td>

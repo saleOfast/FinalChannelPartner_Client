@@ -325,7 +325,7 @@ const ModeVendorCostAgency = ({
 
   const totals = agencySiteLists?.reduce(
     (acc, site) => {
-      acc.display += site.selling_price_as_per_duration || 0;
+      acc.display += site.buying_price_as_per_duration || 0;
       acc.printing += site.printing_cost || 0;
       acc.mounting += site.mounting_cost || 0;
       return acc;
@@ -463,7 +463,7 @@ const ModeVendorCostAgency = ({
                             {Number(site?.buying_price_as_per_duration).toFixed(2)}
                             </td>
                             <td>
-                            {site?.mounting_vendor_id}
+                            {site?.mounting_vendor_name}
                             </td>
                             <td>
                             {site?.mounting_cost_per_sq_ft}

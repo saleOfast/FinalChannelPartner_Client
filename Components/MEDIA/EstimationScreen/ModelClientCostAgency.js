@@ -295,7 +295,7 @@ const ModelClientCostAgency = ({
                             
                             {/* {!viewMode ? ( */}
                             <td className="table_btns d-flex">
-                            <button
+                            {/* <button
                                           className="action_btn"
                                           title="Delete"
                                           onClick={() => {
@@ -304,7 +304,7 @@ const ModelClientCostAgency = ({
                                           }}
                                         >
                                           <DeleteIcon />
-                                        </button>
+                                        </button> */}
                               <button
                                 className="action_btn"
                                 onClick={() => {

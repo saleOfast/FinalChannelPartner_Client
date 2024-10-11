@@ -361,7 +361,7 @@ useEffect(()=>{
                                 {proformaInfo?.costSheets?.map(
                                   (_site, _siteIndex) => {
                                     const totalCost =
-                                      parseFloat(_site?.display_cost_per_month || 0) +
+                                      parseFloat(_site?.selling_price_as_per_duration || 0) +
                                       parseFloat(_site?.printing_cost || 0) +
                                       parseFloat(_site?.mounting_cost || 0);
                                     subTotal += totalCost;
@@ -378,7 +378,7 @@ useEffect(()=>{
                                         <td>{_site?.height}</td>
                                         <td>{_site?.total_sq_ft}</td>
                                         <td>
-                                          {_site?.display_cost_per_month.toFixed(
+                                          {_site?.selling_price_as_per_duration.toFixed(
                                             2
                                           )}
                                         </td>

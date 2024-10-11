@@ -446,17 +446,16 @@ const ModelVendorCostAsset = ({
                             </td>
                             {/* {!viewMode ? ( */}
                             <td className="table_btns d-flex">
-                              <button
+                              {/* <button
                                 className="action_btn"
                                 title="Delete"
                                 onClick={() => {
-                                  // deleteAssetSite(site.site_id);
                                   setAssetDeleteShowConfirm(true);
                                   setDeleteSiteAssetId(site.site_id);
                                 }}
                               >
                                 <DeleteIcon />
-                              </button>
+                              </button> */}
                               <button
                                 className="action_btn"
                                 onClick={() => {

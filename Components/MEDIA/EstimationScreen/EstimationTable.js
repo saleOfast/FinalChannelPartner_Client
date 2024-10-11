@@ -797,12 +797,13 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
                 if (items.length > 0) {
                   return (
-                    <Dropdown>
+                    <Dropdown >
                       <Dropdown.Toggle
-                        className="action_btn"
+                        style={{height:"26px",width:"26px",borderRadius:"3px"}}
+                        className="d-flex justify-content-center align-items-center"
                         title="More Actions"
                       >
-                        <EditIcon />
+                        
                       </Dropdown.Toggle>
                       <Dropdown.Menu>{items}</Dropdown.Menu>
                     </Dropdown>

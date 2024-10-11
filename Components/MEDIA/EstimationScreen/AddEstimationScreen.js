@@ -186,12 +186,16 @@ const AddEstimationScreen = () => {
 
   async function getEstimateStatusList() {
     await fetchData(
-      `/db/media/campaign/campaignBusinessType/getCampaignBusinessType`,
+      `/db/media/estimationStatus/getEstimationStatus`,
       setEstimateStatusList,
       errorToast,
       setErrorToast
     );
   }
+
+  const filteredStatusList = !id 
+  ? estimateStatusList.filter((item) => item.est_s_id === 1)
+  : estimateStatusList.filter((item) => item.est_s_id !== 1);
 
   async function getAssetSites() {
     await fetchData(
@@ -227,7 +231,7 @@ const AddEstimationScreen = () => {
       let token = getCookie("userInfo");
       let data = JSON.parse(token);
       setloginDetails(data);
-      getusersList(data);
+      // getusersList(data);
       // setUserInfo({ ...userInfo, contact_owner: data.user_id });
     }
   }
@@ -688,10 +692,10 @@ const AddEstimationScreen = () => {
 
   useEffect(() => {
     getBusinessTypeList();
-    // getEstimateStatusList()
+    getEstimateStatusList()
     getAccountsList();
     checkLogin();
-    getusersList();
+    // getusersList();
     setUserInfo({
       ...userInfo,
       created_on: DateNow,
@@ -958,19 +962,20 @@ const AddEstimationScreen = () => {
                       </div>
                     </div>
 
-                    {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                 <div className={errorData?.estimate_approval_status ? "input_box errorBox" : "input_box"}>
                   <label htmlFor="estimate_approval_status">Estimate Approval Status *</label>
                   <Select
                           id="client_name"
                           defaultValue={""}
                           placeholder="Select Estimate Approval Status  "
-                          options={estimateStatusList?.map((data, index) => {
-                            return {
+                          options={ filteredStatusList?.map((data)=>{
+                            return{
                               value: data?.est_s_id,
                               label: data?.est_s_name,
-                            };
-                          })}
+                            }
+                          })
+                          }
                           value={estimateStatusList?.map((data, index) => {
                             if (userInfo.est_s_id === data.est_s_id) {
                               return {
@@ -986,7 +991,7 @@ const AddEstimationScreen = () => {
                         />
                   <span className="errorText">{errorData?.est_s_id ? errorData.est_s_id : ""}</span>
                 </div>
-                </div> */}
+                </div>
 
                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                       <div

@@ -94,11 +94,13 @@ const commonIndexHOC = (WrappedComponent) => {
           }
         } catch (error) {
           // If token is invalid, clear state and redirect
+          if(router.pathname==="/setting" && hasCookie("token")){
+            toast.warning("Session expired, please log in again",{autoClose:2500});
+          }
+          dispatch(userLogOut()); 
           dispatch(clearTheme());
           dispatch(clearValue());
-          dispatch(userLogOut()); 
           router.push('/');
-          toast.warning("Session expired, please log in again",{autoClose:2500});
           return;
         }
 

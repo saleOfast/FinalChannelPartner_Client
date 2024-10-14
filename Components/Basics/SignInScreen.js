@@ -88,9 +88,9 @@ export default function SignInScreen({ setLoggedIn }) {
     } else {
       try {
         let baseUrl = window.location.origin;
-        if(baseUrl==="http://localhost:3000"){
-          baseUrl = "https://media.saleofast.com/"
-        }
+        // if(baseUrl==="http://localhost:3000"){
+        //   baseUrl = "https://crm.saleofast.com/"
+        // }
         let payload={};
         if(baseUrl==="http://localhost:3000"){
           payload={

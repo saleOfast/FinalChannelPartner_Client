@@ -12,6 +12,7 @@ import { fetchData } from "../../../Utils/getReq";
 import Select from "react-select";
 import { Delete } from "@mui/icons-material";
 import { costingDetailArray1,costingDetailArray2,marginInfoArray } from "./Array";
+import { Button, Modal, Form } from 'react-bootstrap';
 
 
 const AddCampaignScreen = () => {
@@ -47,6 +48,8 @@ const AddCampaignScreen = () => {
     field_size: null,
     option: null,
   });
+  const [show,setShow] =useState(false)
+  const [prevCmpStatusId,setPrevCmpStatisId]=useState()
 
   const [userInfo, setUserInfo] = useState({
     campaign_id: null,
@@ -93,6 +96,7 @@ const AddCampaignScreen = () => {
     gst: false,
     cgst: false,
     sgst: false,
+    sales_order_pdf:""
   });
 
   async function getAccountsList() {
@@ -184,6 +188,7 @@ const AddCampaignScreen = () => {
           header
         );
         setUserInfo(response.data.data);
+        setPrevCmpStatisId(response?.data?.data?.cmpn_s_id)
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -290,65 +295,6 @@ const AddCampaignScreen = () => {
     }
   };
 
-  // const UpdateHandler = async () => {
-  //   if (validate()) {
-  //     if (hasCookie("token")) {
-  //       setisLoading(true);
-  //       let token = getCookie("token");
-  //       let db_name = getCookie("db_name");
-
-  //       let header = {
-  //         headers: {
-  //           Accept: "application/json",
-  //           Authorization: "Bearer ".concat(token),
-  //           db: db_name,
-  //           m_id: 321,
-  //         },
-  //       };
-
-  //       let newUserInfo = { ...userInfo, updated_on: DateNow };
-
-  //       let newData = JSON.parse(JSON.stringify(newUserInfo));
-
-  //       try {
-  //         const response = await axios.put(
-  //           Baseurl + `/db/media/campaign/campaignManagement/updateCampaign`,
-  //           newData,
-  //           header
-  //         );
-
-  //         if (response.status === 200 || response.status === 204) {
-  //           await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
-  //           toast.success(response.data.message);
-  //           setisLoading(false);
-  //           router.push("/media/Campaigns");
-  //         }
-  //       } catch (error) {
-  //         if (error?.response?.data?.status === 422) {
-  //           const taskObject = {};
-  //           const array = error?.response?.data?.data;
-  //           for (let i = 0; i < array.length; i++) {
-  //             const key = Object.keys(array[i])[0];
-  //             const value = Object.values(array[i])[0];
-  //             taskObject[key] = value;
-  //           }
-  //           setErrorData(taskObject);
-  //         }
-  //         if (error?.response?.data?.message) {
-  //           toast.error(error.response.data.message);
-  //         } else {
-  //           toast.error("Something went wrong!");
-  //         }
-  //         setisLoading(false);
-  //       }
-  //     }
-  //   } else {
-  //     toast.error("Please fill the Mandatory fileds");
-  //   }
-  // };
-
-
-
   const UpdateHandler = async () => {
     if (validate()) {
       if (hasCookie("token")) {
@@ -411,7 +357,8 @@ const AddCampaignScreen = () => {
           }
           setisLoading(false);
         }
-      }
+      }     
+        
     } else {
       toast.error("Please fill the Mandatory fields");
     }
@@ -740,6 +687,72 @@ updatedInfo.printing_margin_percentage =
     }
   };
 
+  const salesOrderUploadHandler = async () => {
+
+      if (hasCookie("token")) {
+        setisLoading(true);
+        let token = getCookie("token");
+        let db_name = getCookie("db_name");
+  
+        let header = {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer ".concat(token),
+            db: db_name,
+            pass:"pass"
+          },
+        };
+  
+        // Create a FormData instance
+        const formData = new FormData();
+  
+        formData.append("campaign_id", userInfo?.campaign_id);
+        formData.append("pdf", userInfo?.sales_order_pdf);
+  
+        try {
+          const response = await axios.put(
+            Baseurl + `/db/media/campaign/campaignManagement/uploadPOPdf`,
+            formData,
+            header
+          );
+  
+          if (response.status === 200 || response.status === 204) {
+            toast.success(response?.data?.message);
+            setisLoading(false);
+            setShow(false)
+          }
+        } catch (error) {
+          if (error?.response?.data?.message) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("Something went wrong!");
+          }
+          setisLoading(false);
+        }
+      }     
+        
+    
+  };
+
+  const handlePoUpload=(e)=>{
+    const fileInput = e.target;
+        const file = fileInput.files[0];
+        const allowedFileTypes = ["application/pdf"];
+        if (file && allowedFileTypes.includes(file.type)) {
+          setUserInfo({ ...userInfo, sales_order_pdf: file});
+        } else {
+          toast.warning("Please upload a valid PDF, JPEG, JPG, or PNG file.");
+          // Clear the file input value to prevent upload
+          fileInput.value = "";
+        }
+  }
+  
+  useEffect(()=>{
+    if(userInfo?.cmpn_s_id=="4"){
+      setShow(true)
+    }
+  },[userInfo?.cmpn_s_id=="4"])
+
   useEffect(() => {
     if (!router.isReady) return;
     if (router.query.id) {
@@ -909,6 +922,36 @@ updatedInfo.printing_margin_percentage =
                       </span>
                     </div>
                   </div>
+                  <Modal className="commonModal" show={show} onHide={()=>{
+                    setUserInfo({...userInfo, cmpn_s_id: prevCmpStatusId})
+                    setShow(false)
+                    }}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>Sales Order PDF</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    <Form.Group controlId="fileUpload">
+                      <Form.Label>Sales Order PDF:</Form.Label>
+                      <Form.Control
+                        type="file"
+                        accept=".pdf"
+                        onChange={(e)=>{
+                          handlePoUpload(e)
+                        }}
+                      />
+                    </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button variant="primary" onClick={()=>{
+                        if(!userInfo?.sales_order_pdf){
+                          return toast.error("Pls Upload Sales Order PDF",{autoClose:2500})
+                        }
+                        salesOrderUploadHandler()
+                      }}  >
+                        SUBMIT
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
 
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div

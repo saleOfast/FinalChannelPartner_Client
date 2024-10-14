@@ -59,12 +59,14 @@ const crmIndexHOC = (WrappedComponent) => {
     let key=true;
 
     useEffect(() => {
+      
+      let token = getCookie("token");
+      // let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZGJfbmFtZSI6Ik1VTFRJX1VTRVI1MDU0NzczMyIsInVzZXJfY29kZSI6IlVTRVI1MDU0NzczMyIsImlhdCI6MTcyNzMyNjgyMSwiZXhwIjoxNzI3MzU1NjIxfQ.5vFWtlNkaOFvNhEn5M6-8A-rGxC4guNXN2PWTRMe7qQ";
       const validateToken = async () => {
         try {
           if(key==true){
             key=false
-          let token = getCookie("token");
-          // let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZGJfbmFtZSI6Ik1VTFRJX1VTRVI1MDU0NzczMyIsInVzZXJfY29kZSI6IlVTRVI1MDU0NzczMyIsImlhdCI6MTcyNzMyNjgyMSwiZXhwIjoxNzI3MzU1NjIxfQ.5vFWtlNkaOFvNhEn5M6-8A-rGxC4guNXN2PWTRMe7qQ";
+          
           let db_name = getCookie("db_name");
 
           let header = {
@@ -91,11 +93,13 @@ const crmIndexHOC = (WrappedComponent) => {
           }
         } catch (error) {
           // If token is invalid, clear state and redirect
-          dispatch(clearTheme());
-          dispatch(clearValue());
+          if(router.pathname==="/crm" && hasCookie("token")){
+            toast.warning("Session expired, please log in again",{autoClose:2500});
+          }
           dispatch(userLogOut()); 
+          dispatch(clearValue());
+          dispatch(clearTheme());
           router.push('/');
-          toast.warning("Session expired, please log in again",{autoClose:2500});
           return;
         }
 

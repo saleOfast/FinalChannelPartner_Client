@@ -6,7 +6,7 @@ import { Baseurl } from "../../../Utils/Constants";
 import { toast } from "react-toastify";
 import moment from "moment";
 
-const ModelSalesOrder = ({ show, handleClose,estimateData }) => {
+const ModelSalesOrder = ({ show, handleClose,estimateData,estimateID }) => {
     const [errors, setErrors] = useState({});
   const [showError, setShowError] = useState(false);
   const [formData, setFormData] = useState({
@@ -45,11 +45,11 @@ const ModelSalesOrder = ({ show, handleClose,estimateData }) => {
         }
         try {
           
-            const response = await axios.get(Baseurl + `/db/media/salesOrder/getSalesOrder`, header);
+            const response = await axios.get(Baseurl + `/db/media/salesOrder/getSalesOrder?estimate_id=${estimateID}`, header);
 
-            if((response?.status==200 || response?.status==201 )&& response?.data?.data.length>0){
+            if((response?.status==200 || response?.status==201 )&& response?.data?.data!==null){
                 setFlag(true)
-                const data=response?.data?.data[0];
+                const data=response?.data?.data;
                 setFormData(data)
                 setFormData({...formData,
                     campaign_code:data?.db_media_campaign?.campaign_code,

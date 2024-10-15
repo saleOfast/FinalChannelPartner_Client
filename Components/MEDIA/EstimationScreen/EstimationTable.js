@@ -30,6 +30,7 @@ import AcceptIcon from "../../Svg/AcceptIcon";
 import RejectIcon from "../../Svg/RejectIcon";
 import { Dropdown } from "react-bootstrap"
 import ModelSalesOrder from "./ModelSalesOrder";
+import ModelPurchaseOrder from "./ModelPurchaseOrder";
 
 
 const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getContactList }) => {
@@ -57,6 +58,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
   const [ mediaSidebarInfo,setmediaSidebarInfo]=useState([])
   const [showDropdown, setShowDropdown] = useState(false);
   const [showSalesOrder,setShowSalesOrder] =useState(false)
+  const [showPurchaseOrder,setShowPurchaseOrder] =useState(false)
 
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
@@ -90,6 +92,10 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
   const handleCloseSalesOrder =()=>{
     setShowSalesOrder(false)
+  }
+
+  const handleClosePurchaseOrder =()=>{
+    setShowPurchaseOrder(false)
   }
 
   const handleVendorAgencyClose = () => {
@@ -661,6 +667,17 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                       Sales Order
                     </Dropdown.Item>)
 
+                    items.push(<Dropdown.Item
+                      key="Sales Order"
+                      title="Download Performa Invoice"
+                      onClick={()=>{
+                        setEstimationId(tableMeta?.rowData[4]);
+                        setShowPurchaseOrder(true)
+                      }}
+                    >
+                      Purchase Order
+                    </Dropdown.Item>)
+
                 if (items.length > 0) {
                   return (
                     <Dropdown >
@@ -731,6 +748,14 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         show={showSalesOrder}
         handleClose={handleCloseSalesOrder}
         estimateData={accountsList?.find((item)=>item?.estimate_id==estimationId)}
+        estimateID={estimationId}
+      />
+      
+      <ModelPurchaseOrder
+          show={showPurchaseOrder}
+          handleClose={handleClosePurchaseOrder}
+          businessType={accountsList?.find((item)=>item?.estimate_id==estimationId)?.db_media_campaign?.cmpn_b_t_id}
+          estimateID={estimationId}
       />
 
       <ModelAssetSite1

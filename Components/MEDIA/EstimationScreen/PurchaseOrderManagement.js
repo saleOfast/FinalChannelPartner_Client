@@ -9,7 +9,7 @@ import { Baseurl } from "../../../Utils/Constants";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const SalesOrderManagement = ({ id, link }) => {
+const PurchaseOrderManagement = ({ id, link }) => {
   const [salesOrder, setSalesOrder] = useState();
   const [show, setShow] = useState(false);
   const [errors, setErrors] = useState({});
@@ -156,7 +156,7 @@ const SalesOrderManagement = ({ id, link }) => {
   return (
     <>
       <div className="add_screen_head">
-        <span className="text_bold">Sales Order Management</span>
+        <span className="text_bold">Purchase Order Management</span>
       </div>
       <div className="add_user_form">
         <div className="row">
@@ -172,36 +172,51 @@ const SalesOrderManagement = ({ id, link }) => {
               <Table bordered responsive>
                 <thead>
                   <tr>
-                    {/* <th>Sales Order Number</th> */}
-                    <th>Sales Order Date</th>
+                    <th>PO Number</th>
+                    <th>PO Date</th>
+                    <th>Month</th>
                     <th>Campaign ID</th>
-                    <th>Campaign Name</th>
-                    <th>Client / Agency Name</th>
-                    <th>Estimate ID</th>
-                    <th>Sales PO Number</th>
-                    <th>Sales PO Date</th>
-                    <th>Sales PO Value</th>
+                    <th>Vendor</th>
+                    <th>Type of Vendor</th>
+                    <th>Type of Media</th>
+                    <th>Total Cost</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>No. of Days</th>
+                    <th>NDP Days</th>
+                    <th>Invoice</th>
+                    <th>Payment Status</th>
+                    <th>Debit Note No.</th>
+                    <th>Debit Note Date</th>
+                    <th>Debit Percentage</th>
+                    <th>Debit Note Amount</th>
+                    <th>GST</th>
                     <th>Remarks</th>
-                    {/* <th>PDF</th>*/}
-                    <th>Actions</th>
+                    <th>Remarks</th>
                   </tr>
                 </thead>
-  
                 <tbody>
                   <tr>
-                    {/* <td>{data?.s_o_number}</td> */}
-                    <td>{salesOrder?.s_o_date  &&  moment(salesOrder?.s_o_date).format("YYYY-MM-DD")}</td>
-                    <td>{salesOrder?.campaign_code}</td>
-                    <td>{salesOrder?.campaign_name}</td>
-                    <td>{salesOrder?.acc_name}</td>
-                    <td>{salesOrder?.estimate_code}</td>
-                    <td>{salesOrder?.s_o_po_number}</td>
-                    <td>
-                      {salesOrder?.s_o_po_date && moment(salesOrder?.s_o_po_date).format("YYYY-MM-DD")}
-                    </td>
-                    <td>{salesOrder?.s_o_po_value}</td>
-                    <td>{salesOrder?.s_o_po_remarks}</td>
-                    {/* <td><a target='_blank' href={link}>PDF</a></td> */}
+                    <td>{/* PO Number (Auto-generated) */}</td>
+                    <td>{/* PO Date (Date input) */}</td>
+                    <td>{/* Month (Text) */}</td>
+                    <td>{/* Campaign ID (Lookup) */}</td>
+                    <td>{/* Vendor (Lookup) */}</td>
+                    <td>{/* Type of Vendor (Picklist) */}</td>
+                    <td>{/* Type of Media (Text) */}</td>
+                    <td>{/* Total Cost (Currency) */}</td>
+                    <td>{/* Start Date (Date input) */}</td>
+                    <td>{/* End Date (Date input) */}</td>
+                    <td>{/* No. of Days (Number input) */}</td>
+                    <td>{/* NDP Days (Number input) */}</td>
+                    <td>{/* Invoice (Text input) */}</td>
+                    <td>{/* Payment Status (Picklist) */}</td>
+                    <td>{/* Debit Note No. (Text input) */}</td>
+                    <td>{/* Debit Note Date (Date input) */}</td>
+                    <td>{/* Debit Percentage (%) */}</td>
+                    <td>{/* Debit Note Amount (Currency input) */}</td>
+                    <td>{/* GST (Text input) */}</td>
+                    <td>{/* Remarks (Text input) */}</td>
                     <td className="table_btns d-flex">
                       <button
                         className="action_btn"
@@ -219,7 +234,7 @@ const SalesOrderManagement = ({ id, link }) => {
             </div>
             )
             :
-            <p>No Sales Order</p>
+            <p>No Purchase Order</p>
           }
           
         </div>
@@ -234,7 +249,7 @@ const SalesOrderManagement = ({ id, link }) => {
         size="xl"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Purchase Order Management</Modal.Title>
+          <Modal.Title>Sales Order Management</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {showError && (
@@ -264,7 +279,7 @@ const SalesOrderManagement = ({ id, link }) => {
                     type="text"
                     name="campaign_id"
                     value={salesOrder?.campaign_code}
-                    onChange={handleChange} 
+                    onChange={handleChange}
                     placeholder="Select Campaign"
                     disabled
                     isInvalid={!!errors.campaign_code}
@@ -427,4 +442,4 @@ const SalesOrderManagement = ({ id, link }) => {
   );
 };
 
-export default SalesOrderManagement;
+export default PurchaseOrderManagement;

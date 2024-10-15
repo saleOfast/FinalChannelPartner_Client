@@ -19,6 +19,7 @@ import EditIcon from "../../Svg/EditIcon";
 import ModelEditAgencySite from "./ModelEditAgencySite";
 import { DMPCArray,additionalInfoArray,TotalCostArray1,TotalCostArray2,marginInfoArray } from "./Array";
 import SalesOrderManagement from "./SalesOrderManagement";
+import PurchaseOrderManagement from "./PurchaseOrderManagement";
  
 
 const AddEstimationScreen = () => {
@@ -2235,6 +2236,11 @@ const AddEstimationScreen = () => {
                 )}
 
                   <SalesOrderManagement 
+                      id={id}
+                      link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
+                  />
+
+                  <PurchaseOrderManagement
                       id={id}
                       link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
                   />

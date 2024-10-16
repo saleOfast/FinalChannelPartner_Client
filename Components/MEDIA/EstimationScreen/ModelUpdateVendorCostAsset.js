@@ -338,7 +338,8 @@ const ModelUpdateVendorCostAsset = ({
               ) || "",
             campaign_duration:
               response?.data?.data?.db_media_campaign?.campaign_duration || "",
-              display_vendor_name:selectedSite?.display_vendor_name,
+              display_vendor_name:response?.data?.data?.displayVendor?.acc_name,
+              display_vendor_id:response?.data?.data?.display_vendor_id,
             display_cost_per_month:
               response?.data?.data?.display_cost_per_month || 0,
             display_vender_cost:
@@ -455,6 +456,7 @@ const ModelUpdateVendorCostAsset = ({
             moment(selectedSite?.campaign_end_date).diff(moment(selectedSite?.campaign_start_date), 'days') ||
               "",
               display_vendor_name:selectedSite?.display_vendor_name,
+              display_vendor_id:selectedSite?.display_vendor_id,
               display_cost_per_month:
               selectedSite?.display_cost_per_month || 0,
             buying_price_as_per_duration:

@@ -12,7 +12,7 @@ const ManagePaymentStatusTab = ({ deleteConfirm, disableConfirm, dataList, openE
   const columns = [
     {
       name: 'est_s_name',
-      label: "Payment Status Name", 
+      label: "Payment Status Name",
       options: {
         filter: true,
       }

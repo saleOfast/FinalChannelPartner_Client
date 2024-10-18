@@ -46,7 +46,7 @@ const Top5Visits = ({ dataList,name }) => {
                         return (
                             <li key={i} className="list-item">
                                 <div className="opp_box">
-                                    <div className="name">{visit?.user}</div>
+                                    <div className="name"><Link className=" text-decoration-underline" href={`/partner/Visits?cp_id=${visit?.user_id}`}>{visit?.user}</Link></div>
                                     <div className="price"> {visit?.visitCount}</div>
                                 </div>
                             </li>
@@ -82,7 +82,7 @@ const Top5Visits = ({ dataList,name }) => {
                     <tbody>
                     {dataList?.topFiveVisits?.map((visit, index) => (
                         <tr key={index}>
-                        <td>{visit?.user}</td>
+                        <td><Link className=" text-decoration-underline" href={`/partner/Visits?cp_id=${visit?.user_id}`}>{visit?.user}</Link></td>
                         <td>{visit?.visitCount}</td>
                         </tr>
                     ))}

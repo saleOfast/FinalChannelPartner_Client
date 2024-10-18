@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import Link from "next/link";
 import { Baseurl, filesUrl } from "../../../../Utils/Constants";
-import { Button, Modal, Form } from "react-bootstrap";
-import { getCookie, hasCookie } from "cookies-next";
+import { Button, Modal, Form, Table } from "react-bootstrap";
+import { getCookie, hasCookie, setCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Loader from "../../../Loader/Loader";
 import DeleteIcon from "../../../Svg/DeleteIcon";
 import EditIcon from "../../../Svg/EditIcon";
 import moment from "moment";
+import DateRange from "../../../DateRangeCustom/Daterange";
+import Select from 'react-select';
+import { fetchData } from '../../../../Utils/getReq';
+import ViewIcon from "../../../Svg/ViewIcon";
+import { useRouter } from "next/router";
+
 
 const CPRegisterLeadsTable = ({
   deleteConfirm,
@@ -21,12 +27,15 @@ const CPRegisterLeadsTable = ({
   openEdtMdl,
   title,
   getDataList,
-  loader
+  loader,
+  bstId,setBstId,statusId,setStatusId
 }) => {
 
   const [userData, setUserData] =  useState([])
+  const router=useRouter()
   const [actionMode, setActionMode] =  useState('')
   const [showModal, setShowModal] =  useState(false)
+  const [showModal2, setShowModal2] =  useState(false)
   const[id,setId]=useState("")
   const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
   const [formData, setFormData] = useState({
@@ -35,10 +44,42 @@ const CPRegisterLeadsTable = ({
     contact: '',
     email: '',
     stage: 'OPEN',
-    createdAt: ''
+    createdAt: '',
+    remarks:"",
+    follow_up_date:""
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({})
+  const [historyData,setHistoryData] =useState([])
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#61E25E"
+
+  const [errorToast, setErrorToast] = useState(false);
+  const [usersList, setUsersList] = useState([]);
+  const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+
+  async function getUsersList() {
+    await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
+  }
+
+  useEffect(()=>{
+    getUsersList()
+  },[])
+
+
+  const getCurrentWeekDates = () => {
+    const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+      const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+      if(hasCookie("cpleadsFilter")){
+        
+       let data=JSON.parse(getCookie("cpleadsFilter"))
+        return {startDate:data?.f_date,endDate:data?.t_date}
+      }
+      else{
+        return { startDate, endDate };
+      }
+    
+  };
+
+const [value, setValue] = useState(getCurrentWeekDates());
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -149,6 +190,39 @@ const updateUserhandler = async (onBoradStage=false) => {
   }
   
 };
+
+
+const getCplHistoryData = async (cpl_id) => {
+  let db_name = (getCookie('db_name'));
+  let url = `/db/channelPartnerLeads/getLeadDetails?db_name=${db_name}&cpl_id=${cpl_id}`;
+ 
+  if (hasCookie('token')) {
+      let token = (getCookie('token'));
+
+      let header = {
+          headers: {
+              Accept: "application/json",
+              Authorization: "Bearer ".concat(token),
+              db: db_name,
+              pass:"pass",
+          }
+      }
+
+      try {
+          const response = await axios.get(Baseurl +url,header);
+          if(response?.status === 200 || response?.status === 201){
+             setShowModal2(true)
+             setHistoryData(response?.data?.data)
+          }
+      } catch (error) {
+          if (error?.response?.data?.message) {
+              toast.error(error?.response?.data?.message,{autoClose:2500});
+          } else {
+              toast.error("Something went wrong!",{autoClose:2500});
+          }
+      }
+  }
+}
 
   const columns = [
     {
@@ -334,7 +408,7 @@ const updateUserhandler = async (onBoradStage=false) => {
                     {
                       tableMeta?.rowData[5]!=="LINK SENT" && (
                         <>
-                              <button
+                        <button
                     className="action_btn"
                     title="Edit"
                     onClick={() => {
@@ -342,8 +416,15 @@ const updateUserhandler = async (onBoradStage=false) => {
                       setFormData(newData)
                       setShowModal(true)
                     }}
+                  ><EditIcon/></button>
+                              <button
+                    className="action_btn"
+                    title="History"
+                    onClick={() => {
+                      getCplHistoryData(value)
+                    }}
                   >
-                    <EditIcon />
+                    <ViewIcon/>
                   </button>
                   <button className="action_btn" onClick={() =>{
                     setcurrObj({...currObj,cpl_id:value})
@@ -400,7 +481,7 @@ const updateUserhandler = async (onBoradStage=false) => {
   }
   ];
 
- 
+  
 
   const options = {
     selectableRows: 'none',
@@ -413,6 +494,9 @@ const updateUserhandler = async (onBoradStage=false) => {
     const newErrors = {};
     if (!formData.first_name) newErrors.first_name = "First name is required";
     if (!formData.last_name) newErrors.last_name = "Last name is required";
+    if(formData?.stage=="CALL" || formData?.stage=="FOLLOW UP" || formData?.stage=="VISIT"){
+      if (!formData.follow_up_date) newErrors.follow_up_date = "Follow Up Date is required";
+    }
     if (!formData.contact || formData.contact.toString().length !== 10) newErrors.contact = "Contact must be 10 digits";
     if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Valid email is required";
     return newErrors;
@@ -427,6 +511,94 @@ const updateUserhandler = async (onBoradStage=false) => {
     });
   };
 
+  let statusArray=[{id:"",label:"All"},{id:"OPEN",label:"OPEN"},{id:"CONTACTED",label:"CONTACTED"},{id:"LINK SENT",label:"LINK SENT"},{id:"ONBOARDED",label:"ONBOARDED"},{id:"NOT INTERESTED",label:"NOT INTERESTED"},{id:"CALL",label:"CALL"},,{id:"VISIT",label:"VISIT"},{id:"FOLLOW UP",label:"FOLLOW UP"}]
+
+  const CustomToolbar = () => {
+    return (
+        <div className=' d-flex justify-content-start gap-3 align-items-center '>
+            <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
+            <DateRange value={value} setValue={setValue}  getData={getDataList} filterType={"cpleads"} /> 
+
+            {
+                  userInfoCheck?.isDB && (
+                    <div className='col-md-4 mb-3'>
+                    <label className='fw-bold' style={{ fontSize: '16px' }}>BST</label>
+                    <Select 
+                      placeholder="Select BST"
+                      options={[{ value: "", label: "All" }, 
+                        ...usersList?.filter(item => item?.role_id == 2)?.map((item) => {
+                          return {
+                            value: item?.user_id,
+                            label: item?.user
+                          };
+                        })
+                      ]}
+                      
+                      value={
+                        usersList?.filter(item=>item?.role_id==2)?.map((item) => {
+                          if(bstId==item?.user_id){
+                            return{
+                              value: item?.user_id,
+                            label: item?.user
+                            }
+                          }
+                        })
+                      }
+                      onChange={(e)=>{
+                        if(e.value==""){
+                          setCookie("bstId",e.value)
+                          router.push("/partner/CPRegisterLeads")
+                          setBstId(e.value)
+                        }
+                        else{
+                          setCookie("bstId",e.value)
+                          setBstId(e.value)
+                        }
+                        
+                      }}
+                    />
+                  </div>
+                  )
+                }
+
+            <div className='col-md-4 mb-3'>
+                  <label className='fw-bold' style={{ fontSize: '16px' }}>Status</label>
+                  <Select 
+                    placeholder="Select Stage"
+                    options={statusArray?.map((item)=>{
+                      return{
+                        value:item.id,
+                        label:item.label
+                      }
+                    })}
+                    value={
+                      statusArray?.map((item)=>{
+                        if(statusId==item?.id){
+                          return{
+                            value:item.id,
+                            label:item.label
+                          }
+                        }
+                      })
+                    }
+                    onChange={(e)=>{
+                      if(e.value==""){
+                        setCookie("cpLeadstatusId",e.value)
+                        router.push("/partner/CPRegisterLeads")
+                        setStatusId(e.value)
+                      }
+                      else{
+                        setCookie("cpLeadstatusId",e.value)
+                      setStatusId(e.value)
+                      }
+                      
+                    }}
+                  />
+                </div>
+        </div>
+    );
+}
+
 
   return (
     <>
@@ -436,7 +608,7 @@ const updateUserhandler = async (onBoradStage=false) => {
       (
         <div className="miuiTable channelTable">
         <MUIDataTable
-          title={<span style={{ color: "black", fontWeight:"bold", fontSize:"17px" }}>{title}</span>}
+          title={<CustomToolbar/>}
           data={dataList}
           columns={columns}
           options={options}
@@ -537,19 +709,7 @@ const updateUserhandler = async (onBoradStage=false) => {
               {errors.email && <Form.Text className="text-danger">{errors.email}</Form.Text>}
             </Form.Group>
 
-            <Form.Group controlId="stage">
-              <Form.Label>Stage</Form.Label>
-              <Form.Control
-                as="select"
-                name="stage"
-                value={formData.stage}
-                onChange={handleInputChange}
-              >
-                <option value="OPEN">OPEN</option>
-                <option value="CONTACTED">CONTACTED</option>
-                <option hidden value="LINK SENT">LINK SENT</option>
-              </Form.Control>
-            </Form.Group>
+            
 
             <Form.Group controlId="registrationDate">
               <Form.Label>Registration Date</Form.Label>
@@ -561,12 +721,103 @@ const updateUserhandler = async (onBoradStage=false) => {
               />
             </Form.Group>
 
+            <Form.Group controlId="stage">
+              <Form.Label>Stage</Form.Label>
+              <Form.Control
+                as="select"
+                name="stage"
+                value={formData.stage}
+                onChange={handleInputChange}
+              >
+                <option hidden value="OPEN">OPEN</option>
+                <option hidden  value="LINK SENT">LINK SENT</option>
+                <option hidden  value="ONBOARDED">ONBOARDED</option>
+                <option  value="CALL">CALL</option>
+                <option  value="FOLLOW UP">FOLLOW UP</option>
+                <option  value="VISIT">VISIT</option>
+                <option value="CONTACTED">CONTACTED</option>
+                <option  value="NOT INTERESTED">NOT INTERESTED</option>
+              </Form.Control>
+            </Form.Group>
+            {
+              (formData.stage == "CALL" || formData.stage == "FOLLOW UP" || formData.stage == "VISIT" ) && <Form.Group controlId="followUpDate">
+              <Form.Label>Follow Up Date*</Form.Label>
+              <Form.Control
+                type="date"
+                name="follow_up_date"
+                value={moment(formData.follow_up_date).format("YYYY-MM-DD")}  // Update format for "date" input
+                min={moment().format("YYYY-MM-DD")}  // Set the minimum date to today
+                onPaste={(e) => e.preventDefault()}  // Disable pasting into the field
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") e.preventDefault();  // Prevent Enter key from submitting form
+                }}
+                onChange={(e) => setFormData({ ...formData, follow_up_date: e.target.value })}
+              />
+              {errors.follow_up_date && <Form.Text className="text-danger">{errors.follow_up_date}</Form.Text>}
+            </Form.Group>
+            }
+            
+
+
+            <Form.Group controlId="remarks">
+              <Form.Label>Remarks</Form.Label>
+              <Form.Control
+                type="text"
+                name="remarks"
+                value={formData.remarks}
+                onChange={(e) => {
+                  // Allow only alphabetic characters
+                  // const value = e.target.value.replace(/[^a-zA-Z]/g, '');
+                  setFormData({
+                    ...formData,
+                    remarks: e.target.value
+                  });
+                }}
+                placeholder="Enter Remarks"
+              />
+              {errors.remarks && <Form.Text className="text-danger">{errors.remarks}</Form.Text>}
+            </Form.Group>
+
             <Button variant="primary" type="submit" className=" float-end mt-4">
               Update
             </Button>
           </Form>
         </Modal.Body>
       </Modal>
+
+      <Modal
+  className=""
+  show={showModal2}
+  onHide={() => setShowModal2(false)}
+  size="xl"
+>
+  <Modal.Header closeButton>
+    <Modal.Title>History</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <div style={{ maxHeight: 'calc(5 * 45px)', overflowY: 'auto' }}>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Follow Up Date</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          {historyData.map((item, index) => (
+            <tr key={index} style={{ height: '45px' }}>
+              <td>{item.stage}</td>
+              <td>{moment(item.follow_up_date).format("DD MMM YYYY")}</td>
+              <td>{item.remarks}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  </Modal.Body>
+</Modal>
+
       
     </>
   );

@@ -119,7 +119,7 @@ const CP_NavBar = () => {
   }, []);
 
   const deleteCookieOnRouteChange=()=>{
-    const cookieNames = ["BookingsFilter", "BrokerageFilter", "Channel_PartnerFilter", "LeadsFilter", "VisitsFilter", "cp_selected"]
+    const cookieNames = ["BookingsFilter", "BrokerageFilter", "Channel_PartnerFilter", "LeadsFilter", "VisitsFilter", "cp_selected","LeadstatusId","LeadcpId","VisitstatusId","VisitcpId","BookingstatusId","BookingcpId","BrokeragestatusId","BrokeragecpId","cpleadsFilter","bstId","cpLeadstatusId"]
     
     cookieNames.forEach((cookie)=>{
       deleteCookie(cookie)
@@ -251,6 +251,15 @@ const CP_NavBar = () => {
         {
                   roleId===2 && (
                     <>
+                    <li className="nav-item">
+        <Link className={`nav-link ${isActive('/partner')}`} href="/partner"
+                  onClick={()=>{
+                    deleteCookieOnRouteChange()
+                    dispatch(setActiveLink("/partner"))
+                    setCookie("activeLink","/partner")
+                  }}
+                >Reports & Dashboard</Link>
+        </li>
                     <li className="nav-item">
         <Link className={`nav-link ${isActive('/partner/ActivePartners')}`} href="/partner/ActivePartners"
                   onClick={()=>{

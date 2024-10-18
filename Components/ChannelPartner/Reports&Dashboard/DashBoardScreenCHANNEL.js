@@ -16,7 +16,7 @@ const DashBoardScreenCHANNEL = () => {
 
   return (
     <>
-    {roleId === 1 &&  <DashboardUser />} 
+    {(roleId === 1 || roleId===2) &&  <DashboardUser />} 
     {(roleId === null || roleId === 3) && <DashboardAdmin /> }
     </>
    

@@ -6,7 +6,7 @@ import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
 import { Baseurl } from '../../../../Utils/Constants';
-import { getCookie, hasCookie } from 'cookies-next';
+import { getCookie, hasCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
 import DateRange from '../../../DateRangeCustom/Daterange';
@@ -15,9 +15,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
 import Loader from '../../../Loader/Loader';
 import { Delete } from "@mui/icons-material";
+import { fetchData } from '../../../../Utils/getReq';
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo, setoldAssignTo, setShowDateFilter, usersList, getDataList,loader }) => {
+
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo, setoldAssignTo, setShowDateFilter, getDataList,loader,cpId,setCpId,statusId,setStatusId }) => {
   const router = useRouter()
   const [data, setData] = useState([])
   const [userData, setUserData] = useState([])
@@ -38,6 +40,17 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
          return { startDate, endDate };
        }
   };
+  const [errorToast, setErrorToast] = useState(false);
+  const [usersList, setUsersList] = useState([]);
+  const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+
+  async function getUsersList() {
+    await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
+  }
+
+  useEffect(()=>{
+    getUsersList()
+  },[])
 
 const [value, setValue] = useState(getCurrentWeekDates());
   const[brokerageBill,setBrokerageBill]=useState({
@@ -262,12 +275,88 @@ const [value, setValue] = useState(getCurrentWeekDates());
     },
   ];
 
+  let statusArray=[{id:"",label:"All"},{id:"Payment Initiated",label:"Payment Initiated"},{id:"Payment Received",label:"Payment Received"},{id:"Payment Rejected",label:"Payment Rejected"},{id:"Booking Done",label:"Booking Done"},{id:"Eligible for brokerage bill",label:"Eligible for brokerage bill"},{id:"Bill Received",label:"Bill Received"},{id:"Bill sent",label:"Bill sent"}]
+
 
   const CustomToolbar = () => {
     return (
       <div className=' d-flex justify-content-start gap-3 align-items-center '>
         <p className='fw-bold ' style={{ fontSize: "18px" }} >{title}</p>
         <DateRange value={value} setValue={setValue} getData={getDataList} filterType={title} />
+        {
+                  userInfo?.isDB && (
+                    <div className='col-md-4 mb-3'>
+                    <label className='fw-bold' style={{ fontSize: '16px' }}>Channel Partner</label>
+                    <Select 
+                      placeholder="Select Channel Partner"
+                      options={[{ value: "", label: "All" }, 
+                        ...usersList?.filter(item => item?.role_id == 1)?.map((item) => {
+                          return {
+                            value: item?.user_id,
+                            label: item?.user
+                          };
+                        })
+                      ]}
+                      
+                      value={
+                        usersList?.filter(item=>item?.role_id==1)?.map((item) => {
+                          if(cpId==item?.user_id){
+                            return{
+                              value: item?.user_id,
+                            label: item?.user
+                            }
+                          }
+                        })
+                      }
+                      onChange={(e)=>{
+                        if(e.value==""){
+                          setCookie("BookingcpId",e.value)
+                          router.push("/partner/Bookings")
+                          setCpId(e.value)
+                        }
+                        else{
+                          setCookie("BookingcpId",e.value)
+                          setCpId(e.value)
+                        }
+                        
+                      }}
+                    />
+                  </div>
+                  )
+                }
+                <div className='col-md-4 mb-3'>
+                  <label className='fw-bold' style={{ fontSize: '16px' }}>Status</label>
+                  <Select 
+                    placeholder="Select Stage"
+                    options={statusArray?.map((item)=>{
+                      return{
+                        value:item.id,
+                        label:item.label
+                      }
+                    })}
+                    value={
+                      statusArray?.map((item)=>{
+                        if(statusId==item?.id){
+                          return{
+                            value:item.id,
+                            label:item.label
+                          }
+                        }
+                      })
+                    }
+                    onChange={(e)=>{
+                      if(e.value==""){
+                        setCookie("BookingstatusId",e.value)
+                        router.push("/partner/Bookings")
+                        setStatusId(e.value)
+                      }
+                      else{
+                        setCookie("BookingstatusId",e.value)
+                      setStatusId(e.value)
+                      }
+                    }}
+                  />
+                </div>
       </div>
     );
   }
@@ -304,7 +393,6 @@ const [value, setValue] = useState(getCurrentWeekDates());
     setBrokerageBill(data);
     fileRef.current.value = ''
   };
-  console.log(fileRef,'After update:', brokerageBill);
 
   const isValidPdfFile = (file) => {
     return file && file.type === 'application/pdf';

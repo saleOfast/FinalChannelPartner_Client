@@ -23,6 +23,10 @@ const DynamicTable = dynamic(
 
 const VisitsScreen = () => {
     const router = useRouter()
+    const {cp_id} =router.query;
+    const {status_id} =router.query;
+    const [cpId,setCpId] =useState(hasCookie("VisitcpId") ? getCookie("VisitcpId"):'')
+    const [statusId,setStatusId] =useState(hasCookie("VisitstatusId") ? getCookie("VisitstatusId"):'')
     const [dataList, setDataList] = useState([])
     const [show, setShow] = useState(false);
     const[loader,setLoader]=useState(false)
@@ -31,7 +35,18 @@ const VisitsScreen = () => {
     const [excelData, setexcelData] = useState([]);
     
     const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
-
+    useEffect(()=>{
+      if(status_id){
+          setStatusId(status_id)
+      }
+      
+    },[status_id])
+    useEffect(()=>{
+      if(cp_id){
+        setCpId(cp_id)
+      }
+     
+    },[cp_id])
     function disableConfirm(value, type) {
         if (type == 1) {
             setconfirmText('enable')
@@ -77,6 +92,27 @@ const VisitsScreen = () => {
 
     const getVisitList = async (queryObjLeads) => {
       setLoader(true)
+      let url = `/db/channel/visit`;
+      let params = {};
+
+      // Build query params
+      if (cp_id) {
+        params.cp_id = cp_id;
+      }
+      if (cpId) {
+        params.cp_id = cpId;  // This will override cp_id if both are present
+      }
+      if (status_id) {
+        params.status_id = status_id;
+      }
+      if (statusId) {
+        params.status_id = statusId;
+      }
+
+      const queryString = new URLSearchParams(params).toString();
+      if (queryString) {
+        url += `?${queryString}`;
+      }
       
         if (hasCookie('token')) {
             let token = (getCookie('token'));
@@ -92,7 +128,10 @@ const VisitsScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/channel/visit`, {...header,params:queryObjLeads});
+                const response = await axios.get(Baseurl + url,{
+                  ...header,
+                  params: queryObjLeads,
+                });
                 if(response?.status === 200 || response?.status === 201){
                   setLoader(false)
                 setDataList(response?.data?.data);
@@ -156,7 +195,7 @@ const VisitsScreen = () => {
       else{
         getVisitList()
       }
-    },[])
+    },[cp_id,cpId,statusId,status_id])
 
     return (
       <>
@@ -174,6 +213,10 @@ const VisitsScreen = () => {
                 oldAssignTo={oldAssignTo}
                 setShowDateFilter={setShowDateFilter}
                 getVisitList={getVisitList}
+                cpId={cpId}
+                setCpId={setCpId}
+                statusId={statusId}
+                setStatusId={setStatusId}
               />
             </div>
           </div>

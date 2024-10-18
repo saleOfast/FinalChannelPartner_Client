@@ -358,7 +358,7 @@ const DashboardAdmin = () => {
                         </Link>
                             </div>
                             <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                            <Link href={"/partner/Visits"} onClick={()=>{
+                            <Link href={"/partner/Visits?status_id=Completed"} onClick={()=>{
                             const queryObjLeads={
                                 f_date:value.startDate,
                                 t_date:value.endDate,
@@ -399,6 +399,111 @@ const DashboardAdmin = () => {
                                     head='Tat For Brokers'
                                     // price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
                                     price={dataList?.averageHours!="NaN" ?`${dataList?.averageHours || '0'} ʰʳˢ `  :`${'0'} ʰʳˢ `} 
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+                            
+                        </div>
+                        <label className='m-3 fw-bold'>CP LEADS</label>
+                        <div className="row leads_row">
+                        <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=OPEN"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='OPEN'
+                                    price={dataList.OPENCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+
+                        <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=CALL"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='CALL'
+                                    price={dataList.CALLCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+
+                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=CONTACTED"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='CONTACTED'
+                                    price={dataList.CONTACTEDCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+
+                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=NOT INTERESTED"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='NOT INTERESTED'
+                                    price={dataList.NOTINTERESTEDCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+
+                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=ONBOARDED"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='ONBOARDED'
+                                    price={dataList.ONBOARDEDCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+
+                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=VISIT"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='VISIT'
+                                    price={dataList.VISITCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/usericon.png' 
                                     />

@@ -25,6 +25,10 @@ const DynamicTable = dynamic(
 const LeadsScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
     const router = useRouter()
+    const {cp_id} =router.query;
+    const {status_id} =router.query;
+    const [cpId,setCpId] =useState(hasCookie("LeadcpId") ? getCookie("LeadcpId"):'')
+    const [statusId,setStatusId] =useState(hasCookie("LeadstatusId") ? getCookie("LeadstatusId"):'')
     const [dataList, setDataList] = useState([])
     const [disableShowConfirm, setdisableShowConfirm] = useState(false)
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
@@ -47,6 +51,19 @@ const LeadsScreen = () => {
     })
     const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
     const userInfo=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")):null
+
+    useEffect(()=>{
+      if(status_id){
+          setStatusId(status_id)
+      }
+      
+    },[status_id])
+    useEffect(()=>{
+      if(cp_id){
+        setCpId(cp_id)
+      }
+     
+    },[cp_id])
 
     const [lead,setLead]=useState({
       lead_id:null,
@@ -75,6 +92,7 @@ const LeadsScreen = () => {
     const [maxDate,setMaxDate]=useState()
     const daysToAdd = 10;
     // const maxDate = moment().add(daysToAdd, 'days').format('YYYY-MM-DD');
+
 
     // Determine the min time based on the selected date
     const minTime = lead.p_visit_date === currentDate ? currentTime : '00:00';
@@ -159,6 +177,27 @@ const LeadsScreen = () => {
 
     const getDataList = async (queryObjLeads) => {
       setLoader(true)
+      let url = `/db/channel/lead`;
+  let params = {};
+
+  // Build query params
+  if (cp_id) {
+    params.cp_id = cp_id;
+  }
+  if (cpId) {
+    params.cp_id = cpId;  
+  }
+  if (status_id) {
+    params.status_id = status_id;
+  }
+  if (statusId) {
+    params.status_id = statusId;
+  }
+
+  const queryString = new URLSearchParams(params).toString();
+      if (queryString) {
+        url += `?${queryString}`;
+      }
         
         if (hasCookie('token')) {
             let token = (getCookie('token'));
@@ -174,9 +213,9 @@ const LeadsScreen = () => {
             }
 
             try {
-                const leads = await axios.get(Baseurl + `/db/channel/lead`,{
+                const leads = await axios.get(Baseurl + url,{
                   ...header,
-                  params:queryObjLeads
+                  params: queryObjLeads,
                 });
                 if(leads?.status === 200 || leads?.status === 201){
                   setLoader(false)
@@ -354,7 +393,7 @@ const LeadsScreen = () => {
       else{
         getDataList()
       }
-    },[])
+    },[cp_id,cpId,statusId,status_id])
 
     useEffect(() => {
       getLocationList();
@@ -400,6 +439,10 @@ const LeadsScreen = () => {
                 minTime={minTime}
                 maxDate={maxDate}
                 getDataList={getDataList}
+                cpId={cpId}
+                setCpId={setCpId}
+                statusId={statusId}
+                setStatusId={setStatusId}
               />
             </div>
           </div>

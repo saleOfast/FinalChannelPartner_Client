@@ -110,8 +110,8 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
           dispatch(stopLoading())
           // router.push("/");
           if(res?.data?.userData?.role_id===2){
-            setCookie("activeLink","/partner/ActivePartners")
-            router.push("/partner/ActivePartners")
+            setCookie("activeLink","/partner")
+            router.push("/partner");
           }
           else{
             setCookie("activeLink","/partner")

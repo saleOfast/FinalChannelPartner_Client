@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import axios from 'axios';
 import { Baseurl } from '../../../../Utils/Constants';
-import { hasCookie, getCookie } from 'cookies-next';
+import { hasCookie, getCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import ConfirmBox from "../../../Basics/ConfirmBox";
 import { useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import { Button } from 'react-bootstrap';
 import dynamic from 'next/dynamic'
 import Papa from "papaparse";
 import Loader from '../../../Loader/Loader';
+import { useRouter } from 'next/router';
 const DynamicTable = dynamic(
     () => import('./CPRegisterLeadsTable'),
     { ssr: false }
@@ -18,7 +19,11 @@ const DynamicTable = dynamic(
 
 const CPRegisterLeadsScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
-
+    const router = useRouter()
+    const {bst_id} =router.query;
+    const {status_id} =router.query;
+    const [bstId,setBstId] =useState(hasCookie("bstId") ? getCookie("bstId"):'')
+    const [statusId,setStatusId] =useState(hasCookie("cpLeadstatusId") ? getCookie("cpLeadstatusId"):'')
     const [dataList, setDataList] = useState([])
     const [disableShowConfirm, setdisableShowConfirm] = useState(false)
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
@@ -31,6 +36,18 @@ const CPRegisterLeadsScreen = () => {
     })
   const [loader,setLoader]=useState(false);
 
+  useEffect(()=>{
+    if(status_id){
+        setStatusId(status_id)
+    }
+    
+  },[status_id])
+  useEffect(()=>{
+    if(bst_id){
+        setBstId(bst_id)
+    }
+   
+  },[bst_id])
 
     function disableConfirm(value, type) {
         if (type == 1) {
@@ -77,11 +94,29 @@ const CPRegisterLeadsScreen = () => {
     };
 
 
-    const getDataList = async () => {
+    const getDataList = async (queryObjLeads) => {
+        let db_name = (getCookie('db_name'));
+        let url = `/db/channelPartnerLeads?db_name=${db_name}`;
+        let params = {};
+        if (bst_id) {
+            params.bst_id = bst_id;
+          }
+          if (bstId) {
+            params.bst_id = bstId;  
+          }
+          if (status_id) {
+            params.status_id = status_id;
+          }
+          if (statusId) {
+            params.status_id = statusId;
+          }
+          const queryString = new URLSearchParams(params).toString();
+          if (queryString) {
+            url += `&${queryString}`;  // Append with '&' instead of '?' since db_name is already there
+          }
         setLoader(true);
         if (hasCookie('token')) {
             let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
 
             let header = {
                 headers: {
@@ -93,7 +128,10 @@ const CPRegisterLeadsScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/channelPartnerLeads?db_name=${db_name}`, header);
+                const response = await axios.get(Baseurl +url, {
+                    ...header,
+                    params: queryObjLeads,
+                  });
                 if(response?.status === 200 || response?.status === 201){
                     setLoader(false);
                     setDataList(response.data.data);
@@ -179,10 +217,16 @@ const CPRegisterLeadsScreen = () => {
     }
     
 
+    const cpleadsFilter=hasCookie("cpleadsFilter") ? JSON.parse(getCookie("cpleadsFilter")) : null;
 
     useEffect(() => {
-        getDataList();
-    }, [])
+        if(cpleadsFilter){
+            getDataList(cpleadsFilter)
+          }
+          else{
+            getDataList()
+          }
+    }, [bstId,statusId])
 
     return (
         <>
@@ -220,6 +264,10 @@ const CPRegisterLeadsScreen = () => {
                             getDataList={getDataList}
                             setcurrObj={setcurrObj}
                             currObj={currObj}
+                            bstId={bstId}
+                            setBstId={setBstId}
+                            statusId={statusId}
+                            setStatusId={setStatusId}
                         />
                     </div>
                 </div>

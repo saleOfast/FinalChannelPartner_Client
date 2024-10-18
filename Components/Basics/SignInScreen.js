@@ -127,37 +127,6 @@ export default function SignInScreen({ setLoggedIn }) {
           dispatch(setbuttonColor(res.data.Logo[0].button_color || "#405189"));
           dispatch(setTopNavColor(res.data.Logo[0].top_nav_color || "#405189"));
           assignPermission(res?.data?.platformData);
-          // if(res?.data?.platformData?.length===1){
-          //   initialPermission(res?.data?.platformData[0]?.platform_name)
-          //   if(res?.data?.platformData[0]?.platform_name==="CHANNEL"){
-          //     router.push("/partner")
-          //   }
-          //   else{
-          //     const route=res?.data?.platformData[0]?.platform_name.toLowerCase()
-          //     router.push(`/${route}`)
-          //   }
-          // }
-          // else{
-          //   if(router.pathname==="/crm"){
-          //     dispatch(crm())
-          //     router.push("/crm")
-          //   }
-          //   else if(router.pathname==="/partner"){
-          //     dispatch(channel())
-          //     router.push("/partner")
-          //   }
-          //   else if(router.pathname==="/dms"){
-          //     dispatch(dms())
-          //     router.push("/dms")
-          //   }
-          //   else if(router.pathname==="/sales"){
-          //     dispatch(sales())
-          //     router.push("/sales")
-          //   }
-          //   else{
-          //     router.push("/")
-          //   }
-          // }
           
           if(router.pathname==="/crm"){
             dispatch(crm())
@@ -166,8 +135,8 @@ export default function SignInScreen({ setLoggedIn }) {
           else if(router.pathname==="/partner"){
             dispatch(channel())
               if(res?.data?.userData?.role_id===2){
-                setCookie("activeLink","/partner/ActivePartners")
-                router.push("/partner/ActivePartners")
+                setCookie("activeLink","/partner")
+                router.push("/partner");
               }
               else{
                 setCookie("activeLink","/partner")

@@ -6,7 +6,7 @@ import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
 import { Baseurl } from '../../../../Utils/Constants';
-import { getCookie, hasCookie } from 'cookies-next';
+import { getCookie, hasCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import { ViewColumn, Visibility } from '@mui/icons-material';
@@ -15,8 +15,11 @@ import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
 import Loader from '../../../Loader/Loader';
+import { fetchData } from '../../../../Utils/getReq';
+import e from 'cors';
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,usersList,getDataList,loader,maxDate }) => {
+
+const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,getDataList,loader,maxDate,cpId,setCpId,statusId,setStatusId }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -48,6 +51,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
   // const [p_visit_date, setVisitDate] = useState(moment().format("YYYY-MM-DD"));
   const[p_visit_date,setVisitDate]=useState("");
   const[p_visit_time,setVisitTime]=useState("");
+  const [errorToast, setErrorToast] = useState(false);
+  const [usersList, setUsersList] = useState([]);
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   const dispatch=useDispatch();
   const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
@@ -57,6 +62,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, leadList, openEdtMdl,
 
   // Determine the min time based on the selected date
   const minTime = p_visit_date === currentDate ? currentTime : '00:00';
+
+  async function getUsersList() {
+    await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
+  }
+
+  useEffect(()=>{
+    getUsersList()
+  },[])
 
 const getVisitInfo=async(visitId)=>{
     if (hasCookie('token')) {
@@ -353,13 +366,90 @@ const getVisitInfo=async(visitId)=>{
         },
     ];
 
-    
+    let stageArray=[{id:"",label:"All"},{id:"1",label:"New"},{id:"2",label:"Visit Planned"},{id:"3",label:"Visit Completed"},{id:"4",label:"Close-Converted"},{id:"5",label:"Close-Converted"}]
     
     const CustomToolbar = () => {
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
                 <DateRange value={value} setValue={setValue}  getData={getDataList} filterType={title} />
+                {
+                  userInfo?.isDB && (
+                    <div className='col-md-4 mb-3'>
+                    <label className='fw-bold' style={{ fontSize: '16px' }}>Channel Partner</label>
+                    <Select 
+                      placeholder="Select Channel Partner"
+                      options={[{ value: "", label: "All" }, 
+                        ...usersList?.filter(item => item?.role_id == 1)?.map((item) => {
+                          return {
+                            value: item?.user_id,
+                            label: item?.user
+                          };
+                        })
+                      ]}
+                      
+                      value={
+                        usersList?.filter(item=>item?.role_id==1)?.map((item) => {
+                          if(cpId==item?.user_id){
+                            return{
+                              value: item?.user_id,
+                            label: item?.user
+                            }
+                          }
+                        })
+                      }
+                      onChange={(e)=>{
+                        if(e.value==""){
+                          setCookie("LeadcpId",e.value)
+                          router.push("/partner/Leads")
+                          setCpId(e.value)
+                        }
+                        else{
+                          setCookie("LeadcpId",e.value)
+                          setCpId(e.value)
+                        }
+                       
+                      }}
+                    />
+                  </div>
+                  )
+                }
+                
+                <div className='col-md-4 mb-3'>
+                  <label className='fw-bold' style={{ fontSize: '16px' }}>Stages</label>
+                  <Select 
+                    placeholder="Select Stage"
+                    options={stageArray?.map((item)=>{
+                      return{
+                        value:item.id,
+                        label:item.label
+                      }
+                    })}
+                    value={
+                      stageArray?.map((item)=>{
+                        if(statusId==item?.id){
+                          return{
+                            value:item.id,
+                            label:item.label
+                          }
+                        }
+                      })
+                    }
+                    onChange={(e)=>{
+                      if(e.value==""){
+                        setCookie("LeadstatusId",e.value)
+                        router.push("/partner/Leads")
+                      setStatusId(e.value)
+                      }
+                      else{
+                        setCookie("LeadstatusId",e.value)
+                      setStatusId(e.value)
+                      }
+                      
+                    }}
+                  />
+                </div>
+                
             </div>
         );
     }

@@ -48,7 +48,7 @@ const CPRegisterLeadsTable = ({
   
 
 
-const addUserHandler = async (id) => {
+const addUserHandler = async (id,assignedToId) => {
   const object=dataList?.find((item)=>item?.cpl_id==id)
   const db_name = getCookie("db_name");
   const token = getCookie("token");
@@ -59,7 +59,8 @@ const addUserHandler = async (id) => {
     email:object?.email,
     role_id:1,
     user:object?.first_name,
-    user_l_name:object?.last_name
+    user_l_name:object?.last_name,
+    report_to:assignedToId
   }
   if (!hasCookie("token")) return;
  
@@ -301,7 +302,6 @@ const updateUserhandler = async (onBoradStage=false) => {
         ),
 
         customBodyRender: (value, tableMeta, updateValue) => {
-          console.log(tableMeta)
           return (
           <span
           className="fw-bold"
@@ -362,7 +362,7 @@ const updateUserhandler = async (onBoradStage=false) => {
                        onClick={() =>{
                         let newData = dataList?.find((item) => item?.cpl_id == value);
                         setFormData(newData)
-                            addUserHandler(value)
+                            addUserHandler(value,tableMeta?.rowData[8])
                          }} title='Onboard For Channel Partner'>
                             Onboard
                       </button>
@@ -375,6 +375,29 @@ const updateUserhandler = async (onBoradStage=false) => {
         },
       },
     },
+    {
+      name: 'asssigned_to',
+      label: "AssignedToId",
+      options: {
+        display:false,
+          filter: false,
+          download:false,
+          viewColumns:false,
+          customHeadRender: (columnMeta, updateDirection) => (
+            <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
+              {columnMeta.label}
+            </th>
+          ),
+            customBodyRender: (value, tableMeta, updateValue) => {
+              return (
+                  <div  className='status_box fw-bold' style={{color:"#293790"}} >
+                      {value}
+                  </div>
+              )
+          }
+            
+      }
+  }
   ];
 
  

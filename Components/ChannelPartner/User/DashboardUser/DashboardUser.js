@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { hasCookie, getCookie } from "cookies-next";
+import { hasCookie, getCookie, setCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -11,6 +11,7 @@ import ReChart from './ReChart';
 import Datepicker from 'react-tailwindcss-datepicker';
 import generatePDF from 'react-to-pdf';
 import Loader from '../../../Loader/Loader';
+import Link from 'next/link';
 
 
 
@@ -337,27 +338,57 @@ const DashboardUser = () => {
                              
                              <div className="row leads_row">
                                  <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                                     <DashLeadsCard
+                                 <Link href={`/partner/Leads`}  onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`LeadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
                                          head='Total Leads'
                                          price={dataList.leads}
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                         img='/images/groupicon.png' />  
+                                         img='/images/groupicon.png' />
+                        </Link>
+                                       
                                  </div>
                                  <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                                     <DashLeadsCard
+                                 <Link href={"/partner/Visits"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`VisitsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
                                          head='Visits Completed'
                                          price={dataList.visits}
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                          img='/images/groupicon.png' />
+
+                        </Link>
+                                     
                                  </div>
                                  <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                                     <DashLeadsCard
+                                 <Link href={"/partner/Bookings"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`BookingsFilter`,queryObjLeads)
+                        }}>
+
+                                        <DashLeadsCard
                                          head='Bookings Completed'
                                          price={dataList.booking}
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                          img='/images/usericon.png' />
+                        </Link>
+                                     
                                  </div>
                                  <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                                    
                                      <DashLeadsCard
                                          head='Tat For Leads'
                                         //  price={`${dataList?.averageHours || '0'} ʰʳˢ `} 

@@ -61,13 +61,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div  className='status_box fw-bold' style={{color:"#293790"}} >
+                        <div  className='status_box fw-bold text-center' style={{color:"#293790"}} >
                             {value}
                         </div>
                     )
@@ -80,15 +80,17 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <Link href={`/partner/ChannelPartnersDetails?id=${tableMeta?.rowData[0]}&mode=view`}  className='status_box fw-bold text-decoration-underline' style={{color:"#293790"}}>
-                            {value}
-                        </Link>
+                        <div   className='status_box text-center' style={{color:"#293790"}}>
+                            <Link href={`/partner/ChannelPartnersDetails?id=${tableMeta?.rowData[0]}&mode=view`} className='fw-bold text-decoration-underline'>
+                              {value}
+                            </Link>
+                        </div>
                     )
                 }
             },
@@ -100,7 +102,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
@@ -111,7 +113,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
                     const year = date.getFullYear();
                     return (
-                        <div className='status_box' style={{color:"#667799"}}>
+                        <div className='status_box text-center' style={{color:"#667799"}}>
                             {`${day}/${month}/${year}`}
                         </div>
                     )
@@ -125,13 +127,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box' style={{color:"#667799"}}>
+                        <div className='status_box text-center' style={{color:"#667799"}}>
                             {value}
                         </div>
                     )
@@ -144,13 +146,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box' style={{color:"#667799"}}>
+                        <div className='status_box text-center' style={{color:"#667799"}}>
                             {value}
                         </div>
                     )
@@ -163,13 +165,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box fw-bold' style={{color:"#293790"}}>
+                        <div className='status_box fw-bold text-center' style={{color:"#293790"}}>
                             {value && <span  >{value.user}</span>}
                             {/* {value && <span  >{value}</span>} */}
                             {/* {userInfo?.user==value?.user ? "" : value?.user} */}
@@ -184,13 +186,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className='status_box'>
+                        <div className='status_box text-center'>
                             {value ? <span className='active status_btn'>active</span> :
                                  <span className='inactive status_btn'>inactive</span>}
                         </div>
@@ -204,14 +206,14 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             options: {
                 filter: true,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     const partnerType = partnerTypes.find(data => data.cpt_id === value);
                     return (
-                        <div  className='status_box fw-bold' style={{color:"#293790"}} >
+                        <div  className='status_box fw-bold text-center' style={{color:"#293790"}} >
                            {partnerType ? partnerType.name : ''}
                         </div>
                     )
@@ -228,16 +230,16 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 // display:(userInfo?.role_id==null || userInfo?.role_id==3 ) && (selectedOption=="Channel Partner"|| (selectedOption=="BST" && userInfo?.role_id==null )) ? true:false,
                 display:(userInfo?.role_id==null || userInfo?.role_id==3 ) && (selectedOption=="Channel Partner") ? true:false,
                 customHeadRender: (columnMeta, updateDirection) => (
-                    <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px"}}   >
+                    <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <div className="table_btns">
+                        <div className="table_btns justify-content-center align-items-center">
                             <button
                                 onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[5]?.user_id) }}
-                                style={{background:`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
+                                style={{background:clientBtnColor? clientBtnColor:`#293790`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
                                 title='Assign - To'>
                                     Assign to

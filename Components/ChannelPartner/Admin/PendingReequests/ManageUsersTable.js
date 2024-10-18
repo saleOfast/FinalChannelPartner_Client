@@ -28,6 +28,7 @@ const ManageUsersTable = ({
     reject_reason: ''
   })
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#61E25E"
+  const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
 
 
   const channelUserStatus = (key) => {
@@ -111,19 +112,19 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
+          <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
 
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <span
-          className="fw-bold"
+          <div
+          className="fw-bold text-center"
           style={{color: '#293790'}}
           >
             {value}
-        </span>
+        </div>
           )
         },
       },
@@ -134,19 +135,21 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
+          <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <Link
-          className="fw-bold text-decoration-underline"
+          <div
+          className="fw-bold text-center"
           style={{color: '#293790'}}
-          href={`/partner/PendingRequestsDetail?id=${tableMeta.rowData[0]}&mode=view`}
+          
           >
+            <Link className="text-decoration-underline" href={`/partner/PendingRequestsDetail?id=${tableMeta.rowData[0]}&mode=view`}>
             {value}
-        </Link>
+            </Link>
+        </div>
           )
         }
       },
@@ -157,19 +160,19 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px'  }} >
+          <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px'  }} >
             {columnMeta.label}
           </th>
         ),
 
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <span
-          className=""
+          <div
+          className="text-center"
           style={{color: '#667799'}}
           >
             {value?.split('T')[0]?.split('-')?.reverse()?.join('/')}
-        </span>
+        </div>
           )
         },
       },
@@ -181,14 +184,15 @@ const ManageUsersTable = ({
         download:false,
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
+          <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <Link
-          className="text-decoration-underline"
+            <div className="text-center">
+                <Link
+          className="text-decoration-underline "
           style={{color: '#293790'}}
           target="_blank"
           href={`${filesUrl}/adh/images${value?.aadhar_file}`}
@@ -196,6 +200,7 @@ const ManageUsersTable = ({
             {value?.aadhar_file ? 'Aadhar': ''}
             
         </Link>
+            </div>
           )
         },
       },
@@ -207,14 +212,15 @@ const ManageUsersTable = ({
         download:false,
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
+          <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
+            <div className="text-center">
           <Link
-          className="text-decoration-underline"
+          className="text-decoration-underline "
           style={{color: '#293790'}}
           target="_blank"
           href={`${filesUrl}/pan/images${value?.pan_file}`}
@@ -222,6 +228,8 @@ const ManageUsersTable = ({
             {value?.pan_file ? 'PAN': ''}
             
         </Link>
+            </div>
+          
           )
         },
       },
@@ -233,21 +241,23 @@ const ManageUsersTable = ({
         filter: false,
         download:false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
+          <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <Link
-          className="text-decoration-underline"
+            <div className="text-center">
+                <Link
+          className="text-decoration-underline "
           style={{color: '#293790'}}
           target="_blank"
           href={`${filesUrl}/rera/images${value?.rera_file}`}
           >
             {value?.rera_file ? 'Rera': ''}
-            
         </Link>
+            </div>
+          
           )
         },
       },
@@ -259,14 +269,15 @@ const ManageUsersTable = ({
         filter: false,
         download:false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
+          <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <Link
-          className="text-decoration-underline"
+            <div className="text-center">
+                <Link
+          className="text-decoration-underline "
           style={{color: '#293790'}}
           target="_blank"
           href={`${filesUrl}/cheque/images${value?.c_cheque_file}`}
@@ -274,6 +285,7 @@ const ManageUsersTable = ({
             {value?.c_cheque_file ? 'Cancelled Cheque': ''}
             
         </Link>
+            </div>
           )
         },
       },
@@ -285,12 +297,12 @@ const ManageUsersTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px' }} >
+          <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
-          return <div className={`status_box ${channelUserStatusColor(value)} `}>{channelUserStatus(value)}</div>;
+          return <div className={`status_box ${channelUserStatusColor(value)} text-center `}>{channelUserStatus(value)}</div>;
         },
       },
     },
@@ -302,7 +314,7 @@ const ManageUsersTable = ({
         download:false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th
-            style={{ background:`${clientBtnColor}`, color: "white",  paddingLeft: '65px' }}
+            style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white",  paddingLeft: '65px' }}
             
           >
             {columnMeta.label}
@@ -310,7 +322,7 @@ const ManageUsersTable = ({
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-              <>
+              <div className="d-flex justify-content-center align-items-center">
               {tableMeta?.rowData[7]===0 && (
                 <button  onClick={()=>{
                   let user=dataList?.find((user)=>(user?.user_code==value))
@@ -319,12 +331,12 @@ const ManageUsersTable = ({
                 Resend
               </button>
               )}
-              {tableMeta?.rowData[7]===1 ?
+              {tableMeta?.rowData[7]===1 && userInfoCheck?.isDB ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
                 ...userInfo, user_code: value
-              })}} style={{backgroundColor: clientBtnColor}} className="btn text-white rounded-5" >
+              })}} style={{backgroundColor: clientBtnColor? clientBtnColor:`#61E25E`}} className="btn text-white rounded-5" >
                 Accept
               </button>
   
@@ -338,8 +350,47 @@ const ManageUsersTable = ({
               
             :
             <div className="text-center"></div> }
-           
+
+           {tableMeta?.rowData[7]===1 && dataList?.find(item=>item?.user_code==value)?.bst_response==false && userInfoCheck?.role_id==2 ?
+              <>  
+              <div className="table_btns d-flex align-items-center justify-content-start gap-3">
+              <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
+                ...userInfo, user_code: value
+              })}} style={{backgroundColor: clientBtnColor? clientBtnColor:`#61E25E`}} className="btn text-white rounded-5" >
+                Accept
+              </button>
+  
+              <button onClick={()=>{setActionMode('Reject'); setShowModalSingle(true); setUserInfo({
+                ...userInfo, user_code: value
+              })}} className=" btn btn-danger rounded-5">
+                Reject
+              </button>
+          </div>
               </>
+              
+            :
+            <div className="text-center"></div> }
+
+            {tableMeta?.rowData[7]===1 && dataList?.find(item=>item?.user_code==value)?.director_response==false && userInfoCheck?.role_id==3 ?
+              <>  
+              <div className="table_btns d-flex align-items-center justify-content-start gap-3">
+              <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
+                ...userInfo, user_code: value
+              })}} style={{backgroundColor: clientBtnColor? clientBtnColor:`#61E25E`}} className="btn text-white rounded-5" >
+                Accept
+              </button>
+  
+              <button onClick={()=>{setActionMode('Reject'); setShowModalSingle(true); setUserInfo({
+                ...userInfo, user_code: value
+              })}} className=" btn btn-danger rounded-5">
+                Reject
+              </button>
+          </div>
+              </>
+              
+            :
+            <div className="text-center"></div> }
+              </div>
           );
         },
       },
@@ -386,7 +437,8 @@ const ManageUsersTable = ({
           doc_verification: actionMode === 'Accept' ? 2 : 3,
           reject_reason: userInfo?.reject_reason,
           user_code: userInfo?.user_code,
-          isCHANNEL:userInfo?.reject_reason ? false : true
+          isCHANNEL:userInfo?.reject_reason ? false : true,
+          forApproval:true
         },
         header
       );
@@ -429,7 +481,8 @@ const ManageUsersTable = ({
           doc_verification: actionMode === 'Accept' ? 2 : 3,
           reject_reason: userInfo.reject_reason,
           user_code: element,
-          isCHANNEL:userInfo?.reject_reason ? false : true
+          isCHANNEL:userInfo?.reject_reason ? false : true,
+          forApproval:true
         },
         header
       );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Link from "next/link";
-import { hasCookie, getCookie } from "cookies-next";
+import { hasCookie, getCookie, setCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -343,7 +343,13 @@ const DashboardAdmin = () => {
                         
                     <div className="row leads_row">
                         <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                        <Link href={"/partner/Leads"}>
+                        <Link href={`/partner/Leads`}  onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`LeadsFilter`,queryObjLeads)
+                        }}>
                                 <DashLeadsCard
                                     head='Total Leads'
                                     price={dataList.leads}
@@ -352,7 +358,13 @@ const DashboardAdmin = () => {
                         </Link>
                             </div>
                             <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                            <Link href={"/partner/Visits"}>
+                            <Link href={"/partner/Visits"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`VisitsFilter`,queryObjLeads)
+                        }}>
                                 <DashLeadsCard
                                     head='Visits Completed'
                                     price={dataList.visits}
@@ -361,7 +373,13 @@ const DashboardAdmin = () => {
                             </Link>
                             </div>
                             <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                            <Link href={"/partner/Bookings"}>
+                            <Link href={"/partner/Bookings"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`BookingsFilter`,queryObjLeads)
+                        }}>
                                 <DashLeadsCard
                                     head='Bookings Completed'
                                     price={dataList.booking}
@@ -370,7 +388,13 @@ const DashboardAdmin = () => {
                             </Link>
                             </div>
                             <div className="col-xl-3 col-md-3 col-12 col-sm-12">
-                            <Link href={"/partner/Brokerage"}>
+                            <Link href={"/partner/Brokerage"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`BrokerageFilter`,queryObjLeads)
+                        }}>
                                 <DashLeadsCard
                                     head='Tat For Brokers'
                                     // price={`${dataList?.averageHours || '0'} ʰʳˢ `} 

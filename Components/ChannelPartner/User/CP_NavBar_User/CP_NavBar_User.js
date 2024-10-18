@@ -269,6 +269,15 @@ const CP_NavBar = () => {
                   }}
                 >C.P Leads</Link>
         </li>
+        <li className="nav-item">
+        <Link className={`nav-link ${isActive('/partner/PendingRequests')}`} 
+                  onClick={()=>{
+                    deleteCookieOnRouteChange()
+                    dispatch(setActiveLink("/partner/PendingRequests"))
+                    setCookie("activeLink","/partner/PendingRequests")
+                  }}
+                href="/partner/PendingRequests">Pending Requests</Link>
+        </li>
                      <li className="nav-item">
         <Link
                     className={`nav-link ${isActive(

@@ -529,6 +529,9 @@ const AddQuotationScreen = () => {
 
         try {
           const response = await axios.get(Baseurl + `/db/producttax?p_id=${e.target.value}&st_id=${userInfo?.bill_state}`, header);
+          if(response.data.data.length==0){
+            toast.warning("Pls Map The Product With Taxes",{autoClose:2500})
+          }
           const taxResp = response.data.data;
           newFormValues[index].price = taxResp[0]?.db_product?.p_price;
           const taxArr = taxResp?.map((data) => { return { tax_name: data?.db_tax?.tax_name, tax_id: data?.db_tax?.tax_id, tax_percentage: data?.db_tax?.tax_percentage, p_id: data?.p_id } })

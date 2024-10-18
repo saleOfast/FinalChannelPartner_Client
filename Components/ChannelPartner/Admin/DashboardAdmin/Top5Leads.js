@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { useState } from "react";
 import { Modal, Table } from "react-bootstrap";
 
@@ -42,7 +43,7 @@ const Top5Leads = ({ dataList, name }) => {
           {dataList?.topFiveLeads?.slice(0, 5)?.map((lead, i) => (
             <li key={i} className="list-item">
               <div className="opp_box">
-                <div className="name">{lead?.user}</div>
+                <div className="name"><Link className=" text-decoration-underline" href={`/partner/Leads?cp_id=${lead?.user_id}`}>{lead?.user}</Link></div>
                 <div className="price">{lead?.leadCount}</div>
               </div>
             </li>
@@ -76,7 +77,7 @@ const Top5Leads = ({ dataList, name }) => {
                 <tbody>
                   {dataList?.topFiveLeads?.map((lead, index) => (
                     <tr key={index}>
-                      <td>{lead?.user}</td>
+                      <td><Link className=" text-decoration-underline" href={`/partner/Leads?cp_id=${lead?.user_id}`}>{lead?.user}</Link></td>
                       <td>{lead?.leadCount}</td>
                     </tr>
                   ))}

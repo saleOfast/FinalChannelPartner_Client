@@ -33,6 +33,7 @@ const DashboardUser = () => {
     const [userDetails, setUserDetails] = useState({})
     const[value,setValue]=useState()
     const [loader,setLoader]=useState(false)
+    const userInfoCheck=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) :null
     
 
 
@@ -335,8 +336,9 @@ const DashboardUser = () => {
                              </div>
                          </div>
                          <div className="cards_Box">
-                             
-                             <div className="row leads_row">
+                            {
+                                userInfoCheck?.role_id==1 &&(
+                                    <div className="row leads_row">
                                  <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                                  <Link href={`/partner/Leads`}  onClick={()=>{
                             const queryObjLeads={
@@ -397,9 +399,125 @@ const DashboardUser = () => {
                                          img='/images/usericon.png' />
                                  </div>
                              </div>
+                                )
+                            }
                              
-     
-                             <div className="row "> 
+                             {
+                                userInfoCheck?.role_id==2 && (
+                                    <>
+                                         <label className='m-3 fw-bold'>CP LEADS</label>
+                        <div className="row leads_row">
+                        <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=OPEN"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='OPEN'
+                                    price={dataList.OPENCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+
+                        <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=CALL"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='CALL'
+                                    price={dataList.CALLCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+
+                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=CONTACTED"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='CONTACTED'
+                                    price={dataList.CONTACTEDCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+
+                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=NOT INTERESTED"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='NOT INTERESTED'
+                                    price={dataList.NOTINTERESTEDCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+
+                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=ONBOARDED"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='ONBOARDED'
+                                    price={dataList.ONBOARDEDCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+
+                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=VISIT"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='VISIT'
+                                    price={dataList.VISITCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png' 
+                                    />
+                            </Link>
+                            </div>
+                            
+                        </div>
+                                    </>
+                                )
+                             }
+                             
+                            
+                             {
+                                userInfoCheck?.role_id==1 && (
+                                    <div className="row "> 
                             
                                  {dataList?.barchart?.length ?
                                      <div className="col-xl-10 col-md-6 col-12 col-sm-12 mt-2">
@@ -411,6 +529,10 @@ const DashboardUser = () => {
                                          </div>
                                      </div> : null}
                              </div>
+                                )
+                             }
+     
+                             
                              
                          </div>
                      </div>

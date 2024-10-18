@@ -26,6 +26,10 @@ const DynamicTable = dynamic(
 const BookingsScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
     const router = useRouter()
+    const {cp_id} =router.query;
+    const {status_id} =router.query;
+    const [cpId,setCpId] =useState(hasCookie("BookingcpId") ? getCookie("BookingcpId"):'')
+    const [statusId,setStatusId] =useState(hasCookie("BookingstatusId") ? getCookie("BookingstatusId"):'')
     const [dataList, setDataList] = useState([])
     const [disableShowConfirm, setdisableShowConfirm] = useState(false)
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
@@ -50,7 +54,18 @@ const BookingsScreen = () => {
    const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
    const[loader,setLoader]=useState(false)
 
+   useEffect(()=>{
+    if(status_id){
+        setStatusId(status_id)
+    }
     
+  },[status_id])
+  useEffect(()=>{
+    if(cp_id){
+      setCpId(cp_id)
+    }
+   
+  },[cp_id])
 
     function disableConfirm(value, type) {
         if (type == 1) {
@@ -105,6 +120,27 @@ const BookingsScreen = () => {
 
     const getDataList = async (queryObjLeads) => {
       setLoader(true)
+      let url = `/db/channel/booking`;
+      let params = {};
+
+      // Build query params
+      if (cp_id) {
+        params.cp_id = cp_id;
+      }
+      if (cpId) {
+        params.cp_id = cpId;  // This will override cp_id if both are present
+      }
+      if (status_id) {
+        params.status_id = status_id;
+      }
+      if (statusId) {
+        params.status_id = statusId;
+      }
+
+      const queryString = new URLSearchParams(params).toString();
+      if (queryString) {
+        url += `?${queryString}`;
+      }
       
         if (hasCookie('token')) {
             let token = (getCookie('token'));
@@ -120,7 +156,10 @@ const BookingsScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/channel/booking`, {...header,params:queryObjLeads});
+                const response = await axios.get(Baseurl + url, {
+                  ...header,
+                  params: queryObjLeads,
+                });
                 if(response?.status === 200 || response?.status === 201){
                   setLoader(false)
                   setDataList(response.data.data);
@@ -288,7 +327,7 @@ const BookingsScreen = () => {
       else{
         getDataList()
       }
-    },[])
+    },[cp_id,cpId,statusId,status_id])
 
 
     return (
@@ -309,6 +348,10 @@ const BookingsScreen = () => {
                 setShowDateFilter={setShowDateFilter}
                 usersList={usersList}
                 getDataList={getDataList}
+                cpId={cpId}
+                setCpId={setCpId}
+                statusId={statusId}
+                setStatusId={setStatusId}
               />
             </div>
           </div>

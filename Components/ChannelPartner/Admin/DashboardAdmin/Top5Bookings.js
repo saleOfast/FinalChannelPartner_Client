@@ -45,7 +45,7 @@ const Top5Bookings = ({ dataList, name }) => {
                         return (
                             <li key={i} className="list-item">
                                 <div className="opp_box">
-                                    <div className="name">{booking?.user}</div>
+                                    <div className="name"><Link className=" text-decoration-underline" href={`/partner/Bookings?cp_id=${booking?.user_id}`}>{booking?.user}</Link></div>
                                     <div className="price"> {booking?.bookingCount}</div>
                                 </div>
                             </li>
@@ -82,7 +82,7 @@ const Top5Bookings = ({ dataList, name }) => {
                 <tbody>
                   {dataList?.topFiveBooking?.map((booking, index) => (
                     <tr key={index}>
-                      <td>{booking?.user}</td>
+                      <td><Link className=" text-decoration-underline" href={`/partner/Bookings?cp_id=${booking?.user_id}`}>{booking?.user}</Link></td>
                       <td>{booking?.bookingCount}</td>
                     </tr>
                   ))}

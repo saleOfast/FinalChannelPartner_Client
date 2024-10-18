@@ -113,7 +113,7 @@ const CP_NavBar_Admin = () => {
   }, []);
 
   const deleteCookieOnRouteChange=()=>{
-    const cookieNames = ["BookingsFilter", "BrokerageFilter", "Channel_PartnerFilter", "LeadsFilter", "VisitsFilter", "cp_selected"]
+    const cookieNames = ["BookingsFilter", "BrokerageFilter", "Channel_PartnerFilter", "LeadsFilter", "VisitsFilter", "cp_selected","LeadstatusId","LeadcpId","VisitstatusId","VisitcpId","BookingstatusId","BookingcpId","BrokeragestatusId","BrokeragecpId","cpleadsFilter","bstId","cpLeadstatusId"]
     
     cookieNames.forEach((cookie)=>{
       deleteCookie(cookie)

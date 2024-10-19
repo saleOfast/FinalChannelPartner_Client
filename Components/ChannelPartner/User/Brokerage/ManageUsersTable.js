@@ -389,7 +389,7 @@ const updateBrokerageBill =  async() => {
         },
     ];
 
-    let statusArray=[{id:"",label:"All"},{id:"Payment Initiated",label:"Payment Initiated"},{id:"Payment Received",label:"Payment Received"},{id:"Payment Rejected",label:"Payment Rejected"},{id:"Bill Received",label:"Bill Received"},{id:"Bill sent",label:"Bill sent"}]
+    let statusArray=[{id:"",label:"All"},{id:"Payment Initiated",label:"Payment Initiated"},{id:"Payment Received",label:"Payment Received"},{id:"Payment Rejected",label:"Payment Rejected"},{id:"Bill sent",label:"Bill Received"}]
   
     const CustomToolbar = () => {
         return (

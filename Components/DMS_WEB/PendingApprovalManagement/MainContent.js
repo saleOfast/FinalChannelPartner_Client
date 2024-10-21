@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 import Select from "react-select";
 import { fetchData } from "../../../Utils/getReq";
+import { filesUrl } from '../../../Utils/Constants';
 
 
 
@@ -11,12 +12,12 @@ const paymentOptions = [
     { value: 'cash', label: 'Cash' },
   ];
 
-const bankingDetailsArray = [
-    { label: "Business PAN Card", id: "pan_file",preview:"pan_file_preview" },
-    { label: "Certificate of Incorporation", id: "incorporation_certificate",preview:"incorporation_certificate_preview" },
-    { label: "Address Proof", id: "address_proof",preview:"address_proof_preview" },
-    { label: "GST Registration Certificate", id: "gst_registration",preview:"gst_registration_preview" },
-    { label: "Banking Details", id: "banking_details",preview:"banking_details_preview" },
+  const bankingDetailsArray = [
+    { label: "Business PAN Card", id: "pan_file",preview:"pan_file_preview",href:"pan" },
+    { label: "Certificate of Incorporation", id: "incorporation_certificate",preview:"incorporation_certificate_preview",href:"incorporation_certificate" },
+    { label: "Address Proof", id: "address_proof",preview:"address_proof_preview",href:"address_proof" },
+    { label: "GST Registration Certificate", id: "gst_registration",preview:"gst_registration_preview",href:"gst_registration" },
+    { label: "Banking Details", id: "banking_details",preview:"banking_details_preview",href:"banking_details" },
   ];
 
   const fileDisplayStyle = {
@@ -452,9 +453,11 @@ const [errorToast, setErrorToast] = useState([]);
                         <div style={fileDisplayStyle}>
                             
                         <span style={fileNameStyle}>
-                            {distributorInfo[item?.preview] || 'No file selected'}
+                          <a target="_blank" href={`${filesUrl}/${item?.href}/images${distributorInfo[item?.id]}`}>
+                          {distributorInfo[item?.id] || 'No file selected'}
+                          </a>
                         </span>
-                        <button
+                        {/* <button
                             type="button"
                             style={removeButtonStyle}
                             onMouseOver={(e) => e.currentTarget.style.backgroundColor = removeButtonHoverStyle.backgroundColor}
@@ -462,7 +465,7 @@ const [errorToast, setErrorToast] = useState([]);
                             onClick={() => handleFileRemove(item?.id, item?.preview)}
                         >
                             ×
-                        </button>
+                        </button> */}
                         </div>
                     </> 
                     :

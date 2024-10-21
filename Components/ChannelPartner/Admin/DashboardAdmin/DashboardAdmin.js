@@ -540,8 +540,8 @@ const DashboardAdmin = () => {
                         </div>
                                 </div> : 
                             null}
-                             <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
                            {dataList?.rangewiseBrokergaeVsBookingChart?.length ?
+                             <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
                                <div className="">
                                    <div className="dash_card chartSec">
                                        <ReChart
@@ -551,11 +551,12 @@ const DashboardAdmin = () => {
                                            dataList={dataList?.rangewiseBrokergaeVsBookingChart}
                                        />
                                    </div>
-                               </div> : 
-                           null}
+                               </div> 
                        </div>
-                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                               : 
+                           null}
                             {dataList?.rangewiseVisitVsBookingsCharts?.length ?
+                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
                                 <div className="">
                                     <div className="dash_card chartSec">
                                         <ReChart
@@ -565,9 +566,10 @@ const DashboardAdmin = () => {
                                             dataList={dataList?.rangewiseVisitVsBookingsCharts}
                                         />
                                     </div>
-                                </div> : 
-                            null}
+                                </div> 
                         </div>
+                                : 
+                            null}
                         </div>
                         
                        

@@ -464,6 +464,7 @@ const [errorToast, setErrorToast] = useState([]);
                         <button
                             type="button"
                             style={removeButtonStyle}
+                            disabled={viewMode}
                             onMouseOver={(e) => e.currentTarget.style.backgroundColor = removeButtonHoverStyle.backgroundColor}
                             onMouseOut={(e) => e.currentTarget.style.backgroundColor = removeButtonStyle.backgroundColor}
                             onClick={() => handleFileRemove(item?.id, item?.preview)}

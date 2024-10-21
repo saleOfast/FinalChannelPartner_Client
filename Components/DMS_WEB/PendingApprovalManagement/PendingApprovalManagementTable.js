@@ -90,7 +90,8 @@ const PendingApprovalManagementTable = ({
           doc_verification: actionMode === 'Accept' ? 2 : 3,
           reject_reason: userInfo?.reject_reason,
           user_code: userInfo?.user_code,
-          isDMS:userInfo?.reject_reason ? false : true
+          isDMS:userInfo?.reject_reason ? false : true,
+          forDMSApproval:true
         },
         header
       );
@@ -110,7 +111,7 @@ const PendingApprovalManagementTable = ({
 
   const columns = [
     {
-      name: "user_id",
+      name: "user_code",
       label: "Id",
       options:{
         display:false,

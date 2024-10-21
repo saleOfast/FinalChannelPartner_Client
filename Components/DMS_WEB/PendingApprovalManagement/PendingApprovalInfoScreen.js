@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Baseurl } from "../../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../../Utils/Constants";
 import { hasCookie, getCookie } from "cookies-next";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -18,7 +18,7 @@ const PendingApprovalInfoScreen = () => {
 
   const router = useRouter();
   const { id } = router.query;
-  const [viewMode, setViewMode] = useState(false);
+  const [viewMode, setViewMode] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [errorData, setErrorData] = useState({});
   const [isLoading, setisLoading] = useState(false);
@@ -213,7 +213,22 @@ const PendingApprovalInfoScreen = () => {
           Baseurl + `/db/users/dms/getPendingVerificationDistrubutors?id=${id}`,
           header
         );
-        setDistributorInfo(response.data.data);
+        const data=response.data.data
+        setDistributorInfo({...data,
+          contact_person:data?.db_user_profile?.contact_person,
+          credit_limit:data?.db_user_profile?.credit_limit,
+          payment_method:data?.db_user_profile?.payment_method,
+          pan_file:data?.db_user_profile?.pan_file,
+          pan_file_preview: `${filesUrl}/pan/images${data?.db_user_profile?.pan_file}`,
+          incorporation_certificate:data?.db_user_profile?.incorporation_certificate,
+          incorporation_certificate_preview: `${filesUrl}/incorporation_certificate/images${data?.db_user_profile?.incorporation_certificate}`,
+          gst_registration:data?.db_user_profile?.gst_registration,
+          gst_registration_preview: `${filesUrl}/gst_registration/images${data?.db_user_profile?.gst_registration}`,
+          address_proof:data?.db_user_profile?.address_proof,
+          address_proof_preview: `${filesUrl}/address_proof/images${data?.db_user_profile?.address_proof}`,
+          banking_details:data?.db_user_profile?.banking_details,
+          banking_details_preview: `${filesUrl}/pan/images${data?.db_user_profile?.banking_details}`,
+        });
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);

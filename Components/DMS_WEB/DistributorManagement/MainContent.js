@@ -3,63 +3,8 @@ import React, { useEffect, useState } from 'react'
 import Select from "react-select";
 import { fetchData } from "../../../Utils/getReq";
 import { filesUrl } from '../../../Utils/Constants';
-
-
-
-const paymentOptions = [
-    { value: 'bank_transfer', label: 'Bank Transfer' },
-    { value: 'credit_card', label: 'Credit Card' },
-    { value: 'cash', label: 'Cash' },
-  ];
-
-const bankingDetailsArray = [
-    { label: "Business PAN Card", id: "pan_file",preview:"pan_file_preview",href:"pan" },
-    { label: "Certificate of Incorporation", id: "incorporation_certificate",preview:"incorporation_certificate_preview",href:"incorporation_certificate" },
-    { label: "Address Proof", id: "address_proof",preview:"address_proof_preview",href:"address_proof" },
-    { label: "GST Registration Certificate", id: "gst_registration",preview:"gst_registration_preview",href:"gst_registration" },
-    { label: "Banking Details", id: "banking_details",preview:"banking_details_preview",href:"banking_details" },
-  ];
-
-  const fileDisplayStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '5px',
-    backgroundColor: '#f9f9f9',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    marginBottom: '10px',
-  };
-  
-  const fileNameStyle = {
-    flexGrow: 1,
-    marginRight: '10px',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  };
-  
-  const removeButtonStyle = {
-    backgroundColor: '#ff4d4d',
-    border: 'none',
-    color: '#fff',
-    borderRadius: '50%',
-    width: '24px',
-    height: '24px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    fontSize: '16px',
-    lineHeight: '1',
-    transition: 'background-color 0.3s ease',
-  };
-  
-  const removeButtonHoverStyle = {
-    ...removeButtonStyle,
-    backgroundColor: '#e60000',
-  };
+import { paymentOptions,bankingDetailsArray } from './Array';
+import { fileDisplayStyle,fileNameStyle,removeButtonStyle ,removeButtonHoverStyle} from './styles';
 
 
 const MainContent = ({ distributorInfo, setDistributorInfo, handleSubmit, updateHandler,viewMode,errorData,editMode,isLoading,setViewMode,id }) => {

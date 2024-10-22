@@ -325,7 +325,6 @@ const ActivePartnersScreen = () => {
                     label: data?.user,
                 }))];
         }
-        // If no match, return an empty array
         return [];
     };
 
@@ -433,12 +432,12 @@ const ActivePartnersScreen = () => {
                                         <Select
                                             id="select"
                                             defaultValue={""}
-                                            options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
-                                                return {
-                                                    value: data?.user_id,
-                                                    label: data?.user,
-                                                };
-                                            })]}
+                                            // options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
+                                            //     return {
+                                            //         value: data?.user_id,
+                                            //         label: data?.user,
+                                            //     };
+                                            // })]}
                                             value={usersList?.map((data, index) => {
                                             if (oldAssignTo === data.user_id) {
                                                 return {
@@ -447,7 +446,7 @@ const ActivePartnersScreen = () => {
                                                 };
                                             }
                                             })}
-                                            // options={userListFilterBasisOfRole(selectedOption,usersList)}
+                                            options={userListFilterBasisOfRole(selectedOption,usersList)}
                                             onChange={(e) => {
                                             setoldAssignTo(e.value)
                                             

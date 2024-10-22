@@ -51,6 +51,26 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     getPartnerTypes()
   },[])
   
+  const userListFilterBasisOfRole = (selectedOption, usersList) => {
+    if (selectedOption === "Channel Partner") {
+        return [{ value: userInfo?.user_id, label: "N.A" },...usersList
+            ?.filter(user => user.role_id === 2 || user.role_id === 3)
+            ?.map(data => ({
+                value: data?.user_id,
+                label: data?.user,
+            }))];
+    }
+    if (selectedOption === "BST") {
+        return [{ value: userInfo?.user_id, label: "N.A" },...usersList
+            ?.filter(user => user.role_id === 3)
+            ?.map(data => ({
+                value: data?.user_id,
+                label: data?.user,
+            }))];
+    }
+    // If no match, return an empty array
+    return [];
+};
 
     const columns = [
 
@@ -227,8 +247,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 filter: false,
                 download:false,
                 viewColumns:false,
-                // display:(userInfo?.role_id==null || userInfo?.role_id==3 ) && (selectedOption=="Channel Partner"|| (selectedOption=="BST" && userInfo?.role_id==null )) ? true:false,
-                display:(userInfo?.role_id==null || userInfo?.role_id==3 ) && (selectedOption=="Channel Partner") ? true:false,
+                display:(userInfo?.role_id==null || userInfo?.role_id==3 ) && (selectedOption=="Channel Partner"|| (selectedOption=="BST" && userInfo?.role_id==null )) ? true:false,
+                // display:(userInfo?.role_id==null || userInfo?.role_id==3 ) && (selectedOption=="Channel Partner") ? true:false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -468,18 +488,13 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                         <Select
                                             id="select"
                                             defaultValue={""}
-                                            // options={usersList?.filter(user => user.role_id === 2).map((data) => {
+                                            // options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
                                             //     return {
                                             //         value: data?.user_id,
                                             //         label: data?.user,
                                             //     };
-                                            // })}
-                                            options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
-                                                return {
-                                                    value: data?.user_id,
-                                                    label: data?.user,
-                                                };
-                                            })]}
+                                            // })]}
+                                            options={userListFilterBasisOfRole(selectedOption,usersList)}
                                             value={usersList?.map((data, index) => {
                                             if (oldAssignTo === data.user_id) {
                                                 return {

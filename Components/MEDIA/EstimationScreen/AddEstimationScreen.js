@@ -13,13 +13,17 @@ import Select from "react-select";
 import { Delete } from "@mui/icons-material";
 import { data } from "autoprefixer";
 import ConfirmBox from "../../Basics/ConfirmBox";
-import { Table } from "react-bootstrap";
+import { ButtonGroup, Table } from "react-bootstrap";
 import DeleteIcon from "../../Svg/DeleteIcon";
 import EditIcon from "../../Svg/EditIcon";
 import ModelEditAgencySite from "./ModelEditAgencySite";
 import { DMPCArray,additionalInfoArray,TotalCostArray1,TotalCostArray2,marginInfoArray } from "./Array";
 import SalesOrderManagement from "./SalesOrderManagement";
 import PurchaseOrderManagement from "./PurchaseOrderManagement";
+import Button from 'react-bootstrap/Button';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+import ActionButtons from "./ActionButtons";
  
 
 const AddEstimationScreen = () => {
@@ -876,20 +880,52 @@ const AddEstimationScreen = () => {
         <div className="main_content">
           <div className="Add_user_screen">
             <div className="row">
-              {/* <div
-              className={
-                viewMode
-                  ? `col-xl-9 col-md-9 col-sm-12 col-12`
-                  : `col-xl-12 col-md-12 col-sm-12 col-12`
-              }
-            > */}
               <div className={`col-xl-12 col-md-12 col-sm-12 col-12`}>
-                <div className="add_screen_head">
-                  <span className="text_bold">Fill Details</span> ( * Fields are
-                  mandatory)
+                <div className="add_screen_head d-flex justify-content-between">
+                  <span className="text_bold">Fill Details ( * Fields are
+                    mandatory)</span> 
+                    {/* <ButtonGroup>
+                      <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}>
+                        1
+                      </Button>
+                      <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}>
+                        2
+                      </Button>
+
+                      <DropdownButton
+                        as={ButtonGroup}
+                        variant="transparent"
+                        id="bg-nested-dropdown"
+                        style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}
+                      >
+                        <Dropdown.Item eventKey="1">Dropdown link</Dropdown.Item>
+                        <Dropdown.Item eventKey="2">Dropdown link</Dropdown.Item>
+                      </DropdownButton>
+                    </ButtonGroup> */}
+
                 </div>
                 <div className="add_user_form">
                   <div className="row">
+                  {
+                  id && (
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="accountId">
+                            Estimation ID
+                          </label>
+                          <input
+                            type="text"
+                            name="accountId"
+                            placeholder="Account ID"
+                            id="accountId"
+                            disabled={true}
+                            className="form-control"
+                            value={userInfo?.estimation_code}
+                          />
+                        </div>
+                      </div>
+                  )
+                }
                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                       <div
                         className={

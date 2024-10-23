@@ -51,6 +51,7 @@ const AddContactScreen = () => {
     account_name: null,
     report_to: null,
     designation: "",
+    department: "",
     contact_no: null,
     email_id: "",
     fax: "",
@@ -639,6 +640,26 @@ const AddContactScreen = () => {
               </div>
               <div className="add_user_form">
                 <div className="row">
+                {
+                  id && (
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="accountId">
+                            Contact ID
+                          </label>
+                          <input
+                            type="text"
+                            name="accountId"
+                            placeholder="Account ID"
+                            id="accountId"
+                            disabled={true}
+                            className="form-control"
+                            value={userInfo?.contact_code}
+                          />
+                        </div>
+                      </div>
+                  )
+                }
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
                       className={
@@ -920,6 +941,34 @@ const AddContactScreen = () => {
                       </div>
                     </div>
                   ) : null}
+
+                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    <div className="input_box">
+                      <label htmlFor="task_name">Department</label>
+                      <input
+                        type="text"
+                        placeholder="Enter Department "
+                        name="Department"
+                        id="Department"
+                        disabled={viewMode}
+                        className="form-control"                        
+                        onChange={(e) => {
+                            const newValue = e.target.value;
+                            // Allow only alphabetic characters and spaces
+                            if (/^[a-zA-Z\s]*$/.test(newValue)) {
+                              setUserInfo({
+                                ...userInfo,
+                                department: newValue,
+                              });
+                            } else {
+                              // Optionally handle invalid input here
+                              // e.g., show an error message or ignore the input
+                            }
+                          }}
+                        value={userInfo.department ? userInfo.department : ""}
+                      />
+                    </div>
+                  </div>
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div className="input_box">
                       <label htmlFor="task_name">Designation</label>

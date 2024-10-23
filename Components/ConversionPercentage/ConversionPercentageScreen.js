@@ -1,35 +1,36 @@
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import PlusIcon from "../Svg/PlusIcon";
+import React, { useEffect, useState } from 'react'
+import Link from 'next/link';
+import PlusIcon from '../Svg/PlusIcon';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import axios from "axios";
-import { Baseurl } from "../../Utils/Constants";
-import { hasCookie, getCookie } from "cookies-next";
-import { toast } from "react-toastify";
+import axios from 'axios';
+import { Baseurl } from '../../Utils/Constants';
+import { hasCookie, getCookie } from 'cookies-next';
+import { toast } from 'react-toastify';
 import ConfirmBox from "../Basics/ConfirmBox";
-import { useSelector } from "react-redux";
-import dynamic from "next/dynamic";
-const DynamicTable = dynamic(() => import("./ManagePaymentStatusTab"), {
-  ssr: false,
-});
+import { useSelector } from 'react-redux';
+import dynamic from 'next/dynamic'
+const DynamicTable = dynamic(
+  () => import('./ConversionPercentageTable'),
+  { ssr: false }
+)
 
-const ManagePaymentStatusScreen = () => {
+const ConversionPercentageScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
 
   const [show, setShow] = useState(false);
   const [dataList, setDataList] = useState([]);
-  const [userInfo, setUserInfo] = useState({ p_s_name: "" });
+  const [userInfo, setUserInfo] = useState({ conversion_amount: "" });
   const [editMode, setEditMode] = useState(false);
   const [disableShowConfirm, setdisableShowConfirm] = useState(false);
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
-  const [currObj, setcurrObj] = useState({ p_s_id: "", action: "" });
   const [confirmText, setconfirmText] = useState("");
+  const [currObj, setcurrObj] = useState({ conversion_id: "", action: "" })
   const [loader, setLoader] = useState(false);
 
   const handleClose = () => {
     setShow(false);
-    setUserInfo({ p_s_name: "" });
+    setUserInfo({ conversion_amount: "" });
   };
 
   const handleShow = () => setShow(true);
@@ -38,9 +39,9 @@ const ManagePaymentStatusScreen = () => {
     setEditMode(true);
     setUserInfo({
       ...userInfo,
-      p_s_name: value[0],
-      p_s_code: value[1],
-      p_s_id: value[3],
+      conversion_amount: value[0],
+      conversion_code: value[1],
+      conversion_id: value[3],
     });
     handleShow();
   };
@@ -56,17 +57,16 @@ const ManagePaymentStatusScreen = () => {
     } else {
       setconfirmText("Disable");
     }
-    setcurrObj({ p_s_id: value, action: type });
+    setcurrObj({ conversion_id: value, action: type });
     setdisableShowConfirm(true);
   }
-
   function deleteConfirm(value) {
-    setcurrObj(value);
-    setdeleteshowConfirm(true);
+    setcurrObj({ conversion_id: value, action: "delete" });
+    setdeleteshowConfirm(true)
   }
 
   const getDataList = async () => {
-    setLoader(true);
+    setLoader(true)
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -76,36 +76,34 @@ const ManagePaymentStatusScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 357,
+          m_id: 177
         },
       };
 
       try {
-        const response = await axios.get(
-          Baseurl + `/db/media/estimationStatus/getEstimationStatus`,
-          header
-        );
+        const response = await axios.get(Baseurl + `/db/media/conversionPercentage/getConversionPercentage`, header);
         if (response?.status == 200 || response?.status == 201) {
-          setLoader(false);
+          setLoader(false)
           setDataList(response.data.data);
         }
       } catch (error) {
-        setLoader(false);
+        setLoader(false)
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
+        }
+        else {
+          toast.error('Something went wrong!')
         }
       }
     }
   };
 
   async function disableHandler() {
+    //let reqInfo = { conversion_id: currObj, status: false };
     const reqInfo = {
-      p_s_id: currObj.p_s_id,
+      conversion_id: currObj.conversion_id,
       status: currObj.action == 1 ? true : false,
     };
-
     setdisableShowConfirm(false);
     if (hasCookie("token")) {
       let token = getCookie("token");
@@ -116,13 +114,13 @@ const ManagePaymentStatusScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 358,
+          m_id: 178
         },
       };
 
       try {
         const response = await axios.put(
-          Baseurl + `/db/media/estimationStatus/updateEstimationStatus`,
+          Baseurl + `/db/media/conversionPercentage/updateConversionPercentage`,
           reqInfo,
           header
         );
@@ -135,8 +133,9 @@ const ManagePaymentStatusScreen = () => {
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
+        }
+        else {
+          toast.error('Something went wrong!')
         }
       }
     }
@@ -152,14 +151,13 @@ const ManagePaymentStatusScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id: 359,
+          m_id: 179
         },
       };
 
       try {
         const response = await axios.delete(
-          Baseurl +
-            `/db/media/estimationStatus/deleteEstimationStatus?p_s_id=${currObj}`,
+          Baseurl + `/db/media/conversionPercentage/deleteConversionPercentage?conversion_id=${currObj.conversion_id}`,
           header
         );
         if (response.status === 204 || response.status === 200) {
@@ -171,16 +169,17 @@ const ManagePaymentStatusScreen = () => {
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
+        }
+        else {
+          toast.error('Something went wrong!')
         }
       }
     }
   }
 
   const addIndustryHandler = async () => {
-    if (userInfo.p_s_name == "") {
-      toast.error("Please enter the Media Type Name");
+    if (userInfo.conversion_amount == "") {
+      toast.error("please enter quotation status name");
     } else {
       if (hasCookie("token")) {
         let token = getCookie("token");
@@ -191,13 +190,13 @@ const ManagePaymentStatusScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id: 356,
+            m_id: 176
           },
         };
 
         try {
           const response = await axios.post(
-            Baseurl + `/db/media/estimationStatus/addEstimationStatus`,
+            Baseurl + `/db/media/conversionPercentage/addConversionPercentage`,
             userInfo,
             header
           );
@@ -209,8 +208,9 @@ const ManagePaymentStatusScreen = () => {
         } catch (error) {
           if (error?.response?.data?.message) {
             toast.error(error.response.data.message);
-          } else {
-            toast.error("Something went wrong!");
+          }
+          else {
+            toast.error('Something went wrong!')
           }
         }
       }
@@ -218,8 +218,8 @@ const ManagePaymentStatusScreen = () => {
   };
 
   const updateHandler = async () => {
-    if (userInfo.p_s_name == "") {
-      toast.error("Please enter the Media Type Name");
+    if (userInfo.conversion_amount == "") {
+      toast.error("please enter quotation status name");
     } else {
       if (hasCookie("token")) {
         let token = getCookie("token");
@@ -230,13 +230,13 @@ const ManagePaymentStatusScreen = () => {
             Accept: "application/json",
             Authorization: "Bearer ".concat(token),
             db: db_name,
-            m_id: 358,
+            m_id: 178
           },
         };
 
         try {
           const response = await axios.put(
-            Baseurl + `/db/media/estimationStatus/updateEstimationStatus`,
+            Baseurl + `/db/media/conversionPercentage/updateConversionPercentage`,
             userInfo,
             header
           );
@@ -248,8 +248,9 @@ const ManagePaymentStatusScreen = () => {
         } catch (error) {
           if (error?.response?.data?.message) {
             toast.error(error.response.data.message);
-          } else {
-            toast.error("Something went wrong!");
+          }
+          else {
+            toast.error('Something went wrong!')
           }
         }
       }
@@ -275,16 +276,18 @@ const ManagePaymentStatusScreen = () => {
         actionType={deleteHandler}
         title={"Are You Sure you want to Delete ?"}
       />
-
       <div className={`main_Box  ${sideView}`}>
         <div className="bread_head">
-          <h3 className="content_head">PAYMENT STATUS MASTER</h3>
+          <h3 className="content_head">CONVERSION PERCENTAGE MASTER</h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <Link href="/setting">Home </Link>
+                {" "}
+                <Link href="/setting">Home</Link>
               </li>
-              <li className="breadcrumb-item"> Payment Status Master</li>
+              <li className="breadcrumb-item active" aria-current="page">
+                Conversion Percentage Master
+              </li>
             </ol>
           </nav>
         </div>
@@ -296,44 +299,42 @@ const ManagePaymentStatusScreen = () => {
                 onClick={OpenAddModal}
               >
                 <PlusIcon />
-                ADD PAYMENT STATUS
+                ADD CONVERSION PERCENTAGE
               </button>
             </div>
             <DynamicTable
               loader={loader}
-              title="Payment Status List"
+              title="Conversion Percentage List"
               openEdtMdl={openEdtMdl}
               dataList={dataList}
               disableConfirm={disableConfirm}
               deleteConfirm={deleteConfirm}
             />
+
           </div>
         </div>
       </div>
 
       <Modal className="commonModal" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>
-            {" "}
-            {editMode ? "EDIT" : " ADD"} PAYMENT STATUS
-          </Modal.Title>
+          <Modal.Title> {editMode ? "EDIT" : " ADD"} CONVERSION PERCENTAGE NAME</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="add_user_form">
             <div className="row">
               <div className="col-xl-12 col-md-12 col-sm-12 col-12">
                 <div className="input_box">
-                  <label htmlFor="email">Payment Status Name</label>
+                  <label htmlFor="email">Conversion Percentage Name</label>
                   <input
                     type="text"
-                    placeholder="Enter Payment Status Name"
-                    name="email"
-                    id="email"
+                    placeholder="Enter Conversion Percentage Name"
+                    name="quotation_status_name"
+                    id="quotation_status_name"
                     className="form-control"
                     onChange={(e) =>
-                      setUserInfo({ ...userInfo, p_s_name: e.target.value })
+                      setUserInfo({ ...userInfo, conversion_amount: e.target.value })
                     }
-                    value={userInfo.p_s_name ? userInfo.p_s_name : ""}
+                    value={userInfo.conversion_amount ? userInfo.conversion_amount : ""}
                   />
                 </div>
               </div>
@@ -356,4 +357,4 @@ const ManagePaymentStatusScreen = () => {
   );
 };
 
-export default ManagePaymentStatusScreen;
+export default ConversionPercentageScreen  

@@ -269,6 +269,26 @@ const AddTaskScreen = () => {
             </div>
             <div className="add_user_form">
               <div className="row">
+              {
+                  id && (
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="accountId">
+                            Task ID
+                          </label>
+                          <input  
+                            type="text"
+                            name="accountId"
+                            placeholder="Account ID"
+                            id="accountId"
+                            disabled={true}
+                            className="form-control"
+                            value={userInfo?.task_code}
+                          />
+                        </div>
+                      </div>
+                  )
+                }
 
                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div className={errorData?.task_name ? 'input_box errorBox' : 'input_box'}>

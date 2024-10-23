@@ -211,7 +211,7 @@ const AddUserScreen = () => {
     setisLoading(true);
     const token = getCookie("token");
     let reqOptions = { ...userInfo, db_name };
-    if(userInfo?.role_id=="2" || userInfo?.role_id=="3"){
+    if(userInfo?.role_id=="3"){
       reqOptions = { ...userInfo, report_to:userInfoCheck?.user_id }
     }
     const header = {
@@ -289,7 +289,7 @@ const AddUserScreen = () => {
 
     try {
       let updatedInfo={...userInfo,isAssigned:true}
-      if(userInfo?.role_id=="2" || userInfo?.role_id=="3"){
+      if( userInfo?.role_id=="3"){
         updatedInfo = { ...userInfo, report_to:userInfoCheck?.user_id }
       }
       const response = await axios.put(`${Baseurl}/db/users`, updatedInfo, header);
@@ -431,6 +431,27 @@ const AddUserScreen = () => {
       reader.readAsDataURL(e.target.files[0]);
     }
   };
+
+  const userListFilterBasisOfRole = (selectedOption, usersList) => {
+    if (selectedOption == "1") {
+        return [{ value: userInfo?.user_id, label: "N.A" },...usersList
+            ?.filter(user => user.role_id === 2 || user.role_id === 3)
+            ?.map(data => ({
+                value: data?.user_id,
+                label: data?.user,
+            }))];
+    }
+    if (selectedOption == "2") {
+        return [{ value: userInfo?.user_id, label: "N.A" },...usersList
+            ?.filter(user => user.role_id === 3)
+            ?.map(data => ({
+                value: data?.user_id,
+                label: data?.user,
+            }))];
+    }
+    // If no match, return an empty array
+    return [];
+};
   
 
   useEffect(() => {
@@ -842,7 +863,7 @@ const AddUserScreen = () => {
                   </div>
                 </div>
                   {
-                    (userInfo?.role_id=="1" ) && (
+                    (userInfo?.role_id=="1" || userInfo?.role_id=="2" ) && (
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                       <div
                         className={
@@ -854,12 +875,13 @@ const AddUserScreen = () => {
                           id={userInfo.des_id}
                           defaultValue={""}
                           isDisabled={viewMode}
-                          options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
-                            return {
-                                value: data?.user_id,
-                                label: data?.user,
-                            };
-                        })]}
+                        //   options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
+                        //     return {
+                        //         value: data?.user_id,
+                        //         label: data?.user,
+                        //     };
+                        // })]}
+                        options={userListFilterBasisOfRole(userInfo?.role_id,usersList)}
                           value={usersList
                             ?.filter((user) => user.role_id == 2)
                             ?.map((data, index) => {

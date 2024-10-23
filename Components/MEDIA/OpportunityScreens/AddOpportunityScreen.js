@@ -65,6 +65,7 @@ const AddOpportunityScreen = () => {
     const [lossLists, setlossLists] = useState([])
     const [iscollapse, setiscollapse] = useState(false);
     const [ContactList,setContactList] =useState([])
+    const [conversionArray,setConversionArray] =useState([])
 
   
 
@@ -76,6 +77,10 @@ const AddOpportunityScreen = () => {
 
     const getProductList = async () => {
         await fetchData(`/db/product`, setProductList, errorToast, setErrorToast)
+    }
+
+    const getConversionList = async () => {
+        await fetchData(`/db/media/conversionPercentage/getConversionPercentage`, setConversionArray, errorToast, setErrorToast)
     }
 
     const getOppTypeList = async () => {
@@ -667,6 +672,7 @@ async function postFieldsFunc(id, data) {
 
    
     useEffect(() => {
+        getConversionList()
         getAccountsList();
         getStageList();
         getLossLists();
@@ -760,6 +766,26 @@ async function postFieldsFunc(id, data) {
                     </div>
                     <div className="add_user_form">
                         <div className="row">
+                        {
+                  id && (
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="accountId">
+                            Opportunity ID
+                          </label>
+                          <input
+                            type="text"
+                            name="accountId"
+                            placeholder="Account ID"
+                            id="accountId"
+                            disabled={true}
+                            className="form-control"
+                            value={userInfo?.opp_code}
+                          />
+                        </div>
+                      </div>
+                  )
+                }
                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                                 <div className={errorData?.opp_name ? 'input_box errorBox' : 'input_box'}>
                                     <label htmlFor="task_name">Opportunity Name *</label>
@@ -1016,7 +1042,7 @@ async function postFieldsFunc(id, data) {
                             <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                             <div className={errorData?.conversion_perc ? 'input_box errorBox' : 'input_box'}>
                                 <label htmlFor="conversion_perc">Conversion % *</label>
-                                <input
+                                {/* <input
                                 type="text"
                                 name="Amount"
                                 placeholder="Enter Conversion %"
@@ -1031,6 +1057,27 @@ async function postFieldsFunc(id, data) {
                                     }
                                 }}
                                 value={userInfo.conversion_perc ? userInfo.conversion_perc : ""}
+                                /> */}
+                                <Select 
+                                    placeholder="Enter Conversion %"
+                                    options={conversionArray?.map((item)=>{
+                                        return{
+                                            label:item?.conversion_amount,
+                                            value:item?.conversion_id
+                                        }
+                                    })}
+                                    value={conversionArray?.map((item)=>{
+                                        if(item?.conversion_id==userInfo?.conversion_perc){
+                                            return{
+                                                label:item?.conversion_amount,
+                                                value:item?.conversion_id
+                                            }
+                                        }
+                                    })}
+                                    onChange={(e)=>{
+                                        setUserInfo({ ...userInfo, conversion_perc: e.value });
+                                    setErrorData({ ...errorData, conversion_perc: '' });
+                                    }}
                                 />
                                 <span className="errorText">
                                 {errorData?.conversion_perc ? errorData.conversion_perc : ''}

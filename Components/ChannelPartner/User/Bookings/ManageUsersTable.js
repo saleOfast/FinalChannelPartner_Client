@@ -284,18 +284,37 @@ const [value, setValue] = useState(getCurrentWeekDates());
         <p className='fw-bold ' style={{ fontSize: "18px" }} >{title}</p>
         <DateRange value={value} setValue={setValue} getData={getDataList} filterType={title} />
         {
-                  userInfo?.isDB && (
+                  (userInfo?.isDB || userInfo?.role_id=="3") && (
                     <div className='col-md-4 mb-3'>
                     <label className='fw-bold' style={{ fontSize: '16px' }}>Channel Partner</label>
                     <Select 
                       placeholder="Select Channel Partner"
-                      options={[{ value: "", label: "All" }, 
-                        ...usersList?.filter(item => item?.role_id == 1)?.map((item) => {
-                          return {
+                      // options={[{ value: "", label: "All" }, 
+                      //   ...usersList?.filter(item => item?.role_id == 1)?.map((item) => {
+                      //     return {
+                      //       value: item?.user_id,
+                      //       label: item?.user
+                      //     };
+                      //   })
+                      // ]}
+
+                      options={[
+                        { value: "", label: "All" },
+                        ...(usersList || [])
+                          .filter(item => {
+                            if (userInfo?.isDB) {
+                              return item?.role_id == 1;
+                            }
+                            // Combine logic for cpUnderBstForDirector
+                            return (
+                              item?.role_id == 1 &&
+                              usersList?.some(i => i?.report_to == userInfo?.user_id && i?.user_id == item?.report_to)
+                            );
+                          })
+                          .map(item => ({
                             value: item?.user_id,
                             label: item?.user
-                          };
-                        })
+                          }))
                       ]}
                       
                       value={

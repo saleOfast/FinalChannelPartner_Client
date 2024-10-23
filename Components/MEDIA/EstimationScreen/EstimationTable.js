@@ -702,6 +702,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         },
       },
     }
+  
+    
   ];
 
   const handleSelectSite = (site_id) => {

@@ -11,14 +11,14 @@ const ManagePaymentStatusTab = ({ deleteConfirm, disableConfirm, dataList, openE
 
   const columns = [
     {
-      name: 'est_s_name',
+      name: 'p_s_name',
       label: "Payment Status Name",
       options: {
         filter: true,
       }
     },
     {
-      name: 'est_s_code',
+      name: 'p_s_code',
       label: "Payment Status Code",
       options: {
         filter: true,
@@ -41,7 +41,7 @@ const ManagePaymentStatusTab = ({ deleteConfirm, disableConfirm, dataList, openE
       }
     },
     {
-      name: 'est_s_id',
+      name: 'p_s_id',
       label: "Action",
       options: {
         filter: false,

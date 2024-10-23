@@ -317,42 +317,8 @@ const AddMountingCostScreen = () => {
             </div>
             <div className="add_user_form">
               <div className="row">
-
-
-{/* 
-                           <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.task_priority_id ? 'input_box errorBox' : 'input_box'}>
-                    <label htmlFor="task_name">Account Name</label>
-                    <Select
-                      id={userInfo.task_priority_id}
-                      defaultValue={""}
-                      isDisabled={viewMode}
-                      options={priorityList?.map((data, index) => {
-                        return {
-                          value: data?.task_priority_id,
-                          label: data?.task_priority_name,
-
-                        }
-                      })}
-                      value={priorityList?.map((data, index) => {
-                        if (userInfo.task_priority_id === data.task_priority_id) {
-                          return {
-                            value: data?.task_priority_id,
-                            label: data?.task_priority_name,
-
-                          }
-                        }
-                      })}
-                      onChange={(e) => {
-                        setUserInfo({ ...userInfo, task_priority_id: e.value })
-                        setErrorData({ ...errorData, task_priority_id: '' })
-                      }}
-                    />
-                    <span className="errorText"> {errorData?.task_priority_id ? errorData.task_priority_id : ''}</span>
-                  </div>
-                </div> */}
-
-
+               
+              
                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                         <div
                           className={
@@ -402,8 +368,47 @@ const AddMountingCostScreen = () => {
                         </div>
                       </div>
 
+                      {
+                  id && (
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="accountId">
+                            Account ID
+                          </label>
+                          <input
+                            type="text"
+                            name="accountId"
+                            placeholder="Account ID"
+                            id="accountId"
+                            disabled={true}
+                            className="form-control"
+                            value={accountList?.find(item=>item?.acc_id==userInfo?.acc_id)?.acc_code}
+                          />
+                        </div>
+                      </div>
+                  )
+                }
 
-
+{
+                  id && (
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="accountId">
+                            Mounting Cost ID
+                          </label>
+                          <input
+                            type="text"
+                            name="accountId"
+                            placeholder="Account ID"
+                            id="accountId"
+                            disabled={true}
+                            className="form-control"
+                            value={userInfo?.mo_c_code}
+                          />
+                        </div>
+                      </div>
+                  )
+                }
                 
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                         <div
@@ -448,8 +453,6 @@ const AddMountingCostScreen = () => {
                         </div>
                       </div>
 
-
-
                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                         <div className="input_box">
                           <label htmlFor="mo_c_cost">
@@ -481,273 +484,11 @@ const AddMountingCostScreen = () => {
                           </span>
                         </div>
                       </div>
-
-                
-                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.task_status_id ? 'input_box errorBox' : 'input_box'}>
-                    <label htmlFor="task_status">Status *</label>
-                    <select
-                      
-                      
-                      className={errorData?.task_status_id ? 'form-control is-invalid' : 'form-control'}
-                      name="task_status"
-                      id="task_status"
-                      disabled={viewMode}
-                      onChange={(e) => {
-                        setUserInfo({ ...userInfo, task_status_id: e.target.value })
-                        setErrorData({ ...errorData, task_status_id: '' })
-                      }}
-                      value={userInfo.task_status_id ? userInfo.task_status_id : ""}  >
-                      <option value="">Select Task Status</option>
-                      {statusList?.map((data, index) => {
-                        return (
-                          <option key={index} value={data.task_status_id}>
-                            {data.task_status_name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <span className="errorText"> {errorData?.task_status_id ? errorData.task_status_id : ''}</span>
-                  </div>
-                </div> */}
-
-
-
-{/* 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.task_status_id ? 'input_box errorBox' : 'input_box'}>
-                    <label htmlFor="task_name">Status </label>
-                    <Select
-                      id={userInfo.task_status_id}
-                      defaultValue={""}
-                      isDisabled={viewMode}
-                      options={statusList?.map((data, index) => {
-                        return {
-                          value: data?.task_status_id,
-                          label: data?.task_status_name,
-
-                        }
-                      })}
-                      value={statusList?.map((data, index) => {
-                        if (userInfo.task_status_id === data.task_status_id) {
-                          return {
-                            value: data?.task_status_id,
-                            label: data?.task_status_name,
-
-                          }
-                        }
-                      })}
-                      onChange={(e) => {
-                        setUserInfo({ ...userInfo, task_status_id: e.value })
-                        setErrorData({ ...errorData, task_status_id: '' })
-                      }}
-                    />
-                    <span className="errorText"> {errorData?.task_status_id ? errorData.task_status_id : ''}</span>
-                  </div>
-                </div> */}
-{/* 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.task_priority_id ? 'input_box errorBox' : 'input_box'}>
-                    <label htmlFor="task_name">Priority *</label>
-                    <Select
-                      id={userInfo.task_priority_id}
-                      defaultValue={""}
-                      isDisabled={viewMode}
-                      options={priorityList?.map((data, index) => {
-                        return {
-                          value: data?.task_priority_id,
-                          label: data?.task_priority_name,
-
-                        }
-                      })}
-                      value={priorityList?.map((data, index) => {
-                        if (userInfo.task_priority_id === data.task_priority_id) {
-                          return {
-                            value: data?.task_priority_id,
-                            label: data?.task_priority_name,
-
-                          }
-                        }
-                      })}
-                      onChange={(e) => {
-                        setUserInfo({ ...userInfo, task_priority_id: e.value })
-                        setErrorData({ ...errorData, task_priority_id: '' })
-                      }}
-                    />
-                    <span className="errorText"> {errorData?.task_priority_id ? errorData.task_priority_id : ''}</span>
-                  </div>
-                </div> */}
-{/* 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.due_date ? 'input_box errorBox' : 'input_box'}>
-                    <label htmlFor="due_date">Due date *</label>
-                    <input
-                      type="date"
-                      name="due_date"
-                      id="due_date"
-                      disabled={viewMode}
-                      onPaste={(e) => e.preventDefault()}
-                      onKeyDown={(e) => e.preventDefault()}
-                      min={minDate}
-                      className={errorData?.due_date ? 'form-control is-invalid' : 'form-control'}
-                      onChange={(e) => {
-                        setUserInfo({ ...userInfo, due_date: e.target.value })
-                        setErrorData({ ...errorData, due_date: '' })
-                      }}
-                      value={userInfo.due_date ? moment(userInfo.due_date).format("YYYY-MM-DD") : ""}
-                    />
-                    <span className="errorText"> {errorData?.due_date ? errorData.due_date : ''}</span>
-                  </div>
-                </div> */}
-{/* 
-                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className="input_box">
-                    <label htmlFor="Saluation">Task Type</label>
-                    <select
-                      name="selectInter"
-                      id="selectInter"
-                      className="form-control"
-                      disabled={viewMode}
-                      onChange={(e) => setUserInfo({ ...userInfo, task_type: e.target.value })
-                      }
-                      value={userInfo.task_type ? userInfo.task_type : ""} >
-                      <option>Select Task Type </option>
-                      <option value='lead task'>Lead Task</option>
-                      <option value='opportunity task'>Opportunity Task</option>
-                    </select>
-                  </div>
-                </div> */}
-
-                {/* {userInfo.task_type == 'lead task' ?
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                    <div className={errorData?.lead_id ? 'input_box errorBox' : 'input_box'}>
-                      <label htmlFor="task_name">Link with Leads *</label>
-                      <Select
-                        id={userInfo.lead_id}
-                        defaultValue={""}
-                        isDisabled={viewMode}
-                        options={leadsList?.map((data, index) => {
-                          return {
-                            value: data?.lead_id,
-                            label: data?.lead_name,
-
-                          }
-                        })}
-                        value={leadsList?.map((data, index) => {
-                          if (userInfo.lead_id === data.lead_id) {
-                            return {
-                              value: data?.lead_id,
-                              label: data?.lead_name,
-
-                            }
-                          }
-                        })}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, lead_id: e.value, link_with_opportunity: null })
-                          setErrorData({ ...errorData, lead_id: '' })
-                        }}
-                      />
-                      <span className="errorText"> {errorData?.lead_id ? errorData.lead_id : ''}</span>
-                    </div>
-                  </div>
-                  :
-                  <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                    <div className={errorData?.opp_id ? 'input_box errorBox' : 'input_box'}>
-                      <label htmlFor="task_name"> Link with Opportunity *</label>
-                      <Select
-                        id={userInfo.opp_id}
-                        defaultValue={""}
-                        isDisabled={viewMode}
-                        options={opportunityList?.map((data, index) => {
-                          return {
-                            value: data?.opp_id,
-                            label: data?.opp_name,
-
-                          }
-                        })}
-                        value={opportunityList?.map((data, index) => {
-                          if (userInfo.link_with_opportunity === data.opp_id) {
-                            return {
-                              value: data?.opp_id,
-                              label: data?.opp_name,
-
-                            }
-                          }
-                        })}
-                        onChange={(e) => {
-                          setUserInfo({ ...userInfo, link_with_opportunity: e.value, lead_id: null })
-                          setErrorData({ ...errorData, link_with_opportunity: '' })
-                        }}
-                      />
-                      <span className="errorText"> {errorData?.link_with_opportunity ? errorData.link_with_opportunity : ''}</span>
-                    </div>
-                  </div>
-
-                } */}
-
-
-
-                {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                  <div className={errorData?.assigned_to ? 'input_box errorBox' : 'input_box'}>
-                    <label htmlFor="task_name">Assign to *</label>
-                    <Select
-                      id={userInfo.assigned_to}
-                      defaultValue={""}
-                      isDisabled={viewMode}
-                      options={usersList?.map((data, index) => {
-                        return {
-                          value: data?.user_id,
-                          label: data?.user,
-
-                        }
-                      })}
-                        value={usersList?.map((data, index) => {
-                          if (userInfo.assigned_to === data.user_id) {
-                            return {
-                              value: data?.user_id,
-                              label: data?.user,
-
-                            }
-                          }
-                        })}
-                      onChange={(e) => {
-                        setUserInfo({ ...userInfo, assigned_to: e.value })
-                        setErrorData({ ...errorData, assigned_to: '' })
-                      }}
-                    />
-                    <span className="errorText"> {errorData?.assigned_to ? errorData.assigned_to : ''}</span>
-                  </div>
-                </div> */}
-
-
                 
               </div>
-              {/* <div className="row">
-                <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                  <div className="input_box">
-                    <label htmlFor="task_desc">Description</label>
-                    <textarea
-                      name="task_desc"
-                      id="task_desc"
-                      placeholder="Enter Description...."
-                      rows="3"
-                      disabled={viewMode}
-                      className="form-control"
-                      onChange={(e) =>
-                        setUserInfo({
-                          ...userInfo,
-                          description: e.target.value,
-                        })
-                      }
-                      value={userInfo.description ? userInfo.description : ""}
-                    ></textarea>
-                  </div>
-                </div>
-              </div> */}
+             
             </div>
-            {/* <div className="add_screen_head">
-              <span className="text_bold">System Information </span>
-            </div> */}
+            
             <div className="add_user_form">
               <div className="row">
        

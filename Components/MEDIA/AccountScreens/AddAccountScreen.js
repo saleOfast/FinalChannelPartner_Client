@@ -170,13 +170,107 @@ const AddAccountScreen = () => {
     await fetchData(`/db/industry`, setIndustryList, errorToast, setErrorToast);
   }
 
-  const submitHandler = async () => {
+  const validateFields = () => {
+    const mandatoryFields = [
+      'acc_name',          // Account Name
+      'email_id',         // Email
+      'account_type_id',  // Type
+      'contact_no',       // Mobile No
+      'ind_id',           // Industry
+      'emp_name',         // Employee
+      'bill_cont',        // Billing Country
+      'bill_state',       // Billing State
+      'bill_pincode',     // Zip / Postal Code
+      'bank_name',        // Bank Name
+      'bank_ac_no',       // Bank Account Number
+      'ifsc_code',        // IFSC Code
+      'micr_code',        // MICR Code
+      'credit_limit',     // Credit Limit
+      'cin_number',       // CIN Number
+      'tan_number',       // TAN Number
+      'pan_number',       // PAN Number
+      'gstin_number',     // GSTIN Number
+      'service_tax_number',// Service Tax Number
+      'contact_person_finance',
+      'designation_finance',
+      'mobile_finance',
+      'email_finance',
+      'credit_note',
+      'debit_note',
+      'volume_deal_agreement',
+      'volume_deal_percentage',
+      'ship_cont',
+      'ship_state',
+      'ship_pincode'
+    ];
+  
+    let errors = {};
+  
+    mandatoryFields.forEach(field => {
+      if (!userInfo[field]) {
+        errors[field] = `${field.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase())} is required.`;
+      }
+    });
+  
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (userInfo.email_id && !emailPattern.test(userInfo.email_id)) {
+      errors.email_id = "Invalid email address.";
+    }
+  
+    const mobilePattern = /^[0-9]{10}$/; 
+    if (userInfo.contact_no && !mobilePattern.test(userInfo.contact_no)) {
+      errors.contact_no = "Invalid mobile number.";
+    }
+  
+    const zipPattern = /^[0-9]{5,6}$/; 
+    if (userInfo.bill_pincode && !zipPattern.test(userInfo.bill_pincode)) {
+      errors.bill_pincode = "Invalid ZIP/Postal code.";
+    }
+  
+    if (userInfo.bank_ac_no && !/^[0-9]{14}$/.test(userInfo.bank_ac_no)) {
+      errors.bank_ac_no = "Account number must be of 14 digits.";
+    }
+  
+    if (userInfo.ifsc_code && !/^[A-Za-z]{4}[0-9]{7}$/.test(userInfo.ifsc_code)) {
+      errors.ifsc_code = "IFSC code must be of 11 alphanumeric characters.";
+    }
+  
+    if (userInfo.micr_code && !/^[0-9]{9}$/.test(userInfo.micr_code)) {
+      errors.micr_code = "MICR code must be of 9 digits.";
+    }
+  
+    if (userInfo.cin_number && !/^[A-Za-z0-9]{21}$/.test(userInfo.cin_number)) {
+      errors.cin_number = "CIN number must be of 21 alphanumeric characters.";
+    }
+  
+    if (userInfo.tan_number && !/^[A-Za-z0-9]{10}$/.test(userInfo.tan_number)) {
+      errors.tan_number = "TAN number must be of 10 alphanumeric characters.";
+    }
+  
+    if (userInfo.pan_number && !/^[A-Za-z0-9]{10}$/.test(userInfo.pan_number)) {
+      errors.pan_number = "PAN number must be of 10 alphanumeric characters.";
+    }
+  
+    if (userInfo.service_tax_number && !/^[0-9]{15}$/.test(userInfo.service_tax_number)) {
+      errors.service_tax_number = "Service tax number must be of 15 digits.";
+    }
+  
+    const shipZipPattern = /^[0-9]{5,6}$/; 
+    if (userInfo.ship_pincode && !shipZipPattern.test(userInfo.ship_pincode)) {
+      errors.ship_pincode = "Invalid shipping ZIP/Postal code.";
+    }
+  
+    if (Object.keys(errors).length > 0) {
+      setErrorData(errors);
+      toast.error("Please fill in all mandatory fields.");
+      return false;
+    }
+  
+    return true;
+  };
 
-  if (!userInfo?.email_id || !emailPattern.test(userInfo.email_id)) {
-    toast.error("Invalid email address");
-    return; 
-  }
+  const submitHandler = async () => {
+  if (!validateFields()) return
 
     if (hasCookie("token")) {
       setisLoading(true);
@@ -240,12 +334,7 @@ const AddAccountScreen = () => {
   };
 
   const UpdateHandler = async () => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!userInfo?.email_id || !emailPattern.test(userInfo.email_id)) {
-      toast.error("Invalid email address");
-      return; 
-    }
+    if (!validateFields()) return
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -756,6 +845,26 @@ const AddAccountScreen = () => {
               </div>
               <div className="add_user_form">
                 <div className="row">
+                {
+                  id && (
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="accountId">
+                            Account ID
+                          </label>
+                          <input
+                            type="text"
+                            name="accountId"
+                            placeholder="Account ID"
+                            id="accountId"
+                            disabled={true}
+                            className="form-control"
+                            value={userInfo?.acc_code}
+                          />
+                        </div>
+                      </div>
+                  )
+                }
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div
                       className={
@@ -1160,7 +1269,7 @@ const AddAccountScreen = () => {
 
                   <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                     <div className="input_box">
-                      <label htmlFor="Employee">Employee</label>
+                      <label htmlFor="Employee">Employee *</label>
                       <input
                         type="text"
                         name="Employee"
@@ -1680,7 +1789,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="bank_name"> Bank Name</label>
+                        <label htmlFor="bank_name"> Bank Name *</label>
                         <input
                           type="text"
                           placeholder="Enter Bank Name"
@@ -1730,7 +1839,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="bank_ac_no"> Bank A/C No.</label>
+                        <label htmlFor="bank_ac_no"> Bank A/C No. *</label>
                         <input
                           type="text"
                           placeholder="Enter Bank Account No."
@@ -1786,7 +1895,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="ifsc_code">IFSC Code</label>
+                        <label htmlFor="ifsc_code">IFSC Code *</label>
                         <input
                           type="text"
                           placeholder="Enter IFSC Code"
@@ -1824,7 +1933,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="micr_code">MICR Code</label>
+                        <label htmlFor="micr_code">MICR Code *</label>
                         <input
                           type="text"
                           placeholder="Enter MICR Code"
@@ -1862,7 +1971,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="credit_limit">Credit Limit</label>
+                        <label htmlFor="credit_limit">Credit Limit *</label>
                         <input
                           type="text"
                           placeholder="Enter Credit Limit"
@@ -1922,7 +2031,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="cin_number">CIN Number</label>
+                        <label htmlFor="cin_number">CIN Number *</label>
                         <input
                           type="text"
                           placeholder="Enter CIN Number"
@@ -1960,7 +2069,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="tan_number">TAN Number</label>
+                        <label htmlFor="tan_number">TAN Number *</label>
                         <input
                           type="text"
                           placeholder="Enter TAN Number"
@@ -1998,7 +2107,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="pan_number">PAN Number</label>
+                        <label htmlFor="pan_number">PAN Number *</label>
                         <input
                           type="text"
                           placeholder="Enter PAN Number"
@@ -2036,7 +2145,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="gstin_number">GSTIN Number</label>
+                        <label htmlFor="gstin_number">GSTIN Number *</label>
                         <div className="input_box d-flex">
                           <input
                             type="text"
@@ -2099,7 +2208,7 @@ const AddAccountScreen = () => {
                     >
                       <div className="input_box">
                         <label htmlFor="service_tax_number">
-                          Service Tax Number
+                          Service Tax Number *
                         </label>
                         <input
                           type="text"
@@ -2156,7 +2265,7 @@ const AddAccountScreen = () => {
                     >
                       <div className="input_box">
                         <label htmlFor="contact_person_finance">
-                          Contact Person
+                          Contact Person *
                         </label>
                         <input
                           type="text"
@@ -2222,7 +2331,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="designation_finance">Designation</label>
+                        <label htmlFor="designation_finance">Designation *</label>
                         <input
                           type="text"
                           placeholder="Enter Designation"
@@ -2287,7 +2396,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="mobile_finance">Mobile</label>
+                        <label htmlFor="mobile_finance">Mobile *</label>
                         <input
                           type="text"
                           placeholder="Enter Mobile No."
@@ -2352,7 +2461,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="email_finance"> Email </label>
+                        <label htmlFor="email_finance"> Email *</label>
                         <input
                           type="text"
                           placeholder="Enter Email Id"
@@ -2396,7 +2505,7 @@ const AddAccountScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="task_name">Credit Note</label>
+                      <label htmlFor="task_name">Credit Note *</label>
                       <Select
                         id={userInfo.credit_note}
                         isDisabled={viewMode}
@@ -2435,7 +2544,7 @@ const AddAccountScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="task_name">Debit Note</label>
+                      <label htmlFor="task_name">Debit Note *</label>
                       <Select
                         id={userInfo.debit_note}
                         isDisabled={viewMode}
@@ -2472,7 +2581,7 @@ const AddAccountScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="task_name">Volume Deal Aggreement</label>
+                      <label htmlFor="task_name">Volume Deal Aggreement *</label>
                       <Select
                         id={userInfo.volume_deal_agreement}
                         isDisabled={viewMode}
@@ -2517,7 +2626,7 @@ const AddAccountScreen = () => {
                     >
                       <div className="input_box">
                         <label htmlFor="volume_deal_percentage">
-                          Volume Deal Percentage
+                          Volume Deal Percentage *
                         </label>
                         <input
                           type="text"

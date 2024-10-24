@@ -275,8 +275,10 @@ const ModelVendorCostAsset = ({
 }
 
   useEffect(() => {
-    getAssetSites();
-    getBusinessTypeList();
+    if(estimateId){
+      getAssetSites();
+      getBusinessTypeList();
+    }
   }, [show]);
 
   const totals = assetSiteLists?.reduce(

@@ -310,18 +310,24 @@ const ModeVendorCostAgency = ({
   }
 
   useEffect(() => {
-
-    getAgencySites();
-    getBusinessTypeList();
+    if(estimateId){
+      getAgencySites();
+      getBusinessTypeList();
+      getPrintingVendor();
+      getPrintingMaterial();
+      getMountingVendor();
+      getDisplayVendors()
+    }
   }, [show]);
 
-  useEffect(()=>{
-    getPrintingVendor();
-    getPrintingMaterial();
-    getMountingVendor();
-    getDisplayVendors()
+  // useEffect(()=>{
+  //   see above useEffect()
+  //   getPrintingVendor();
+  //   getPrintingMaterial();
+  //   getMountingVendor();
+  //   getDisplayVendors()
 
-  },[show])
+  // },[show])
 
   const totals = agencySiteLists?.reduce(
     (acc, site) => {

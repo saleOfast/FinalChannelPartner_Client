@@ -181,24 +181,24 @@ const AddAccountScreen = () => {
       'bill_cont',        // Billing Country
       'bill_state',       // Billing State
       'bill_pincode',     // Zip / Postal Code
-      'bank_name',        // Bank Name
-      'bank_ac_no',       // Bank Account Number
-      'ifsc_code',        // IFSC Code
-      'micr_code',        // MICR Code
-      'credit_limit',     // Credit Limit
-      'cin_number',       // CIN Number
-      'tan_number',       // TAN Number
-      'pan_number',       // PAN Number
-      'gstin_number',     // GSTIN Number
-      'service_tax_number',// Service Tax Number
-      'contact_person_finance',
-      'designation_finance',
-      'mobile_finance',
-      'email_finance',
-      'credit_note',
-      'debit_note',
-      'volume_deal_agreement',
-      'volume_deal_percentage',
+      // 'bank_name',        // Bank Name
+      // 'bank_ac_no',       // Bank Account Number
+      // 'ifsc_code',        // IFSC Code
+      // 'micr_code',        // MICR Code
+      // 'credit_limit',     // Credit Limit
+      // 'cin_number',       // CIN Number
+      // 'tan_number',       // TAN Number
+      // 'pan_number',       // PAN Number
+      // 'gstin_number',     // GSTIN Number
+      // 'service_tax_number',// Service Tax Number
+      // 'contact_person_finance',
+      // 'designation_finance',
+      // 'mobile_finance',
+      // 'email_finance',
+      // 'credit_note',
+      // 'debit_note',
+      // 'volume_deal_agreement',
+      // 'volume_deal_percentage',
       'ship_cont',
       'ship_state',
       'ship_pincode'
@@ -227,9 +227,9 @@ const AddAccountScreen = () => {
       errors.bill_pincode = "Invalid ZIP/Postal code.";
     }
   
-    if (userInfo.bank_ac_no && !/^[0-9]{14}$/.test(userInfo.bank_ac_no)) {
-      errors.bank_ac_no = "Account number must be of 14 digits.";
-    }
+    // if (userInfo.bank_ac_no && !/^[0-9]{14}$/.test(userInfo.bank_ac_no)) {
+    //   errors.bank_ac_no = "Account number must be of 14 digits.";
+    // }
   
     if (userInfo.ifsc_code && !/^[A-Za-z]{4}[0-9]{7}$/.test(userInfo.ifsc_code)) {
       errors.ifsc_code = "IFSC code must be of 11 alphanumeric characters.";
@@ -1789,7 +1789,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="bank_name"> Bank Name *</label>
+                        <label htmlFor="bank_name"> Bank Name </label>
                         <input
                           type="text"
                           placeholder="Enter Bank Name"
@@ -1839,7 +1839,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="bank_ac_no"> Bank A/C No. *</label>
+                        <label htmlFor="bank_ac_no"> Bank A/C No. </label>
                         <input
                           type="text"
                           placeholder="Enter Bank Account No."
@@ -1895,7 +1895,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="ifsc_code">IFSC Code *</label>
+                        <label htmlFor="ifsc_code">IFSC Code </label>
                         <input
                           type="text"
                           placeholder="Enter IFSC Code"
@@ -1933,7 +1933,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="micr_code">MICR Code *</label>
+                        <label htmlFor="micr_code">MICR Code </label>
                         <input
                           type="text"
                           placeholder="Enter MICR Code"
@@ -1971,7 +1971,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="credit_limit">Credit Limit *</label>
+                        <label htmlFor="credit_limit">Credit Limit </label>
                         <input
                           type="text"
                           placeholder="Enter Credit Limit"
@@ -2031,7 +2031,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="cin_number">CIN Number *</label>
+                        <label htmlFor="cin_number">CIN Number </label>
                         <input
                           type="text"
                           placeholder="Enter CIN Number"
@@ -2069,7 +2069,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="tan_number">TAN Number *</label>
+                        <label htmlFor="tan_number">TAN Number </label>
                         <input
                           type="text"
                           placeholder="Enter TAN Number"
@@ -2107,7 +2107,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="pan_number">PAN Number *</label>
+                        <label htmlFor="pan_number">PAN Number </label>
                         <input
                           type="text"
                           placeholder="Enter PAN Number"
@@ -2145,7 +2145,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="gstin_number">GSTIN Number *</label>
+                        <label htmlFor="gstin_number">GSTIN Number </label>
                         <div className="input_box d-flex">
                           <input
                             type="text"
@@ -2208,7 +2208,7 @@ const AddAccountScreen = () => {
                     >
                       <div className="input_box">
                         <label htmlFor="service_tax_number">
-                          Service Tax Number *
+                          Service Tax Number 
                         </label>
                         <input
                           type="text"
@@ -2265,7 +2265,7 @@ const AddAccountScreen = () => {
                     >
                       <div className="input_box">
                         <label htmlFor="contact_person_finance">
-                          Contact Person *
+                          Contact Person 
                         </label>
                         <input
                           type="text"
@@ -2331,7 +2331,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="designation_finance">Designation *</label>
+                        <label htmlFor="designation_finance">Designation </label>
                         <input
                           type="text"
                           placeholder="Enter Designation"
@@ -2396,7 +2396,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="mobile_finance">Mobile *</label>
+                        <label htmlFor="mobile_finance">Mobile </label>
                         <input
                           type="text"
                           placeholder="Enter Mobile No."
@@ -2461,7 +2461,7 @@ const AddAccountScreen = () => {
                       }
                     >
                       <div className="input_box">
-                        <label htmlFor="email_finance"> Email *</label>
+                        <label htmlFor="email_finance"> Email </label>
                         <input
                           type="text"
                           placeholder="Enter Email Id"
@@ -2505,7 +2505,7 @@ const AddAccountScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="task_name">Credit Note *</label>
+                      <label htmlFor="task_name">Credit Note </label>
                       <Select
                         id={userInfo.credit_note}
                         isDisabled={viewMode}
@@ -2544,7 +2544,7 @@ const AddAccountScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="task_name">Debit Note *</label>
+                      <label htmlFor="task_name">Debit Note </label>
                       <Select
                         id={userInfo.debit_note}
                         isDisabled={viewMode}
@@ -2581,7 +2581,7 @@ const AddAccountScreen = () => {
                           : "input_box"
                       }
                     >
-                      <label htmlFor="task_name">Volume Deal Aggreement *</label>
+                      <label htmlFor="task_name">Volume Deal Aggreement </label>
                       <Select
                         id={userInfo.volume_deal_agreement}
                         isDisabled={viewMode}
@@ -2626,7 +2626,7 @@ const AddAccountScreen = () => {
                     >
                       <div className="input_box">
                         <label htmlFor="volume_deal_percentage">
-                          Volume Deal Percentage *
+                          Volume Deal Percentage 
                         </label>
                         <input
                           type="text"

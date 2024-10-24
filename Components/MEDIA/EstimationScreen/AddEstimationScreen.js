@@ -24,6 +24,16 @@ import Button from 'react-bootstrap/Button';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import ActionButtons from "./ActionButtons";
+import ModelAssetSite1 from "./ModelAssetSite1";
+import ModelAssetSite2 from "./ModelAssetSite2";
+import ModelClientCostAsset from "./ModelClientCostAsset";
+import ModelVendorCostAsset from "./ModelVendorCostAsset";
+import ModelAgencySite from "./ModelAgencySite";
+import ModelAgencySiteUpload from "./ModelAgencySiteUpload";
+import ModelClientCostAgency from "./ModelClientCostAgency";
+import ModelVendorCostAgency from "./ModelVendorCostAgency";
+import ModelSalesOrder from "./ModelSalesOrder";
+import ModelPurchaseOrder from "./ModelPurchaseOrder";
  
 
 const AddEstimationScreen = () => {
@@ -33,43 +43,10 @@ const AddEstimationScreen = () => {
   const { id } = router.query;
   const { ac_id } = router.query;
 
-  const [editMode, setEditMode] = useState(false);
-  const [estimatesList, setEstimatesList] = useState([]);
-  const [isLoading, setisLoading] = useState(false);
-  const [viewMode, setViewMode] = useState(false);
-  const [usersList, setUsersLsit] = useState([]);
-  const [iscollapse, setiscollapse] = useState(false);
-  const [errorData, setErrorData] = useState({});
-  const [contError, setContError] = useState({});
-  const [errorToast, setErrorToast] = useState(false);
-  const [loginDetails, setloginDetails] = useState({});
-  const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
-  const [assetDeleteShowConfirm,setAssetDeleteShowConfirm]=useState(false);
-  const [busiessTypeList, setBusinessTypeList] = useState([]);
-  const [isAgency, setIsAgency] = useState(false);
-  const [assetSiteLists, setAssetSiteLists] = useState([]);
-  const [agencySiteLists, setAgencySiteLists] = useState([]);
-  const [agencySiteData, setAgencySiteData] = useState([]);
-  const [estimateStatusList, setEstimateStatusList] = useState([]);
-  const [getAgencyData, setGetAgencyData] = useState(false);
-
-  const [deleteSiteAgencyId, setDeleteSiteAgencyId] = useState("");
-  const [deleteSiteAssetId, setDeleteSiteAssetId] = useState("");
-
-  const [show, setShow] = useState(false);
-  const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
-  const [newFields, setNewFields] = useState({
-    field_lable: null,
-    input_type: null,
-    field_type: null,
-    field_size: null,
-    option: null,
-  });
-
   const getTodayDate = () => {
     return new Date().toISOString().split("T")[0];
   };
-
+  const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
   const [userInfo, setUserInfo] = useState({
     estimate_type: "",
     campaign_id: null,
@@ -127,6 +104,332 @@ const AddEstimationScreen = () => {
     cgst: false,
     sgst: false,
   });
+  const [editMode, setEditMode] = useState(false);
+  const [estimatesList, setEstimatesList] = useState([]);
+  const [isAddLoading, setisAddLoading] = useState(false);
+  const [viewMode, setViewMode] = useState(false);
+  const [usersList, setUsersLsit] = useState([]);
+  const [iscollapse, setiscollapse] = useState(false);
+  const [errorData, setErrorData] = useState({});
+  const [contError, setContError] = useState({});
+  const [errorToast, setErrorToast] = useState(false);
+  const [loginDetails, setloginDetails] = useState({});
+  const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
+  const [assetDeleteShowConfirm,setAssetDeleteShowConfirm]=useState(false);
+  const [busiessTypeList, setBusinessTypeList] = useState([]);
+  const [isAgency, setIsAgency] = useState(false);
+  const [assetSiteLists, setAssetSiteLists] = useState([]);
+  const [agencySiteLists, setAgencySiteLists] = useState([]);
+  const [agencySiteData, setAgencySiteData] = useState([]);
+  const [estimateStatusList, setEstimateStatusList] = useState([]);
+  const [getAgencyData, setGetAgencyData] = useState(false);
+  const [stateList, setStatelist] = useState([]);
+  const [cityList, setCitylist] = useState([]);
+  const [stateId, setStateId] = useState("");
+  const [cityIds, setCityIds] = useState([]);
+  const [deleteSiteAgencyId, setDeleteSiteAgencyId] = useState("");
+  const [deleteSiteAssetId, setDeleteSiteAssetId] = useState("");
+  const [show, setShow] = useState(false);
+  
+  const [newFields, setNewFields] = useState({
+    field_lable: null,
+    input_type: null,
+    field_type: null,
+    field_size: null,
+    option: null,
+  });
+
+
+
+  // buttons
+  const userInfoCheck=JSON.parse(getCookie("userInfo"));
+  const isNewOrReopen=userInfo?.est_s_id=="1" || userInfo?.est_s_id=="4"
+  const isApproved = userInfo?.est_s_id=="2"
+  const isSentForApproval = userInfo?.est_s_id=="4"
+  const isDB=userInfoCheck?.isDB
+  const isasset =busiessTypeList?.find(
+    (item) =>
+      item?.cmpn_b_t_id ==
+      userInfo?.db_media_campaign?.cmpn_b_t_id
+  )?.cmpn_b_t_name == "Asset"           
+  const isagency =busiessTypeList?.find(
+    (item) =>
+      item?.cmpn_b_t_id ==
+      userInfo?.db_media_campaign?.cmpn_b_t_id
+  )?.cmpn_b_t_name == "Agency";
+
+  const [siteLists, setSiteLists] = useState([]);
+  const [isLoading, setisLoading] = useState(false);
+  const [show1, setShow1] = useState(false);
+  const [show2, setShow2] = useState(false);
+  const [show5, setShow5] = useState(false);
+  const [show3, setShow3] = useState(false);
+  const [show4, setShow4] = useState(false);
+  const [show6, setShow6] = useState(false);
+  const [showVendorAsset, setShowVendorAsset] = useState(false);
+  const [showVendorAgency, setShowVendorAgency] = useState(false);
+  const [selectedSites, setSelectedSites] = useState([]);
+  const [showSalesOrder,setShowSalesOrder] =useState(false)
+  const [showPurchaseOrder,setShowPurchaseOrder] =useState(false)
+  const [ mediaSidebarInfo,setmediaSidebarInfo]=useState([])
+  const [estimateApprovals, setEstimateApprovals] = useState();
+
+
+  const handleClose1 = () => {
+    setShow1(false);
+    setStateId("");
+    setCityIds([]);
+  };
+  const handleClose2 = () => {
+    setShow2(false);
+  };
+  const handleClose5 = () => {
+    setShow5(false);
+  };
+  const handleClose3 = () => {
+    setShow3(false);
+  };
+  const handleClose4 = () => {
+    setShow4(false);
+  };
+  const handleClose6 = () => {
+    setShow6(false);
+  };
+  const handleVendorAssetClose = () => {
+    setShowVendorAsset(false);
+  };
+  const handleVendorAgencyClose = () => {
+    setShowVendorAgency(false);
+  };
+  const handleCloseSalesOrder =()=>{
+    setShowSalesOrder(false)
+  }
+  const handleClosePurchaseOrder =()=>{
+    setShowPurchaseOrder(false)
+  }
+
+  const getSiteList = async () => {
+    if (!stateId) {
+      return toast.warning("Please Select State");
+    }
+    if (cityIds.length < 1) {
+      return toast.warning("Please Select City");
+    }
+
+    const params = { city_id: cityIds };
+    const queryString = new URLSearchParams(params).toString();
+
+    await fetchData(
+      `/db/media/siteManagement/getSite?${queryString}`,
+      setSiteLists,
+      errorToast,
+      setErrorToast
+    );
+
+    handleClose1();
+    setShow2(true);
+  };
+
+  const getState = async () => {
+    await fetchData(
+      `/db/area/states?cnt_id=101`,
+      setStatelist,
+      errorToast,
+      setErrorToast
+    );
+  };
+
+  const getCity = async (id) => {
+    await fetchData(
+      `/db/area/city?st_id=${id}`,
+      (data) => setCitylist(data.cityData),
+      errorToast,
+      setErrorToast
+    );
+  };
+
+  const handleSelectSite = (site_id) => {
+    setSelectedSites((prevSelected) =>
+      prevSelected.includes(site_id)
+        ? prevSelected.filter((id) => id !== site_id)
+        : [...prevSelected, site_id]
+    );
+  };
+
+  const addAssetInSite = async (formattedSites) => {
+    if (hasCookie("token")) {
+      setisLoading(true);
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id:439
+        },
+      };
+
+      try {
+        const response = await axios.post(
+          Baseurl +
+            `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
+          {
+            estimate_id: id,
+            sites: formattedSites,
+          },
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          setisLoading(false);
+          handleClose2();
+          setSelectedSites();
+        }
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
+    }
+  };
+
+  const getContactList =()=>{
+    console.log("getContactList called")
+  }
+
+  const sentForApproval = async (estimate_id) => {
+    if (hasCookie("token")) {
+      setisLoading(true);
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id:444
+        },
+      };
+
+      try {
+        const response = await axios.post(
+          Baseurl +
+            `/db/media/estimation/sendMailForApproval/`,
+          {
+            estimate_id: estimate_id,
+          },
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          getContactList()
+        }
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
+    }
+  };
+
+  const getSidebarInfo = async () => {
+    await fetchData(
+      `/db/permission?id=${userInfoCheck?.role_id}&pf=MEDIA`,
+      setmediaSidebarInfo,
+      errorToast,
+      setErrorToast
+    );
+  };
+
+  const accept_rejectApproval = async (estimate_id,status) => {
+    if (hasCookie("token")) {
+      setisLoading(true);
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id:443
+        },
+      };
+
+      try {
+        const response = await axios.post(
+          Baseurl +
+            `/db/media/estimation/approveEstimate`,
+          {
+            estimate_id: estimate_id,
+            approval:status
+          },
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          getContactList()
+        }
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+        setisLoading(false);
+      }
+    }
+  };
+
+  const getEstimateApprovals = async () => {
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          db: db_name,
+          pass:"pass"
+        },
+      };
+
+      try {
+        const { data } = await axios.get(
+          Baseurl + `/db/settings/generalSettings`,
+          header
+        );
+        setEstimateApprovals(data?.data[2]?.setting_value.split(",").map(Number)); 
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    getCity(stateId);
+  }, [stateId]);
+
+  // buttons
+
+  
 
   async function getAccountsList() {
     await fetchData(
@@ -318,7 +621,7 @@ const AddEstimationScreen = () => {
   const submitHandler = async () => {
     if (validate()) {
       if (hasCookie("token")) {
-        setisLoading(true);
+        setisAddLoading(true);
         let token = getCookie("token");
         let db_name = getCookie("db_name");
 
@@ -346,7 +649,7 @@ const AddEstimationScreen = () => {
             //   userInfo.db_contact_fields
             // );
             toast.success(response.data.message);
-            setisLoading(false);
+            setisAddLoading(false);
             router.push("/media/Estimations");
           }
         } catch (error) {
@@ -365,7 +668,7 @@ const AddEstimationScreen = () => {
           } else {
             toast.error("Something went wrong2!");
           }
-          setisLoading(false);
+          setisAddLoading(false);
         }
       }
     } else {
@@ -376,7 +679,7 @@ const AddEstimationScreen = () => {
   const UpdateHandler = async () => {
     if (validate()) {
       if (hasCookie("token")) {
-        setisLoading(true);
+        setisAddLoading(true);
         let token = getCookie("token");
         let db_name = getCookie("db_name");
 
@@ -414,7 +717,7 @@ const AddEstimationScreen = () => {
           if (response.status === 200 || response.status === 204) {
             // await postFieldsFunc(newData.contact_id, newData.db_contact_fields);
             toast.success(response.data.message);
-            setisLoading(false);
+            setisAddLoading(false);
 
             router.push("/media/Estimations");
           }
@@ -434,7 +737,7 @@ const AddEstimationScreen = () => {
           } else {
             toast.error("Something went wrong!");
           }
-          setisLoading(false);
+          setisAddLoading(false);
         }
       }
     } else {
@@ -496,7 +799,7 @@ const AddEstimationScreen = () => {
 
   // async function postFieldsFunc(id, data) {
   //   if (hasCookie("token")) {
-  //     setisLoading(true);
+  //     setisAddLoading(true);
   //     let token = getCookie("token");
   //     let db_name = getCookie("db_name");
   //     let header = {
@@ -519,7 +822,7 @@ const AddEstimationScreen = () => {
   //       );
   //       if (response.status === 204 || response.status === 200) {
   //         toast.success(response.data.message);
-  //         setisLoading(false);
+  //         setisAddLoading(false);
   //       }
   //     } catch (error) {
   //       if (error?.response?.data?.status === 422) {
@@ -537,7 +840,7 @@ const AddEstimationScreen = () => {
   //       } else {
   //         toast.error("Something went wrong!");
   //       }
-  //       setisLoading(false);
+  //       setisAddLoading(false);
   //     }
   //   }
   // }
@@ -652,7 +955,7 @@ const AddEstimationScreen = () => {
         } else {
           toast.error("Something went wrong!");
         }
-        setisLoading(false);
+        setisAddLoading(false);
       }
     }
   };
@@ -691,7 +994,7 @@ const AddEstimationScreen = () => {
           toast.error("Something went wrong!");
           setdeleteshowConfirm(false);
         }
-        setisLoading(false);
+        setisAddLoading(false);
       }
     }
   };
@@ -699,7 +1002,9 @@ const AddEstimationScreen = () => {
   useEffect(() => {
     getBusinessTypeList();
     getEstimateStatusList()
+    getEstimateApprovals()
     getAccountsList();
+    getSidebarInfo()
     checkLogin();
     // getusersList();
     setUserInfo({
@@ -853,6 +1158,7 @@ const AddEstimationScreen = () => {
     }
   },[id])
 
+  
 
   return (
     <>
@@ -884,24 +1190,191 @@ const AddEstimationScreen = () => {
                 <div className="add_screen_head d-flex justify-content-between">
                   <span className="text_bold">Fill Details ( * Fields are
                     mandatory)</span> 
-                    {/* <ButtonGroup>
-                      <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}>
-                        1
-                      </Button>
-                      <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}>
-                        2
-                      </Button>
+                    <ButtonGroup>
+                      {/* Asset */}
+                      {
+                        (isasset &&
+                          mediaSidebarInfo[0]?.children?.find(
+                            (item) => item?.menu_id == 433
+                          )?.children[0]?.children[4]?.actions == 1 &&
+                          isNewOrReopen) ||
+                        (isasset && isDB && isNewOrReopen) && (
+                          <Button  key="offer-asset-site" variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }} onClick={() => {
+                            getState();
+                            setShow1(true);
+                          }} >
+                            Offer Site
+                          </Button>
+                        )
+                      }
+                      
+                      {
+                        (isasset &&
+                          mediaSidebarInfo[0]?.children?.find(
+                            (item) => item?.menu_id == 433
+                          )?.children[0]?.children[5]?.actions == 1 &&
+                          isNewOrReopen) ||
+                        (isasset && isDB && isNewOrReopen) && (
+                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }} onClick={() => {
+                            getState();
+                            setShow5(true);
+                          }} >
+                            Client Cost Sheet
+                          </Button>
+                        )
+                      }
+
+                      {
+                        (isasset &&
+                          mediaSidebarInfo[0]?.children?.find(
+                            (item) => item?.menu_id == 433
+                          )?.children[0]?.children[6]?.actions == 1 &&
+                          isNewOrReopen) ||
+                        (isasset && isDB && isNewOrReopen) && (
+                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}  onClick={() => {
+                            getState();
+                            setShowVendorAsset(true);
+                          }} >
+                          Vendor Cost Sheet
+                          </Button>
+                        )
+                      }
+
+                      
+
+                      {/* Asset */}
+
+                      {/* Agency */}
+
+                      {
+                        (isagency &&
+                          mediaSidebarInfo[0]?.children?.find(
+                            (item) => item?.menu_id == 433
+                          )?.children[0]?.children[4]?.actions == 1 &&
+                          isNewOrReopen) ||
+                        (isagency && isDB && isNewOrReopen) && (
+                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}  onClick={() => {
+                            setShow3(true);
+                          }}  >
+                          Offer Site
+                          </Button>
+                        )
+                      }
+
+                      
+                      {
+                        (isagency &&
+                          mediaSidebarInfo[0]?.children?.find(
+                            (item) => item?.menu_id == 433
+                          )?.children[0]?.children[4]?.actions == 1 &&
+                          isNewOrReopen) ||
+                        (isagency && isDB && isNewOrReopen) && (
+                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}  onClick={() => {
+                            setShow4(true);
+                          }}  >
+                          Upload Site
+                          </Button>
+                        )
+                      }
+                      
+                      {
+                        (isagency &&
+                          mediaSidebarInfo[0]?.children?.find(
+                            (item) => item?.menu_id == 433
+                          )?.children[0]?.children[5]?.actions == 1 &&
+                          isNewOrReopen) ||
+                        (isagency && isDB && isNewOrReopen) && (
+                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}  onClick={() => {
+                            getState();
+                              setShow6(true);
+                          }}  >
+                          Client Cost Sheet
+                          </Button>
+                        )
+                      }
+                      
+                      {
+                        (isagency &&
+                          mediaSidebarInfo[0]?.children?.find(
+                            (item) => item?.menu_id == 433
+                          )?.children[0]?.children[6]?.actions == 1 &&
+                          isNewOrReopen) ||
+                        (isagency && isDB && isNewOrReopen) && (
+                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}    onClick={() => {
+                            getState();
+                            setShowVendorAgency(true);
+                        }}  >
+                        Vendor Cost Sheet
+                        </Button>
+                        )
+                      }
+                      
+
+
+
+                      {/* Agency */}
 
                       <DropdownButton
                         as={ButtonGroup}
                         variant="transparent"
                         id="bg-nested-dropdown"
+                        
                         style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}
                       >
-                        <Dropdown.Item eventKey="1">Dropdown link</Dropdown.Item>
-                        <Dropdown.Item eventKey="2">Dropdown link</Dropdown.Item>
+                        {
+                          (mediaSidebarInfo[0]?.children?.find(
+                            (item) => item?.menu_id == 433
+                          )?.children[0]?.children[9]?.actions == 1 &&
+                            isNewOrReopen) ||
+                          (isDB && isNewOrReopen) && (
+                            <Dropdown.Item eventKey="1" onClick={() => {
+                              sentForApproval(id);
+                            }} >Send For Approval</Dropdown.Item>
+                          )
+                        }
+
+                        { (mediaSidebarInfo[0]?.children?.find(
+                  (item) => item?.menu_id == 433
+                )?.children[0]?.children[8]?.actions == 1 &&
+                  estimateApprovals?.indexOf(userInfo?.role_id) !== -1 &&
+                  isSentForApproval) ||
+                (userInfo?.isDB == true && isSentForApproval)
+                             &&(
+                              <>
+                                   <Dropdown.Item eventKey="2" onClick={() => {
+                              accept_rejectApproval(id, "true");
+                            }} >Accept</Dropdown.Item>
+                        
+
+                      <Dropdown.Item eventKey="3" onClick={() => {
+                        accept_rejectApproval(id, "false");
+                      }} >Reject</Dropdown.Item>
+                              </>
+                             )
+                        }
+                        
+                       
+
+                      {
+                        (mediaSidebarInfo[0]?.children?.find(
+                          (item) => item?.menu_id == 433
+                        )?.children[0]?.children[7]?.actions == 1 &&
+                          isApproved) ||
+                        (userInfo?.isDB === true && isApproved) && (
+                          <Dropdown.Item as={Link} href={`/media/PorformaInvoice?est_id=${id}`} eventKey="4">Invoice</Dropdown.Item>
+                        )
+                      }
+
+                        <Dropdown.Item eventKey="5" onClick={() => {
+                          setShowSalesOrder(true)
+                        }} >Sales Order</Dropdown.Item>
+
+                        <Dropdown.Item eventKey="6" onClick={() => {
+                          setShowPurchaseOrder(true)
+                        }} >Purchase Order</Dropdown.Item>
+
                       </DropdownButton>
-                    </ButtonGroup> */}
+                    </ButtonGroup>
 
                 </div>
                 <div className="add_user_form">
@@ -2646,19 +3119,19 @@ const AddEstimationScreen = () => {
                             </Link>
                             {editMode ? (
                               <button
-                                disabled={isLoading}
+                                disabled={isAddLoading}
                                 className="btn btn-primary"
                                 onClick={UpdateHandler}
                               >
-                                {isLoading ? "Loading..." : "Update"}
+                                {isAddLoading ? "Loading..." : "Update"}
                               </button>
                             ) : (
                               <button
-                                disabled={isLoading}
+                                disabled={isAddLoading}
                                 className="btn btn-primary"
                                 onClick={submitHandler}
                               >
-                                {isLoading ? "Loading..." : "Save & Submit"}
+                                {isAddLoading ? "Loading..." : "Save & Submit"}
                               </button>
                             )}
                           </>
@@ -2672,6 +3145,110 @@ const AddEstimationScreen = () => {
           </div>
         </div>
       </div>
+      
+      <ModelAssetSite1 
+          show={show1}
+          handleClose={handleClose1}
+          stateList={stateList}
+          setStateId={setStateId}
+          setCityIds={setCityIds}
+          cityList={cityList}
+          stateId={stateId}
+          cityIds={cityIds}
+          getSiteList={getSiteList}
+      />
+
+      <ModelAssetSite2
+        show2={show2}
+        handleClose2={handleClose2}
+        siteLists={siteLists}
+        isLoading={isLoading}
+        selectedSites={selectedSites}
+        handleSelectSite={handleSelectSite}
+        addAssetInSite={addAssetInSite}
+      />
+
+      <ModelClientCostAsset
+        show={show5}
+        handleClose={handleClose5}
+        stateList={stateList}
+        setStateId={setStateId}
+        setCityIds={setCityIds}
+        cityList={cityList}
+        getSiteList={getSiteList}
+        stateId={stateId}
+        cityIds={cityIds}
+        estimateId={id}
+      />
+
+      <ModelVendorCostAsset
+        show={showVendorAsset}
+        handleClose={handleVendorAssetClose}
+        stateList={stateList}
+        setStateId={setStateId}
+        setCityIds={setCityIds}
+        cityList={cityList}
+        getSiteList={getSiteList}
+        stateId={stateId}
+        cityIds={cityIds}
+        estimateId={id}
+        getContactList={getContactList}
+      />
+
+      <ModelAgencySite
+        show={show3}
+        handleClose3={handleClose3}
+        estimateId={id}
+      />
+
+      <ModelAgencySiteUpload
+        show={show4}
+        handleClose={handleClose4}
+        estimateId={id}
+      />
+
+      <ModelClientCostAgency
+        show={show6}
+        handleClose={handleClose6}
+        stateList={stateList}
+        setStateId={setStateId}
+        setCityIds={setCityIds}
+        cityList={cityList}
+        getSiteList={getSiteList}
+        stateId={stateId}
+        cityIds={cityIds}
+        estimateId={id}
+        getContactList={getContactList}
+      />
+
+      <ModelVendorCostAgency
+        show={showVendorAgency}
+        handleClose={handleVendorAgencyClose}
+        stateList={stateList}
+        setStateId={setStateId}
+        setCityIds={setCityIds}
+        cityList={cityList}
+        getSiteList={getSiteList}
+        stateId={stateId}
+        cityIds={cityIds}
+        estimateId={id}
+        getContactList={getContactList}
+      />
+
+      <ModelSalesOrder
+        show={showSalesOrder}
+        handleClose={handleCloseSalesOrder}
+        estimateData={userInfo}
+        estimateID={id}
+      />
+      
+      <ModelPurchaseOrder
+          show={showPurchaseOrder}
+          handleClose={handleClosePurchaseOrder}
+          businessType={userInfo?.cmpn_b_t_id}
+          estimateID={id}
+      />
+
     </>
   );
 };

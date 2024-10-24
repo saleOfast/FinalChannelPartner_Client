@@ -5,6 +5,7 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import { getCookie, hasCookie } from "cookies-next";
 import { Baseurl } from "../../../Utils/Constants";
+import { fetchData } from "../../../Utils/getReq";
 
 const ModelPurchaseOrder = ({ show, handleClose, estimateID,businessType }) => {
   const [formData, setFormData] = useState({
@@ -35,6 +36,9 @@ const ModelPurchaseOrder = ({ show, handleClose, estimateID,businessType }) => {
   });
   const [errors, setErrors] = useState({});
   const [vendorsName, setVendorsName] = useState([]);
+  const [paymentStatusList,setPaymentStatusList] = useState([])
+  const [errorToast, setErrorToast] = useState({});
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -107,8 +111,6 @@ const ModelPurchaseOrder = ({ show, handleClose, estimateID,businessType }) => {
     }
   };
 
-
-
   const getParticularVendorInfo = async () => {
     
     if (hasCookie('token')) {
@@ -143,6 +145,15 @@ const ModelPurchaseOrder = ({ show, handleClose, estimateID,businessType }) => {
     }
 }
 
+const getPaymentStatusList = async () => {
+  await fetchData(
+    `/db/media/paymentStatus/getPaymentStatus`,
+    setPaymentStatusList,
+    errorToast,
+    setErrorToast
+  );
+};
+
 
   useEffect(()=>{
       if(formData.account_type_id!==""){
@@ -169,6 +180,12 @@ const ModelPurchaseOrder = ({ show, handleClose, estimateID,businessType }) => {
         })
       }
   },[formData?.acc_id])
+
+  useEffect(()=>{
+    if(show){
+      getPaymentStatusList()
+    }
+  },[show])
 
   
 
@@ -403,9 +420,11 @@ const ModelPurchaseOrder = ({ show, handleClose, estimateID,businessType }) => {
                     isInvalid={!!errors.p_o_payment_status}
                   >
                     <option value="">Select Payment Status</option>
-                    <option value="1">Pending</option>
-                    <option value="2">In-Progress</option>
-                    <option value="3">Done</option>
+                    {
+                      paymentStatusList?.map((item,index)=>(
+                        <option key={index} value={item?.p_s_id}>{item?.p_s_name}</option>
+                      ))
+                    }
                   </Form.Control>
                   <Form.Control.Feedback type="invalid">{errors.p_o_payment_status}</Form.Control.Feedback>
                 </Form.Group>

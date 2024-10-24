@@ -82,7 +82,7 @@ const ManagePaymentStatusScreen = () => {
 
       try {
         const response = await axios.get(
-          Baseurl + `/db/media/estimationStatus/getEstimationStatus`,
+          Baseurl + `/db/media/paymentStatus/getPaymentStatus`,
           header
         );
         if (response?.status == 200 || response?.status == 201) {
@@ -122,7 +122,7 @@ const ManagePaymentStatusScreen = () => {
 
       try {
         const response = await axios.put(
-          Baseurl + `/db/media/estimationStatus/updateEstimationStatus`,
+          Baseurl + `/db/media/paymentStatus/updatePaymentStatus`,
           reqInfo,
           header
         );
@@ -159,7 +159,7 @@ const ManagePaymentStatusScreen = () => {
       try {
         const response = await axios.delete(
           Baseurl +
-            `/db/media/estimationStatus/deleteEstimationStatus?p_s_id=${currObj}`,
+            `/db/media/paymentStatus/deletePaymentStatus?p_s_id=${currObj}`,
           header
         );
         if (response.status === 204 || response.status === 200) {
@@ -197,7 +197,7 @@ const ManagePaymentStatusScreen = () => {
 
         try {
           const response = await axios.post(
-            Baseurl + `/db/media/estimationStatus/addEstimationStatus`,
+            Baseurl + `/db/media/paymentStatus/addPaymentStatus`,
             userInfo,
             header
           );
@@ -236,7 +236,7 @@ const ManagePaymentStatusScreen = () => {
 
         try {
           const response = await axios.put(
-            Baseurl + `/db/media/estimationStatus/updateEstimationStatus`,
+            Baseurl + `/db/media/paymentStatus/updatePaymentStatus`,
             userInfo,
             header
           );

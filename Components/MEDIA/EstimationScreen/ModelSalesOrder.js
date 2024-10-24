@@ -80,7 +80,11 @@ const ModelSalesOrder = ({ show, handleClose,estimateData,estimateID }) => {
                     estimate_code:estimateData?.estimation_code,
                     estimate_id:estimateData?.estimate_id,
                     acc_name:estimateData?.db_media_campaign?.db_account?.acc_name,
-                    acc_id:estimateData?.db_media_campaign?.db_account?.acc_id
+                    acc_id:estimateData?.db_media_campaign?.db_account?.acc_id,
+                    s_o_po_date:moment(estimateData?.db_media_campaign?.s_o_po_date).format("YYYY-MM-DD"),
+                    s_o_po_number:estimateData?.db_media_campaign?.s_o_po_number,
+                    s_o_po_remarks:estimateData?.db_media_campaign?.s_o_po_remarks,
+                    s_o_po_value:estimateData?.db_media_campaign?.s_o_po_value,
                 })
             }
         } catch (error) {

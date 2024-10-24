@@ -333,7 +333,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
   }, []);
 
   useEffect(() => {
-    getCity(stateId);
+    if(stateId) getCity(stateId);
   }, [stateId]);
 
   const columns = [
@@ -400,34 +400,34 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
               </button>
 
               {(mediaSidebarInfo[0]?.children?.find(
-                (item) => item?.menu_id == 433
-              )?.children[0]?.children[8]?.actions == 1 &&
-                estimateApprovals?.indexOf(userInfo?.role_id) !== -1 &&
-                tableMeta.rowData[3] == "Sent For Approval") ||
-                (userInfo?.isDB == true &&
-                  tableMeta.rowData[3] === "Sent For Approval" && (
-                    <>
-                      <button
-                        className="action_btn"
-                        title="Accept"
-                        onClick={() => {
-                          accept_rejectApproval(value, "true");
-                        }}
-                      >
-                        <AcceptIcon />
-                      </button>
+                  (item) => item?.menu_id == 433
+                )?.children[0]?.children[8]?.actions == 1 &&
+                  estimateApprovals?.indexOf(userInfo?.role_id) !== -1 &&
+                  tableMeta.rowData[3] == "Sent For Approval") ||
+                (userInfo?.isDB == true && tableMeta.rowData[3] === "Sent For Approval") ? (
+                  <>
+                    <button
+                      className="action_btn"
+                      title="Accept"
+                      onClick={() => {
+                        accept_rejectApproval(value, "true");
+                      }}
+                    >
+                      <AcceptIcon />
+                    </button>
 
-                      <button
-                        className="action_btn"
-                        title="Reject"
-                        onClick={() => {
-                          accept_rejectApproval(value, "false");
-                        }}
-                      >
-                        <RejectIcon />
-                      </button>
-                    </>
-                  ))}
+                    <button
+                      className="action_btn"
+                      title="Reject"
+                      onClick={() => {
+                        accept_rejectApproval(value, "false");
+                      }}
+                    >
+                      <RejectIcon />
+                    </button>
+                  </>
+                ) : null}
+
 
               {(() => {
                 const items = [];
@@ -448,7 +448,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
                 const isDB = userInfo?.isDB
 
-                // Asset condition: Offer Asset Site
+                // Asset condition: Offer Asset Site 
                 if (
                   (isAsset &&
                     mediaSidebarInfo[0]?.children?.find(
@@ -767,9 +767,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         setStateId={setStateId}
         setCityIds={setCityIds}
         cityList={cityList}
-        getSiteList={getSiteList}
         stateId={stateId}
         cityIds={cityIds}
+        getSiteList={getSiteList}
       />
 
       <ModelClientCostAsset
@@ -830,26 +830,12 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
       <ModelAgencySiteUpload
         show={show4}
         handleClose={handleClose4}
-        stateList={stateList}
-        setStateId={setStateId}
-        setCityIds={setCityIds}
-        cityList={cityList}
-        getSiteList={getSiteList}
-        stateId={stateId}
         estimateId={estimationId}
-        cityIds={cityIds}
       />
 
       <ModelAgencySite
         show={show3}
         handleClose3={handleClose3}
-        stateList={stateList}
-        setStateId={setStateId}
-        setCityIds={setCityIds}
-        cityList={cityList}
-        getSiteList={getSiteList}
-        stateId={stateId}
-        cityIds={cityIds}
         estimateId={estimationId}
       />
 

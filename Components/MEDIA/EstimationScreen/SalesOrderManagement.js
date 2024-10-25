@@ -16,7 +16,7 @@ const SalesOrderManagement = ({ id, link }) => {
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const getSalesOrder = async () => {
+  const getSalesOrder = async (id) => {
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -73,8 +73,10 @@ const SalesOrderManagement = ({ id, link }) => {
   };
 
   useEffect(() => {
-    getSalesOrder();
-  }, []);
+    if(id){
+      getSalesOrder(id);
+    }
+  }, [id]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -234,7 +236,7 @@ const SalesOrderManagement = ({ id, link }) => {
         size="xl"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Purchase Order Management</Modal.Title>
+          <Modal.Title>Sales Order Management</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {showError && (

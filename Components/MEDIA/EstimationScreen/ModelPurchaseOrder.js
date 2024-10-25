@@ -163,9 +163,7 @@ const getPaymentStatusList = async () => {
 
   useEffect(()=>{
       if(formData?.acc_id!==""){
-        console.log(vendorsName)
         const data=vendorsName?.find(item=>item?.acc_id==formData?.acc_id)
-        console.log(data)
         setFormData({...formData,
             acc_name:data?.acc_name,
             campaign_id:data?.campaign_id,

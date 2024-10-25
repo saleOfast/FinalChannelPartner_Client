@@ -23,7 +23,6 @@ import PurchaseOrderManagement from "./PurchaseOrderManagement";
 import Button from 'react-bootstrap/Button';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-import ActionButtons from "./ActionButtons";
 import ModelAssetSite1 from "./ModelAssetSite1";
 import ModelAssetSite2 from "./ModelAssetSite2";
 import ModelClientCostAsset from "./ModelClientCostAsset";
@@ -34,6 +33,11 @@ import ModelClientCostAgency from "./ModelClientCostAgency";
 import ModelVendorCostAgency from "./ModelVendorCostAgency";
 import ModelSalesOrder from "./ModelSalesOrder";
 import ModelPurchaseOrder from "./ModelPurchaseOrder";
+import SiteBookingHistory from "./SiteBookingHistory";
+import AssetSites from "./AssetSites";
+import AgencySites from "./AgencySites";
+import ModelGenerateCard from "./ModelGenerateCard";
+import JobCardManagement from "./JobCardManagement";
  
 
 const AddEstimationScreen = () => {
@@ -173,7 +177,7 @@ const AddEstimationScreen = () => {
   const [showPurchaseOrder,setShowPurchaseOrder] =useState(false)
   const [ mediaSidebarInfo,setmediaSidebarInfo]=useState([])
   const [estimateApprovals, setEstimateApprovals] = useState();
-
+  const [showGenerateCard, setShowGenerateCard] = useState(false);
 
   const handleClose1 = () => {
     setShow1(false);
@@ -207,6 +211,10 @@ const AddEstimationScreen = () => {
   const handleClosePurchaseOrder =()=>{
     setShowPurchaseOrder(false)
   }
+
+  const handleCloseGenerateCard = () => {
+    setShowGenerateCard(false);
+  };
 
   const getSiteList = async () => {
     if (!stateId) {
@@ -473,16 +481,6 @@ const AddEstimationScreen = () => {
     }
   }, [userInfo, busiessTypeList, editMode]);
 
-  const [bookingHistory,setBookingHistory] =useState([])
-
-  async function getBookingHistory() {
-    await fetchData(
-      `/db/media/estimation/getSiteBookingHistory?estimate_id=${id}`,
-      setBookingHistory,
-      errorToast,
-      setErrorToast
-    );
-  }
 
   async function getBusinessTypeList() {
     await fetchData(
@@ -1152,11 +1150,7 @@ const AddEstimationScreen = () => {
     getAgencySites();
   }, [show]);
 
-  useEffect(()=>{
-    if(id){
-      getBookingHistory()
-    }
-  },[id])
+  
 
   
 
@@ -1372,6 +1366,10 @@ const AddEstimationScreen = () => {
                         <Dropdown.Item eventKey="6" onClick={() => {
                           setShowPurchaseOrder(true)
                         }} >Purchase Order</Dropdown.Item>
+
+                        <Dropdown.Item eventKey="7" onClick={() => {
+                          setShowGenerateCard(true)
+                        }} >Generate Job Card</Dropdown.Item>
 
                       </DropdownButton>
                     </ButtonGroup>
@@ -2584,294 +2582,66 @@ const AddEstimationScreen = () => {
                   ) :null
                 }
 
+                {
+                  id && (
+                    <>
+                        <AssetSites 
+                          busiessTypeList={busiessTypeList}
+                          userInfo={userInfo}
+                          assetDeleteShowConfirm={assetDeleteShowConfirm}
+                          viewMode={viewMode}
+                          setAssetDeleteShowConfirm={setAssetDeleteShowConfirm}
+                          setDeleteSiteAssetId={setDeleteSiteAssetId}
+                          id={id}
+                          deleteAssetSite={deleteAssetSite}
+                          assetSiteLists={assetSiteLists}
+                          errorToast={errorToast}
+                          setErrorToast={setErrorToast}
+                        />
+
+                        
+
+                        <AgencySites 
+                          busiessTypeList={busiessTypeList}
+                          userInfo={userInfo}
+                          deleteshowConfirm={deleteshowConfirm}
+                          setdeleteshowConfirm={setdeleteshowConfirm}
+                          deleteAgencySite={deleteAgencySite}
+                          agencySiteLists={agencySiteLists}
+                          viewMode={viewMode}
+                          show={show}
+                          setShow={setShow}
+                          setGetAgencyData={setGetAgencyData}
+                          handleClose={handleClose}
+                          getAgencyData={getAgencyData}
+                          agencySiteData={agencySiteData}
+                          setAgencySiteData={setAgencySiteData}
+                          setDeleteSiteAgencyId={setDeleteSiteAgencyId}
+                          id={id}
+                        />
+
+                        <SalesOrderManagement 
+                            id={id}
+                            link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
+                        />
+
+                        <PurchaseOrderManagement
+                            id={id}
+                            link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
+                        />
+
+                        <JobCardManagement
+                          id={id}
+                        />
+                    </>
+                  )
+                }
+                
                 
 
-               
 
-                {busiessTypeList?.find(
-                  (item) =>
-                    item?.cmpn_b_t_id ==
-                    userInfo?.db_media_campaign?.cmpn_b_t_id
-                )?.cmpn_b_t_name == "Asset" && (
-                  <>
-                    <ConfirmBox
-                      showConfirm={assetDeleteShowConfirm}
-                      setshowConfirm={setAssetDeleteShowConfirm}
-                      actionType={deleteAssetSite}
-                      title={"Are You Sure you want to Delete ?"}
-                    />
-                    <div className="add_screen_head">
-                      <span className="text_bold">Asset Sites</span>
-                    </div>
-                    <div className="add_user_form">
-                      <div className="row ">
-                        {assetSiteLists?.filter((item) => item.status == true)
-                          .length > 0 ? (
-                          <Table bordered hover responsive>
-                            <thead>
-                              <tr>
-                                <th>Site ID</th>
-                                <th>State</th>
-                                <th>City</th>
-                                <th>Location</th>
-                                <th>Category</th>
-                                <th>Media Format</th>
-                                <th>Media Vehicle</th>
-                                <th>Media Type</th>
-                                <th>Quantity</th>
-                                <th>Height (Ft.)</th>
-                                <th>Width (Ft.)</th>
-                                <th>Total Sq. Ft.</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {assetSiteLists
-                                ?.filter((item) => item.status == true)
-                                ?.map((site) => (
-                                  <tr key={site.site_id}>
-                                    <td>{site.site_id}</td>
-                                    <td>
-                                      {site?.db_site?.db_state?.state_name}
-                                    </td>
-                                    <td>{site?.db_site?.db_city?.city_name}</td>
-                                    <td>{site?.db_site?.location}</td>
-                                    <td>
-                                      {
-                                        site?.db_site?.db_site_category
-                                          ?.site_cat_name
-                                      }
-                                    </td>
-                                    <td>
-                                      {site?.db_site?.db_media_format?.m_f_name}
-                                    </td>
-                                    <td>
-                                      {
-                                        site?.db_site?.db_media_vehicle
-                                          ?.m_v_name
-                                      }
-                                    </td>
-                                    <td>
-                                      {site?.db_site?.db_media_type?.m_t_name}
-                                    </td>
-                                    <td>{site?.db_site.quantity}</td>
-                                    <td>{site?.db_site.height}</td>
-                                    <td>{site?.db_site.width}</td>
-                                    <td>
-                                      {site?.db_site.height *
-                                        site?.db_site.width}
-                                    </td>
-                                    {!viewMode ? (
-                                      <td className="table_btns">
-                                        <button
-                                          className="action_btn"
-                                          title="Delete"
-                                          onClick={() => {
-                                            // deleteAssetSite(site.site_id);
-                                            setAssetDeleteShowConfirm(true);
-                                            setDeleteSiteAssetId(site.site_id)
-                                          }}
-                                        >
-                                          <DeleteIcon />
-                                        </button>
-                                      </td>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </tr>
-                                ))}
-                            </tbody>
-                          </Table>
-                        ) : (
-                          <p>No sites available</p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="add_screen_head">
-                    <span className="text_bold">Site Booking History</span>
-                  </div>
-                  <div className="add_user_form">
-                    <div className="row">
-                    <div
-                      style={{
-                        maxHeight: '350px', // Set the maximum height for the table
-                        overflowY: 'auto',   // Enable vertical scrolling
-                        marginBottom: '20px', // Add some space below the table
-                      }}
-                    >
-                      <Table striped bordered hover responsive>
-                        <thead>
-                          <tr>
-                            <th>Booking History ID</th>
-                            <th>Site ID</th>
-                            <th>Campaign ID</th>
-                            <th>Campaign Start Date</th>
-                            <th>Campaign End Date</th>
-                            <th>Campaign Total Days</th>
-                            <th>Campaign Status</th>
-                            <th>Client Cost</th>
-                            <th>Vendor Cost</th>
-                            <th>Margin</th>
-                            <th>Margin %</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {bookingHistory.map((booking,index) => (
-                            <tr key={index}>
-                              <td>{booking?.sb_code}</td>
-                              <td>
-                                <Link href={`/sites/${booking}`}>{booking?.db_site?.site_id}</Link>
-                              </td>
-                              <td>
-                                <Link href={`/campaigns/${booking}`}>{booking?.db_media_campaign?.campaign_id}</Link>
-                              </td>
-                              <td>{moment(booking?.db_media_campaign?.campaign_start_date).format("DD/MM/YYYY")
-                              }</td>
-                              <td>{moment(booking?.db_media_campaign?.campaign_end_date).format("DD/MM/YYYY")
-                              }</td>
-                              <td>{booking?.db_media_campaign?.campaign_duration}</td>
-                              <td>{booking?.db_media_campaign?.db_campaign_status?.cmpn_s_name}</td>
-                              <td>{booking?.db_asset_client_cost_sheet?.final_client_po_cost?.toFixed(2)}</td>
-                              <td>{(booking.db_asset_vendor_cost_sheet?.mounting_cost+booking.db_asset_vendor_cost_sheet?.printing_cost+booking.db_asset_vendor_cost_sheet?.final_display_cost).toFixed(2)}</td>
-                              <td>{booking?.db_media_campaign?.overall_margin}</td>
-                              <td>{booking?.db_media_campaign?.overall_margin_percentage}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </Table>
-                    </div>
-                    </div>
-                    </div>
-                  </>
-                )}
 
-                  <SalesOrderManagement 
-                      id={id}
-                      link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
-                  />
-
-                  <PurchaseOrderManagement
-                      id={id}
-                      link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
-                  />
-
-                {busiessTypeList?.find(
-                  (item) =>
-                    item?.cmpn_b_t_id ==
-                    userInfo?.db_media_campaign?.cmpn_b_t_id
-                )?.cmpn_b_t_name == "Agency" && (
-                  <>
-                    <ConfirmBox
-                      showConfirm={deleteshowConfirm}
-                      setshowConfirm={setdeleteshowConfirm}
-                      actionType={deleteAgencySite}
-                      title={"Are You Sure you want to Delete ?"}
-                    />
-                    <div className="add_screen_head">
-                      <span className="text_bold">Agency Sites</span>
-                    </div>
-                    <div className="add_user_form">
-                      <div className="row ">
-                        {agencySiteLists?.filter((item) => item.status == true)
-                          .length > 0 ? (
-                          <Table bordered hover responsive>
-                            <thead>
-                              <tr>
-                                <th>Site ID</th>
-                                <th>State</th>
-                                <th>City</th>
-                                <th>Location</th>
-                                <th>Media Format</th>
-                                <th>Media Vehicle</th>
-                                <th>Media Type</th>
-                                <th>Quantity</th>
-                                <th>Height (Ft.)</th>
-                                <th>Width (Ft.)</th>
-                                <th>Total Sq. Ft.</th>
-                                <th>Client Display Cost / Sq. Ft.</th>
-                                <th>Client Mounting Cost / Sq. Ft.</th>
-                                <th>Client Printing Cost / Sq. Ft.</th>
-                                {!viewMode && (
-                                  <>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                  </>
-                                )}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {agencySiteLists
-                                ?.filter((item) => item.status == true)
-                                ?.map((site) => (
-                                  <tr key={site.site_id}>
-                                    <td>{site.site_id}</td>
-                                    <td>{site?.state_id}</td>
-                                    <td>{site?.city_id}</td>
-                                    <td>{site?.location}</td>
-
-                                    <td>{site?.m_f_id}</td>
-                                    <td>{site?.m_v_id}</td>
-                                    <td>{site?.m_t_id}</td>
-                                    <td>{site?.quantity}</td>
-                                    <td>{site?.height}</td>
-                                    <td>{site?.width}</td>
-                                    <td>{site?.height * site?.width}</td>
-                                    <td>{site?.client_display_cost}</td>
-                                    <td>{site?.client_mounting_cost}</td>
-                                    <td>{site?.client_printing_cost}</td>
-
-                                    {!viewMode ? (
-                                      <td className="table_btns">
-                                        <button
-                                          className="action_btn"
-                                          title="Edit"
-                                          onClick={() => {
-                                            setAgencySiteData(site);
-                                            setShow(true);
-                                          }}
-                                        >
-                                          <EditIcon />
-                                        </button>
-                                      </td>
-                                    ) : (
-                                      ""
-                                    )}
-
-                                    {!viewMode ? (
-                                      <td className="delete-btn">
-                                        <button
-                                          className="action_btn"
-                                          title="Delete"
-                                          onClick={() => {
-                                            setdeleteshowConfirm(true);
-                                            setDeleteSiteAgencyId(site.site_id);
-                                          }}
-                                        >
-                                          <DeleteIcon />
-                                        </button>
-                                      </td>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </tr>
-                                ))}
-                            </tbody>
-                          </Table>
-                        ) : (
-                          <p>No sites available</p>
-                        )}
-                        {
-                          <ModelEditAgencySite
-                            show={show}
-                            setGetAgencyData={setGetAgencyData}
-                            handleClose={handleClose}
-                            getAgencyData={getAgencyData}
-                            agencySiteData={agencySiteData}
-                          />
-                        }
-                      </div>
-                    </div>
-                  </>
-                )}
+                  
 
                   
 
@@ -3247,6 +3017,13 @@ const AddEstimationScreen = () => {
           handleClose={handleClosePurchaseOrder}
           businessType={userInfo?.cmpn_b_t_id}
           estimateID={id}
+      />
+
+      <ModelGenerateCard 
+        show={showGenerateCard}
+        handleClose={setShowGenerateCard}
+        businessType={userInfo?.cmpn_b_t_id}
+        estimateID={id}
       />
 
     </>

@@ -31,6 +31,7 @@ import RejectIcon from "../../Svg/RejectIcon";
 import { Dropdown } from "react-bootstrap"
 import ModelSalesOrder from "./ModelSalesOrder";
 import ModelPurchaseOrder from "./ModelPurchaseOrder";
+import ModelGenerateCard from "./ModelGenerateCard";
 
 
 const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getContactList }) => {
@@ -49,6 +50,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
   const [show6, setShow6] = useState(false);
   const [showVendorAsset, setShowVendorAsset] = useState(false);
   const [showVendorAgency, setShowVendorAgency] = useState(false);
+  const [showGenerateCard, setShowGenerateCard] = useState(false);
 
   const [selectedSites, setSelectedSites] = useState([]);
   const [estimationId, setEstimationId] = useState(null);
@@ -66,6 +68,10 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
     setShow(false);
     setStateId("");
     setCityIds([]);
+  };
+
+  const handleCloseGenerateCard = () => {
+    setShowGenerateCard(false);
   };
 
   const handleClose2 = () => {
@@ -678,6 +684,17 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                       Purchase Order
                     </Dropdown.Item>)
 
+                    items.push(<Dropdown.Item
+                      key="Sales Order"
+                      title="Generate Job Card"
+                      onClick={()=>{
+                        setEstimationId(tableMeta?.rowData[4]);
+                        setShowGenerateCard(true)
+                      }}
+                    >
+                     Generate Job Card
+                    </Dropdown.Item>)
+
                 if (items.length > 0) {
                   return (
                     <Dropdown >
@@ -758,6 +775,13 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
           handleClose={handleClosePurchaseOrder}
           businessType={accountsList?.find((item)=>item?.estimate_id==estimationId)?.db_media_campaign?.cmpn_b_t_id}
           estimateID={estimationId}
+      />
+
+      <ModelGenerateCard 
+        show={showGenerateCard}
+        handleClose={setShowGenerateCard}
+        businessType={accountsList?.find((item)=>item?.estimate_id==estimationId)?.db_media_campaign?.cmpn_b_t_id}
+        estimateID={estimationId}
       />
 
       <ModelAssetSite1

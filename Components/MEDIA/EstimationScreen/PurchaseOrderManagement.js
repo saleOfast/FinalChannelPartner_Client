@@ -17,7 +17,7 @@ const PurchaseOrderManagement = ({ id, link }) => {
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const getPurchaseOrder = async () => {
+  const getPurchaseOrder = async (id) => {
     if (hasCookie("token")) {
       let token = getCookie("token");
       let db_name = getCookie("db_name");
@@ -32,13 +32,13 @@ const PurchaseOrderManagement = ({ id, link }) => {
       };
       try {
         const response = await axios.get(
-          Baseurl + `/db/media/purchaseOrder/getPurchaseOrder`,
+          Baseurl + `/db/media/purchaseOrder/getPurchaseOrder?estimate_id=${id}`,
           header
         );
 
         if (
           (response?.status == 200 || response?.status == 201) &&
-          response?.data?.data!==null
+          response?.data?.data?.length>0
         ) {
           const data = response?.data?.data;
           setPurchaseOrder(data);
@@ -57,7 +57,7 @@ const PurchaseOrderManagement = ({ id, link }) => {
 
   useEffect(() => {
     if(id){
-      getPurchaseOrder();
+      getPurchaseOrder(id);
     }
   }, [id]);
 

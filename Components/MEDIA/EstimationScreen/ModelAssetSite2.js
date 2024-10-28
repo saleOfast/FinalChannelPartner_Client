@@ -7,7 +7,8 @@ const ModelAssetSite2 = ({ show2,
     isLoading,
     selectedSites = [], // Default to an empty array if undefined
     addAssetInSite,
-    handleSelectSite,}) => {
+    handleSelectSite,
+    getSingleData}) => {
   return (
     <>
         <Modal  show={show2} onHide={handleClose2} size="lg">

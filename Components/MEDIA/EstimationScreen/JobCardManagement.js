@@ -1,66 +1,66 @@
-import React from 'react';
+import { getCookie, hasCookie } from 'cookies-next';
+import React, { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
+import { Baseurl } from '../../../Utils/Constants';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import moment from 'moment';
 
-const JobCardManagement = () => {
-  // Dummy data for the tables
-  const jobRequests = [
-    {
-      requestId: 'D001',
-      requestDate: '2024-10-25',
-      requestType: 'Display',
-      vendorCode: 'V001',
-      vendorName: 'Vendor A',
-      campaignStartDate: '2024-11-01',
-      siteId: 'S001',
-      siteState: 'CA',
-      siteCity: 'Los Angeles',
-      siteLocation: '123 Main St',
-      widthFt: 10,
-      heightFt: 5,
-      quantity: 100,
-      totalPayout: 5000,
-    },
-    {
-      requestId: 'M001',
-      requestDate: '2024-10-25',
-      requestType: 'Mounting',
-      vendorCode: 'V002',
-      vendorName: 'Vendor B',
-      campaignStartDate: '2024-11-05',
-      siteState: 'NY',
-      siteCity: 'New York',
-      siteLocation: '456 Elm St',
-      widthFt: 12,
-      heightFt: 6,
-      quantity: 50,
-      totalSqFt: 72,
-      perSqFtCost: 20,
-      totalPayout: 1440,
-    },
-    {
-      requestId: 'P001',
-      requestDate: '2024-10-25',
-      requestType: 'Printing',
-      vendorCode: 'V003',
-      vendorName: 'Vendor C',
-      printingMaterial: 'Vinyl',
-      campaignStartDate: '2024-11-10',
-      siteState: 'TX',
-      siteCity: 'Houston',
-      siteLocation: '789 Oak St',
-      widthFt: 15,
-      heightFt: 8,
-      quantity: 200,
-      totalSqFt: 1200,
-      perSqFtCost: 10,
-      totalPayout: 12000,
-    },
-  ];
+const JobCardManagement = ({id,type}) => {
 
-  // Filter job requests by type
-  const displayRequests = jobRequests.filter(req => req.requestType === "Display");
-  const mountingRequests = jobRequests.filter(req => req.requestType === "Mounting");
-  const printingRequests = jobRequests.filter(req => req.requestType === "Printing");
+  const [displayRequest,setDisplayRequest]=useState([])
+  const [mountingRequest,setMountingRequest]=useState([])
+  const [printingRequest,setPrintingRequest]=useState([])
+
+  const getJobCards = async (id,type) => {
+    if (hasCookie('token')) {
+        let token = (getCookie('token'));
+        let db_name = (getCookie('db_name'));
+
+        let header = {
+            headers: {
+                Accept: "application/json",
+                Authorization: "Bearer ".concat(token),
+                db: db_name,
+                pass:"pass"
+            }
+        }
+        const ACCOUNT_TYPES = {
+          PRINTING: 13,
+          MOUNTING: 14,
+          DISPLAY_TYPE1: 12,
+          DISPLAY_TYPE2: 10
+      };
+        try {
+            const response = await axios.get(Baseurl + `/db/media/jobCard/getJobCard?estimate_id=${id}`, header);
+            if (response?.status == 200 || response?.status == 201) {
+              const data = response?.data?.data || [];
+              
+              setPrintingRequest(data.filter(item => item.account_type_id == ACCOUNT_TYPES.PRINTING));
+              setMountingRequest(data.filter(item => item.account_type_id == ACCOUNT_TYPES.MOUNTING));
+              
+              const displayType = type == 1 ? ACCOUNT_TYPES.DISPLAY_TYPE1 : ACCOUNT_TYPES.DISPLAY_TYPE2;
+              setDisplayRequest(data.filter(item => item.account_type_id == displayType));
+          }
+           
+        } catch (error) {
+            console.log(error)
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            }
+            else {
+                toast.error('Something went wrong!')
+            }
+        }
+    }
+}
+
+useEffect(() => {
+  if (id && type !== undefined) { // Check that both id and type are valid
+    getJobCards(id, type);
+  }
+}, [id, type]);
+
 
   return (
     <div className=''>
@@ -77,9 +77,13 @@ const JobCardManagement = () => {
           <tr>
             <th>Request ID</th>
             <th>Request Date</th>
-            <th>Vendor Code</th>
-            <th>Vendor Name</th>
+            <th>Display Vendor Code</th>
+            <th>Display Vendor Name</th>
+            <th>Campaign Id</th>
+            <th>Estimate Id</th>
             <th>Campaign Start Date</th>
+            <th>Campaign End Date</th>
+            <th>Campaign Duration</th>
             <th>Site ID</th>
             <th>Site State</th>
             <th>Site City</th>
@@ -91,22 +95,26 @@ const JobCardManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {displayRequests.map((request, index) => (
+          {displayRequest?.map((request, index) => (
             <tr key={index}>
-              <td>{request.requestId}</td>
-              <td>{request.requestDate}</td>
-              <td>{request.vendorCode}</td>
-              <td>{request.vendorName}</td>
-              <td>{request.campaignStartDate}</td>
-              <td>{request.siteId || '-'}</td>
-              <td>{request.siteState}</td>
-              <td>{request.siteCity}</td>
-              <td>{request.siteLocation}</td>
-              <td>{request.widthFt}</td>
-              <td>{request.heightFt}</td>
-              <td>{request.quantity}</td>
-              <td>{request.totalPayout}</td>
-            </tr>
+            <td>{request.jc_code}</td>
+            <td>{moment(request.jc_request_date).format("YYYY-MM-DD")}</td>
+            <td>{request.jc_vendor_code}</td>
+            <td>{request.jc_vendor_name}</td>
+            <td>{request.campaign_code||request.campaign_id}</td>
+            <td>{request.estimation_code||request.estimate_id}</td>
+            <td>{moment(request.campaign_start_date).format("YYYY-MM-DD")}</td>
+            <td>{moment(request.campaign_end_date).format("YYYY-MM-DD")}</td>
+            <td>{request.campaign_duration}</td>
+            <td>{request.site_code ||request.site_id}</td>
+            <td>{request.site_state}</td>
+            <td>{request.site_city}</td>
+            <td>{request.site_location}</td>
+            <td>{request.site_width}</td>
+            <td>{request.site_height}</td>
+            <td>{request.site_quantity}</td>
+            <td>{request.site_total_payout}</td>
+          </tr>
           ))}
         </tbody>
       </Table>
@@ -119,11 +127,15 @@ const JobCardManagement = () => {
                  <Table striped bordered hover responsive>
         <thead>
           <tr>
-            <th>Request ID</th>
-            <th>Request Date</th>
-            <th>Vendor Code</th>
-            <th>Vendor Name</th>
+          <th>Request ID</th>
+          <th>Request Date</th>
+            <th>Mounting Vendor Code</th>
+            <th>Mounting Vendor Name</th>
+            <th>Campaign Id</th>
+            <th>Estimate Id</th>
             <th>Campaign Start Date</th>
+            <th>Campaign End Date</th>
+            <th>Campaign Duration</th>
             <th>Site ID</th>
             <th>Site State</th>
             <th>Site City</th>
@@ -135,22 +147,26 @@ const JobCardManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {mountingRequests.map((request, index) => (
+          {mountingRequest.map((request, index) => (
             <tr key={index}>
-              <td>{request.requestId}</td>
-              <td>{request.requestDate}</td>
-              <td>{request.vendorCode}</td>
-              <td>{request.vendorName}</td>
-              <td>{request.campaignStartDate}</td>
-              <td>{request.siteId || '-'}</td>
-              <td>{request.siteState}</td>
-              <td>{request.siteCity}</td>
-              <td>{request.siteLocation}</td>
-              <td>{request.widthFt}</td>
-              <td>{request.heightFt}</td>
-              <td>{request.quantity}</td>
-              <td>{request.totalPayout}</td>
-            </tr>
+            <td>{request.jc_code}</td>
+            <td>{moment(request.jc_request_date).format("YYYY-MM-DD")}</td>
+            <td>{request.jc_vendor_code}</td>
+            <td>{request.jc_vendor_name}</td>
+            <td>{request.campaign_code||request.campaign_id}</td>
+            <td>{request.estimation_code||request.estimate_id}</td>
+            <td>{moment(request.campaign_start_date).format("YYYY-MM-DD")}</td>
+            <td>{moment(request.campaign_end_date).format("YYYY-MM-DD")}</td>
+            <td>{request.campaign_duration}</td>
+            <td>{request.site_code ||request.site_id}</td>
+            <td>{request.site_state}</td>
+            <td>{request.site_city}</td>
+            <td>{request.site_location}</td>
+            <td>{request.site_width}</td>
+            <td>{request.site_height}</td>
+            <td>{request.site_quantity}</td>
+            <td>{request.site_total_payout}</td>
+          </tr>
           ))}
         </tbody>
       </Table>
@@ -163,11 +179,16 @@ const JobCardManagement = () => {
                  <Table striped bordered hover responsive>
         <thead>
           <tr>
-            <th>Request ID</th>
+          <th>Request ID</th>
             <th>Request Date</th>
-            <th>Vendor Code</th>
-            <th>Vendor Name</th>
+            <th>Printing Vendor Code</th>
+            <th>Printing Vendor Name</th>
+            <th>Printing Material</th>
+            <th>Campaign Id</th>
+            <th>Estimate Id</th>
             <th>Campaign Start Date</th>
+            <th>Campaign End Date</th>
+            <th>Campaign Duration</th>
             <th>Site ID</th>
             <th>Site State</th>
             <th>Site City</th>
@@ -179,21 +200,26 @@ const JobCardManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {printingRequests.map((request, index) => (
+          {printingRequest.map((request, index) => (
             <tr key={index}>
-              <td>{request.requestId}</td>
-              <td>{request.requestDate}</td>
-              <td>{request.vendorCode}</td>
-              <td>{request.vendorName}</td>
-              <td>{request.campaignStartDate}</td>
-              <td>{request.siteId || '-'}</td>
-              <td>{request.siteState}</td>
-              <td>{request.siteCity}</td>
-              <td>{request.siteLocation}</td>
-              <td>{request.widthFt}</td>
-              <td>{request.heightFt}</td>
-              <td>{request.quantity}</td>
-              <td>{request.totalPayout}</td>
+              <td>{request.jc_code}</td>
+              <td>{moment(request.jc_request_date).format("YYYY-MM-DD")}</td>
+              <td>{request.jc_vendor_code}</td>
+              <td>{request.jc_vendor_name}</td>
+              <td>{request.printing_material}</td>
+              <td>{request.campaign_code||request.campaign_id}</td>
+              <td>{request.estimation_code||request.estimate_id}</td>
+              <td>{moment(request.campaign_start_date).format("YYYY-MM-DD")}</td>
+              <td>{moment(request.campaign_end_date).format("YYYY-MM-DD")}</td>
+              <td>{request.campaign_duration}</td>
+              <td>{request.site_code ||request.site_id}</td>
+              <td>{request.site_state}</td>
+              <td>{request.site_city}</td>
+              <td>{request.site_location}</td>
+              <td>{request.site_width}</td>
+              <td>{request.site_height}</td>
+              <td>{request.site_quantity}</td>
+              <td>{request.site_total_payout}</td>
             </tr>
           ))}
         </tbody>

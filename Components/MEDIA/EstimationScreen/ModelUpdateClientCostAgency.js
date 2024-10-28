@@ -19,7 +19,9 @@ const ModelUpdateClientCostAgency = ({
   selectedSite,
   getAgencySites,
   getContactList,
-  estimationTotals
+  estimationTotals,
+  getSingleData,
+  estimateId
 }) => {
 
   const [formData, setFormData] = useState({
@@ -272,6 +274,7 @@ const ModelUpdateClientCostAgency = ({
           handleClose()
           setFlag(false)
           getContactList()
+          getSingleData(estimateId)
         }
       } catch (error) {
         console.log(error);
@@ -318,6 +321,7 @@ const ModelUpdateClientCostAgency = ({
           handleClose()
           setFlag(false)
           getContactList()
+          getSingleData(estimateId)
         }
       } catch (error) {
         console.log(error);

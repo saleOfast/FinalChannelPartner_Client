@@ -723,6 +723,10 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
     
   ];
 
+  const getSingleData=(id)=>{
+    console.log("getSingleData called")
+  }
+
   const handleSelectSite = (site_id) => {
     setSelectedSites((prevSelected) =>
       prevSelected.includes(site_id)
@@ -768,6 +772,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         handleClose={handleCloseSalesOrder}
         estimateData={accountsList?.find((item)=>item?.estimate_id==estimationId)}
         estimateID={estimationId}
+        getSingleData={getSingleData}
       />
       
       <ModelPurchaseOrder
@@ -775,6 +780,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
           handleClose={handleClosePurchaseOrder}
           businessType={accountsList?.find((item)=>item?.estimate_id==estimationId)?.db_media_campaign?.cmpn_b_t_id}
           estimateID={estimationId}
+          getSingleData={getSingleData}
       />
 
       <ModelGenerateCard 
@@ -782,6 +788,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         handleClose={setShowGenerateCard}
         businessType={accountsList?.find((item)=>item?.estimate_id==estimationId)?.db_media_campaign?.cmpn_b_t_id}
         estimateID={estimationId}
+        getSingleData={getSingleData}
       />
 
       <ModelAssetSite1
@@ -794,6 +801,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         stateId={stateId}
         cityIds={cityIds}
         getSiteList={getSiteList}
+        getSingleData={getSingleData}
+        estimateId={estimationId}
       />
 
       <ModelClientCostAsset
@@ -807,6 +816,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         stateId={stateId}
         cityIds={cityIds}
         estimateId={estimationId}
+        getSingleData={getSingleData}
       />
 
       <ModelVendorCostAsset
@@ -821,6 +831,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         cityIds={cityIds}
         estimateId={estimationId}
         getContactList={getContactList}
+        getSingleData={getSingleData}
       />
 
       <ModelVendorCostAgency
@@ -835,6 +846,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         cityIds={cityIds}
         estimateId={estimationId}
         getContactList={getContactList}
+        getSingleData={getSingleData}
       />
 
       <ModelClientCostAgency
@@ -849,18 +861,21 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         cityIds={cityIds}
         estimateId={estimationId}
         getContactList={getContactList}
+        getSingleData={getSingleData}
       />
 
       <ModelAgencySiteUpload
         show={show4}
         handleClose={handleClose4}
         estimateId={estimationId}
+        getSingleData={getSingleData}
       />
 
       <ModelAgencySite
         show={show3}
         handleClose3={handleClose3}
         estimateId={estimationId}
+        getSingleData={getSingleData}
       />
 
       <ModelAssetSite2
@@ -871,6 +886,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         selectedSites={selectedSites}
         handleSelectSite={handleSelectSite}
         addAssetInSite={addAssetInSite}
+        estimateId={estimationId}
+        getSingleData={getSingleData}
       />
     </>
   );

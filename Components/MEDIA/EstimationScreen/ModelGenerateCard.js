@@ -1,7 +1,11 @@
+import axios from 'axios';
+import { getCookie, hasCookie } from 'cookies-next';
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+import { Baseurl } from '../../../Utils/Constants';
 
-const ModelGenerateCard = ({ show, handleClose, estimateID, businessType }) => {
+const ModelGenerateCard = ({ show, handleClose, estimateID, businessType, getSingleData }) => {
   const [selectedVendors, setSelectedVendors] = useState({
     printing: false,
     mounting: false,
@@ -16,38 +20,73 @@ const ModelGenerateCard = ({ show, handleClose, estimateID, businessType }) => {
     }));
   };
 
-  const handleGenerateCard = () => {
+  const handleGenerateCard = async() => {
     const selectedTypes = [];
 
     if (selectedVendors.printing) {
-      selectedTypes.push({ account_type_id: "13" });
+      selectedTypes.push("13");
     }
     if (selectedVendors.mounting) {
-      selectedTypes.push({ account_type_id: "14" });
+      selectedTypes.push("14" );
     }
     if (selectedVendors.display) {
-        
-      selectedTypes.push({ account_type_id: businessType == 1 ? "12" : "10" });
+      businessType == 1 ? selectedTypes.push("12") :selectedTypes.push("10")
     }
 
     if (selectedTypes.length === 0) {
-      alert('Please select at least one vendor.');
+      toast.warning('Please select at least one vendor.',{autoClose:1500});
       return;
     }
 
-    // Call your function to send the payload
     const payload = {
-      estimateID,
-      vendors: selectedTypes,
+      estimate_id:estimateID,
+      types: selectedTypes,
     };
+
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        },
+      };
+      
+      try {
+        const response = await axios.post(
+          Baseurl +
+            `/db/media/jobCard/addJobCard`,
+            payload,
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          handleClose(); // Close the modal after generating the card
+          setSelectedVendors({})
+          getSingleData(estimateID)
+        }
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      }
+    }
+
+    // Call your function to send the payload
+   
+
+
     
-    console.log('Payload:', payload);
     
-    // Here you would typically call your function to handle the payload
-    // generateCard(payload);
     
-    handleClose(); // Close the modal after generating the card
-    setSelectedVendors({})
+   
   };
 
   return (

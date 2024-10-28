@@ -294,6 +294,8 @@ const AddEstimationScreen = () => {
           setisLoading(false);
           handleClose2();
           setSelectedSites();
+          getSingleData(id)
+          getAssetSites()
         }
       } catch (error) {
         console.log(error);
@@ -1184,7 +1186,9 @@ const AddEstimationScreen = () => {
                 <div className="add_screen_head d-flex justify-content-between">
                   <span className="text_bold">Fill Details ( * Fields are
                     mandatory)</span> 
-                    <ButtonGroup>
+                    {
+                      id && (
+                        <ButtonGroup>
                       {/* Asset */}
                       {
                         (isasset &&
@@ -1373,6 +1377,9 @@ const AddEstimationScreen = () => {
 
                       </DropdownButton>
                     </ButtonGroup>
+                      )
+                    }
+                    
 
                 </div>
                 <div className="add_user_form">
@@ -2632,6 +2639,7 @@ const AddEstimationScreen = () => {
 
                         <JobCardManagement
                           id={id}
+                          type={userInfo?.cmpn_b_t_id}
                         />
                     </>
                   )
@@ -2936,6 +2944,8 @@ const AddEstimationScreen = () => {
         selectedSites={selectedSites}
         handleSelectSite={handleSelectSite}
         addAssetInSite={addAssetInSite}
+        getSingleData={getSingleData}
+        getAssetSites={getAssetSites}
       />
 
       <ModelClientCostAsset
@@ -2949,6 +2959,7 @@ const AddEstimationScreen = () => {
         stateId={stateId}
         cityIds={cityIds}
         estimateId={id}
+        getSingleData={getSingleData}
       />
 
       <ModelVendorCostAsset
@@ -2963,18 +2974,21 @@ const AddEstimationScreen = () => {
         cityIds={cityIds}
         estimateId={id}
         getContactList={getContactList}
+        getSingleData={getSingleData}
       />
 
       <ModelAgencySite
         show={show3}
         handleClose3={handleClose3}
         estimateId={id}
+        getSingleData={getSingleData}
       />
 
       <ModelAgencySiteUpload
         show={show4}
         handleClose={handleClose4}
         estimateId={id}
+        getSingleData={getSingleData}
       />
 
       <ModelClientCostAgency
@@ -2989,6 +3003,7 @@ const AddEstimationScreen = () => {
         cityIds={cityIds}
         estimateId={id}
         getContactList={getContactList}
+        getSingleData={getSingleData}
       />
 
       <ModelVendorCostAgency
@@ -3003,6 +3018,7 @@ const AddEstimationScreen = () => {
         cityIds={cityIds}
         estimateId={id}
         getContactList={getContactList}
+        getSingleData={getSingleData}
       />
 
       <ModelSalesOrder
@@ -3010,6 +3026,7 @@ const AddEstimationScreen = () => {
         handleClose={handleCloseSalesOrder}
         estimateData={userInfo}
         estimateID={id}
+        getSingleData={getSingleData}
       />
       
       <ModelPurchaseOrder
@@ -3017,6 +3034,7 @@ const AddEstimationScreen = () => {
           handleClose={handleClosePurchaseOrder}
           businessType={userInfo?.cmpn_b_t_id}
           estimateID={id}
+          getSingleData={getSingleData}
       />
 
       <ModelGenerateCard 
@@ -3024,6 +3042,7 @@ const AddEstimationScreen = () => {
         handleClose={setShowGenerateCard}
         businessType={userInfo?.cmpn_b_t_id}
         estimateID={id}
+        getSingleData={getSingleData}
       />
 
     </>

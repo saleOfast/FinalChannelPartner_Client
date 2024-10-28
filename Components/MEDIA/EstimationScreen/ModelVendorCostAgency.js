@@ -26,7 +26,8 @@ const ModeVendorCostAgency = ({
   stateId,
   cityIds,
   estimateId,
-  getContactList
+  getContactList,
+  getSingleData
 }) => {
   const [assetSiteLists, setAssetSiteLists] = useState([]);
   const [assetDeleteShowConfirm, setAssetDeleteShowConfirm] = useState(false);
@@ -363,6 +364,7 @@ const ModeVendorCostAgency = ({
         getContactList={getContactList}
         estimationTotals={estimationTotals}
         displayVendorsList={displayVendorsList}
+        getSingleData={getSingleData}
       />
       {/* <ConfirmBox
         showConfirm={assetDeleteShowConfirm}

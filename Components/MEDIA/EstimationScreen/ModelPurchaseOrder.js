@@ -7,12 +7,13 @@ import { getCookie, hasCookie } from "cookies-next";
 import { Baseurl } from "../../../Utils/Constants";
 import { fetchData } from "../../../Utils/getReq";
 
-const ModelPurchaseOrder = ({ show, handleClose, estimateID,businessType }) => {
+const ModelPurchaseOrder = ({ show, handleClose, estimateID,businessType,getSingleData }) => {
   const [formData, setFormData] = useState({
     p_o_code: '', // Auto-generated
     p_o_date: '',
     month: '',
     campaign_id: '',
+    estimate_id:'',
     campaign_code: '',
     acc_id: '',
     acc_name:"",
@@ -59,7 +60,7 @@ const ModelPurchaseOrder = ({ show, handleClose, estimateID,businessType }) => {
     if (!formData.campaign_id) fieldErrors.campaign_id = "Campaign ID is required";
     if (!formData.acc_id) fieldErrors.acc_id = "Vendor is required";
     if (!formData.account_type_id) fieldErrors.account_type_id = "Vendor Type is required";
-    if (!formData.m_t_id) fieldErrors.m_t_id = "Type of Media is required";
+    // if (!formData.m_t_id) fieldErrors.m_t_id = "Type of Media is required";
     if (!formData.p_o_cost || isNaN(formData.p_o_cost)) fieldErrors.p_o_cost = "Valid Total Cost is required";
     // if (!formData.p_o_date) fieldErrors.p_o_date = "PO Date is required";
     if (!formData.p_o_start_date) fieldErrors.p_o_start_date = "Start Date is required";
@@ -96,6 +97,7 @@ const ModelPurchaseOrder = ({ show, handleClose, estimateID,businessType }) => {
             toast.success(response?.data?.message);
             setFormData({})
             handleClose()
+            getSingleData(estimateID)
           }
         } catch (error) {
           console.log(error);
@@ -165,6 +167,7 @@ const getPaymentStatusList = async () => {
       if(formData?.acc_id!==""){
         const data=vendorsName?.find(item=>item?.acc_id==formData?.acc_id)
         setFormData({...formData,
+            estimate_id:estimateID,
             acc_name:data?.acc_name,
             campaign_id:data?.campaign_id,
             campaign_code:data?.campaign_code,

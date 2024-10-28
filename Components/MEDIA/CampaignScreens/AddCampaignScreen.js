@@ -97,9 +97,9 @@ const AddCampaignScreen = () => {
     cgst: false,
     sgst: false,
     sales_order_pdf:"",
-    s_o_po_number:"",
+    s_o_po_number:0,
     s_o_po_date:"",
-    s_o_po_value:"",
+    s_o_po_value:0,
     s_o_po_remarks:"",
   });
 
@@ -235,7 +235,7 @@ const AddCampaignScreen = () => {
         let db_name = getCookie("db_name");
 
         const formData = new FormData();
-
+        delete userInfo?.s_o_po_date;
         Object.keys(userInfo).forEach((key) => {
           if (userInfo[key] instanceof File) {
             formData.append(key, userInfo[key]);
@@ -317,6 +317,10 @@ const AddCampaignScreen = () => {
   
         // Create a FormData instance
         const formData = new FormData();
+        if(!userInfo?.s_o_po_date){
+          delete userInfo?.s_o_po_date;
+        }
+        delete userInfo?.status;
   
         // Create new user info with updated_on field
         let newUserInfo = { ...userInfo, updated_on: new Date().toISOString() };
@@ -338,7 +342,7 @@ const AddCampaignScreen = () => {
           );
   
           if (response.status === 200 || response.status === 204) {
-            await postFieldsFunc(newUserInfo.contact_id, newUserInfo.db_contact_fields);
+            // await postFieldsFunc(newUserInfo.contact_id, newUserInfo.db_contact_fields);
             toast.success(response.data.message);
             setisLoading(false);
             router.push("/media/Campaigns");

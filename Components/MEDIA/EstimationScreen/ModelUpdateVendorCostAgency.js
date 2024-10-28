@@ -32,7 +32,8 @@ const ModelUpdateVendorCostAgency = ({
   getContactList,
   getAgencySites,
   estimationTotals,
-  displayVendorsList
+  displayVendorsList,
+  getSingleData,
 }) => {
   const [printingVendor, setPrintingVendor] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -267,6 +268,7 @@ const ModelUpdateVendorCostAgency = ({
           setFlag(false);
           getAgencySites()
           getContactList()
+          getSingleData(estimateId)
         }
       } catch (error) {
         console.log("errosdkthhfhkghkgjkhgjka",error);
@@ -321,6 +323,7 @@ const ModelUpdateVendorCostAgency = ({
           setFlag(false);
           getAgencySites()
           getContactList()
+          getSingleData(estimateId)
         }
       } catch (error) {
         console.log(error);

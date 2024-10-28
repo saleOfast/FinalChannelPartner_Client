@@ -28,7 +28,8 @@ const ModelUpdateVendorCostAsset = ({
   mountingVendorData,
   getContactList,
   getAssetSites,
-  estimationTotals
+  estimationTotals,
+  getSingleData
 }) => {
   const [printingVendor, setPrintingVendor] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -179,6 +180,7 @@ const ModelUpdateVendorCostAsset = ({
           setFlag(false);
           getAssetSites()
           getContactList()
+          getSingleData(estimateId)
         }
       } catch (error) {
         console.log("errosdkthhfhkghkgjkhgjka",error);
@@ -268,6 +270,7 @@ const ModelUpdateVendorCostAsset = ({
           handleClose();
           setFlag(false);
           getContactList()
+          getSingleData(estimateId)
         }
       } catch (error) {
         console.log(error);

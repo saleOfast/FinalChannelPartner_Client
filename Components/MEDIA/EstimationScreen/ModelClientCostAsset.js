@@ -26,6 +26,7 @@ const ModelClientCostAsset = ({
   stateId,
   cityIds,
   estimateId,
+  getSingleData
 }) => {
   const [assetSiteLists, setAssetSiteLists] = useState([]);
   const [assetDeleteShowConfirm, setAssetDeleteShowConfirm] = useState(false);
@@ -175,6 +176,7 @@ const ModelClientCostAsset = ({
         estimateId={estimateId}
         selectedSite={selectedSite} 
         estimationTotals={estimationTotals}
+        getSingleData={getSingleData}
       />
       {/* <ConfirmBox
         showConfirm={assetDeleteShowConfirm}

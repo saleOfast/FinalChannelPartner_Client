@@ -6,7 +6,7 @@ import { getCookie } from 'cookies-next';
 import { toast, ToastContainer } from 'react-toastify'; // Import react-toastify
 import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for react-toastify
 
-const ModelAgencySiteSiteUpload = ({ show, handleClose, estimateId }) => {
+const ModelAgencySiteSiteUpload = ({ show, handleClose, estimateId,getSingleData }) => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false); // Track upload status
 
@@ -57,8 +57,10 @@ const ModelAgencySiteSiteUpload = ({ show, handleClose, estimateId }) => {
       // Send file and estimateId to the server
       const response = await axios.post(`${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`, formData, { headers });
       toast.success('File uploaded successfully.'); 
+
       console.log("response is ",response)// Notify user of successful upload
       setFile(null); // Clear the file input
+      getSingleData(estimateId)
     } catch (error) {
       // More detailed error logging
       console.error('Error uploading file:', error);

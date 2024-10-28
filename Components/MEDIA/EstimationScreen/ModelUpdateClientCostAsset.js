@@ -18,7 +18,9 @@ const ModelUpdateClientCostAsset = ({
   cityIds,
   selectedSite,
   getAssetSites,
-  estimationTotals
+  estimationTotals,
+  getSingleData,
+  estimateId
 }) => {
 
   const [formData, setFormData] = useState({
@@ -273,6 +275,7 @@ const validate = () => {
           setLoading(false)
           handleClose()
           setFlag(false)
+          getSingleData(estimateId)
         }
       } catch (error) {
         console.log(error);
@@ -318,6 +321,7 @@ const validate = () => {
           setLoading(false)
           handleClose()
           setFlag(false)
+          getSingleData(estimateId)
         }
       } catch (error) {
         console.log(error);

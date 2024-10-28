@@ -6,7 +6,7 @@ import { Baseurl } from "../../../Utils/Constants";
 import { toast } from "react-toastify";
 import moment from "moment";
 
-const ModelSalesOrder = ({ show, handleClose,estimateData,estimateID }) => {
+const ModelSalesOrder = ({ show, handleClose,estimateData,estimateID,getSingleData }) => {
     const [errors, setErrors] = useState({});
   const [showError, setShowError] = useState(false);
   const [formData, setFormData] = useState({
@@ -159,6 +159,7 @@ const ModelSalesOrder = ({ show, handleClose,estimateData,estimateID }) => {
             toast.success(response?.data?.message);
             setLoading(false)
             handleClose()
+            getSingleData(estimateID)
           }
         } catch (error) {
           console.log(error);
@@ -206,6 +207,7 @@ const ModelSalesOrder = ({ show, handleClose,estimateData,estimateID }) => {
             toast.success(response?.data?.message);
             setLoading(false)
             handleClose()
+            getSingleData(estimateID)
           }
         } catch (error) {
           console.log(error);

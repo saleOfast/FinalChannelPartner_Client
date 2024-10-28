@@ -13,6 +13,7 @@ const ModelAgencySite = ({
   // getSiteList,
   userInfo,
   estimateId,
+  getSingleData
 }) => {
   const [rows, setRows] = useState([
     {
@@ -352,6 +353,7 @@ const ModelAgencySite = ({
       if (response.status === 200) {
         toast.success("Data saved successfully!");
         handleClose3();
+        getSingleData(estimateId)
       } else {
         toast.error("Failed to save data. Please try again.");
       }

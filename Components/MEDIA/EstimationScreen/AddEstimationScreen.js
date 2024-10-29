@@ -38,6 +38,7 @@ import AssetSites from "./AssetSites";
 import AgencySites from "./AgencySites";
 import ModelGenerateCard from "./ModelGenerateCard";
 import JobCardManagement from "./JobCardManagement";
+import UpdateNDPModel from "./UpdateNDPModel";
  
 
 const AddEstimationScreen = () => {
@@ -178,6 +179,7 @@ const AddEstimationScreen = () => {
   const [ mediaSidebarInfo,setmediaSidebarInfo]=useState([])
   const [estimateApprovals, setEstimateApprovals] = useState();
   const [showGenerateCard, setShowGenerateCard] = useState(false);
+  const [showNDP, setShowNDP] = useState(false);
 
   const handleClose1 = () => {
     setShow1(false);
@@ -214,6 +216,10 @@ const AddEstimationScreen = () => {
 
   const handleCloseGenerateCard = () => {
     setShowGenerateCard(false);
+  };
+
+  const handleCloseNDPModel = () => {
+    setShowNDP(false);
   };
 
   const getSiteList = async () => {
@@ -1374,6 +1380,10 @@ const AddEstimationScreen = () => {
                         <Dropdown.Item eventKey="7" onClick={() => {
                           setShowGenerateCard(true)
                         }} >Generate Job Card</Dropdown.Item>
+
+                        <Dropdown.Item eventKey="8" onClick={() => {
+                          setShowNDP(true)
+                        }} >Update NDP</Dropdown.Item>
 
                       </DropdownButton>
                     </ButtonGroup>
@@ -3039,10 +3049,17 @@ const AddEstimationScreen = () => {
 
       <ModelGenerateCard 
         show={showGenerateCard}
-        handleClose={setShowGenerateCard}
+        handleClose={handleCloseGenerateCard}
         businessType={userInfo?.cmpn_b_t_id}
         estimateID={id}
         getSingleData={getSingleData}
+      />
+
+      <UpdateNDPModel
+        id={id}
+        assetSiteLists={assetSiteLists}
+        show={showNDP}
+        handleClose={handleCloseNDPModel}
       />
 
     </>

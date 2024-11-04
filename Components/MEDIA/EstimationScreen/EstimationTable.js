@@ -32,6 +32,8 @@ import { Dropdown } from "react-bootstrap"
 import ModelSalesOrder from "./ModelSalesOrder";
 import ModelPurchaseOrder from "./ModelPurchaseOrder";
 import ModelGenerateCard from "./ModelGenerateCard";
+import UpdateNDPModel from "./UpdateNDPModel";
+import RePrintingMountingModel from "./RePrintingMountingModel";
 
 
 const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getContactList }) => {
@@ -51,6 +53,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
   const [showVendorAsset, setShowVendorAsset] = useState(false);
   const [showVendorAgency, setShowVendorAgency] = useState(false);
   const [showGenerateCard, setShowGenerateCard] = useState(false);
+  const [assetSiteLists, setAssetSiteLists] = useState([]);
+  const [agencySiteLists, setAgencySiteLists] = useState([]);
 
   const [selectedSites, setSelectedSites] = useState([]);
   const [estimationId, setEstimationId] = useState(null);
@@ -61,6 +65,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
   const [showDropdown, setShowDropdown] = useState(false);
   const [showSalesOrder,setShowSalesOrder] =useState(false)
   const [showPurchaseOrder,setShowPurchaseOrder] =useState(false)
+  const [showNDP, setShowNDP] = useState(false);
+  const [showRePrMo, setShowRePrMo] = useState(false);
+
 
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
@@ -107,6 +114,11 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
   const handleVendorAgencyClose = () => {
     setShowVendorAgency(false);
   };
+
+  const handleCloseNDPModel = () => {
+    setShowNDP(false);
+  };
+  
   const getState = async () => {
     await fetchData(
       `/db/area/states?cnt_id=101`,
@@ -115,6 +127,25 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
       setErrorToast
     );
   };
+
+  async function getAssetSites() {
+    await fetchData(
+      `/db/media/estimationAssetBusiness/getEstimationAssetBusiness?estimate_id=${estimationId}`,
+      setAssetSiteLists,
+      errorToast,
+      setErrorToast
+    );
+  }
+
+  async function getAgencySites() {
+    await fetchData(
+      `/db/media/estimationAgencyBusiness/getSitesForAgencyEstimates?estimate_id=${estimationId}`,
+
+      setAgencySiteLists,
+      errorToast,
+      setErrorToast
+    );
+  }
 
   
 
@@ -695,6 +726,29 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                      Generate Job Card
                     </Dropdown.Item>)
 
+                      items.push(<Dropdown.Item
+                        key="Sales Order"
+                        title="Generate Job Card"
+                        onClick={()=>{
+                          setEstimationId(tableMeta?.rowData[4]);
+                          getAssetSites()
+                          setShowNDP(true)
+                        }}
+                      >
+                      Update NDP
+                      </Dropdown.Item>)
+
+                      items.push(<Dropdown.Item
+                        key="Sales Order"
+                        title="Generate Job Card"
+                        onClick={()=>{
+                          setEstimationId(tableMeta?.rowData[4]);
+                          setShowRePrMo(true)
+                        }}
+                      >
+                      Re-Printing/Mounting
+                      </Dropdown.Item>)
+
                 if (items.length > 0) {
                   return (
                     <Dropdown >
@@ -789,6 +843,19 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         businessType={accountsList?.find((item)=>item?.estimate_id==estimationId)?.db_media_campaign?.cmpn_b_t_id}
         estimateID={estimationId}
         getSingleData={getSingleData}
+      />
+
+      <UpdateNDPModel
+        id={estimationId}
+        assetSiteLists={assetSiteLists}
+        show={showNDP}
+        handleClose={handleCloseNDPModel}
+      />
+
+      <RePrintingMountingModel
+        id={estimationId}
+        show={showRePrMo}
+        setShowRePrMo={setShowRePrMo}
       />
 
       <ModelAssetSite1

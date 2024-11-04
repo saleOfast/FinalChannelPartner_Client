@@ -54,7 +54,7 @@ const AssetSites = ({busiessTypeList,userInfo,assetDeleteShowConfirm,setAssetDel
                                 ?.filter((item) => item.status == true)
                                 ?.map((site) => (
                                   <tr key={site.site_id}>
-                                    <td>{site.site_id}</td>
+                                    <td>{site?.db_site?.site_code}</td>
                                     <td>
                                       {site?.db_site?.db_state?.state_name}
                                     </td>

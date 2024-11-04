@@ -75,7 +75,7 @@ const UpdateNDPModel = ({id,assetSiteLists,show,handleClose}) => {
                         )}
                 </Modal.Body>
         <Modal.Footer>
-          <Button
+          <Button 
             variant="primary"
             disabled={isLoading}
           >

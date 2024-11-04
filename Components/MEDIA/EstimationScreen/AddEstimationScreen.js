@@ -39,6 +39,7 @@ import AgencySites from "./AgencySites";
 import ModelGenerateCard from "./ModelGenerateCard";
 import JobCardManagement from "./JobCardManagement";
 import UpdateNDPModel from "./UpdateNDPModel";
+import RePrintingMountingModel from "./RePrintingMountingModel";
  
 
 const AddEstimationScreen = () => {
@@ -180,6 +181,7 @@ const AddEstimationScreen = () => {
   const [estimateApprovals, setEstimateApprovals] = useState();
   const [showGenerateCard, setShowGenerateCard] = useState(false);
   const [showNDP, setShowNDP] = useState(false);
+  const [showRePrMo, setShowRePrMo] = useState(false);
 
   const handleClose1 = () => {
     setShow1(false);
@@ -1384,6 +1386,10 @@ const AddEstimationScreen = () => {
                         <Dropdown.Item eventKey="8" onClick={() => {
                           setShowNDP(true)
                         }} >Update NDP</Dropdown.Item>
+
+                        <Dropdown.Item eventKey="9" onClick={() => {
+                          setShowRePrMo(true)
+                        }} >Re-Printing/Mounting</Dropdown.Item>
 
                       </DropdownButton>
                     </ButtonGroup>
@@ -2651,6 +2657,10 @@ const AddEstimationScreen = () => {
                           id={id}
                           type={userInfo?.cmpn_b_t_id}
                         />
+
+                        
+
+
                     </>
                   )
                 }
@@ -3055,11 +3065,17 @@ const AddEstimationScreen = () => {
         getSingleData={getSingleData}
       />
 
-      <UpdateNDPModel
+      <UpdateNDPModel 
         id={id}
         assetSiteLists={assetSiteLists}
         show={showNDP}
         handleClose={handleCloseNDPModel}
+      />
+
+      <RePrintingMountingModel
+        id={id}
+        show={showRePrMo}
+        setShowRePrMo={setShowRePrMo}
       />
 
     </>

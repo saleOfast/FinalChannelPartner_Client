@@ -55,6 +55,7 @@ const AddEstimationScreen = () => {
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
   const [userInfo, setUserInfo] = useState({
     estimate_type: "",
+    est_t_id:"",
     campaign_id: null,
     est_s_id:null,
     campaign_name: "",
@@ -128,6 +129,7 @@ const AddEstimationScreen = () => {
   const [agencySiteLists, setAgencySiteLists] = useState([]);
   const [agencySiteData, setAgencySiteData] = useState([]);
   const [estimateStatusList, setEstimateStatusList] = useState([]);
+  const [estimateTypeList, setEstimateTypeList] = useState([]);
   const [getAgencyData, setGetAgencyData] = useState(false);
   const [stateList, setStatelist] = useState([]);
   const [cityList, setCitylist] = useState([]);
@@ -510,6 +512,15 @@ const AddEstimationScreen = () => {
     );
   }
 
+  async function getEstimateTypeList() {
+    await fetchData(
+      `/db/media/estimationType/getEstimationType`,
+      setEstimateTypeList,
+      errorToast,
+      setErrorToast
+    );
+  }
+
   const filteredStatusList = !id 
   ? estimateStatusList.filter((item) => item.est_s_id === 1)
   : estimateStatusList.filter((item) => item.est_s_id !== 1);
@@ -619,8 +630,8 @@ const AddEstimationScreen = () => {
    
     if (!userInfo.estimate_date)
       errors.estimate_date = "Estimate Date is required";
-    if (!userInfo.estimate_type.trim())
-      errors.estimate_type = "Estimate Type is required"; // Ensure estimate_type is not empty
+    // if (!userInfo.estimate_type.trim())
+    //   errors.estimate_type = "Estimate Type is required";
 
     setErrorData(errors);
     return Object.keys(errors).length === 0;
@@ -1010,6 +1021,7 @@ const AddEstimationScreen = () => {
   useEffect(() => {
     getBusinessTypeList();
     getEstimateStatusList()
+    getEstimateTypeList()
     getEstimateApprovals()
     getAccountsList();
     getSidebarInfo()
@@ -1195,7 +1207,7 @@ const AddEstimationScreen = () => {
                   <span className="text_bold">Fill Details ( * Fields are
                     mandatory)</span> 
                     {
-                      id && (
+                      id && !viewMode && (
                         <ButtonGroup>
                       {/* Asset */}
                       {
@@ -1383,9 +1395,9 @@ const AddEstimationScreen = () => {
                           setShowGenerateCard(true)
                         }} >Generate Job Card</Dropdown.Item>
 
-                        <Dropdown.Item eventKey="8" onClick={() => {
+                        {/* <Dropdown.Item eventKey="8" onClick={() => {
                           setShowNDP(true)
-                        }} >Update NDP</Dropdown.Item>
+                        }} >Update NDP</Dropdown.Item> */}
 
                         <Dropdown.Item eventKey="9" onClick={() => {
                           setShowRePrMo(true)
@@ -1456,7 +1468,7 @@ const AddEstimationScreen = () => {
                       </div>
                     </div>
 
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                    {/* <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                       <div
                         className={
                           errorData?.estimate_type
@@ -1492,7 +1504,39 @@ const AddEstimationScreen = () => {
                             : ""}
                         </span>
                       </div>
-                    </div>
+                    </div> */}
+
+                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div className={errorData?.est_t_id ? "input_box errorBox" : "input_box"}>
+                  <label htmlFor="estimate_approval_status">Estimate Type *</label>
+                  <Select
+                          id="client_name"
+                          isDisabled={viewMode}
+                          defaultValue={""}
+                          placeholder="Select Estimate Approval Status  "
+                          options={ estimateTypeList?.map((data)=>{
+                            return{
+                              value: data?.est_t_id,
+                              label: data?.est_t_name,
+                            }
+                          })
+                          }
+                          value={estimateTypeList?.map((data, index) => {
+                            if (userInfo.est_t_id === data.est_t_id) {
+                              return {
+                                value: data?.est_t_id,
+                                label: data?.est_t_name,
+                              };
+                            }
+                          })}
+                          onChange={(e) => {
+                            setUserInfo({ ...userInfo, est_t_id: e.value });
+                            setErrorData({ ...errorData, est_t_id: "" });
+                          }}
+                        />
+                  <span className="errorText">{errorData?.est_t_id ? errorData.est_t_id : ""}</span>
+                </div>
+                </div>
 
                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                 <div className={errorData?.estimate_approval_status ? "input_box errorBox" : "input_box"}>
@@ -1500,6 +1544,7 @@ const AddEstimationScreen = () => {
                   <Select
                           id="client_name"
                           defaultValue={""}
+                          isDisabled={viewMode}
                           placeholder="Select Estimate Approval Status  "
                           options={ filteredStatusList?.map((data)=>{
                             return{

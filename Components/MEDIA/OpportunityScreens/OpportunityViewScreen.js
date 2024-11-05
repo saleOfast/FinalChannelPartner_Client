@@ -37,7 +37,7 @@ const OpportunityViewScreen = () => {
   const [userInfo, setUserInfo] = useState({
     task_name: "",
     due_date: "",
-    lead_id: "",
+    link_with_opportunity: "",
     contact_person_name: "",
     related_to: "",
     task_status_id:"",
@@ -142,10 +142,10 @@ const OpportunityViewScreen = () => {
 
       try {
         const response = await axios.get(
-          Baseurl + `/db/leads/task?l_id=${id}`,
+          Baseurl + `/db/leads/task?link_with_opportunity=${id}`,
           header
         );
-        setTaskList(response.data.data);
+        setTaskList(response?.data?.data);
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -171,7 +171,7 @@ const OpportunityViewScreen = () => {
 
       try {
         const response = await axios.get(
-          Baseurl + `/db/leads/calls?l_id=${id}`,
+          Baseurl + `/db/leads/calls?link_with_opportunity=${id}`,
           header
         );
         setCallList(response.data.data);
@@ -202,9 +202,10 @@ const OpportunityViewScreen = () => {
       toast.error("Please enter the Priority ");
     }else {
       if (hasCookie("token")) {
-        let token = getCookie("token");
+        let token = getCookie("token"); 
         let db_name = getCookie("db_name");
-        let reqOptions = { ...userInfo, lead_id: router.query.id }
+        delete userInfo?.lead_id;
+        let reqOptions = { ...userInfo, link_with_opportunity: router.query.id }
         let header = {
           headers: {
             Accept: "application/json",
@@ -226,7 +227,7 @@ const OpportunityViewScreen = () => {
             setUserInfo({
               task_name: "",
               due_date: "",
-              lead_id: "",
+              link_with_opportunity: "",
               contact_person_name: "",
               related_to: "",
               task_status_id:"",
@@ -257,7 +258,7 @@ const OpportunityViewScreen = () => {
       if (hasCookie("token")) {
         let token = getCookie("token");
         let db_name = getCookie("db_name");
-        let reqOptions = { ...contactInfo, lead_id: router.query.id }
+        let reqOptions = { ...contactInfo, link_with_opportunity: router.query.id ,event_type:"opportunity event" }
         let header = {
           headers: {
             Accept: "application/json",
@@ -340,7 +341,7 @@ async function getPriorityList() {
   useEffect(() => {
     if (!router.isReady) return;
     if (router.query.id) {
-      setUserInfo({ ...userInfo, lead_id: router.query.id });
+      setUserInfo({ ...userInfo, link_with_opportunity: router.query.id });
       getDataList(id);
       getTaskInLead(id);
       getCallsInLead(id)

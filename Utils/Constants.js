@@ -4,7 +4,7 @@
 // export const Baseurl = 'https://crm.saleofast.com/support/api/v1';
 // export const filesUrl = 'https://crm.saleofast.com/support/images';
 
-/*  -----------------iis links------------- */
+// /*  -----------------iis links------------- */
 
 export const Baseurl = 'http://crm.cybermatrixsolutions.com/support/api/v1';
 export const filesUrl = 'http://crm.cybermatrixsolutions.com/support/images'; 

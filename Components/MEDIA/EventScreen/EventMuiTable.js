@@ -224,7 +224,7 @@ const EventMuiTable = ({
     due_date:list?.due_date,
     contact_person_name:list?.contact_person_name,
     db_lead:list?.db_lead?.lead_name,
-    db_opportunity:list?.opp_name,
+    db_opportunity:list?.db_opportunity?.opp_name,
     cts_no:list?.cts_no,
     db_task_status:list?.db_task_status?.task_status_name,
     call_lead_id:list?.call_lead_id,

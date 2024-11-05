@@ -4,6 +4,8 @@ import Select from 'react-select';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { fetchData } from '../../../Utils/getReq';
+import { toast } from 'react-toastify';
+import { getCookie, hasCookie } from 'cookies-next';
 
 
 const RePrintingMountingModel = ({ id, show, setShowRePrMo }) => {
@@ -31,27 +33,55 @@ const RePrintingMountingModel = ({ id, show, setShowRePrMo }) => {
 
   const handleSave = async () => {
     if (!selectedOption) {
-      alert('Please select an option before saving.');
+      toast.warning('Please select an option before saving.',{autoClose:1500});
       return;
     }
 
+    console.log(selectedOption)
+    console.log(id)
+
     setIsLoading(true);
-    try {
-      // Replace with your API endpoint
-      const response = await axios.post('/api/reprinting', {
-        id,
-        reason: selectedOption.value,
-      });
-      
-      if (response.status === 200) {
-        router.push('/Estimations'); 
+    
+    if (hasCookie("token")) {
+      let token = getCookie("token");
+      let db_name = getCookie("db_name");
+
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          // m_id:444
+          pass:"pass"
+        },
+      };
+
+      try {
+        const response = await axios.post(
+          Baseurl +
+            `/db/media/estimation/addReprintEstimate`,
+          {
+            estimate_id: id,
+            ndp_r_id: selectedOption.value,
+          },
+          header
+        );
+        if (response.status === 204 || response.status === 200) {
+          toast.success(response?.data?.message);
+          router.push('/media/Estimations'); 
+        }
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
       }
-    } catch (error) {
-      console.error('Error saving:', error);
-      alert('An error occurred while saving. Please try again.');
-    } finally {
-      setIsLoading(false);
-      setShowRePrMo(false); // Close the modal after operation
+      finally {
+        setIsLoading(false);
+        setShowRePrMo(false); // Close the modal after operation
+      }
     }
   };
 
@@ -81,7 +111,6 @@ const RePrintingMountingModel = ({ id, show, setShowRePrMo }) => {
               }
           })}
           placeholder="Select a reason..."
-          isClearable
         />
       </Modal.Body>
 
@@ -89,7 +118,9 @@ const RePrintingMountingModel = ({ id, show, setShowRePrMo }) => {
         <Button variant="secondary" onClick={() => setShowRePrMo(false)}>
           Cancel
         </Button>
-        <Button variant="primary"  disabled={isLoading}>
+        <Button variant="primary" onClick={()=>{
+          handleSave()
+        }}  disabled={isLoading}>
           {isLoading ? 'Saving...' : 'Save'}
         </Button>
       </Modal.Footer>

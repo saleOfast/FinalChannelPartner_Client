@@ -30,7 +30,7 @@ const AddOpportunityScreen = () => {
         amount: "",
         desc: "",
         account_name: "",
-        opportunity_stg_id: "",
+        opportunity_stg_id: 1,
         opportunity_type_id: null,
         lead_src_id: "",
         opp_owner: null,

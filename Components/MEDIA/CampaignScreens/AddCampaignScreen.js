@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Baseurl } from "../../../Utils/Constants";
+import { Baseurl, filesUrl } from "../../../Utils/Constants";
 import { hasCookie, getCookie } from "cookies-next";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -13,6 +13,9 @@ import Select from "react-select";
 import { Delete } from "@mui/icons-material";
 import { costingDetailArray1,costingDetailArray2,marginInfoArray } from "./Array";
 import { Button, Modal, Form } from 'react-bootstrap';
+import SalesOrderManagement from "./SalesOrderManagement";
+import PurchaseOrderManagement from "./PurchaseOrderManagement";
+import CampaignEstimates from "./CampaignEstimates";
 
 
 const AddCampaignScreen = () => {
@@ -1418,6 +1421,22 @@ updatedInfo.printing_margin_percentage =
                   ))}
                 </div>
               </div>
+
+                  <CampaignEstimates 
+                       id={id}
+                       link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
+                  />
+
+                  <SalesOrderManagement 
+                       id={id}
+                       link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
+                  />
+
+                  <PurchaseOrderManagement 
+                       id={id}
+                       link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
+                  />
+
                 </>
               ) : null
             }

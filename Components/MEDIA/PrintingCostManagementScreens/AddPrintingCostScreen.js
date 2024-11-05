@@ -641,6 +641,32 @@ const AddPrintingCostScreen = () => {
                     </div>
                   </div>
 
+                  {
+                      id && (
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor="mo_c_cost">
+                            Status
+                          </label>
+                          <input
+                            type="text"
+                            name="status"
+                            placeholder="Status"
+                            id="status"
+                            disabled={true}
+                            className="form-control"
+                            value={userInfo.status}
+                          />
+                            <span className="errorText">
+                            {errorData?.status
+                              ? errorData.status
+                              : ""}
+                          </span>
+                        </div>
+                      </div>
+                      )
+                    }
+
                  
 
 

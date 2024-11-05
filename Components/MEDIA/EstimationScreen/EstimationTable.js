@@ -381,7 +381,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
     },  
     {
       name: "estimate_type",
-      label: "Estimated Type",
+      label: "Estimate Type",
       options: { filter: true },
     },
     {
@@ -726,17 +726,17 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
                      Generate Job Card
                     </Dropdown.Item>)
 
-                      items.push(<Dropdown.Item
-                        key="Sales Order"
-                        title="Generate Job Card"
-                        onClick={()=>{
-                          setEstimationId(tableMeta?.rowData[4]);
-                          getAssetSites()
-                          setShowNDP(true)
-                        }}
-                      >
-                      Update NDP
-                      </Dropdown.Item>)
+                      // items.push(<Dropdown.Item
+                      //   key="Sales Order"
+                      //   title="Generate Job Card"
+                      //   onClick={()=>{
+                      //     setEstimationId(tableMeta?.rowData[4]);
+                      //     getAssetSites()
+                      //     setShowNDP(true)
+                      //   }}
+                      // >
+                      // Update NDP
+                      // </Dropdown.Item>)
 
                       items.push(<Dropdown.Item
                         key="Sales Order"
@@ -799,7 +799,7 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
 
   const mappedDataList = accountsList?.map((list) => ({
     campaign_name: list?.db_media_campaign?.campaign_name,
-    estimate_type: list?.estimate_type,
+    estimate_type: list?.db_estimation_type?.est_t_name,
     estimate_id: list?.estimate_id,
     business_type: list?.db_media_campaign?.cmpn_b_t_id,
     estimate_status:list?.estimateStatus?.est_s_name,

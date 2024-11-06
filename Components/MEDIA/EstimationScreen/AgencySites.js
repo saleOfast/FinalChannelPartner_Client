@@ -46,6 +46,9 @@ const AgencySites = ({busiessTypeList,userInfo,deleteshowConfirm,setdeleteshowCo
                                 <th>Client Display Cost / Sq. Ft.</th>
                                 <th>Client Mounting Cost / Sq. Ft.</th>
                                 <th>Client Printing Cost / Sq. Ft.</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Duration</th>
                                 {!viewMode && (
                                   <>
                                     {/* <th>Edit</th>
@@ -75,6 +78,9 @@ const AgencySites = ({busiessTypeList,userInfo,deleteshowConfirm,setdeleteshowCo
                                     <td>{site?.client_display_cost}</td>
                                     <td>{site?.client_mounting_cost}</td>
                                     <td>{site?.client_printing_cost}</td>
+                                    <td>{site?.start_date}</td>
+                                    <td>{site?.end_date}</td>
+                                    <td>{site?.duration}</td>
 
                                     {!viewMode ? (
                                       <td className="table_btns d-flex">

@@ -1,135 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import { Button, Modal } from 'react-bootstrap';
-// import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap CSS is imported
-
-// const ModelEditAgencySite = ({ show, handleClose, agencySiteData }) => {
-//     console.log("site agency data is ", agencySiteData);
-
-//     // State for all form fields
-//     const [formData, setFormData] = useState({
-//         state_id: '',
-//         city_id: '',
-//         location: '',
-//         m_f_id: '',  //MediaFormat
-//         m_t_id: '', //mediaType
-//         m_v_id: '', //mediaVehicle
-//         quantity: '',
-//         height: '',
-//         width: '',
-//         totalSqFt: '',
-//         client_display_cost: '',
-//         client_mounting_cost: '',
-//         client_printing_cost:''
-//     });
-
-//     useEffect(() => {
-//         // Populate fields with initial data if agencySiteData is provided
-//         if (agencySiteData) {
-//             setFormData(prevState => ({
-//                 ...prevState,
-//                 ...agencySiteData,
-//                 totalSqFt: (agencySiteData.height || 0) * (agencySiteData.width || 0)
-//             }));
-//         }
-//     }, [agencySiteData]);
-
-//     useEffect(() => {
-//         // Calculate totalSqFt whenever height or width changes
-//         if (formData.height && formData.width) {
-//             setFormData(prevState => ({
-//                 ...prevState,
-//                 totalSqFt: formData.height * formData.width
-//             }));
-//         }
-//     }, [formData.height, formData.width]);
-
-//     const handleChange = (e) => {
-//         const { id, value } = e.target;
-//         setFormData(prevState => ({
-//             ...prevState,
-//             [id]: value
-//         }));
-//     };
-
-//     const handleUpdate = async () => {
-//         try {
-//             const response = await fetch('/api/v1/db/media/estimationAgencyBusiness/updateSitesForAgencyEstimates', {
-//                 method: 'POST',
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                 },
-//                 body: JSON.stringify(formData),
-//             });
-
-//             if (response.ok) {
-//                 const data = await response.json();
-//                 // Handle successful response
-//                 console.log('Update successful', data);
-//                 handleClose(); // Close the modal after successful update
-//             } else {
-//                 const errorData = await response.json();
-//                 // Handle error response
-//                 console.error('Update failed', errorData);
-//             }
-//         } catch (error) {
-//             console.error('Error:', error);
-//         }
-//     };
-
-//     return (
-//         <>
-//             <Modal className="commonModal" show={show} onHide={handleClose} size="lg">
-//                 <Modal.Header closeButton>
-//                     <Modal.Title>Agency Site Edit</Modal.Title>
-//                 </Modal.Header>
-//                 <Modal.Body>
-//                     <div className="d-flex flex-nowrap" style={{ overflowX: 'auto', padding: '10px' }}>
-//                         <div className="d-flex flex-row">
-//                             {[
-//                                 { id: 'state', label: 'State', type: 'text', placeholder: 'Enter state' },
-//                                 { id: 'city', label: 'City', type: 'text', placeholder: 'Enter city' },
-//                                 { id: 'location', label: 'Location', type: 'text', placeholder: 'Enter location' },
-//                                 { id: 'mediaFormat', label: 'Media Format', type: 'text', placeholder: 'Enter media format' },
-//                                 { id: 'mediaType', label: 'Media Type', type: 'text', placeholder: 'Enter media type' },
-//                                 { id: 'mediaVehicle', label: 'Media Vehicle', type: 'text', placeholder: 'Enter media vehicle' },
-//                                 { id: 'quantity', label: 'Quantity', type: 'number', placeholder: 'Enter quantity' },
-//                                 { id: 'height', label: 'Height', type: 'number', placeholder: 'Enter height' },
-//                                 { id: 'width', label: 'Width', type: 'number', placeholder: 'Enter width' },
-//                                 { id: 'totalSqFt', label: 'Total Sq. Ft.', type: 'text', placeholder: 'Total Sq. Ft.', disabled: true },
-//                                 { id: 'clientDisplayCost', label: 'Client Display Cost', type: 'number', placeholder: 'Enter client display cost' },
-//                                 { id: 'clientMountingCost', label: 'Client Mounting Cost / Sq. Ft.', type: 'number', placeholder: 'Enter client mounting cost / sq. ft.' }
-//                             ].map(({ id, label, type, placeholder, disabled }, index) => (
-//                                 <div key={index} className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
-//                                     <div className="form-group">
-//                                         <label htmlFor={id}>{label}</label>
-//                                         <input
-//                                             type={type}
-//                                             id={id}
-//                                             className="form-control"
-//                                             placeholder={placeholder}
-//                                             style={{ width: '100%' }}
-//                                             value={formData[id] || ''}
-//                                             onChange={handleChange}
-//                                             disabled={disabled}
-//                                         />
-//                                     </div>
-//                                 </div>
-//                             ))}
-//                         </div>
-//                     </div>
-//                 </Modal.Body>
-//                 <Modal.Footer>
-//                     <Button variant="primary" onClick={handleUpdate}>
-//                         UPDATE
-//                     </Button>
-//                 </Modal.Footer>
-//             </Modal>
-//         </>
-//     );
-// }
-
-// export default ModelEditAgencySite;
-
 import React, { useState, useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
@@ -138,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap CSS is import
 import { toast } from "react-toastify";
 import { hasCookie, getCookie } from "cookies-next";
 import { fetchData } from "../../../Utils/getReq";
+import moment from 'moment';
 
 
 
@@ -159,7 +28,10 @@ const ModelEditAgencySite = ({ show, handleClose, agencySiteData,setGetAgencyDat
         totalSqFt: '',
         client_display_cost: '',
         client_mounting_cost: '',
-        client_printing_cost: ''
+        client_printing_cost: '',
+        start_date:'',
+        end_date:'',
+        duration:''
 });
 // const [agencySiteLists,setAgencySiteLists]=useState([]);
 // const [errorToast, setErrorToast] = useState(false);
@@ -190,6 +62,15 @@ const ModelEditAgencySite = ({ show, handleClose, agencySiteData,setGetAgencyDat
         }
     }, [formData.height, formData.width]);
 
+    useEffect(() => {
+        if (formData.start_date && formData.end_date) {
+            const startDate = new Date(formData.start_date);
+            const endDate = new Date(formData.end_date);
+            const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)); // Duration in days
+            setFormData(prevState => ({ ...prevState, duration }));
+        }
+    }, [formData.start_date, formData.end_date]);
+
     const handleChange = (e) => {
         const { id, value } = e.target;
         setFormData(prevState => ({
@@ -218,7 +99,7 @@ let header;
 
         const { status, ...formDataWithoutStatus } = formData;
 
-
+        console.log(formDataWithoutStatus)
         try {
 
             
@@ -301,6 +182,46 @@ let header;
                                     </div>
                                 </div>
                             ))}
+                             <div className="col-xl-4 col-md-4 col-sm-4 col-4 p-1">
+                                <div className="form-group">
+                                    <label htmlFor="start_date">Start Date*</label>
+                                    <input 
+                                        type="date" 
+                                        id="start_date"
+                                        min={moment(agencySiteData?.db_estimate?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")}
+                                        max={moment(agencySiteData?.db_estimate?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")}
+                                        className="form-control" 
+                                        value={formData.start_date} 
+                                        onChange={handleChange} 
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-xl-4 col-md-4 col-sm-4 col-4 p-1">
+                                <div className="form-group">
+                                    <label htmlFor="end_date">End Date*</label>
+                                    <input 
+                                        type="date" 
+                                        min={moment(agencySiteData?.db_estimate?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")}
+                                        max={moment(agencySiteData?.db_estimate?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")}
+                                        id="end_date" 
+                                        className="form-control" 
+                                        value={formData.end_date} 
+                                        onChange={handleChange} 
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-xl-4 col-md-4 col-sm-4 col-4 p-1">
+                                <div className="form-group">
+                                    <label htmlFor="duration">Duration (days)</label>
+                                    <input 
+                                        type="text" 
+                                        id="duration" 
+                                        className="form-control" 
+                                        value={formData.duration} 
+                                        readOnly 
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </Modal.Body>

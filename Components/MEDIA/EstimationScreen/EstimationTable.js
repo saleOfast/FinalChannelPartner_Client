@@ -34,6 +34,7 @@ import ModelPurchaseOrder from "./ModelPurchaseOrder";
 import ModelGenerateCard from "./ModelGenerateCard";
 import UpdateNDPModel from "./UpdateNDPModel";
 import RePrintingMountingModel from "./RePrintingMountingModel";
+import moment from "moment";
 
 
 const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getContactList }) => {
@@ -55,6 +56,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
   const [showGenerateCard, setShowGenerateCard] = useState(false);
   const [assetSiteLists, setAssetSiteLists] = useState([]);
   const [agencySiteLists, setAgencySiteLists] = useState([]);
+  const [startDate,setStartDate] = useState("")
+  const [endDate,setEndDate] = useState("")
+  const [duration,setDuration] = useState("")
 
   const [selectedSites, setSelectedSites] = useState([]);
   const [estimationId, setEstimationId] = useState(null);
@@ -220,6 +224,9 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
           {
             estimate_id: estimationId,
             sites: formattedSites,
+            start_date:startDate,
+            end_date:endDate,
+            duration:duration,
           },
           header
         );
@@ -870,6 +877,12 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         getSiteList={getSiteList}
         getSingleData={getSingleData}
         estimateId={estimationId}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        setDuration={setDuration}
+        duration={duration}
+        min={moment(accountsList?.find(item=>item?.estimate_id==estimationId)?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")}
+        max={moment(accountsList?.find(item=>item?.estimate_id==estimationId)?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")}
       />
 
       <ModelClientCostAsset

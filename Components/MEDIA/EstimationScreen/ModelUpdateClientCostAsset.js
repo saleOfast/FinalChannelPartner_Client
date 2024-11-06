@@ -79,7 +79,7 @@ const ModelUpdateClientCostAsset = ({
                 
                 setFormData({...formData,
                   ccs_id:response?.data?.data?.ccs_id || '',
-                  site_id: response?.data?.data?.site_id || '',
+                  site_id: response?.data?.data?.db_site?.site_code || '',
                   state:response?.data?.data?.state || '',
                   city:response?.data?.data?.city || '',
                   location: response?.data?.data?.location || '',
@@ -108,7 +108,7 @@ const ModelUpdateClientCostAsset = ({
             else{
               console.log(true)
               setFormData({
-                site_id: selectedSite?.site_id || '',
+                site_id: selectedSite?.site_code || '',
                 estimate_id:selectedSite?.estimate_id||"",
                 state:selectedSite?.state || '',
                 city:selectedSite?.city || '',

@@ -288,7 +288,7 @@ export const formaArray = [
 ];
 
 export const updateClientCostAssetArray = [
-  { label: "Site Code", name: "site_id", type: "number", disabled: true },
+  { label: "Site Code", name: "site_id", type: "text", disabled: true },
   { label: "State", name: "state", disabled: true },
   { label: "City", name: "city", disabled: true },
   { label: "Location", name: "location", disabled: true },

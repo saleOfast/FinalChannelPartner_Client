@@ -13,7 +13,9 @@ const ModelAgencySite = ({
   // getSiteList,
   userInfo,
   estimateId,
-  getSingleData
+  getSingleData,
+  min,
+  max
 }) => {
   const [rows, setRows] = useState([
     {
@@ -32,6 +34,9 @@ const ModelAgencySite = ({
       clientDisplayCost: "",
       clientMountingCost: "",
       clientPrintingCost: "",
+      start_date: "", 
+      end_date: "",   
+      duration: ""    
     },
   ]);
 
@@ -378,6 +383,16 @@ const ModelAgencySite = ({
       const width = parseFloat(updatedRows[index].width) || 0;
       updatedRows[index].totalSqFt = (height * width).toFixed(2);
     }
+    if (name === "start_date" || name === "end_date") {
+      const startDate = new Date(updatedRows[index].start_date);
+      const endDate = new Date(updatedRows[index].end_date);
+      if (startDate && endDate && endDate >= startDate) {
+          const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)); // Duration in days
+          updatedRows[index].duration = duration;
+      } else {
+          updatedRows[index].duration = ""; // Reset if dates are invalid
+      }
+  }
 
     setRows(updatedRows);
   };
@@ -736,6 +751,49 @@ const ModelAgencySite = ({
                           {error[`clientPrintingCost-${index}`] && <span className="text-danger">{error[`clientPrintingCost-${index}`]}</span>}
                         </div>
                       </div>
+
+                      <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+                                        <div className="input_box">
+                                            <label htmlFor={`start_date-${index}`}>Start Date*</label>
+                                            <input 
+                                                type="date" 
+                                                className="form-control" 
+                                                name="start_date" 
+                                                min={min}
+                                                max={max}
+                                                value={row.start_date} 
+                                                onChange={(event) => handleInputChange(index, event)} 
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+                                        <div className="input_box">
+                                            <label htmlFor={`end_date-${index}`}>End Date*</label>
+                                            <input 
+                                                type="date" 
+                                                min={row.start_date}
+                                                max={max}
+                                                className="form-control" 
+                                                name="end_date" 
+                                                value={row.end_date} 
+                                                onChange={(event) => handleInputChange(index, event)} 
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="col-xl-3 col-md-3 col-sm-3 col-3 p-1">
+                                        <div className="input_box">
+                                            <label htmlFor={`duration-${index}`}>Duration (days)</label>
+                                            <input 
+                                                type="text" 
+                                                className="form-control" 
+                                                name="duration" 
+                                                value={row.duration} 
+                                                readOnly 
+                                            />
+                                        </div>
+                                    </div>
                       {index !== 0 && (
                         <div className="col-md-12 mb-3">
                           <Button

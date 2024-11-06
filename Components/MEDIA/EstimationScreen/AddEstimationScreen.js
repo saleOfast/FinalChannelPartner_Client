@@ -138,6 +138,9 @@ const AddEstimationScreen = () => {
   const [deleteSiteAgencyId, setDeleteSiteAgencyId] = useState("");
   const [deleteSiteAssetId, setDeleteSiteAssetId] = useState("");
   const [show, setShow] = useState(false);
+  const [startDate,setStartDate] = useState("")
+  const [endDate,setEndDate] = useState("")
+  const [duration,setDuration] = useState("")
   
   const [newFields, setNewFields] = useState({
     field_lable: null,
@@ -296,6 +299,9 @@ const AddEstimationScreen = () => {
           {
             estimate_id: id,
             sites: formattedSites,
+            start_date:startDate,
+            end_date:endDate,
+            duration:duration,
           },
           header
         );
@@ -2999,6 +3005,12 @@ const AddEstimationScreen = () => {
           stateId={stateId}
           cityIds={cityIds}
           getSiteList={getSiteList}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          setDuration={setDuration}
+          duration={duration}
+          min={moment(userInfo?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")}
+          max={moment(userInfo?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")}
       />
 
       <ModelAssetSite2
@@ -3047,6 +3059,8 @@ const AddEstimationScreen = () => {
         handleClose3={handleClose3}
         estimateId={id}
         getSingleData={getSingleData}
+        min={moment(userInfo?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")}
+        max={moment(userInfo?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")}
       />
 
       <ModelAgencySiteUpload

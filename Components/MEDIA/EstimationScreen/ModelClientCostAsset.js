@@ -220,9 +220,9 @@ const ModelClientCostAsset = ({
                         <th>Width (Ft.)</th>
                         <th>Height (Ft.)</th>
                         <th>Total (Sq. Ft.)</th>
-                        <th>Campaign Start Date</th>
-                        <th>Campaign End Date</th>
-                        <th>Campaign Duration</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Duration</th>
                         <th>Display Cost / Month</th>
                         <th>Selling Price as per Duration</th>
                         <th>Final Client PO Cost</th>
@@ -259,13 +259,14 @@ const ModelClientCostAsset = ({
                             <td>{site?.width}</td>
                             <td>{site?.total_sq_ft}</td>
                             <td>
-                              {moment(site?.campaign_start_date).format("DD/MM/YYYY")}
+                              {moment(site?.start_date).format("DD/MM/YYYY")}
                             </td>
                             <td>
-                              {moment(site?.campaign_end_date).format("DD/MM/YYYY")}
+                              {moment(site?.end_date).format("DD/MM/YYYY")}
                             </td>
                             <td>
-                              {moment(site?.campaign_end_date).diff(moment(site?.campaign_start_date), 'days')}
+                              {/* {moment(site?.campaign_end_date).diff(moment(site?.campaign_start_date), 'days')} */}
+                              {site?.duration}
                             </td>
                             <td>
                               {site?.display_cost_per_month}

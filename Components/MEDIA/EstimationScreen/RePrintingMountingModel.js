@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { fetchData } from '../../../Utils/getReq';
 import { toast } from 'react-toastify';
 import { getCookie, hasCookie } from 'cookies-next';
+import { Baseurl } from '../../../Utils/Constants';
 
 
 const RePrintingMountingModel = ({ id, show, setShowRePrMo }) => {
@@ -62,7 +63,7 @@ const RePrintingMountingModel = ({ id, show, setShowRePrMo }) => {
             `/db/media/estimation/addReprintEstimate`,
           {
             estimate_id: id,
-            ndp_r_id: selectedOption.value,
+            ndp_r_id: selectedOption,
           },
           header
         );
@@ -81,12 +82,16 @@ const RePrintingMountingModel = ({ id, show, setShowRePrMo }) => {
       finally {
         setIsLoading(false);
         setShowRePrMo(false); // Close the modal after operation
+        setSelectedOption(null)
       }
     }
   };
 
   return (
-    <Modal show={show} onHide={() => setShowRePrMo(false)} size="md">
+    <Modal show={show} onHide={() =>{
+       setShowRePrMo(false)
+       setSelectedOption(null)
+       }} size="md">
       <Modal.Header closeButton>
         <Modal.Title>Re-Printing Mounting</Modal.Title>
       </Modal.Header>

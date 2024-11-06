@@ -956,6 +956,8 @@ const EstimationTable = ({ accountsList, openConfirmBox, title, loader, getConta
         handleClose3={handleClose3}
         estimateId={estimationId}
         getSingleData={getSingleData}
+        min={moment(accountsList?.find(item=>item?.estimate_id==estimationId)?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")}
+        max={moment(accountsList?.find(item=>item?.estimate_id==estimationId)?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")}
       />
 
       <ModelAssetSite2

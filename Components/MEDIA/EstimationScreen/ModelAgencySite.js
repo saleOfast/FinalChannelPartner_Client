@@ -186,72 +186,6 @@ const ModelAgencySite = ({
     }
   }, [show]);
 
-  // const handleSubmit = async () => {
-  //   setLoading(true);
-  //   setError("");
-
-  //   const token = getCookie("token");
-  //   const db_name = getCookie("db_name");
-
-  //   const headers = {
-  //     Accept: "application/json",
-  //     Authorization: `Bearer ${token}`,
-  //     db: db_name,
-  //     m_id:439,
-  //     "Content-Type": "application/json",
-  //   };
-
-  //   // Transform rows to include values instead of IDs
-  //   const transformedRows = rows.map((row) => ({
-  //     country_id: "India",
-  //     estimate_id: estimateId,
-  //     state_id: row.state_name,
-  //     // state_name: row.state_name,
-  //     city_id: row.city_name,
-  //     // city_name: row.city_name,
-  //     location: row.location,
-  //     m_f_id:
-  //       mediaFormats.find((option) => option.value === row.mediaFormat)
-  //         ?.label || "",
-
-  //     m_v_id:
-  //       mediaVehicles.find((option) => option.value === row.mediaVehicle)
-  //         ?.label || "",
-
-  //     m_t_id:
-  //       mediaTypes.find((option) => option.value === row.mediaType)?.label ||
-  //       "",
-
-  //     quantity: row.quantity,
-  //     height: row.height,
-  //     width: row.width,
-  //     total_sqft: row.totalSqFt,
-  //     client_display_cost: row.clientDisplayCost,
-  //     client_mounting_cost: row.clientMountingCost,
-  //     client_printing_cost: row.clientPrintingCost,
-  //   }));
-
-  //   try {
-  //     const response = await axios.post(
-  //       `${Baseurl}/db/media/estimationAgencyBusiness/addSitesForAgencyEstimates`,
-  //       { sites: transformedRows },
-  //       { headers }
-  //     );
-
-  //     if (response.status === 200) {
-  //       toast.success("Data saved successfully!");
-  //       // getSiteList();
-  //       handleClose3();
-  //     } else {
-  //       toast.error("Failed to save data. Please try again.");
-  //     }
-  //   } catch (error) {
-  //     setError(error?.response?.data?.message || "Something went wrong!");
-  //     toast.error(error?.response?.data?.message || "Something went wrong!");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -308,6 +242,15 @@ const ModelAgencySite = ({
         newError[`clientPrintingCost-${index}`] = "Printing Cost is required";
         hasError = true;
       }
+      if (!row.start_date) {
+        newError[`clientPrintingCost-${index}`] = "Start Date is required";
+        hasError = true;
+      }
+      if (!row.end_date) {
+        newError[`clientPrintingCost-${index}`] = "End Date is required";
+        hasError = true;
+      }
+      
     });
   
     if (hasError) {
@@ -345,6 +288,9 @@ const ModelAgencySite = ({
       client_display_cost: row.clientDisplayCost,
       client_mounting_cost: row.clientMountingCost,
       client_printing_cost: row.clientPrintingCost,
+      start_date: row.start_date,
+      end_date: row.end_date,
+      duration: row.duration,
     }));
 
   
@@ -762,6 +708,8 @@ const ModelAgencySite = ({
                                                 min={min}
                                                 max={max}
                                                 value={row.start_date} 
+                                                onKeyDown={(e)=>e.preventDefault()}
+                                                onPaste={(e)=>e.preventDefault()}
                                                 onChange={(event) => handleInputChange(index, event)} 
                                             />
                                         </div>
@@ -774,9 +722,12 @@ const ModelAgencySite = ({
                                                 type="date" 
                                                 min={row.start_date}
                                                 max={max}
+                                                disabled={!row.start_date}
                                                 className="form-control" 
                                                 name="end_date" 
-                                                value={row.end_date} 
+                                                value={row.end_date}
+                                                onKeyDown={(e)=>e.preventDefault()}
+                                                onPaste={(e)=>e.preventDefault()} 
                                                 onChange={(event) => handleInputChange(index, event)} 
                                             />
                                         </div>

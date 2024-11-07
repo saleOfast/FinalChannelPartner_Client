@@ -961,6 +961,7 @@ const AddOpportunityScreen = () => {
                 >
                   <label htmlFor="task_name">Stage *</label>
                   <Select
+                    isDisabled
                     id={userInfo.opportunity_stg_id}
                     defaultValue={""}
                     options={stageList?.map((data, index) => {

@@ -926,6 +926,7 @@ async function postFieldsFunc(id, data) {
                                 <div className={errorData?.opportunity_stg_id ? 'input_box errorBox' : 'input_box'}>
                                     <label htmlFor="task_name">Stage  *</label>
                                     <Select
+                                        isDisabled
                                         id={userInfo.opportunity_stg_id}
                                         defaultValue={""}
                                         options={stageList?.map((data, index) => {

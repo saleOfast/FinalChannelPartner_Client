@@ -8,7 +8,7 @@ import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import Button from "react-bootstrap/Button";
 import ConfirmBox from "../Basics/ConfirmBox";
-import ManageTaskStatusTab from "./ManageTaskstatusTab";
+import ManageTaskStatusTab from "./ManageTaskStatusTab";
 import Papa from "papaparse";
 import { useSelector } from "react-redux";
 const ManageTaskStatusScreen = () => {

@@ -1221,7 +1221,7 @@ const AddAccountScreen = () => {
                             setErrorData({ ...errorData, phone_no: "Phone number can only contain digits." });
                           }
                         }}
-                        value={userInfo.phone_no ? userInfo.phone_no : null}
+                        value={userInfo.phone_no ? userInfo.phone_no : ""}
                       />
                       <span className="errorText">
                         {" "}

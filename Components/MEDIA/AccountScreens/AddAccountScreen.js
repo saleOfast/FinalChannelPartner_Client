@@ -1183,9 +1183,9 @@ const AddAccountScreen = () => {
                     >
                       <label htmlFor="phone_no">Phone No</label>
                       <input
-                        type="number"
+                        type="text"
                         name="phone_no"
-                        placeholder="Enter Contact No."
+                        placeholder="Enter Phone No."
                         id="phone_no"
                         disabled={viewMode}
                         className={

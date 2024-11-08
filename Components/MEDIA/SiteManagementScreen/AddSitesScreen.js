@@ -1547,7 +1547,7 @@ const AddSitesScreen = () => {
 
                       <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                         <div className="input_box">
-                          <label htmlFor="total_sq_ft">Total Sq. Ft.</label>
+                          <label htmlFor="total_sq_ft">Total Sq. Ft. (Height X Width)</label>
                           <input
                             type="number"
                             name="total_sq_ft"

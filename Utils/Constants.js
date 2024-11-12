@@ -1,7 +1,7 @@
 // /*  -----------------uat links------------- */
 
-export const Baseurl = 'https://crm.saleofast.com/support/api/v1';
-export const filesUrl = 'https://crm.saleofast.com/support/images';
+// export const Baseurl = 'https://crm.saleofast.com/support/api/v1';
+// export const filesUrl = 'https://crm.saleofast.com/support/images';
 
 // /*  -----------------iis links------------- */
 
@@ -23,5 +23,5 @@ export const filesUrl = 'https://crm.saleofast.com/support/images';
 
 /* -----------------NK Realtors links------------- */
 
-// export const Baseurl = 'http://18.61.222.249:8050/api/v1';
-// export const filesUrl = 'http://18.61.222.249:8050/images';
+export const Baseurl = 'http://18.61.222.249:8050/api/v1';
+export const filesUrl = 'http://18.61.222.249:8050/images';

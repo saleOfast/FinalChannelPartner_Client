@@ -883,7 +883,6 @@ const AddUserScreen = () => {
                         // })]}
                         options={userListFilterBasisOfRole(userInfo?.role_id,usersList)}
                           value={usersList
-                            ?.filter((user) => user.role_id == 2)
                             ?.map((data, index) => {
                             if (userInfo.report_to == data.user_id) {
                               return {

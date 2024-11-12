@@ -9,7 +9,7 @@ const ReChart1 = ({ head, dataList, keyX='lead', keyY='booking'}) => {
                  <div className=' fw-bold fs-5'  >
                         {head}
                         </div>
-                    <div className="col-xl-8 col-md-8 col-sm-6 col-6">
+                    <div className="col-xl-10 col-md-10 col-sm-10 col-10">
                    
                         <div className="pieChart pt-5">
                             

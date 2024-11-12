@@ -40,6 +40,7 @@ import ModelGenerateCard from "./ModelGenerateCard";
 import JobCardManagement from "./JobCardManagement";
 import UpdateNDPModel from "./UpdateNDPModel";
 import RePrintingMountingModel from "./RePrintingMountingModel";
+import ModelForceClosure from "./ModelForceClosure";
  
 
 const AddEstimationScreen = () => {
@@ -187,6 +188,7 @@ const AddEstimationScreen = () => {
   const [showGenerateCard, setShowGenerateCard] = useState(false);
   const [showNDP, setShowNDP] = useState(false);
   const [showRePrMo, setShowRePrMo] = useState(false);
+  const [showForceClosure, setShowForceClosure] = useState(false);
 
   const handleClose1 = () => {
     setShow1(false);
@@ -1408,6 +1410,10 @@ const AddEstimationScreen = () => {
                         <Dropdown.Item eventKey="9" onClick={() => {
                           setShowRePrMo(true)
                         }} >Re-Printing/Mounting</Dropdown.Item>
+
+                        {/* <Dropdown.Item eventKey="10" onClick={() => {
+                          setShowForceClosure(true)
+                        }} >Force Closure</Dropdown.Item> */}
 
                       </DropdownButton>
                     </ButtonGroup>
@@ -3135,6 +3141,13 @@ const AddEstimationScreen = () => {
         id={id}
         show={showRePrMo}
         setShowRePrMo={setShowRePrMo}
+      />
+
+      <ModelForceClosure 
+        id={id}
+        show={showForceClosure}
+        setShow={setShowForceClosure}
+        userInfo={userInfo}
       />
 
     </>

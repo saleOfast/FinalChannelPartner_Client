@@ -17,14 +17,14 @@ const RevenueChart1 = ({ dataList }) => {
     return (
         <>
             {dataList && dataList.length > 0 ? 
-                <ResponsiveContainer width='100%' height={300}>
+                <ResponsiveContainer width='100%' height={490}>
                     <PieChart>
                         <Pie
                             data={dataList}
                             cx="40%"
                             cy="50%"
-                            innerRadius={30}
-                            outerRadius={50}
+                            innerRadius={45}
+                            outerRadius={75}
                             fill="#8884d8"
                             dataKey="count"
                             nameKey="category"

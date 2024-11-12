@@ -501,7 +501,7 @@ const DashBoardScreen = () => {
 
                     <div className='row'>
                             {salesOrderAssetBusiness?.length ?
-                       <div className="col-xl-12 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
                                 <div className="">
                                     <div className="dash_card chartSec">
                                         <ReChart
@@ -516,7 +516,7 @@ const DashBoardScreen = () => {
                             null} 
 
                              {salesOrderAgencyBusiness?.length ?
-                       <div className="col-xl-12 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
                                 <div className="">
                                     <div className="dash_card chartSec">
                                         <ReChart
@@ -531,11 +531,11 @@ const DashBoardScreen = () => {
                             null}
 
                             {purchaseOrderAssetBusiness?.length ?
-                       <div className="col-xl-12 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
                                 <div className="">
                                     <div className="dash_card chartSec">
                                         <ReChart
-                                            head='Puchase Order Asset Business'
+                                            head='Purchase Order Asset Business'
                                             keyX='month'
                                             keyY='total'
                                             dataList={purchaseOrderAssetBusiness}
@@ -546,11 +546,11 @@ const DashBoardScreen = () => {
                             null}   
 
                             {purchaseOrderAgencyBusiness?.length ?
-                       <div className="col-xl-12 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
                                 <div className="">
                                     <div className="dash_card chartSec">
                                         <ReChart
-                                            head='Puchase Order Agency Business'
+                                            head='Purchase Order Agency Business'
                                             keyX='month'
                                             keyY='total'
                                             dataList={purchaseOrderAgencyBusiness}
@@ -561,7 +561,7 @@ const DashBoardScreen = () => {
                             null}     
 
                             {salesOrderByCreator?.length ?
-                       <div className="col-xl-12 col-md-12 col-lg-6 col-sm-12 mt-2"> 
+                       <div className="col-xl-6 col-md-12 col-lg-6 col-sm-12 mt-2"> 
                                 <div className="">
                                     <div className="dash_card chartSec">
                                         <ReChart1
@@ -577,7 +577,7 @@ const DashBoardScreen = () => {
 
                              {siteAvailabilityReport?.data?.length ?
                                 // {dataList?.piechartOpp?.length ?
-                            <div className="col-xl-12 col-md-6 col-12 col-sm-12">
+                            <div className="col-xl-6 col-md-6 col-12 col-sm-12">
 
                                 <OpportunityCard
                                     head='Site Availability Report '
@@ -589,7 +589,7 @@ const DashBoardScreen = () => {
 
                             {siteCategoryReport?.data?.length ?
                                 // {dataList?.piechartOpp?.length ?
-                            <div className="col-xl-12 col-md-6 col-12 col-sm-12">
+                            <div className="col-xl-6 col-md-6 col-12 col-sm-12">
 
                                 <OpportunityCard1
                                     head='Site Category Report '

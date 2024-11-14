@@ -221,6 +221,25 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             }
         },
         {
+            name: 'db_user_profile',
+            label: "Designation",
+            options: {
+                filter: true,
+                customHeadRender: (columnMeta, updateDirection) => (
+                    <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
+                      {columnMeta.label}
+                    </th>
+                  ),
+                  customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <div  className='status_box fw-bold text-center' style={{color:"#293790"}} >
+                            {value?.db_designation?.designation}
+                        </div>
+                    )
+                }   
+            }
+        },
+        {
             name: 'cpt_id',
             label: "Partner Type",
             options: {
@@ -255,6 +274,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
+                    console.log(tableMeta.rowData)
                     return (
                         <div className="table_btns justify-content-center align-items-center">
                             <button
@@ -267,20 +287,6 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                         </div>
                     )
                 }
-                // customBodyRender: (value, tableMeta, updateValue) => {
-                //     return (
-                //         <div className="table_btns">
-                //             <button
-                //                 onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[8]?.user_id) }}
-                //                 style={{background:`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
-                //                 className='pe-3 ps-3'
-                //                 title='Assign - To'>
-                //                     Assign to
-                //             </button>
-                          
-                //         </div>
-                //     )
-                // }
             }
         },
         {

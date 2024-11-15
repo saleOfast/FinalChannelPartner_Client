@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Baseurl, filesUrl } from "../../Utils/Constants";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { startButtonLoading, stopButtonLoading } from "../../store/buttonLoaderSlice";
@@ -83,10 +83,12 @@ const ForgotPassword = () => {
     return;
   }
     try {
+      let db_name = getCookie("db_name")
       dispatch(startButtonLoading())
       // Make the API request using Axios
       const response = await axios.post(`${Baseurl}/db/users/cp/send`, {
         email: email.trim(),
+        db_name: db_name
       });
       if (response.data.status == 200) {
         toast.success(response.data.message);

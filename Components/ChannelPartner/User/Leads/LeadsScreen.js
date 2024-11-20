@@ -603,7 +603,7 @@ const LeadsScreen = () => {
                               <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
                                 <div className='row '>
                                   <div className="col-3">
-                                      <label htmlFor="name" className="pb-1">Contact No<span className="star text-danger">*</span></label>
+                                      <label htmlFor="name" className="pb-1">Contact No<span className="star text-danger"></span></label>
                                     </div>
                                     <div className="col-9">
                                       <input autofocus  value={lead?.p_contact_no} onChange={(e) => {
@@ -613,7 +613,7 @@ const LeadsScreen = () => {
                                             setLead({ ...lead, p_contact_no: value });
                                           }
                                         }}
-                                        type="number" name="name" className="input-field" placeholder required />
+                                        type="number" name="name" className="input-field" placeholder />
                                       <span className='errorText text-danger'>
                                           {errorData?.p_contact_no ? errorData.p_contact_no:""}
                                       </span>

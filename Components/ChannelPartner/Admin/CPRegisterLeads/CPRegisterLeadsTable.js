@@ -144,8 +144,11 @@ const addUserHandler = async (id,assignedToId) => {
 };
 
 
-const updateUserhandler = async (onBoradStage=false) => {
-  const newErrors = validateForm();
+const updateUserhandler = async (onBoradStage=false, user_id, t_id ) => {
+  let newErrors = {}
+  if(!user_id && !t_id){
+     newErrors = validateForm();
+  }
   if (Object.keys(newErrors).length === 0) {
     if (!hasCookie("token")) return;
   
@@ -162,8 +165,10 @@ const updateUserhandler = async (onBoradStage=false) => {
   if(onBoradStage){
      newFormData={...formData,db_name:db_name,stage:"LINK SENT"}
   }
-  else{
-     newFormData={...formData,db_name:db_name}
+  else if(user_id && t_id){
+    newFormData={...formData, asssigned_to: user_id, cpl_id: t_id, db_name:db_name}
+   }else{
+   newFormData={...formData, db_name:db_name}
   }
   // const newFormData={...formData,db_name:db_name,}
   try {
@@ -185,6 +190,7 @@ const updateUserhandler = async (onBoradStage=false) => {
   }
     console.log('Form data submitted:', formData);
     setShowModal(false);
+    setShowAssignTo(false);
   } else {
     setErrors(newErrors);
   }
@@ -223,7 +229,13 @@ const getCplHistoryData = async (cpl_id) => {
       }
   }
 }
-
+const [showAssignTo, setShowAssignTo] = useState("");
+const [oldAssignTo, setOldAssignTo] = useState("")
+const [selectedOption, setSelectedOption] = useState("");
+const assignChangeHandler = (e) =>{
+  setSelectedOption(e)
+  setOldAssignTo(e)
+}
   const columns = [
     {
       name: "first_name",
@@ -435,7 +447,20 @@ const getCplHistoryData = async (cpl_id) => {
                         </>
                       )
                     }
-                  
+                    {userInfo?.isDB && <div className="table_btns justify-content-center align-items-center" style={{marginRight:'5px'}}>
+                            <button
+                                onClick={()=>{
+                                  const newData=dataList?.find((item)=>item?.cpl_id==value)
+                                  setFormData(newData);
+                                  setShowAssignTo(value); 
+                                  setOldAssignTo(tableMeta?.tableData[tableMeta?.rowIndex][8])
+                                }}
+                                style={{background:clientBtnColor? clientBtnColor:`#293790`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
+                                className='pe-3 ps-3'
+                                title='Assign - To'>
+                                    Assign to
+                            </button>
+                        </div>}
                   {
                     tableMeta?.rowData[5]=="CONTACTED" && (
                       <button 
@@ -818,7 +843,60 @@ const getCplHistoryData = async (cpl_id) => {
   </Modal.Body>
 </Modal>
 
-      
+<Modal className="commonModal"  show={!showAssignTo? false: true }   onHide={()=>setShowAssignTo("")} style={{}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>  Assign To  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="add_user_form">
+                        <div className="row">
+                            <div className="col-xl-12 col-md-12 col-sm-12 col-12">
+                                <div className="input_box">
+                                   
+                                        <Select
+                                            id="select"
+                                            defaultValue={""}
+                                            
+                                            options={[ 
+                                                ...usersList?.filter(item => item?.role_id == 2)?.map((item) => {
+                                                  return {
+                                                    value: item?.user_id,
+                                                    label: item?.user
+                                                  };
+                                                })
+                                              ]}
+                                              value={
+                                                usersList?.filter(item=>item?.role_id==2)?.map((item) => {
+                                            if (oldAssignTo === item.user_id) {
+                                                return {
+                                                    value: item?.user_id,
+                                                    label: item?.user
+                                                    }
+                                                }
+                                                })
+                                              }
+                                            onChange={(e) => {
+                                                assignChangeHandler(e.value)
+                                            }}
+                                        />
+                                        
+                                      
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button className=" btn btn-danger rounded-5" 
+                    onClick={()=>setShowAssignTo("")}
+                    >Cancel</button>
+                    <div style={{background:clientBtnColor}} className='btn rounded-5 text-white' 
+                     onClick={()=>updateUserhandler(false, selectedOption, showAssignTo)} 
+                     >
+                        SUBMIT
+                    </div>
+                </Modal.Footer>
+            </Modal>
     </>
   );
 };

@@ -199,43 +199,39 @@ export default function SignInScreen({ setLoggedIn }) {
     <>
       <div className="NewLoginScreen bg-white">
         <div className="row m-0  login">
-
-          <div style={{background:"#111B34"}} className="col-12 col-lg-6 m-0 p-0  w-half lg:w-1/2 m-0 p-0 bg-blue-500">
-            <div className="form-left d-flex flex-column justify-content-center">
-              {/* <img src="/images/Ellipse26.png" alt="normal"className="image-one" /> */}
+          <div className="col-12 col-lg-6 m-0 p-0">
+            <div className="form-left d-flex flex-column justify-content-between">
+              <img src="/images/Ellipse26.png" alt="normal"className="image-one" />
               <img
                 src={ clientData?.logo
                   &&( `${filesUrl}` +
                     `/logo/images${clientData?.logo}`)}
-                alt=""
+                alt
                 className=" mx-auto w-auto"
               />
-              {/* <img
+              <img
                 src="/images/Ellipse27.png"
                 alt
                 className="image-two d-none d-lg-block"
-              /> */}
+              />
             </div>
           </div>
-
-          <div style={{background:"#F28A21"}} className="col-12 col-lg-6 d-flex align-items-center  justify-content-center pt-5 w-half lg:w-1/2 m-0 p-0  text-black-500">
-            <div className="form-right  d-flex justify-content-center align-items-center text-black-100">
-              <form action className="row g-4 text-black-100" onSubmit={submitHandler}>
+          <div className=" col-12 col-lg-6 d-flex align-items-center bg-white justify-content-center pt-5">
+            <div className="form-right  d-flex justify-content-center align-items-center ">
+              <form action className="row g-4" onSubmit={submitHandler}>
                 <div className="col-12">
                   <div className="d-flex flex-column">
                     <b className="fs-3 mb-2 text-center text-md-start">Login</b>
                     <span
-                      className="font-black fs-6 d-none d-md-block"
-                      style={{ fontWeight: 600 }}
+                      className="fs-6 d-none d-md-block"
+                      style={{ color: "#CFCFCF" }}
                     >
                       Welcome Back! Please login to your account
                     </span>
                   </div>
                 </div>
                 <div className="col-12">
-                  <label className="fs-5 pb-2 " 
-                  style={{ fontWeight: 600 }}
-                  >
+                  <label className="fs-5 pb-2" style={{ color: "#A7A7A7" }}>
                     Username
                   </label>
                   <div className="input-group">
@@ -260,9 +256,7 @@ export default function SignInScreen({ setLoggedIn }) {
                   </div>
                 </div>
                 <div className="col-12">
-                  <label className="fs-5 pb-2" 
-                 style={{ fontWeight: 600 }}
-                  >
+                  <label className="fs-5 pb-2" style={{ color: "#A7A7A7" }}>
                     Password
                   </label>
                   <div className="input-group">
@@ -296,16 +290,16 @@ export default function SignInScreen({ setLoggedIn }) {
                   <Link
                     href="/ResetPassword"
                     className="float-end fw-semibold text-decoration-none"
-                    style={{ fontWeight: 600, textDecoration: 'none!important' }}
+                    style={{ color: "#549EF5" }}
                   >
                     Forgot Password?
                   </Link>
                 </div>
-                <div className="col-12 text-black-100">
+                <div className="col-12">
                   <button
                     type="submit"
-                    style={{background: "#405189"}}
-                    className="btn text-white fs-4 fw-semibold px-4 float-end w-100 rounded-4 text-black-100"
+                    style={{background:clientData?.button_color}}
+                    className="btn text-white fs-4 fw-semibold px-4 float-end w-100 rounded-4"
                   >
                     Login
                   </button>
@@ -313,15 +307,7 @@ export default function SignInScreen({ setLoggedIn }) {
               </form>
             </div>
           </div>
-
         </div>
-        <style>
-          {`
-         a:hover {
-           color: inherit;
-           }
-          `}
-        </style>
       </div>
     </>
   );

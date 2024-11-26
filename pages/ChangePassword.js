@@ -92,9 +92,9 @@ export default ChannelPartnerHOC(
       return (
         <div className="NewLoginScreen bg-white">
         <div className="row m-0  login">
-          <div className="col-12 col-lg-6 m-0 p-0">
-            <div className="form-left d-flex flex-column justify-content-between">
-              <img src="/images/Ellipse26.png" alt="normal"className="image-one" />
+          <div style={{background:"#111B34"}} className="col-12 col-lg-6 m-0 p-0">
+            <div className="form-left d-flex flex-column justify-content-center">
+              {/* <img src="/images/Ellipse26.png" alt="normal"className="image-one" /> */}
               <img
                 src={
                   clientData?.logo
@@ -104,15 +104,15 @@ export default ChannelPartnerHOC(
                 alt
                 className=" mx-auto"
               />
-              <img
+              {/* <img
                 src="/images/Ellipse27.png"
                 alt
                 className="image-two d-none d-lg-block"
-              />
+              /> */}
             </div>
             
           </div>
-          <div className=" col-12 col-lg-6 d-flex align-items-center bg-white justify-content-center pt-5">
+          <div style={{background:"#F28A21"}} className=" col-12 col-lg-6 d-flex align-items-center justify-content-center pt-5">
             <div className="form-right  d-flex justify-content-center align-items-center ">
               <form action className="row g-4" onSubmit={(e)=>{
                 e.preventDefault()
@@ -124,7 +124,7 @@ export default ChannelPartnerHOC(
                   </div>
                 </div>
                 <div className="col-12">
-                  <label className="fs-5 pb-2" style={{ color: "#A7A7A7" }}>
+                  <label className="fs-5 pb-2" style={{ fontWeight: 600 }}>
                     Password
                   </label>
                   <div className="input-group">
@@ -148,7 +148,7 @@ export default ChannelPartnerHOC(
                 </div>
 
                 <div className="col-12">
-                  <label className="fs-5 pb-2" style={{ color: "#A7A7A7" }}>
+                  <label className="fs-5 pb-2" style={{ fontWeight: 600 }}>
                     Confirm Password
                   </label>
                   <div className="input-group">
@@ -175,7 +175,7 @@ export default ChannelPartnerHOC(
                   <button
                     type="submit"
                     disabled={isButtonLoading}
-                    style={{background:clientData?.button_color}}
+                    style={{background: "#405189"}}
                     className="btn text-white fs-4 fw-semibold px-4 float-end w-100 rounded-4"
                   >
                     {isButtonLoading ? (

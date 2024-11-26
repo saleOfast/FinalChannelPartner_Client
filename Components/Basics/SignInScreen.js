@@ -200,7 +200,7 @@ export default function SignInScreen({ setLoggedIn }) {
       <div className="NewLoginScreen bg-white">
         <div className="row m-0  login">
 
-          <div style={{background:"#111B34"}} className="col-12 col-lg-6 m-0 p-0  w-half lg:w-1/2 m-0 p-0 bg-blue-500">
+          <div style={{background:"#111B34"}} className="col-12 col-lg-6 m-0 p-0  w-half lg:w-1/2 m-0 p-0">
             <div className="form-left d-flex flex-column justify-content-center">
               {/* <img src="/images/Ellipse26.png" alt="normal"className="image-one" /> */}
               <img

@@ -237,13 +237,14 @@ export default mainIndexHOC(
                 loader ? <Loader/> :(
                   <div className="NewLoginScreen bg-white w-100  overflow-auto">
                   <div className="row m-0 login">
-                    <div className="col-12 col-lg-6 m-0 p-0">
-                      <div className="form-left d-flex flex-column justify-content-between">
-                        <img
+                    <div style={{background:"#111B34"}} className="col-12 col-lg-6 m-0 p-0">
+                      <div className="form-left d-flex flex-column justify-content-center">
+                        {/* <img
                           src="/images/Ellipse26.png"
                           alt="Background One"
                           className="image-one"
-                        />{
+                        /> */}
+                        {
                         clientData?.logo ? <img
                           src={
                             clientData?.logo &&
@@ -253,14 +254,14 @@ export default mainIndexHOC(
                           className=" mx-auto"
                         /> : ""
                         }
-                        <img
+                        {/* <img
                           src="/images/Ellipse27.png"
                           alt="Background Two"
                           className="image-two d-none d-lg-block"
-                        />
+                        /> */}
                       </div>
                     </div>
-                    <div className="col-12 col-lg-6 d-flex align-items-center mt-5 mt-md-0 justify-content-center" style={{ marginTop: '0%' }}>
+                    <div className="col-12 col-lg-6 d-flex align-items-center mt-5 mt-md-0 justify-content-center" style={{ marginTop: '0%', background:"#F28A21" }}>
                     <div className="row w-100 pb-5">
                       {allowedpermission?.map((permission, i) => (
                         <div

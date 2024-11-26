@@ -125,7 +125,7 @@ const ResetPassword = () => {
                 <div className="col-12 d-flex gap-4">
                   <button
                     type="submit"
-                    style={{background:clientData?.button_color}}
+                    style={{background: "#405189"}}
                     className="btn text-white fs-4 fw-semibold px-4 float-end w-100 rounded-4"
                   >
                     Submit

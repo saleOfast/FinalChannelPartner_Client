@@ -175,7 +175,7 @@ export default ChannelPartnerHOC(
                   <button
                     type="submit"
                     disabled={isButtonLoading}
-                    style={{background:clientData?.button_color}}
+                    style={{background: "#405189"}}
                     className="btn text-white fs-4 fw-semibold px-4 float-end w-100 rounded-4"
                   >
                     {isButtonLoading ? (

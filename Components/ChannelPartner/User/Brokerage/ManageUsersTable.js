@@ -210,7 +210,7 @@ const updateBrokerageBill =  async() => {
           name: 'brokerage_code',
           label: "Booking ID",
           options: {
-              filter: true,
+              filter: false,
               customHeadRender: (columnMeta, updateDirection) => (
                   <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                     {columnMeta.label}
@@ -230,7 +230,7 @@ const updateBrokerageBill =  async() => {
             name: 'BrokerageBookingtDataName',
             label: "Booking Name",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -251,7 +251,7 @@ const updateBrokerageBill =  async() => {
             name: 'BrokerageBookingtDataEmail',
             label: "Email",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -273,7 +273,7 @@ const updateBrokerageBill =  async() => {
             name: 'BrokerageBookingtDataContact',
             label: "Contact No.",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -293,7 +293,7 @@ const updateBrokerageBill =  async() => {
             name: 'BrokerageBookingtDataProject',
             label: "Project",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -506,7 +506,8 @@ const updateBrokerageBill =  async() => {
         responsive: "simple",
         onRowSelectionChange : handleRowClick,
         downloadOptions:{filename:"ChannelBrokerage"},
-        filterType:'multiselect'
+        filterType:'multiselect',
+        viewColumns: false,
     };
 
     function formatDate(date) {
@@ -554,7 +555,17 @@ const updateBrokerageBill =  async() => {
                     data={mappedDataList}
                     // data={dataList}
                     columns={columns}
-                    options={options}
+                    // options={options}
+                    options={{
+                      ...options,
+                      customFilterDialogFooter: () => (
+                        <div
+                          style={{
+                            minWidth: "400px", // Set consistent width
+                          }}
+                        />
+                      ),
+                    }}
 
                 />
                 <div>

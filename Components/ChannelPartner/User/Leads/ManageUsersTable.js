@@ -197,7 +197,7 @@ const getVisitInfo=async(visitId)=>{
             name: 'lead_code',
             label: "Lead ID",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -217,7 +217,7 @@ const getVisitInfo=async(visitId)=>{
             name: 'lead_name',
             label: "Lead Name",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -238,7 +238,7 @@ const getVisitInfo=async(visitId)=>{
             name: 'email_id',
             label: "Email",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -259,7 +259,7 @@ const getVisitInfo=async(visitId)=>{
             name: 'p_contact_no',
             label: "Contact No.",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -275,10 +275,55 @@ const getVisitInfo=async(visitId)=>{
             }
         },
         {
+          name: 'createdAt',
+          label: "Created Date",
+          options: {
+              filter: false,
+              customHeadRender: (columnMeta, updateDirection) => (
+                  <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
+                    {columnMeta.label}
+                  </th>
+                ),
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    
+                  const date = new Date(value);
+                  const day = String(date.getDate()).padStart(2, '0');
+                  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                  const year = date.getFullYear();
+                  return (
+                      <div className='status_box text-center' style={{color:"#667799"}}>
+                          {`${day}/${month}/${year}`}
+                      </div>
+                  )
+              }
+          }
+      },
+      {
+        name: 'assigned_lead',
+        label: "C.P Name",
+        options: {
+            filter: true,
+            customHeadRender: (columnMeta, updateDirection) => (
+                <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
+                  {columnMeta.label}
+                </th>
+              ),
+            customBodyRender: (value, tableMeta, updateValue) => {
+                return (
+                    <div className='status_box' style={{color:"#667799"}}>
+                        {value}
+                    </div>
+                )
+            }
+        }
+    },
+   
+ 
+        {
             name: 'sales_project_name',
             label: "Project",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -500,6 +545,7 @@ const getVisitInfo=async(visitId)=>{
           // }
         },
         filterType:'multiselect',
+        viewColumns: false,
     };
 
     
@@ -562,7 +608,10 @@ const getVisitInfo=async(visitId)=>{
         p_contact_no:list?.p_contact_no,
         sales_project_name:list?.sales_project_name,
         visitList:list?.visitList,
-        db_lead_stage:list?.db_lead_stage?.stage
+        db_lead_stage:list?.db_lead_stage?.stage,
+        createdAt:list?.createdAt,
+        assigned_lead:`${list?.leadOwner?.user ?? ""} ${list?.leadOwner?.user_l_name ?? ""}`,
+      
       }))
       
  
@@ -579,7 +628,17 @@ const getVisitInfo=async(visitId)=>{
             // data={leadList}
             data={mappedDataList}
             columns={columns}
-            options={options}
+            // options={options}
+            options={{
+              ...options,
+              customFilterDialogFooter: () => (
+                <div
+                  style={{
+                    minWidth: "400px", // Set consistent width
+                  }}
+                />
+              ),
+            }}
           />
          
         </div>

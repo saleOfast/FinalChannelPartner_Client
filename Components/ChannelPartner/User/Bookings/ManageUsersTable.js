@@ -92,7 +92,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
       name: 'booking_code',
       label: "Booking ID",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
@@ -112,7 +112,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
       name: 'booking_name',
       label: "Booking Name",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
@@ -132,7 +132,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
       name: 'email',
       label: "Email",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
@@ -153,7 +153,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
       name: 'contact_no',
       label: "Contact No.",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
@@ -172,7 +172,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
       name: 'BookingprojectData',
       label: "Project",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: 'white', paddingLeft:"15px",padding:"8px" }}   >
             {columnMeta.label}
@@ -533,7 +533,8 @@ const [value, setValue] = useState(getCurrentWeekDates());
     responsive: "simple",
     onRowSelectionChange: handleRowClick,
     downloadOptions:{filename:"ChannelBookings"},
-    filterType:'multiselect'
+    filterType:'multiselect',
+    viewColumns: false,
   };
 
   const mappedDataList=dataList?.map(list=>({
@@ -560,7 +561,17 @@ const [value, setValue] = useState(getCurrentWeekDates());
             // data={dataList}
             data={mappedDataList}
             columns={columns}
-            options={options}
+            // options={options}
+            options={{
+              ...options,
+              customFilterDialogFooter: () => (
+                <div
+                  style={{
+                    minWidth: "400px", // Set consistent width
+                  }}
+                />
+              ),
+            }}
           />
         </div>
         )

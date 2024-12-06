@@ -103,7 +103,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             name: 'visit_code',
             label: "Visit ID",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -123,7 +123,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             name: 'leadDataName',
             label: "Lead Name",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -144,7 +144,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             name: 'leadDataEmail',
             label: "Email",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -166,7 +166,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             name: 'leadDataContact',
             label: "Contact No.",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -186,7 +186,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             name: 'leadDataProject',
             label: "Project",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -203,10 +203,53 @@ const [value, setValue] = useState(getCurrentWeekDates());
             }
         },
         {
+          name: 'assigning_date',
+          label: "Assign Date",
+          options: {
+              filter: false,
+              customHeadRender: (columnMeta, updateDirection) => (
+                  <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
+                    {columnMeta.label}
+                  </th>
+                ),
+                customBodyRender: (value, tableMeta, updateValue) => {
+                          
+                  const date = new Date(value);
+                  const day = String(date.getDate()).padStart(2, '0');
+                  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                  const year = date.getFullYear();
+                  return (
+                      <div className='status_box text-center' style={{color:"#667799"}}>
+                          {`${day}/${month}/${year}`}
+                      </div>
+                  )
+              }
+          }
+      },
+      {
+        name: 'completed_date',
+        label: "Completed Date",
+        options: {
+            filter: false,
+            customHeadRender: (columnMeta, updateDirection) => (
+                <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
+                  {columnMeta.label}
+                </th>
+              ),
+            customBodyRender: (value, tableMeta, updateValue) => {
+                return (
+                    <div className='status_box' style={{color:"#667799"}}>
+                        {value}
+                    </div>
+                )
+            }
+        }
+      },
+        {
             name: 'p_visit_date',
             label: "Visit Date",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -225,7 +268,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             name: 'p_visit_time',
             label: "Visit Time",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th style={{background:`${clientBtnColor}`, color: 'white',paddingLeft:"15px",padding:"8px"}}   >
                       {columnMeta.label}
@@ -412,7 +455,8 @@ const [value, setValue] = useState(getCurrentWeekDates());
         responsive: "simple",
         onRowSelectionChange : handleRowClick,
         downloadOptions:{filename:"ChannelVisits"},
-        filterType:'multiselect'
+        filterType:'multiselect',
+        viewColumns: false,
     };
 
     const mappedDataList=dataList?.map(list=>({
@@ -424,7 +468,9 @@ const [value, setValue] = useState(getCurrentWeekDates());
       leadDataProject:list?.leadData?.sales_project_name,
       p_visit_date:list?.p_visit_date,
       p_visit_time:list?.p_visit_time,
-      status:list?.status
+      status:list?.status,
+      assigning_date: list?.createdAt,
+      completed_date: list?.status === "Completed" ? list?.updatedAt : ""
     }))
       
  
@@ -440,7 +486,17 @@ const [value, setValue] = useState(getCurrentWeekDates());
                     data={mappedDataList}
                     // data={dataList}
                     columns={columns}
-                    options={options}
+                    // options={options}
+                    options={{
+                      ...options,
+                      customFilterDialogFooter: () => (
+                        <div
+                          style={{
+                            minWidth: "300px", // Set consistent width
+                          }}
+                        />
+                      ),
+                    }}
 
                 />
                 <div>

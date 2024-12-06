@@ -139,7 +139,7 @@ const addUserHandler = async (id,assignedToId) => {
     } else {
       toast.error("Something went wrong!",{autoClose:2500});
     }
-    setisLoading(false);
+    // setisLoading(false);
   }
 };
 
@@ -241,7 +241,7 @@ const assignChangeHandler = (e) =>{
       name: "first_name",
       label: "First Name",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
             {columnMeta.label}
@@ -264,7 +264,7 @@ const assignChangeHandler = (e) =>{
       name: "last_name",
       label: "Last Name",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
             {columnMeta.label}
@@ -287,7 +287,7 @@ const assignChangeHandler = (e) =>{
       name: "email",
       label: "Email",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
             {columnMeta.label}
@@ -310,7 +310,7 @@ const assignChangeHandler = (e) =>{
       name: "contact",
       label: "Contact",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
             {columnMeta.label}
@@ -333,7 +333,7 @@ const assignChangeHandler = (e) =>{
       name: "createdAt",
       label: "Registration Date",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px"  }} >
             {columnMeta.label}
@@ -512,7 +512,8 @@ const assignChangeHandler = (e) =>{
     selectableRows: 'none',
     responsive: "simple",
     downloadOptions:{filename:"CPRegistrationList"},
-    filterType:'multiselect'
+    filterType:'multiselect',
+    viewColumns: false,
   };
 
   const validateForm = () => {
@@ -636,7 +637,17 @@ const assignChangeHandler = (e) =>{
           title={<CustomToolbar/>}
           data={dataList}
           columns={columns}
-          options={options}
+          // options={options}
+          options={{
+            ...options,
+            customFilterDialogFooter: () => (
+              <div
+                style={{
+                  minWidth: "400px", // Set consistent width
+                }}
+              />
+            ),
+          }}
         />
         
       </div>

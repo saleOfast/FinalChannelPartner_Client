@@ -79,7 +79,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             name: 'user_code',
             label: "Account ID",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -98,7 +98,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             name: 'user',
             label: "Account Name",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -120,7 +120,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             name: 'createdAt',
             label: "Created Date",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -145,7 +145,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             name: 'lead_count',
             label: "Leads Count",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -164,7 +164,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             name: 'booking_count',
             label: "Bookings Count",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -348,26 +348,78 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         console.log(`Selected option: ${value}`);
         // Add any additional logic you want to handle on selection change
       };
-
-    const handleRowClick = (rowData, rowMeta) => {
-        console.log(rowData,"rowMeta",rowMeta)
-        const data = rowMeta?.reduce((accu, value) => {
-            accu.push(dataList[value.dataIndex].user_code);
-            return accu; // Return the accumulator
-        }, []);
-        setUserData([...data]);
+    // const handleRowClick = async (rowData, rowMeta, val) => {
+    //     console.log(rowData,"rowMeta",rowMeta, val)
+    //     const data = rowMeta?.reduce((accu, value) => {
+    //         accu.push(dataList[value.dataIndex].user_code);
+    //         return accu; // Return the accumulator
+    //     }, []);
+    //     setUserData([...data]);
+    //    )}
+    
+    const handleDelete = async (rowsDeleted) => {
+        let toastShown=false;
+        const deletedIndices = rowsDeleted.data.map((row) => row.dataIndex);
+        const userIds = deletedIndices.map((index) => dataList[index].user_id);
+    
+        if (hasCookie("token")) {
+            const token = getCookie("token");
+            const db_name = getCookie("db_name");
+    
+            const headers = {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+                db: db_name,
+                pass: "pass",
+            };
+    
+            try {
+                // Send a single request with all user IDs
+                const response = await axios.put(
+                    `${Baseurl}/db/users/delete`,
+                    { user_ids: userIds }, // Send all IDs in one payload
+                    { headers }
+                );
+                if (response.status === 200 || response.status === 201) {
+                if (!toastShown) { 
+                    toast.success(response?.data?.message,{autoClose:2500});
+                    toastShown = true; 
+                }    
+                getDataList();
+             } // Refresh the data list after successful deletion
+            } catch (error) {
+                console.error(error?.response?.data?.message || "Something went wrong!");
+                if (error?.response?.data?.status === 422) {
+                    if (!toastShown) { 
+                        toast.error(error?.response?.data?.message,{autoClose:2500});
+                        toastShown = true; 
+                    }
+                } else if (error?.response?.data?.message) {
+                    if (!toastShown) { 
+                        toast.error(error?.response?.data?.message,{autoClose:2500});
+                        toastShown = true; 
+                    }
+                } else {
+                    if (!toastShown) { 
+                        toast.error("Something went wrong!",{autoClose:2500});
+                        toastShown = true; 
+                    }
+                }
+            }
+        }
     };
-
 
 
     const options = {
         enableNestedDataAccess: ".",
-        selectableRows: 'multiple',
+        selectableRows: userInfo?.isDB ? 'multiple' : 'none',
         responsive: "simple",
-        onRowSelectionChange : handleRowClick,
+        // onRowSelectionChange : handleRowClick,
+        onRowsDelete: handleDelete,
         downloadOptions:{filename:"ChannelPartnerList"},
         enableNestedDataAccess:".",
-        filterType:'multiselect'
+        filterType:'multiselect',
+        viewColumns: false,
     };
 
    
@@ -458,7 +510,17 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     data={dataList}
                     // data={mappedDataList}
                     columns={columns}
-                    options={options}
+                    // options={options}
+                    options={{
+                        ...options,
+                        customFilterDialogFooter: () => (
+                          <div
+                            style={{
+                              minWidth: "400px", // Set consistent width
+                            }}
+                          />
+                        ),
+                      }}
                 />
                 <div>
           {userData.length ?

@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { startButtonLoading, stopButtonLoading } from "../../../../store/buttonLoaderSlice";
 import Loader from "../../../Loader/Loader";
+import ConfirmBox from "../../../Basics/ConfirmBox";
 
 const CampaignAdminScreen = () => {
   const [showModal, setShowModal] = useState(false);
@@ -187,7 +188,7 @@ const CampaignAdminScreen = () => {
     if(projectData?.contact_no?.toString().length!==10){
       return toast.warning("contact no should be of 10 digit",{autoClose:2500})
      }
-     if(projectData?.project=="" || projectData?.property_size=="" || projectData?.location=="" || projectData?.unit_area=="" || projectData?.contact_no=="" || projectData?.price==""){
+     if(projectData?.project=="" || projectData?.contact_no==""){
       return toast.warning("Pls Fill Mandatory Fields",{autoClose:2500})
      }
      
@@ -238,7 +239,7 @@ const CampaignAdminScreen = () => {
     if(projectData?.contact_no?.toString().length!==10){
       return toast.warning("contact no should be of 10 digit",{autoClose:2500})
      }
-     if(projectData?.project=="" || projectData?.property_size=="" || projectData?.location=="" || projectData?.unit_area=="" || projectData?.contact_no=="" || projectData?.price=="" ){
+     if(projectData?.project=="" || projectData?.contact_no=="" ){
       return toast.warning("Pls Fill Mandatory Fields",{autoClose:2500})
      }
     if (!hasCookie("token")) return;
@@ -285,8 +286,48 @@ const CampaignAdminScreen = () => {
     }
 };
 
-  
+const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
+const [currObj, setcurrObj] = useState({ project_id: "", action: "" });
 
+function deleteConfirm(value) {
+  setcurrObj({ project_id: value, action: "delete" });
+  setdeleteshowConfirm(true);
+}
+async function deleteHandler() {
+  if (hasCookie("token")) {
+    let token = getCookie("token");
+    let db_name = getCookie("db_name");
+
+    let header = {
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer ".concat(token),
+        db: db_name,
+        m_id: "pass"
+        // m_id: 149,
+      },
+    };
+
+    try {
+      const response = await axios.delete(
+        Baseurl + `/db/channel/project?project_id=${currObj.project_id}`,
+        header
+      );
+      if (response.status === 204 || response.status === 200) {
+        toast.success(response.data.message);
+        setdeleteshowConfirm(false);
+        setcurrObj({ account_type_id: "", action: "" });
+        getDataList();
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong!");
+      }
+    }
+  }
+}
   return (
     <>
     {
@@ -313,6 +354,12 @@ const CampaignAdminScreen = () => {
            
           </div>
         </div>
+        <ConfirmBox
+            showConfirm={deleteshowConfirm}
+            setshowConfirm={setdeleteshowConfirm}
+            actionType={deleteHandler}
+            title={"Are You Sure you want to Delete ?"}
+          />
         <section className="Channel-profile Booking-Detail Visit-Details Campaigns pt-4 pb-2 bg-white">
           <div className="container mb-4">
             <div className="row gx-4 gy-4">
@@ -336,7 +383,7 @@ const CampaignAdminScreen = () => {
                         </div>
                       </div>
                       <div className="col-4 d-flex justify-content-end">
-                        <div className="d-flex gap-2">
+                        <div className="d-flex gap-3">
                           {
                             hasCookie("channel") && userInfo?.role_id==null && (
                               <img
@@ -361,7 +408,11 @@ const CampaignAdminScreen = () => {
                             style={{ height: 17 }}
                           />
                           </Link>
-                          
+                          {
+                            hasCookie("channel") &&  userInfo?.role_id==null && (
+                              <Delete style={{color: '#eb5244',cursor:'pointer'}} onClick={()=>deleteConfirm(project?.project_id)}/>
+                            )
+                          }
                         </div>
                       </div>
                     </div>
@@ -424,7 +475,7 @@ const CampaignAdminScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
+                {/* <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Property Size*
                   </label>
@@ -441,10 +492,10 @@ const CampaignAdminScreen = () => {
                     style={{ outline: "none" }}
                     className="w-73 border p-2 rounded-md text-black"
                   />
-                </div>
+                </div> */}
               </div>
 
-              <div className="d-flex justify-content-between gap-5 align-items-center">
+              {/* <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Location*
@@ -481,7 +532,7 @@ const CampaignAdminScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
@@ -502,7 +553,7 @@ const CampaignAdminScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-                <div className="w-50 d-flex justify-content-between align-items-center">
+                {/* <div className="w-50 d-flex justify-content-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Price*
                   </label>
@@ -519,7 +570,7 @@ const CampaignAdminScreen = () => {
                     style={{ outline: "none" }}
                     className="w-73 border p-2 rounded-md text-black"
                   />
-                </div>
+                </div> */}
               </div>
 
 

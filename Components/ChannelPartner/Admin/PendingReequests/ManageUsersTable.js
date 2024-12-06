@@ -110,7 +110,7 @@ const ManageUsersTable = ({
       name: "user_code",
       label: "Account Name",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
@@ -133,7 +133,7 @@ const ManageUsersTable = ({
       name: "user",
       label: "Name",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px' }} >
             {columnMeta.label}
@@ -158,7 +158,7 @@ const ManageUsersTable = ({
       name: "createdAt",
       label: "Request Date",
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px'  }} >
             {columnMeta.label}
@@ -397,21 +397,49 @@ const ManageUsersTable = ({
     },
   ];
 
-  const handleRowClick = (rowData, rowMeta) => {
-    const data = rowMeta?.reduce((accu, value) => {
-        accu.push(dataList[value.dataIndex].user_code);
-        return accu; // Return the accumulator
-    }, []);
-    setUserData([...data]);
-};
+//   const handleRowClick = (rowData, rowMeta) => {
+//     const data = rowMeta?.reduce((accu, value) => {
+//         accu.push(dataList[value.dataIndex].user_code);
+//         return accu; // Return the accumulator
+//     }, []);
+//     setUserData([...data]);
+// };
+async function handleDelete(rowsDeleted) {
+  const deletedIndices = rowsDeleted.data.map((row) => row.dataIndex);
+  const userIds = deletedIndices.map((index) => dataList[index].user_id);
+  if (hasCookie('token')) {
+      let token = (getCookie('token'));
+      let db_name = (getCookie('db_name'));
 
+      let header = {
+          headers: {
+              Accept: "application/json",
+              Authorization: "Bearer ".concat(token),
+              db: db_name,
+              pass: "pass",
+              // m_id: 79
+          }
+      }
+      try {
+          const response = await axios.put(Baseurl + `/db/users/delete`, { user_ids: userIds }, header);
+          if (response.status === 204 || response.status === 200) {
+              toast.success(response?.data?.message,{autoClose:2500})
+              getDataList();
+          }
+      } catch (error) {
+          toast.error(error?.response?.data?.message,{autoClose:2500});
+      }
+  }
+}
 
   const options = {
-    selectableRows: 'multiple',
+    selectableRows: userInfoCheck?.isDB ? 'multiple' : 'none',
     responsive: "simple",
-    onRowSelectionChange : handleRowClick,
+    // onRowSelectionChange : handleRowClick,
+    onRowsDelete: handleDelete,
     downloadOptions:{filename:"PendingRequestList"},
-    filterType:'multiselect'
+    filterType:'multiselect',
+    viewColumns: false,
   };
 
   const updateUserhandler = async () => {
@@ -523,7 +551,17 @@ const ManageUsersTable = ({
           title={<span style={{ color: "black", fontWeight:"bold", fontSize:"17px" }}>{title}</span>}
           data={dataList}
           columns={columns}
-          options={options}
+          // options={options}
+          options={{
+            ...options,
+            customFilterDialogFooter: () => (
+              <div
+                style={{
+                  minWidth: "300px", // Set consistent width
+                }}
+              />
+            ),
+          }}
         />
         <div>
           {userData.length ?

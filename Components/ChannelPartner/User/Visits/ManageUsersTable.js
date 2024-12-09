@@ -213,14 +213,9 @@ const [value, setValue] = useState(getCurrentWeekDates());
                   </th>
                 ),
                 customBodyRender: (value, tableMeta, updateValue) => {
-                          
-                  const date = new Date(value);
-                  const day = String(date.getDate()).padStart(2, '0');
-                  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-                  const year = date.getFullYear();
                   return (
                       <div className='status_box text-center' style={{color:"#667799"}}>
-                          {`${day}/${month}/${year}`}
+                          {formatDate(value)}
                       </div>
                   )
               }
@@ -239,7 +234,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             customBodyRender: (value, tableMeta, updateValue) => {
                 return (
                     <div className='status_box' style={{color:"#667799"}}>
-                        {value}
+                        {formatDate(value)}
                     </div>
                 )
             }

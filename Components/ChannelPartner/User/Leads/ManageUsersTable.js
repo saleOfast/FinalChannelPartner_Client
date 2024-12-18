@@ -532,11 +532,63 @@ const getVisitInfo=async(visitId)=>{
         setUserData([...data]);
     };
 
-    
+    const handleDelete = async (rowsDeleted) => {
+      let toastShown=false;
+      const deletedIndices = rowsDeleted.data.map((row) => row.dataIndex);
+      const leadIds = deletedIndices.map((index) => leadList[index].lead_id);
+  
+      if (hasCookie("token")) {
+          const token = getCookie("token");
+          const db_name = getCookie("db_name");
+  
+          const headers = {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+              db: db_name,
+              pass: "pass",
+          };
+  
+          try {
+              // Send a single request with all user IDs
+              const response = await axios.put(
+                  `${Baseurl}/db/channel/lead/delete`,
+                  { l_id: leadIds }, // Send all IDs in one payload
+                  { headers }
+              );
+              if (response.status === 200 || response.status === 201) {
+              if (!toastShown) { 
+                  toast.success(response?.data?.message,{autoClose:2500});
+                  toastShown = true; 
+              }    
+              getDataList();
+           } // Refresh the data list after successful deletion
+          } catch (error) {
+              console.error(error?.response?.data?.message || "Something went wrong!");
+              if (error?.response?.data?.status === 422) {
+                  if (!toastShown) { 
+                      toast.error(error?.response?.data?.message,{autoClose:2500});
+                      toastShown = true; 
+                  }
+              } else if (error?.response?.data?.message) {
+                  if (!toastShown) { 
+                      toast.error(error?.response?.data?.message,{autoClose:2500});
+                      toastShown = true; 
+                  }
+              } else {
+                  if (!toastShown) { 
+                      toast.error("Something went wrong!",{autoClose:2500});
+                      toastShown = true; 
+                  }
+              }
+          }
+      }
+  };
+
     const options = {
-        selectableRows: 'none',
+        selectableRows: userInfo?.isDB ? 'multiple' : 'none',
         responsive: "simple",
         // onRowSelectionChange : handleRowClick,
+        onRowsDelete: handleDelete,
         downloadOptions:{
           filename:"ChannelLeads",
           // filterOptions:{

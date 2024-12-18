@@ -539,8 +539,8 @@ const updateBrokerageBill =  async() => {
       BrokerageBookingtDataEmail:list?.BrokerageBookingtData?.email,
       BrokerageBookingtDataContact:list?.BrokerageBookingtData?.contact_no,
       BrokerageBookingtDataProject:list?.BrokerageLeadData?.sales_project_name,
-      BrokerageBookingtDataLocation:list?.BrokerageBookingtData?.Location,
-      status:list?.status
+      BrokerageBookingtDataLocation:[list?.BrokerageBookingtData?.Location]?.filter(d => d !== null && d !== undefined),
+      status:list?.status == "Bill sent" ? "Bill Received" : list?.status
     }))
 
     return (

@@ -314,7 +314,20 @@ const ActivePartnersScreen = () => {
                 ?.filter(user => user.role_id === 2 || user.role_id === 3)
                 ?.map(data => ({
                     value: data?.user_id,
-                    label: data?.user,
+                    label: (
+                        <>
+                          {data?.user ?? ""}{" "}
+                          {data?.user_status ? (
+                            <span className="status_box  text-center">
+                            <span className="active status_btn">active</span>
+                            </span>
+                          ) : (
+                            <span className="status_box  text-center">
+                            <span className="inactive status_btn">inactive</span>
+                            </span>
+                          )}
+                        </>
+                      ),
                 }))];
         }
         if (selectedOption === "BST") {
@@ -322,7 +335,20 @@ const ActivePartnersScreen = () => {
                 ?.filter(user => user.role_id === 3)
                 ?.map(data => ({
                     value: data?.user_id,
-                    label: data?.user,
+                     label: (
+                    <>
+                      {data?.user ?? ""}{" "}
+                      {data?.user_status ? (
+                        <span className="status_box  text-center">
+                        <span className="active status_btn">active</span>
+                        </span>
+                      ) : (
+                        <span className="status_box  text-center">
+                        <span className="inactive status_btn">inactive</span>
+                        </span>
+                      )}
+                    </>
+                  ),
                 }))];
         }
         return [];

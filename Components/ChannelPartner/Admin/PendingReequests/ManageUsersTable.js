@@ -341,7 +341,7 @@ const ManageUsersTable = ({
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
               <div className="d-flex justify-content-center align-items-center">
-              {tableMeta?.rowData[7]===0 && (
+              {tableMeta?.rowData[8]==="Pending" && (
                 <button  onClick={()=>{
                   let user=dataList?.find((user)=>(user?.user_code==value[0]))
                   resendEmail(user?.user_id,user?.email, user?.value[1])
@@ -349,7 +349,7 @@ const ManageUsersTable = ({
                 Resend
               </button>
               )}
-              {tableMeta?.rowData[7]===1 && userInfoCheck?.isDB ?
+              {tableMeta?.rowData[8]==="Under Process" && userInfoCheck?.isDB ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
@@ -369,7 +369,7 @@ const ManageUsersTable = ({
             :
             <div className="text-center"></div> }
 
-           {tableMeta?.rowData[7]===1 && dataList?.find(item=>item?.user_code==value[0])?.bst_response==false && userInfoCheck?.role_id==2 ?
+           {tableMeta?.rowData[8]==="Under Process" && dataList?.find(item=>item?.user_code==value[0])?.bst_response==false && userInfoCheck?.role_id==2 ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
@@ -389,7 +389,7 @@ const ManageUsersTable = ({
             :
             <div className="text-center"></div> }
 
-            {tableMeta?.rowData[7]===1 && dataList?.find(item=>item?.user_code==value[0])?.director_response==false && userInfoCheck?.role_id==3 ?
+            {tableMeta?.rowData[8]==="Under Process" && dataList?.find(item=>item?.user_code==value[0])?.director_response==false && userInfoCheck?.role_id==3 ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({

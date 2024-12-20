@@ -274,11 +274,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
-                    console.log(tableMeta.rowData)
                     return (
                         <div className="table_btns justify-content-center align-items-center">
                             <button
-                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[5]?.user_id) }}
+                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.tableData[tableMeta?.rowIndex][10]??"") }}
                                 style={{background:clientBtnColor? clientBtnColor:`#293790`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
                                 title='Assign - To'>
@@ -486,12 +485,12 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
           }
         }
       };
-      
       const mappedDataList=dataList?.map(list=>({
         ...list,
         reportToUser: [list?.reportToUser?.user]?.filter(d => d !== null && d !== undefined),
         user_status: list?.user_status ? "active" : "inactive",
         db_user_profile: [list?.db_user_profile?.db_designation?.designation]?.filter(d => d !== null && d !== undefined),
+        reportToUserId: list?.reportToUser?.user_id
       }))
 
     return (
@@ -563,7 +562,20 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                             if (oldAssignTo === data.user_id) {
                                                 return {
                                                 value: data?.user_id,
-                                                label: data?.user,
+                                                label: (
+                                                    <>
+                                                      {data?.user ?? ""}{" "}
+                                                      {data?.user_status ? (
+                                                        <span className="status_box  text-center">
+                                                        <span className="active status_btn">active</span>
+                                                        </span>
+                                                      ) : (
+                                                        <span className="status_box  text-center">
+                                                        <span className="inactive status_btn">inactive</span>
+                                                        </span>
+                                                      )}
+                                                    </>
+                                                  ),
                                                 };
                                             }
                                             })}

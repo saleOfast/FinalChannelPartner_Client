@@ -863,19 +863,31 @@ const assignChangeHandler = (e) =>{
                         <div className="row">
                             <div className="col-xl-12 col-md-12 col-sm-12 col-12">
                                 <div className="input_box">
-                                   
                                         <Select
                                             id="select"
                                             defaultValue={""}
+                                            options={[
+                                              ...usersList?.filter(item => item?.role_id === 2)?.map((item) => {
+                                                return {
+                                                  value: item?.user_id,
+                                                  label: (
+                                                    <>
+                                                      {item?.user ?? ""}{" "}
+                                                      {item?.user_status ? (
+                                                        <span className="status_box  text-center">
+                                                        <span className="active status_btn">active</span>
+                                                        </span>
+                                                      ) : (
+                                                        <span className="status_box  text-center">
+                                                        <span className="inactive status_btn">inactive</span>
+                                                        </span>
+                                                      )}
+                                                    </>
+                                                  ),
+                                                };
+                                              }),
+                                            ]}
                                             
-                                            options={[ 
-                                                ...usersList?.filter(item => item?.role_id == 2)?.map((item) => {
-                                                  return {
-                                                    value: item?.user_id,
-                                                    label: item?.user
-                                                  };
-                                                })
-                                              ]}
                                               value={
                                                 usersList?.filter(item=>item?.role_id==2)?.map((item) => {
                                             if (oldAssignTo === item.user_id) {

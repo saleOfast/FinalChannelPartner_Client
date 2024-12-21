@@ -339,12 +339,13 @@ const ManageUsersTable = ({
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
+          let user=dataList?.find((user)=>(user?.user_code==value))
           return (
               <div className="d-flex justify-content-center align-items-center">
               {tableMeta?.rowData[8]==="Pending" && (
                 <button  onClick={()=>{
-                  let user=dataList?.find((user)=>(user?.user_code==value[0]))
-                  resendEmail(user?.user_id,user?.email, user?.value[1])
+                  // let user=dataList?.find((user)=>(user?.user_code==value))
+                  resendEmail(user?.user_id,user?.email, user?.report_to ?? null)
                   }} style={{backgroundColor:"green"}} className="btn text-white rounded-5" >
                 Resend
               </button>
@@ -353,13 +354,13 @@ const ManageUsersTable = ({
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
-                ...userInfo, user_code: value[0], report_to: value[1]
+                ...userInfo, user_code: value
               })}} style={{backgroundColor: clientBtnColor? clientBtnColor:`#61E25E`}} className="btn text-white rounded-5" >
                 Accept
               </button>
   
               <button onClick={()=>{setActionMode('Reject'); setShowModalSingle(true); setUserInfo({
-                ...userInfo, user_code: value[0], report_to: value[1]
+                ...userInfo, user_code: value
               })}} className=" btn btn-danger rounded-5">
                 Reject
               </button>
@@ -369,17 +370,17 @@ const ManageUsersTable = ({
             :
             <div className="text-center"></div> }
 
-           {tableMeta?.rowData[8]==="Under Process" && dataList?.find(item=>item?.user_code==value[0])?.bst_response==false && userInfoCheck?.role_id==2 ?
+           {tableMeta?.rowData[8]==="Under Process" && dataList?.find(item=>item?.user_code==value)?.bst_response==false && userInfoCheck?.role_id==2 ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
-                ...userInfo, user_code: value[0], report_to: value[1]
+                ...userInfo, user_code: value
               })}} style={{backgroundColor: clientBtnColor? clientBtnColor:`#61E25E`}} className="btn text-white rounded-5" >
                 Accept
               </button>
   
               <button onClick={()=>{setActionMode('Reject'); setShowModalSingle(true); setUserInfo({
-                ...userInfo, user_code: value[0], report_to: value[1]
+                ...userInfo, user_code: value
               })}} className=" btn btn-danger rounded-5">
                 Reject
               </button>
@@ -389,17 +390,17 @@ const ManageUsersTable = ({
             :
             <div className="text-center"></div> }
 
-            {tableMeta?.rowData[8]==="Under Process" && dataList?.find(item=>item?.user_code==value[0])?.director_response==false && userInfoCheck?.role_id==3 ?
+            {tableMeta?.rowData[8]==="Under Process" && dataList?.find(item=>item?.user_code==value)?.director_response==false && userInfoCheck?.role_id==3 ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
-                ...userInfo, user_code: value[0], report_to: value[1]
+                ...userInfo, user_code: value
               })}} style={{backgroundColor: clientBtnColor? clientBtnColor:`#61E25E`}} className="btn text-white rounded-5" >
                 Accept
               </button>
   
               <button onClick={()=>{setActionMode('Reject'); setShowModalSingle(true); setUserInfo({
-                ...userInfo, user_code: value[0], report_to: value[1]
+                ...userInfo, user_code: value
               })}} className=" btn btn-danger rounded-5">
                 Reject
               </button>
@@ -556,12 +557,13 @@ async function handleDelete(rowsDeleted) {
     }
     setUserData([])
   };
-
+  
   const mappedDataList = dataList.map((data) => ({
     ...data,
     doc_verification: channelUserStatus(data?.doc_verification),
-    reportToUser: [data?.reportToUser?.user]?.filter(user => user !== null && user !== undefined),
-    user_code: [ data?.user_code, data?.report_to]
+    reportToUser: ""
+    // dataList?.find((user)=>(user?.user_code==value))
+    ,
   }));
   return (
     <>

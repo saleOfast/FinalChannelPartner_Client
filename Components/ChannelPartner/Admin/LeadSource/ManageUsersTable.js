@@ -299,7 +299,7 @@ const getVisitInfo=async(visitId)=>{
     
     const options = {
         selectableRows: 'none',
-        responsive: "simple",
+        responsive: "standard",
         // onRowSelectionChange : handleRowClick,
         downloadOptions:{filename:"ChannelLeads"},
         filterType:'multiselect'

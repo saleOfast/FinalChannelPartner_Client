@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import PlusIcon from '../../../Svg/PlusIcon';
 import axios from 'axios';
-import { hasCookie, getCookie } from 'cookies-next';
+import { hasCookie, getCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 
 import { useSelector } from 'react-redux';
@@ -16,6 +16,7 @@ import Select from 'react-select';
 import { fetchData } from '../../../../Utils/getReq';
 import Daterange from '../../../DateRangeCustom/Daterange';
 import Loader from '../../../Loader/Loader';
+import DateRange from '../../../DateRangeCustom/Daterange';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -35,6 +36,34 @@ const VisitsScreen = () => {
     const [excelData, setexcelData] = useState([]);
     
     const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+
+    let statusArray=[{id:"",label:"All"},{id:"Requested",label:"Requested"},{id:"Scheduled",label:"Scheduled"},{id:"Rescheduled",label:"Rescheduled"},{id:"Completed",label:"Completed"},{id:"Rejected",label:"Rejected"}]
+
+      const [usersList, setUsersList] = useState([]);
+        const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+      
+        async function getUsersList() {
+          await fetchData("/db/users", setUsersList, null, null);
+        }
+      
+        useEffect(()=>{
+          getUsersList()
+        },[])
+    const getCurrentWeekDates = () => {
+        const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+          const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+          if(hasCookie("VisitsFilter")){
+              
+            let data=JSON.parse(getCookie("VisitsFilter"))
+             return {startDate:data?.f_date,endDate:data?.t_date}
+           }
+           else{
+             return { startDate, endDate };
+           }
+      };
+    
+    const [value, setValue] = useState(getCurrentWeekDates());
+    
     useEffect(()=>{
       if(status_id){
           setStatusId(status_id)
@@ -200,9 +229,104 @@ const VisitsScreen = () => {
     return (
       <>
       
-      <div className="w-100 ps-4 pe-4 overflow-auto">
+      <div className="w-100 ps-4 pe-4 overflow-auto Visit">
           <div className="main_content">
             <div className="table_screen">
+            <div className="top_btn_sec mb-3 " style={{paddingRight:"0px"}}>
+            <div className="col-12 d-flex flex-wrap flex-md-nowrap justify-content-center justify-content-md-end align-items-center gap-3 mt-3 mt-md-0">
+            {
+                                  (userInfoCheck?.isDB || userInfoCheck?.role_id=="3" ) && (
+                                    <div className='fix-width-1 text-start'>
+                                    <label className='fw-bold' style={{ fontSize: '16px' }}>Channel Partner</label>
+                                    <Select 
+                                      placeholder="Select"
+                                      options={[
+                                        { value: "", label: "All" },
+                                        ...(usersList || [])
+                                          .filter(item => {
+                                            if (userInfoCheck?.isDB) {
+                                              return item?.role_id == 1;
+                                            }
+                                            // Combine logic for cpUnderBstForDirector
+                                            return (
+                                              item?.role_id == 1 &&
+                                              usersList?.some(i => i?.report_to == userInfoCheck?.user_id && i?.user_id == item?.report_to)
+                                            );
+                                          })
+                                          .map(item => ({
+                                            value: item?.user_id,
+                                            label: item?.user
+                                          }))
+                                      ]}
+                                      
+                                      value={
+                                        usersList?.filter(item=>item?.role_id==1)?.map((item) => {
+                                          if(cpId==item?.user_id){
+                                            return{
+                                              value: item?.user_id,
+                                            label: item?.user
+                                            }
+                                          }
+                                        })
+                                      }
+                                      onChange={(e)=>{
+                                        if(e.value==""){
+                                          setCookie("VisitcpId",e.value)
+                                          router.push("/partner/Visits")
+                                          setCpId(e.value)
+                                        }
+                                        else{
+                                          setCookie("VisitcpId",e.value)
+                                          setCpId(e.value)
+                                        }
+                                        
+                                      }}
+                                    />
+                                  </div>
+                                  )
+                                }
+              <div className='fix-width-2 text-start'>
+              <label className='fw-bold' style={{ fontSize: '16px' }}>Date</label>
+              <DateRange value={value} setValue={setValue} getData={getVisitList} filterType={"Visits"} />
+              </div>
+               
+                                <div className='fix-width-3 text-start'>
+                                  <label className='fw-bold' style={{ fontSize: '16px' }}>Status</label>
+                                  <Select 
+                                    placeholder="Select Stage"
+                                    options={statusArray?.map((item)=>{
+                                      return{
+                                        value:item.id,
+                                        label:item.label
+                                      }
+                                    })}
+                                    value={
+                                      statusArray?.map((item)=>{
+                                        if(statusId==item?.id){
+                                          return{
+                                            value:item.id,
+                                            label:item.label
+                                          }
+                                        }
+                                      })
+                                    }
+                                    onChange={(e)=>{
+                                      if(e.value==""){
+                                        setCookie("VisitstatusId",e.value)
+                                        router.push("/partner/Visits")
+                                        setStatusId(e.value)
+                
+                                      }
+                                      else{
+                                        setCookie("VisitstatusId",e.value)
+                                        setStatusId(e.value)
+                                      }
+                                     
+                                    }}
+                                  />
+                                </div>
+            </div>
+            </div>
               <DynamicTable
                 title="Visits"
                 dataList={dataList}

@@ -92,7 +92,7 @@ export default function SignInScreen({ setLoggedIn }) {
         //   baseUrl = "https://crm.saleofast.com/"
         // }
         let payload={};
-        if(baseUrl==="http://localhost:3000" || baseUrl==="http://192.168.1.33:3000"){
+        if(baseUrl==="http://localhost:3000" || baseUrl==="http://192.168.1.36:3000"){
           payload={
             email: userForm.email.toLowerCase(),
           password: userForm.password,

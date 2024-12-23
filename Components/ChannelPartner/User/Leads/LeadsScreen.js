@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import PlusIcon from '../../../Svg/PlusIcon';
 import axios from 'axios';
-import { hasCookie, getCookie } from 'cookies-next';
+import { hasCookie, getCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, Button, Form, Row, Col, Dropdown } from 'react-bootstrap';
@@ -17,6 +17,7 @@ import Daterange from '../../../DateRangeCustom/Daterange';
 import moment from 'moment';
 import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
 import Loader from '../../../Loader/Loader';
+import DateRange from '../../../DateRangeCustom/Daterange';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -51,6 +52,32 @@ const LeadsScreen = () => {
     })
     const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
     const userInfo=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")):null
+    
+    async function getUsersList() {
+        await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
+      }
+    
+      useEffect(()=>{
+        getUsersList()
+      },[])
+
+
+    let stageArray=[{id:"",label:"All"},{id:"1",label:"New"},{id:"2",label:"Visit Planned"},{id:"3",label:"Visit Completed"},{id:"4",label:"Close-Converted"},{id:"5",label:"Close-Converted"}]
+    const getCurrentWeekDates = () => {
+          const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+            const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+            if(hasCookie("LeadsFilter")){
+              
+             let data=JSON.parse(getCookie("LeadsFilter"))
+              return {startDate:data?.f_date,endDate:data?.t_date}
+            }
+            else{
+              return { startDate, endDate };
+            }
+          
+        };
+      
+      const [value, setValue] = useState(getCurrentWeekDates());
 
     useEffect(()=>{
       if(status_id){
@@ -408,20 +435,151 @@ const LeadsScreen = () => {
         <div className="w-100 ps-4 pe-4 overflow-auto ">
           <div className="main_content">
             <div className="table_screen">
-              <div className="top_btn_sec mb-3 " style={{paddingRight:"0px"}}>
-                <div className="d-flex">
-                  {
-                    userInfo?.role_id==1 &&(
-                      <button
-                      className="btn ms-auto  Add_btn  "
-                      style={{ background: `${clientBtnColor}` }}
-                      onClick={()=>{setShowAssignTo(true)}}
-                    >
-                      <PlusIcon />
-                      Create Lead
-                    </button>
-                    )
+              <div className="col-12 top_btn_sec mb-4 d-flex justify-content-start justify-content-md-end my-3" style={{paddingRight:"0px"}}>
+                <div className="d-flex flex-md-row flex-wrap justify-content-md-end align-items-start align-items-md-center gap-3">
+                  
+               
+                {
+                    userInfo?.role_id==1 ?
+                    <div className=' mt-4 fix-width-1'>
+                    <button
+                       className="btn bg-black Add_btn p-2 ms-0 d-flex align-items-center justify-content-center w-100"
+                       style={{ background: `${clientBtnColor}`,height:"fit-content" }}
+                       onClick={()=>{setShowAssignTo(true)}}
+                     >
+                       <PlusIcon />
+                       Create Lead
+                     </button>
+                     
+                 </div>
+                    :""
                   }
+                  {
+                  (userInfo?.isDB || userInfo?.role_id=="3") && (
+                    <div className=' text-start fix-width-2'>
+                    <label className='fw-bold' style={{ fontSize: '14px' }}>Channel Partner</label>
+                    <Select 
+                      placeholder="Select"
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          textAlign: "left", // Align text inside the menu to the left
+                        }),
+                        option: (provided) => ({
+                          ...provided,
+                          textAlign: "left", // Align individual options to the left
+                        }),
+                        singleValue: (provided) => ({
+                          ...provided,
+                          textAlign: "left", // Align the selected value to the left
+                          direction: "ltr", // Ensure left-to-right text flow
+                        }),
+                      }}
+                      options={[
+                        { value: "", label: "All" },
+                        ...(usersList || [])
+                          .filter(item => {
+                            if (userInfo?.isDB) {
+                              return item?.role_id == 1;
+                            }
+                            // Combine logic for cpUnderBstForDirector
+                            return (
+                              item?.role_id == 1 &&
+                              usersList?.some(i => i?.report_to == userInfo?.user_id && i?.user_id == item?.report_to)
+                            );
+                          })
+                          .map(item => ({
+                            value: item?.user_id,
+                            label: item?.user
+                          }))
+                      ]}
+                      
+                      
+                      
+                      value={
+                        usersList?.filter(item=>item?.role_id==1)?.map((item) => {
+                          if(cpId==item?.user_id){
+                            return{
+                              value: item?.user_id,
+                            label: item?.user
+                            }
+                          }
+                        })
+                      }
+                      onChange={(e)=>{
+                        if(e.value==""){
+                          setCookie("LeadcpId",e.value)
+                          router.push("/partner/Leads")
+                          setCpId(e.value)
+                        }
+                        else{
+                          setCookie("LeadcpId",e.value)
+                          setCpId(e.value)
+                        }
+                       
+                      }}
+                    />
+                  </div>
+                  )
+                }
+                  
+              
+                
+                  <div className='fix-width-3 text-start'>
+                  <label className='fw-bold' style={{ fontSize: '16px' }}>Stages</label>
+                  <Select 
+                    placeholder="Select Stage"
+                    styles={{
+                      menu: (provided) => ({
+                        ...provided,
+                        textAlign: "left", // Align text inside the menu to the left
+                      }),
+                      option: (provided) => ({
+                        ...provided,
+                        textAlign: "left", // Align individual options to the left
+                      }),
+                      singleValue: (provided) => ({
+                        ...provided,
+                        textAlign: "left", // Align the selected value to the left
+                        direction: "ltr", // Ensure left-to-right text flow
+                      }),
+                    }}
+                    options={stageArray?.map((item)=>{
+                      return{
+                        value:item.id,
+                        label:item.label
+                      }
+                    })}
+                    value={
+                      stageArray?.map((item)=>{
+                        if(statusId==item?.id){
+                          return{
+                            value:item.id,
+                            label:item.label
+                          }
+                        }
+                      })
+                    }
+                    onChange={(e)=>{
+                      if(e.value==""){
+                        setCookie("LeadstatusId",e.value)
+                        router.push("/partner/Leads")
+                      setStatusId(e.value)
+                      }
+                      else{
+                        setCookie("LeadstatusId",e.value)
+                      setStatusId(e.value)
+                      }
+                      
+                    }}
+                  />
+                  </div>
+                  <div className='fix-width-4 text-start'>
+                  <label className='fw-bold' style={{ fontSize: '16px' }}>Date</label>
+                <DateRange value={value} setValue={setValue}  getData={getDataList} filterType={"Leads"} />
+                  </div>
+                  
+                 
                
                   
                 </div>
@@ -519,7 +677,7 @@ const LeadsScreen = () => {
                             createLead()
                             }} >
                             <div className='row'>
-                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                              <div className='col-12 col-xl-6 col-md-6 col-sm-12 my-2'>
                                 <div className='row '>
                                   <div className="col-3">
                                       <label htmlFor="name" className="pb-1">Lead Name<span className="star text-danger">*</span></label>
@@ -536,7 +694,7 @@ const LeadsScreen = () => {
                                 </div>
                               </div>
 
-                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                              <div className='col-12 col-xl-6 col-md-6 col-sm-12 my-2'>
                                 <div className='row '>
                                   <div className="col-3">
                                       <label htmlFor="name" className="pb-1">Location<span className="star text-danger">*</span></label>
@@ -568,7 +726,7 @@ const LeadsScreen = () => {
                                 </div>
                               </div>
 
-                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                              <div className='col-12 col-xl-6 col-md-6 col-sm-12 my-2'>
                                 <div className='row '>
                                   <div className="col-3">
                                       <label htmlFor="name" className="pb-1">Email<span className="star text-danger">*</span></label>
@@ -584,7 +742,7 @@ const LeadsScreen = () => {
                                 </div>
                               </div>
 
-                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                              <div className='col-12 col-xl-6 col-md-6 col-sm-12 my-2'>
                                 <div className='row '>
                                   <div className="col-3">
                                       <label htmlFor="name" className="pb-1">Pincode<span className="star text-danger">*</span></label>
@@ -600,7 +758,7 @@ const LeadsScreen = () => {
                                 </div>
                               </div>
 
-                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                              <div className='col-12 col-xl-6 col-md-6 col-sm-12 my-2'>
                                 <div className='row '>
                                   <div className="col-3">
                                       <label htmlFor="name" className="pb-1">Contact No<span className="star text-danger"></span></label>
@@ -621,7 +779,7 @@ const LeadsScreen = () => {
                                 </div>
                               </div>
 
-                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                              <div className='col-12 col-xl-6 col-md-6 col-sm-12 my-2'>
                                 <div className='row '>
                                   <div className="col-3">
                                       <label htmlFor="name" className="pb-1">Visit Date<span className="star text-danger">*</span></label>
@@ -640,7 +798,7 @@ const LeadsScreen = () => {
                                 </div>
                               </div>
 
-                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                              <div className='col-12 col-xl-6 col-md-6 col-sm-12 my-2'>
                                 <div className='row '>
                                   <div className="col-3">
                                       <label htmlFor="name" className="pb-1">Project<span className="star text-danger">*</span></label>
@@ -673,7 +831,7 @@ const LeadsScreen = () => {
                                 </div>
                               </div>
 
-                              <div className='col col-xl-6 col-md-6 col-sm-12 my-2'>
+                              <div className='col-12 col-xl-6 col-md-6 col-sm-12 my-2'>
                                 <div className='row '>
                                   <div className="col-3">
                                       <label htmlFor="name" className="pb-1">Visit Time<span className="star text-danger">*</span></label>

@@ -12,10 +12,14 @@ import dynamic from 'next/dynamic'
 import Papa from "papaparse";
 import Loader from '../../../Loader/Loader';
 import { useRouter } from 'next/router';
+import DateRange from '../../../DateRangeCustom/Daterange';
 const DynamicTable = dynamic(
     () => import('./CPRegisterLeadsTable'),
     { ssr: false }
 )
+import Select from 'react-select';
+import { fetchData } from '../../../../Utils/getReq';
+
 
 const CPRegisterLeadsScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
@@ -35,6 +39,35 @@ const CPRegisterLeadsScreen = () => {
         db_name: ''
     })
   const [loader,setLoader]=useState(false);
+
+    const [usersList, setUsersList] = useState([]);
+      const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+    
+      async function getUsersList() {
+        await fetchData("/db/users", setUsersList, null, null);
+      }
+    
+      useEffect(()=>{
+        getUsersList()
+      },[])
+
+  const getCurrentWeekDates = () => {
+      const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+        const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+        if(hasCookie("cpleadsFilter")){
+          
+         let data=JSON.parse(getCookie("cpleadsFilter"))
+          return {startDate:data?.f_date,endDate:data?.t_date}
+        }
+        else{
+          return { startDate, endDate };
+        }
+      
+    };
+  
+  const [value, setValue] = useState(getCurrentWeekDates());
+
+  let statusArray=[{id:"",label:"All"},{id:"OPEN",label:"OPEN"},{id:"CONTACTED",label:"CONTACTED"},{id:"LINK SENT",label:"LINK SENT"},{id:"ONBOARDED",label:"ONBOARDED"},{id:"NOT INTERESTED",label:"NOT INTERESTED"},{id:"CALL",label:"CALL"},,{id:"VISIT",label:"VISIT"},{id:"FOLLOW UP",label:"FOLLOW UP"}]
 
   useEffect(()=>{
     if(status_id){
@@ -241,17 +274,86 @@ const CPRegisterLeadsScreen = () => {
                 <div className="main_content">
                     <div className="table_screen">
                         <div className="top_btn_sec ">
-                            <div className="d-flex">
-                            <Link href='/ChannelAddUsers'>
-                                {/* <button className="btn ms-auto btn-primary Add_btn me-3">
-                                    <PlusIcon />
-                                    ADD USER
-                                </button> */}
-                            </Link>
-                            {/* <button className="btn btn-primary Add_btn" onClick={handleShow}>
-                                <PlusIcon />
-                                Import CSV
-                            </button> */}
+                            <div className="d-flex flex-wrap flex-md-nowrap align-items-center gap-3">
+                          <div className='col-6 col-md-3 mt-4 mt-md-2'>
+                        <DateRange value={value} setValue={setValue}  getData={getDataList} filterType={"cpleads"} /> 
+                        </div>
+                            {
+                                              userInfoCheck?.isDB && (
+                                                <div className='col-6 col-md-5 mb-3 text-start'>
+                                                <label className='fw-bold' style={{ fontSize: '16px' }}>BST</label>
+                                                <Select 
+                                                  placeholder="Select BST"
+                                                  options={[{ value: "", label: "All" }, 
+                                                    ...usersList?.filter(item => item?.role_id == 2)?.map((item) => {
+                                                      return {
+                                                        value: item?.user_id,
+                                                        label: item?.user
+                                                      };
+                                                    })
+                                                  ]}
+                                                  
+                                                  value={
+                                                    usersList?.filter(item=>item?.role_id==2)?.map((item) => {
+                                                      if(bstId==item?.user_id){
+                                                        return{
+                                                          value: item?.user_id,
+                                                        label: item?.user
+                                                        }
+                                                      }
+                                                    })
+                                                  }
+                                                  onChange={(e)=>{
+                                                    if(e.value==""){
+                                                      setCookie("bstId",e.value)
+                                                      router.push("/partner/CPRegisterLeads")
+                                                      setBstId(e.value)
+                                                    }
+                                                    else{
+                                                      setCookie("bstId",e.value)
+                                                      setBstId(e.value)
+                                                    }
+                                                    
+                                                  }}
+                                                />
+                                              </div>
+                                              )
+                                            }
+                            
+                                        <div className='col-5 col-md-4 mb-3 text-start'>
+                                              <label className='fw-bold' style={{ fontSize: '16px' }}>Status</label>
+                                              <Select 
+                                                placeholder="Select Stage"
+                                                options={statusArray?.map((item)=>{
+                                                  return{
+                                                    value:item.id,
+                                                    label:item.label
+                                                  }
+                                                })}
+                                                value={
+                                                  statusArray?.map((item)=>{
+                                                    if(statusId==item?.id){
+                                                      return{
+                                                        value:item.id,
+                                                        label:item.label
+                                                      }
+                                                    }
+                                                  })
+                                                }
+                                                onChange={(e)=>{
+                                                  if(e.value==""){
+                                                    setCookie("cpLeadstatusId",e.value)
+                                                    router.push("/partner/CPRegisterLeads")
+                                                    setStatusId(e.value)
+                                                  }
+                                                  else{
+                                                    setCookie("cpLeadstatusId",e.value)
+                                                  setStatusId(e.value)
+                                                  }
+                                                  
+                                                }}
+                                              />
+                                            </div>
                             </div>
                         </div>
                         <DynamicTable

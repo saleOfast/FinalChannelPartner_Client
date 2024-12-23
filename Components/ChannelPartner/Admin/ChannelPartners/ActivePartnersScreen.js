@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import PlusIcon from '../../../Svg/PlusIcon';
 import axios from 'axios';
-import { hasCookie, getCookie } from 'cookies-next';
+import { hasCookie, getCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ import Select from 'react-select';
 import { fetchData } from '../../../../Utils/getReq';
 import Daterange from '../../../DateRangeCustom/Daterange';
 import Loader from "../../../Loader/Loader";
+import DateRange from '../../../DateRangeCustom/Daterange';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -49,6 +50,29 @@ const ActivePartnersScreen = () => {
   const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
   const [loader,setLoader]=useState(false);
   const [selectedOption, setSelectedOption] = useState(hasCookie("cp_selected") ? getCookie("cp_selected"):'Channel Partner');
+
+   const getCurrentWeekDates = () => {
+      const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+        const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+        if(hasCookie("Channel_PartnerFilter")){
+          let data=JSON.parse(getCookie("Channel_PartnerFilter"))
+           return {startDate:data?.f_date,endDate:data?.t_date}
+         }
+         else{
+           return { startDate, endDate };
+         }
+  
+    };
+
+    const handleChange = (event) => {
+            const value = event.target.value;
+            setCookie("cp_selected",value)
+            setSelectedOption(value);
+            console.log(`Selected option: ${value}`);
+            // Add any additional logic you want to handle on selection change
+          };
+  
+    const [value, setValue] = useState(getCurrentWeekDates());
 
   
 
@@ -353,18 +377,53 @@ const ActivePartnersScreen = () => {
               
               <div className="main_content">
                   <div className="table_screen">
-                      <div className="top_btn_sec mb-3" style={{paddingRight:"0px"}} >
-                          <div className="d-flex">
-                              {
+                      <div className="top_btn_sec my-3" style={{paddingRight:"0px"}} >
+                          <div className="d-flex flex-wrap flex-md-nowrap align-items-center gap-2 gap-md-3">
+                            <div className='fix-width-1'>
+                          {
                                   userInfo?.role_id==null && (
-                                      <button className="btn ms-auto Add_btn  mb-2" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/partner/ChannelPartnersDetails')}>
+                                      <button className="btn ms-0 Add_btn p-2 w-100 d-flex align-items-center justify-content-center" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/partner/ChannelPartnersDetails')}>
                                   <PlusIcon />
                                   ADD USER
                               </button>
                                   )
-                              }
+                              }</div>
+                              <div className='fix-width-2 mt-0 mt-md-0'>
+                <DateRange value={value} setValue={setValue} getData={getDataList} filterType={"Channel_Partner"} /></div>
+                {
+                                hasCookie("channel") &&(userInfo?.role_id==null || userInfo?.role_id==3) &&(
+                                    <div style={{ marginBottom: '0' }}>
+                        <select 
+                          value={selectedOption} 
+                          onChange={handleChange} 
+                          style={{
+                            display: 'block',
+                            width: '100%',
+                            padding: '10px 10px',
+                            fontSize: '1rem',
+                            fontWeight: '400',
+                            lineHeight: '1.5',
+                            color: '#495057',
+                            backgroundColor: '#fff',
+                            backgroundClip: 'padding-box',
+                            border: '1px solid #ced4da',
+                            borderRadius: '.25rem',
+                            transition: 'border-color .15s ease-in-out,box-shadow .15s ease-in-out',
+                            marginTop: '0px'
+                          }}
+                        >
+                          <option value="Channel Partner">Channel Partner</option>
+                          <option value="BST">BST</option>
+                          <option value="Director">Director</option>
+                        </select>
+                      </div>
+                                )
+                               }
+
+                              
                               
                           </div>
+                          
                       </div>
                       <DynamicTable
                           title='Channel Partners'

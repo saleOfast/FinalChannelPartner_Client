@@ -510,7 +510,7 @@ const assignChangeHandler = (e) =>{
 
   const options = {
     selectableRows: 'none',
-    responsive: "simple",
+    responsive: "standard",
     downloadOptions:{filename:"CPRegistrationList"},
     filterType:'multiselect',
     viewColumns: false,
@@ -543,9 +543,9 @@ const assignChangeHandler = (e) =>{
     return (
         <div className=' d-flex justify-content-start gap-3 align-items-center '>
             <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-            <DateRange value={value} setValue={setValue}  getData={getDataList} filterType={"cpleads"} /> 
+            {/* <DateRange value={value} setValue={setValue}  getData={getDataList} filterType={"cpleads"} />  */}
 
-            {
+            {/* {
                   userInfoCheck?.isDB && (
                     <div className='col-md-4 mb-3'>
                     <label className='fw-bold' style={{ fontSize: '16px' }}>BST</label>
@@ -620,7 +620,7 @@ const assignChangeHandler = (e) =>{
                       
                     }}
                   />
-                </div>
+                </div> */}
         </div>
     );
 }

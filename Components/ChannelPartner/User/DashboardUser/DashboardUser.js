@@ -321,7 +321,8 @@ const DashboardUser = () => {
                                       )
                                          :
                                       (
-                                         <Datepicker
+                                        <div className='mt-5 mt-md-4'>
+                                            <Datepicker
                                          value={value}
                                          showFooter={true}
                                          displayFormat={"DD-MM-YYYY"}
@@ -331,6 +332,8 @@ const DashboardUser = () => {
                                          primaryColor={"blue"}
                                          containerClassName="relative w-64 mt-8  border rounded-md mb-4 border-black  text-black inline-block" 
                                          />
+                                        </div>
+                                         
                                       )
                                  } 
                              </div>

@@ -434,7 +434,7 @@ async function handleDelete(rowsDeleted) {
 
   const options = {
     selectableRows: userInfoCheck?.isDB ? 'multiple' : 'none',
-    responsive: "simple",
+    responsive: "standard",
     // onRowSelectionChange : handleRowClick,
     onRowsDelete: handleDelete,
     downloadOptions:{filename:"PendingRequestList"},

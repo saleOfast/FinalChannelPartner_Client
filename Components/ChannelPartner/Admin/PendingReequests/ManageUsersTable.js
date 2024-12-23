@@ -34,29 +34,29 @@ const ManageUsersTable = ({
   const channelUserStatus = (key) => {
     switch (key) {
       case 0:
-        return <span>Pending</span>;
+        return "Pending";
         break;
       case 1:
-        return <span>Under Process</span>;
+        return "Under Process";
         break;
       case 3:
-        return <span>Rejected</span>;
+        return "Rejected";
         break;
       default:
-        return <span>Completed</span>;
+        return "Completed";
         break;
     }
   };
 
   const channelUserStatusColor = (key) => {
     switch (key) {
-      case 0:
+      case "Pending":
         return 'text-primary';
         break;
-      case 1:
+      case "Under Process":
         return 'text-warning';
         break;
-      case 3:
+      case "Rejected":
         return 'text-danger';
         break;
       default:
@@ -65,7 +65,7 @@ const ManageUsersTable = ({
     }
   };
 
-  const resendEmail =  async(id,email) => {
+  const resendEmail =  async(id,email,report_to) => {
 
     
       if (!hasCookie("token")) return;
@@ -84,7 +84,8 @@ const ManageUsersTable = ({
       try {
         const response = await axios.post(`${Baseurl}/db/users/resendEmailToPendingUser`,{
           email:email,
-          user_id:id
+          user_id:id,
+          report_to:report_to 
         }, header);
         if (response.status === 200 || response.status === 201) {
           toast.success(response?.data?.message,{autoClose:2500});
@@ -290,7 +291,25 @@ const ManageUsersTable = ({
         },
       },
     },
-
+    {
+      name: "reportToUser",
+      label: "Assigned to",
+      options: {
+        filter: true,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th className="text-center" style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white", paddingLeft: '15px' }} >
+            {columnMeta.label}
+          </th>
+        ),
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+              <div className='status_box fw-bold text-center' style={{color:"#293790"}}>
+                  {value && <span  >{value}</span>}
+              </div>
+          )
+      }
+      },
+    },
     {
       name: "doc_verification",
       label: "Status",
@@ -302,7 +321,7 @@ const ManageUsersTable = ({
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
-          return <div className={`status_box ${channelUserStatusColor(value)} text-center `}>{channelUserStatus(value)}</div>;
+          return <div className={`status_box ${channelUserStatusColor(value)} text-center `}>{value}</div>;
         },
       },
     },
@@ -315,23 +334,23 @@ const ManageUsersTable = ({
         customHeadRender: (columnMeta, updateDirection) => (
           <th
             style={{ background:clientBtnColor? clientBtnColor:`#61E25E`, color: "white",  paddingLeft: '65px' }}
-            
           >
             {columnMeta.label}
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
+          let user=dataList?.find((user)=>(user?.user_code==value))
           return (
               <div className="d-flex justify-content-center align-items-center">
-              {tableMeta?.rowData[7]===0 && (
+              {tableMeta?.rowData[8]==="Pending" && (
                 <button  onClick={()=>{
-                  let user=dataList?.find((user)=>(user?.user_code==value))
-                  resendEmail(user?.user_id,user?.email)
+                  // let user=dataList?.find((user)=>(user?.user_code==value))
+                  resendEmail(user?.user_id,user?.email, user?.report_to ?? null)
                   }} style={{backgroundColor:"green"}} className="btn text-white rounded-5" >
                 Resend
               </button>
               )}
-              {tableMeta?.rowData[7]===1 && userInfoCheck?.isDB ?
+              {tableMeta?.rowData[8]==="Under Process" && userInfoCheck?.isDB ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
@@ -351,7 +370,7 @@ const ManageUsersTable = ({
             :
             <div className="text-center"></div> }
 
-           {tableMeta?.rowData[7]===1 && dataList?.find(item=>item?.user_code==value)?.bst_response==false && userInfoCheck?.role_id==2 ?
+           {tableMeta?.rowData[8]==="Under Process" && dataList?.find(item=>item?.user_code==value)?.bst_response==false && userInfoCheck?.role_id==2 ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
@@ -371,7 +390,7 @@ const ManageUsersTable = ({
             :
             <div className="text-center"></div> }
 
-            {tableMeta?.rowData[7]===1 && dataList?.find(item=>item?.user_code==value)?.director_response==false && userInfoCheck?.role_id==3 ?
+            {tableMeta?.rowData[8]==="Under Process" && dataList?.find(item=>item?.user_code==value)?.director_response==false && userInfoCheck?.role_id==3 ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
@@ -466,7 +485,8 @@ async function handleDelete(rowsDeleted) {
           reject_reason: userInfo?.reject_reason,
           user_code: userInfo?.user_code,
           isCHANNEL:userInfo?.reject_reason ? false : true,
-          forApproval:true
+          forApproval:true,
+          report_to: userInfo?.report_to
         },
         header
       );
@@ -537,9 +557,14 @@ async function handleDelete(rowsDeleted) {
     }
     setUserData([])
   };
-
-
-
+  
+  const mappedDataList = dataList.map((data) => ({
+    ...data,
+    doc_verification: channelUserStatus(data?.doc_verification),
+    reportToUser: ""
+    // dataList?.find((user)=>(user?.user_code==value))
+    ,
+  }));
   return (
     <>
     {
@@ -549,7 +574,7 @@ async function handleDelete(rowsDeleted) {
         <div className="miuiTable channelTable">
         <MUIDataTable
           title={<span style={{ color: "black", fontWeight:"bold", fontSize:"17px" }}>{title}</span>}
-          data={dataList}
+          data={mappedDataList}
           columns={columns}
           // options={options}
           options={{

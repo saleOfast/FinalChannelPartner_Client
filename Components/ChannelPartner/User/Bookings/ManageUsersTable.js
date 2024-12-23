@@ -535,7 +535,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
       email:list?.email,
       contact_no:list?.contact_no,
       BookingprojectData:list?.BookingleadData?.sales_project_name,
-      Location:list?.Location,
+      Location:[list?.Location]?.filter(d => d !== null && d !== undefined),
       status:list?.status,
       BrokerageBookingList:list?.BrokerageBookingList
   }))

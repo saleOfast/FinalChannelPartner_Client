@@ -192,7 +192,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box fw-bold text-center' style={{color:"#293790"}}>
-                            {value && <span  >{value.user}</span>}
+                            {value && <span  >{value}</span>}
                             {/* {value && <span  >{value}</span>} */}
                             {/* {userInfo?.user==value?.user ? "" : value?.user} */}
                         </div>
@@ -213,7 +213,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className='status_box text-center'>
-                            {value ? <span className='active status_btn'>active</span> :
+                            {value === "active" ? <span className='active status_btn'>active</span> :
                                  <span className='inactive status_btn'>inactive</span>}
                         </div>
                     )
@@ -233,7 +233,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                   customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div  className='status_box fw-bold text-center' style={{color:"#293790"}} >
-                            {value?.db_designation?.designation}
+                            {value}
                         </div>
                     )
                 }   
@@ -243,7 +243,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
             name: 'cpt_id',
             label: "Partner Type",
             options: {
-                filter: true,
+                filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
                     <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
                       {columnMeta.label}
@@ -274,11 +274,10 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
-                    console.log(tableMeta.rowData)
                     return (
                         <div className="table_btns justify-content-center align-items-center">
                             <button
-                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.rowData[5]?.user_id) }}
+                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.tableData[tableMeta?.rowIndex][10]??"") }}
                                 style={{background:clientBtnColor? clientBtnColor:`#293790`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
                                 title='Assign - To'>
@@ -486,16 +485,12 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
           }
         }
       };
-      
       const mappedDataList=dataList?.map(list=>({
-        user_code:list?.user_code,
-        user:list?.user,
-        createdAt:list?.createdAt,
-        lead_count:list?.lead_count,
-        booking_count:list?.booking_count,
-        reportToUser:list?.reportToUser?.user,
-        user_status:list?.user_status,
-        reportToUserId:list?.reportToUser?.user_id,
+        ...list,
+        reportToUser: [list?.reportToUser?.user]?.filter(d => d !== null && d !== undefined),
+        user_status: list?.user_status ? "active" : "inactive",
+        db_user_profile: [list?.db_user_profile?.db_designation?.designation]?.filter(d => d !== null && d !== undefined),
+        reportToUserId: list?.reportToUser?.user_id
       }))
 
     return (
@@ -507,7 +502,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                 <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
-                    data={dataList}
+                    data={mappedDataList}
                     // data={mappedDataList}
                     columns={columns}
                     // options={options}
@@ -567,7 +562,20 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                                             if (oldAssignTo === data.user_id) {
                                                 return {
                                                 value: data?.user_id,
-                                                label: data?.user,
+                                                label: (
+                                                    <>
+                                                      {data?.user ?? ""}{" "}
+                                                      {data?.user_status ? (
+                                                        <span className="status_box  text-center">
+                                                        <span className="active status_btn">active</span>
+                                                        </span>
+                                                      ) : (
+                                                        <span className="status_box  text-center">
+                                                        <span className="inactive status_btn">inactive</span>
+                                                        </span>
+                                                      )}
+                                                    </>
+                                                  ),
                                                 };
                                             }
                                             })}

@@ -306,8 +306,8 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <DateRange value={value} setValue={setValue} getData={getDataList} filterType={"Channel_Partner"} />
-               {
+                {/* <DateRange value={value} setValue={setValue} getData={getDataList} filterType={"Channel_Partner"} /> */}
+               {/* {
                 hasCookie("channel") &&(userInfo?.role_id==null || userInfo?.role_id==3) &&(
                     <div style={{ marginBottom: '0' }}>
         <select 
@@ -335,7 +335,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
         </select>
       </div>
                 )
-               }
+               } */}
       
             </div>
         );
@@ -412,7 +412,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
     const options = {
         enableNestedDataAccess: ".",
         selectableRows: userInfo?.isDB ? 'multiple' : 'none',
-        responsive: "simple",
+        responsive: "standard",
         // onRowSelectionChange : handleRowClick,
         onRowsDelete: handleDelete,
         downloadOptions:{filename:"ChannelPartnerList"},

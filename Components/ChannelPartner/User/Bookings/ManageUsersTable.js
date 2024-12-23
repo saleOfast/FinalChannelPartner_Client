@@ -282,22 +282,13 @@ const [value, setValue] = useState(getCurrentWeekDates());
     return (
       <div className=' d-flex justify-content-start gap-3 align-items-center '>
         <p className='fw-bold ' style={{ fontSize: "18px" }} >{title}</p>
-        <DateRange value={value} setValue={setValue} getData={getDataList} filterType={title} />
-        {
+        {/* <DateRange value={value} setValue={setValue} getData={getDataList} filterType={title} /> */}
+        {/* {
                   (userInfo?.isDB || userInfo?.role_id=="3") && (
                     <div className='col-md-4 mb-3'>
                     <label className='fw-bold' style={{ fontSize: '16px' }}>Channel Partner</label>
                     <Select 
                       placeholder="Select Channel Partner"
-                      // options={[{ value: "", label: "All" }, 
-                      //   ...usersList?.filter(item => item?.role_id == 1)?.map((item) => {
-                      //     return {
-                      //       value: item?.user_id,
-                      //       label: item?.user
-                      //     };
-                      //   })
-                      // ]}
-
                       options={[
                         { value: "", label: "All" },
                         ...(usersList || [])
@@ -375,7 +366,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
                       }
                     }}
                   />
-                </div>
+                </div> */}
       </div>
     );
   }
@@ -530,7 +521,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
 
   const options = {
     selectableRows: 'none',
-    responsive: "simple",
+    responsive: "standard",
     onRowSelectionChange: handleRowClick,
     downloadOptions:{filename:"ChannelBookings"},
     filterType:'multiselect',

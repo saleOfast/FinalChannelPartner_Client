@@ -2842,4 +2842,28 @@ z-index: 0;
 border-radius: 10px;
 }
 }
+@media screen and (max-width:768px) {
+
+  .table_screen .miuiTable .css-hyum1k-MuiToolbar-root,
+  .table_screen .miuiTable .css-i6s8oyroot,
+  .table_screen .miuiTable .css-i6s8oy {
+
+    display: flex !important;
+    justify-content: space-between !important;
+    padding-right: 0 !important;
+  }
+
+  .css-i4bv87-MuiSvgIcon-root {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .table_screen .miuiTable .css-2ulfj5-MuiTypography-root,
+  .table_screen .miuiTable .MuiTypography-root {
+    text-align: start !important;
+  }
+  .tss-qbo1l6-MUIDataTableToolbar-actions {
+      text-align: end!important;
+  }
+}
 /* ---------------------------------------New Login Screen CSS End--------------------------------------------------- */

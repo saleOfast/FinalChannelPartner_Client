@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Baseurl, filesUrl } from "../../../../Utils/Constants";
 import { deleteCookie, getCookie, hasCookie, removeCookies, setCookie } from "cookies-next";
 import { Dropdown } from "react-bootstrap";
@@ -27,6 +27,9 @@ const CP_NavBar = () => {
   const allowedpermission = hasCookie("allowedpermissions")? JSON.parse(getCookie("allowedpermissions")) :"";
   const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
   const activeLink=useSelector(state=>state.cpActiveLink.activeLink)
+  const ref1=useRef()
+  const ref2=useRef(null)
+  
 
   const isActive = (pathname) => {
     return  activeLink===pathname ? "active" : "";
@@ -126,6 +129,15 @@ const CP_NavBar = () => {
     })
   }
 
+  const onRefCall=()=>{
+    if(ref1.current){
+      ref1.current.classList.add("collapsed")
+    }
+    if(ref2.current){
+      ref2.current.classList.remove("show")
+    }
+  }
+
   return (
     <>
       <ConfirmBox
@@ -140,10 +152,10 @@ const CP_NavBar = () => {
       <nav className="navbar navbar-expand-lg navbar-light bg-white">
   <div className="container-fluid">
   <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="normal" style={{maxHeight:"8vh"}} />
-    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <button ref={ref1} className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span className="navbar-toggler-icon" />
     </button>
-    <div className="collapse navbar-collapse " id="navbarNavDropdown">
+    <div className="collapse navbar-collapse " id="navbarNavDropdown" ref={ref2}>
       <ul className="navbar-nav ms-auto">
         {
           roleId===1 && (
@@ -156,10 +168,11 @@ const CP_NavBar = () => {
                           deleteCookie("channel")
                           dispatch(clearValue()) //for clearing the value (initial state in permission mode)
                           router.push("/")
+                          onRefCall()
                         }}><img src='/switch.svg' style={{width:"15px",marginTop:"4px"}}/></li>
                       )
                     }
-                <li className="nav-item">
+                <li className="nav-item" onClick={onRefCall}>
         <Link className={`nav-link ${isActive('/partner')}`} href="/partner"
                   onClick={()=>{
                     deleteCookieOnRouteChange()
@@ -168,7 +181,7 @@ const CP_NavBar = () => {
                   }}
                 >Reports & Dashboard</Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item" onClick={onRefCall}>
         <Link
                     className={`nav-link ${isActive(
                       "/partner/Leads"
@@ -184,7 +197,7 @@ const CP_NavBar = () => {
                     Leads
                   </Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item" onClick={onRefCall}>
         <Link
                     className={`nav-link ${isActive(
                       "/partner/Visits"
@@ -199,7 +212,7 @@ const CP_NavBar = () => {
                     Visits
                   </Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item" onClick={onRefCall}>
         <Link
                     className={`nav-link ${isActive(
                       "/partner/Bookings"
@@ -214,7 +227,7 @@ const CP_NavBar = () => {
                     Bookings
                   </Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item" onClick={onRefCall}>
         <Link
                     className={`nav-link ${isActive(
                       "/partner/Brokerage"
@@ -229,7 +242,7 @@ const CP_NavBar = () => {
                     Brokerage
                   </Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item" onClick={onRefCall}>
         <Link
                     className={`nav-link ${isActive(
                       "/partner/Campaign"
@@ -251,7 +264,7 @@ const CP_NavBar = () => {
         {
                   roleId===2 && (
                     <>
-                    <li className="nav-item">
+                    <li className="nav-item" onClick={onRefCall}>
         <Link className={`nav-link ${isActive('/partner')}`} href="/partner"
                   onClick={()=>{
                     deleteCookieOnRouteChange()
@@ -260,7 +273,7 @@ const CP_NavBar = () => {
                   }}
                 >Reports & Dashboard</Link>
         </li>
-                    <li className="nav-item">
+                    <li className="nav-item" onClick={onRefCall}>
         <Link className={`nav-link ${isActive('/partner/ActivePartners')}`} href="/partner/ActivePartners"
                   onClick={()=>{
                     router.pathname=="/partner/ChannelPartnersDetails" || router.pathname=="/partner/EditActiveUsers" ||router.pathname=="/partner/ActivePartners"   ? "" : deleteCookieOnRouteChange()
@@ -269,7 +282,7 @@ const CP_NavBar = () => {
                   }}
                 >Channel Partners</Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item" onClick={onRefCall}>
         <Link className={`nav-link ${isActive('/partner/CPRegisterLeads')}`} href="/partner/CPRegisterLeads"
                   onClick={()=>{
                     deleteCookieOnRouteChange()
@@ -278,7 +291,7 @@ const CP_NavBar = () => {
                   }}
                 >C.P Leads</Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item" onClick={onRefCall}>
         <Link className={`nav-link ${isActive('/partner/PendingRequests')}`} 
                   onClick={()=>{
                     deleteCookieOnRouteChange()
@@ -287,7 +300,7 @@ const CP_NavBar = () => {
                   }}
                 href="/partner/PendingRequests">Pending Requests</Link>
         </li>
-                     <li className="nav-item">
+                     <li className="nav-item" onClick={onRefCall}>
         <Link
                     className={`nav-link ${isActive(
                       "/partner/Leads"
@@ -302,7 +315,7 @@ const CP_NavBar = () => {
                     Leads
                   </Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item" onClick={onRefCall}>
         <Link
                     className={`nav-link ${isActive(
                       "/partner/Visits"
@@ -317,7 +330,7 @@ const CP_NavBar = () => {
                     Visits
                   </Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item" onClick={onRefCall}>
         <Link
                     className={`nav-link ${isActive(
                       "/partner/Bookings"
@@ -333,7 +346,7 @@ const CP_NavBar = () => {
                   </Link>
         </li>
         
-                        <li className="nav-item">
+                        <li className="nav-item" onClick={onRefCall}>
                   <Link
                     className={`nav-link ${isActive(
                       "/partner/Brokerage"
@@ -348,7 +361,7 @@ const CP_NavBar = () => {
                     Brokerage
                   </Link>
                 </li>
-                <li className="nav-item">
+                <li className="nav-item" onClick={onRefCall}>
         <Link
                     className={`nav-link ${isActive(
                       "/partner/Campaign"
@@ -366,7 +379,7 @@ const CP_NavBar = () => {
                     </>
                   )
                 }
-        <li className="nav-item">
+        <li className="nav-item" onClick={onRefCall}>
                     <div className='user_profile'>
                     <Dropdown className='cp_nav_toggle' >
                   <Dropdown.Toggle variant="none" id="profileBtn">

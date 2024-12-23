@@ -417,25 +417,13 @@ const getVisitInfo=async(visitId)=>{
         return (
             <div className=' d-flex justify-content-start gap-3 align-items-center '>
                 <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-                <DateRange value={value} setValue={setValue}  getData={getDataList} filterType={title} />
+                {/* <DateRange value={value} setValue={setValue}  getData={getDataList} filterType={title} />
                 {
                   (userInfo?.isDB || userInfo?.role_id=="3") && (
                     <div className='col-md-4 mb-3'>
                     <label className='fw-bold' style={{ fontSize: '16px' }}>Channel Partner</label>
                     <Select 
                       placeholder="Select Channel Partner"
-                      // options={[
-                      //   { value: "", label: "All" },
-                      //   ...(usersList || []).filter(item => {
-                      //     if (userInfo?.isDB) {
-                      //       return item?.role_id == 1;
-                      //     }
-                      //     return item?.role_id == 1 && cpUnderBstForDirector?.some(i => i?.id == item?.report_to);
-                      //   }).map(item => ({
-                      //     value: item?.user_id,
-                      //     label: item?.user
-                      //   }))
-                      // ]}
 
                       options={[
                         { value: "", label: "All" },
@@ -483,9 +471,9 @@ const getVisitInfo=async(visitId)=>{
                     />
                   </div>
                   )
-                }
+                } */}
                 
-                <div className='col-md-4 mb-3'>
+                {/* <div className='col-md-4 mb-3'>
                   <label className='fw-bold' style={{ fontSize: '16px' }}>Stages</label>
                   <Select 
                     placeholder="Select Stage"
@@ -518,7 +506,7 @@ const getVisitInfo=async(visitId)=>{
                       
                     }}
                   />
-                </div>
+                </div> */}
                 
             </div>
         );
@@ -586,7 +574,7 @@ const getVisitInfo=async(visitId)=>{
 
     const options = {
         selectableRows: userInfo?.isDB ? 'multiple' : 'none',
-        responsive: "simple",
+        responsive: "standard",
         // onRowSelectionChange : handleRowClick,
         onRowsDelete: handleDelete,
         downloadOptions:{

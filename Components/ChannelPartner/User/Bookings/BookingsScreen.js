@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import PlusIcon from '../../../Svg/PlusIcon';
 import axios from 'axios';
-import { hasCookie, getCookie } from 'cookies-next';
+import { hasCookie, getCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 
 import { useSelector } from 'react-redux';
@@ -18,6 +18,7 @@ import Select from 'react-select';
 import { fetchData } from '../../../../Utils/getReq';
 import Daterange from '../../../DateRangeCustom/Daterange';
 import Loader from '../../../Loader/Loader';
+import DateRange from '../../../DateRangeCustom/Daterange';
 const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
@@ -53,6 +54,34 @@ const BookingsScreen = () => {
 
    const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
    const[loader,setLoader]=useState(false)
+
+   let statusArray=[{id:"",label:"All"},{id:"Payment Initiated",label:"Payment Initiated"},{id:"Payment Received",label:"Payment Received"},{id:"Payment Rejected",label:"Payment Rejected"},{id:"Booking Done",label:"Booking Done"},{id:"Eligible for brokerage bill",label:"Eligible for brokerage bill"},{id:"Bill Received",label:"Bill Received"},{id:"Bill sent",label:"Bill sent"}]
+
+     const userInfo=hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")):null
+     
+       async function getUsersList() {
+         await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
+       }
+     
+       useEffect(()=>{
+         getUsersList()
+       },[])
+   
+
+   const getCurrentWeekDates = () => {
+       const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+         const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+         if(hasCookie("BookingsFilter")){
+             
+           let data=JSON.parse(getCookie("BookingsFilter"))
+            return {startDate:data?.f_date,endDate:data?.t_date}
+          }
+          else{
+            return { startDate, endDate };
+          }
+     };
+     const [value, setValue] = useState(getCurrentWeekDates());
+     
 
    useEffect(()=>{
     if(status_id){
@@ -333,9 +362,102 @@ const BookingsScreen = () => {
     return (
       <>
      
-      <div className="w-100 ps-4 pe-4 overflow-auto">
+      <div className="w-100 ps-4 pe-4 overflow-auto Visit">
           <div className="main_content">
             <div className="table_screen">
+            <div className="top_btn_sec mb-3 " style={{paddingRight:"0px"}}>
+            <div className="col-12 d-flex flex-wrap justify-content-center justify-content-md-end flex-md-nowrap align-items-center gap-3 mt-3 mt-md-0">
+            {
+                                  (userInfo?.isDB || userInfo?.role_id=="3") && (
+                                    <div className='fix-width-1 text-start'>
+                                    <label className='fw-bold' style={{ fontSize: '16px' }}>Channel Partner</label>
+                                    <Select 
+                                      placeholder="Select"
+                                      options={[
+                                        { value: "", label: "All" },
+                                        ...(usersList || [])
+                                          .filter(item => {
+                                            if (userInfo?.isDB) {
+                                              return item?.role_id == 1;
+                                            }
+                                            // Combine logic for cpUnderBstForDirector
+                                            return (
+                                              item?.role_id == 1 &&
+                                              usersList?.some(i => i?.report_to == userInfo?.user_id && i?.user_id == item?.report_to)
+                                            );
+                                          })
+                                          .map(item => ({
+                                            value: item?.user_id,
+                                            label: item?.user
+                                          }))
+                                      ]}
+                                      
+                                      value={
+                                        usersList?.filter(item=>item?.role_id==1)?.map((item) => {
+                                          if(cpId==item?.user_id){
+                                            return{
+                                              value: item?.user_id,
+                                            label: item?.user
+                                            }
+                                          }
+                                        })
+                                      }
+                                      onChange={(e)=>{
+                                        if(e.value==""){
+                                          setCookie("BookingcpId",e.value)
+                                          router.push("/partner/Bookings")
+                                          setCpId(e.value)
+                                        }
+                                        else{
+                                          setCookie("BookingcpId",e.value)
+                                          setCpId(e.value)
+                                        }
+                                        
+                                      }}
+                                    />
+                                  </div>
+                                  )
+                                }
+              <div className='fix-width-2 text-start'>
+              <label className='fw-bold' style={{ fontSize: '16px' }}>Date</label>
+              <DateRange value={value} setValue={setValue} getData={getDataList} filterType={"Bookings"} />
+              </div>
+               
+                                <div className='fix-width-3 text-start'>
+                                  <label className='fw-bold' style={{ fontSize: '16px' }}>Status</label>
+                                  <Select 
+                                    placeholder="Select Stage"
+                                    options={statusArray?.map((item)=>{
+                                      return{
+                                        value:item.id,
+                                        label:item.label
+                                      }
+                                    })}
+                                    value={
+                                      statusArray?.map((item)=>{
+                                        if(statusId==item?.id){
+                                          return{
+                                            value:item.id,
+                                            label:item.label
+                                          }
+                                        }
+                                      })
+                                    }
+                                    onChange={(e)=>{
+                                      if(e.value==""){
+                                        setCookie("BookingstatusId",e.value)
+                                        router.push("/partner/Bookings")
+                                        setStatusId(e.value)
+                                      }
+                                      else{
+                                        setCookie("BookingstatusId",e.value)
+                                      setStatusId(e.value)
+                                      }
+                                    }}
+                                  />
+                                </div>
+            </div>
+            </div>
               <DynamicTable
                 title="Bookings"
                 dataList={dataList}

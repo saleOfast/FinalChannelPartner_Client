@@ -272,7 +272,7 @@ const CP_NavBar_Admin = () => {
                   Campaign 
                 </Link>
         </li>
-        <li className="nav-item" onClick={onRefCall}>
+        <li className="nav-item">
                     <div className='user_profile'>
                     <Dropdown className='cp_nav_toggle' >
                   <Dropdown.Toggle variant="none" id="profileBtn">
@@ -296,7 +296,7 @@ const CP_NavBar_Admin = () => {
                       </div>
                     </div>
                   </Dropdown.Toggle>
-                  <Dropdown.Menu  >
+                  <Dropdown.Menu  onClick={onRefCall}>
                     <Link href={"/partner/ChannelProfile"}>
                       <Dropdown.Item className='d-flex align-items-center' onClick={()=>{
                          deleteCookieOnRouteChange()

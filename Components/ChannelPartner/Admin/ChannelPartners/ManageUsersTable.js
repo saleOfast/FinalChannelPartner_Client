@@ -250,10 +250,11 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
                     </th>
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
-                    const partnerType = partnerTypes.find(data => data.cpt_id === value);
+                    // const partnerType = partnerTypes.find(data => data.cpt_id === value);
                     return (
                         <div  className='status_box fw-bold text-center' style={{color:"#293790"}} >
-                           {partnerType ? partnerType.name : ''}
+                           {/* {partnerType ? partnerType.name : ''} */}
+                           {value}
                         </div>
                     )
                 }
@@ -487,6 +488,7 @@ const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl,
       };
       const mappedDataList=dataList?.map(list=>({
         ...list,
+        cpt_id: list?.db_role?.role_name,
         reportToUser: [list?.reportToUser?.user]?.filter(d => d !== null && d !== undefined),
         user_status: list?.user_status ? "active" : "inactive",
         db_user_profile: [list?.db_user_profile?.db_designation?.designation]?.filter(d => d !== null && d !== undefined),

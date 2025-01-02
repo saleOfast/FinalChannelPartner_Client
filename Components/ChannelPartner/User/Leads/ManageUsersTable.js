@@ -146,7 +146,16 @@ const getVisitInfo=async(visitId)=>{
                 return true;
             }
             break;
-
+            case "VISIT NOT DONE":
+              statusDate.setDate(statusDate.getDate() + 1); 
+              
+              if (statusDate < currentDate) {
+                  return false;
+              } else {
+                
+                  return true;
+              }
+              break;
         case "Scheduled":
           
             return true;

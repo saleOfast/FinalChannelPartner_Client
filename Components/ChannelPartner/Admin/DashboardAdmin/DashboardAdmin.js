@@ -6,7 +6,17 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import DashboardRevnueCard from './DashboardRevnueCard'
 import DashLeadsCard from './DashLeadsCard'
-
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import ContactsIcon from '@mui/icons-material/Contacts';
+import CallIcon from '@mui/icons-material/Call';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
+import BookOnlineIcon from '@mui/icons-material/BookOnline';
+import TimelapseIcon from '@mui/icons-material/Timelapse';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
+import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
+import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
 import TasksCard from './TasksCard';
 import OpportunityCard from './OpportunityCard';
 import { Baseurl, filesUrl } from '../../../../Utils/Constants';
@@ -23,6 +33,12 @@ import Top5Bookings from './Top5Bookings';
 import Top5Leads from './Top5Leads';
 import Top5Visits from './Top5Visits';
 import Loader from '../../../Loader/Loader';
+import { InputLabel, Select } from '@mui/material';
+import { FormControl } from '@mui/material';
+import { MenuItem } from '@mui/material';
+import { VisitReport } from './visitReport';
+import { OpenReport } from './OpenReport';
+import { BookingReport } from './BookingReport';
 
 
 const DashboardAdmin = () => {
@@ -61,14 +77,17 @@ const DashboardAdmin = () => {
         },1)
     }
 
+    const [screen, setScreen] = React.useState('1');
 
 
     const handleValueChange = (newValue) => {
       setValue(newValue);
       setStartDate(startDate)
       setEndDate(endDate)
+      if(screen == 1){
+        getDataList(newValue.startDate, newValue.endDate);
 
-      getDataList(newValue.startDate, newValue.endDate);
+      }
   
     }
 
@@ -275,11 +294,14 @@ const DashboardAdmin = () => {
     }, []);
 
 
+    const handleChange = (event) => {
+        setScreen(event.target.value);
+    };
     useEffect(() => {
-        if (startDate !== null && endDate !== null) {
+        if (startDate !== null && endDate !== null && screen == 1) {
             getDataList(startDate, endDate);
         }
-    }, [router.isReady, id, startDate]);
+    }, [router.isReady, id, startDate, screen]);
 
     // useEffect(() => {
     //     const location = window.navigator && window.navigator.geolocation
@@ -296,12 +318,13 @@ const DashboardAdmin = () => {
     //     }
     //     getAttndncData();
     // }, [])
-
+   
     return (
         <>
         {
             loader ? <div className='d-block w-100 '><Loader/></div>
             :
+           
             (
                 <div className='d-block w-100 '>
       <div>
@@ -315,7 +338,7 @@ const DashboardAdmin = () => {
           <div className={`main_Box w-100 `} >
             <div className="main_content dashboard indxx"id='to-be-printed' >
                 <div className="Cards_side w-100">
-                    <div className="dashboard_head">
+                    <div className="dashboard_head" style={{display:"flex", gap:"20px", width:"100%", justifyContent:"space-between", alignItems:""}}>
                         <div className="time_filter" style={{marginTop:"-40px",marginBottom:"-10px"}}>
                             {
                                 showLogo ? 
@@ -341,11 +364,32 @@ const DashboardAdmin = () => {
                                  )
                             }    
                         </div>
+                        <div style={{marginRight:"10px"}}>
+                        <FormControl fullWidth style={{width:"200px", padding:"-10px", margin:"-10px"}}>
+                           <InputLabel id="demo-simple-select-label">Screen</InputLabel>
+                              <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={screen}
+                                label="Age"
+                                onChange={handleChange}
+                                 >
+                               <MenuItem value={1}>Dashboard</MenuItem>
+                               <MenuItem value={2}>Visit Report</MenuItem>
+                               <MenuItem value={3}>Booking Report</MenuItem>
+                               <MenuItem value={4}>Open Report</MenuItem>
+
+                             </Select>
+                       </FormControl>
+                        </div>
                     </div>
-                    <div className="cards_Box ">
+                    {screen === 2 ?<VisitReport startDate={value?.startDate} endDate={value?.endDate} dateFilter={value?.dateFilter} /> : screen === 3 ? <BookingReport startDate={value?.startDate} endDate={value?.endDate}/>  : screen === 4 ? <OpenReport startDate={value?.startDate} endDate={value?.endDate}/>
+                 
+                   :
+                   <div className="cards_Box ">
                         
-                    <div className="row leads_row">
-                        <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                    <div className="row leads_row addgap">
+                        <div className="col-xl-3 col-md-3 col-12 col-sm-12 addgap" >
                         <Link href={`/partner/Leads`}  onClick={()=>{
                             const queryObjLeads={
                                 f_date:value.startDate,
@@ -357,7 +401,9 @@ const DashboardAdmin = () => {
                                     head='Total Leads'
                                     price={dataList.leads}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/groupicon.png' />  
+                                    img='/images/groupicon.png'
+                                    color="#05539c"  
+                                    icon={Diversity3Icon}/>  
                         </Link>
                             </div>
                             <div className="col-xl-3 col-md-3 col-12 col-sm-12">
@@ -372,7 +418,9 @@ const DashboardAdmin = () => {
                                     head='Visits Completed'
                                     price={dataList.visits}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/groupicon.png' />
+                                    img='/images/groupicon.png'
+                                    color='#9c8f05'
+                                    icon={WhereToVoteIcon} />
                             </Link>
                             </div>
                             <div className="col-xl-3 col-md-3 col-12 col-sm-12">
@@ -387,7 +435,9 @@ const DashboardAdmin = () => {
                                     head='Bookings Completed'
                                     price={dataList.booking}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/usericon.png' />
+                                    img='/images/usericon.png'
+                                    color='#9c0550'
+                                    icon={BookOnlineIcon} />
                             </Link>
                             </div>
                             <div className="col-xl-3 col-md-3 col-12 col-sm-12">
@@ -403,14 +453,16 @@ const DashboardAdmin = () => {
                                     // price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
                                     price={dataList?.averageHours!="NaN" ?`${dataList?.averageHours || '0'} ʰʳˢ `  :`${'0'} ʰʳˢ `} 
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/usericon.png' 
+                                    img='/images/usericon.png'
+                                    color='#03850d' 
+                                    icon={TimelapseIcon}
                                     />
                             </Link>
                             </div>
                             
                         </div>
-                        <label className='m-3 fw-bold'>CP LEADS</label>
-                        <div className="row leads_row">
+                        <label className='m-3 fw-bold text-2xl' style={{fontSize: "24px", color: "#160354"}}>CP LEADS</label>
+                        <div className="row leads_row addgap">
                         <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                         <Link href={"/partner/CPRegisterLeads?status_id=OPEN"} onClick={()=>{
                             const queryObjLeads={
@@ -423,7 +475,9 @@ const DashboardAdmin = () => {
                                     head='OPEN'
                                     price={dataList.OPENCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/usericon.png' 
+                                    img='/images/usericon.png'
+                                    color='#ff0000'
+                                    icon={AutoGraphIcon} 
                                     />
                             </Link>
                             </div>
@@ -441,6 +495,9 @@ const DashboardAdmin = () => {
                                     price={dataList.CALLCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/usericon.png' 
+                                    color='#008000' 
+                                    icon={CallIcon}
+
                                     />
                             </Link>
                             </div>
@@ -458,6 +515,8 @@ const DashboardAdmin = () => {
                                     price={dataList.CONTACTEDCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/usericon.png' 
+                                    color='#cc5f10' 
+                                    icon={ContactsIcon}
                                     />
                             </Link>
                             </div>
@@ -474,7 +533,9 @@ const DashboardAdmin = () => {
                                     head='NOT INTERESTED'
                                     price={dataList.NOTINTERESTEDCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/usericon.png' 
+                                    img='/images/usericon.png'
+                                    color='#ad027a'  
+                                    icon={NotInterestedIcon}
                                     />
                             </Link>
                             </div>
@@ -491,7 +552,9 @@ const DashboardAdmin = () => {
                                     head='ONBOARDED'
                                     price={dataList.ONBOARDEDCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/usericon.png' 
+                                    img='/images/usericon.png'
+                                    color='#0000FF'  
+                                    icon={GroupAddIcon}
                                     />
                             </Link>
                             </div>
@@ -508,11 +571,30 @@ const DashboardAdmin = () => {
                                     head='VISIT'
                                     price={dataList.VISITCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/usericon.png' 
+                                    img='/images/usericon.png'
+                                    color="#8a059c" 
+                                    icon={PersonPinCircleIcon}
                                     />
                             </Link>
                             </div>
-                            
+                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=FOLLOW UP"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='FOLLOW UP'
+                                    price={dataList.FOLLOWUPCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png'
+                                    color="#018c7e" 
+                                    icon={PermPhoneMsgIcon}
+                                    />
+                            </Link>
+                            </div>
                         </div>
                         <div className='row'>
                         {dataList?.EnrolVsAcceptChart?.length ?
@@ -577,7 +659,7 @@ const DashboardAdmin = () => {
                         
                        
                         
-                    </div>
+                    </div>}
                 </div>
                 <div className="Task_side">
                     <div className="opertunity_box">
@@ -605,7 +687,15 @@ const DashboardAdmin = () => {
       </div>
             )
         }
-        
+        <style>
+            {
+                `
+                .addgap{
+                --bs-gutter-y: 1.5rem;
+                }
+                `
+            }
+        </style>
         </>
       
         

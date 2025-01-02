@@ -221,7 +221,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
           return (
             <div
               style={{ 
-                background:value==="Payment Initiated" ? "#FFA825" : value==="Payment Received" ?"#84CA4D" : value==="Booking Done" ? "#17B4E7" : value==="Eligible for brokerage bill" ? "#186EBC" : value==="Bill Received" ? "#FCCC37" :"violet"
+                background:value==="Payment Initiated" ? "#FFA825" : value==="Payment Received" ?"#84CA4D" : value==="Booking Done" ? "#17B4E7" : value==="Eligible for brokerage bill" ? "#186EBC" : value==="Bill Received" ? "#FCCC37" : value==="VISIT DONE NOT BOOKED" ? "#d43953" :"violet"
                 , color: "white", padding: "6px", borderRadius: "20px", border: "white", width: "fit-content"}}
               className='pe-3 ps-3'>
               {value}

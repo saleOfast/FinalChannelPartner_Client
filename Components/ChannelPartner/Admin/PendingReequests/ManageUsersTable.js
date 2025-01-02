@@ -561,7 +561,7 @@ async function handleDelete(rowsDeleted) {
   const mappedDataList = dataList.map((data) => ({
     ...data,
     doc_verification: channelUserStatus(data?.doc_verification),
-    reportToUser: ""
+    reportToUser: [data?.reportToUser?.user]?.filter((d)=> d != null && d != undefined)
     // dataList?.find((user)=>(user?.user_code==value))
     ,
   }));

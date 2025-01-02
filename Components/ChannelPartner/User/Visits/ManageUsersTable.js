@@ -234,7 +234,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
             customBodyRender: (value, tableMeta, updateValue) => {
                 return (
                     <div className='status_box' style={{color:"#667799"}}>
-                        {formatDate(value)}
+                        {value ? formatDate(value):""}
                     </div>
                 )
             }
@@ -314,6 +314,8 @@ const [value, setValue] = useState(getCurrentWeekDates());
                                     ? "#D9534F" 
                                     : value === "Rescheduled"
                                     ? "#FF6F61"  // or any color of your choice
+                                    : value === "VISIT NOT DONE"
+                                    ? "#d43953"  // or any color of your choice
                                     : "",
                                   borderRadius: "20px",
                                   border: "white"

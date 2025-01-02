@@ -1500,11 +1500,13 @@ select.form-control::after {
 
 .dash_card {
   padding: 15px;
-  box-shadow: var(--shadow-color) 0px 8px 24px;
-  border-radius: 5px;
+  /* box-shadow: var(--shadow-color) 0px 8px 24px;  */
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+  border-radius: 9px;
   display: flex;
   /* align-items: center; */
   justify-content: space-between;
+  /* background: #ddd; */
 }
 .dash_card .detail_sec .head_text {
   font-style: normal;
@@ -1982,7 +1984,10 @@ select.form-control::after {
 }
 
 .opertunity_box .task_card {
-  box-shadow: var(--shadow-color) 0px 8px 24px;
+  /* box-shadow: var(--shadow-color) 0px 8px 24px; */
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 .opertunity_box .task_card .task_head {
   padding: 20px;

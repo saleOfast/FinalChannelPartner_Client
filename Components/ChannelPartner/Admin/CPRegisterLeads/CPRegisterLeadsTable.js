@@ -145,10 +145,8 @@ const addUserHandler = async (id,assignedToId) => {
 
 
 const updateUserhandler = async (onBoradStage=false, user_id, t_id ) => {
-  let newErrors = {}
-  if(!user_id && !t_id){
-     newErrors = validateForm();
-  }
+  let newErrors = validateForm();
+
   if (Object.keys(newErrors).length === 0) {
     if (!hasCookie("token")) return;
   
@@ -164,8 +162,7 @@ const updateUserhandler = async (onBoradStage=false, user_id, t_id ) => {
   let newFormData;
   if(onBoradStage){
      newFormData={...formData,db_name:db_name,stage:"LINK SENT"}
-  }
-  else if(user_id && t_id){
+   }else if(user_id && t_id){
     newFormData={...formData, asssigned_to: user_id, cpl_id: t_id, db_name:db_name}
    }else{
    newFormData={...formData, db_name:db_name}
@@ -353,6 +350,29 @@ const assignChangeHandler = (e) =>{
       },
     },
     {
+      name: "follow_up_date",
+      label: "Follow up Date",
+      options: {
+        filter: false,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px"  }} >
+            {columnMeta.label}
+          </th>
+        ),
+
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+          <span
+          className=""
+          style={{color: '#667799'}}
+          >
+            {value ? formatDate(value): ""}
+        </span>
+          )
+        },
+      },
+    },
+    {
       name: "stage",
       label: "Status",
       options: {
@@ -453,7 +473,7 @@ const assignChangeHandler = (e) =>{
                                   const newData=dataList?.find((item)=>item?.cpl_id==value)
                                   setFormData(newData);
                                   setShowAssignTo(value); 
-                                  setOldAssignTo(tableMeta?.tableData[tableMeta?.rowIndex][8])
+                                  setOldAssignTo(tableMeta?.rowData[9])
                                 }}
                                 style={{background:clientBtnColor? clientBtnColor:`#293790`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'

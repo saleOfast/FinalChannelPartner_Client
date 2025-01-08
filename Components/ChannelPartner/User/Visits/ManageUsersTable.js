@@ -12,12 +12,13 @@ import PlusIcon from '../../../Svg/PlusIcon';
 import DateRange from '../../../DateRangeCustom/Daterange';
 import Loader from '../../../Loader/Loader';
 import { fetchData } from '../../../../Utils/getReq';
+import * as XLSX from "xlsx";
 
 
 
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,getVisitList,loader,cpId,setCpId,statusId,setStatusId }) => {
+const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,getVisitList,loader,cpId,setCpId,statusId,setStatusId }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -445,6 +446,55 @@ const [value, setValue] = useState(getCurrentWeekDates());
         downloadOptions:{filename:"ChannelVisits"},
         filterType:'multiselect',
         viewColumns: false,
+        onDownload: (buildHead, buildBody, columns, data) => {
+              const workbook = XLSX.utils.book_new();
+              let range;
+              if(hasCookie("VisitsFilter")){
+                range= JSON.parse(getCookie("VisitsFilter"))
+              }
+              let filteredColumns = columns // Remove the last two columns
+              const filteredData = data.map(row => {
+                return filteredColumns.map((col, index) => row.data[index]);
+              });
+              
+              const customData = [
+                ["Channel Visits Report"], 
+                [], 
+                [`Filter by:`],
+                [],
+                [`Date Range: ${range?.f_date ? formatDate(range?.f_date):formatDate(start)} to ${range?.t_date ? formatDate(range?.t_date):formatDate(end)}`],
+                [], 
+                [], 
+                filteredColumns.map(col => col.label || col.name), 
+                ...filteredData,
+              ];
+            
+              const worksheet = XLSX.utils.aoa_to_sheet(customData);
+            
+              worksheet['!merges'] = [
+                { s: { r: 0, c: 0 }, e: { r: 1, c: filteredColumns.length-1} }, // Merge A1 and A2 for the title
+                { s: { r: 2, c: 0 }, e: { r: 3, c: filteredColumns.length-1 } }, // Merge A3 for the date range
+                { s: { r: 4, c: 0 }, e: { r: 4, c: filteredColumns.length-1 } }, // Merge A3 for the date range
+                { s: { r: 5, c: 0 }, e: { r: 6, c: filteredColumns.length-1} }, // Merge A3 for the date range
+                
+              ];
+              worksheet['!cols'] = [
+                { wch: 8 }, 
+                { wch: 12 },
+                { wch: 18 },
+                { wch: 30 },
+                { wch: 14 },
+                { wch: 24 },
+                { wch: 22 },
+                { wch: 22 },
+                { wch: 18 },
+                { wch: 12 },
+                { wch: 18 },
+              ];
+              XLSX.utils.book_append_sheet(workbook, worksheet, "ChannelVisits");
+              XLSX.writeFile(workbook, "ChannelVisits.xlsx");
+              return false;
+          }          
     };
 
     const mappedDataList=dataList?.map(list=>({

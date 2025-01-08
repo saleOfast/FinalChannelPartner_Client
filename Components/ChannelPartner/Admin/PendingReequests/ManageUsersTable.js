@@ -7,6 +7,8 @@ import { getCookie, hasCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Loader from "../../../Loader/Loader";
+import * as XLSX from "xlsx";
+import { formatDate } from "../../../../Utils/common";
 
 const ManageUsersTable = ({
   deleteConfirm,
@@ -15,7 +17,9 @@ const ManageUsersTable = ({
   openEdtMdl,
   title,
   getDataList,
-  loader
+  loader,
+  start,
+  end
 }) => {
 
   const [userData, setUserData] =  useState([])
@@ -459,6 +463,49 @@ async function handleDelete(rowsDeleted) {
     downloadOptions:{filename:"PendingRequestList"},
     filterType:'multiselect',
     viewColumns: false,
+     onDownload: (buildHead, buildBody, columns, data) => {
+                  const workbook = XLSX.utils.book_new();
+                  const filteredColumns = columns.slice(0, -1); // Remove the last two columns
+                  const filteredData = data.map(row => {
+                    return filteredColumns.map((col, index) => row.data[index]);
+                  });
+                  
+                  const customData = [
+                    ["Pending Sign Up Requests Report"], 
+                    [], 
+                    [`Filter by:`],
+                    [],
+                    [`Date Range: All`],
+                    [], 
+                    [], 
+                    filteredColumns.map(col => col.label || col.name), 
+                    ...filteredData,
+                  ];
+                
+                  const worksheet = XLSX.utils.aoa_to_sheet(customData);
+                
+                  worksheet['!merges'] = [
+                    { s: { r: 0, c: 0 }, e: { r: 1, c: filteredColumns.length-1 } }, // Merge A1 and A2 for the title
+                    { s: { r: 2, c: 0 }, e: { r: 3, c: filteredColumns.length-1 } }, // Merge A3 for the date range
+                    { s: { r: 4, c: 0 }, e: { r: 4, c: filteredColumns.length-1 } }, // Merge A3 for the date range
+                    { s: { r: 5, c: 0 }, e: { r: 6, c: filteredColumns.length-1 } }, // Merge A3 for the date range
+                    
+                  ];
+                  worksheet['!cols'] = [
+                    { wch: 14 }, 
+                    { wch: 16 },
+                    { wch: 22 },
+                    { wch: 18 },
+                    { wch: 16 },
+                    { wch: 22 },
+                    { wch: 18 },
+                    { wch: 16 },
+                    { wch: 16 },
+                  ];
+                  XLSX.utils.book_append_sheet(workbook, worksheet, "PendingSignUpRequests");
+                  XLSX.writeFile(workbook, "PendingSignUpRequests.xlsx");
+                  return false;
+                }
   };
 
   const updateUserhandler = async () => {

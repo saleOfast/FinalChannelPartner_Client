@@ -466,6 +466,8 @@ const ActivePartnersScreen = () => {
                           selectedOption={selectedOption}
                           setSelectedOption={setSelectedOption}
                           channelPartnerFilter={channelPartnerFilter}
+                          start={value?.startDate}
+                          end={value?.endDate}
                       />
                   </div>
               </div>

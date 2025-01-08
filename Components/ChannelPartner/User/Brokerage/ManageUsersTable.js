@@ -13,12 +13,13 @@ import DateRange from '../../../DateRangeCustom/Daterange';
 import { saveAs } from 'file-saver';
 import Loader from '../../../Loader/Loader';
 import { fetchData } from '../../../../Utils/getReq';
+import * as XLSX from "xlsx";
 
 
 
 
 
-const ManageUsersTable = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,getDataList,loader,cpId,setCpId,statusId,setStatusId }) => {
+const ManageUsersTable = ({start, end, deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,getDataList,loader,cpId,setCpId,statusId,setStatusId }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -492,6 +493,13 @@ const updateBrokerageBill =  async() => {
         }, []);
         setUserData([...data]);
     };
+    function formatDate(date) {
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${day}/${month}/${year}`;
+    }
 
     const options = {
         selectableRows: 'none',
@@ -500,15 +508,55 @@ const updateBrokerageBill =  async() => {
         downloadOptions:{filename:"ChannelBrokerage"},
         filterType:'multiselect',
         viewColumns: false,
-    };
+        onDownload: (buildHead, buildBody, columns, data) => {
+          const workbook = XLSX.utils.book_new();
+          let range;
+          if(hasCookie("BrokerageFilter")){
+            range= JSON.parse(getCookie("BrokerageFilter"))
+          }
+          let filteredColumns = columns; // Remove the last two columns
+          const filteredData = data.map(row => {
+            return filteredColumns.map((col, index) => row.data[index]);
+          });
+          
+          const customData = [
+            ["Channel Brokerage Report"], 
+            [], 
+            [`Filter by:`],
+            [],
+            [`Date Range: ${range?.f_date ? formatDate(range?.f_date):formatDate(start)} to ${range?.t_date ? formatDate(range?.t_date):formatDate(end)}`],
+            [], 
+            [], 
+            filteredColumns.map(col => col.label || col.name), 
+            ...filteredData,
+          ];
+        
+          const worksheet = XLSX.utils.aoa_to_sheet(customData);
+        
+          worksheet['!merges'] = [
+            { s: { r: 0, c: 0 }, e: { r: 1, c: filteredColumns.length-1 } }, // Merge A1 and A2 for the title
+            { s: { r: 2, c: 0 }, e: { r: 3, c: filteredColumns.length-1 } }, // Merge A3 for the date range
+            { s: { r: 4, c: 0 }, e: { r: 4, c: filteredColumns.length-1 } }, // Merge A3 for the date range
+            { s: { r: 5, c: 0 }, e: { r: 6, c: filteredColumns.length-1 } }, // Merge A3 for the date range
+            
+          ];
+          worksheet['!cols'] = [
+            { wch: 10 }, 
+            { wch: 12 },
+            { wch: 22 },
+            { wch: 30 },
+            { wch: 14 },
+            { wch: 24 },
+            { wch: 22 },
+            { wch: 22 },
+            { wch: 18 },
 
-    function formatDate(date) {
-      const d = new Date(date);
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${day}/${month}/${year}`;
-    }
+          ];
+          XLSX.utils.book_append_sheet(workbook, worksheet, "ChannelBrokerage");
+          XLSX.writeFile(workbook, "ChannelBrokerage.xlsx");
+          return false;
+        }    
+    };
 
     const handleFileChange = (e) => {
       if (e.target.files[0]) {

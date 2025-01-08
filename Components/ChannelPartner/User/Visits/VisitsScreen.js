@@ -341,6 +341,8 @@ const VisitsScreen = () => {
                 setCpId={setCpId}
                 statusId={statusId}
                 setStatusId={setStatusId}
+                start={value?.startDate}
+                end={value?.endDate}
               />
             </div>
           </div>

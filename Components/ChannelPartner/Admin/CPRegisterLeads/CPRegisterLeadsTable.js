@@ -15,7 +15,7 @@ import Select from 'react-select';
 import { fetchData } from '../../../../Utils/getReq';
 import ViewIcon from "../../../Svg/ViewIcon";
 import { useRouter } from "next/router";
-
+import * as XLSX from "xlsx";
 
 const CPRegisterLeadsTable = ({
   deleteConfirm,
@@ -28,6 +28,8 @@ const CPRegisterLeadsTable = ({
   title,
   getDataList,
   loader,
+  start,
+  end,
   bstId,setBstId,statusId,setStatusId
 }) => {
 
@@ -525,15 +527,64 @@ const assignChangeHandler = (e) =>{
       }
   }
   ];
-
-  
-
+ 
+   
   const options = {
     selectableRows: 'none',
     responsive: "standard",
     downloadOptions:{filename:"CPRegistrationList"},
     filterType:'multiselect',
     viewColumns: false,
+    customFilterDialogFooter: () => (
+      <div style={{ minWidth: "400px" }} />
+    ),
+    // Customizing the download behavior
+    onDownload: (buildHead, buildBody, columns, data) => {
+      const workbook = XLSX.utils.book_new();
+      let range;
+      if(hasCookie("cpleadsFilter")){
+        range= JSON.parse(getCookie("cpleadsFilter"))
+      }
+      const filteredColumns = columns.slice(0, -2); // Remove the last two columns
+      const filteredData = data.map(row => {
+        return filteredColumns.map((col, index) => row.data[index]);
+      });
+      
+      const customData = [
+        ["Channel Partner Registration Report"], 
+        [], 
+        [`Filter by:`],
+        [],
+        [`Date Range: ${range?.f_date ? formatDate(range?.f_date):formatDate(start)} to ${range?.t_date ? formatDate(range?.t_date):formatDate(end)}`],
+        [], 
+        [], 
+        filteredColumns.map(col => col.label || col.name), 
+        ...filteredData,
+      ];
+    
+      const worksheet = XLSX.utils.aoa_to_sheet(customData);
+    
+      worksheet['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 1, c: filteredColumns.length - 1 } }, // Merge A1 and A2 for the title
+        { s: { r: 2, c: 0 }, e: { r: 3, c: filteredColumns.length - 1 } }, // Merge A3 for the date range
+        { s: { r: 4, c: 0 }, e: { r: 4, c: filteredColumns.length - 1 } }, // Merge A3 for the date range
+        { s: { r: 5, c: 0 }, e: { r: 6, c: filteredColumns.length - 1 } }, // Merge A3 for the date range
+        
+      ];
+      worksheet['!cols'] = [
+        { wch: 12 }, 
+        { wch: 12 },
+        { wch: 30 },
+        { wch: 12 },
+        { wch: 20 },
+        { wch: 20 },
+        { wch: 14 },
+        { wch: 12 },
+      ];
+      XLSX.utils.book_append_sheet(workbook, worksheet, "CPRegistrationList");
+      XLSX.writeFile(workbook, "CPRegistrationList.xlsx");
+      return false;
+    }
   };
 
   const validateForm = () => {

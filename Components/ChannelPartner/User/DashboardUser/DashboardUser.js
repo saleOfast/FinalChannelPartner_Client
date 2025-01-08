@@ -12,7 +12,17 @@ import Datepicker from 'react-tailwindcss-datepicker';
 import generatePDF from 'react-to-pdf';
 import Loader from '../../../Loader/Loader';
 import Link from 'next/link';
-
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import ContactsIcon from '@mui/icons-material/Contacts';
+import CallIcon from '@mui/icons-material/Call';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
+import BookOnlineIcon from '@mui/icons-material/BookOnline';
+import TimelapseIcon from '@mui/icons-material/Timelapse';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
+import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
+import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
 
 
 const DashboardUser = () => {
@@ -341,7 +351,7 @@ const DashboardUser = () => {
                          <div className="cards_Box">
                             {
                                 userInfoCheck?.role_id==1 &&(
-                                    <div className="row leads_row">
+                                    <div className="row leads_row addgap">
                                  <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                                  <Link href={`/partner/Leads`}  onClick={()=>{
                             const queryObjLeads={
@@ -354,7 +364,9 @@ const DashboardUser = () => {
                                          head='Total Leads'
                                          price={dataList.leads}
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                         img='/images/groupicon.png' />
+                                         img='/images/groupicon.png'
+                                         color="#05539c"  
+                                        icon={Diversity3Icon} />
                         </Link>
                                        
                                  </div>
@@ -370,7 +382,9 @@ const DashboardUser = () => {
                                          head='Visits Completed'
                                          price={dataList.visits}
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                         img='/images/groupicon.png' />
+                                         img='/images/groupicon.png'
+                                         color='#9c8f05'
+                                         icon={WhereToVoteIcon} />
 
                         </Link>
                                      
@@ -388,7 +402,9 @@ const DashboardUser = () => {
                                          head='Bookings Completed'
                                          price={dataList.booking}
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                         img='/images/usericon.png' />
+                                         img='/images/usericon.png'
+                                         color='#9c0550'
+                                         icon={BookOnlineIcon} />
                         </Link>
                                      
                                  </div>
@@ -399,7 +415,9 @@ const DashboardUser = () => {
                                         //  price={`${dataList?.averageHours || '0'} ʰʳˢ `} 
                                         price={dataList?.averageHours!="NaN" ?`${dataList?.averageHours || '0'} ʰʳˢ `  :`${'0'} ʰʳˢ `} 
                                          date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                         img='/images/usericon.png' />
+                                         img='/images/usericon.png'
+                                         color='#03850d' 
+                                         icon={TimelapseIcon} />
                                  </div>
                              </div>
                                 )
@@ -409,7 +427,7 @@ const DashboardUser = () => {
                                 userInfoCheck?.role_id==2 && (
                                     <>
                                          <label className='m-3 fw-bold'>CP LEADS</label>
-                        <div className="row leads_row">
+                        <div className="row leads_row addgap">
                         <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                         <Link href={"/partner/CPRegisterLeads?status_id=OPEN"} onClick={()=>{
                             const queryObjLeads={
@@ -422,7 +440,9 @@ const DashboardUser = () => {
                                     head='OPEN'
                                     price={dataList.OPENCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/usericon.png' 
+                                    img='/images/usericon.png'
+                                    color='#ff0000'
+                                    icon={AutoGraphIcon}  
                                     />
                             </Link>
                             </div>
@@ -440,6 +460,8 @@ const DashboardUser = () => {
                                     price={dataList.CALLCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/usericon.png' 
+                                    color='#008000' 
+                                    icon={CallIcon}
                                     />
                             </Link>
                             </div>
@@ -456,7 +478,9 @@ const DashboardUser = () => {
                                     head='CONTACTED'
                                     price={dataList.CONTACTEDCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/usericon.png' 
+                                    img='/images/usericon.png'
+                                    color='#cc5f10' 
+                                    icon={ContactsIcon} 
                                     />
                             </Link>
                             </div>
@@ -474,6 +498,8 @@ const DashboardUser = () => {
                                     price={dataList.NOTINTERESTEDCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/usericon.png' 
+                                    color='#ad027a'  
+                                    icon={NotInterestedIcon}
                                     />
                             </Link>
                             </div>
@@ -491,6 +517,8 @@ const DashboardUser = () => {
                                     price={dataList.ONBOARDEDCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
                                     img='/images/usericon.png' 
+                                    color='#0000FF'  
+                                    icon={GroupAddIcon}
                                     />
                             </Link>
                             </div>
@@ -507,11 +535,30 @@ const DashboardUser = () => {
                                     head='VISIT'
                                     price={dataList.VISITCPs}
                                     date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
-                                    img='/images/usericon.png' 
+                                    img='/images/usericon.png'
+                                    color="#8a059c" 
+                                    icon={PersonPinCircleIcon} 
                                     />
                             </Link>
                             </div>
-                            
+                            <div className="col-xl-3 col-md-3 col-12 col-sm-12">
+                        <Link href={"/partner/CPRegisterLeads?status_id=FOLLOW UP"} onClick={()=>{
+                            const queryObjLeads={
+                                f_date:value.startDate,
+                                t_date:value.endDate,
+                              }
+                              setCookie(`cpleadsFilter`,queryObjLeads)
+                        }}>
+                                <DashLeadsCard
+                                    head='FOLLOW UP'
+                                    price={dataList.FOLLOWUPCPs}
+                                    date={`${moment(value?.startDate).format("DD-MM-YYYY")} to ${moment(value?.endDate).format("DD-MM-YYYY")}`}
+                                    img='/images/usericon.png'
+                                    color="#018c7e" 
+                                    icon={PermPhoneMsgIcon}
+                                    />
+                            </Link>
+                            </div>
                         </div>
                                     </>
                                 )
@@ -545,6 +592,15 @@ const DashboardUser = () => {
            </div>
         )
        }
+        <style>
+            {
+                `
+                .addgap{
+                --bs-gutter-y: 1.5rem;
+                }
+                `
+            }
+        </style>
         </>
        
         

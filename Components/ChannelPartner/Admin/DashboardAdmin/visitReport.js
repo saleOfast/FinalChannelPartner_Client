@@ -5,11 +5,10 @@ import { toast } from 'react-toastify';
 import { Baseurl } from '../../../../Utils/Constants';
 import axios from 'axios';
 import Link from 'next/link';
+import * as XLSX from "xlsx";
 
 export const VisitReport = (startDate, endDate, dateFilter) => {
-      const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
-      console.log({startDate, endDate})
-      
+  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"      
   function formatTime(timeString) {
     const timeParts = (timeString || '').split(':');
     const hours = parseInt(timeParts[0]);
@@ -314,6 +313,52 @@ export const VisitReport = (startDate, endDate, dateFilter) => {
         // enableNestedDataAccess:".",
         // filterType:'multiselect',
         viewColumns: true,
+        onDownload: (buildHead, buildBody, columns, data) => {
+              const workbook = XLSX.utils.book_new();
+              let filteredColumns = columns // Remove the last two columns
+              const filteredData = data.map(row => {
+                return filteredColumns.map((col, index) => row.data[index]);
+              });
+              
+              const customData = [
+                ["Channel Visits Report"], 
+                [], 
+                [`Filter by:`],
+                [],
+                [`Date Range: ${startDate?.startDate ? formatDate(startDate?.startDate): null} to ${startDate?.endDate ? formatDate(startDate?.endDate):null}`],
+                [], 
+                [], 
+                filteredColumns.map(col => col.label || col.name), 
+                ...filteredData,
+              ];
+            
+              const worksheet = XLSX.utils.aoa_to_sheet(customData);
+            
+              worksheet['!merges'] = [
+                { s: { r: 0, c: 0 }, e: { r: 1, c: filteredColumns.length-1} }, // Merge A1 and A2 for the title
+                { s: { r: 2, c: 0 }, e: { r: 3, c: filteredColumns.length-1 } }, // Merge A3 for the date range
+                { s: { r: 4, c: 0 }, e: { r: 4, c: filteredColumns.length-1 } }, // Merge A3 for the date range
+                { s: { r: 5, c: 0 }, e: { r: 6, c: filteredColumns.length-1} }, // Merge A3 for the date range
+                
+              ];
+              worksheet['!cols'] = [
+                { wch: 8 }, 
+                { wch: 12 },
+                { wch: 18 },
+                { wch: 30 },
+                { wch: 14 },
+                { wch: 24 },
+                { wch: 22 },
+                { wch: 22 },
+                { wch: 18 },
+                { wch: 12 },
+                { wch: 18 },
+                { wch: 18 },
+              ];
+              XLSX.utils.book_append_sheet(workbook, worksheet, "ChannelVisits");
+              XLSX.writeFile(workbook, "ChannelVisits.xlsx");
+              return false;
+            }          
     };
         const[loader,setLoader]=useState(false)
     
@@ -323,7 +368,7 @@ export const VisitReport = (startDate, endDate, dateFilter) => {
         let url = `/db/channel/visit`;
      
       let params = {};
-       
+        console.log({queryObjLeads})
         // const queryString = new URLSearchParams().toString();
         // if (queryString) {
         //   url += `?${queryString}`;
@@ -370,7 +415,7 @@ export const VisitReport = (startDate, endDate, dateFilter) => {
 
         useEffect(()=>{
             if(startDate){
-              getVisitList(startDate?.startDate, startDate?.endDate)
+              getVisitList(startDate)
             }
             else{
               getVisitList()

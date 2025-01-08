@@ -410,7 +410,7 @@ async function deleteHandler() {
                           </Link>
                           {
                             hasCookie("channel") &&  userInfo?.role_id==null && (
-                              <Delete style={{color: '#eb5244',cursor:'pointer'}} onClick={()=>deleteConfirm(project?.project_id)}/>
+                              <Delete style={{color: '#eb5244',cursor:'pointer', height:"20px"}} onClick={()=>deleteConfirm(project?.project_id)}/>
                             )
                           }
                         </div>

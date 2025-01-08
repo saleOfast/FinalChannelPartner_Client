@@ -131,7 +131,7 @@ const CampaignDetailsAdminScreen = () => {
       if(projectData?.contact_no?.toString().length!==10){
         return toast.warning("contact no should be of 10 digit",{autoClose:2500})
        }
-       if(projectData?.project=="" || projectData?.property_size=="" || projectData?.location=="" || projectData?.unit_area=="" || projectData?.contact_no=="" || projectData?.price==""){
+       if(projectData?.project=="" || projectData?.contact_no==""){
         return toast.warning("Pls Fill Mandatory Fields",{autoClose:2500})
        }
         if (!hasCookie("token")) return;
@@ -303,12 +303,12 @@ const CampaignDetailsAdminScreen = () => {
                           <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Name</label>
                           <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.project}</div>
                       </div>
-                      <div style={{width: "50%",display:"flex"}}>
+                      {/* <div style={{width: "50%",display:"flex"}}>
                           <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Size</label>
                           <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.property_size}</div>
-                      </div>
+                      </div> */}
                   </div>
-                  <div style={{display: "flex", justifyContent: "space-between"}}>
+                  {/* <div style={{display: "flex", justifyContent: "space-between"}}>
                       <div style={{width: "50%",display:"flex"}}>
                           <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Location</label>
                           <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.location}</div>
@@ -317,16 +317,16 @@ const CampaignDetailsAdminScreen = () => {
                           <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Unit Area</label>
                           <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.unit_area}</div>
                       </div>
-                  </div>
+                  </div> */}
                   <div style={{display: "flex", justifyContent: "space-between"}}>
                       <div style={{width: "50%",display:"flex"}}>
                           <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Contact No.</label>
                           <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>+91-{projectData?.contact_no}</div>
                       </div>
-                      <div style={{width: "50%",display:"flex"}}>
+                      {/* <div style={{width: "50%",display:"flex"}}>
                           <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Price</label>
                           <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.price}</div>
-                      </div>
+                      </div> */}
                   </div>
               </div>
           </div>
@@ -391,7 +391,7 @@ const CampaignDetailsAdminScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
+                {/* <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Property Size*
                   </label>
@@ -408,10 +408,10 @@ const CampaignDetailsAdminScreen = () => {
                     style={{ outline: "none" }}
                     className="w-73 border p-2 rounded-md text-black"
                   />
-                </div>
+                </div> */}
               </div>
 
-              <div className="d-flex justify-content-between gap-5 align-items-center">
+              {/* <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Location*
@@ -448,7 +448,7 @@ const CampaignDetailsAdminScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
@@ -469,7 +469,7 @@ const CampaignDetailsAdminScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-                <div className="w-50 d-flex justify-content-between align-items-center">
+                {/* <div className="w-50 d-flex justify-content-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Price*
                   </label>
@@ -486,7 +486,7 @@ const CampaignDetailsAdminScreen = () => {
                     style={{ outline: "none" }}
                     className="w-73 border p-2 rounded-md text-black"
                   />
-                </div>
+                </div> */}
               </div>
 
 

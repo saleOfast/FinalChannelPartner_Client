@@ -53,7 +53,6 @@ const CPRegisterLeadsTable = ({
   const [errors, setErrors] = useState({})
   const [historyData,setHistoryData] =useState([])
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#61E25E"
-
   const [errorToast, setErrorToast] = useState(false);
   const [usersList, setUsersList] = useState([]);
   const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
@@ -402,7 +401,7 @@ const assignChangeHandler = (e) =>{
       label: "Assigned To",
       options: {
         filter: true,
-        display:userInfo?.isDB ? true:false,
+        display:(userInfo?.isDB || userInfo?.role_id == 3) ? true:false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
             {columnMeta.label}
@@ -484,7 +483,7 @@ const assignChangeHandler = (e) =>{
                             </button>
                         </div>}
                   {
-                    tableMeta?.rowData[5]=="CONTACTED" && (
+                    tableMeta?.rowData[6]=="CONTACTED" && (
                       <button 
                       className="btn text-white rounded-5"  style={{backgroundColor: clientBtnColor ? clientBtnColor : "#61E25E"}}
                        onClick={() =>{

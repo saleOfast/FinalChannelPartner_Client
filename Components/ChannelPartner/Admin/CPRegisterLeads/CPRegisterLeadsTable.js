@@ -122,8 +122,8 @@ const addUserHandler = async (id,assignedToId) => {
       header
     );
     if (response.status === 200 || response.status === 201) {
-      let onBoradStage=true ;
-      updateUserhandler(onBoradStage)
+      let onBoradStage=true;
+      await updateUserhandler(onBoradStage, null, null)
       toast.success("Mail Sent for Onboarding",{autoClose:2500});
     }
   } catch (error) {

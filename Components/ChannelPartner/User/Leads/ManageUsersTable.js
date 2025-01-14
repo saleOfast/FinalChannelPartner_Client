@@ -383,18 +383,15 @@ const getVisitInfo=async(visitId)=>{
                   ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                   const isDisabled=permitVisit(value[0]?.status, value[0]?.createdAt);
-                   
                     return (
                         <div className="table_btns">
                             <button
                                 onClick={()=>{getVisitInfo(tableMeta?.rowData[0]); setVisitId(tableMeta?.rowData[0]); setShowModal(true);}}
-                                style={{background:isDisabled ? "#9C9AA5":`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
-                                className={`pe-3 ps-3 ${isDisabled && value[0]?.status==="Requested" ? "requested_hover" : isDisabled && value[0]?.status==="Scheduled" ? "scheduled_hover": isDisabled && value[0]?.status==="Completed" ?"completed_hover" :"" }` }
-                                
-                                
+                                style={{background:isDisabled ? "#9C9AA5"  :`${clientBtnColor}`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
+                                className={`pe-3 ps-3 ${isDisabled && (value[0]?.status==="Requested" || value[0]?.status==="VISIT NOT DONE") ? "requested_hover" : isDisabled && value[0]?.status==="Scheduled" ? "scheduled_hover": isDisabled && value[0]?.status==="Completed" ?"completed_hover" :"" }` }
                                 disabled={isDisabled}
                                 >
-                                    Request Visit
+                                  {!isDisabled && value[0]?.status==="VISIT NOT DONE" ? "VISIT NOT DONE" : "Request Visit"}
                             </button>
                             <div className=' hide_div1' >
                                 <div className='d-flex justify-content-center fw-bold'>

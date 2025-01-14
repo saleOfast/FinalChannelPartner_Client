@@ -354,7 +354,7 @@ const ManageUsersTable = ({
                 Resend
               </button>
               )}
-              {tableMeta?.rowData[8]==="Under Process" && userInfoCheck?.isDB ?
+              {tableMeta?.rowData[8]=="Under Process" && userInfoCheck?.isDB ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
@@ -374,7 +374,7 @@ const ManageUsersTable = ({
             :
             <div className="text-center"></div> }
 
-           {tableMeta?.rowData[8]==="Under Process" && dataList?.find(item=>item?.user_code==value)?.bst_response==false && userInfoCheck?.role_id==2 ?
+           {tableMeta?.rowData[8]=="Under Process" && dataList?.find(item=>item?.user_code==value)?.bst_response==false && userInfoCheck?.role_id==2 ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
@@ -394,7 +394,7 @@ const ManageUsersTable = ({
             :
             <div className="text-center"></div> }
 
-            {tableMeta?.rowData[8]==="Under Process" && dataList?.find(item=>item?.user_code==value)?.director_response==false && userInfoCheck?.role_id==3 ?
+            {tableMeta?.rowData[8]=="Under Process" && dataList?.find(item=>item?.user_code==value)?.director_response==false && userInfoCheck?.role_id==3 ?
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
@@ -574,10 +574,11 @@ async function handleDelete(rowsDeleted) {
         `${Baseurl}/db/users`,
         {
           doc_verification: actionMode === 'Accept' ? 2 : 3,
-          reject_reason: userInfo.reject_reason,
+          reject_reason: userInfo?.reject_reason,
           user_code: element,
           isCHANNEL:userInfo?.reject_reason ? false : true,
-          forApproval:true
+          forApproval:true,
+          report_to: userInfo?.report_to
         },
         header
       );

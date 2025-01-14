@@ -404,7 +404,7 @@ const ActivePartnersScreen = () => {
               <div className="main_content">
                   <div className="table_screen">
                       <div className="top_btn_sec my-3" style={{paddingRight:"0px"}} >
-                          <div className="d-flex flex-wrap flex-md-nowrap align-items-center gap-2 gap-md-3">
+                          <div className="d-flex flex-wrap flex-md-nowrap align-items-center gap-2 gap-md-3" style={{justifyContent: userInfo?.role_id ? "end":"", width: userInfo?.role_id ? "100%": "" }}>
                             <div className='fix-width-1'>
                           {
                                   userInfo?.role_id==null && (
@@ -440,7 +440,7 @@ const ActivePartnersScreen = () => {
                         >
                           <option value="Channel Partner">Channel Partner</option>
                           <option value="BST">BST</option>
-                          <option value="Director">Director</option>
+                          {userInfo?.role_id==null && <option value="Director">Director</option>}
                         </select>
                       </div>
                                 )

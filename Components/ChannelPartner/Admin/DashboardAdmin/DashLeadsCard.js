@@ -61,7 +61,7 @@ const DashLeadsCard = ({ head, price, date, img, color,icon }) => {
                   style={{ fontSize: "20px", color: `rgba(${hexToRgb(color)}, 1.5)`}}
                 />}
               </span>
-              <span>{head}</span>
+              <span className='dashTitle'>{head}</span>
             </span>
           </div>
 

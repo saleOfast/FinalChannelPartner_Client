@@ -89,9 +89,10 @@ const [value, setValue] = useState(getCurrentWeekDates());
 };
   
 
-
+const [isUser, setIsUser] = useState(false);
+const [isUserData, setIsUserData] = useState(null);
 const addUserHandler = async (id,assignedToId) => {
-  const object=dataList?.find((item)=>item?.cpl_id==id)
+  const object=dataList?.find((item)=>item?.cpl_id==id);
   const db_name = getCookie("db_name");
   const token = getCookie("token");
   const payload={
@@ -122,8 +123,8 @@ const addUserHandler = async (id,assignedToId) => {
       header
     );
     if (response.status === 200 || response.status === 201) {
-      let onBoradStage=true;
-      await updateUserhandler(onBoradStage, null, null)
+      setIsUser(true)
+      // await updateUserhandler(true)
       toast.success("Mail Sent for Onboarding",{autoClose:2500});
     }
   } catch (error) {
@@ -136,7 +137,15 @@ const addUserHandler = async (id,assignedToId) => {
       setErrorData(taskObject);
     }
     if (error?.response?.data?.message) {
-      toast.error(error?.response?.data?.message,{autoClose:2500});
+      if(error?.response?.data?.message == "user existed in this db"){
+        setIsUserData(error?.response?.data?.userData);
+        setIsUser(true);
+        if(error?.response?.data?.userData?.doc_verification == 0){
+          toast.info("User Already Onboard. Please check the pending request and resend the verification mail",{autoClose:4000});
+        }
+      }else{
+        toast.error(error?.response?.data?.message,{autoClose:2500});
+      }
     } else {
       toast.error("Something went wrong!",{autoClose:2500});
     }
@@ -145,7 +154,7 @@ const addUserHandler = async (id,assignedToId) => {
 };
 
 
-const updateUserhandler = async (onBoradStage=false, user_id, t_id ) => {
+const updateUserhandler = async (onBoradStage=false, isUserData) => {
   let newErrors = validateForm();
 
   if (Object.keys(newErrors).length === 0) {
@@ -161,11 +170,12 @@ const updateUserhandler = async (onBoradStage=false, user_id, t_id ) => {
     },
   };
   let newFormData;
-  if(onBoradStage){
-     newFormData={...formData,db_name:db_name,stage:"LINK SENT"}
-   }else if(user_id && t_id){
-    newFormData={...formData, asssigned_to: user_id, cpl_id: t_id, db_name:db_name}
-   }else{
+  if(onBoradStage && isUserData){
+    newFormData={...formData,db_name:db_name,stage:isUserData?.doc_verification == 0 ? "LINK SENT" : isUserData?.doc_verification == 2 ? "ONBOARDED" : ""}
+    toast.warn("User Already OnBoarded")
+   }else if(onBoradStage){
+    newFormData={...formData,db_name:db_name,stage:"LINK SENT"}
+  }else{
    newFormData={...formData, db_name:db_name}
   }
   // const newFormData={...formData,db_name:db_name,}
@@ -177,7 +187,7 @@ const updateUserhandler = async (onBoradStage=false, user_id, t_id ) => {
     );
     if (response.status === 200 || response.status === 201) {
       // toast.success(response?.data?.message,{autoClose:2500});
-      getDataList()
+    await getDataList();
     }
   } catch (error) {
     if (error?.response?.data?.message) {
@@ -195,6 +205,18 @@ const updateUserhandler = async (onBoradStage=false, user_id, t_id ) => {
   
 };
 
+useEffect(  ()=>{
+  
+  if(isUser){
+    async function fetchData() {
+      // You can await here
+       await updateUserhandler(true, isUserData);
+      // ...
+    }
+    fetchData();
+   
+  }
+},[isUser, isUserData])
 
 const getCplHistoryData = async (cpl_id) => {
   let db_name = (getCookie('db_name'));
@@ -435,11 +457,12 @@ const assignChangeHandler = (e) =>{
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
+
           return (
               <>
                   <div className="table_btns">
                     {
-                      tableMeta?.rowData[5]!=="LINK SENT" && (
+                      tableMeta?.rowData[6]!=="LINK SENT" && (
                         <>
                         <button
                     className="action_btn"
@@ -468,7 +491,7 @@ const assignChangeHandler = (e) =>{
                         </>
                       )
                     }
-                    {userInfo?.isDB && <div className="table_btns justify-content-center align-items-center" style={{marginRight:'5px'}}>
+                    {userInfo?.isDB && tableMeta?.rowData[6]!=="CONTACTED" && <div className="table_btns justify-content-center align-items-center" style={{marginRight:'5px'}}>
                             <button
                                 onClick={()=>{
                                   const newData=dataList?.find((item)=>item?.cpl_id==value)
@@ -486,11 +509,20 @@ const assignChangeHandler = (e) =>{
                     tableMeta?.rowData[6]=="CONTACTED" && (
                       <button 
                       className="btn text-white rounded-5"  style={{backgroundColor: clientBtnColor ? clientBtnColor : "#61E25E"}}
-                       onClick={() =>{
-                        let newData = dataList?.find((item) => item?.cpl_id == value);
-                        setFormData(newData)
-                            addUserHandler(value,tableMeta?.rowData[8])
-                         }} title='Onboard For Channel Partner'>
+                      //  onClick={() =>{
+                      //   let newData = dataList?.find((item) => item?.cpl_id == value);
+                      //   setFormData(newData)
+                      //       addUserHandler(value,newData?.asssigned_to)
+                      //    }} 
+                      onClick={async () => {
+                        const newData = dataList?.find((item) => item?.cpl_id == value);
+                        if (newData) {
+                          setFormData({...newData, cpl_id: value }); // Update formData
+                          await addUserHandler(value, newData?.asssigned_to); // Ensure sequential execution
+                          // await updateUserhandler(true)
+                        }
+                      }}
+                         title='Onboard For Channel Partner'>
                             Onboard
                       </button>
                     )
@@ -969,7 +1001,11 @@ const assignChangeHandler = (e) =>{
                                                 })
                                               }
                                             onChange={(e) => {
-                                                assignChangeHandler(e.value)
+                                                assignChangeHandler(e.value);  
+                                                setFormData({
+                                                  ...formData,
+                                                  asssigned_to: e.value
+                                                });
                                             }}
                                         />
                                         
@@ -984,7 +1020,7 @@ const assignChangeHandler = (e) =>{
                     onClick={()=>setShowAssignTo("")}
                     >Cancel</button>
                     <div style={{background:clientBtnColor}} className='btn rounded-5 text-white' 
-                     onClick={()=>updateUserhandler(false, selectedOption, showAssignTo)} 
+                     onClick={()=>updateUserhandler(false)} 
                      >
                         SUBMIT
                     </div>

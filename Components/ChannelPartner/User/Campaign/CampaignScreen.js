@@ -409,7 +409,7 @@ const CampaignScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
+                {/* <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Property Size*
                   </label>
@@ -427,10 +427,10 @@ const CampaignScreen = () => {
                     style={{ outline: "none" }}
                     className="w-73 border p-2 rounded-md text-black"
                   />
-                </div>
+                </div> */}
               </div>
 
-              <div className="d-flex justify-content-between gap-5 align-items-center">
+              {/* <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Location*
@@ -469,7 +469,7 @@ const CampaignScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
@@ -490,7 +490,7 @@ const CampaignScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-                <div className="w-50 d-flex justify-content-between align-items-center">
+                {/* <div className="w-50 d-flex justify-content-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Price*
                   </label>
@@ -508,7 +508,7 @@ const CampaignScreen = () => {
                     style={{ outline: "none" }}
                     className="w-73 border p-2 rounded-md text-black"
                   />
-                </div>
+                </div> */}
               </div>
 
 

@@ -426,7 +426,7 @@ const DashboardUser = () => {
                              {
                                 userInfoCheck?.role_id==2 && (
                                     <>
-                                         <label className='m-3 fw-bold'>CP LEADS</label>
+                                         <label className='m-3 fw-bold' style={{fontSize: "24px", color: "#160354"}}>CP LEADS</label>
                         <div className="row leads_row addgap">
                         <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                         <Link href={"/partner/CPRegisterLeads?status_id=OPEN"} onClick={()=>{

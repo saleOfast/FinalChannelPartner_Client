@@ -491,7 +491,7 @@ const assignChangeHandler = (e) =>{
                         </>
                       )
                     }
-                    {userInfo?.isDB && tableMeta?.rowData[6]!=="CONTACTED" && <div className="table_btns justify-content-center align-items-center" style={{marginRight:'5px'}}>
+                    {userInfo?.isDB && tableMeta?.rowData[6]!=="ONBOARDED" && tableMeta?.rowData[6]!=="LINK SENT"&& <div className="table_btns justify-content-center align-items-center" style={{marginRight:'5px'}}>
                             <button
                                 onClick={()=>{
                                   const newData=dataList?.find((item)=>item?.cpl_id==value)

@@ -346,7 +346,7 @@ const ManageUsersTable = ({
           let user=dataList?.find((user)=>(user?.user_code==value))
           return (
               <div className="d-flex justify-content-center align-items-center">
-              {tableMeta?.rowData[8]==="Pending" && (
+              {(tableMeta?.rowData[8]==="Pending" || tableMeta?.rowData[8]==="Rejected" )&& (
                 <button  onClick={()=>{
                   // let user=dataList?.find((user)=>(user?.user_code==value))
                   resendEmail(user?.user_id,user?.email, user?.report_to ?? null)

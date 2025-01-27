@@ -452,7 +452,7 @@ const ActivePartnersScreen = () => {
                           
                       </div>
                       <DynamicTable
-                          title='Channel Partners'
+                          title={selectedOption}
                           dataList={dataList}
                           loader={loader}
                           disableConfirm={disableConfirm}

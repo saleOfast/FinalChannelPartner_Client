@@ -23,7 +23,6 @@ const ManageUsersTable = ({start, end, deleteConfirm, disableConfirm, dataList, 
     const [actionMode, setActionMode] =  useState('')
     const [showModal, setShowModal] =  useState(false)
     const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
-
   const getCurrentWeekDates = () => {
     const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
       const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
@@ -161,6 +160,26 @@ const ManageUsersTable = ({start, end, deleteConfirm, disableConfirm, dataList, 
             }
         },
         {
+          name: 'cp_lead_count',
+          label: "C.P Leads Count",
+          options: {
+              display: (userInfo?.role_id != 1 && selectedOption != 'Channel Partner') ? true : false,
+              filter: false,
+              customHeadRender: (columnMeta, updateDirection) => (
+                  <th className="text-center" style={{background:clientBtnColor? clientBtnColor:`#293790`, color: 'white',paddingLeft:"15px"}}   >
+                    {columnMeta.label}
+                  </th>
+                ),
+              customBodyRender: (value, tableMeta, updateValue) => {
+                  return (
+                      <div className='status_box text-center' style={{color:"#667799"}}>
+                          {value}
+                      </div>
+                  )
+              }
+          }
+      },
+        {
             name: 'booking_count',
             label: "Bookings Count",
             options: {
@@ -278,7 +297,7 @@ const ManageUsersTable = ({start, end, deleteConfirm, disableConfirm, dataList, 
                     return (
                         <div className="table_btns justify-content-center align-items-center">
                             <button
-                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.tableData[tableMeta?.rowIndex][10]??"") }}
+                                onClick={()=>{setShowAssignTo(value); setoldAssignTo(tableMeta?.tableData[tableMeta?.rowIndex][11]??"") }}
                                 style={{background:clientBtnColor? clientBtnColor:`#293790`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
                                 className='pe-3 ps-3'
                                 title='Assign - To'>

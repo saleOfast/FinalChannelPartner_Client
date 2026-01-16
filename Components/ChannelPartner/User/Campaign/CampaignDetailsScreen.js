@@ -1,579 +1,564 @@
 import axios from 'axios';
 import { getCookie, hasCookie } from 'cookies-next';
 import Link from 'next/link';
-import { useRouter } from 'next/router'
-import React, { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Baseurl, filesUrl } from '../../../../Utils/Constants';
 import { Modal } from 'react-bootstrap';
-import { Delete } from '@mui/icons-material';
-import generatePDF, { Options } from 'react-to-pdf';
+import { Delete, Download } from '@mui/icons-material';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { useDispatch, useSelector } from 'react-redux';
 import { startButtonLoading, stopButtonLoading } from '../../../../store/buttonLoaderSlice';
 import Loader from '../../../Loader/Loader';
 
-
 const CampaignDetailsScreen = () => {
-    const router=useRouter()
-    const {id}=router.query;
-    const [showModal, setShowModal] = useState(false);
-    const clientBtnColor = hasCookie("clientBtnColor")
-        ? getCookie("clientBtnColor")
-        : "#293790";
-    const [projectData, setProjectData] = useState({
-        project: "",
-        project_id:null,
-        location: "",
-        property_size: "",
-        unit_area: "",
-        price: "",
-        contact_no: "",
-        file: null,
-        file_preview:"", 
-        logo:null,
-        logo_preview:null,
-        template:null,
-        template_name:null,
-        htmlString:""
-    });
+  const router = useRouter();
+  const { id } = router.query;
+  const [showModal, setShowModal] = useState(false);
+  const [loader, setLoader] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const contentRef = useRef(null);
 
-    const clientLogo= getCookie('clientLogo')? JSON.parse(getCookie('clientLogo')) : null;
-    const dispatch=useDispatch()
-    const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
-    const [loader,setLoader]=useState(false)
+  const clientBtnColor = hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790";
+  const clientLogo = getCookie('clientLogo') ? JSON.parse(getCookie('clientLogo')) : null;
+  const userInfo = hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) : null;
+  
+  const dispatch = useDispatch();
+  const { isButtonLoading } = useSelector((state) => state.buttonLoader);
 
-    const targetRef=useRef();
-    const options = {
-      filename: `${projectData?.project}-Template.pdf`,
-      page: {
-        margin: 20
-      }
-    };
-   const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+  const [projectData, setProjectData] = useState({
+    project: "",
+    project_id: null,
+    location: "",
+    property_size: "",
+    unit_area: "",
+    price: "",
+    contact_no: "",
+    file: null,
+    file_preview: "",
+    logo: null,
+    logo_preview: null,
+    template: null,
+    template_name: null,
+    htmlString: ""
+  });
 
+  useEffect(() => {
+    if (id) {
+      getCampaignById();
+    }
+  }, [id]);
 
-    const getTargetElement = () => document.getElementById("content2");
-    const downloadPdf = () => generatePDF(getTargetElement, options);
-    const downloadHtml = () => {
-      const htmlContent = document.getElementById("content2").innerHTML;
-      const blob = new Blob([htmlContent], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${projectData?.project}-Template.html`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    };
+  const getCampaignById = async () => {
+    setLoader(true);
+    if (hasCookie("token")) {
+      const token = getCookie("token");
+      const db_name = getCookie("db_name");
 
-    useEffect(()=>{
-        if(id){
-            getCampaignById()
-        }
-    },[id])
-
-    const getCampaignById = async () => {
-        if (hasCookie("token")) {
-          let token = getCookie("token");
-          let db_name = getCookie("db_name");
-    
-          let header = {
-            headers: {
-              Accept: "application/json",
-              Authorization: "Bearer ".concat(token),
-              db: db_name,
-              m_id: 76,
-            },
-          };
-    
-          try {
-            const response = await axios.get(
-              Baseurl + `/db/channel/project?project_id=${id}`,
-              header
-            );
-            const campaign=response?.data?.data?.projectData
-            if(response?.status === 200 || response?.status === 201){
-              setLoader(false)
-              setProjectData({
-                ...projectData,
-                project: campaign?.project,
-                project_id: campaign?.project_id,
-                location: campaign?.location,
-                property_size: campaign?.property_size,
-                unit_area: campaign?.unit_area,
-                price: campaign?.price,
-                contact_no: campaign?.contact_no,
-                file:campaign?.cover_image,
-                file_preview: `${filesUrl}/project/images${campaign?.cover_image}`,
-                logo:campaign?.logo_image,
-                logo_preview: `${filesUrl}/projectLogo/images${campaign?.logo_image}`,
-                template:campaign?.html_file,
-                template_name:campaign?.html_file,
-                htmlString:response?.data?.data?.htmlTemplate
-            })
-            }
-            
-          } catch (error) {
-            console.log(error)
-            if (error?.response?.data?.message) {
-              setLoader(false)
-              toast.error(error?.response?.data?.message,{autoClose:2500});
-            } else {
-              setLoader(false)
-              toast.error("Something went wrong!",{autoClose:2500});
-            }
-          }
-        }
+      const header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          m_id: 76,
+        },
       };
 
-    const updateProject=  async() => {
-      if(projectData?.contact_no?.toString().length!==10){
-        return toast.warning("contact no should be of 10 digit",{autoClose:2500})
-       }
-       if( projectData?.contact_no==""){
-        return toast.warning("Pls Fill Mandatory Fields",{autoClose:2500})
-       }
-        if (!hasCookie("token")) return;
-        const token = getCookie("token");
-        const db_name = getCookie("db_name");
-        const header = {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-            db: db_name,
-            m_id: 79,
-          },
-        };
-    
-        const formData=new FormData();
-      for (const [key, value] of Object.entries(projectData)) {
-        formData.append(key, value);
-      }
-    
-        try {
-          dispatch(startButtonLoading())
-          const response = await axios.post(`${Baseurl}/db/channel/project/usertemplate`,formData, header);
-          if (response.status === 200 || response.status === 201) {
-            toast.success(response?.data?.message,{autoClose:2500});
-            dispatch(stopButtonLoading())
-            setShowModal(false)
-            getCampaignById();
+      try {
+        const response = await axios.get(
+          Baseurl + `/db/channel/project?project_id=${id}`,
+          header
+        );
+        const campaign = response?.data?.data?.projectData;
+        if (response?.status === 200 || response?.status === 201) {
+          let htmlContent = response?.data?.data?.htmlTemplate || "";
+          
+          // If htmlTemplate is empty but html_file exists, fetch the HTML file directly
+          if (!htmlContent && campaign?.html_file) {
+            try {
+              const htmlFileUrl = `${filesUrl}/projectHtml/html/${campaign.html_file}`;
+              const htmlResponse = await fetch(htmlFileUrl);
+              if (htmlResponse.ok) {
+                htmlContent = await htmlResponse.text();
+              }
+            } catch (htmlError) {
+              console.log("Could not fetch HTML file:", htmlError);
+            }
           }
-        } catch (error) {
-          console.log(error)
-          if (error?.response?.data?.status === 422) {
-            dispatch(stopButtonLoading())
-                toast.error(error?.response?.data?.message,{autoClose:2500})
-                
-          }
-          if (error?.response?.data?.message) {
-            dispatch(stopButtonLoading())
-            toast.error(error?.response?.data?.message,{autoClose:2500});
-          } else {
-            dispatch(stopButtonLoading())
-            toast.error("Something went wrong!",{autoClose:2500});
-          }
+
+          setProjectData({
+            project: campaign?.project,
+            project_id: campaign?.project_id,
+            location: campaign?.location,
+            property_size: campaign?.property_size,
+            unit_area: campaign?.unit_area,
+            price: campaign?.price,
+            contact_no: campaign?.contact_no,
+            file: campaign?.cover_image,
+            file_preview: campaign?.cover_image ? `${filesUrl}/project/images/${campaign?.cover_image}` : null,
+            logo: campaign?.logo_image,
+            logo_preview: campaign?.logo_image ? `${filesUrl}/projectLogo/images/${campaign?.logo_image}` : null,
+            template: campaign?.html_file,
+            template_name: campaign?.html_file,
+            htmlString: htmlContent
+          });
         }
-    };
-
-
-    const handleFileChange = (e, field, fieldPreview) => {
-      const file = e.target.files[0];
-      const allowedTypes = field === "template" ? ['text/html', 'text/htm'] : ['image/jpg', 'image/jpeg', 'image/png'];
-    
-      if (file && allowedTypes.includes(file.type)) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (fieldPreview === "template_name") {
-            setProjectData({
-              ...projectData,
-              [field]: file,
-              [fieldPreview]: file.name,
-            });
-          } else {
-            setProjectData({
-              ...projectData,
-              [field]: file,
-              [fieldPreview]: URL.createObjectURL(file),
-            });
-          }
-        };
-        reader.readAsDataURL(file);
-      } else {
-        // toast.warning(`Invalid file type. Please upload ${allowedTypes.join(', ')}.`);
-        const allowedExtensions = field === "template" ? ".html, .htm" : ".jpg, .jpeg, .png";
-      toast.warning(`Invalid file type. Please upload ${allowedExtensions}.`,{autoClose:2500});
+      } catch (error) {
+        console.log(error);
+        toast.error(error?.response?.data?.message || "Something went wrong!", { autoClose: 2500 });
+      } finally {
+        setLoader(false);
       }
-    
-      // Reset the input value to ensure the change event is fired even if the same file is selected
-      e.target.value = "";
+    }
+  };
+
+  // Download PDF function
+  const downloadPdf = async () => {
+    setPdfLoading(true);
+    toast.info('Generating PDF...', { autoClose: 2000 });
+
+    try {
+      // Create a temporary container with all content for PDF capture
+      const tempContainer = document.createElement('div');
+      tempContainer.style.cssText = 'position: fixed; left: 0; top: 0; width: 900px; background: #fff; padding: 30px; z-index: -9999;';
+      
+      // Build the PDF content HTML
+      tempContainer.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #eee;">
+          <div>${clientLogo?.logo ? `<img src="${filesUrl}/logo/images${clientLogo?.logo}" style="max-height: 60px;" />` : ''}</div>
+          <div>${projectData?.logo_preview ? `<img src="${projectData?.logo_preview}" style="max-height: 60px;" />` : ''}</div>
+        </div>
+        
+        ${projectData?.file_preview ? `
+          <div style="margin-bottom: 25px; text-align: center;">
+            <img src="${projectData?.file_preview}" style="max-width: 100%; max-height: 400px; border-radius: 8px; object-fit: cover;" />
+          </div>
+        ` : ''}
+        
+        <div style="text-align: center; margin-bottom: 25px;">
+          <h1 style="color: ${clientBtnColor}; font-size: 32px; font-weight: bold; margin: 0;">${projectData?.project || 'Campaign'}</h1>
+        </div>
+        
+        ${projectData?.htmlString ? `
+          <div style="padding: 20px; background: #fafafa; border-radius: 8px; margin-bottom: 25px; border: 1px solid #eee;">
+            ${projectData?.htmlString}
+          </div>
+        ` : ''}
+        
+        <div style="margin-bottom: 25px;">
+          <h3 style="color: ${clientBtnColor}; margin-bottom: 15px; font-size: 20px;">Project Details</h3>
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;">
+            <div style="display: flex; margin-bottom: 15px;">
+              <span style="color: #6c757d; font-weight: 600; width: 150px;">Property Name:</span>
+              <span style="color: ${clientBtnColor}; font-weight: 600;">${projectData?.project || 'N/A'}</span>
+            </div>
+            ${projectData?.location ? `<div style="display: flex; margin-bottom: 15px;"><span style="color: #6c757d; font-weight: 600; width: 150px;">Location:</span><span style="color: #333; font-weight: 600;">${projectData?.location}</span></div>` : ''}
+            ${projectData?.property_size ? `<div style="display: flex; margin-bottom: 15px;"><span style="color: #6c757d; font-weight: 600; width: 150px;">Property Size:</span><span style="color: #333; font-weight: 600;">${projectData?.property_size}</span></div>` : ''}
+            ${projectData?.unit_area ? `<div style="display: flex; margin-bottom: 15px;"><span style="color: #6c757d; font-weight: 600; width: 150px;">Unit Area:</span><span style="color: #333; font-weight: 600;">${projectData?.unit_area}</span></div>` : ''}
+            ${projectData?.price ? `<div style="display: flex; margin-bottom: 15px;"><span style="color: #6c757d; font-weight: 600; width: 150px;">Price:</span><span style="color: #333; font-weight: 600;">${projectData?.price}</span></div>` : ''}
+            <div style="display: flex;">
+              <span style="color: #6c757d; font-weight: 600; width: 150px;">Contact No:</span>
+              <span style="color: #28a745; font-weight: 600;">+91-${projectData?.contact_no || 'N/A'}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="background: ${clientBtnColor}; color: white; padding: 25px; border-radius: 8px; text-align: center;">
+          <p style="margin: 0 0 10px 0; font-size: 14px;">For More Information, Contact Us</p>
+          <p style="margin: 0; font-size: 28px; font-weight: bold;">+91-${projectData?.contact_no || 'N/A'}</p>
+          <p style="margin: 10px 0 0 0; font-size: 14px; opacity: 0.9;">${projectData?.project || ''}</p>
+        </div>
+      `;
+
+      document.body.appendChild(tempContainer);
+
+      // Wait for images to load
+      const images = tempContainer.querySelectorAll('img');
+      await Promise.all([...images].map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(resolve => {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      }));
+
+      // Small delay to ensure rendering
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Capture with html2canvas
+      const canvas = await html2canvas(tempContainer, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false
+      });
+
+      // Remove temp container
+      document.body.removeChild(tempContainer);
+
+      // Create PDF
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 10;
+
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= (pageHeight - 20);
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight + 10;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= (pageHeight - 20);
+      }
+
+      pdf.save(`${projectData?.project || 'Campaign'}-Template.pdf`);
+      toast.success('PDF downloaded successfully!', { autoClose: 2500 });
+    } catch (error) {
+      console.error('PDF Error:', error);
+      toast.error('Error generating PDF');
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
+  const updateProject = async () => {
+    if (projectData?.contact_no?.toString().length !== 10) {
+      return toast.warning("Contact no should be of 10 digits", { autoClose: 2500 });
+    }
+    if (projectData?.contact_no === "") {
+      return toast.warning("Please fill mandatory fields", { autoClose: 2500 });
+    }
+    if (!hasCookie("token")) return;
+
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+    const header = {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        db: db_name,
+        m_id: 79,
+      },
     };
 
-    // const handleFileChange = (e,field,fieldPreview) => {
-    //     if (e.target.files[0]) {
-    //       const reader = new FileReader();
-    //       reader.onloadend = () => {
-    //         if(fieldPreview==="template_name"){
-    //           setProjectData({
-    //             ...projectData,
-    //             [field]: e.target.files[0],
-    //             [fieldPreview]: e.target.files[0].name,
-    //           });
-    //         }
-    //         else{
-    //           setProjectData({
-    //             ...projectData,
-    //             [field]: e.target.files[0],
-    //             [fieldPreview]: URL.createObjectURL(e.target.files[0]),
-    //           });
-    //         }
-            
-    //       };
-    //       reader.readAsDataURL(e.target.files[0]);
-    //     }
-    //   };
+    const formData = new FormData();
+    for (const [key, value] of Object.entries(projectData)) {
+      formData.append(key, value);
+    }
 
-   
+    try {
+      dispatch(startButtonLoading());
+      const response = await axios.post(`${Baseurl}/db/channel/project/usertemplate`, formData, header);
+      if (response.status === 200 || response.status === 201) {
+        toast.success(response?.data?.message, { autoClose: 2500 });
+        dispatch(stopButtonLoading());
+        setShowModal(false);
+        getCampaignById();
+      }
+    } catch (error) {
+      dispatch(stopButtonLoading());
+      toast.error(error?.response?.data?.message || "Something went wrong!", { autoClose: 2500 });
+    }
+  };
+
+  const handleFileChange = (e, field, fieldPreview) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpg', 'image/jpeg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.warning('Please upload .jpg, .jpeg, or .png files', { autoClose: 2500 });
+      e.target.value = "";
+      return;
+    }
+    setProjectData({ ...projectData, [field]: file, [fieldPreview]: URL.createObjectURL(file) });
+    e.target.value = "";
+  };
+
   return (
     <>
-    {
-      loader ? <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}><Loader/></div>
-      :
-      (
-        <div style={{padding: "2rem", overflowX: "auto",width:"100%"}}>
-
-        {/* Edit and Download Start */}
-        {
-           hasCookie("channel") && userInfo?.role_id==1 && (
-            <div style={{display: "flex", justifyContent: "end", alignItems: "center",gap:"10px",paddingBottom:"15px"}}>
-            <img src="/ChannelPartner/profile-edit.svg" alt="Profile Edit" style={{ fontWeight: "bold", cursor: "pointer"}} 
-                onClick={() => {
-                    setShowModal(true);
-                    getCampaignById(id);
-                }}
-            />
-            <img 
-            src="/ChannelPartner/download-file-blue.svg" 
-            alt="Download File" 
-            style={{height: "1.2rem", cursor: "pointer"}} 
-            onClick={()=>{
-              downloadHtml()              
-            }}
-            />
-        </div>
-           )
-        }
-        
-        {/* Edit and Download End */}
-  
+      {loader ? (
+        <div style={{ padding: "2rem", width: "100%" }}><Loader /></div>
+      ) : (
+        <div style={{ padding: "2rem", width: "100%", background: "#f5f5f5", minHeight: "100vh" }}>
           
-        {/* To be downloaded as html start */}
-        <div style={{padding:"10px"}} id="content2">
-        <div style={{padding: "1rem", display: "flex", flexDirection: "column", gap: "1rem"}} >
-  
-  
-        {/* company logo and client logo start*/}
-        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-          {
-            clientLogo?.logo  ? <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="Client Logo" style={{maxHeight: "3rem"}} /> :<div></div>
-          }
-            {
-              projectData?.logo!==null ? <img src={projectData?.logo_preview} alt="Project Logo" style={{maxHeight: "3rem"}} />
-              :
-              <div></div>
-            }
-        </div>
-        {/* company logo and client logo end*/}
-  
-        {/* uploaded html by admin start*/}
-        <div dangerouslySetInnerHTML={{__html: projectData?.htmlString  || ``}}></div>
-        {/* uploaded html by admin end*/}
-  
-        {/* Project Detail Start  */}
-        <div style={{gap: "1rem", display: "flex", flexDirection: "column"}} >
-            <div style={{fontWeight: "bold", fontSize: "1.25rem"}}>Project Details</div>
-  
-            <div style={{border: "2px solid", borderRadius: "0.5rem", background: "#EBECEE", padding: "2rem"}}>
-                <div style={{display: "flex", flexDirection: "column",gap:"20px"}}>
-                    <div style={{display: "flex", justifyContent: "space-between"}}>
-                        <div style={{width: "50%",display:"flex"}}>
-                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Name</label>
-                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.project}</div>
-                        </div>
-                        {/* <div style={{width: "50%",display:"flex"}}>
-                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Property Size</label>
-                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.property_size}</div>
-                        </div> */}
-                    </div>
-                    <div style={{display: "flex", justifyContent: "space-between"}}>
-                        {/* <div style={{width: "50%",display:"flex"}}>
-                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Location</label>
-                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.location}</div>
-                        </div>
-                        <div style={{width: "50%",display:"flex"}}>
-                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Unit Area</label>
-                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.unit_area}</div>
-                        </div> */}
-                    </div>
-                    <div style={{display: "flex", justifyContent: "space-between"}}>
-                        <div style={{width: "50%",display:"flex"}}>
-                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Contact No.</label>
-                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>+91-{projectData?.contact_no}</div>
-                        </div>
-                        {/* <div style={{width: "50%",display:"flex"}}>
-                            <label style={{color: "#9C9AA5", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>Price</label>
-                            <div style={{color: "#293790", fontSize: "1rem", fontWeight: "bold",width:"50%",fontSize:"20px"}}>{projectData?.price}</div>
-                        </div> */}
-                    </div>
-                </div>
-            </div>
-        </div>
-        {/* Project Detail End  */}
-  
-        </div>
-        </div>
-        {/* To be downloaded as html end */}
-  
-  
-        {/* Back to campaign button start */}
-        <div style={{display:"flex", justifyContent:"center",alignItems:"center"}}>
-            <Link href={`/partner/Campaign`} style={{background:clientBtnColor,color:"white",padding:"5px 10px",borderRadius:"20px"}}>Back to Campaigns</Link>
-        </div>
-        {/* Back to campaign button end */}
-  
-        </div>
-      )
-    }
-      
-      
-
-     <Modal
-        show={showModal}
-        onHide={() => {
-          if(isButtonLoading==false){
-            setShowModal(false);
-          }
-        }}
-        size="lg"
-        centered
-      >
-        <Modal.Body>
-          <form className="  d-flex flex-column gap-4 p-4 " onSubmit={(e)=>{
-            e.preventDefault()
-            updateProject()
-          }}>
-            <div
-              className=" text-center fs-4 "
-              style={{ color: clientBtnColor }}
+          {/* Action Buttons */}
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginBottom: "15px" }}>
+            {hasCookie("channel") && userInfo?.role_id == 1 && (
+              <button
+                onClick={() => { setShowModal(true); getCampaignById(id); }}
+                style={{
+                  background: clientBtnColor,
+                  color: "white",
+                  border: "none",
+                  padding: "8px 16px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px"
+                }}
+              >
+                Edit
+              </button>
+            )}
+            <button
+              onClick={downloadPdf}
+              disabled={pdfLoading}
+              style={{
+                background: pdfLoading ? "#ccc" : "#28a745",
+                color: "white",
+                border: "none",
+                padding: "8px 16px",
+                borderRadius: "5px",
+                cursor: pdfLoading ? "not-allowed" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "5px"
+              }}
             >
-              Project Details
+              {pdfLoading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Download style={{ fontSize: "18px" }} />
+                  Download PDF
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Campaign Preview Content */}
+          <div
+            ref={contentRef}
+            style={{
+              background: "#ffffff",
+              padding: "30px",
+              borderRadius: "10px",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+              maxWidth: "900px",
+              margin: "0 auto"
+            }}
+          >
+            {/* Header with Logos */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", paddingBottom: "15px", borderBottom: "2px solid #eee" }}>
+              <div>
+                {clientLogo?.logo && (
+                  <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="Client Logo" style={{ maxHeight: "60px" }} />
+                )}
+              </div>
+              <div>
+                {projectData?.logo_preview && (
+                  <img src={projectData?.logo_preview} alt="Project Logo" style={{ maxHeight: "60px" }} />
+                )}
+              </div>
             </div>
+
+            {/* Cover Image */}
+            {projectData?.file_preview && (
+              <div style={{ marginBottom: "25px", textAlign: "center" }}>
+                <img 
+                  src={projectData?.file_preview} 
+                  alt="Cover Image" 
+                  style={{ 
+                    maxWidth: "100%", 
+                    maxHeight: "400px", 
+                    borderRadius: "8px",
+                    objectFit: "cover"
+                  }} 
+                />
+              </div>
+            )}
+
+            {/* Project Title */}
+            <div style={{ textAlign: "center", marginBottom: "25px" }}>
+              <h1 style={{ color: clientBtnColor, fontSize: "32px", fontWeight: "bold", margin: "0" }}>
+                {projectData?.project || "Campaign"}
+              </h1>
+            </div>
+
+            {/* HTML Template Content */}
+            {projectData?.htmlString ? (
+              <iframe
+                srcDoc={projectData?.htmlString}
+                style={{
+                  width: "100%",
+                  minHeight: "500px",
+                  border: "1px solid #eee",
+                  borderRadius: "8px",
+                  marginBottom: "25px",
+                  background: "#fff"
+                }}
+                title="Campaign Template"
+                sandbox="allow-same-origin"
+              />
+            ) : (
+              <div style={{
+                padding: "40px 20px",
+                background: "#f8f9fa",
+                borderRadius: "8px",
+                marginBottom: "25px",
+                border: "1px dashed #dee2e6",
+                textAlign: "center"
+              }}>
+                <p style={{ color: "#6c757d", margin: 0, fontSize: "16px" }}>
+                  {projectData?.template_name ? "HTML template uploaded but content not available" : "No HTML template uploaded"}
+                </p>
+              </div>
+            )}
+
+            {/* Project Details */}
+            <div style={{ marginBottom: "25px" }}>
+              <h3 style={{ color: clientBtnColor, marginBottom: "15px", fontSize: "20px" }}>Project Details</h3>
+              <div style={{ background: "#f8f9fa", padding: "20px", borderRadius: "8px", border: "1px solid #dee2e6" }}>
+                <div style={{ display: "flex", marginBottom: "15px" }}>
+                  <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>Property Name:</span>
+                  <span style={{ color: clientBtnColor, fontWeight: "600" }}>{projectData?.project || "N/A"}</span>
+                </div>
+                {projectData?.location && (
+                  <div style={{ display: "flex", marginBottom: "15px" }}>
+                    <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>Location:</span>
+                    <span style={{ color: "#333", fontWeight: "600" }}>{projectData?.location}</span>
+                  </div>
+                )}
+                {projectData?.property_size && (
+                  <div style={{ display: "flex", marginBottom: "15px" }}>
+                    <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>Property Size:</span>
+                    <span style={{ color: "#333", fontWeight: "600" }}>{projectData?.property_size}</span>
+                  </div>
+                )}
+                {projectData?.unit_area && (
+                  <div style={{ display: "flex", marginBottom: "15px" }}>
+                    <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>Unit Area:</span>
+                    <span style={{ color: "#333", fontWeight: "600" }}>{projectData?.unit_area}</span>
+                  </div>
+                )}
+                {projectData?.price && (
+                  <div style={{ display: "flex", marginBottom: "15px" }}>
+                    <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>Price:</span>
+                    <span style={{ color: "#333", fontWeight: "600" }}>{projectData?.price}</span>
+                  </div>
+                )}
+                <div style={{ display: "flex" }}>
+                  <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>Contact No:</span>
+                  <span style={{ color: "#28a745", fontWeight: "600" }}>+91-{projectData?.contact_no || "N/A"}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Footer */}
+            <div style={{
+              background: clientBtnColor,
+              color: "white",
+              padding: "25px",
+              borderRadius: "8px",
+              textAlign: "center"
+            }}>
+              <p style={{ margin: "0 0 10px 0", fontSize: "14px" }}>For More Information, Contact Us</p>
+              <p style={{ margin: "0", fontSize: "28px", fontWeight: "bold" }}>+91-{projectData?.contact_no || "N/A"}</p>
+              <p style={{ margin: "10px 0 0 0", fontSize: "14px", opacity: "0.9" }}>{projectData?.project}</p>
+            </div>
+          </div>
+
+          {/* Back Button */}
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+            <Link
+              href="/partner/Campaign"
+              style={{
+                background: clientBtnColor,
+                color: "white",
+                padding: "10px 25px",
+                borderRadius: "25px",
+                textDecoration: "none",
+                fontWeight: "500"
+              }}
+            >
+              Back to Campaigns
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      <Modal show={showModal} onHide={() => !isButtonLoading && setShowModal(false)} size="lg" centered>
+        <Modal.Body>
+          <form className="d-flex flex-column gap-4 p-4" onSubmit={(e) => { e.preventDefault(); updateProject(); }}>
+            <div className="text-center fs-4" style={{ color: clientBtnColor }}>Edit Details</div>
 
             <div className="d-flex flex-column gap-3">
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Name*
-                  </label>
+                  <label className="w-27" style={{ color: "#9C9AA5" }}>Property Name</label>
                   <input
                     type="text"
                     disabled
                     value={projectData?.project}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        project: e.target.value,
-                      });
-                    }}
-                    placeholder="Burrow Real Estate"
                     style={{ outline: "none" }}
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-                {/* <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Size*
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value={projectData?.property_size}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        property_size: e.target.value,
-                      });
-                    }}
-                    placeholder="3,4,5 BHK"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div> */}
               </div>
-{/* 
-              <div className="d-flex justify-content-between gap-5 align-items-center">
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Location*
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value={projectData?.location}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        location: e.target.value,
-                      });
-                    }}
-                    placeholder="Ex:- Vasant Kunj"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div>
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Unit Area*
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value={projectData?.unit_area}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        unit_area: e.target.value,
-                      });
-                    }}
-                    placeholder="4000 sq ft"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div>
-              </div> */}
 
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Contact No.*
-                  </label>
+                  <label className="w-27" style={{ color: "#9C9AA5" }}>Contact No.*</label>
                   <input
                     type="text"
-                    
                     value={projectData?.contact_no}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        contact_no: e.target.value,
-                      });
-                    }}
+                    onChange={(e) => setProjectData({ ...projectData, contact_no: e.target.value })}
                     placeholder="+91-8787675466"
                     style={{ outline: "none" }}
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-                {/* <div className="w-50 d-flex justify-content-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Price*
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value={projectData?.price}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        price: e.target.value,
-                      });
-                    }}
-                    placeholder="₹ 3.57 Cr onwards"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div> */}
               </div>
-
 
               <div className="d-flex justify-content-between gap-5 align-items-center">
-                
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Property Logo
-                  </label>
-                  <input
-                    type="file"
-                    accept=".jpeg, .jpg, .png"
-                    onChange={(e)=>{
-                      handleFileChange(e,"logo","logo_preview")
-                    }}
-                    id="logoInput"
-                    style={{ display: "none" }}
-                  />
-                  {projectData?.logo_preview ? 
+                  <label className="w-27" style={{ color: "#9C9AA5" }}>Property Logo</label>
+                  <input type="file" accept=".jpeg, .jpg, .png" onChange={(e) => handleFileChange(e, "logo", "logo_preview")} id="logoInput" style={{ display: "none" }} />
+                  {projectData?.logo_preview ? (
                     <div className="relative">
-                        <img src={projectData?.logo_preview} />
-                        <span className="absolute top-0 right-0" onClick={()=>{
-                          setProjectData({
-                            ...projectData,
-                            logo: null,
-                            logo_preview:null
-                          })
-                        }}>
-                            <Delete style={{color: 'red',cursor:'pointer'}}/>
-                        </span>
-                        
+                      <img src={projectData?.logo_preview} style={{ maxHeight: "60px" }} />
+                      <span className="absolute top-0 right-0" onClick={() => setProjectData({ ...projectData, logo: null, logo_preview: null })}>
+                        <Delete style={{ color: 'red', cursor: 'pointer' }} />
+                      </span>
                     </div>
-                    : 
-                  <label
-                      htmlFor="logoInput"
-                      className="w-73 border p-2 ps-1 rounded-md text-black"
-                      style={{ outline: "none", cursor: "pointer" }}
-                    >
-                      Click here to choose file
+                  ) : (
+                    <label htmlFor="logoInput" className="w-73 border p-2 ps-1 rounded-md text-black" style={{ cursor: "pointer" }}>
+                      Click to choose file
                     </label>
-                    }
+                  )}
                 </div>
               </div>
-
-
             </div>
 
-            <div className="d-flex justify-content-center align-items-center gap-3 ">
-              <button
-              type='button'
-              disabled={isButtonLoading}
-                className="btn btn-danger rounded-5"
-                onClick={() => {
-                  setShowModal(false);
-                  getCampaignById()
-                } }
-              >
+            <div className="d-flex justify-content-center align-items-center gap-3">
+              <button type="button" disabled={isButtonLoading} className="btn btn-danger rounded-5" onClick={() => { setShowModal(false); getCampaignById(); }}>
                 Cancel
               </button>
-              <button
-              disabled={isButtonLoading}
-                className="btn text-white rounded-5"
-                style={{ background: clientBtnColor }}
-              >
-                {isButtonLoading ? (
-                    <>
-                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    &nbsp;Update
-                  </>
-                ) : (
-                  'Update'
-                )} 
+              <button type="submit" disabled={isButtonLoading} className="btn text-white rounded-5" style={{ background: clientBtnColor }}>
+                {isButtonLoading ? (<><span className="spinner-border spinner-border-sm" />&nbsp;Updating...</>) : 'Update'}
               </button>
-
             </div>
           </form>
         </Modal.Body>
       </Modal>
-
     </>
+  );
+};
 
-  )
-}
-
-export default CampaignDetailsScreen
+export default CampaignDetailsScreen;

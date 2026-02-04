@@ -108,7 +108,7 @@ const CampaignDetailsAdminScreen = () => {
         const campaign = response?.data?.data?.projectData
         if (response?.status === 200 || response?.status === 201) {
           let htmlContent = response?.data?.data?.htmlTemplate || "";
-          
+
           // If htmlTemplate is empty but html_file exists, fetch the HTML file directly
           if (!htmlContent && campaign?.html_file) {
             try {
@@ -121,7 +121,7 @@ const CampaignDetailsAdminScreen = () => {
               console.log("Could not fetch HTML file:", htmlError);
             }
           }
-          
+
           setLoader(false)
           setProjectData({
             ...projectData,
@@ -176,12 +176,21 @@ const CampaignDetailsAdminScreen = () => {
 
     const formData = new FormData();
     for (const [key, value] of Object.entries(projectData)) {
-      formData.append(key, value);
+      // Only append non-null values
+      if (value !== null && value !== undefined && value !== "") {
+        formData.append(key, value);
+      }
     }
 
     try {
       dispatch(startButtonLoading())
-      const response = await axios.put(`${Baseurl}/db/channel/project`, formData, header);
+      const response = await axios.put(`${Baseurl}/db/channel/project`, formData, {
+        ...header,
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+        transformRequest: [(data) => data], // Don't transform FormData
+        // Don't set Content-Type - let browser set it with boundary for FormData
+      });
       if (response.status === 200 || response.status === 201) {
         toast.success(response?.data?.message, { autoClose: 2500 });
         dispatch(stopButtonLoading())
@@ -189,48 +198,70 @@ const CampaignDetailsAdminScreen = () => {
         getCampaignById();
       }
     } catch (error) {
-      console.log(error)
-      if (error?.response?.data?.status === 422) {
-        dispatch(stopButtonLoading())
-        toast.error(error?.response?.data?.message, { autoClose: 2500 })
-
+      console.log("Upload error:", error)
+      dispatch(stopButtonLoading())
+      
+      // Handle 413 Request Entity Too Large error
+      if (error?.response?.status === 413) {
+        toast.error("File size is too large. Maximum allowed size is 10MB. The server rejected this file. Please upload a smaller file or contact your administrator to increase the server upload limit.", { autoClose: 5000 });
+        return;
       }
-      if (error?.response?.data?.message) {
-        dispatch(stopButtonLoading())
+      
+      if (error?.response?.data?.status === 422) {
+        toast.error(error?.response?.data?.message, { autoClose: 2500 })
+      } else if (error?.response?.data?.message) {
         toast.error(error?.response?.data?.message, { autoClose: 2500 });
+      } else if (error?.message) {
+        toast.error(error.message, { autoClose: 2500 });
       } else {
-        dispatch(stopButtonLoading())
-        toast.error("Something went wrong!", { autoClose: 2500 });
+        toast.error("Something went wrong! Please check your connection and try again.", { autoClose: 2500 });
       }
     }
   };
 
   const handleFileChange = (e, field, fieldPreview) => {
     const file = e.target.files[0];
+    if (!file) {
+      e.target.value = "";
+      return;
+    }
+
     const allowedTypes = field === "template" ? ['text/html', 'text/htm'] : ['image/jpg', 'image/jpeg', 'image/png'];
 
-    if (file && allowedTypes.includes(file.type)) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (fieldPreview === "template_name") {
-          setProjectData({
-            ...projectData,
-            [field]: file,
-            [fieldPreview]: file.name,
-          });
-        } else {
-          setProjectData({
-            ...projectData,
-            [field]: file,
-            [fieldPreview]: URL.createObjectURL(file),
-          });
-        }
-      };
-      reader.readAsDataURL(file);
-    } else {
-      // toast.warning(`Invalid file type. Please upload ${allowedTypes.join(', ')}.`);
+    if (!allowedTypes.includes(file.type)) {
       const allowedExtensions = field === "template" ? ".html, .htm" : ".jpg, .jpeg, .png";
       toast.warning(`Invalid file type. Please upload ${allowedExtensions}.`, { autoClose: 2500 });
+      e.target.value = "";
+      return;
+    }
+
+    // For HTML template files, skip FileReader to avoid memory issues with large files
+    if (field === "template") {
+      // Check file size and block if larger than 10MB (server limit is around 10MB based on 413 errors)
+      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > maxSize) {
+        toast.error(`File size is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Maximum allowed size is 10MB. Please upload a smaller file.`, {autoClose: 4000});
+        e.target.value = "";
+        return;
+      }
+      
+      // Store file directly without reading into memory
+      setProjectData({
+        ...projectData,
+        [field]: file,
+        [fieldPreview]: file.name,
+      });
+    } else {
+      // For images, use FileReader for preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProjectData({
+          ...projectData,
+          [field]: file,
+          [fieldPreview]: URL.createObjectURL(file),
+        });
+      };
+      reader.readAsDataURL(file);
     }
 
     // Reset the input value to ensure the change event is fired even if the same file is selected
@@ -314,31 +345,31 @@ const CampaignDetailsAdminScreen = () => {
         loader ? <div style={{ padding: "2rem", width: "100%", display: "flex", justifyContent: "center" }}><Loader /></div>
           :
           (
-            <div className="campaign-wrapper" style={{ 
-              padding: "20px", 
-              width: "100%", 
+            <div className="campaign-wrapper" style={{
+              padding: "20px",
+              width: "100%",
               minHeight: "100vh",
               background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
               overflowY: "auto"
             }}>
-              
+
               {/* Main Card */}
-              <div className="card-hover" style={{ 
-                background: "#ffffff", 
-                borderRadius: "20px", 
-                boxShadow: "0 8px 32px rgba(0,0,0,0.12)", 
-                maxWidth: "900px", 
+              <div className="card-hover" style={{
+                background: "#ffffff",
+                borderRadius: "20px",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+                maxWidth: "900px",
                 margin: "0 auto",
                 overflow: "hidden",
                 transition: "all 0.3s ease"
               }}>
-                
+
                 {/* Header with Gradient */}
-                <div style={{ 
+                <div style={{
                   background: `linear-gradient(135deg, ${clientBtnColor} 0%, ${clientBtnColor}dd 100%)`,
-                  padding: "20px 24px", 
-                  display: "flex", 
-                  justifyContent: "space-between", 
+                  padding: "20px 24px",
+                  display: "flex",
+                  justifyContent: "space-between",
                   alignItems: "center",
                   position: "relative",
                   overflow: "hidden"
@@ -346,14 +377,14 @@ const CampaignDetailsAdminScreen = () => {
                   {/* Decorative circles */}
                   <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "100px", height: "100px", borderRadius: "50%", background: "rgba(255,255,255,0.1)" }}></div>
                   <div style={{ position: "absolute", bottom: "-30px", left: "20%", width: "60px", height: "60px", borderRadius: "50%", background: "rgba(255,255,255,0.08)" }}></div>
-                  
+
                   <div style={{ display: "flex", alignItems: "center", gap: "12px", zIndex: 1 }}>
-                    <div style={{ 
-                      width: "42px", height: "42px", 
-                      background: "rgba(255,255,255,0.2)", 
-                      borderRadius: "12px", 
-                      display: "flex", 
-                      alignItems: "center", 
+                    <div style={{
+                      width: "42px", height: "42px",
+                      background: "rgba(255,255,255,0.2)",
+                      borderRadius: "12px",
+                      display: "flex",
+                      alignItems: "center",
                       justifyContent: "center",
                       backdropFilter: "blur(10px)"
                     }}>
@@ -364,20 +395,20 @@ const CampaignDetailsAdminScreen = () => {
                       <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "12px", margin: "2px 0 0 0" }}>View and manage your campaign</p>
                     </div>
                   </div>
-                  
+
                   <div style={{ display: "flex", gap: "10px", alignItems: "center", zIndex: 1 }}>
                     {hasCookie("channel") && userInfo?.role_id == null && (
                       <button
                         className="btn-hover"
                         onClick={() => { setShowModal(true); getCampaignById(id); }}
-                        style={{ 
-                          background: "rgba(255,255,255,0.2)", 
-                          border: "1px solid rgba(255,255,255,0.4)", 
-                          borderRadius: "10px", 
-                          padding: "10px 18px", 
-                          cursor: "pointer", 
-                          color: "#fff", 
-                          fontSize: "13px", 
+                        style={{
+                          background: "rgba(255,255,255,0.2)",
+                          border: "1px solid rgba(255,255,255,0.4)",
+                          borderRadius: "10px",
+                          padding: "10px 18px",
+                          cursor: "pointer",
+                          color: "#fff",
+                          fontSize: "13px",
                           fontWeight: "600",
                           backdropFilter: "blur(10px)",
                           transition: "all 0.3s ease",
@@ -393,14 +424,14 @@ const CampaignDetailsAdminScreen = () => {
                       className="btn-hover"
                       onClick={downloadPdf}
                       disabled={pdfLoading}
-                      style={{ 
-                        background: pdfLoading ? "#ccc" : "#fff", 
-                        border: "none", 
-                        borderRadius: "10px", 
-                        padding: "10px 18px", 
-                        cursor: pdfLoading ? "not-allowed" : "pointer", 
-                        color: pdfLoading ? "#666" : clientBtnColor, 
-                        fontSize: "13px", 
+                      style={{
+                        background: pdfLoading ? "#ccc" : "#fff",
+                        border: "none",
+                        borderRadius: "10px",
+                        padding: "10px 18px",
+                        cursor: pdfLoading ? "not-allowed" : "pointer",
+                        color: pdfLoading ? "#666" : clientBtnColor,
+                        fontSize: "13px",
                         fontWeight: "600",
                         boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
                         transition: "all 0.3s ease",
@@ -424,16 +455,16 @@ const CampaignDetailsAdminScreen = () => {
 
                 {/* Content */}
                 <div id="content2" style={{ padding: "16px" }}>
-                  
+
                   {/* Logos Section */}
                   {(clientLogo?.logo || projectData?.logo) && (
-                    <div style={{ 
-                      display: "flex", 
-                      justifyContent: "space-between", 
-                      alignItems: "center", 
-                      padding: "12px 16px", 
-                      background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)", 
-                      borderRadius: "10px", 
+                    <div style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "12px 16px",
+                      background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+                      borderRadius: "10px",
                       marginBottom: "12px",
                       border: "1px solid #e0e0e0"
                     }}>
@@ -448,11 +479,11 @@ const CampaignDetailsAdminScreen = () => {
 
                   {/* HTML Content */}
                   {projectData?.htmlString && (
-                    <div className="campaign-content" style={{ 
-                      padding: "12px", 
-                      background: "#fafafa", 
-                      border: "1px solid #e8e8e8", 
-                      borderRadius: "10px", 
+                    <div className="campaign-content" style={{
+                      padding: "12px",
+                      background: "#fafafa",
+                      border: "1px solid #e8e8e8",
+                      borderRadius: "10px",
                       marginBottom: "12px",
                       boxShadow: "inset 0 2px 8px rgba(0,0,0,0.03)"
                     }}>
@@ -461,19 +492,20 @@ const CampaignDetailsAdminScreen = () => {
                   )}
 
                   {/* Project Details Card */}
-                  <div style={{ 
-                    background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)", 
-                    borderRadius: "12px", 
-                    border: "1px solid #e0e0e0", 
+                  {/* i have commented it because two time comming */}
+                  {/* <div style={{
+                    background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
+                    borderRadius: "12px",
+                    border: "1px solid #e0e0e0",
                     overflow: "hidden",
                     boxShadow: "0 4px 20px rgba(0,0,0,0.05)"
                   }}>
-                    <div style={{ 
+                    <div style={{
                       background: `linear-gradient(135deg, ${clientBtnColor}15 0%, ${clientBtnColor}08 100%)`,
-                      padding: "10px 16px", 
-                      fontWeight: "700", 
-                      fontSize: "14px", 
-                      color: clientBtnColor, 
+                      padding: "10px 16px",
+                      fontWeight: "700",
+                      fontSize: "14px",
+                      color: clientBtnColor,
                       borderBottom: "1px solid #e8e8e8",
                       display: "flex",
                       alignItems: "center",
@@ -483,22 +515,22 @@ const CampaignDetailsAdminScreen = () => {
                       Project Details
                     </div>
                     <div style={{ padding: "0" }}>
-                      {/* Property Name */}
-                      <div style={{ 
-                        display: "flex", 
-                        alignItems: "center", 
-                        padding: "12px 16px", 
+
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "12px 16px",
                         borderBottom: "1px solid #f0f0f0",
                         background: "#fff",
                         transition: "background 0.2s ease"
                       }}>
-                        <div style={{ 
-                          width: "36px", 
-                          height: "36px", 
-                          background: `${clientBtnColor}15`, 
-                          borderRadius: "10px", 
-                          display: "flex", 
-                          alignItems: "center", 
+                        <div style={{
+                          width: "36px",
+                          height: "36px",
+                          background: `${clientBtnColor}15`,
+                          borderRadius: "10px",
+                          display: "flex",
+                          alignItems: "center",
                           justifyContent: "center",
                           marginRight: "12px"
                         }}>
@@ -509,21 +541,21 @@ const CampaignDetailsAdminScreen = () => {
                           <p style={{ color: "#1a1a2e", fontSize: "14px", fontWeight: "700", margin: 0 }}>{projectData?.project || "N/A"}</p>
                         </div>
                       </div>
-                      
-                      {/* Contact Number */}
-                      <div style={{ 
-                        display: "flex", 
-                        alignItems: "center", 
+
+
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
                         padding: "12px 16px",
                         background: "#fff"
                       }}>
-                        <div style={{ 
-                          width: "36px", 
-                          height: "36px", 
-                          background: "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)", 
-                          borderRadius: "10px", 
-                          display: "flex", 
-                          alignItems: "center", 
+                        <div style={{
+                          width: "36px",
+                          height: "36px",
+                          background: "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)",
+                          borderRadius: "10px",
+                          display: "flex",
+                          alignItems: "center",
                           justifyContent: "center",
                           marginRight: "12px"
                         }}>
@@ -533,19 +565,19 @@ const CampaignDetailsAdminScreen = () => {
                           <p style={{ color: "#888", fontSize: "10px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px", margin: "0 0 2px 0" }}>Contact Number</p>
                           <p style={{ color: "#2e7d32", fontSize: "14px", fontWeight: "700", margin: 0 }}>+91-{projectData?.contact_no || "N/A"}</p>
                         </div>
-                        <a 
+                        <a
                           href={`tel:+91${projectData?.contact_no}`}
                           className="btn-hover"
-                          style={{ 
-                            background: "linear-gradient(135deg, #43a047 0%, #2e7d32 100%)", 
-                            color: "#fff", 
-                            padding: "10px 16px", 
-                            borderRadius: "10px", 
-                            textDecoration: "none", 
-                            fontWeight: "600", 
-                            fontSize: "12px", 
-                            display: "flex", 
-                            alignItems: "center", 
+                          style={{
+                            background: "linear-gradient(135deg, #43a047 0%, #2e7d32 100%)",
+                            color: "#fff",
+                            padding: "10px 16px",
+                            borderRadius: "10px",
+                            textDecoration: "none",
+                            fontWeight: "600",
+                            fontSize: "12px",
+                            display: "flex",
+                            alignItems: "center",
                             gap: "6px",
                             boxShadow: "0 4px 15px rgba(46,125,50,0.3)",
                             transition: "all 0.3s ease"
@@ -555,28 +587,29 @@ const CampaignDetailsAdminScreen = () => {
                         </a>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                 </div>
 
                 {/* Footer */}
-                <div style={{ 
-                  padding: "16px", 
-                  background: "#f0f0f0", 
-                  borderTop: "2px solid #ddd", 
-                  display: "flex", 
+                <div style={{
+                  padding: "16px",
+                  background: "#f0f0f0",
+                  borderTop: "2px solid #ddd",
+                  display: "flex",
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: "center",
+                  marginBottom: '50px'
                 }}>
-                  <Link 
-                    href="/partner/CampaignAdmin" 
-                    style={{ 
+                  <Link
+                    href="/partner/CampaignAdmin"
+                    style={{
                       background: "#2563eb",
-                      color: "#ffffff", 
-                      padding: "14px 32px", 
-                      borderRadius: "10px", 
-                      textDecoration: "none", 
-                      fontSize: "16px", 
+                      color: "#ffffff",
+                      padding: "14px 32px",
+                      borderRadius: "10px",
+                      textDecoration: "none",
+                      fontSize: "16px",
                       fontWeight: "700",
                       boxShadow: "0 4px 12px rgba(37, 99, 235, 0.4)",
                       display: "inline-block",

@@ -23,5 +23,5 @@
 
 /* -----------------NK Realtors links------------- */
 
-export const Baseurl = 'http://18.61.222.249:8050/api/v1';
-export const filesUrl = 'http://18.61.222.249:8050/images';
+export const Baseurl = 'https://admin.theprosperity.in/api/v1';
+export const filesUrl = 'https://admin.theprosperity.in/images';

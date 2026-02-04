@@ -10,45 +10,45 @@ import { UserLogIN } from '../../store/ClientLoginSlice';
 import { Baseurl, filesUrl } from '../../Utils/Constants';
 import axios from 'axios';
 import { validEmail } from '../../Utils/regex';
-import { assignPermissions, crm, dms,sales,channel } from '../../store/permissionSlice';
+import { assignPermissions, crm, dms, sales, channel } from '../../store/permissionSlice';
 import { startLoading, stopLoading } from '../../store/loaderSlice';
 import { clearTheme, setSidebarColor, setTopNavColor, setbuttonColor } from '../../store/themeSlice';
 
 
 export default function SignInScreen({ setLoggedIn }) {
-  
+
     const router = useRouter()
     const dispatch = useDispatch()
-  const[clientData,setClientData]=useState();
+    const [clientData, setClientData] = useState();
     const [userForm, setUserForm] = useState({
         email: "",
         password: ""
     })
-    const initialPermission=(permission)=>{
+    const initialPermission = (permission) => {
         switch (permission) {
             case "CRM":
                 dispatch(crm())
                 break;
-            
+
             case "DMS":
                 dispatch(dms())
                 break;
-            
+
             case "CHANNEL":
                 dispatch(channel())
                 break;
-            
+
             case "SALES":
                 dispatch(sales())
-        
+
             default:
                 break;
         }
     }
-  
+
 
     const assignPermission = (permissionsArray) => {
-       
+
         const arr = permissionsArray.reduce((ac, permission) => {
             const platformName = permission.platform_name.toLowerCase();
             return [...ac, platformName];
@@ -56,8 +56,8 @@ export default function SignInScreen({ setLoggedIn }) {
         dispatch(assignPermissions(arr));
 
     }
-    
-    
+
+
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -90,7 +90,7 @@ export default function SignInScreen({ setLoggedIn }) {
                     setCookie('userInfo', res.data.userData);
                     setCookie('clientLogo', res.data.Logo[0]);
                     setCookie('db_name', res.data.userData.db_name);
-                    
+
                     dispatch(setSidebarColor(res.data.Logo[0].sidebar_color || '#405189'))
                     dispatch(setbuttonColor(res.data.Logo[0].button_color || '#405189'))
                     dispatch(setTopNavColor(res.data.Logo[0].top_nav_color || '#405189'))
@@ -114,36 +114,36 @@ export default function SignInScreen({ setLoggedIn }) {
         }
     }
 
-    useEffect(()=>{
-        const getSignInData=async()=>{
-          try {
-            let baseUrl = window.location.origin;
-            if(baseUrl==="http://localhost:3000"){
-              baseUrl="http://crm.cybermatrixsolutions.com"
+    useEffect(() => {
+        const getSignInData = async () => {
+            try {
+                let baseUrl = window.location.origin;
+                if (baseUrl === "http://localhost:3001") {
+                    baseUrl = "http://crm.cybermatrixsolutions.com"
+                }
+                const { data } = await axios.post(Baseurl + "/db/admin/url", {
+                    client_url: `${baseUrl}`,
+                })
+                setClientData(data?.data)
+            } catch (error) {
+                console.log(error)
             }
-            const {data}=await axios.post(Baseurl+"/db/admin/url",{
-              client_url:`${baseUrl}`,
-            })
-            setClientData(data?.data)
-          } catch (error) {
-            console.log(error)
-          }
         }
         getSignInData()
-      },[])
+    }, [])
 
     return (
         <div className="login_wrapper">
             <div className="login_box">
                 <div className="img_logo">
-                     {/* <LeadShyneIcon />  */}
-                     <img
-                      src={
-                        clientData?.logo
-                          &&( `${filesUrl}` +
-                            `/logo/images${clientData?.logo}`)
-                      }
-                      alt
+                    {/* <LeadShyneIcon />  */}
+                    <img
+                        src={
+                            clientData?.logo
+                            && (`${filesUrl}` +
+                                `/logo/images${clientData?.logo}`)
+                        }
+                        alt
                     />
                 </div>
                 <div className="header"> Please Login to Continue </div>
@@ -173,7 +173,7 @@ export default function SignInScreen({ setLoggedIn }) {
                             />
                         </div>
                         <div className="btn_box">
-                            <button className="btn btn-primary" style={{background:clientData?.button_color}} type='submit'>Submit</button>
+                            <button className="btn btn-primary" style={{ background: clientData?.button_color }} type='submit'>Submit</button>
                         </div>
                         <div className="forget_links">
                             <Link href='/ResetPassword'> Forgot Password? </Link>

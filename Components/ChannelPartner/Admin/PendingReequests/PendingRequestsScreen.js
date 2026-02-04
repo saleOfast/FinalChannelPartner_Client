@@ -29,7 +29,7 @@ const PendingRequestsScreen = () => {
         id: '',
         action: ''
     })
-  const [loader,setLoader]=useState(false);
+    const [loader, setLoader] = useState(false);
 
 
     function disableConfirm(value, type) {
@@ -94,17 +94,17 @@ const PendingRequestsScreen = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/users/cp/getPendingVerificationUser`, header);
-                if(response?.status === 200 || response?.status === 201){
+                if (response?.status === 200 || response?.status === 201) {
                     setLoader(false);
                     setDataList(response.data.data);
                 }
             } catch (error) {
                 if (error?.response?.data?.message) {
                     setLoader(false);
-                    toast.error(error?.response?.data?.message,{autoClose:2500});
+                    toast.error(error?.response?.data?.message, { autoClose: 2500 });
                 } else {
                     setLoader(false);
-                    toast.error("Something went wrong!",{autoClose:2500});
+                    toast.error("Something went wrong!", { autoClose: 2500 });
                 }
             }
         }
@@ -130,7 +130,7 @@ const PendingRequestsScreen = () => {
             try {
                 const response = await axios.put(Baseurl + `/db/users`, reqInfo, header);
                 if (response.status === 204 || response.status === 200) {
-                    toast.success(response?.data?.message,{autoClose:2500})
+                    toast.success(response?.data?.message, { autoClose: 2500 })
                     setdisableShowConfirm(false)
                     setcurrObj({
                         id: '',
@@ -139,7 +139,7 @@ const PendingRequestsScreen = () => {
                     getDataList();
                 }
             } catch (error) {
-                toast.error(error?.response?.data?.message,{autoClose:2500});
+                toast.error(error?.response?.data?.message, { autoClose: 2500 });
             }
         }
     }
@@ -163,7 +163,7 @@ const PendingRequestsScreen = () => {
             try {
                 const response = await axios.delete(Baseurl + `/db/users?id=${currObj.id}`, header);
                 if (response.status === 204 || response.status === 200) {
-                    toast.success(response?.data?.message,{autoClose:2500})
+                    toast.success(response?.data?.message, { autoClose: 2500 })
                     setdeleteshowConfirm(false)
                     setcurrObj({
                         id: '',
@@ -172,7 +172,7 @@ const PendingRequestsScreen = () => {
                     getDataList();
                 }
             } catch (error) {
-                toast.error(error?.response?.data?.message,{autoClose:2500})
+                toast.error(error?.response?.data?.message, { autoClose: 2500 })
             }
         }
 
@@ -180,7 +180,7 @@ const PendingRequestsScreen = () => {
 
     async function csvSubmitHandler() {
         if (excelData.length <= 0) {
-            toast.error('No Data Found Please Check and try Again',{autoClose:2500})
+            toast.error('No Data Found Please Check and try Again', { autoClose: 2500 })
         } else {
             if (hasCookie("token")) {
                 let token = getCookie("token");
@@ -197,15 +197,15 @@ const PendingRequestsScreen = () => {
                 try {
                     const response = await axios.post(Baseurl + `/db/users/owner`, excelData, header);
                     if (response.status === 204 || response.status === 200) {
-                        toast.success(response?.data?.message,{autoClose:2500});
+                        toast.success(response?.data?.message, { autoClose: 2500 });
                         getDataList();
                         handleClose();
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                        toast.error(error?.response?.data?.message,{autoClose:2500});
+                        toast.error(error?.response?.data?.message, { autoClose: 2500 });
                     } else {
-                        toast.error("Something went wrong!",{autoClose:2500});
+                        toast.error("Something went wrong!", { autoClose: 2500 });
                     }
                 }
             }
@@ -213,7 +213,7 @@ const PendingRequestsScreen = () => {
 
     }
 
-    
+
 
 
     useEffect(() => {
@@ -222,20 +222,20 @@ const PendingRequestsScreen = () => {
 
     return (
         <>
-        
-        <div className="w-100 ps-4 pe-4 pb-4 overflow-scroll" >
-                
+
+            <div className="w-100 ps-4 pe-4 pb-4 overflow-scroll" >
+
                 <div className="main_content">
                     <div className="table_screen">
                         <div className="top_btn_sec ">
                             <div className="d-flex">
-                            <Link href='/ChannelAddUsers'>
-                                {/* <button className="btn ms-auto btn-primary Add_btn me-3">
+                                <Link href='/ChannelAddUsers'>
+                                    {/* <button className="btn ms-auto btn-primary Add_btn me-3">
                                     <PlusIcon />
                                     ADD USER
                                 </button> */}
-                            </Link>
-                            {/* <button className="btn btn-primary Add_btn" onClick={handleShow}>
+                                </Link>
+                                {/* <button className="btn btn-primary Add_btn" onClick={handleShow}>
                                 <PlusIcon />
                                 Import CSV
                             </button> */}
@@ -252,7 +252,7 @@ const PendingRequestsScreen = () => {
                     </div>
                 </div>
             </div>
-            
+
 
             <Modal className="commonModal" show={show} onHide={handleClose}>
                 <Modal.Header closeButton>

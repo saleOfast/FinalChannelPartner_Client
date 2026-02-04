@@ -129,30 +129,47 @@ const CampaignAdminScreen = () => {
 
   const handleFileChange = (e, field, fieldPreview) => {
     const file = e.target.files[0];
+    if (!file) {
+      e.target.value = "";
+      return;
+    }
+
     const allowedTypes = field === "template" ? ['text/html', 'text/htm'] : ['image/jpg', 'image/jpeg', 'image/png'];
 
-    if (file && allowedTypes.includes(file.type)) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (fieldPreview === "template_name") {
-          setProjectData({
-            ...projectData,
-            [field]: file,
-            [fieldPreview]: file.name,
-          });
-        } else {
-          setProjectData({
-            ...projectData,
-            [field]: file,
-            [fieldPreview]: URL.createObjectURL(file),
-          });
-        }
-      };
-      reader.readAsDataURL(file);
-    } else {
-      // toast.warning(`Invalid file type. Please upload ${allowedTypes.join(', ')}.`,{autoClose:2500});
+    if (!allowedTypes.includes(file.type)) {
       const allowedExtensions = field === "template" ? ".html, .htm" : ".jpg, .jpeg, .png";
       toast.warning(`Invalid file type. Please upload ${allowedExtensions}.`, { autoClose: 2500 });
+      e.target.value = "";
+      return;
+    }
+
+    // For HTML template files, skip FileReader to avoid memory issues with large files
+    if (field === "template") {
+      // Check file size and block if larger than 10MB (server limit is around 10MB based on 413 errors)
+      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > maxSize) {
+        toast.error(`File size is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Maximum allowed size is 10MB. Please upload a smaller file.`, {autoClose: 4000});
+        e.target.value = "";
+        return;
+      }
+      
+      // Store file directly without reading into memory
+      setProjectData({
+        ...projectData,
+        [field]: file,
+        [fieldPreview]: file.name,
+      });
+    } else {
+      // For images, use FileReader for preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProjectData({
+          ...projectData,
+          [field]: file,
+          [fieldPreview]: URL.createObjectURL(file),
+        });
+      };
+      reader.readAsDataURL(file);
     }
 
     // Reset the input value to ensure the change event is fired even if the same file is selected
@@ -206,12 +223,21 @@ const CampaignAdminScreen = () => {
 
     const formData = new FormData();
     for (const [key, value] of Object.entries(projectData)) {
-      formData.append(key, value);
+      // Only append non-null values
+      if (value !== null && value !== undefined && value !== "") {
+        formData.append(key, value);
+      }
     }
 
     try {
       dispatch(startButtonLoading())
-      const response = await axios.post(`${Baseurl}/db/channel/project`, formData, header);
+      const response = await axios.post(`${Baseurl}/db/channel/project`, formData, {
+        ...header,
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+        transformRequest: [(data) => data], // Don't transform FormData
+        // Don't set Content-Type - let browser set it with boundary for FormData
+      });
       if (response.status === 200 || response.status === 201) {
         toast.success(response?.data?.message, { autoClose: 2500 });
         dispatch(stopButtonLoading())
@@ -219,17 +245,23 @@ const CampaignAdminScreen = () => {
         getDataList();
       }
     } catch (error) {
-      console.log(error)
-      if (error?.response?.data?.status === 422) {
-        dispatch(stopButtonLoading())
-        toast.error(error?.response?.data?.message, { autoClose: 2500 })
+      console.log("Upload error:", error)
+      dispatch(stopButtonLoading())
+      
+      // Handle 413 Request Entity Too Large error
+      if (error?.response?.status === 413) {
+        toast.error("File size is too large. Maximum allowed size is 10MB. The server rejected this file. Please upload a smaller file or contact your administrator to increase the server upload limit.", { autoClose: 5000 });
+        return;
       }
-      if (error?.response?.data?.message) {
-        dispatch(stopButtonLoading())
+      
+      if (error?.response?.data?.status === 422) {
+        toast.error(error?.response?.data?.message, { autoClose: 2500 })
+      } else if (error?.response?.data?.message) {
         toast.error(error?.response?.data?.message, { autoClose: 2500 });
+      } else if (error?.message) {
+        toast.error(error.message, { autoClose: 2500 });
       } else {
-        dispatch(stopButtonLoading())
-        toast.error("Something went wrong!", { autoClose: 2500 });
+        toast.error("Something went wrong! Please check your connection and try again.", { autoClose: 2500 });
       }
     }
   };
@@ -256,12 +288,21 @@ const CampaignAdminScreen = () => {
 
     const formData = new FormData();
     for (const [key, value] of Object.entries(projectData)) {
-      formData.append(key, value);
+      // Only append non-null values
+      if (value !== null && value !== undefined && value !== "") {
+        formData.append(key, value);
+      }
     }
 
     try {
       dispatch(startButtonLoading())
-      const response = await axios.put(`${Baseurl}/db/channel/project`, formData, header);
+      const response = await axios.put(`${Baseurl}/db/channel/project`, formData, {
+        ...header,
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+        transformRequest: [(data) => data], // Don't transform FormData
+        // Don't set Content-Type - let browser set it with boundary for FormData
+      });
       if (response.status === 200 || response.status === 201) {
         toast.success(response?.data?.message, { autoClose: 2500 });
         dispatch(stopButtonLoading())
@@ -271,17 +312,23 @@ const CampaignAdminScreen = () => {
         getDataList();
       }
     } catch (error) {
-      console.log(error)
+      console.log("Update error:", error)
+      dispatch(stopButtonLoading())
+      
+      // Handle 413 Request Entity Too Large error
+      if (error?.response?.status === 413) {
+        toast.error("File size is too large. Maximum allowed size is 10MB. The server rejected this file. Please upload a smaller file or contact your administrator to increase the server upload limit.", { autoClose: 5000 });
+        return;
+      }
+      
       if (error?.response?.data?.status === 422) {
         toast.error(error?.response?.data?.message, { autoClose: 2500 })
-        dispatch(stopButtonLoading())
-      }
-      if (error?.response?.data?.message) {
-        dispatch(stopButtonLoading())
+      } else if (error?.response?.data?.message) {
         toast.error(error?.response?.data?.message, { autoClose: 2500 });
+      } else if (error?.message) {
+        toast.error(error.message, { autoClose: 2500 });
       } else {
-        dispatch(stopButtonLoading())
-        toast.error("Something went wrong!", { autoClose: 2500 });
+        toast.error("Something went wrong! Please check your connection and try again.", { autoClose: 2500 });
       }
     }
   };

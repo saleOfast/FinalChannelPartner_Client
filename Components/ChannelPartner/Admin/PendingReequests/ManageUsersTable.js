@@ -358,13 +358,13 @@ const ManageUsersTable = ({
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
-                ...userInfo, user_code: value
+                ...userInfo, user_code: value, report_to: user?.report_to ?? null
               })}} style={{backgroundColor: clientBtnColor? clientBtnColor:`#61E25E`}} className="btn text-white rounded-5" >
                 Accept
               </button>
   
               <button onClick={()=>{setActionMode('Reject'); setShowModalSingle(true); setUserInfo({
-                ...userInfo, user_code: value
+                ...userInfo, user_code: value, report_to: user?.report_to ?? null
               })}} className=" btn btn-danger rounded-5">
                 Reject
               </button>
@@ -378,13 +378,13 @@ const ManageUsersTable = ({
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
-                ...userInfo, user_code: value
+                ...userInfo, user_code: value, report_to: user?.report_to ?? null
               })}} style={{backgroundColor: clientBtnColor? clientBtnColor:`#61E25E`}} className="btn text-white rounded-5" >
                 Accept
               </button>
   
               <button onClick={()=>{setActionMode('Reject'); setShowModalSingle(true); setUserInfo({
-                ...userInfo, user_code: value
+                ...userInfo, user_code: value, report_to: user?.report_to ?? null
               })}} className=" btn btn-danger rounded-5">
                 Reject
               </button>
@@ -398,13 +398,13 @@ const ManageUsersTable = ({
               <>  
               <div className="table_btns d-flex align-items-center justify-content-start gap-3">
               <button  onClick={()=>{setActionMode('Accept'); setShowModalSingle(true);  setUserInfo({
-                ...userInfo, user_code: value
+                ...userInfo, user_code: value, report_to: user?.report_to ?? null
               })}} style={{backgroundColor: clientBtnColor? clientBtnColor:`#61E25E`}} className="btn text-white rounded-5" >
                 Accept
               </button>
   
               <button onClick={()=>{setActionMode('Reject'); setShowModalSingle(true); setUserInfo({
-                ...userInfo, user_code: value
+                ...userInfo, user_code: value, report_to: user?.report_to ?? null
               })}} className=" btn btn-danger rounded-5">
                 Reject
               </button>

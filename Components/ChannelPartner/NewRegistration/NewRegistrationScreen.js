@@ -13,43 +13,43 @@ import { startButtonLoading, stopButtonLoading } from "../../../store/buttonLoad
 
 const NewRegistrationScreen = () => {
   const [formFields, setFormFields] = useState({
-    first_name:"",
-    last_name:"",
-    email:"",
-    contact:null
+    first_name: "",
+    last_name: "",
+    email: "",
+    contact: null
   });
-  const[clientData,setClientData]=useState();
-  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
-  const dispatch=useDispatch()
+  const [clientData, setClientData] = useState();
+  const { isButtonLoading } = useSelector((state) => state.buttonLoader)
+  const dispatch = useDispatch()
 
   const router = useRouter();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     const { first_name, last_name, email, contact } = formFields;
-  
+
     // Basic validations for mandatory fields
     if (!first_name || !last_name || !email || !contact) {
       dispatch(stopButtonLoading());
-      return toast.warning("Please fill all mandatory fields",{autoClose:2500});
+      return toast.warning("Please fill all mandatory fields", { autoClose: 2500 });
     }
-  
+
     // Validate contact number for 10 digits
     const contactRegex = /^\d{10}$/;
     if (!contactRegex.test(contact)) {
       dispatch(stopButtonLoading());
-      return toast.warning("Contact number must be a 10-digit number",{autoClose:2500});
+      return toast.warning("Contact number must be a 10-digit number", { autoClose: 2500 });
     }
-  
+
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       dispatch(stopButtonLoading());
-      return toast.warning("Please enter a valid email address",{autoClose:2500});
+      return toast.warning("Please enter a valid email address", { autoClose: 2500 });
     }
 
-    let newFormfields={...formFields,db_name:clientData?.db_name}
+    let newFormfields = { ...formFields, db_name: clientData?.db_name }
     console.log(newFormfields)
     try {
       dispatch(startButtonLoading());
@@ -57,32 +57,33 @@ const NewRegistrationScreen = () => {
         Baseurl + `/db/channelPartnerLeads`,
         newFormfields
       );
-  
+
       if (data.status === 200) {
         dispatch(stopButtonLoading());
-        toast.success(data?.message,{autoClose:2500});
+        toast.success(data?.message, { autoClose: 2500 });
         setTimeout(() => {
           router.push("/partner");
-        }, 2500);        
+        }, 2500);
       }
     } catch (error) {
       dispatch(stopButtonLoading());
       console.log(error?.response?.data);
       const errorMessage = error?.response?.data?.message || "Something went wrong!";
-      toast.error(errorMessage,{autoClose:2500});
+      toast.error(errorMessage, { autoClose: 2500 });
     }
   };
-  
 
-  useEffect(()=>{
-    const getSignInData=async()=>{
+
+  useEffect(() => {
+    const getSignInData = async () => {
       try {
         let baseUrl = window.location.origin;
-        if(baseUrl==="http://localhost:3000"){
-          baseUrl="https://kissan.saleofast.com"
+        // Handle local development URLs (localhost and local IP addresses)
+        if (baseUrl === "http://localhost:3000" || baseUrl.startsWith("http://10.") || baseUrl.startsWith("http://192.168.") || baseUrl.startsWith("http://172.")) {
+          baseUrl = "https://connect.theprosperity.in"
         }
-        const {data}=await axios.post(Baseurl+"/db/admin/url",{
-          client_url:`${baseUrl}`,
+        const { data } = await axios.post(Baseurl + "/db/admin/url", {
+          client_url: `${baseUrl}`,
         })
         setClientData(data?.data)
       } catch (error) {
@@ -90,85 +91,85 @@ const NewRegistrationScreen = () => {
       }
     }
     getSignInData()
-  },[])
+  }, [])
 
   return (
     <>
-      <section className="Sign-Up pt-4" style={{padding:'0 16px'}}>
+      <section className="Sign-Up pt-4" style={{ padding: '0 16px' }}>
         <div className="container">
           <div className="row">
-          <div className="col-12 col-md-7">
-                <div className="row gx-3">
+            <div className="col-12 col-md-7">
+              <div className="row gx-3">
                 <div className="Sign-In-logo pb-4">
-                  <img  src={
-                        clientData?.logo
-                          ? `${filesUrl}` +
-                            `/logo/images${clientData?.logo}`
-                          : "/ChannelPartner/logo.png"
-                      } alt="normal"/>
+                  <img src={
+                    clientData?.logo
+                      ? `${filesUrl}` +
+                      `/logo/images${clientData?.logo}`
+                      : "/ChannelPartner/logo.png"
+                  } alt="normal" />
                 </div>
-                  <div className="col-6">
-                    <div
-                      style={{
-                        height: 290,
-                        width: "100%",
-                        backgroundImage: clientData?.client_image_1 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_1}`:`url(/ChannelPartner/signup-img1.png)`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
-                        marginBottom: 15,
-                        borderTopLeftRadius: 10,
-                      }}
-                    ></div>
-                    <div
-                      style={{
-                        height: 200,
-                        width: "100%",
-                        backgroundImage: clientData?.client_image_2 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_2}`:`url(/ChannelPartner/signup-img3.png)`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
-                        marginBottom: 15,
-                        borderBottomLeftRadius: 10,
-                      }}
-                    ></div>
-                    <div></div>
-                  </div>
-                  <div className="col-6">
-                    <div
-                      style={{
-                        height: 200,
-                        width: "100%",
-                        backgroundImage: clientData?.client_image_3 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_3}`:`url(/ChannelPartner/signup-img2.png)`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
-                        marginBottom: 15,
-                        borderTopRightRadius: 10,
-                      }}
-                    ></div>
-                    <div
-                      style={{
-                        height: 290,
-                        width: "100%",
-                        backgroundImage: clientData?.client_image_4 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_4}`:`url(/ChannelPartner/signup-img4.png)`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
-                        marginBottom: 15,
-                        borderBottomRightRadius: 10,
-                      }}
-                    ></div>
-                  </div>
+                <div className="col-6">
+                  <div
+                    style={{
+                      height: 290,
+                      width: "100%",
+                      backgroundImage: clientData?.client_image_1 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_1}` : `url(/ChannelPartner/signup-img1.png)`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                      marginBottom: 15,
+                      borderTopLeftRadius: 10,
+                    }}
+                  ></div>
+                  <div
+                    style={{
+                      height: 200,
+                      width: "100%",
+                      backgroundImage: clientData?.client_image_2 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_2}` : `url(/ChannelPartner/signup-img3.png)`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                      marginBottom: 15,
+                      borderBottomLeftRadius: 10,
+                    }}
+                  ></div>
+                  <div></div>
+                </div>
+                <div className="col-6">
+                  <div
+                    style={{
+                      height: 200,
+                      width: "100%",
+                      backgroundImage: clientData?.client_image_3 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_3}` : `url(/ChannelPartner/signup-img2.png)`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                      marginBottom: 15,
+                      borderTopRightRadius: 10,
+                    }}
+                  ></div>
+                  <div
+                    style={{
+                      height: 290,
+                      width: "100%",
+                      backgroundImage: clientData?.client_image_4 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_4}` : `url(/ChannelPartner/signup-img4.png)`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                      marginBottom: 15,
+                      borderBottomRightRadius: 10,
+                    }}
+                  ></div>
                 </div>
               </div>
+            </div>
             <div className="col-12 col-md-5 d-flex justify-content-center">
               <div className="Sign-Up_Sign-In">
                 <h3 className="Perfect-Home ps-2">Find Your Perfect Home. </h3>
                 <div className="underline" />
                 <div className="d-flex pt-5 ps-2">
-                                   <div
+                  <div
                     className="nav-link d-flex flex-column gap-2 align-items-center pb-3 Sign-Up-btn text-white"
                     id="Sign-Up"
                     data-bs-toggle="tab"
                     data-bs-target="#Sign-Up-tab"
-                    style={{ backgroundColor: `${clientData?.button_color || '#293790'}`}}
+                    style={{ backgroundColor: `${clientData?.button_color || '#293790'}` }}
                   >
                     Registration
                   </div>
@@ -232,7 +233,7 @@ const NewRegistrationScreen = () => {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="rowTab">
                           <div className="labels">
                             <label id="number" htmlFor="contact">
@@ -271,13 +272,13 @@ const NewRegistrationScreen = () => {
                               className="input-field"
                               placeholder="Enter Email"
                               value={formFields?.email}
-                              onChange={(e)=>{
-                                setFormFields({...formFields,email:e.target.value})
+                              onChange={(e) => {
+                                setFormFields({ ...formFields, email: e.target.value })
                               }}
                             />
                           </div>
                         </div>
-                       
+
                         <button
                           id="craete-account"
                           type="submit"
@@ -285,13 +286,13 @@ const NewRegistrationScreen = () => {
                           disabled={isButtonLoading}
                         >
                           {isButtonLoading ? (
-                                  <>
-                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                    &nbsp;Submit
-                                  </>
-                                ) : (
-                                  'Submit'
-                                )}
+                            <>
+                              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                              &nbsp;Submit
+                            </>
+                          ) : (
+                            'Submit'
+                          )}
                         </button>
                       </form>
                     </div>

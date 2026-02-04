@@ -30,232 +30,358 @@ const CPRegisterLeadsTable = ({
   loader,
   start,
   end,
-  bstId,setBstId,statusId,setStatusId
+  bstId, setBstId, statusId, setStatusId
 }) => {
 
-  const [userData, setUserData] =  useState([])
-  const router=useRouter()
-  const [actionMode, setActionMode] =  useState('')
-  const [showModal, setShowModal] =  useState(false)
-  const [showModal2, setShowModal2] =  useState(false)
-  const[id,setId]=useState("")
-  const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+  const [userData, setUserData] = useState([])
+  const router = useRouter()
+  const [actionMode, setActionMode] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const [showModal2, setShowModal2] = useState(false)
+  const [id, setId] = useState("")
+  const userInfo = hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) : null;
   const [formData, setFormData] = useState({
+    cpl_id: '',
     first_name: '',
     last_name: '',
     contact: '',
     email: '',
     stage: 'OPEN',
     createdAt: '',
-    remarks:"",
-    follow_up_date:""
+    remarks: "",
+    follow_up_date: ""
   });
   const [errors, setErrors] = useState({})
-  const [historyData,setHistoryData] =useState([])
-  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#61E25E"
+  const [historyData, setHistoryData] = useState([])
+  const clientBtnColor = hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#61E25E"
   const [errorToast, setErrorToast] = useState(false);
   const [usersList, setUsersList] = useState([]);
-  const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+  const userInfoCheck = hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) : null;
 
   async function getUsersList() {
     await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getUsersList()
-  },[])
+  }, [])
 
 
   const getCurrentWeekDates = () => {
     const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
-      const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
-      if(hasCookie("cpleadsFilter")){
-        
-       let data=JSON.parse(getCookie("cpleadsFilter"))
-        return {startDate:data?.f_date,endDate:data?.t_date}
-      }
-      else{
-        return { startDate, endDate };
-      }
-    
+    const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
+    if (hasCookie("cpleadsFilter")) {
+
+      let data = JSON.parse(getCookie("cpleadsFilter"))
+      return { startDate: data?.f_date, endDate: data?.t_date }
+    }
+    else {
+      return { startDate, endDate };
+    }
+
   };
 
-const [value, setValue] = useState(getCurrentWeekDates());
+  const [value, setValue] = useState(getCurrentWeekDates());
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return `${date.getDate()}/${months[date.getMonth()]}/${date.getFullYear()}`;
-};
-  
-
-const [isUser, setIsUser] = useState(false);
-const [isUserData, setIsUserData] = useState(null);
-const addUserHandler = async (id,assignedToId) => {
-  const object=dataList?.find((item)=>item?.cpl_id==id);
-  const db_name = getCookie("db_name");
-  const token = getCookie("token");
-  const payload={
-    contact_number:object?.contact,
-    cpt_id:1,
-    db_name:db_name,
-    email:object?.email,
-    role_id:1,
-    user:object?.first_name,
-    user_l_name:object?.last_name,
-    report_to:assignedToId
-  }
-  if (!hasCookie("token")) return;
- 
-  const header = {
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-      pass:"pass"
-    },
   };
 
-  try {
-    
-    const response = await axios.post(
-      `${Baseurl}/db/users`,
-      payload,
-      header
-    );
-    if (response.status === 200 || response.status === 201) {
-      setIsUser(true)
-      // await updateUserhandler(true)
-      toast.success("Mail Sent for Onboarding",{autoClose:2500});
-    }
-  } catch (error) {
-    if (error?.response?.data?.status === 422) {
-      const taskObject = error.response.data.data.reduce((obj, item) => {
-        const [key, value] = Object.entries(item)[0];
-        obj[key] = value;
-        return obj;
-      }, {});
-      setErrorData(taskObject);
-    }
-    if (error?.response?.data?.message) {
-      if(error?.response?.data?.message == "user existed in this db"){
-        setIsUserData(error?.response?.data?.userData);
-        setIsUser(true);
-        if(error?.response?.data?.userData?.doc_verification == 0){
-          toast.info("User Already Onboard. Please check the pending request and resend the verification mail",{autoClose:4000});
-        }
-      }else{
-        toast.error(error?.response?.data?.message,{autoClose:2500});
-      }
-    } else {
-      toast.error("Something went wrong!",{autoClose:2500});
-    }
-    // setisLoading(false);
-  }
-};
 
-
-const updateUserhandler = async (onBoradStage=false, isUserData) => {
-  let newErrors = validateForm();
-
-  if (Object.keys(newErrors).length === 0) {
+  const [isUser, setIsUser] = useState(false);
+  const [isUserData, setIsUserData] = useState(null);
+  const addUserHandler = async (id, assignedToId) => {
+    const object = dataList?.find((item) => item?.cpl_id == id);
+    const db_name = getCookie("db_name");
+    const token = getCookie("token");
+    const payload = {
+      contact_number: object?.contact,
+      cpt_id: 1,
+      db_name: db_name,
+      email: object?.email,
+      role_id: 1,
+      user: object?.first_name,
+      user_l_name: object?.last_name,
+      report_to: assignedToId
+    }
     if (!hasCookie("token")) return;
-  
-  const token = getCookie("token");
-  const db_name = getCookie("db_name");
-  const header = {
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-      pass: "pass",
-    },
+
+    const header = {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        pass: "pass"
+      },
+    };
+
+    try {
+
+      const response = await axios.post(
+        `${Baseurl}/db/users`,
+        payload,
+        header
+      );
+      if (response.status === 200 || response.status === 201) {
+        setIsUser(true)
+        // await updateUserhandler(true)
+        toast.success("Mail Sent for Onboarding", { autoClose: 2500 });
+      }
+    } catch (error) {
+      if (error?.response?.data?.status === 422) {
+        const taskObject = error.response.data.data.reduce((obj, item) => {
+          const [key, value] = Object.entries(item)[0];
+          obj[key] = value;
+          return obj;
+        }, {});
+        setErrorData(taskObject);
+      }
+      if (error?.response?.data?.message) {
+        if (error?.response?.data?.message == "user existed in this db") {
+          setIsUserData(error?.response?.data?.userData);
+          setIsUser(true);
+          if (error?.response?.data?.userData?.doc_verification == 0) {
+            toast.info("User Already Onboard. Please check the pending request and resend the verification mail", { autoClose: 4000 });
+          }
+        } else {
+          toast.error(error?.response?.data?.message, { autoClose: 2500 });
+        }
+      } else {
+        toast.error("Something went wrong!", { autoClose: 2500 });
+      }
+      // setisLoading(false);
+    }
   };
-  let newFormData;
-  if(onBoradStage && isUserData){
-    newFormData={...formData,db_name:db_name,stage:isUserData?.doc_verification == 0 ? "LINK SENT" : isUserData?.doc_verification == 2 ? "ONBOARDED" : ""}
-    toast.warn("User Already OnBoarded")
-   }else if(onBoradStage){
-    newFormData={...formData,db_name:db_name,stage:"LINK SENT"}
-  }else{
-   newFormData={...formData, db_name:db_name}
-  }
-  // const newFormData={...formData,db_name:db_name,}
-  try {
-    const response = await axios.put(
-      `${Baseurl}/db/channelPartnerLeads`,
-      newFormData,
-      header
-    );
-    if (response.status === 200 || response.status === 201) {
-      // toast.success(response?.data?.message,{autoClose:2500});
-    await getDataList();
-    }
-  } catch (error) {
-    if (error?.response?.data?.message) {
-      toast.error(error?.response?.data?.message,{autoClose:2500});
+
+
+  const updateUserhandler = async (onBoradStage = false, isUserData) => {
+    let newErrors = validateForm();
+
+    if (Object.keys(newErrors).length === 0) {
+      if (!hasCookie("token")) return;
+
+      const token = getCookie("token");
+      const db_name = getCookie("db_name");
+      const header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          pass: "pass",
+        },
+      };
+      let newFormData;
+      if (onBoradStage && isUserData) {
+        newFormData = { ...formData, db_name: db_name, stage: isUserData?.doc_verification == 0 ? "LINK SENT" : isUserData?.doc_verification == 2 ? "ONBOARDED" : "" }
+        toast.warn("User Already OnBoarded")
+      } else if (onBoradStage) {
+        newFormData = { ...formData, db_name: db_name, stage: "LINK SENT" }
+      } else {
+        newFormData = { ...formData, db_name: db_name }
+      }
+      // const newFormData={...formData,db_name:db_name,}
+      try {
+        const response = await axios.put(
+          `${Baseurl}/db/channelPartnerLeads`,
+          newFormData,
+          header
+        );
+        if (response.status === 200 || response.status === 201) {
+          // toast.success(response?.data?.message,{autoClose:2500});
+          await getDataList();
+        }
+      } catch (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message, { autoClose: 2500 });
+        } else {
+          toast.error("Something went wrong!", { autoClose: 2500 });
+        }
+      }
+      console.log('Form data submitted:', formData);
+      setShowModal(false);
+      setShowAssignTo(false);
     } else {
-      toast.error("Something went wrong!",{autoClose:2500});
+      setErrors(newErrors);
     }
-  }
-    console.log('Form data submitted:', formData);
-    setShowModal(false);
-    setShowAssignTo(false);
-  } else {
-    setErrors(newErrors);
-  }
-  
-};
 
-useEffect(  ()=>{
-  
-  if(isUser){
-    async function fetchData() {
-      // You can await here
-       await updateUserhandler(true, isUserData);
-      // ...
+  };
+
+  useEffect(() => {
+
+    if (isUser) {
+      async function fetchData() {
+        // You can await here
+        await updateUserhandler(true, isUserData);
+        // ...
+      }
+      fetchData();
+
     }
-    fetchData();
-   
-  }
-},[isUser, isUserData])
+  }, [isUser, isUserData])
 
-const getCplHistoryData = async (cpl_id) => {
-  let db_name = (getCookie('db_name'));
-  let url = `/db/channelPartnerLeads/getLeadDetails?db_name=${db_name}&cpl_id=${cpl_id}`;
- 
-  if (hasCookie('token')) {
+  const getCplHistoryData = async (cpl_id) => {
+    let db_name = (getCookie('db_name'));
+    let url = `/db/channelPartnerLeads/getLeadDetails?db_name=${db_name}&cpl_id=${cpl_id}`;
+
+    if (hasCookie('token')) {
       let token = (getCookie('token'));
 
       let header = {
-          headers: {
-              Accept: "application/json",
-              Authorization: "Bearer ".concat(token),
-              db: db_name,
-              pass:"pass",
-          }
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        }
       }
 
       try {
-          const response = await axios.get(Baseurl +url,header);
-          if(response?.status === 200 || response?.status === 201){
-             setShowModal2(true)
-             setHistoryData(response?.data?.data)
-          }
+        const response = await axios.get(Baseurl + url, header);
+        if (response?.status === 200 || response?.status === 201) {
+          setShowModal2(true)
+          setHistoryData(response?.data?.data)
+        }
       } catch (error) {
-          if (error?.response?.data?.message) {
-              toast.error(error?.response?.data?.message,{autoClose:2500});
-          } else {
-              toast.error("Something went wrong!",{autoClose:2500});
-          }
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message, { autoClose: 2500 });
+        } else {
+          toast.error("Something went wrong!", { autoClose: 2500 });
+        }
       }
+    }
   }
-}
-const [showAssignTo, setShowAssignTo] = useState("");
-const [oldAssignTo, setOldAssignTo] = useState("")
-const [selectedOption, setSelectedOption] = useState("");
-const assignChangeHandler = (e) =>{
-  setSelectedOption(e)
-  setOldAssignTo(e)
-}
+  const [showAssignTo, setShowAssignTo] = useState("");
+  const [oldAssignTo, setOldAssignTo] = useState("")
+  const [selectedOption, setSelectedOption] = useState("");
+  const [isDownloading, setIsDownloading] = useState(false);
+  const assignChangeHandler = (e) => {
+    setSelectedOption(e)
+    setOldAssignTo(e)
+  }
+
+  // Function to fetch history for a single lead
+  const fetchLeadHistory = async (cpl_id) => {
+    let db_name = getCookie('db_name');
+    let url = `/db/channelPartnerLeads/getLeadDetails?db_name=${db_name}&cpl_id=${cpl_id}`;
+
+    if (hasCookie('token')) {
+      let token = getCookie('token');
+      let header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(token),
+          db: db_name,
+          pass: "pass",
+        }
+      }
+
+      try {
+        const response = await axios.get(Baseurl + url, header);
+        if (response?.status === 200 || response?.status === 201) {
+          return response?.data?.data || [];
+        }
+      } catch (error) {
+        console.log("Error fetching history for cpl_id:", cpl_id);
+        return [];
+      }
+    }
+    return [];
+  };
+
+  // Custom download function with all history remarks
+  const handleCustomDownload = async () => {
+    setIsDownloading(true);
+    toast.info("Fetching all history data. Please wait...", { autoClose: 2000 });
+
+    try {
+      // Fetch history for all leads
+      const leadsWithHistory = await Promise.all(
+        dataList.map(async (lead) => {
+          const history = await fetchLeadHistory(lead.cpl_id);
+          
+          // Get latest remark (first item in history is usually the latest)
+          const latestRemarkItem = history.find(item => item.remarks);
+          const latestRemarks = latestRemarkItem ? latestRemarkItem.remarks : (lead.remarks || "");
+          
+          // Combine all remarks from history with date (excluding the latest one for history)
+          const allRemarks = history
+            .filter(item => item.remarks)
+            .map(item => `${moment(item.follow_up_date).format("DD/MM/YY")}: ${item.remarks}`)
+            .join(" | ");
+          
+          return {
+            ...lead,
+            latest_remarks: latestRemarks,
+            all_remarks: allRemarks || lead.remarks || ""
+          };
+        })
+      );
+
+      // Create Excel workbook
+      const workbook = XLSX.utils.book_new();
+      let range;
+      if (hasCookie("cpleadsFilter")) {
+        range = JSON.parse(getCookie("cpleadsFilter"));
+      }
+
+      // Prepare data for Excel with Latest Remarks column
+      const excelData = leadsWithHistory.map(lead => [
+        lead.first_name || "",
+        lead.last_name || "",
+        lead.email || "",
+        lead.contact || "",
+        formatDate(lead.createdAt),
+        lead.follow_up_date ? formatDate(lead.follow_up_date) : "",
+        lead.stage || "",
+        lead.user || "",
+        lead.latest_remarks || "",
+        lead.all_remarks || ""
+      ]);
+
+      const customData = [
+        ["Channel Partner Registration Report"],
+        [],
+        [`Filter by:`],
+        [],
+        [`Date Range: ${range?.f_date ? formatDate(range?.f_date) : formatDate(start)} to ${range?.t_date ? formatDate(range?.t_date) : formatDate(end)}`],
+        [],
+        [],
+        ["First Name", "Last Name", "Email", "Contact", "Registration Date", "Follow up Date", "Status", "Assigned To", "Latest Remarks", "Remarks (All History)"],
+        ...excelData,
+      ];
+
+      const worksheet = XLSX.utils.aoa_to_sheet(customData);
+
+      worksheet['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 1, c: 9 } },
+        { s: { r: 2, c: 0 }, e: { r: 3, c: 9 } },
+        { s: { r: 4, c: 0 }, e: { r: 4, c: 9 } },
+        { s: { r: 5, c: 0 }, e: { r: 6, c: 9 } },
+      ];
+
+      worksheet['!cols'] = [
+        { wch: 12 },
+        { wch: 12 },
+        { wch: 30 },
+        { wch: 12 },
+        { wch: 20 },
+        { wch: 20 },
+        { wch: 14 },
+        { wch: 12 },
+        { wch: 30 },
+        { wch: 60 },
+      ];
+
+      XLSX.utils.book_append_sheet(workbook, worksheet, "CPRegistrationList");
+      XLSX.writeFile(workbook, "CPRegistrationList.xlsx");
+      toast.success("Download completed!", { autoClose: 2000 });
+    } catch (error) {
+      console.log("Download error:", error);
+      toast.error("Error downloading file", { autoClose: 2500 });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
   const columns = [
     {
       name: "first_name",
@@ -263,19 +389,19 @@ const assignChangeHandler = (e) =>{
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
+          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
             {columnMeta.label}
           </th>
         ),
 
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <span
-          className="fw-bold"
-          style={{color: '#293790'}}
-          >
-            {value}
-        </span>
+            <span
+              className="fw-bold"
+              style={{ color: '#293790' }}
+            >
+              {value}
+            </span>
           )
         },
       },
@@ -286,19 +412,19 @@ const assignChangeHandler = (e) =>{
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
+          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
             {columnMeta.label}
           </th>
         ),
 
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <span
-          className="fw-bold"
-          style={{color: '#293790'}}
-          >
-            {value}
-        </span>
+            <span
+              className="fw-bold"
+              style={{ color: '#293790' }}
+            >
+              {value}
+            </span>
           )
         },
       },
@@ -309,19 +435,19 @@ const assignChangeHandler = (e) =>{
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
+          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
             {columnMeta.label}
           </th>
         ),
 
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <span
-          className="fw-bold"
-          style={{color: '#293790'}}
-          >
-            {value}
-        </span>
+            <span
+              className="fw-bold"
+              style={{ color: '#293790' }}
+            >
+              {value}
+            </span>
           )
         },
       },
@@ -332,19 +458,19 @@ const assignChangeHandler = (e) =>{
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
+          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
             {columnMeta.label}
           </th>
         ),
 
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <span
-          className="fw-bold"
-          style={{color: '#293790'}}
-          >
-            {value}
-        </span>
+            <span
+              className="fw-bold"
+              style={{ color: '#293790' }}
+            >
+              {value}
+            </span>
           )
         },
       },
@@ -355,19 +481,19 @@ const assignChangeHandler = (e) =>{
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px"  }} >
+          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
             {columnMeta.label}
           </th>
         ),
 
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <span
-          className=""
-          style={{color: '#667799'}}
-          >
-            {formatDate(value)}
-        </span>
+            <span
+              className=""
+              style={{ color: '#667799' }}
+            >
+              {formatDate(value)}
+            </span>
           )
         },
       },
@@ -378,19 +504,19 @@ const assignChangeHandler = (e) =>{
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px"  }} >
+          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
             {columnMeta.label}
           </th>
         ),
 
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <span
-          className=""
-          style={{color: '#667799'}}
-          >
-            {value ? formatDate(value): ""}
-        </span>
+            <span
+              className=""
+              style={{ color: '#667799' }}
+            >
+              {value ? formatDate(value) : ""}
+            </span>
           )
         },
       },
@@ -401,19 +527,19 @@ const assignChangeHandler = (e) =>{
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
+          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
             {columnMeta.label}
           </th>
         ),
 
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <span
-          className="fw-bold"
-          style={{color: '#293790'}}
-          >
-            {value}
-        </span>
+            <span
+              className="fw-bold"
+              style={{ color: '#293790' }}
+            >
+              {value}
+            </span>
           )
         },
       },
@@ -423,21 +549,44 @@ const assignChangeHandler = (e) =>{
       label: "Assigned To",
       options: {
         filter: true,
-        display:(userInfo?.isDB || userInfo?.role_id == 3) ? true:false,
+        display: (userInfo?.isDB || userInfo?.role_id == 3) ? true : false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
+          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
             {columnMeta.label}
           </th>
         ),
 
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-          <span
-          className="fw-bold"
-          style={{color: '#293790'}}
-          >
-            {value}
-        </span>
+            <span
+              className="fw-bold"
+              style={{ color: '#293790' }}
+            >
+              {value}
+            </span>
+          )
+        },
+      },
+    },
+    {
+      name: "remarks",
+      label: "Remarks",
+      options: {
+        filter: false,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
+            {columnMeta.label}
+          </th>
+        ),
+
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <span
+              className=""
+              style={{ color: '#667799' }}
+            >
+              {value || ""}
+            </span>
           )
         },
       },
@@ -447,11 +596,11 @@ const assignChangeHandler = (e) =>{
       label: "Action",
       options: {
         filter: false,
-        download:false,
+        download: false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th
-            style={{ background:`${clientBtnColor}`, color: "white",  paddingLeft: '65px' }}
-            
+            style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '65px' }}
+
           >
             {columnMeta.label}
           </th>
@@ -459,56 +608,58 @@ const assignChangeHandler = (e) =>{
         customBodyRender: (value, tableMeta, updateValue) => {
 
           return (
-              <>
-                  <div className="table_btns">
-                    {
-                      tableMeta?.rowData[6]!=="LINK SENT" && (
-                        <>
-                        <button
-                    className="action_btn"
-                    title="Edit"
-                    onClick={() => {
-                      const newData=dataList?.find((item)=>item?.cpl_id==value)
-                      setFormData(newData)
-                      setShowModal(true)
-                    }}
-                  ><EditIcon/></button>
-                              <button
-                    className="action_btn"
-                    title="History"
-                    onClick={() => {
-                      getCplHistoryData(value)
-                    }}
-                  >
-                    <ViewIcon/>
-                  </button>
-                  <button className="action_btn" onClick={() =>{
-                    setcurrObj({...currObj,cpl_id:value})
-                     setdeleteshowConfirm(true)
-                     }} title='Remove'>
+            <>
+              <div className="table_btns">
+                {
+                  tableMeta?.rowData[6] !== "LINK SENT" && (
+                    <>
+                      <button
+                        className="action_btn"
+                        title="Edit"
+                        onClick={() => {
+                          const newData = dataList?.find((item) => item?.cpl_id == value)
+                          setFormData(newData)
+                          setShowModal(true)
+                        }}
+                      >
+                        <EditIcon />
+                      </button>
+                      <button
+                        className="action_btn"
+                        title="History"
+                        onClick={() => {
+                          getCplHistoryData(value)
+                        }}
+                      >
+                        <ViewIcon />
+                      </button>
+                      <button className="action_btn" onClick={() => {
+                        setcurrObj({ ...currObj, cpl_id: value })
+                        setdeleteshowConfirm(true)
+                      }} title='Remove'>
                         <DeleteIcon />
+                      </button>
+                    </>
+                  )
+                }
+                {userInfo?.isDB && tableMeta?.rowData[6] !== "ONBOARDED" && tableMeta?.rowData[6] !== "LINK SENT" && <div className="table_btns justify-content-center align-items-center" style={{ marginRight: '5px' }}>
+                  <button
+                    onClick={() => {
+                      const newData = dataList?.find((item) => item?.cpl_id == value)
+                      setFormData(newData);
+                      setShowAssignTo(value);
+                      setOldAssignTo(tableMeta?.rowData[9])
+                    }}
+                    style={{ background: clientBtnColor ? clientBtnColor : `#293790`, color: "white", padding: "6px", borderRadius: "20px", border: "white" }}
+                    className='pe-3 ps-3'
+                    title='Assign - To'>
+                    Assign to
                   </button>
-                        </>
-                      )
-                    }
-                    {userInfo?.isDB && tableMeta?.rowData[6]!=="ONBOARDED" && tableMeta?.rowData[6]!=="LINK SENT"&& <div className="table_btns justify-content-center align-items-center" style={{marginRight:'5px'}}>
-                            <button
-                                onClick={()=>{
-                                  const newData=dataList?.find((item)=>item?.cpl_id==value)
-                                  setFormData(newData);
-                                  setShowAssignTo(value); 
-                                  setOldAssignTo(tableMeta?.rowData[9])
-                                }}
-                                style={{background:clientBtnColor? clientBtnColor:`#293790`, color:"white",padding:"6px", borderRadius:"20px",border:"white"}}
-                                className='pe-3 ps-3'
-                                title='Assign - To'>
-                                    Assign to
-                            </button>
-                        </div>}
-                  {
-                    tableMeta?.rowData[6]=="CONTACTED" && (
-                      <button 
-                      className="btn text-white rounded-5"  style={{backgroundColor: clientBtnColor ? clientBtnColor : "#61E25E"}}
+                </div>}
+                {
+                  tableMeta?.rowData[6] == "CONTACTED" && (
+                    <button
+                      className="btn text-white rounded-5" style={{ backgroundColor: clientBtnColor ? clientBtnColor : "#61E25E" }}
                       //  onClick={() =>{
                       //   let newData = dataList?.find((item) => item?.cpl_id == value);
                       //   setFormData(newData)
@@ -517,19 +668,19 @@ const assignChangeHandler = (e) =>{
                       onClick={async () => {
                         const newData = dataList?.find((item) => item?.cpl_id == value);
                         if (newData) {
-                          setFormData({...newData, cpl_id: value }); // Update formData
+                          setFormData({ ...newData, cpl_id: value }); // Update formData
                           await addUserHandler(value, newData?.asssigned_to); // Ensure sequential execution
                           // await updateUserhandler(true)
                         }
                       }}
-                         title='Onboard For Channel Partner'>
-                            Onboard
-                      </button>
-                    )
-                  }
+                      title='Onboard For Channel Partner'>
+                      Onboard
+                    </button>
+                  )
+                }
 
-                  </div>
-              </>
+              </div>
+            </>
           );
         },
       },
@@ -538,83 +689,41 @@ const assignChangeHandler = (e) =>{
       name: 'asssigned_to',
       label: "AssignedToId",
       options: {
-        display:false,
-          filter: false,
-          download:false,
-          viewColumns:false,
-          customHeadRender: (columnMeta, updateDirection) => (
-            <th style={{ background:`${clientBtnColor}`, color: "white", paddingLeft: '15px',padding:"7px" }} >
-              {columnMeta.label}
-            </th>
-          ),
-            customBodyRender: (value, tableMeta, updateValue) => {
-              return (
-                  <div  className='status_box fw-bold' style={{color:"#293790"}} >
-                      {value}
-                  </div>
-              )
-          }
-            
+        display: false,
+        filter: false,
+        download: false,
+        viewColumns: false,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
+            {columnMeta.label}
+          </th>
+        ),
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <div className='status_box fw-bold' style={{ color: "#293790" }} >
+              {value}
+            </div>
+          )
+        }
+
       }
-  }
+    }
   ];
- 
-   
+
+
   const options = {
     selectableRows: 'none',
     responsive: "standard",
-    downloadOptions:{filename:"CPRegistrationList"},
-    filterType:'multiselect',
+    downloadOptions: { filename: "CPRegistrationList" },
+    filterType: 'multiselect',
     viewColumns: false,
     customFilterDialogFooter: () => (
       <div style={{ minWidth: "400px" }} />
     ),
-    // Customizing the download behavior
-    onDownload: (buildHead, buildBody, columns, data) => {
-      const workbook = XLSX.utils.book_new();
-      let range;
-      if(hasCookie("cpleadsFilter")){
-        range= JSON.parse(getCookie("cpleadsFilter"))
-      }
-      const filteredColumns = columns.slice(0, -2); // Remove the last two columns
-      const filteredData = data.map(row => {
-        return filteredColumns.map((col, index) => row.data[index]);
-      });
-      
-      const customData = [
-        ["Channel Partner Registration Report"], 
-        [], 
-        [`Filter by:`],
-        [],
-        [`Date Range: ${range?.f_date ? formatDate(range?.f_date):formatDate(start)} to ${range?.t_date ? formatDate(range?.t_date):formatDate(end)}`],
-        [], 
-        [], 
-        filteredColumns.map(col => col.label || col.name), 
-        ...filteredData,
-      ];
-    
-      const worksheet = XLSX.utils.aoa_to_sheet(customData);
-    
-      worksheet['!merges'] = [
-        { s: { r: 0, c: 0 }, e: { r: 1, c: filteredColumns.length - 1 } }, // Merge A1 and A2 for the title
-        { s: { r: 2, c: 0 }, e: { r: 3, c: filteredColumns.length - 1 } }, // Merge A3 for the date range
-        { s: { r: 4, c: 0 }, e: { r: 4, c: filteredColumns.length - 1 } }, // Merge A3 for the date range
-        { s: { r: 5, c: 0 }, e: { r: 6, c: filteredColumns.length - 1 } }, // Merge A3 for the date range
-        
-      ];
-      worksheet['!cols'] = [
-        { wch: 12 }, 
-        { wch: 12 },
-        { wch: 30 },
-        { wch: 12 },
-        { wch: 20 },
-        { wch: 20 },
-        { wch: 14 },
-        { wch: 12 },
-      ];
-      XLSX.utils.book_append_sheet(workbook, worksheet, "CPRegistrationList");
-      XLSX.writeFile(workbook, "CPRegistrationList.xlsx");
-      return false;
+    // Use original download icon but trigger custom download
+    onDownload: () => {
+      handleCustomDownload();
+      return false; // Prevent default download
     }
   };
 
@@ -622,7 +731,7 @@ const assignChangeHandler = (e) =>{
     const newErrors = {};
     if (!formData.first_name) newErrors.first_name = "First name is required";
     if (!formData.last_name) newErrors.last_name = "Last name is required";
-    if(formData?.stage=="CALL" || formData?.stage=="FOLLOW UP" || formData?.stage=="VISIT"){
+    if (formData?.stage == "CALL" || formData?.stage == "FOLLOW UP" || formData?.stage == "VISIT") {
       if (!formData.follow_up_date) newErrors.follow_up_date = "Follow Up Date is required";
     }
     if (!formData.contact || formData.contact.toString().length !== 10) newErrors.contact = "Contact must be 10 digits";
@@ -639,15 +748,15 @@ const assignChangeHandler = (e) =>{
     });
   };
 
-  let statusArray=[{id:"",label:"All"},{id:"OPEN",label:"OPEN"},{id:"CONTACTED",label:"CONTACTED"},{id:"LINK SENT",label:"LINK SENT"},{id:"ONBOARDED",label:"ONBOARDED"},{id:"NOT INTERESTED",label:"NOT INTERESTED"},{id:"CALL",label:"CALL"},,{id:"VISIT",label:"VISIT"},{id:"FOLLOW UP",label:"FOLLOW UP"}]
+  let statusArray = [{ id: "", label: "All" }, { id: "OPEN", label: "OPEN" }, { id: "CONTACTED", label: "CONTACTED" }, { id: "LINK SENT", label: "LINK SENT" }, { id: "ONBOARDED", label: "ONBOARDED" }, { id: "NOT INTERESTED", label: "NOT INTERESTED" }, { id: "CALL", label: "CALL" }, , { id: "VISIT", label: "VISIT" }, { id: "FOLLOW UP", label: "FOLLOW UP" }]
 
   const CustomToolbar = () => {
     return (
-        <div className=' d-flex justify-content-start gap-3 align-items-center '>
-            <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
-            {/* <DateRange value={value} setValue={setValue}  getData={getDataList} filterType={"cpleads"} />  */}
+      <div className=' d-flex justify-content-start gap-3 align-items-center '>
+        <p className='fw-bold ' style={{ fontSize: "18px" }} >{title}</p>
+        {/* <DateRange value={value} setValue={setValue}  getData={getDataList} filterType={"cpleads"} />  */}
 
-            {/* {
+        {/* {
                   userInfoCheck?.isDB && (
                     <div className='col-md-4 mb-3'>
                     <label className='fw-bold' style={{ fontSize: '16px' }}>BST</label>
@@ -723,39 +832,39 @@ const assignChangeHandler = (e) =>{
                     }}
                   />
                 </div> */}
-        </div>
+      </div>
     );
-}
+  }
 
 
   return (
     <>
-    {
-      loader ?  <div className="miuiTable channelTable"><Loader/></div>
-      :
-      (
-        <div className="miuiTable channelTable">
-        <MUIDataTable
-          title={<CustomToolbar/>}
-          data={dataList}
-          columns={columns}
-          // options={options}
-          options={{
-            ...options,
-            customFilterDialogFooter: () => (
-              <div
-                style={{
-                  minWidth: "400px", // Set consistent width
+      {
+        loader ? <div className="miuiTable channelTable"><Loader /></div>
+          :
+          (
+            <div className="miuiTable channelTable">
+              <MUIDataTable
+                title={<CustomToolbar />}
+                data={dataList}
+                columns={columns}
+                // options={options}
+                options={{
+                  ...options,
+                  customFilterDialogFooter: () => (
+                    <div
+                      style={{
+                        minWidth: "400px", // Set consistent width
+                      }}
+                    />
+                  ),
                 }}
               />
-            ),
-          }}
-        />
-        
-      </div>
-      )
-    }
-      
+
+            </div>
+          )
+      }
+
 
       <Modal
         className="commonModal"
@@ -769,7 +878,7 @@ const assignChangeHandler = (e) =>{
           <Modal.Title>Update Info</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={(e)=>{
+          <Form onSubmit={(e) => {
             e.preventDefault()
             updateUserhandler()
           }}>
@@ -818,7 +927,7 @@ const assignChangeHandler = (e) =>{
               <Form.Control
                 type="text"
                 name="contact"
-                disabled={true}
+                // disabled={true}
                 value={formData.contact}
                 onChange={(e) => {
                   // Allow only numeric characters and limit to 10 digits
@@ -839,7 +948,7 @@ const assignChangeHandler = (e) =>{
               <Form.Control
                 type="email"
                 name="email"
-                disabled={true}
+                // disabled={true}
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Enter email"
@@ -847,7 +956,7 @@ const assignChangeHandler = (e) =>{
               {errors.email && <Form.Text className="text-danger">{errors.email}</Form.Text>}
             </Form.Group>
 
-            
+
 
             <Form.Group controlId="registrationDate">
               <Form.Label>Registration Date</Form.Label>
@@ -868,33 +977,33 @@ const assignChangeHandler = (e) =>{
                 onChange={handleInputChange}
               >
                 <option hidden value="OPEN">OPEN</option>
-                <option hidden  value="LINK SENT">LINK SENT</option>
-                <option hidden  value="ONBOARDED">ONBOARDED</option>
-                <option  value="CALL">CALL</option>
-                <option  value="FOLLOW UP">FOLLOW UP</option>
-                <option  value="VISIT">VISIT</option>
+                <option hidden value="LINK SENT">LINK SENT</option>
+                <option hidden value="ONBOARDED">ONBOARDED</option>
+                <option value="CALL">CALL</option>
+                <option value="FOLLOW UP">FOLLOW UP</option>
+                <option value="VISIT">VISIT</option>
                 <option value="CONTACTED">CONTACTED</option>
-                <option  value="NOT INTERESTED">NOT INTERESTED</option>
+                <option value="NOT INTERESTED">NOT INTERESTED</option>
               </Form.Control>
             </Form.Group>
             {
-              (formData.stage == "CALL" || formData.stage == "FOLLOW UP" || formData.stage == "VISIT" ) && <Form.Group controlId="followUpDate">
-              <Form.Label>Follow Up Date*</Form.Label>
-              <Form.Control
-                type="date"
-                name="follow_up_date"
-                value={moment(formData.follow_up_date).format("YYYY-MM-DD")}  // Update format for "date" input
-                min={moment().format("YYYY-MM-DD")}  // Set the minimum date to today
-                onPaste={(e) => e.preventDefault()}  // Disable pasting into the field
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") e.preventDefault();  // Prevent Enter key from submitting form
-                }}
-                onChange={(e) => setFormData({ ...formData, follow_up_date: e.target.value })}
-              />
-              {errors.follow_up_date && <Form.Text className="text-danger">{errors.follow_up_date}</Form.Text>}
-            </Form.Group>
+              (formData.stage == "CALL" || formData.stage == "FOLLOW UP" || formData.stage == "VISIT") && <Form.Group controlId="followUpDate">
+                <Form.Label>Follow Up Date*</Form.Label>
+                <Form.Control
+                  type="date"
+                  name="follow_up_date"
+                  value={moment(formData.follow_up_date).format("YYYY-MM-DD")}  // Update format for "date" input
+                  min={moment().format("YYYY-MM-DD")}  // Set the minimum date to today
+                  onPaste={(e) => e.preventDefault()}  // Disable pasting into the field
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") e.preventDefault();  // Prevent Enter key from submitting form
+                  }}
+                  onChange={(e) => setFormData({ ...formData, follow_up_date: e.target.value })}
+                />
+                {errors.follow_up_date && <Form.Text className="text-danger">{errors.follow_up_date}</Form.Text>}
+              </Form.Group>
             }
-            
+
 
 
             <Form.Group controlId="remarks">
@@ -924,108 +1033,108 @@ const assignChangeHandler = (e) =>{
       </Modal>
 
       <Modal
-  className=""
-  show={showModal2}
-  onHide={() => setShowModal2(false)}
-  size="xl"
->
-  <Modal.Header closeButton>
-    <Modal.Title>History</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <div style={{ maxHeight: 'calc(5 * 45px)', overflowY: 'auto' }}>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Status</th>
-            <th>Follow Up Date</th>
-            <th>Remarks</th>
-          </tr>
-        </thead>
-        <tbody>
-          {historyData.map((item, index) => (
-            <tr key={index} style={{ height: '45px' }}>
-              <td>{item.stage}</td>
-              <td>{moment(item.follow_up_date).format("DD MMM YYYY")}</td>
-              <td>{item.remarks}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
-  </Modal.Body>
-</Modal>
+        className=""
+        show={showModal2}
+        onHide={() => setShowModal2(false)}
+        size="xl"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>History</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div style={{ maxHeight: 'calc(5 * 45px)', overflowY: 'auto' }}>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Follow Up Date</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                {historyData.map((item, index) => (
+                  <tr key={index} style={{ height: '45px' }}>
+                    <td>{item.stage}</td>
+                    <td>{moment(item.follow_up_date).format("DD MMM YYYY")}</td>
+                    <td>{item.remarks}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        </Modal.Body>
+      </Modal>
 
-<Modal className="commonModal"  show={!showAssignTo? false: true }   onHide={()=>setShowAssignTo("")} style={{}}>
-                <Modal.Header closeButton>
-                    <Modal.Title>  Assign To  </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="add_user_form">
-                        <div className="row">
-                            <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <div className="input_box">
-                                        <Select
-                                            id="select"
-                                            defaultValue={""}
-                                            options={[
-                                              ...usersList?.filter(item => item?.role_id === 2)?.map((item) => {
-                                                return {
-                                                  value: item?.user_id,
-                                                  label: (
-                                                    <>
-                                                      {item?.user ?? ""}{" "}
-                                                      {item?.user_status ? (
-                                                        <span className="status_box  text-center">
-                                                        <span className="active status_btn">active</span>
-                                                        </span>
-                                                      ) : (
-                                                        <span className="status_box  text-center">
-                                                        <span className="inactive status_btn">inactive</span>
-                                                        </span>
-                                                      )}
-                                                    </>
-                                                  ),
-                                                };
-                                              }),
-                                            ]}
-                                            
-                                              value={
-                                                usersList?.filter(item=>item?.role_id==2)?.map((item) => {
-                                            if (oldAssignTo === item.user_id) {
-                                                return {
-                                                    value: item?.user_id,
-                                                    label: item?.user
-                                                    }
-                                                }
-                                                })
-                                              }
-                                            onChange={(e) => {
-                                                assignChangeHandler(e.value);  
-                                                setFormData({
-                                                  ...formData,
-                                                  asssigned_to: e.value
-                                                });
-                                            }}
-                                        />
-                                        
-                                      
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <button className=" btn btn-danger rounded-5" 
-                    onClick={()=>setShowAssignTo("")}
-                    >Cancel</button>
-                    <div style={{background:clientBtnColor}} className='btn rounded-5 text-white' 
-                     onClick={()=>updateUserhandler(false)} 
-                     >
-                        SUBMIT
-                    </div>
-                </Modal.Footer>
-            </Modal>
+      <Modal className="commonModal" show={!showAssignTo ? false : true} onHide={() => setShowAssignTo("")} style={{}}>
+        <Modal.Header closeButton>
+          <Modal.Title>  Assign To  </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="add_user_form">
+            <div className="row">
+              <div className="col-xl-12 col-md-12 col-sm-12 col-12">
+                <div className="input_box">
+                  <Select
+                    id="select"
+                    defaultValue={""}
+                    options={[
+                      ...usersList?.filter(item => item?.role_id === 2)?.map((item) => {
+                        return {
+                          value: item?.user_id,
+                          label: (
+                            <>
+                              {item?.user ?? ""}{" "}
+                              {item?.user_status ? (
+                                <span className="status_box  text-center">
+                                  <span className="active status_btn">active</span>
+                                </span>
+                              ) : (
+                                <span className="status_box  text-center">
+                                  <span className="inactive status_btn">inactive</span>
+                                </span>
+                              )}
+                            </>
+                          ),
+                        };
+                      }),
+                    ]}
+
+                    value={
+                      usersList?.filter(item => item?.role_id == 2)?.map((item) => {
+                        if (oldAssignTo === item.user_id) {
+                          return {
+                            value: item?.user_id,
+                            label: item?.user
+                          }
+                        }
+                      })
+                    }
+                    onChange={(e) => {
+                      assignChangeHandler(e.value);
+                      setFormData({
+                        ...formData,
+                        asssigned_to: e.value
+                      });
+                    }}
+                  />
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <button className=" btn btn-danger rounded-5"
+            onClick={() => setShowAssignTo("")}
+          >Cancel</button>
+          <div style={{ background: clientBtnColor }} className='btn rounded-5 text-white'
+            onClick={() => updateUserhandler(false)}
+          >
+            SUBMIT
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

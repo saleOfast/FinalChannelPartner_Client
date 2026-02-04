@@ -97,9 +97,9 @@ const CampaignDetailsScreen = () => {
             price: campaign?.price,
             contact_no: campaign?.contact_no,
             file: campaign?.cover_image,
-            file_preview: campaign?.cover_image ? `${filesUrl}/project/images/${campaign?.cover_image}` : null,
+            file_preview: campaign?.cover_image ? `${filesUrl}/project/images${campaign?.cover_image}` : null,
             logo: campaign?.logo_image,
-            logo_preview: campaign?.logo_image ? `${filesUrl}/projectLogo/images/${campaign?.logo_image}` : null,
+            logo_preview: campaign?.logo_image ? `${filesUrl}/projectLogo/images${campaign?.logo_image}` : null,
             template: campaign?.html_file,
             template_name: campaign?.html_file,
             htmlString: htmlContent
@@ -124,12 +124,14 @@ const CampaignDetailsScreen = () => {
       const tempContainer = document.createElement('div');
       tempContainer.style.cssText = 'position: fixed; left: 0; top: 0; width: 900px; background: #fff; padding: 30px; z-index: -9999;';
       
-      // Build the PDF content HTML
+      // Build the PDF content HTML - Only include header, cover image, title and HTML template
+      // The HTML template already contains Project Details and Contact info
       tempContainer.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #eee;">
-          <div>${clientLogo?.logo ? `<img src="${filesUrl}/logo/images${clientLogo?.logo}" style="max-height: 60px;" />` : ''}</div>
-          <div>${projectData?.logo_preview ? `<img src="${projectData?.logo_preview}" style="max-height: 60px;" />` : ''}</div>
-        </div>
+        ${projectData?.logo_preview ? `
+          <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #eee;">
+            <img src="${projectData?.logo_preview}" style="max-height: 60px;" />
+          </div>
+        ` : ''}
         
         ${projectData?.file_preview ? `
           <div style="margin-bottom: 25px; text-align: center;">
@@ -146,30 +148,6 @@ const CampaignDetailsScreen = () => {
             ${projectData?.htmlString}
           </div>
         ` : ''}
-        
-        <div style="margin-bottom: 25px;">
-          <h3 style="color: ${clientBtnColor}; margin-bottom: 15px; font-size: 20px;">Project Details</h3>
-          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;">
-            <div style="display: flex; margin-bottom: 15px;">
-              <span style="color: #6c757d; font-weight: 600; width: 150px;">Property Name:</span>
-              <span style="color: ${clientBtnColor}; font-weight: 600;">${projectData?.project || 'N/A'}</span>
-            </div>
-            ${projectData?.location ? `<div style="display: flex; margin-bottom: 15px;"><span style="color: #6c757d; font-weight: 600; width: 150px;">Location:</span><span style="color: #333; font-weight: 600;">${projectData?.location}</span></div>` : ''}
-            ${projectData?.property_size ? `<div style="display: flex; margin-bottom: 15px;"><span style="color: #6c757d; font-weight: 600; width: 150px;">Property Size:</span><span style="color: #333; font-weight: 600;">${projectData?.property_size}</span></div>` : ''}
-            ${projectData?.unit_area ? `<div style="display: flex; margin-bottom: 15px;"><span style="color: #6c757d; font-weight: 600; width: 150px;">Unit Area:</span><span style="color: #333; font-weight: 600;">${projectData?.unit_area}</span></div>` : ''}
-            ${projectData?.price ? `<div style="display: flex; margin-bottom: 15px;"><span style="color: #6c757d; font-weight: 600; width: 150px;">Price:</span><span style="color: #333; font-weight: 600;">${projectData?.price}</span></div>` : ''}
-            <div style="display: flex;">
-              <span style="color: #6c757d; font-weight: 600; width: 150px;">Contact No:</span>
-              <span style="color: #28a745; font-weight: 600;">+91-${projectData?.contact_no || 'N/A'}</span>
-            </div>
-          </div>
-        </div>
-        
-        <div style="background: ${clientBtnColor}; color: white; padding: 25px; border-radius: 8px; text-align: center;">
-          <p style="margin: 0 0 10px 0; font-size: 14px;">For More Information, Contact Us</p>
-          <p style="margin: 0; font-size: 28px; font-weight: bold;">+91-${projectData?.contact_no || 'N/A'}</p>
-          <p style="margin: 10px 0 0 0; font-size: 14px; opacity: 0.9;">${projectData?.project || ''}</p>
-        </div>
       `;
 
       document.body.appendChild(tempContainer);
@@ -253,12 +231,21 @@ const CampaignDetailsScreen = () => {
 
     const formData = new FormData();
     for (const [key, value] of Object.entries(projectData)) {
-      formData.append(key, value);
+      // Only append non-null values
+      if (value !== null && value !== undefined && value !== "") {
+        formData.append(key, value);
+      }
     }
 
     try {
       dispatch(startButtonLoading());
-      const response = await axios.post(`${Baseurl}/db/channel/project/usertemplate`, formData, header);
+      const response = await axios.post(`${Baseurl}/db/channel/project/usertemplate`, formData, {
+        ...header,
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+        transformRequest: [(data) => data], // Don't transform FormData
+        // Don't set Content-Type - let browser set it with boundary for FormData
+      });
       if (response.status === 200 || response.status === 201) {
         toast.success(response?.data?.message, { autoClose: 2500 });
         dispatch(stopButtonLoading());
@@ -290,82 +277,85 @@ const CampaignDetailsScreen = () => {
       {loader ? (
         <div style={{ padding: "2rem", width: "100%" }}><Loader /></div>
       ) : (
-        <div style={{ padding: "2rem", width: "100%", background: "#f5f5f5", minHeight: "100vh" }}>
-          
-          {/* Action Buttons */}
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginBottom: "15px" }}>
-            {hasCookie("channel") && userInfo?.role_id == 1 && (
+        <div style={{ 
+          padding: "1rem", 
+          width: "100%", 
+          background: "#f5f5f5", 
+          height: "100vh", 
+          overflow: "auto",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center"
+        }}>
+          {/* Centered Container */}
+          <div style={{ width: "100%", maxWidth: "1000px", padding: "0 15px" }}>
+            
+            {/* Action Buttons */}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginBottom: "15px" }}>
+              {hasCookie("channel") && userInfo?.role_id == 1 && (
+                <button
+                  onClick={() => { setShowModal(true); getCampaignById(id); }}
+                  style={{
+                    background: clientBtnColor,
+                    color: "white",
+                    border: "none",
+                    padding: "8px 16px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5px"
+                  }}
+                >
+                  Edit
+                </button>
+              )}
               <button
-                onClick={() => { setShowModal(true); getCampaignById(id); }}
+                onClick={downloadPdf}
+                disabled={pdfLoading}
                 style={{
-                  background: clientBtnColor,
+                  background: pdfLoading ? "#ccc" : "#28a745",
                   color: "white",
                   border: "none",
                   padding: "8px 16px",
                   borderRadius: "5px",
-                  cursor: "pointer",
+                  cursor: pdfLoading ? "not-allowed" : "pointer",
                   display: "flex",
                   alignItems: "center",
                   gap: "5px"
                 }}
               >
-                Edit
+                {pdfLoading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Download style={{ fontSize: "18px" }} />
+                    Download PDF
+                  </>
+                )}
               </button>
-            )}
-            <button
-              onClick={downloadPdf}
-              disabled={pdfLoading}
+            </div>
+
+            {/* Campaign Preview Content */}
+            <div
+              ref={contentRef}
               style={{
-                background: pdfLoading ? "#ccc" : "#28a745",
-                color: "white",
-                border: "none",
-                padding: "8px 16px",
-                borderRadius: "5px",
-                cursor: pdfLoading ? "not-allowed" : "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "5px"
+                background: "#ffffff",
+                padding: "25px",
+                borderRadius: "10px",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                width: "100%"
               }}
             >
-              {pdfLoading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Download style={{ fontSize: "18px" }} />
-                  Download PDF
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* Campaign Preview Content */}
-          <div
-            ref={contentRef}
-            style={{
-              background: "#ffffff",
-              padding: "30px",
-              borderRadius: "10px",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-              maxWidth: "900px",
-              margin: "0 auto"
-            }}
-          >
-            {/* Header with Logos */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", paddingBottom: "15px", borderBottom: "2px solid #eee" }}>
-              <div>
-                {clientLogo?.logo && (
-                  <img src={`${filesUrl}/logo/images${clientLogo?.logo}`} alt="Client Logo" style={{ maxHeight: "60px" }} />
-                )}
+            {/* Header with Logo */}
+            {projectData?.logo_preview && (
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px", paddingBottom: "15px", borderBottom: "2px solid #eee" }}>
+                <img src={projectData?.logo_preview} alt="Project Logo" style={{ maxHeight: "60px" }} />
               </div>
-              <div>
-                {projectData?.logo_preview && (
-                  <img src={projectData?.logo_preview} alt="Project Logo" style={{ maxHeight: "60px" }} />
-                )}
-              </div>
-            </div>
+            )}
 
             {/* Cover Image */}
             {projectData?.file_preview && (
@@ -397,13 +387,15 @@ const CampaignDetailsScreen = () => {
                 style={{
                   width: "100%",
                   minHeight: "500px",
+                  height: "auto",
                   border: "1px solid #eee",
                   borderRadius: "8px",
                   marginBottom: "25px",
-                  background: "#fff"
+                  background: "#fff",
+                  overflow: "auto"
                 }}
                 title="Campaign Template"
-                sandbox="allow-same-origin"
+                scrolling="yes"
               />
             ) : (
               <div style={{
@@ -471,23 +463,24 @@ const CampaignDetailsScreen = () => {
               <p style={{ margin: "0", fontSize: "28px", fontWeight: "bold" }}>+91-{projectData?.contact_no || "N/A"}</p>
               <p style={{ margin: "10px 0 0 0", fontSize: "14px", opacity: "0.9" }}>{projectData?.project}</p>
             </div>
-          </div>
+            </div>
 
-          {/* Back Button */}
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-            <Link
-              href="/partner/Campaign"
-              style={{
-                background: clientBtnColor,
-                color: "white",
-                padding: "10px 25px",
-                borderRadius: "25px",
-                textDecoration: "none",
-                fontWeight: "500"
-              }}
-            >
-              Back to Campaigns
-            </Link>
+            {/* Back Button */}
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "20px", marginBottom: "20px" }}>
+              <Link
+                href="/partner/Campaign"
+                style={{
+                  background: clientBtnColor,
+                  color: "white",
+                  padding: "10px 25px",
+                  borderRadius: "25px",
+                  textDecoration: "none",
+                  fontWeight: "500"
+                }}
+              >
+                Back to Campaigns
+              </Link>
+            </div>
           </div>
         </div>
       )}

@@ -150,7 +150,7 @@ const AddUserScreen = () => {
         user: data1?.user,
         user_l_name: data1?.user_l_name,
         email: data1?.email,
-        cpt_id:data1?.cpt_id,
+        cpt_id: data1?.cpt_id ? Number(data1.cpt_id) : null,
         contact_number: data1?.contact_number,
         db_name: data1?.db_name,
         isDB: data1?.isDB,
@@ -231,14 +231,14 @@ const AddUserScreen = () => {
       const userId = response?.data?.data?.userProfileData?.user_id;
       if (response.status === 200 || response.status === 201) {
         toast.success(response?.data?.message,{autoClose:2500});
-        if (uploadDocs.aadhar_card)
-          AddUploadPicture(userId, "adh", uploadDocs.aadhar[0], 0);
-        if (uploadDocs.pan_card)
-          AddUploadPicture(userId, "pan", uploadDocs.pan[0], 0);
+        if (uploadDocs.aadhar)
+          AddUploadPicture(userId, "adh", uploadDocs.aadhar, 0);
+        if (uploadDocs.pan)
+          AddUploadPicture(userId, "pan", uploadDocs.pan, 0);
         if (uploadDocs.rera)
-          AddUploadPicture(userId, "rera", uploadDocs.rera[0], 0);
+          AddUploadPicture(userId, "rera", uploadDocs.rera, 0);
         if (uploadDocs.cheque)
-        AddUploadPicture(userId, "cheque", uploadDocs.cheque[0], 0);
+        AddUploadPicture(userId, "cheque", uploadDocs.cheque, 0);
         if (userImage) AddUploadPicture(userId, "lsUser", userImage[0], 0);
         setisLoading(false);
         router.push("/partner/ActivePartners");
@@ -288,10 +288,35 @@ const AddUserScreen = () => {
     
 
     try {
-      let updatedInfo={...userInfo,isAssigned:true}
-      if( userInfo?.role_id=="3"){
-        updatedInfo = { ...userInfo, report_to:userInfoCheck?.user_id }
+      // Build update payload - ensure cpt_id is always included for Channel Partners
+      let updatedInfo = {
+        ...userInfo,
+        isAssigned: true
+      };
+      
+      // For Channel Partners (role_id 1), explicitly ensure cpt_id is included
+      if(userInfo?.role_id == "1"){
+        updatedInfo.cpt_id = userInfo?.cpt_id ? parseInt(userInfo.cpt_id) : null;
+        updatedInfo.report_to = userInfo?.report_to || null;
+      } else if(userInfo?.role_id == "3"){
+        // For BST users (role_id 3)
+        updatedInfo.report_to = userInfoCheck?.user_id;
+      } else if(userInfo?.role_id == "2"){
+        // For BST users (role_id 2)
+        updatedInfo.report_to = userInfo?.report_to || null;
       }
+      
+      // CRITICAL: For Channel Partners (role_id 1), cpt_id MUST be explicitly included
+      if(updatedInfo.role_id == "1" || updatedInfo.role_id == 1){
+        // Ensure cpt_id is always a number, never undefined
+        const cptIdValue = userInfo?.cpt_id;
+        if(cptIdValue !== null && cptIdValue !== undefined && cptIdValue !== ""){
+          updatedInfo.cpt_id = Number(cptIdValue);
+        } else {
+          updatedInfo.cpt_id = null;
+        }
+      }
+      
       const response = await axios.put(`${Baseurl}/db/users`, updatedInfo, header);
       if (response.status === 200 || response.status === 201) {
         toast.success(response?.data?.message,{autoClose:2500});
@@ -299,18 +324,18 @@ const AddUserScreen = () => {
           AddUploadPicture(
             updtUId,
             "adh",
-            uploadDocs.aadhar[0],
+            uploadDocs.aadhar,
             oldFiles.aadhar
           );
         if (uploadDocs.pan)
-          AddUploadPicture(updtUId, "pan", uploadDocs.pan[0], oldFiles.pan);
+          AddUploadPicture(updtUId, "pan", uploadDocs.pan, oldFiles.pan);
         if (uploadDocs.rera)
-          AddUploadPicture(updtUId, "rera", uploadDocs.rera[0], oldFiles.rera);
+          AddUploadPicture(updtUId, "rera", uploadDocs.rera, oldFiles.rera);
         if (uploadDocs.cheque)
           AddUploadPicture(
             updtUId,
             "cheque",
-            uploadDocs.cheque[0],
+            uploadDocs.cheque,
             oldFiles.cheque
           );
         if (userImage)
@@ -575,7 +600,7 @@ const AddUserScreen = () => {
                           });
                           setErrorData({ ...errorData, cpt_id: "" });
                         }}
-                        value={userInfo.cpt_id ? userInfo.cpt_id : ""}
+                        value={userInfo.cpt_id !== null && userInfo.cpt_id !== undefined ? userInfo.cpt_id : ""}
                       >
                         <option value="">Select Partner Type </option>
                         {partnerTypes?.map(({ cpt_id, name }) => {

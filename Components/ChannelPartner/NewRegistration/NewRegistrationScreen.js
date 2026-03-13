@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Baseurl, filesUrl } from "../../../Utils/Constants";
-import { setCookie } from "cookies-next";
+import { setCookie, getCookie } from "cookies-next";
 import { useDispatch, useSelector } from "react-redux";
 import { startButtonLoading, stopButtonLoading } from "../../../store/buttonLoaderSlice";
 
@@ -16,9 +16,13 @@ const NewRegistrationScreen = () => {
     first_name: "",
     last_name: "",
     email: "",
-    contact: null
+    contact: null,
+    state_id: "",
+    city_id: ""
   });
   const [clientData, setClientData] = useState();
+  const [stateList, setStateList] = useState([]);
+  const [cityList, setCityList] = useState([]);
   const { isButtonLoading } = useSelector((state) => state.buttonLoader)
   const dispatch = useDispatch()
 
@@ -27,10 +31,10 @@ const NewRegistrationScreen = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const { first_name, last_name, email, contact } = formFields;
+    const { first_name, last_name, email, contact, state_id, city_id } = formFields;
 
     // Basic validations for mandatory fields
-    if (!first_name || !last_name || !email || !contact) {
+    if (!first_name || !last_name || !email || !contact || !state_id || !city_id) {
       dispatch(stopButtonLoading());
       return toast.warning("Please fill all mandatory fields", { autoClose: 2500 });
     }
@@ -74,6 +78,82 @@ const NewRegistrationScreen = () => {
   };
 
 
+  const getStateList = async () => {
+    try {
+      const token = getCookie("token");
+      const db_name = getCookie("db_name");
+
+      const header = token ? {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          db: db_name,
+          pass: "pass",
+        },
+      } : {
+        headers: {
+          Accept: "application/json",
+        },
+      };
+
+      const response = await axios.get(
+        `${Baseurl}/db/admin/state/available?country_id=101`,
+        header
+      );
+
+      if (response.data?.data && Array.isArray(response.data.data)) {
+        setStateList(response.data.data);
+      } else if (Array.isArray(response.data)) {
+        setStateList(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching states:", error);
+      toast.error("Failed to load states. Please refresh the page.");
+    }
+  };
+
+  const getCityList = async (stateId) => {
+    if (!stateId) {
+      setCityList([]);
+      return;
+    }
+
+    try {
+      const token = getCookie("token");
+      const db_name = getCookie("db_name");
+
+      const header = token ? {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          db: db_name,
+          pass: "pass",
+        },
+      } : {
+        headers: {
+          Accept: "application/json",
+        },
+      };
+
+      const response = await axios.get(
+        `${Baseurl}/db/admin/city/by-state?state_id=${stateId}`,
+        header
+      );
+
+      if (response.data?.data && Array.isArray(response.data.data)) {
+        setCityList(response.data.data);
+      } else if (Array.isArray(response.data)) {
+        setCityList(response.data);
+      } else {
+        setCityList([]);
+      }
+    } catch (error) {
+      console.error("Error fetching cities:", error);
+      setCityList([]);
+      toast.error("Failed to load cities for selected state.");
+    }
+  };
+
   useEffect(() => {
     const getSignInData = async () => {
       try {
@@ -90,8 +170,19 @@ const NewRegistrationScreen = () => {
         console.log(error)
       }
     }
-    getSignInData()
-  }, [])
+    getSignInData();
+    getStateList();
+  }, []);
+
+  useEffect(() => {
+    if (formFields.state_id) {
+      getCityList(formFields.state_id);
+      setFormFields(prev => ({ ...prev, city_id: "" }));
+    } else {
+      setCityList([]);
+      setFormFields(prev => ({ ...prev, city_id: "" }));
+    }
+  }, [formFields.state_id]);
 
   return (
     <>
@@ -274,6 +365,84 @@ const NewRegistrationScreen = () => {
                               value={formFields?.email}
                               onChange={(e) => {
                                 setFormFields({ ...formFields, email: e.target.value })
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="rowTab">
+                          <div className="labels">
+                            <label id="state-label" htmlFor="state_id">
+                              State
+                            </label>
+                            <span>*</span>
+                          </div>
+                          <div className="rightTab">
+                            <Select
+                              id="state_id"
+                              options={stateList.map((state) => ({
+                                value: state.state_id ?? state.id,
+                                label: state.state_name,
+                              }))}
+                              value={stateList
+                                .map((state) => ({
+                                  value: state.state_id ?? state.id,
+                                  label: state.state_name,
+                                }))
+                                .find((option) => option.value === formFields.state_id)}
+                              onChange={(e) => {
+                                setFormFields({
+                                  ...formFields,
+                                  state_id: e ? e.value : "",
+                                  city_id: "",
+                                });
+                              }}
+                              placeholder="Select State"
+                              isClearable
+                              styles={{
+                                control: (base) => ({
+                                  ...base,
+                                  minHeight: "40px",
+                                  border: "1px solid #ced4da",
+                                  borderRadius: "4px",
+                                }),
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="rowTab">
+                          <div className="labels">
+                            <label id="city-label" htmlFor="city_id">City</label>
+                            <span>*</span>
+                          </div>
+                          <div className="rightTab">
+                            <Select
+                              id="city_id"
+                              isDisabled={!formFields.state_id}
+                              options={cityList.map((city) => ({
+                                value: city.city_id ?? city.id,
+                                label: city.city_name,
+                              }))}
+                              value={cityList
+                                .map((city) => ({
+                                  value: city.city_id ?? city.id,
+                                  label: city.city_name,
+                                }))
+                                .find((option) => option.value === formFields.city_id)}
+                              onChange={(e) => {
+                                setFormFields({
+                                  ...formFields,
+                                  city_id: e ? e.value : "",
+                                });
+                              }}
+                              placeholder={formFields.state_id ? "Select City" : "Select State first"}
+                              isClearable
+                              styles={{
+                                control: (base) => ({
+                                  ...base,
+                                  minHeight: "40px",
+                                  border: "1px solid #ced4da",
+                                  borderRadius: "4px",
+                                }),
                               }}
                             />
                           </div>

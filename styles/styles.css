@@ -270,6 +270,7 @@ select.form-control::after {
   position: relative;
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 .main_wrapper .topNav_Wrapper .top_nav .profile_sec .btn:active,
 .main_wrapper .topNav_Wrapper .top_nav .profile_sec .btn.show {
@@ -277,7 +278,7 @@ select.form-control::after {
 }
 .main_wrapper .topNav_Wrapper .top_nav .profile_sec .quick_add_sec {
   position: relative;
-  margin-right: var(--spaces-width);
+  margin-right: 0;
 }
 .main_wrapper .topNav_Wrapper .top_nav .profile_sec .quick_add_sec #quickAdd {
   display: flex;
@@ -288,7 +289,7 @@ select.form-control::after {
   fill: var(--white-color);
 }
 .main_wrapper .topNav_Wrapper .top_nav .profile_sec .quick_add_sec #quickAdd .btn_text {
-  margin: 0px 10px;
+  margin: 0 6px;
 }
 .main_wrapper .topNav_Wrapper .top_nav .profile_sec .quick_add_sec #quickAdd .chevrolet svg {
   width: 10px;

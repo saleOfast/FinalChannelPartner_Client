@@ -8,7 +8,7 @@ import EditIcon from "../Svg/EditIcon";
 import DeleteIcon from "../Svg/DeleteIcon";
 import Loader from "../Loader/Loader";
 
-const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disableConfirm, dataList, openEdtMdl, title,loader }) => {
+const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disableConfirm, dataList, openEdtMdl, title, loader }) => {
 
     const columns = [
         {
@@ -38,7 +38,7 @@ const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disable
             label: "Action",
             options: {
                 filter: false,
-                download:false,
+                download: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <div className="table_btns">
@@ -50,36 +50,36 @@ const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disable
                                 <DisableIcon />
                             </button> : null}
                             {
-                                (value!==1 && value!==2 && value!==3) ? (
+                                (value !== 1 && value !== 2 && value !== 3) ? (
                                     <>
-                                            <Link href={`/AddProfileManage?id=${value}`}>
-                                <button
+                                        <Link href={`/AddProfileManage?id=${value}`}>
+                                            {/* <button
                                     className="action_btn"
                                     title='Edit'>
                                     <EditIcon />
-                                </button>
-                            </Link>
-                            <Link href={`/RolePermission?id=${value}`}>
-                                <button
-                                    className="action_btn x2"
-                                    title='Permissions'>
-                                    <ListVicn />
-                                </button>
-                            </Link>
+                                </button> */}
+                                        </Link>
+                                        <Link href={`/RolePermission?id=${value}`}>
+                                            <button
+                                                className="action_btn x2"
+                                                title='Permissions'>
+                                                <ListVicn />
+                                            </button>
+                                        </Link>
 
-                            <button
-                                onClick={() => deleteConfirm(value)}
-                                className="action_btn"
-                                title='Delete'>
-                                <DeleteIcon />
-                            </button>
+                                        <button
+                                            onClick={() => deleteConfirm(value)}
+                                            className="action_btn"
+                                            title='Delete'>
+                                            <DeleteIcon />
+                                        </button>
                                     </>
-                                )  :<div>
+                                ) : <div>
                                     <input placeholder="Default Role/Permission" type="text" disabled />
-                                    
-                                </div> 
+
+                                </div>
                             }
-                            
+
                         </div>
                     )
                 }
@@ -90,25 +90,25 @@ const UserProfileManagementTable = ({ redirectPermission, deleteConfirm, disable
     const options = {
         selectableRows: 'none',
         responsive: "standard",
-        downloadOptions:{filename:"UsersProfileList.csv"}
+        downloadOptions: { filename: "UsersProfileList.csv" }
     };
 
     return (
         <>
-        {
-            loader ? <><Loader/></> :
-            (
-                <div className="miuiTable">
-                <MUIDataTable
-                    title={title}
-                    data={dataList}
-                    columns={columns}
-                    options={options}
-                />
-            </div>
-            )
-        }
-            
+            {
+                loader ? <><Loader /></> :
+                    (
+                        <div className="miuiTable">
+                            <MUIDataTable
+                                title={title}
+                                data={dataList}
+                                columns={columns}
+                                options={options}
+                            />
+                        </div>
+                    )
+            }
+
         </>
 
     )

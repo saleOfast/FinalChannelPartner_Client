@@ -46,35 +46,35 @@ const ActivePartnersScreen = () => {
         id: '',
         action: ''
     })
-  const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
-  const userInfo=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
-  const [loader,setLoader]=useState(false);
-  const [selectedOption, setSelectedOption] = useState(hasCookie("cp_selected") ? getCookie("cp_selected"):'Channel Partner');
+    const clientBtnColor = hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+    const userInfo = hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) : null;
+    const [loader, setLoader] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(hasCookie("cp_selected") ? getCookie("cp_selected") : 'Channel Partner');
 
-   const getCurrentWeekDates = () => {
-      const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
+    const getCurrentWeekDates = () => {
+        const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
         const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
-        if(hasCookie("Channel_PartnerFilter")){
-          let data=JSON.parse(getCookie("Channel_PartnerFilter"))
-           return {startDate:data?.f_date,endDate:data?.t_date}
-         }
-         else{
-           return { startDate, endDate };
-         }
-  
+        if (hasCookie("Channel_PartnerFilter")) {
+            let data = JSON.parse(getCookie("Channel_PartnerFilter"))
+            return { startDate: data?.f_date, endDate: data?.t_date }
+        }
+        else {
+            return { startDate, endDate };
+        }
+
     };
 
     const handleChange = (event) => {
-            const value = event.target.value;
-            setCookie("cp_selected",value)
-            setSelectedOption(value);
-            console.log(`Selected option: ${value}`);
-            // Add any additional logic you want to handle on selection change
-          };
-  
+        const value = event.target.value;
+        setCookie("cp_selected", value)
+        setSelectedOption(value);
+        console.log(`Selected option: ${value}`);
+        // Add any additional logic you want to handle on selection change
+    };
+
     const [value, setValue] = useState(getCurrentWeekDates());
 
-  
+
 
     function disableConfirm(value, type) {
         if (type == 1) {
@@ -111,7 +111,7 @@ const ActivePartnersScreen = () => {
 
     async function getUsersList() {
         await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
-      }
+    }
 
 
     const importHandler = (event, type) => {
@@ -131,7 +131,7 @@ const ActivePartnersScreen = () => {
 
     const getDataList = async (queryObjLeads) => {
         setLoader(true)
-        
+
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
@@ -146,25 +146,27 @@ const ActivePartnersScreen = () => {
             }
 
             try {
-                
-                const response = selectedOption=="Channel Partner" ? 
-                await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, {...header,params:queryObjLeads})
-                : selectedOption=="BST" ?
-                await axios.get(Baseurl + `/db/users/rolewise?role_id=2`, {...header,params:queryObjLeads})
-                :
-                await axios.get(Baseurl + `/db/users/rolewise?role_id=3`, {...header,params:queryObjLeads})
 
-                if(response?.status === 200 || response?.status === 201){
+                const response = selectedOption == "Channel Partner" ?
+                    await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, { ...header, params: queryObjLeads })
+                    : selectedOption == "BST" ?
+                        await axios.get(Baseurl + `/db/users/rolewise?role_id=2`, { ...header, params: queryObjLeads })
+                        :
+                        await axios.get(Baseurl + `/db/users/rolewise?role_id=3`, { ...header, params: queryObjLeads })
+
+
+
+                if (response?.status === 200 || response?.status === 201) {
                     setLoader(false)
-                setDataList(response?.data?.data);
+                    setDataList(response?.data?.data);
                 }
             } catch (error) {
                 if (error?.response?.data?.message) {
                     setLoader(false)
-                    toast.error(error?.response?.data?.message,{autoClose:2500});
+                    toast.error(error?.response?.data?.message, { autoClose: 2500 });
                 } else {
                     setLoader(false)
-                    toast.error("Something went wrong!",{autoClose:2500});
+                    toast.error("Something went wrong!", { autoClose: 2500 });
                 }
             }
         }
@@ -190,7 +192,7 @@ const ActivePartnersScreen = () => {
             try {
                 const response = await axios.put(Baseurl + `/db/users`, reqInfo, header);
                 if (response.status === 204 || response.status === 200) {
-                    toast.success(response?.data?.message,{autoClose:2500})
+                    toast.success(response?.data?.message, { autoClose: 2500 })
                     setdisableShowConfirm(false)
                     setcurrObj({
                         id: '',
@@ -199,7 +201,7 @@ const ActivePartnersScreen = () => {
                     getDataList();
                 }
             } catch (error) {
-                toast.error(error?.response?.data?.message,{autoClose:2500});
+                toast.error(error?.response?.data?.message, { autoClose: 2500 });
             }
         }
     }
@@ -223,7 +225,7 @@ const ActivePartnersScreen = () => {
             try {
                 const response = await axios.delete(Baseurl + `/db/users?id=${currObj.id}`, header);
                 if (response.status === 204 || response.status === 200) {
-                    toast.success(response?.data?.message,{autoClose:2500})
+                    toast.success(response?.data?.message, { autoClose: 2500 })
                     setdeleteshowConfirm(false)
                     setcurrObj({
                         id: '',
@@ -232,7 +234,7 @@ const ActivePartnersScreen = () => {
                     getDataList();
                 }
             } catch (error) {
-                toast.error(error?.response?.data?.message,{autoClose:2500})
+                toast.error(error?.response?.data?.message, { autoClose: 2500 })
             }
         }
 
@@ -240,7 +242,7 @@ const ActivePartnersScreen = () => {
 
     async function csvSubmitHandler() {
         if (excelData.length <= 0) {
-            toast.error('No Data Found Please Check and try Again',{autoClose:2500})
+            toast.error('No Data Found Please Check and try Again', { autoClose: 2500 })
         } else {
             if (hasCookie("token")) {
                 let token = getCookie("token");
@@ -257,15 +259,15 @@ const ActivePartnersScreen = () => {
                 try {
                     const response = await axios.post(Baseurl + `/db/users/owner`, excelData, header);
                     if (response.status === 204 || response.status === 200) {
-                        toast.success(response?.data?.message,{autoClose:2500});
+                        toast.success(response?.data?.message, { autoClose: 2500 });
                         getDataList();
                         handleClose();
                     }
                 } catch (error) {
                     if (error?.response?.data?.message) {
-                        toast.error(error.response.data.message,{autoClose:2500});
+                        toast.error(error.response.data.message, { autoClose: 2500 });
                     } else {
-                        toast.error("Something went wrong!",{autoClose:2500});
+                        toast.error("Something went wrong!", { autoClose: 2500 });
                     }
                 }
             }
@@ -273,106 +275,106 @@ const ActivePartnersScreen = () => {
 
     }
 
-    const channelPartnerFilter=hasCookie("Channel_PartnerFilter") ? JSON.parse(getCookie("Channel_PartnerFilter")) : null;
+    const channelPartnerFilter = hasCookie("Channel_PartnerFilter") ? JSON.parse(getCookie("Channel_PartnerFilter")) : null;
 
     const updateUserhandler = async () => {
         if (!hasCookie("token")) return;
         const token = getCookie("token");
         const db_name = getCookie("db_name");
         const header = {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-            db: db_name,
-            pass:"pass"
-          },
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+                db: db_name,
+                pass: "pass"
+            },
         };
-        
-        let payload = oldAssignTo==null ? 
-        {
-            db_name: db_name,
-            user_code: showAssignTo,
-            isAssigned: true
-        } :
-        {
-            db_name: db_name,
-            user_code: showAssignTo,
-            report_to: oldAssignTo,
-            isAssigned: true
-        }
-       
+
+        let payload = oldAssignTo == null ?
+            {
+                db_name: db_name,
+                user_code: showAssignTo,
+                isAssigned: true
+            } :
+            {
+                db_name: db_name,
+                user_code: showAssignTo,
+                report_to: oldAssignTo,
+                isAssigned: true
+            }
+
         try {
-          const response = await axios.put(`${Baseurl}/db/users`, payload, header);
-          if (response.status === 200 || response.status === 201) {
-            toast.success(response?.data?.message,{autoClose:2500});
-            setoldAssignTo('')
-            setShowAssignTo('')
-            toast.success(response?.message,{autoClose:2500})
-            if(channelPartnerFilter){
-                // if(hasCookie("cp_selected")){
-                //     setSelectedOption(getCookie("cp_selected"))
-                // }
-                getDataList(channelPartnerFilter)
-              }
-              else{
-                getDataList()
-              }
-          }
+            const response = await axios.put(`${Baseurl}/db/users`, payload, header);
+            if (response.status === 200 || response.status === 201) {
+                toast.success(response?.data?.message, { autoClose: 2500 });
+                setoldAssignTo('')
+                setShowAssignTo('')
+                toast.success(response?.message, { autoClose: 2500 })
+                if (channelPartnerFilter) {
+                    // if(hasCookie("cp_selected")){
+                    //     setSelectedOption(getCookie("cp_selected"))
+                    // }
+                    getDataList(channelPartnerFilter)
+                }
+                else {
+                    getDataList()
+                }
+            }
         } catch (error) {
-          if (error?.response?.data?.status === 422) {
-                toast.error(error?.response?.data?.message,{autoClose:2500})
-                
-          }
-          if (error?.response?.data?.message) {
-            toast.error(error?.response?.data?.message,{autoClose:2500});
-          } else {
-            toast.error("Something went wrong!",{autoClose:2500});
-          }
+            if (error?.response?.data?.status === 422) {
+                toast.error(error?.response?.data?.message, { autoClose: 2500 })
+
+            }
+            if (error?.response?.data?.message) {
+                toast.error(error?.response?.data?.message, { autoClose: 2500 });
+            } else {
+                toast.error("Something went wrong!", { autoClose: 2500 });
+            }
         }
     };
 
 
     const userListFilterBasisOfRole = (selectedOption, usersList) => {
         if (selectedOption === "Channel Partner") {
-            return [{ value: userInfo?.user_id, label: "N.A" },...usersList
+            return [{ value: userInfo?.user_id, label: "N.A" }, ...usersList
                 ?.filter(user => user.role_id === 2 || user.role_id === 3)
                 ?.map(data => ({
                     value: data?.user_id,
                     label: (
                         <>
-                          {data?.user ?? ""}{" "}
-                          {data?.user_status ? (
-                            <span className="status_box  text-center">
-                            <span className="active status_btn">active</span>
-                            </span>
-                          ) : (
-                            <span className="status_box  text-center">
-                            <span className="inactive status_btn">inactive</span>
-                            </span>
-                          )}
+                            {data?.user ?? ""}{" "}
+                            {data?.user_status ? (
+                                <span className="status_box  text-center">
+                                    <span className="active status_btn">active</span>
+                                </span>
+                            ) : (
+                                <span className="status_box  text-center">
+                                    <span className="inactive status_btn">inactive</span>
+                                </span>
+                            )}
                         </>
-                      ),
+                    ),
                 }))];
         }
         if (selectedOption === "BST") {
-            return [{ value: userInfo?.user_id, label: "N.A" },...usersList
+            return [{ value: userInfo?.user_id, label: "N.A" }, ...usersList
                 ?.filter(user => user.role_id === 3)
                 ?.map(data => ({
                     value: data?.user_id,
-                     label: (
-                    <>
-                      {data?.user ?? ""}{" "}
-                      {data?.user_status ? (
-                        <span className="status_box  text-center">
-                        <span className="active status_btn">active</span>
-                        </span>
-                      ) : (
-                        <span className="status_box  text-center">
-                        <span className="inactive status_btn">inactive</span>
-                        </span>
-                      )}
-                    </>
-                  ),
+                    label: (
+                        <>
+                            {data?.user ?? ""}{" "}
+                            {data?.user_status ? (
+                                <span className="status_box  text-center">
+                                    <span className="active status_btn">active</span>
+                                </span>
+                            ) : (
+                                <span className="status_box  text-center">
+                                    <span className="inactive status_btn">inactive</span>
+                                </span>
+                            )}
+                        </>
+                    ),
                 }))];
         }
         return [];
@@ -384,95 +386,95 @@ const ActivePartnersScreen = () => {
         // getDataList()
     }, [selectedOption])
 
-    
-    useEffect(()=>{
-      if(channelPartnerFilter){
-        // if(hasCookie("cp_selected")){
-        //     setSelectedOption(getCookie("cp_selected"))
-        // }
-        getDataList(channelPartnerFilter)
-      }
-      else{
-        getDataList()
-      }
-    },[selectedOption])
+
+    useEffect(() => {
+        if (channelPartnerFilter) {
+            // if(hasCookie("cp_selected")){
+            //     setSelectedOption(getCookie("cp_selected"))
+            // }
+            getDataList(channelPartnerFilter)
+        }
+        else {
+            getDataList()
+        }
+    }, [selectedOption])
 
     return (
         <>
-        <div className="w-100 ps-4 pe-4 overflow-scroll" >
-              
-              <div className="main_content">
-                  <div className="table_screen">
-                      <div className="top_btn_sec my-3" style={{paddingRight:"0px"}} >
-                          <div className="d-flex flex-wrap flex-md-nowrap align-items-center gap-2 gap-md-3" style={{justifyContent: userInfo?.role_id ? "end":"", width: userInfo?.role_id ? "100%": "" }}>
-                            <div className='fix-width-1'>
-                          {
-                                  userInfo?.role_id==null && (
-                                      <button className="btn ms-0 Add_btn p-2 w-100 d-flex align-items-center justify-content-center" style={{background:`${clientBtnColor}`}} onClick={()=>goto('/partner/ChannelPartnersDetails')}>
-                                  <PlusIcon />
-                                  ADD USER
-                              </button>
-                                  )
-                              }</div>
-                              <div className='fix-width-2 mt-0 mt-md-0'>
-                <DateRange value={value} setValue={setValue} getData={getDataList} filterType={"Channel_Partner"} /></div>
-                {
-                                hasCookie("channel") &&(userInfo?.role_id==null || userInfo?.role_id==3) &&(
-                                    <div style={{ marginBottom: '0' }}>
-                        <select 
-                          value={selectedOption} 
-                          onChange={handleChange} 
-                          style={{
-                            display: 'block',
-                            width: '100%',
-                            padding: '10px 10px',
-                            fontSize: '1rem',
-                            fontWeight: '400',
-                            lineHeight: '1.5',
-                            color: '#495057',
-                            backgroundColor: '#fff',
-                            backgroundClip: 'padding-box',
-                            border: '1px solid #ced4da',
-                            borderRadius: '.25rem',
-                            transition: 'border-color .15s ease-in-out,box-shadow .15s ease-in-out',
-                            marginTop: '0px'
-                          }}
-                        >
-                          <option value="Channel Partner">Channel Partner</option>
-                          <option value="BST">BST</option>
-                          {userInfo?.role_id==null && <option value="Director">Director</option>}
-                        </select>
-                      </div>
-                                )
-                               }
+            <div className="w-100 ps-4 pe-4 overflow-scroll" >
 
-                              
-                              
-                          </div>
-                          
-                      </div>
-                      <DynamicTable
-                          title={selectedOption}
-                          dataList={dataList}
-                          loader={loader}
-                          disableConfirm={disableConfirm}
-                          deleteConfirm={deleteConfirm}
-                          setShowAssignTo={setShowAssignTo}
-                          setoldAssignTo={setoldAssignTo}
-                          oldAssignTo={oldAssignTo}
-                          setShowDateFilter={setShowDateFilter}
-                          usersList={usersList}
-                          getDataList={getDataList}
-                          selectedOption={selectedOption}
-                          setSelectedOption={setSelectedOption}
-                          channelPartnerFilter={channelPartnerFilter}
-                          start={value?.startDate}
-                          end={value?.endDate}
-                      />
-                  </div>
-              </div>
-          </div>
-            
+                <div className="main_content">
+                    <div className="table_screen">
+                        <div className="top_btn_sec my-3" style={{ paddingRight: "0px" }} >
+                            <div className="d-flex flex-wrap flex-md-nowrap align-items-center gap-2 gap-md-3" style={{ justifyContent: userInfo?.role_id ? "end" : "", width: userInfo?.role_id ? "100%" : "" }}>
+                                <div className='fix-width-1'>
+                                    {
+                                        userInfo?.role_id == null && (
+                                            <button className="btn ms-0 Add_btn p-2 w-100 d-flex align-items-center justify-content-center" style={{ background: `${clientBtnColor}` }} onClick={() => goto('/partner/ChannelPartnersDetails')}>
+                                                <PlusIcon />
+                                                ADD USER
+                                            </button>
+                                        )
+                                    }</div>
+                                <div className='fix-width-2 mt-0 mt-md-0'>
+                                    <DateRange value={value} setValue={setValue} getData={getDataList} filterType={"Channel_Partner"} /></div>
+                                {
+                                    hasCookie("channel") && (userInfo?.role_id == null || userInfo?.role_id == 3) && (
+                                        <div style={{ marginBottom: '0' }}>
+                                            <select
+                                                value={selectedOption}
+                                                onChange={handleChange}
+                                                style={{
+                                                    display: 'block',
+                                                    width: '100%',
+                                                    padding: '10px 10px',
+                                                    fontSize: '1rem',
+                                                    fontWeight: '400',
+                                                    lineHeight: '1.5',
+                                                    color: '#495057',
+                                                    backgroundColor: '#fff',
+                                                    backgroundClip: 'padding-box',
+                                                    border: '1px solid #ced4da',
+                                                    borderRadius: '.25rem',
+                                                    transition: 'border-color .15s ease-in-out,box-shadow .15s ease-in-out',
+                                                    marginTop: '0px'
+                                                }}
+                                            >
+                                                <option value="Channel Partner">Channel Partner</option>
+                                                <option value="BST">BST</option>
+                                                {userInfo?.role_id == null && <option value="Director">Director</option>}
+                                            </select>
+                                        </div>
+                                    )
+                                }
+
+
+
+                            </div>
+
+                        </div>
+                        <DynamicTable
+                            title={selectedOption}
+                            dataList={dataList}
+                            loader={loader}
+                            disableConfirm={disableConfirm}
+                            deleteConfirm={deleteConfirm}
+                            setShowAssignTo={setShowAssignTo}
+                            setoldAssignTo={setoldAssignTo}
+                            oldAssignTo={oldAssignTo}
+                            setShowDateFilter={setShowDateFilter}
+                            usersList={usersList}
+                            getDataList={getDataList}
+                            selectedOption={selectedOption}
+                            setSelectedOption={setSelectedOption}
+                            channelPartnerFilter={channelPartnerFilter}
+                            start={value?.startDate}
+                            end={value?.endDate}
+                        />
+                    </div>
+                </div>
+            </div>
+
 
             <Modal className="commonModal" show={show} onHide={handleClose} >
                 <Modal.Header closeButton>
@@ -506,7 +508,7 @@ const ActivePartnersScreen = () => {
                 </Modal.Footer>
             </Modal>
 
-            <Modal className="commonModal"  show={!showAssignTo? false: true }   onHide={()=>setShowAssignTo("")} style={{}}>
+            <Modal className="commonModal" show={!showAssignTo ? false : true} onHide={() => setShowAssignTo("")} style={{}}>
                 <Modal.Header closeButton>
                     <Modal.Title>  Assign To </Modal.Title>
                 </Modal.Header>
@@ -515,47 +517,72 @@ const ActivePartnersScreen = () => {
                         <div className="row">
                             <div className="col-xl-12 col-md-12 col-sm-12 col-12">
                                 <div className="input_box">
-                                   
-                                        <Select
-                                            id="select"
-                                            defaultValue={""}
-                                            // options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
-                                            //     return {
-                                            //         value: data?.user_id,
-                                            //         label: data?.user,
-                                            //     };
-                                            // })]}
-                                            value={usersList?.map((data, index) => {
+                                    <label className="form-label">Assign To</label>
+                                    <Select
+                                        id="select"
+                                        defaultValue={""}
+                                        isSearchable={true}
+                                        isClearable={true}
+                                        placeholder="Search and select user..."
+                                        noOptionsMessage={() => "No users found"}
+                                        filterOption={(option, inputValue) => {
+                                            if (!inputValue) return true;
+                                            const user = usersList?.find(u => u.user_id === option.value);
+                                            if (!user) return false;
+                                            const searchTerm = inputValue.toLowerCase();
+                                            return (
+                                                user.user?.toLowerCase().includes(searchTerm) ||
+                                                user.email?.toLowerCase().includes(searchTerm) ||
+                                                String(user.contact_number || "").includes(searchTerm)
+                                            );
+                                        }}
+                                        // options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
+                                        //     return {
+                                        //         value: data?.user_id,
+                                        //         label: data?.user,
+                                        //     };
+                                        // })]}
+                                        value={usersList?.map((data, index) => {
                                             if (oldAssignTo === data.user_id) {
                                                 return {
-                                                value: data?.user_id,
-                                                label: data?.user,
+                                                    value: data?.user_id,
+                                                    label: data?.user,
                                                 };
                                             }
-                                            })}
-                                            options={userListFilterBasisOfRole(selectedOption,usersList)}
-                                            onChange={(e) => {
-                                            setoldAssignTo(e.value)
-                                            
-                                            }}
-                                        />
-                                        
-                                      
+                                        })}
+                                        options={userListFilterBasisOfRole(selectedOption, usersList)}
+                                        onChange={(e) => {
+                                            setoldAssignTo(e?.value || "")
+
+                                        }}
+                                        styles={{
+                                            control: (base) => ({
+                                                ...base,
+                                                minHeight: '38px',
+                                            }),
+                                            menu: (base) => ({
+                                                ...base,
+                                                zIndex: 9999,
+                                            }),
+                                        }}
+                                    />
+
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button className=" btn btn-danger rounded-5" onClick={()=>setShowAssignTo("")}>Cancel</button>
-                    <div style={{background:clientBtnColor}} className='btn rounded-5 text-white'  onClick={updateUserhandler} >
+                    <button className=" btn btn-danger rounded-5" onClick={() => setShowAssignTo("")}>Cancel</button>
+                    <div style={{ background: clientBtnColor }} className='btn rounded-5 text-white' onClick={updateUserhandler} >
                         SUBMIT
                     </div>
                 </Modal.Footer>
             </Modal>
 
 
-            <Modal className="w-100" size="xl" show={showDateFilter} onHide={()=>setShowDateFilter(false)} >
+            <Modal className="w-100" size="xl" show={showDateFilter} onHide={() => setShowDateFilter(false)} >
                 <Modal.Header closeButton>
                     <Modal.Title>  Assign to </Modal.Title>
                 </Modal.Header>
@@ -563,15 +590,15 @@ const ActivePartnersScreen = () => {
                     <Daterange />
                 </Modal.Body>
                 <Modal.Footer>
-                    <button className="btn btn-cancel me-2" onClick={()=>setShowDateFilter(false)}>Cancel</button>
+                    <button className="btn btn-cancel me-2" onClick={() => setShowDateFilter(false)}>Cancel</button>
                     <Button variant="primary" >
                         SUBMIT
                     </Button>
                 </Modal.Footer>
             </Modal>
 
-           
-            
+
+
         </>
     )
 }

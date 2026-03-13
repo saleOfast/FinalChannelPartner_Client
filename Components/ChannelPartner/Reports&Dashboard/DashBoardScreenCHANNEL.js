@@ -5,7 +5,7 @@ import DashboardAdmin from '../Admin/DashboardAdmin/DashboardAdmin';
 import DashboardUser from '../User/DashboardUser/DashboardUser';
 const DashBoardScreenCHANNEL = () => {
 
-  const[roleId,setRoleId]=useState()
+  const [roleId, setRoleId] = useState()
 
   useEffect(() => {
     if (hasCookie("userInfo")) {
@@ -16,10 +16,10 @@ const DashBoardScreenCHANNEL = () => {
 
   return (
     <>
-    {(roleId === 1 || roleId===2) &&  <DashboardUser />} 
-    {(roleId === null || roleId === 3) && <DashboardAdmin /> }
+      {(roleId === 1 || roleId === 2 || roleId === 31) && <DashboardUser />}
+      {(roleId === null || roleId === 3) && <DashboardAdmin />}
     </>
-   
+
   )
 }
 

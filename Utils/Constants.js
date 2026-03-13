@@ -22,6 +22,11 @@
 // export const filesUrl = 'http://192.168.1.20:8050/images';
 
 /* -----------------NK Realtors links------------- */
-
+// Production
 export const Baseurl = 'https://admin.theprosperity.in/api/v1';
 export const filesUrl = 'https://admin.theprosperity.in/images';
+
+// Local
+// export const Baseurl = 'http://localhost:8050/api/v1';
+// export const filesUrl = 'http://localhost:8050/images';
+

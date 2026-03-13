@@ -9,8 +9,8 @@ import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from 'next/dynamic'
 const DynamicTable = dynamic(
-  () => import('./UserProfileManagementTable'),
-  { ssr: false }
+    () => import('./UserProfileManagementTable'),
+    { ssr: false }
 )
 
 const UserPrflMgmtscreens = () => {
@@ -20,8 +20,8 @@ const UserPrflMgmtscreens = () => {
     const [disableShowConfirm, setdisableShowConfirm] = useState(false)
     const [deleteshowConfirm, setdeleteshowConfirm] = useState(false)
     const [currObj, setcurrObj] = useState('')
-    const[loader,setLoader]=useState(false)
-    const allowedpermissions=hasCookie("allowedpermissions")? JSON.parse(getCookie("allowedpermissions")) :null
+    const [loader, setLoader] = useState(false)
+    const allowedpermissions = hasCookie("allowedpermissions") ? JSON.parse(getCookie("allowedpermissions")) : null
 
     function disableConfirm(value) {
         setcurrObj(value)
@@ -44,60 +44,61 @@ const UserPrflMgmtscreens = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id:55
+                    m_id: 55
                 }
             }
             try {
                 const response = await axios.get(Baseurl + `/db/role`, header);
-                if(response?.status === 200 || response?.status === 201){
+                if (response?.status === 200 || response?.status === 201) {
                     setLoader(false)
-                    setDataList(response.data.data);
+                    setDataList(response?.data?.data);
                 }
+                console.log("vvv", response)
             } catch (error) {
                 setLoader(false)
                 if (error?.response?.data?.message) {
-                  toast.error(error.response.data.message);
+                    toast.error(error.response.data.message);
                 }
                 else {
-                  toast.error('Something went wrong!')
+                    toast.error('Something went wrong!')
                 }
-              }
+            }
         }
     }
 
     async function disableHandler() {
         setdisableShowConfirm(false)
-         let reqInfo = { loss_id: currObj, status: false }
-    
-         if (hasCookie('token')) {
-             let token = (getCookie('token'));
-             let db_name = (getCookie('db_name'));
-    
-             let header = {
-                 headers: {
-                     Accept: "application/json",
-                     Authorization: "Bearer ".concat(token),
-                     db: db_name
-                 }
-             }
-    
-             try {
-                 const response = await axios.put(Baseurl + `/db/role`, reqInfo, header);
-                 if (response.status === 204 || response.status === 200) {
-                     toast.success(response.data.message)
-                     setdisableShowConfirm(false)
-                     setcurrObj('')
-                     getDataList();
-                 }
-             } catch (error) {
+        let reqInfo = { loss_id: currObj, status: false }
+
+        if (hasCookie('token')) {
+            let token = (getCookie('token'));
+            let db_name = (getCookie('db_name'));
+
+            let header = {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: "Bearer ".concat(token),
+                    db: db_name
+                }
+            }
+
+            try {
+                const response = await axios.put(Baseurl + `/db/role`, reqInfo, header);
+                if (response.status === 204 || response.status === 200) {
+                    toast.success(response.data.message)
+                    setdisableShowConfirm(false)
+                    setcurrObj('')
+                    getDataList();
+                }
+            } catch (error) {
                 if (error?.response?.data?.message) {
-                  toast.error(error.response.data.message);
+                    toast.error(error.response.data.message);
                 }
                 else {
-                  toast.error('Something went wrong!')
+                    toast.error('Something went wrong!')
                 }
-              }
-         }
+            }
+        }
     }
 
     async function deleteHandler() {
@@ -106,16 +107,16 @@ const UserPrflMgmtscreens = () => {
         if (hasCookie('token')) {
             let token = (getCookie('token'));
             let db_name = (getCookie('db_name'));
-    
+
             let header = {
                 headers: {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id:59
+                    m_id: 59
                 }
             }
-    
+
             try {
                 const response = await axios.delete(Baseurl + `/db/role?role_id=${currObj}`, header);
                 if (response.status === 204 || response.status === 200) {
@@ -126,12 +127,12 @@ const UserPrflMgmtscreens = () => {
                 }
             } catch (error) {
                 if (error?.response?.data?.message) {
-                  toast.error(error.response.data.message);
+                    toast.error(error.response.data.message);
                 }
                 else {
-                  toast.error('Something went wrong!')
+                    toast.error('Something went wrong!')
                 }
-              }
+            }
         }
 
     }
@@ -154,7 +155,7 @@ const UserPrflMgmtscreens = () => {
                 actionType={deleteHandler}
                 title={"Are You Sure you want to Delete ?"} />
 
-             <div className={`main_Box  ${sideView}`}>
+            <div className={`main_Box  ${sideView}`}>
                 <div className="bread_head">
                     <h3 className="content_head">USER PROFILE MASTER</h3>
                     <nav aria-label="breadcrumb">
@@ -168,16 +169,16 @@ const UserPrflMgmtscreens = () => {
                     <div className="table_screen">
                         <div className="top_btn_sec">
                             {
-                                allowedpermissions[0]==="channel" ? null :(
+                                allowedpermissions[1] === "channel" ? null : (
                                     <Link href='/AddProfileManage'>
-                                <button className="btn btn-primary Add_btn">
-                                    <PlusIcon />
-                                    ADD PROFILE
-                                </button>
-                            </Link>
+                                        <button className="btn btn-primary Add_btn">
+                                            <PlusIcon />
+                                            ADD PROFILE
+                                        </button>
+                                    </Link>
                                 )
                             }
-                            
+
                         </div>
                         <DynamicTable
                             title='Users Profile List'

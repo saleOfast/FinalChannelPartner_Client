@@ -308,6 +308,7 @@ select.form-control {
         position: relative;
         display: flex;
         align-items: center;
+        gap: 8px;
 
         .btn:active,
         .btn.show {
@@ -316,7 +317,7 @@ select.form-control {
 
         .quick_add_sec {
           position: relative;
-          margin-right: var(--spaces-width);
+          margin-right: 0;
 
           #quickAdd {
             display: flex;
@@ -330,7 +331,7 @@ select.form-control {
             }
 
             .btn_text {
-              margin: 0px 10px;
+              margin: 0 6px;
             }
 
             .chevrolet {

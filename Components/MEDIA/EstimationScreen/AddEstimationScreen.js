@@ -17,7 +17,7 @@ import { ButtonGroup, Table } from "react-bootstrap";
 import DeleteIcon from "../../Svg/DeleteIcon";
 import EditIcon from "../../Svg/EditIcon";
 import ModelEditAgencySite from "./ModelEditAgencySite";
-import { DMPCArray,additionalInfoArray,TotalCostArray1,TotalCostArray2,marginInfoArray } from "./Array";
+import { DMPCArray, additionalInfoArray, TotalCostArray1, TotalCostArray2, marginInfoArray } from "./Array";
 import SalesOrderManagement from "./SalesOrderManagement";
 import PurchaseOrderManagement from "./PurchaseOrderManagement";
 import Button from 'react-bootstrap/Button';
@@ -41,7 +41,7 @@ import JobCardManagement from "./JobCardManagement";
 import UpdateNDPModel from "./UpdateNDPModel";
 import RePrintingMountingModel from "./RePrintingMountingModel";
 import ModelForceClosure from "./ModelForceClosure";
- 
+
 
 const AddEstimationScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
@@ -56,9 +56,9 @@ const AddEstimationScreen = () => {
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DDTHH:mm");
   const [userInfo, setUserInfo] = useState({
     estimate_type: "",
-    est_t_id:"",
+    est_t_id: "",
     campaign_id: null,
-    est_s_id:null,
+    est_s_id: null,
     campaign_name: "",
     acc_id: "",
     package_offer: "",
@@ -123,7 +123,7 @@ const AddEstimationScreen = () => {
   const [errorToast, setErrorToast] = useState(false);
   const [loginDetails, setloginDetails] = useState({});
   const [deleteshowConfirm, setdeleteshowConfirm] = useState(false);
-  const [assetDeleteShowConfirm,setAssetDeleteShowConfirm]=useState(false);
+  const [assetDeleteShowConfirm, setAssetDeleteShowConfirm] = useState(false);
   const [busiessTypeList, setBusinessTypeList] = useState([]);
   const [isAgency, setIsAgency] = useState(false);
   const [assetSiteLists, setAssetSiteLists] = useState([]);
@@ -139,10 +139,10 @@ const AddEstimationScreen = () => {
   const [deleteSiteAgencyId, setDeleteSiteAgencyId] = useState("");
   const [deleteSiteAssetId, setDeleteSiteAssetId] = useState("");
   const [show, setShow] = useState(false);
-  const [startDate,setStartDate] = useState("")
-  const [endDate,setEndDate] = useState("")
-  const [duration,setDuration] = useState("")
-  
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
+  const [duration, setDuration] = useState("")
+
   const [newFields, setNewFields] = useState({
     field_lable: null,
     input_type: null,
@@ -154,17 +154,17 @@ const AddEstimationScreen = () => {
 
 
   // buttons
-  const userInfoCheck=JSON.parse(getCookie("userInfo"));
-  const isNewOrReopen=userInfo?.est_s_id=="1" || userInfo?.est_s_id=="4"
-  const isApproved = userInfo?.est_s_id=="2"
-  const isSentForApproval = userInfo?.est_s_id=="4"
-  const isDB=userInfoCheck?.isDB
-  const isasset =busiessTypeList?.find(
+  const userInfoCheck = JSON.parse(getCookie("userInfo"));
+  const isNewOrReopen = userInfo?.est_s_id == "1" || userInfo?.est_s_id == "4"
+  const isApproved = userInfo?.est_s_id == "2"
+  const isSentForApproval = userInfo?.est_s_id == "4"
+  const isDB = userInfoCheck?.isDB
+  const isasset = busiessTypeList?.find(
     (item) =>
       item?.cmpn_b_t_id ==
       userInfo?.db_media_campaign?.cmpn_b_t_id
-  )?.cmpn_b_t_name == "Asset"           
-  const isagency =busiessTypeList?.find(
+  )?.cmpn_b_t_name == "Asset"
+  const isagency = busiessTypeList?.find(
     (item) =>
       item?.cmpn_b_t_id ==
       userInfo?.db_media_campaign?.cmpn_b_t_id
@@ -181,9 +181,9 @@ const AddEstimationScreen = () => {
   const [showVendorAsset, setShowVendorAsset] = useState(false);
   const [showVendorAgency, setShowVendorAgency] = useState(false);
   const [selectedSites, setSelectedSites] = useState([]);
-  const [showSalesOrder,setShowSalesOrder] =useState(false)
-  const [showPurchaseOrder,setShowPurchaseOrder] =useState(false)
-  const [ mediaSidebarInfo,setmediaSidebarInfo]=useState([])
+  const [showSalesOrder, setShowSalesOrder] = useState(false)
+  const [showPurchaseOrder, setShowPurchaseOrder] = useState(false)
+  const [mediaSidebarInfo, setmediaSidebarInfo] = useState([])
   const [estimateApprovals, setEstimateApprovals] = useState();
   const [showGenerateCard, setShowGenerateCard] = useState(false);
   const [showNDP, setShowNDP] = useState(false);
@@ -216,10 +216,10 @@ const AddEstimationScreen = () => {
   const handleVendorAgencyClose = () => {
     setShowVendorAgency(false);
   };
-  const handleCloseSalesOrder =()=>{
+  const handleCloseSalesOrder = () => {
     setShowSalesOrder(false)
   }
-  const handleClosePurchaseOrder =()=>{
+  const handleClosePurchaseOrder = () => {
     setShowPurchaseOrder(false)
   }
 
@@ -290,20 +290,20 @@ const AddEstimationScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:439
+          m_id: 439
         },
       };
 
       try {
         const response = await axios.post(
           Baseurl +
-            `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
+          `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
           {
             estimate_id: id,
             sites: formattedSites,
-            start_date:startDate,
-            end_date:endDate,
-            duration:duration,
+            start_date: startDate,
+            end_date: endDate,
+            duration: duration,
           },
           header
         );
@@ -327,7 +327,7 @@ const AddEstimationScreen = () => {
     }
   };
 
-  const getContactList =()=>{
+  const getContactList = () => {
     console.log("getContactList called")
   }
 
@@ -342,14 +342,14 @@ const AddEstimationScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:444
+          m_id: 444
         },
       };
 
       try {
         const response = await axios.post(
           Baseurl +
-            `/db/media/estimation/sendMailForApproval/`,
+          `/db/media/estimation/sendMailForApproval/`,
           {
             estimate_id: estimate_id,
           },
@@ -380,7 +380,7 @@ const AddEstimationScreen = () => {
     );
   };
 
-  const accept_rejectApproval = async (estimate_id,status) => {
+  const accept_rejectApproval = async (estimate_id, status) => {
     if (hasCookie("token")) {
       setisLoading(true);
       let token = getCookie("token");
@@ -391,17 +391,17 @@ const AddEstimationScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:443
+          m_id: 443
         },
       };
 
       try {
         const response = await axios.post(
           Baseurl +
-            `/db/media/estimation/approveEstimate`,
+          `/db/media/estimation/approveEstimate`,
           {
             estimate_id: estimate_id,
-            approval:status
+            approval: status
           },
           header
         );
@@ -431,7 +431,7 @@ const AddEstimationScreen = () => {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
           db: db_name,
-          pass:"pass"
+          pass: "pass"
         },
       };
 
@@ -440,7 +440,7 @@ const AddEstimationScreen = () => {
           Baseurl + `/db/settings/generalSettings`,
           header
         );
-        setEstimateApprovals(data?.data[2]?.setting_value.split(",").map(Number)); 
+        setEstimateApprovals(data?.data[2]?.setting_value.split(",").map(Number));
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error?.response?.data?.message);
@@ -457,7 +457,7 @@ const AddEstimationScreen = () => {
 
   // buttons
 
-  
+
 
   async function getAccountsList() {
     await fetchData(
@@ -529,9 +529,9 @@ const AddEstimationScreen = () => {
     );
   }
 
-  const filteredStatusList = !id 
-  ? estimateStatusList.filter((item) => item.est_s_id === 1)
-  : estimateStatusList.filter((item) => item.est_s_id !== 1);
+  const filteredStatusList = !id
+    ? estimateStatusList.filter((item) => item.est_s_id === 1)
+    : estimateStatusList.filter((item) => item.est_s_id !== 1);
 
   async function getAssetSites() {
     await fetchData(
@@ -611,31 +611,31 @@ const AddEstimationScreen = () => {
     // if(!userInfo.est_s_id){
     //   errors.est_s_id = "Enter Estimate Approval Status";
     // }
-   
+
     if (isAgency) {
       console.log(userInfo)
-      if (userInfo.agency_commission_display==null)
+      if (userInfo.agency_commission_display == null)
         errors.agency_commission_display =
           "Agency commission display is required";
-      if (userInfo.agency_commission_mounting==null  )
+      if (userInfo.agency_commission_mounting == null)
         errors.agency_commission_mounting =
           "Agency commission mounting is required";
-      if (userInfo.agency_commission_printing==null )
+      if (userInfo.agency_commission_printing == null)
         errors.agency_commission_printing =
           "Agency commission printing is required";
     }
     if (!userInfo.package_offer)
       errors.package_offer = "Package offer is required";
 
-    if(userInfo.package_offer=="Yes"){
-      if (userInfo.package_cost_display==null )
+    if (userInfo.package_offer == "Yes") {
+      if (userInfo.package_cost_display == null)
         errors.package_cost_display = "Package cost display is required";
-      if (userInfo.package_cost_mounting==null )
+      if (userInfo.package_cost_mounting == null)
         errors.package_cost_mounting = "Package cost mounting  is required";
-      if (userInfo.package_cost_printing==null )
+      if (userInfo.package_cost_printing == null)
         errors.package_cost_printing = "Package cost printing  is required";
     }
-   
+
     if (!userInfo.estimate_date)
       errors.estimate_date = "Estimate Date is required";
     // if (!userInfo.estimate_type.trim())
@@ -663,7 +663,7 @@ const AddEstimationScreen = () => {
 
         let oppBody = { ...userInfo };
         oppBody.contact_owner = loginDetails.user_id;
-        oppBody.submitted_date=new Date().toISOString().split("T")[0]
+        oppBody.submitted_date = new Date().toISOString().split("T")[0]
         try {
           const response = await axios.post(
             Baseurl + `/db/media/estimation/addEstimation`,
@@ -950,14 +950,14 @@ const AddEstimationScreen = () => {
           Accept: "application/json",
           Authorization: "Bearer ".concat(token),
           db: db_name,
-          m_id:437
+          m_id: 437
         },
       };
 
       try {
         const response = await axios.post(
           Baseurl +
-            `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
+          `/db/media/estimationAssetBusiness/addEstimationAssetBusiness`,
           {
             estimate_id: id,
             sites: [
@@ -1004,7 +1004,7 @@ const AddEstimationScreen = () => {
       try {
         const response = await axios.delete(
           Baseurl +
-            `/db/media/estimationAgencyBusiness/deleteSitesForAgencyEstimates?site_id=${deleteSiteAgencyId}`,
+          `/db/media/estimationAgencyBusiness/deleteSitesForAgencyEstimates?site_id=${deleteSiteAgencyId}`,
           header
         );
         if (response.status === 204 || response.status === 200) {
@@ -1180,9 +1180,9 @@ const AddEstimationScreen = () => {
     getAgencySites();
   }, [show]);
 
-  
 
-  
+
+
 
   return (
     <>
@@ -1212,238 +1212,238 @@ const AddEstimationScreen = () => {
             <div className="row">
               <div className={`col-xl-12 col-md-12 col-sm-12 col-12`}>
                 <div className="add_screen_head d-flex justify-content-between">
-                  <span className="text_bold">Fill Details ( * Fields are
-                    mandatory)</span> 
-                    {
-                      id && !viewMode && (
-                        <ButtonGroup>
-                      {/* Asset */}
-                      {
-                        (isasset &&
-                          mediaSidebarInfo[0]?.children?.find(
-                            (item) => item?.menu_id == 433
-                          )?.children[0]?.children[4]?.actions == 1 &&
-                          isNewOrReopen) ||
-                        (isasset && isDB && isNewOrReopen) && (
-                          <Button  key="offer-asset-site" variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }} onClick={() => {
-                            getState();
-                            setShow1(true);
-                          }} >
-                            Offer Site
-                          </Button>
-                        )
-                      }
-                      
-                      {
-                        (isasset &&
-                          mediaSidebarInfo[0]?.children?.find(
-                            (item) => item?.menu_id == 433
-                          )?.children[0]?.children[5]?.actions == 1 &&
-                          isNewOrReopen) ||
-                        (isasset && isDB && isNewOrReopen) && (
-                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }} onClick={() => {
-                            getState();
-                            setShow5(true);
-                          }} >
-                            Client Cost Sheet
-                          </Button>
-                        )
-                      }
-
-                      {
-                        (isasset &&
-                          mediaSidebarInfo[0]?.children?.find(
-                            (item) => item?.menu_id == 433
-                          )?.children[0]?.children[6]?.actions == 1 &&
-                          isNewOrReopen) ||
-                        (isasset && isDB && isNewOrReopen) && (
-                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}  onClick={() => {
-                            getState();
-                            setShowVendorAsset(true);
-                          }} >
-                          Vendor Cost Sheet
-                          </Button>
-                        )
-                      }
-
-                      
-
-                      {/* Asset */}
-
-                      {/* Agency */}
-
-                      {
-                        (isagency &&
-                          mediaSidebarInfo[0]?.children?.find(
-                            (item) => item?.menu_id == 433
-                          )?.children[0]?.children[4]?.actions == 1 &&
-                          isNewOrReopen) ||
-                        (isagency && isDB && isNewOrReopen) && (
-                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}  onClick={() => {
-                            setShow3(true);
-                          }}  >
-                          Offer Site
-                          </Button>
-                        )
-                      }
-
-                      
-                      {
-                        (isagency &&
-                          mediaSidebarInfo[0]?.children?.find(
-                            (item) => item?.menu_id == 433
-                          )?.children[0]?.children[4]?.actions == 1 &&
-                          isNewOrReopen) ||
-                        (isagency && isDB && isNewOrReopen) && (
-                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}  onClick={() => {
-                            setShow4(true);
-                          }}  >
-                          Upload Site
-                          </Button>
-                        )
-                      }
-                      
-                      {
-                        (isagency &&
-                          mediaSidebarInfo[0]?.children?.find(
-                            (item) => item?.menu_id == 433
-                          )?.children[0]?.children[5]?.actions == 1 &&
-                          isNewOrReopen) ||
-                        (isagency && isDB && isNewOrReopen) && (
-                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}  onClick={() => {
-                            getState();
-                              setShow6(true);
-                          }}  >
-                          Client Cost Sheet
-                          </Button>
-                        )
-                      }
-                      
-                      {
-                        (isagency &&
-                          mediaSidebarInfo[0]?.children?.find(
-                            (item) => item?.menu_id == 433
-                          )?.children[0]?.children[6]?.actions == 1 &&
-                          isNewOrReopen) ||
-                        (isagency && isDB && isNewOrReopen) && (
-                          <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}    onClick={() => {
-                            getState();
-                            setShowVendorAgency(true);
-                        }}  >
-                        Vendor Cost Sheet
-                        </Button>
-                        )
-                      }
-                      
-
-
-
-                      {/* Agency */}
-
-                      <DropdownButton
-                        as={ButtonGroup}
-                        variant="transparent"
-                        id="bg-nested-dropdown"
-                        
-                        style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}
-                      >
+                  <span className="text_bold">Fill Details  ( * Fields are
+                    mandatory)</span>
+                  {
+                    id && !viewMode && (
+                      <ButtonGroup>
+                        {/* Asset */}
                         {
-                          (mediaSidebarInfo[0]?.children?.find(
-                            (item) => item?.menu_id == 433
-                          )?.children[0]?.children[9]?.actions == 1 &&
+                          (isasset &&
+                            mediaSidebarInfo[0]?.children?.find(
+                              (item) => item?.menu_id == 433
+                            )?.children[0]?.children[4]?.actions == 1 &&
                             isNewOrReopen) ||
-                          (isDB && isNewOrReopen) && (
-                            <Dropdown.Item eventKey="1" onClick={() => {
-                              sentForApproval(id);
-                            }} >Send For Approval</Dropdown.Item>
+                          (isasset && isDB && isNewOrReopen) && (
+                            <Button key="offer-asset-site" variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }} onClick={() => {
+                              getState();
+                              setShow1(true);
+                            }} >
+                              Offer Site
+                            </Button>
                           )
                         }
 
-                        { (mediaSidebarInfo[0]?.children?.find(
-                  (item) => item?.menu_id == 433
-                )?.children[0]?.children[8]?.actions == 1 &&
-                  estimateApprovals?.indexOf(userInfo?.role_id) !== -1 &&
-                  isSentForApproval) ||
-                (userInfo?.isDB == true && isSentForApproval)
-                             &&(
-                              <>
-                                   <Dropdown.Item eventKey="2" onClick={() => {
-                              accept_rejectApproval(id, "true");
-                            }} >Accept</Dropdown.Item>
-                        
-
-                      <Dropdown.Item eventKey="3" onClick={() => {
-                        accept_rejectApproval(id, "false");
-                      }} >Reject</Dropdown.Item>
-                              </>
-                             )
+                        {
+                          (isasset &&
+                            mediaSidebarInfo[0]?.children?.find(
+                              (item) => item?.menu_id == 433
+                            )?.children[0]?.children[5]?.actions == 1 &&
+                            isNewOrReopen) ||
+                          (isasset && isDB && isNewOrReopen) && (
+                            <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }} onClick={() => {
+                              getState();
+                              setShow5(true);
+                            }} >
+                              Client Cost Sheet
+                            </Button>
+                          )
                         }
-                        
-                       
 
-                      {
-                        (mediaSidebarInfo[0]?.children?.find(
-                          (item) => item?.menu_id == 433
-                        )?.children[0]?.children[7]?.actions == 1 &&
-                          isApproved) ||
-                        (userInfo?.isDB === true && isApproved) && (
-                          <Dropdown.Item as={Link} href={`/media/PorformaInvoice?est_id=${id}`} eventKey="4">Invoice</Dropdown.Item>
-                        )
-                      }
+                        {
+                          (isasset &&
+                            mediaSidebarInfo[0]?.children?.find(
+                              (item) => item?.menu_id == 433
+                            )?.children[0]?.children[6]?.actions == 1 &&
+                            isNewOrReopen) ||
+                          (isasset && isDB && isNewOrReopen) && (
+                            <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }} onClick={() => {
+                              getState();
+                              setShowVendorAsset(true);
+                            }} >
+                              Vendor Cost Sheet
+                            </Button>
+                          )
+                        }
 
-                        <Dropdown.Item eventKey="5" onClick={() => {
-                          setShowSalesOrder(true)
-                        }} >Sales Order</Dropdown.Item>
 
-                        <Dropdown.Item eventKey="6" onClick={() => {
-                          setShowPurchaseOrder(true)
-                        }} >Purchase Order</Dropdown.Item>
 
-                        <Dropdown.Item eventKey="7" onClick={() => {
-                          setShowGenerateCard(true)
-                        }} >Generate Job Card</Dropdown.Item>
+                        {/* Asset */}
 
-                        {/* <Dropdown.Item eventKey="8" onClick={() => {
+                        {/* Agency */}
+
+                        {
+                          (isagency &&
+                            mediaSidebarInfo[0]?.children?.find(
+                              (item) => item?.menu_id == 433
+                            )?.children[0]?.children[4]?.actions == 1 &&
+                            isNewOrReopen) ||
+                          (isagency && isDB && isNewOrReopen) && (
+                            <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }} onClick={() => {
+                              setShow3(true);
+                            }}  >
+                              Offer Site
+                            </Button>
+                          )
+                        }
+
+
+                        {
+                          (isagency &&
+                            mediaSidebarInfo[0]?.children?.find(
+                              (item) => item?.menu_id == 433
+                            )?.children[0]?.children[4]?.actions == 1 &&
+                            isNewOrReopen) ||
+                          (isagency && isDB && isNewOrReopen) && (
+                            <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }} onClick={() => {
+                              setShow4(true);
+                            }}  >
+                              Upload Site
+                            </Button>
+                          )
+                        }
+
+                        {
+                          (isagency &&
+                            mediaSidebarInfo[0]?.children?.find(
+                              (item) => item?.menu_id == 433
+                            )?.children[0]?.children[5]?.actions == 1 &&
+                            isNewOrReopen) ||
+                          (isagency && isDB && isNewOrReopen) && (
+                            <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }} onClick={() => {
+                              getState();
+                              setShow6(true);
+                            }}  >
+                              Client Cost Sheet
+                            </Button>
+                          )
+                        }
+
+                        {
+                          (isagency &&
+                            mediaSidebarInfo[0]?.children?.find(
+                              (item) => item?.menu_id == 433
+                            )?.children[0]?.children[6]?.actions == 1 &&
+                            isNewOrReopen) ||
+                          (isagency && isDB && isNewOrReopen) && (
+                            <Button variant="transparent" style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }} onClick={() => {
+                              getState();
+                              setShowVendorAgency(true);
+                            }}  >
+                              Vendor Cost Sheet
+                            </Button>
+                          )
+                        }
+
+
+
+
+                        {/* Agency */}
+
+                        <DropdownButton
+                          as={ButtonGroup}
+                          variant="transparent"
+                          id="bg-nested-dropdown"
+
+                          style={{ backgroundColor: 'white', color: 'black', border: '1px solid black' }}
+                        >
+                          {
+                            (mediaSidebarInfo[0]?.children?.find(
+                              (item) => item?.menu_id == 433
+                            )?.children[0]?.children[9]?.actions == 1 &&
+                              isNewOrReopen) ||
+                            (isDB && isNewOrReopen) && (
+                              <Dropdown.Item eventKey="1" onClick={() => {
+                                sentForApproval(id);
+                              }} >Send For Approval</Dropdown.Item>
+                            )
+                          }
+
+                          {(mediaSidebarInfo[0]?.children?.find(
+                            (item) => item?.menu_id == 433
+                          )?.children[0]?.children[8]?.actions == 1 &&
+                            estimateApprovals?.indexOf(userInfo?.role_id) !== -1 &&
+                            isSentForApproval) ||
+                            (userInfo?.isDB == true && isSentForApproval)
+                            && (
+                              <>
+                                <Dropdown.Item eventKey="2" onClick={() => {
+                                  accept_rejectApproval(id, "true");
+                                }} >Accept</Dropdown.Item>
+
+
+                                <Dropdown.Item eventKey="3" onClick={() => {
+                                  accept_rejectApproval(id, "false");
+                                }} >Reject</Dropdown.Item>
+                              </>
+                            )
+                          }
+
+
+
+                          {
+                            (mediaSidebarInfo[0]?.children?.find(
+                              (item) => item?.menu_id == 433
+                            )?.children[0]?.children[7]?.actions == 1 &&
+                              isApproved) ||
+                            (userInfo?.isDB === true && isApproved) && (
+                              <Dropdown.Item as={Link} href={`/media/PorformaInvoice?est_id=${id}`} eventKey="4">Invoice</Dropdown.Item>
+                            )
+                          }
+
+                          <Dropdown.Item eventKey="5" onClick={() => {
+                            setShowSalesOrder(true)
+                          }} >Sales Order</Dropdown.Item>
+
+                          <Dropdown.Item eventKey="6" onClick={() => {
+                            setShowPurchaseOrder(true)
+                          }} >Purchase Order</Dropdown.Item>
+
+                          <Dropdown.Item eventKey="7" onClick={() => {
+                            setShowGenerateCard(true)
+                          }} >Generate Job Card</Dropdown.Item>
+
+                          {/* <Dropdown.Item eventKey="8" onClick={() => {
                           setShowNDP(true)
                         }} >Update NDP</Dropdown.Item> */}
 
-                        <Dropdown.Item eventKey="9" onClick={() => {
-                          setShowRePrMo(true)
-                        }} >Re-Printing/Mounting</Dropdown.Item>
+                          <Dropdown.Item eventKey="9" onClick={() => {
+                            setShowRePrMo(true)
+                          }} >Re-Printing/Mounting</Dropdown.Item>
 
-                        {/* <Dropdown.Item eventKey="10" onClick={() => {
+                          {/* <Dropdown.Item eventKey="10" onClick={() => {
                           setShowForceClosure(true)
                         }} >Force Closure</Dropdown.Item> */}
 
-                      </DropdownButton>
-                    </ButtonGroup>
-                      )
-                    }
-                    
+                        </DropdownButton>
+                      </ButtonGroup>
+                    )
+                  }
+
 
                 </div>
                 <div className="add_user_form">
                   <div className="row">
-                  {
-                  id && (
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                        <div className="input_box">
-                          <label htmlFor="accountId">
-                            Estimation ID
-                          </label>
-                          <input
-                            type="text"
-                            name="accountId"
-                            placeholder="Account ID"
-                            id="accountId"
-                            disabled={true}
-                            className="form-control"
-                            value={userInfo?.estimation_code}
-                          />
+                    {
+                      id && (
+                        <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                          <div className="input_box">
+                            <label htmlFor="accountId">
+                              Estimation ID
+                            </label>
+                            <input
+                              type="text"
+                              name="accountId"
+                              placeholder="Account ID"
+                              id="accountId"
+                              disabled={true}
+                              className="form-control"
+                              value={userInfo?.estimation_code}
+                            />
+                          </div>
                         </div>
-                      </div>
-                  )
-                }
+                      )
+                    }
                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                       <div
                         className={
@@ -1519,15 +1519,15 @@ const AddEstimationScreen = () => {
                     </div> */}
 
                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.est_t_id ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="estimate_approval_status">Estimate Type *</label>
-                  <Select
+                      <div className={errorData?.est_t_id ? "input_box errorBox" : "input_box"}>
+                        <label htmlFor="estimate_approval_status">Estimate Type *</label>
+                        <Select
                           id="client_name"
                           isDisabled={viewMode}
                           defaultValue={""}
                           placeholder="Select Estimate Approval Status  "
-                          options={ estimateTypeList?.map((data)=>{
-                            return{
+                          options={estimateTypeList?.map((data) => {
+                            return {
                               value: data?.est_t_id,
                               label: data?.est_t_name,
                             }
@@ -1546,20 +1546,20 @@ const AddEstimationScreen = () => {
                             setErrorData({ ...errorData, est_t_id: "" });
                           }}
                         />
-                  <span className="errorText">{errorData?.est_t_id ? errorData.est_t_id : ""}</span>
-                </div>
-                </div>
+                        <span className="errorText">{errorData?.est_t_id ? errorData.est_t_id : ""}</span>
+                      </div>
+                    </div>
 
                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                <div className={errorData?.estimate_approval_status ? "input_box errorBox" : "input_box"}>
-                  <label htmlFor="estimate_approval_status">Estimate Approval Status *</label>
-                  <Select
+                      <div className={errorData?.estimate_approval_status ? "input_box errorBox" : "input_box"}>
+                        <label htmlFor="estimate_approval_status">Estimate Approval Status *</label>
+                        <Select
                           id="client_name"
                           defaultValue={""}
                           isDisabled={viewMode}
                           placeholder="Select Estimate Approval Status  "
-                          options={ filteredStatusList?.map((data)=>{
-                            return{
+                          options={filteredStatusList?.map((data) => {
+                            return {
                               value: data?.est_s_id,
                               label: data?.est_s_name,
                             }
@@ -1578,9 +1578,9 @@ const AddEstimationScreen = () => {
                             setErrorData({ ...errorData, est_s_id: "" });
                           }}
                         />
-                  <span className="errorText">{errorData?.est_s_id ? errorData.est_s_id : ""}</span>
-                </div>
-                </div>
+                        <span className="errorText">{errorData?.est_s_id ? errorData.est_s_id : ""}</span>
+                      </div>
+                    </div>
 
                     <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                       <div
@@ -1623,25 +1623,25 @@ const AddEstimationScreen = () => {
                               campaign_end_date: campaign?.campaign_end_date,
                               campaign_duration: campaign?.campaign_duration,
                               cmpn_b_t_id: campaign?.cmpn_b_t_id,
-                              display_selling_cost:campaign?.client_display_cost,
-                              printing_selling_cost:campaign?.client_printing_cost,
-                              mounting_selling_cost:campaign?.client_mounting_cost,
-                              total_selling_cost:campaign?.client_printing_cost+campaign?.client_mounting_cost+campaign?.client_display_cost,
+                              display_selling_cost: campaign?.client_display_cost,
+                              printing_selling_cost: campaign?.client_printing_cost,
+                              mounting_selling_cost: campaign?.client_mounting_cost,
+                              total_selling_cost: campaign?.client_printing_cost + campaign?.client_mounting_cost + campaign?.client_display_cost,
 
-                              display_buying_cost:campaign?.total_vendor_display_cost,
-                              printing_buying_cost:campaign?.total_vendor_printing_cost,
-                              mounting_buying_cost:campaign?.total_vendor_mounting_cost,
-                              total_buying_cost:campaign?.total_vendor_printing_cost+campaign?.total_vendor_mounting_cost+campaign?.total_vendor_display_cost,
+                              display_buying_cost: campaign?.total_vendor_display_cost,
+                              printing_buying_cost: campaign?.total_vendor_printing_cost,
+                              mounting_buying_cost: campaign?.total_vendor_mounting_cost,
+                              total_buying_cost: campaign?.total_vendor_printing_cost + campaign?.total_vendor_mounting_cost + campaign?.total_vendor_display_cost,
 
-                              overall_margin:campaign?.overall_margin,
-                              display_margin:campaign?.display_margin,
-                              mounting_margin:campaign?.mounting_margin,
-                              printing_margin:campaign?.printing_margin,
+                              overall_margin: campaign?.overall_margin,
+                              display_margin: campaign?.display_margin,
+                              mounting_margin: campaign?.mounting_margin,
+                              printing_margin: campaign?.printing_margin,
 
-                              overall_margin_percentage:campaign?.overall_margin_percentage,
-                              display_margin_percentage:campaign?.display_margin_percentage,
-                              mounting_margin_percentage:campaign?.mounting_margin_percentage,
-                              printing_margin_percentage:campaign?.printing_margin_percentage,
+                              overall_margin_percentage: campaign?.overall_margin_percentage,
+                              display_margin_percentage: campaign?.display_margin_percentage,
+                              mounting_margin_percentage: campaign?.mounting_margin_percentage,
+                              printing_margin_percentage: campaign?.printing_margin_percentage,
 
                             });
                             setErrorData({ ...errorData, campaign_id: "" });
@@ -1675,14 +1675,14 @@ const AddEstimationScreen = () => {
                           value={
                             id
                               ? moment(
-                                  estimatesList?.find(
-                                    (item) =>
-                                      item?.campaign_id == userInfo?.campaign_id
-                                  )?.campaign_start_date
-                                ).format("YYYY-MM-DD")
+                                estimatesList?.find(
+                                  (item) =>
+                                    item?.campaign_id == userInfo?.campaign_id
+                                )?.campaign_start_date
+                              ).format("YYYY-MM-DD")
                               : moment(userInfo?.campaign_start_date).format(
-                                  "YYYY-MM-DD"
-                                )
+                                "YYYY-MM-DD"
+                              )
                           }
                           disabled
                           onChange={(e) => {
@@ -1730,14 +1730,14 @@ const AddEstimationScreen = () => {
                           value={
                             id
                               ? moment(
-                                  estimatesList?.find(
-                                    (item) =>
-                                      item?.campaign_id == userInfo?.campaign_id
-                                  )?.campaign_end_date
-                                ).format("YYYY-MM-DD")
+                                estimatesList?.find(
+                                  (item) =>
+                                    item?.campaign_id == userInfo?.campaign_id
+                                )?.campaign_end_date
+                              ).format("YYYY-MM-DD")
                               : moment(userInfo?.campaign_end_date).format(
-                                  "YYYY-MM-DD"
-                                )
+                                "YYYY-MM-DD"
+                              )
                           }
                           onChange={(e) => {
                             setErrorData({
@@ -1778,9 +1778,9 @@ const AddEstimationScreen = () => {
                           value={
                             id
                               ? estimatesList?.find(
-                                  (item) =>
-                                    item?.campaign_id == userInfo?.campaign_id
-                                )?.campaign_duration
+                                (item) =>
+                                  item?.campaign_id == userInfo?.campaign_id
+                              )?.campaign_duration
                               : userInfo?.campaign_duration || "0days"
                           }
                         />
@@ -1816,7 +1816,7 @@ const AddEstimationScreen = () => {
                             if (
                               id &&
                               data.cmpn_b_t_id ==
-                                userInfo?.db_media_campaign?.cmpn_b_t_id
+                              userInfo?.db_media_campaign?.cmpn_b_t_id
                             ) {
                               return {
                                 value: data?.cmpn_b_t_id,
@@ -1887,143 +1887,143 @@ const AddEstimationScreen = () => {
                     </div>
 
                     {
-                      userInfo?.package_offer =="Yes" && (
-                          <>
-                              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.package_cost_display
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="package_cost_display">
-                          Package Cost Display *
-                        </label>
-                        <input
-                          type="text"
-                          id="package_cost_display"
-                          className="form-control"
-                          disabled={viewMode}
-                          placeholder="Enter Display Currency"
-                          value={userInfo?.package_cost_display}
-                          // onChange={(e) => {
-                          //   const value = e.target.value;
-                          //   // Allow only numeric characters and decimal point
-                          //   if (/^[0-9]*\.?[0-9]*$/.test(value)) {
-                          //     setUserInfo({ ...userInfo, package_cost_display: value });
-                          //   }
-                          // }}
+                      userInfo?.package_offer == "Yes" && (
+                        <>
+                          <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.package_cost_display
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="package_cost_display">
+                                Package Cost Display *
+                              </label>
+                              <input
+                                type="text"
+                                id="package_cost_display"
+                                className="form-control"
+                                disabled={viewMode}
+                                placeholder="Enter Display Currency"
+                                value={userInfo?.package_cost_display}
+                                // onChange={(e) => {
+                                //   const value = e.target.value;
+                                //   // Allow only numeric characters and decimal point
+                                //   if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                                //     setUserInfo({ ...userInfo, package_cost_display: value });
+                                //   }
+                                // }}
 
-                          onChange={(e) => {
-                            setErrorData({
-                              ...errorData,
-                              package_cost_display: "",
-                            });
-                            const value = e.target.value;
-                            const regex = /^\d*\.?\d*$/;
-                            if (regex.test(value)) {
-                              setUserInfo({
-                                ...userInfo,
-                                package_cost_display: value,
-                              });
-                            }
-                          }}
-                        />
-                        <span className="errorText">
-                          {errorData?.package_cost_display
-                            ? errorData.package_cost_display
-                            : ""}
-                        </span>
-                      </div>
-                    </div>
+                                onChange={(e) => {
+                                  setErrorData({
+                                    ...errorData,
+                                    package_cost_display: "",
+                                  });
+                                  const value = e.target.value;
+                                  const regex = /^\d*\.?\d*$/;
+                                  if (regex.test(value)) {
+                                    setUserInfo({
+                                      ...userInfo,
+                                      package_cost_display: value,
+                                    });
+                                  }
+                                }}
+                              />
+                              <span className="errorText">
+                                {errorData?.package_cost_display
+                                  ? errorData.package_cost_display
+                                  : ""}
+                              </span>
+                            </div>
+                          </div>
 
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.package_cost_mounting
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="package_cost_mounting">
-                          Package Cost Mounting *
-                        </label>
-                        <input
-                          type="text"
-                          id="package_cost_mounting"
-                          className="form-control"
-                          disabled={viewMode}
-                          placeholder="Enter Mounting Currency"
-                          value={userInfo?.package_cost_mounting}
-                          onChange={(e) => {
-                            setErrorData({
-                              ...errorData,
-                              package_cost_mounting: "",
-                            });
-                            const value = e.target.value;
-                            // Allow only numeric characters and decimal point
-                            if (/^[0-9]*\.?[0-9]*$/.test(value)) {
-                              setUserInfo({
-                                ...userInfo,
-                                package_cost_mounting: value,
-                              });
-                            }
-                          }}
-                        />
-                        <span className="errorText">
-                          {errorData?.package_cost_mounting
-                            ? errorData.package_cost_mounting
-                            : ""}
-                        </span>
-                      </div>
-                    </div>
+                          <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.package_cost_mounting
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="package_cost_mounting">
+                                Package Cost Mounting *
+                              </label>
+                              <input
+                                type="text"
+                                id="package_cost_mounting"
+                                className="form-control"
+                                disabled={viewMode}
+                                placeholder="Enter Mounting Currency"
+                                value={userInfo?.package_cost_mounting}
+                                onChange={(e) => {
+                                  setErrorData({
+                                    ...errorData,
+                                    package_cost_mounting: "",
+                                  });
+                                  const value = e.target.value;
+                                  // Allow only numeric characters and decimal point
+                                  if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                                    setUserInfo({
+                                      ...userInfo,
+                                      package_cost_mounting: value,
+                                    });
+                                  }
+                                }}
+                              />
+                              <span className="errorText">
+                                {errorData?.package_cost_mounting
+                                  ? errorData.package_cost_mounting
+                                  : ""}
+                              </span>
+                            </div>
+                          </div>
 
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.package_cost_printing
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="package_cost_printing_currency">
-                          Package Cost Printing *
-                        </label>
-                        <input
-                          type="text"
-                          id="package_cost_printing"
-                          className="form-control"
-                          disabled={viewMode}
-                          placeholder="Enter Printing Currency"
-                          value={userInfo?.package_cost_printing}
-                          onChange={(e) => {
-                            setErrorData({
-                              ...errorData,
-                              package_cost_printing: "",
-                            });
-                            const value = e.target.value;
-                            // Allow only numeric characters and decimal point
-                            if (/^[0-9]*\.?[0-9]*$/.test(value)) {
-                              setUserInfo({
-                                ...userInfo,
-                                package_cost_printing: value,
-                              });
-                            }
-                          }}
-                        />
-                        <span className="errorText">
-                          {errorData?.package_cost_printing
-                            ? errorData.package_cost_printing
-                            : ""}
-                        </span>
-                      </div>
-                    </div>
-                          </>
+                          <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.package_cost_printing
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="package_cost_printing_currency">
+                                Package Cost Printing *
+                              </label>
+                              <input
+                                type="text"
+                                id="package_cost_printing"
+                                className="form-control"
+                                disabled={viewMode}
+                                placeholder="Enter Printing Currency"
+                                value={userInfo?.package_cost_printing}
+                                onChange={(e) => {
+                                  setErrorData({
+                                    ...errorData,
+                                    package_cost_printing: "",
+                                  });
+                                  const value = e.target.value;
+                                  // Allow only numeric characters and decimal point
+                                  if (/^[0-9]*\.?[0-9]*$/.test(value)) {
+                                    setUserInfo({
+                                      ...userInfo,
+                                      package_cost_printing: value,
+                                    });
+                                  }
+                                }}
+                              />
+                              <span className="errorText">
+                                {errorData?.package_cost_printing
+                                  ? errorData.package_cost_printing
+                                  : ""}
+                              </span>
+                            </div>
+                          </div>
+                        </>
                       )
                     }
 
-                    
+
 
                     {isAgency && (
                       <>
@@ -2195,24 +2195,24 @@ const AddEstimationScreen = () => {
                   </div>
                 </div>
 
-                    {
-                      viewMode && (
-                        <>
-                            <div className="add_screen_head">
-                  <span className="text_bold">Approval Details </span>
-                </div>
-                <div className="add_user_form">
-                  <div className="row ">
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.submitted_date
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="submitted_date">Submitted Date </label>
-                        {/* <input
+                {
+                  viewMode && (
+                    <>
+                      <div className="add_screen_head">
+                        <span className="text_bold">Approval Details </span>
+                      </div>
+                      <div className="add_user_form">
+                        <div className="row ">
+                          <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.submitted_date
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="submitted_date">Submitted Date </label>
+                              {/* <input
                           type="date"
                           id="submitted_date"
                           className="form-control"
@@ -2234,501 +2234,501 @@ const AddEstimationScreen = () => {
                             })
                           }
                         /> */}
-                        <input
-                          type="date"
-                          id="submitted_date"
-                          className="form-control"
-                          disabled={true}
-                          min={new Date().toISOString().split("T")[0]} // Ensure min date is today's date
-                          onPaste={(e) => e.preventDefault()}
-                          onKeyDown={(e) => e.preventDefault()}
-                          value={
-                            userInfo?.submitted_date
-                              ? moment(userInfo?.submitted_date).format("YYYY-MM-DD")
-                              : new Date().toISOString().split("T")[0] // Set today's date as the default value
-                          }
-                          onChange={(e) =>
-                            setUserInfo({
-                              ...userInfo,
-                              submitted_date: e.target.value,
-                            })
-                          }
-                        />
+                              <input
+                                type="date"
+                                id="submitted_date"
+                                className="form-control"
+                                disabled={true}
+                                min={new Date().toISOString().split("T")[0]} // Ensure min date is today's date
+                                onPaste={(e) => e.preventDefault()}
+                                onKeyDown={(e) => e.preventDefault()}
+                                value={
+                                  userInfo?.submitted_date
+                                    ? moment(userInfo?.submitted_date).format("YYYY-MM-DD")
+                                    : new Date().toISOString().split("T")[0] // Set today's date as the default value
+                                }
+                                onChange={(e) =>
+                                  setUserInfo({
+                                    ...userInfo,
+                                    submitted_date: e.target.value,
+                                  })
+                                }
+                              />
 
-                        <span className="errorText">
-                          {errorData?.submitted_date
-                            ? errorData.submitted_date
-                            : ""}
-                        </span>
+                              <span className="errorText">
+                                {errorData?.submitted_date
+                                  ? errorData.submitted_date
+                                  : ""}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.approval_status
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="approval_status">
+                                Approval Status{" "}
+                              </label>
+                              <input
+                                type="text"
+                                id="approval_status"
+                                className="form-control"
+                                disabled={viewMode}
+                                placeholder="Enter Approval Status"
+                                value={userInfo?.approval_status}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  // Allow only alphabetic characters (including spaces)
+                                  if (/^[A-Za-z0-9\s]*$/.test(value)) {
+                                    setUserInfo({
+                                      ...userInfo,
+                                      approval_status: value,
+                                    });
+                                  }
+                                }}
+                              />
+                              <span className="errorText">
+                                {errorData?.approval_status
+                                  ? errorData.approval_status
+                                  : ""}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.approved_date
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="approved_date">Approved Date </label>
+                              <input
+                                type="date"
+                                id="approved_date"
+                                disabled={viewMode}
+                                className="form-control"
+                                min={new Date().toISOString().split("T")[0]}
+                                onPaste={(e) => e.preventDefault()}
+                                onKeyDown={(e) => e.preventDefault()}
+                                value={
+                                  userInfo?.approved_date
+                                    ? moment(userInfo?.approved_date).format(
+                                      "YYYY-MM-DD"
+                                    )
+                                    : ""
+                                }
+                                onChange={(e) =>
+                                  setUserInfo({
+                                    ...userInfo,
+                                    approved_date: e.target.value,
+                                  })
+                                }
+                              />
+                              <span className="errorText">
+                                {errorData?.approved_date
+                                  ? errorData.approved_date
+                                  : ""}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.approval_comments
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="approval_comments">
+                                Approval Comments{" "}
+                              </label>
+                              <input
+                                type="text"
+                                id="approval_comments"
+                                className="form-control"
+                                disabled={viewMode}
+                                placeholder="Enter Approval Comments"
+                                value={userInfo?.approval_comments}
+                                onChange={(e) => {
+                                  // Regular expression to match only alphabetic characters and spaces
+                                  const value = e.target.value;
+
+                                  setUserInfo({
+                                    ...userInfo,
+                                    approval_comments: value,
+                                  });
+                                }}
+                              />
+                              <span className="errorText">
+                                {errorData?.approval_comments
+                                  ? errorData.approval_comments
+                                  : ""}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.rejected_date
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="rejected_date">Rejected Date </label>
+                              <input
+                                type="date"
+                                id="rejected_date"
+                                className="form-control"
+                                disabled={viewMode}
+                                min={new Date().toISOString().split("T")[0]}
+                                onPaste={(e) => e.preventDefault()}
+                                onKeyDown={(e) => e.preventDefault()}
+                                value={
+                                  userInfo?.rejected_date
+                                    ? moment(userInfo?.rejected_date).format(
+                                      "YYYY-MM-DD"
+                                    )
+                                    : ""
+                                }
+                                onChange={(e) =>
+                                  setUserInfo({
+                                    ...userInfo,
+                                    rejected_date: e.target.value,
+                                  })
+                                }
+                              />
+                              <span className="errorText">
+                                {errorData?.rejected_date
+                                  ? errorData.rejected_date
+                                  : ""}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div
+                              className={
+                                errorData?.rejection_comments
+                                  ? "input_box errorBox"
+                                  : "input_box"
+                              }
+                            >
+                              <label htmlFor="rejection_comments">
+                                Rejection Comments{" "}
+                              </label>
+                              <input
+                                type="text"
+                                id="rejection_comments"
+                                className="form-control"
+                                disabled={viewMode}
+                                placeholder="Enter Rejection Comments"
+                                value={userInfo?.rejection_comments}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  // Allow only alphabetic characters (including spaces)
+                                  if (/^[A-Za-z0-9\s]*$/.test(value)) {
+                                    setUserInfo({
+                                      ...userInfo,
+                                      rejection_comments: value,
+                                    });
+                                  }
+                                }}
+                              />
+                              <span className="errorText">
+                                {errorData?.rejection_comments
+                                  ? errorData.rejection_comments
+                                  : ""}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.approval_status
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="approval_status">
-                          Approval Status{" "}
-                        </label>
-                        <input
-                          type="text"
-                          id="approval_status"
-                          className="form-control"
-                          disabled={viewMode}
-                          placeholder="Enter Approval Status"
-                          value={userInfo?.approval_status}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            // Allow only alphabetic characters (including spaces)
-                            if (/^[A-Za-z0-9\s]*$/.test(value)) {
-                              setUserInfo({
-                                ...userInfo,
-                                approval_status: value,
-                              });
-                            }
-                          }}
-                        />
-                        <span className="errorText">
-                          {errorData?.approval_status
-                            ? errorData.approval_status
-                            : ""}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.approved_date
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="approved_date">Approved Date </label>
-                        <input
-                          type="date"
-                          id="approved_date"
-                          disabled={viewMode}
-                          className="form-control"
-                          min={new Date().toISOString().split("T")[0]}
-                          onPaste={(e) => e.preventDefault()}
-                          onKeyDown={(e) => e.preventDefault()}
-                          value={
-                            userInfo?.approved_date
-                              ? moment(userInfo?.approved_date).format(
-                                  "YYYY-MM-DD"
-                                )
-                              : ""
-                          }
-                          onChange={(e) =>
-                            setUserInfo({
-                              ...userInfo,
-                              approved_date: e.target.value,
-                            })
-                          }
-                        />
-                        <span className="errorText">
-                          {errorData?.approved_date
-                            ? errorData.approved_date
-                            : ""}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.approval_comments
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="approval_comments">
-                          Approval Comments{" "}
-                        </label>
-                        <input
-                          type="text"
-                          id="approval_comments"
-                          className="form-control"
-                          disabled={viewMode}
-                          placeholder="Enter Approval Comments"
-                          value={userInfo?.approval_comments}
-                          onChange={(e) => {
-                            // Regular expression to match only alphabetic characters and spaces
-                            const value = e.target.value;
-
-                            setUserInfo({
-                              ...userInfo,
-                              approval_comments: value,
-                            });
-                          }}
-                        />
-                        <span className="errorText">
-                          {errorData?.approval_comments
-                            ? errorData.approval_comments
-                            : ""}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.rejected_date
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="rejected_date">Rejected Date </label>
-                        <input
-                          type="date"
-                          id="rejected_date"
-                          className="form-control"
-                          disabled={viewMode}
-                          min={new Date().toISOString().split("T")[0]}
-                          onPaste={(e) => e.preventDefault()}
-                          onKeyDown={(e) => e.preventDefault()}
-                          value={
-                            userInfo?.rejected_date
-                              ? moment(userInfo?.rejected_date).format(
-                                  "YYYY-MM-DD"
-                                )
-                              : ""
-                          }
-                          onChange={(e) =>
-                            setUserInfo({
-                              ...userInfo,
-                              rejected_date: e.target.value,
-                            })
-                          }
-                        />
-                        <span className="errorText">
-                          {errorData?.rejected_date
-                            ? errorData.rejected_date
-                            : ""}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                      <div
-                        className={
-                          errorData?.rejection_comments
-                            ? "input_box errorBox"
-                            : "input_box"
-                        }
-                      >
-                        <label htmlFor="rejection_comments">
-                          Rejection Comments{" "}
-                        </label>
-                        <input
-                          type="text"
-                          id="rejection_comments"
-                          className="form-control"
-                          disabled={viewMode}
-                          placeholder="Enter Rejection Comments"
-                          value={userInfo?.rejection_comments}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            // Allow only alphabetic characters (including spaces)
-                            if (/^[A-Za-z0-9\s]*$/.test(value)) {
-                              setUserInfo({
-                                ...userInfo,
-                                rejection_comments: value,
-                              });
-                            }
-                          }}
-                        />
-                        <span className="errorText">
-                          {errorData?.rejection_comments
-                            ? errorData.rejection_comments
-                            : ""}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                        </>
-                      )
-                    }
+                    </>
+                  )
+                }
                 {
-                  id ?(
+                  id ? (
                     <>
 
-<div className="add_screen_head">
-                  <span className="text_bold">
-                    Display, Mounting and Printing Cost{" "}
-                  </span>
-                </div>
-                <div className="add_user_form">
-                  <div className="row ">
-                    {DMPCArray?.map((item) => (
-                      <div
-                        className="col-xl-3 col-md-3 col-sm-12 col-12"
-                        key={item.id}
-                      >
-                        <div
-                          className={
-                            errorData?.[item?.id]
-                              ? "input_box errorBox"
-                              : "input_box"
-                          }
-                        >
-                          <label htmlFor="campaign_brand">{item?.label} </label>
-                          <input
-                            type="number"
-                            id={item?.id}
-                            className="form-control"
-                            disabled={
-                              viewMode ||
-                              item?.id === "total_selling_cost" ||
-                              item?.id === "total_buying_cost"
-                            }
-                            placeholder={`Enter ${item?.label}`}
-                            value={userInfo?.[item?.id]}
-                            onChange={(e) =>
-                              handleDMPCInfoChange(e, item?.fieldType)
-                            }
-                          />
-                          <span className="errorText">
-                            {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
-                          </span>
+                      <div className="add_screen_head">
+                        <span className="text_bold">
+                          Display, Mounting and Printing Cost{" "}
+                        </span>
+                      </div>
+                      <div className="add_user_form">
+                        <div className="row ">
+                          {DMPCArray?.map((item) => (
+                            <div
+                              className="col-xl-3 col-md-3 col-sm-12 col-12"
+                              key={item.id}
+                            >
+                              <div
+                                className={
+                                  errorData?.[item?.id]
+                                    ? "input_box errorBox"
+                                    : "input_box"
+                                }
+                              >
+                                <label htmlFor="campaign_brand">{item?.label} </label>
+                                <input
+                                  type="number"
+                                  id={item?.id}
+                                  className="form-control"
+                                  disabled={
+                                    viewMode ||
+                                    item?.id === "total_selling_cost" ||
+                                    item?.id === "total_buying_cost"
+                                  }
+                                  placeholder={`Enter ${item?.label}`}
+                                  value={userInfo?.[item?.id]}
+                                  onChange={(e) =>
+                                    handleDMPCInfoChange(e, item?.fieldType)
+                                  }
+                                />
+                                <span className="errorText">
+                                  {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
 
-                <div className="add_screen_head">
-                  <span className="text_bold">Total Cost</span>
-                </div>
-                <div className="add_user_form">
-                  <div className="row ">
-                    {TotalCostArray1?.map((item) => (
-                      <div
-                        className="col-xl-3 col-md-3 col-sm-12 col-12"
-                        key={item.id}
-                      >
-                        <div
-                          className={
-                            errorData?.[item?.id]
-                              ? "input_box errorBox"
-                              : "input_box"
-                          }
-                        >
-                          <label htmlFor="campaign_brand">{item?.label} </label>
-                          <input
-                            type="number"
-                            id={item?.id}
-                            className="form-control"
-                            disabled={
-                              viewMode ||
-                              item?.id === "total_vendor_cost_with_tax" ||
-                              item?.id === "total_client_cost_with_tax"
-                            }
-                            placeholder={`Enter ${item?.label}`}
-                            value={userInfo?.[item?.id]}
-                            onChange={(e) =>
-                              handleTotalCostInfoChange(e, item?.fieldType)
-                            }
-                          />
-                          <span className="errorText">
-                            {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
-                          </span>
+                      <div className="add_screen_head">
+                        <span className="text_bold">Total Cost</span>
+                      </div>
+                      <div className="add_user_form">
+                        <div className="row ">
+                          {TotalCostArray1?.map((item) => (
+                            <div
+                              className="col-xl-3 col-md-3 col-sm-12 col-12"
+                              key={item.id}
+                            >
+                              <div
+                                className={
+                                  errorData?.[item?.id]
+                                    ? "input_box errorBox"
+                                    : "input_box"
+                                }
+                              >
+                                <label htmlFor="campaign_brand">{item?.label} </label>
+                                <input
+                                  type="number"
+                                  id={item?.id}
+                                  className="form-control"
+                                  disabled={
+                                    viewMode ||
+                                    item?.id === "total_vendor_cost_with_tax" ||
+                                    item?.id === "total_client_cost_with_tax"
+                                  }
+                                  placeholder={`Enter ${item?.label}`}
+                                  value={userInfo?.[item?.id]}
+                                  onChange={(e) =>
+                                    handleTotalCostInfoChange(e, item?.fieldType)
+                                  }
+                                />
+                                <span className="errorText">
+                                  {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="add_user_form">
-                  <div className="row ">
-                    {TotalCostArray2?.map((item) => (
-                      <div
-                        className="col-xl-3 col-md-3 col-sm-12 col-12"
-                        key={item.id}
-                      >
-                        <div
-                          className={
-                            errorData?.[item?.id]
-                              ? "input_box errorBox"
-                              : "input_box"
-                          }
-                        >
-                          <label htmlFor="campaign_brand">{item?.label} </label>
-                          <input
-                            type="number"
-                            id={item?.id}
-                            className="form-control"
-                            disabled={
-                              viewMode ||
-                              item?.id === "total_vendor_cost_with_tax" ||
-                              item?.id === "total_client_cost_with_tax"
-                            }
-                            placeholder={`Enter ${item?.label}`}
-                            value={userInfo?.[item?.id]}
-                            onChange={(e) =>
-                              handleTotalCostInfoChange(e, item?.fieldType)
-                            }
-                          />
-                          <span className="errorText">
-                            {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
-                          </span>
+                      <div className="add_user_form">
+                        <div className="row ">
+                          {TotalCostArray2?.map((item) => (
+                            <div
+                              className="col-xl-3 col-md-3 col-sm-12 col-12"
+                              key={item.id}
+                            >
+                              <div
+                                className={
+                                  errorData?.[item?.id]
+                                    ? "input_box errorBox"
+                                    : "input_box"
+                                }
+                              >
+                                <label htmlFor="campaign_brand">{item?.label} </label>
+                                <input
+                                  type="number"
+                                  id={item?.id}
+                                  className="form-control"
+                                  disabled={
+                                    viewMode ||
+                                    item?.id === "total_vendor_cost_with_tax" ||
+                                    item?.id === "total_client_cost_with_tax"
+                                  }
+                                  placeholder={`Enter ${item?.label}`}
+                                  value={userInfo?.[item?.id]}
+                                  onChange={(e) =>
+                                    handleTotalCostInfoChange(e, item?.fieldType)
+                                  }
+                                />
+                                <span className="errorText">
+                                  {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
 
-                <div className="add_screen_head">
-                  <span className="text_bold">Additional Information</span>
-                </div>
-                <div className="add_user_form">
-                  <div className="row ">
-                    {additionalInfoArray?.map((item) => (
-                      <div
-                        className="col-xl-3 col-md-3 col-sm-12 col-12"
-                        key={item.id}
-                      >
-                        <div
-                          className={
-                            errorData?.[item?.id]
-                              ? "input_box errorBox"
-                              : "input_box"
-                          }
-                        >
-                          <label htmlFor="campaign_brand">{item?.label} </label>
-                          <input
-                            type="number"
-                            id={item?.id}
-                            className="form-control"
-                            disabled={viewMode}
-                            placeholder={`Enter ${item?.label}`}
-                            value={userInfo?.[item?.id]}
-                            onChange={(e) =>
-                              handleTotalCostInfoChange(e, item?.fieldType)
-                            }
-                          />
-                          <span className="errorText">
-                            {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
-                          </span>
+                      <div className="add_screen_head">
+                        <span className="text_bold">Additional Information</span>
+                      </div>
+                      <div className="add_user_form">
+                        <div className="row ">
+                          {additionalInfoArray?.map((item) => (
+                            <div
+                              className="col-xl-3 col-md-3 col-sm-12 col-12"
+                              key={item.id}
+                            >
+                              <div
+                                className={
+                                  errorData?.[item?.id]
+                                    ? "input_box errorBox"
+                                    : "input_box"
+                                }
+                              >
+                                <label htmlFor="campaign_brand">{item?.label} </label>
+                                <input
+                                  type="number"
+                                  id={item?.id}
+                                  className="form-control"
+                                  disabled={viewMode}
+                                  placeholder={`Enter ${item?.label}`}
+                                  value={userInfo?.[item?.id]}
+                                  onChange={(e) =>
+                                    handleTotalCostInfoChange(e, item?.fieldType)
+                                  }
+                                />
+                                <span className="errorText">
+                                  {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="add_screen_head">
-                  <span className="text_bold">Margin Information </span>
-                </div>
-                <div className="add_user_form">
-                  <div className="row ">
-                    {marginInfoArray?.map((item) => (
-                      <div
-                        className="col-xl-3 col-md-3 col-sm-12 col-12"
-                        key={item.id}
-                      >
-                        <div
-                          className={
-                            errorData?.[item?.id]
-                              ? "input_box errorBox"
-                              : "input_box"
-                          }
-                        >
-                          <label htmlFor="campaign_brand">{item?.label} </label>
-                          <input
-                            type="text"
-                            id={item?.id}
-                            className="form-control"
-                            disabled={viewMode}
-                            placeholder={`Enter ${item?.label}`}
-                            value={userInfo?.[item?.id]}
-                            onChange={(e) =>
-                              handleMarginInfoChange(e, item?.fieldType)
-                            }
-                          />
-                          <span className="errorText">
-                            {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
-                          </span>
+                      <div className="add_screen_head">
+                        <span className="text_bold">Margin Information </span>
+                      </div>
+                      <div className="add_user_form">
+                        <div className="row ">
+                          {marginInfoArray?.map((item) => (
+                            <div
+                              className="col-xl-3 col-md-3 col-sm-12 col-12"
+                              key={item.id}
+                            >
+                              <div
+                                className={
+                                  errorData?.[item?.id]
+                                    ? "input_box errorBox"
+                                    : "input_box"
+                                }
+                              >
+                                <label htmlFor="campaign_brand">{item?.label} </label>
+                                <input
+                                  type="text"
+                                  id={item?.id}
+                                  className="form-control"
+                                  disabled={viewMode}
+                                  placeholder={`Enter ${item?.label}`}
+                                  value={userInfo?.[item?.id]}
+                                  onChange={(e) =>
+                                    handleMarginInfoChange(e, item?.fieldType)
+                                  }
+                                />
+                                <span className="errorText">
+                                  {errorData?.[item?.id] ? errorData?.[item?.id] : ""}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
                     </>
 
-                  ) :null
+                  ) : null
                 }
 
                 {
                   id && (
                     <>
-                        <AssetSites 
-                          busiessTypeList={busiessTypeList}
-                          userInfo={userInfo}
-                          assetDeleteShowConfirm={assetDeleteShowConfirm}
-                          viewMode={viewMode}
-                          setAssetDeleteShowConfirm={setAssetDeleteShowConfirm}
-                          setDeleteSiteAssetId={setDeleteSiteAssetId}
-                          id={id}
-                          deleteAssetSite={deleteAssetSite}
-                          assetSiteLists={assetSiteLists}
-                          errorToast={errorToast}
-                          setErrorToast={setErrorToast}
-                        />
+                      <AssetSites
+                        busiessTypeList={busiessTypeList}
+                        userInfo={userInfo}
+                        assetDeleteShowConfirm={assetDeleteShowConfirm}
+                        viewMode={viewMode}
+                        setAssetDeleteShowConfirm={setAssetDeleteShowConfirm}
+                        setDeleteSiteAssetId={setDeleteSiteAssetId}
+                        id={id}
+                        deleteAssetSite={deleteAssetSite}
+                        assetSiteLists={assetSiteLists}
+                        errorToast={errorToast}
+                        setErrorToast={setErrorToast}
+                      />
 
-                        
 
-                        <AgencySites 
-                          busiessTypeList={busiessTypeList}
-                          userInfo={userInfo}
-                          deleteshowConfirm={deleteshowConfirm}
-                          setdeleteshowConfirm={setdeleteshowConfirm}
-                          deleteAgencySite={deleteAgencySite}
-                          agencySiteLists={agencySiteLists}
-                          viewMode={viewMode}
-                          show={show}
-                          setShow={setShow}
-                          setGetAgencyData={setGetAgencyData}
-                          handleClose={handleClose}
-                          getAgencyData={getAgencyData}
-                          agencySiteData={agencySiteData}
-                          setAgencySiteData={setAgencySiteData}
-                          setDeleteSiteAgencyId={setDeleteSiteAgencyId}
-                          id={id}
-                        />
 
-                        <SalesOrderManagement 
-                            id={id}
-                            link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
-                        />
+                      <AgencySites
+                        busiessTypeList={busiessTypeList}
+                        userInfo={userInfo}
+                        deleteshowConfirm={deleteshowConfirm}
+                        setdeleteshowConfirm={setdeleteshowConfirm}
+                        deleteAgencySite={deleteAgencySite}
+                        agencySiteLists={agencySiteLists}
+                        viewMode={viewMode}
+                        show={show}
+                        setShow={setShow}
+                        setGetAgencyData={setGetAgencyData}
+                        handleClose={handleClose}
+                        getAgencyData={getAgencyData}
+                        agencySiteData={agencySiteData}
+                        setAgencySiteData={setAgencySiteData}
+                        setDeleteSiteAgencyId={setDeleteSiteAgencyId}
+                        id={id}
+                      />
 
-                        <PurchaseOrderManagement
-                            id={id}
-                            link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
-                        />
+                      <SalesOrderManagement
+                        id={id}
+                        link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
+                      />
 
-                        <JobCardManagement
-                          id={id}
-                          type={userInfo?.cmpn_b_t_id}
-                        />
+                      <PurchaseOrderManagement
+                        id={id}
+                        link={`${filesUrl}/supportDoc/images${userInfo?.sales_order_pdf}`}
+                      />
 
-                        
+                      <JobCardManagement
+                        id={id}
+                        type={userInfo?.cmpn_b_t_id}
+                      />
+
+
 
 
                     </>
                   )
                 }
-                
-                
 
 
 
-                  
 
-                  
+
+
+
+
 
                 <div className="add_screen_head">
                   <span className="text_bold">System Information </span>
@@ -3000,23 +3000,23 @@ const AddEstimationScreen = () => {
           </div>
         </div>
       </div>
-      
-      <ModelAssetSite1 
-          show={show1}
-          handleClose={handleClose1}
-          stateList={stateList}
-          setStateId={setStateId}
-          setCityIds={setCityIds}
-          cityList={cityList}
-          stateId={stateId}
-          cityIds={cityIds}
-          getSiteList={getSiteList}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-          setDuration={setDuration}
-          duration={duration}
-          min={moment(userInfo?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")}
-          max={moment(userInfo?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")}
+
+      <ModelAssetSite1
+        show={show1}
+        handleClose={handleClose1}
+        stateList={stateList}
+        setStateId={setStateId}
+        setCityIds={setCityIds}
+        cityList={cityList}
+        stateId={stateId}
+        cityIds={cityIds}
+        getSiteList={getSiteList}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        setDuration={setDuration}
+        duration={duration}
+        min={moment(userInfo?.db_media_campaign?.campaign_start_date).format("YYYY-MM-DD")}
+        max={moment(userInfo?.db_media_campaign?.campaign_end_date).format("YYYY-MM-DD")}
       />
 
       <ModelAssetSite2
@@ -3113,16 +3113,16 @@ const AddEstimationScreen = () => {
         estimateID={id}
         getSingleData={getSingleData}
       />
-      
+
       <ModelPurchaseOrder
-          show={showPurchaseOrder}
-          handleClose={handleClosePurchaseOrder}
-          businessType={userInfo?.cmpn_b_t_id}
-          estimateID={id}
-          getSingleData={getSingleData}
+        show={showPurchaseOrder}
+        handleClose={handleClosePurchaseOrder}
+        businessType={userInfo?.cmpn_b_t_id}
+        estimateID={id}
+        getSingleData={getSingleData}
       />
 
-      <ModelGenerateCard 
+      <ModelGenerateCard
         show={showGenerateCard}
         handleClose={handleCloseGenerateCard}
         businessType={userInfo?.cmpn_b_t_id}
@@ -3130,7 +3130,7 @@ const AddEstimationScreen = () => {
         getSingleData={getSingleData}
       />
 
-      <UpdateNDPModel 
+      <UpdateNDPModel
         id={id}
         assetSiteLists={assetSiteLists}
         show={showNDP}
@@ -3143,7 +3143,7 @@ const AddEstimationScreen = () => {
         setShowRePrMo={setShowRePrMo}
       />
 
-      <ModelForceClosure 
+      <ModelForceClosure
         id={id}
         show={showForceClosure}
         setShow={setShowForceClosure}

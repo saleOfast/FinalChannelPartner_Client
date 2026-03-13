@@ -298,17 +298,17 @@ const CPRegisterLeadsTable = ({
       const leadsWithHistory = await Promise.all(
         dataList.map(async (lead) => {
           const history = await fetchLeadHistory(lead.cpl_id);
-          
+
           // Get latest remark (first item in history is usually the latest)
           const latestRemarkItem = history.find(item => item.remarks);
           const latestRemarks = latestRemarkItem ? latestRemarkItem.remarks : (lead.remarks || "");
-          
+
           // Combine all remarks from history with date (excluding the latest one for history)
           const allRemarks = history
             .filter(item => item.remarks)
             .map(item => `${moment(item.follow_up_date).format("DD/MM/YY")}: ${item.remarks}`)
             .join(" | ");
-          
+
           return {
             ...lead,
             latest_remarks: latestRemarks,
@@ -332,10 +332,13 @@ const CPRegisterLeadsTable = ({
         lead.contact || "",
         formatDate(lead.createdAt),
         lead.follow_up_date ? formatDate(lead.follow_up_date) : "",
+        lead.city || "",
+        lead.state || "",
+        lead.group || "",
         lead.stage || "",
         lead.user || "",
         lead.latest_remarks || "",
-        lead.all_remarks || ""
+        lead.all_remarks || "",
       ]);
 
       const customData = [
@@ -346,7 +349,7 @@ const CPRegisterLeadsTable = ({
         [`Date Range: ${range?.f_date ? formatDate(range?.f_date) : formatDate(start)} to ${range?.t_date ? formatDate(range?.t_date) : formatDate(end)}`],
         [],
         [],
-        ["First Name", "Last Name", "Email", "Contact", "Registration Date", "Follow up Date", "Status", "Assigned To", "Latest Remarks", "Remarks (All History)"],
+        ["First Name", "Last Name", "Email", "Contact", "Registration Date", "Follow up Date", "City", "State", "group", "Status", "Assigned To", "Latest Remarks", "Remarks (All History)"],
         ...excelData,
       ];
 
@@ -358,7 +361,6 @@ const CPRegisterLeadsTable = ({
         { s: { r: 4, c: 0 }, e: { r: 4, c: 9 } },
         { s: { r: 5, c: 0 }, e: { r: 6, c: 9 } },
       ];
-
       worksheet['!cols'] = [
         { wch: 12 },
         { wch: 12 },
@@ -366,10 +368,13 @@ const CPRegisterLeadsTable = ({
         { wch: 12 },
         { wch: 20 },
         { wch: 20 },
-        { wch: 14 },
-        { wch: 12 },
-        { wch: 30 },
-        { wch: 60 },
+        { wch: 15 }, // city
+        { wch: 15 }, // state
+        { wch: 15 }, // group
+        { wch: 15 }, // status
+        { wch: 20 }, // assigned
+        { wch: 30 }, // latest remarks
+        { wch: 60 }, // history remarks
       ];
 
       XLSX.utils.book_append_sheet(workbook, worksheet, "CPRegistrationList");
@@ -382,6 +387,15 @@ const CPRegisterLeadsTable = ({
       setIsDownloading(false);
     }
   };
+  const headerCellStyle = {
+    background: clientBtnColor,
+    color: "white",
+    padding: "12px 16px",
+    textAlign: "left",
+    verticalAlign: "middle",
+    border: "none",
+  };
+
   const columns = [
     {
       name: "first_name",
@@ -389,7 +403,7 @@ const CPRegisterLeadsTable = ({
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
+          <th style={headerCellStyle}>
             {columnMeta.label}
           </th>
         ),
@@ -412,7 +426,7 @@ const CPRegisterLeadsTable = ({
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
+          <th style={headerCellStyle}>
             {columnMeta.label}
           </th>
         ),
@@ -435,7 +449,7 @@ const CPRegisterLeadsTable = ({
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
+          <th style={headerCellStyle}>
             {columnMeta.label}
           </th>
         ),
@@ -458,7 +472,55 @@ const CPRegisterLeadsTable = ({
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
+          <th style={headerCellStyle}>
+            {columnMeta.label}
+          </th>
+        ),
+
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <span
+              className="fw-bold"
+              style={{ color: '#293790' }}
+            >
+              {value}
+            </span>
+          )
+        },
+      },
+    },
+    // city
+    {
+      name: "city",
+      label: "City",
+      options: {
+        filter: false,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th style={headerCellStyle}>
+            {columnMeta.label}
+          </th>
+        ),
+
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <span
+              className="fw-bold"
+              style={{ color: '#293790' }}
+            >
+              {value}
+            </span>
+          )
+        },
+      },
+    },
+    // state 
+    {
+      name: "state",
+      label: "State",
+      options: {
+        filter: false,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th style={headerCellStyle}>
             {columnMeta.label}
           </th>
         ),
@@ -481,7 +543,7 @@ const CPRegisterLeadsTable = ({
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
+          <th style={headerCellStyle}>
             {columnMeta.label}
           </th>
         ),
@@ -504,7 +566,7 @@ const CPRegisterLeadsTable = ({
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
+          <th style={headerCellStyle}>
             {columnMeta.label}
           </th>
         ),
@@ -527,7 +589,55 @@ const CPRegisterLeadsTable = ({
       options: {
         filter: true,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
+          <th style={headerCellStyle}>
+            {columnMeta.label}
+          </th>
+        ),
+
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <span
+              className="fw-bold"
+              style={{ color: '#293790' }}
+            >
+              {value}
+            </span>
+          )
+        },
+      },
+    },
+    // Designation
+    {
+      name: "designation",
+      label: "Designation",
+      options: {
+        filter: true,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th style={headerCellStyle}>
+            {columnMeta.label}
+          </th>
+        ),
+
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <span
+              className="fw-bold"
+              style={{ color: '#293790' }}
+            >
+              {value}
+            </span>
+          )
+        },
+      },
+    },
+    // Group
+    {
+      name: "group",
+      label: "Group",
+      options: {
+        filter: true,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th style={headerCellStyle}>
             {columnMeta.label}
           </th>
         ),
@@ -551,7 +661,7 @@ const CPRegisterLeadsTable = ({
         filter: true,
         display: (userInfo?.isDB || userInfo?.role_id == 3) ? true : false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
+          <th style={headerCellStyle}>
             {columnMeta.label}
           </th>
         ),
@@ -568,29 +678,29 @@ const CPRegisterLeadsTable = ({
         },
       },
     },
-    {
-      name: "remarks",
-      label: "Remarks",
-      options: {
-        filter: false,
-        customHeadRender: (columnMeta, updateDirection) => (
-          <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
-            {columnMeta.label}
-          </th>
-        ),
+    // {
+    //   name: "remarks",
+    //   label: "Remarks",
+    //   options: {
+    //     filter: false,
+    //     customHeadRender: (columnMeta, updateDirection) => (
+    //       <th style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '15px', padding: "7px" }} >
+    //         {columnMeta.label}
+    //       </th>
+    //     ),
 
-        customBodyRender: (value, tableMeta, updateValue) => {
-          return (
-            <span
-              className=""
-              style={{ color: '#667799' }}
-            >
-              {value || ""}
-            </span>
-          )
-        },
-      },
-    },
+    //     customBodyRender: (value, tableMeta, updateValue) => {
+    //       return (
+    //         <span
+    //           className=""
+    //           style={{ color: '#667799' }}
+    //         >
+    //           {value || ""}
+    //         </span>
+    //       )
+    //     },
+    //   },
+    // },
     {
       name: "cpl_id",
       label: "Action",
@@ -598,10 +708,7 @@ const CPRegisterLeadsTable = ({
         filter: false,
         download: false,
         customHeadRender: (columnMeta, updateDirection) => (
-          <th
-            style={{ background: `${clientBtnColor}`, color: "white", paddingLeft: '65px' }}
-
-          >
+          <th style={{ ...headerCellStyle, textAlign: "center" }}>
             {columnMeta.label}
           </th>
         ),
@@ -657,7 +764,7 @@ const CPRegisterLeadsTable = ({
                   </button>
                 </div>}
                 {
-                  tableMeta?.rowData[6] == "CONTACTED" && (
+                  tableMeta?.rowData[8] == "CONTACTED" && (
                     <button
                       className="btn text-white rounded-5" style={{ backgroundColor: clientBtnColor ? clientBtnColor : "#61E25E" }}
                       //  onClick={() =>{
@@ -699,6 +806,7 @@ const CPRegisterLeadsTable = ({
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
+          // console.log("tableMeta", tableMeta)
           return (
             <div className='status_box fw-bold' style={{ color: "#293790" }} >
               {value}
@@ -1074,9 +1182,25 @@ const CPRegisterLeadsTable = ({
             <div className="row">
               <div className="col-xl-12 col-md-12 col-sm-12 col-12">
                 <div className="input_box">
+                  <label className="form-label">Assign To</label>
                   <Select
                     id="select"
                     defaultValue={""}
+                    isSearchable={true}
+                    isClearable={true}
+                    placeholder="Search and select user..."
+                    noOptionsMessage={() => "No users found"}
+                    filterOption={(option, inputValue) => {
+                      if (!inputValue) return true;
+                      const user = usersList?.find(u => u.user_id === option.value);
+                      if (!user) return false;
+                      const searchTerm = inputValue.toLowerCase();
+                      return (
+                        user.user?.toLowerCase().includes(searchTerm) ||
+                        user.email?.toLowerCase().includes(searchTerm) ||
+                        String(user.contact_number || "").includes(searchTerm)
+                      );
+                    }}
                     options={[
                       ...usersList?.filter(item => item?.role_id === 2)?.map((item) => {
                         return {
@@ -1110,11 +1234,21 @@ const CPRegisterLeadsTable = ({
                       })
                     }
                     onChange={(e) => {
-                      assignChangeHandler(e.value);
+                      assignChangeHandler(e?.value || "");
                       setFormData({
                         ...formData,
-                        asssigned_to: e.value
+                        asssigned_to: e?.value || ""
                       });
+                    }}
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        minHeight: '38px',
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        zIndex: 9999,
+                      }),
                     }}
                   />
 

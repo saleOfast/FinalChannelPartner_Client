@@ -29,7 +29,7 @@ const AddProfileScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id:58
+                    m_id: 58
                 }
             }
             try {
@@ -59,12 +59,18 @@ const AddProfileScreen = () => {
                         Accept: "application/json",
                         Authorization: "Bearer ".concat(token),
                         db: db_name,
-                        m_id:56
+                        m_id: 56
                     }
+                }
+                // ✅ Merge platform_id with userInfo
+                let payload = {
+                    ...userInfo,
+                    platform_id: 4
                 }
 
                 try {
                     const response = await axios.post(Baseurl + `/db/role`, userInfo, header);
+                    console.log("response", response)
                     if (response.status === 204 || response.status === 200) {
                         toast.success(response.data.message)
                         router.push('/UserProfileManagement');
@@ -96,7 +102,7 @@ const AddProfileScreen = () => {
                         Accept: "application/json",
                         Authorization: "Bearer ".concat(token),
                         db: db_name,
-                        m_id:58
+                        m_id: 58
                     }
                 }
 
@@ -128,7 +134,7 @@ const AddProfileScreen = () => {
         }
     }, [router.isReady, id])
     return (
-         <div className={`main_Box  ${sideView}`}>
+        <div className={`main_Box  ${sideView}`}>
             <div className="bread_head">
                 <h3 className="content_head">{editMode ? 'EDIT' : 'ADD'} PROFILE</h3>
                 <nav aria-label="breadcrumb">
@@ -164,7 +170,7 @@ const AddProfileScreen = () => {
                                 </div>
                                 <div className="text-end">
                                     <div className="submit_btn">
-                                    <Link href="/UserProfileManagement"><button className="btn btn-cancel me-2">Cancel</button></Link>
+                                        <Link href="/UserProfileManagement"><button className="btn btn-cancel me-2">Cancel</button></Link>
                                         {editMode ? <button className="btn btn-primary" onClick={updateUserhandler}>Update</button> :
                                             <button className="btn btn-primary" onClick={addUserhandler}>Save & Submit</button>}
                                     </div>

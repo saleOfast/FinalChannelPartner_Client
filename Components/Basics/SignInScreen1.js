@@ -118,8 +118,8 @@ export default function SignInScreen({ setLoggedIn }) {
         const getSignInData = async () => {
             try {
                 let baseUrl = window.location.origin;
-                if (baseUrl === "http://localhost:3001") {
-                    baseUrl = "http://crm.cybermatrixsolutions.com"
+                if (baseUrl === "http://localhost:3000") {
+                    baseUrl = "https://srijanbandhan.com"
                 }
                 const { data } = await axios.post(Baseurl + "/db/admin/url", {
                     client_url: `${baseUrl}`,

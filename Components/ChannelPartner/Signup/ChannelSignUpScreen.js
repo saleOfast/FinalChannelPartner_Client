@@ -36,10 +36,10 @@ const ChannelSignUpScreen = () => {
   const [statelist, setStatelist] = useState([]);
   const [citylist, setCitylist] = useState([]);
   const [errorToast, setErrorToast] = useState(false);
-  const[clientData,setClientData]=useState();
-  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
-  const dispatch=useDispatch()
-  const [tokenLoading,setTokenLoading] =useState(false)
+  const [clientData, setClientData] = useState();
+  const { isButtonLoading } = useSelector((state) => state.buttonLoader)
+  const dispatch = useDispatch()
+  const [tokenLoading, setTokenLoading] = useState(false)
 
   const router = useRouter();
 
@@ -58,24 +58,32 @@ const ChannelSignUpScreen = () => {
         { token }
       );
       if (data.status === 200) {
+        const preFill = data?.data?.preFillData || {};
         if (data?.data?.doc_verification === 0) {
           setTokenLoading(false)
-          toast.success(data?.message,{autoClose:2500});
-          setFormFields({
-            ...formFields,
-            name: data?.data?.user || "",
-            user_l_name: data?.data?.user_l_name || "",
-            mobile: data?.data?.contact_number || "",
-            email: data?.data?.email || "",
+          toast.success(data?.message, { autoClose: 2500 });
+          setFormFields((prev) => ({
+            ...prev,
+            // basic details – prefer preFillData if present
+            name: preFill.first_name || data?.data?.user || "",
+            user_l_name: preFill.last_name || data?.data?.user_l_name || "",
+            mobile: preFill.contact || data?.data?.contact_number || "",
+            email: preFill.email || data?.data?.email || "",
             id: data?.data?.user_id,
             token: token,
             isTokenVerified: true,
-          });
-        }else if (data?.data?.doc_verification === 1) {
+            // prefill location/details coming from lead registration
+            organisation: data?.data?.organisation || "",
+            state_id: preFill.state_id || data?.data?.state_id || "",
+            city_id: preFill.city_id || data?.data?.city_id || "",
+            address: data?.data?.address || "",
+            gst: data?.data?.gst || "",
+          }));
+        } else if (data?.data?.doc_verification === 1) {
           setTokenLoading(false)
-          toast.success("Pending for verification",{autoClose:2500});
-          setFormFields({
-            ...formFields,
+          toast.success("Pending for verification", { autoClose: 2500 });
+          setFormFields((prev) => ({
+            ...prev,
             name: data?.data?.user || "",
             user_l_name: data?.data?.user_l_name || "",
             mobile: data?.data?.contact_number || "",
@@ -91,15 +99,15 @@ const ChannelSignUpScreen = () => {
             city_id: data?.data?.city_id || "",
             address: data?.data?.address || "",
             gst: data?.data?.gst || "",
-          });
-          setInterval(()=>{
+          }));
+          setInterval(() => {
             router.push("/partner")
-          },[1500])
-        }else if (data?.data?.doc_verification === 2) {
+          }, [1500])
+        } else if (data?.data?.doc_verification === 2) {
           setTokenLoading(false)
-          toast.success("Documents Verified",{autoClose:2500});
-          setFormFields({
-            ...formFields,
+          toast.success("Documents Verified", { autoClose: 2500 });
+          setFormFields((prev) => ({
+            ...prev,
             name: data?.data?.user || "",
             user_l_name: data?.data?.user_l_name || "",
             mobile: data?.data?.contact_number || "",
@@ -115,15 +123,15 @@ const ChannelSignUpScreen = () => {
             city_id: data?.data?.city_id || "",
             address: data?.data?.address || "",
             gst: data?.data?.gst || "",
-          });
-          setInterval(()=>{
+          }));
+          setInterval(() => {
             router.push("/partner")
-          },[1500])
-        } else{
+          }, [1500])
+        } else {
           setTokenLoading(false)
-          toast.success("Documents Rejected",{autoClose:2500});
-          setFormFields({
-            ...formFields,
+          toast.success("Documents Rejected", { autoClose: 2500 });
+          setFormFields((prev) => ({
+            ...prev,
             name: data?.data?.user || "",
             user_l_name: data?.data?.user_l_name || "",
             mobile: data?.data?.contact_number || "",
@@ -139,19 +147,19 @@ const ChannelSignUpScreen = () => {
             city_id: data?.data?.city_id || "",
             address: data?.data?.address || "",
             gst: data?.data?.gst || "",
-          });
-          setInterval(()=>{
+          }));
+          setInterval(() => {
             router.push("/partner")
-          },[1500])
+          }, [1500])
         }
-        
+
       }
     } catch (error) {
       setTokenLoading(false)
       console.log(error)
       const errorMessage =
         error?.response?.data?.message || "Something went wrong!";
-      toast.error(errorMessage,{autoClose:2500});
+      toast.error(errorMessage, { autoClose: 2500 });
     }
   };
 
@@ -162,9 +170,9 @@ const ChannelSignUpScreen = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if(formFields?.name=="" || formFields.user_l_name=="" || formFields.organisation=="" || formFields.mobile=="" || formFields.email=="" || formFields.state_id=="" || formFields.city_id=="" || formFields.address==""  || formFields.aadhar=="" || formFields.pan=="" || formFields.rera=="" || formFields.cheque==""){
+    if (formFields?.name == "" || formFields.user_l_name == "" || formFields.organisation == "" || formFields.mobile == "" || formFields.email == "" || formFields.state_id == "" || formFields.city_id == "" || formFields.address == "" || formFields.aadhar == "" || formFields.pan == "" || formFields.rera == "" || formFields.cheque == "") {
       dispatch(stopButtonLoading())
-        return  toast.warning("Pls Fill All Mandatory Fields",{autoClose:2500});
+      return toast.warning("Pls Fill All Mandatory Fields", { autoClose: 2500 });
     }
     if (
       !isValidFileType(formFields.aadhar) ||
@@ -173,13 +181,13 @@ const ChannelSignUpScreen = () => {
       (formFields.cheque && !isValidFileType(formFields.cheque))
     ) {
       dispatch(stopButtonLoading());
-      return toast.warning("Please upload files in PNG or JPEG format.",{autoClose:2500});
+      return toast.warning("Please upload files in PNG or JPEG format.", { autoClose: 2500 });
     }
-    
+
     try {
       dispatch(startButtonLoading())
       if (!formFields.aadhar || !formFields.pan || !formFields.rera) {
-        toast.error("Aadhar, PAN, and RERA are required.",{autoClose:2500});
+        toast.error("Aadhar, PAN, and RERA are required.", { autoClose: 2500 });
         dispatch(stopButtonLoading())
         return;
       }
@@ -203,7 +211,7 @@ const ChannelSignUpScreen = () => {
       formData.append("state_id", formFields.state_id);
       formData.append("organisation", formFields.organisation);
       formData.append("gst", formFields.gst);
-      
+
 
       const { data } = await axios.put(
         Baseurl + `/db/users/cp/completeRegistration`,
@@ -211,7 +219,7 @@ const ChannelSignUpScreen = () => {
       );
       if (data.status === 200) {
         dispatch(stopButtonLoading())
-        toast.success(data?.message,{autoClose:2500});
+        toast.success(data?.message, { autoClose: 2500 });
         setFormFields({ ...formFields, isSubmitted: true });
         router.push("/ChannelPartnerRegister_Next");
       }
@@ -220,7 +228,7 @@ const ChannelSignUpScreen = () => {
       console.log(error?.response?.data);
       const errorMessage =
         error?.response?.data?.message || "Something went wrong!";
-      toast.error(errorMessage,{autoClose:2500});
+      toast.error(errorMessage, { autoClose: 2500 });
     }
   };
 
@@ -270,12 +278,12 @@ const ChannelSignUpScreen = () => {
     }
   }, [formFields.state_id]);
 
-  useEffect(()=>{
-    const getSignInData=async()=>{
+  useEffect(() => {
+    const getSignInData = async () => {
       try {
         const baseUrl = window.location.origin;
-        const {data}=await axios.post(Baseurl+"/db/admin/url",{
-          client_url:`${baseUrl}`,
+        const { data } = await axios.post(Baseurl + "/db/admin/url", {
+          client_url: `${baseUrl}`,
         })
         setClientData(data?.data)
       } catch (error) {
@@ -283,208 +291,208 @@ const ChannelSignUpScreen = () => {
       }
     }
     getSignInData()
-  },[])
+  }, [])
 
   return (
     <>
-    {
-      tokenLoading ? <Loader/> :
-      ( 
-        <section className="Sign-Up pt-4" style={{padding:'0 16px'}}>
-        <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-7">
-              <div className="row gx-3">
-                <div className="Sign-In-logo pb-4">
-                  <img  src={
-                        clientData?.logo
-                          ? `${filesUrl}` +
+      {
+        tokenLoading ? <Loader /> :
+          (
+            <section className="Sign-Up pt-4" style={{ padding: '0 16px' }}>
+              <div className="container">
+                <div className="row">
+                  <div className="col-12 col-md-7">
+                    <div className="row gx-3">
+                      <div className="Sign-In-logo pb-4">
+                        <img src={
+                          clientData?.logo
+                            ? `${filesUrl}` +
                             `/logo/images${clientData?.logo}`
-                          : "/ChannelPartner/logo.png"
-                      } alt="normal"/>
-                </div>
-                <div className="col-6">
-                  <div
-                    style={{
-                      height: 320,
-                      width: "100%",
-                      // backgroundImage: "url(/ChannelPartner/signup-img1.png)",
-                      backgroundImage: clientData?.client_image_1 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_1}`:`url(/ChannelPartner/signup-img1.png)`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      marginBottom: 15,
-                      borderTopLeftRadius: 10,
-                    }}
-                  ></div>
-                  <div
-                    style={{
-                      height: 336,
-                      width: "100%",
-                      // backgroundImage: "url(/ChannelPartner/signup-img3.png)",
-                      backgroundImage: clientData?.client_image_2 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_2}`:`url(/ChannelPartner/signup-img3.png)`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      marginBottom: 15,
-                      borderBottomLeftRadius: 10,
-                    }}
-                  ></div>
-                  <div></div>
-                </div>
-                <div className="col-6">
-                  <div
-                    style={{
-                      height: 176,
-                      width: "100%",
-                      // backgroundImage: "url(/ChannelPartner/signup-img2.png)",
-                      backgroundImage: clientData?.client_image_3 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_3}`:`url(/ChannelPartner/signup-img2.png)`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      marginBottom: 15,
-                      borderTopRightRadius: 10,
-                    }}
-                  ></div>
-                  <div
-                    style={{
-                      height: 368,
-                      width: "100%",
-                      // backgroundImage: "url(/ChannelPartner/signup-img4.png)",
-                      backgroundImage: clientData?.client_image_4 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_4}`:`url(/ChannelPartner/signup-img4.png)`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      marginBottom: 15,
-                      borderBottomRightRadius: 10,
-                    }}
-                  ></div>
-                </div>
-                <div className="col-12 d-flex gap-3">
-                  <div
-                    style={{
-                      height: 192,
-                      width: "100%",
-                      // backgroundImage: "url(/ChannelPartner/signup-img2.png)",
-                      backgroundImage: clientData?.client_image_1 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_1}`:`url(/ChannelPartner/signup-img2.png)`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      marginBottom: 15,
-                      borderBottomLeftRadius: 10,
-                    }}
-                  ></div>
-                  <div
-                    style={{
-                      height: 304,
-                      width: "100%",
-                      // backgroundImage: "url(/ChannelPartner/signup-img5.png)",
-                      backgroundImage: clientData?.client_image_2 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_2}`:`url(/ChannelPartner/signup-img5.png)`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      marginBottom: 15,
-                      borderBottomRightRadius: 10,
-                      marginTop: "-110px",
-                    }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-            <div className="col-12 col-md-5 d-flex justify-content-center">
-              <div className="Sign-Up_Sign-In">
-                <h3 className="Perfect-Home ps-2">Find Your Perfect Home. </h3>
-                <div className="underline" />
-                <div className="d-flex pt-5 ps-2">
-                                   <div
-                    className="nav-link d-flex flex-column gap-2 align-items-center pb-3 Sign-Up-btn text-white"
-                    id="Sign-Up"
-                    data-bs-toggle="tab"
-                    data-bs-target="#Sign-Up-tab"
-                    style={{ backgroundColor: `${clientData?.button_color || '#293790'}`}}
-                  >
-                    Sign Up
+                            : "/ChannelPartner/logo.png"
+                        } alt="normal" />
+                      </div>
+                      <div className="col-6">
+                        <div
+                          style={{
+                            height: 320,
+                            width: "100%",
+                            // backgroundImage: "url(/ChannelPartner/signup-img1.png)",
+                            backgroundImage: clientData?.client_image_1 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_1}` : `url(/ChannelPartner/signup-img1.png)`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "cover",
+                            marginBottom: 15,
+                            borderTopLeftRadius: 10,
+                          }}
+                        ></div>
+                        <div
+                          style={{
+                            height: 336,
+                            width: "100%",
+                            // backgroundImage: "url(/ChannelPartner/signup-img3.png)",
+                            backgroundImage: clientData?.client_image_2 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_2}` : `url(/ChannelPartner/signup-img3.png)`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "cover",
+                            marginBottom: 15,
+                            borderBottomLeftRadius: 10,
+                          }}
+                        ></div>
+                        <div></div>
+                      </div>
+                      <div className="col-6">
+                        <div
+                          style={{
+                            height: 176,
+                            width: "100%",
+                            // backgroundImage: "url(/ChannelPartner/signup-img2.png)",
+                            backgroundImage: clientData?.client_image_3 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_3}` : `url(/ChannelPartner/signup-img2.png)`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "cover",
+                            marginBottom: 15,
+                            borderTopRightRadius: 10,
+                          }}
+                        ></div>
+                        <div
+                          style={{
+                            height: 368,
+                            width: "100%",
+                            // backgroundImage: "url(/ChannelPartner/signup-img4.png)",
+                            backgroundImage: clientData?.client_image_4 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_4}` : `url(/ChannelPartner/signup-img4.png)`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "cover",
+                            marginBottom: 15,
+                            borderBottomRightRadius: 10,
+                          }}
+                        ></div>
+                      </div>
+                      <div className="col-12 d-flex gap-3">
+                        <div
+                          style={{
+                            height: 192,
+                            width: "100%",
+                            // backgroundImage: "url(/ChannelPartner/signup-img2.png)",
+                            backgroundImage: clientData?.client_image_1 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_1}` : `url(/ChannelPartner/signup-img2.png)`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "cover",
+                            marginBottom: 15,
+                            borderBottomLeftRadius: 10,
+                          }}
+                        ></div>
+                        <div
+                          style={{
+                            height: 304,
+                            width: "100%",
+                            // backgroundImage: "url(/ChannelPartner/signup-img5.png)",
+                            backgroundImage: clientData?.client_image_2 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_2}` : `url(/ChannelPartner/signup-img5.png)`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "cover",
+                            marginBottom: 15,
+                            borderBottomRightRadius: 10,
+                            marginTop: "-110px",
+                          }}
+                        ></div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="perfect-home-form pt-1">
-                  <section className="Details_Form">
-                    <div className="container pt-3">
-                      <form
-                        id="survey-form"
-                        method="GET"
-                        action
-                        className="d-flex flex-column gap-3"
-                        onSubmit={handleSubmit}
-                      >
-                        <div className="d-flex gap-2">
-                          <div className="rowTab">
-                            <div className="labels">
-                              <label id="name-label" htmlFor="name">
-                                Name
-                              </label>
-                              <span>*</span>
-                            </div>
-                            <div className="rightTab">
-                              <input
-                                autofocus
-                                type="text"
-                                name="name"
-                                id="name"
-                                className="input-field"
-                                placeholder="Enter First Name"
-                                value={formFields.name}
-                                
-                                disabled={formFields.isTokenVerified}
-                              />
-                            </div>
-                          </div>
-                          <div className="rowTab">
-                            <div className="labels">
-                              <label id="name-label" htmlFor="name">Last Name</label>
-                              <span />
-                            </div>
-                            <div className="rightTab">
-                              <input
-                                autofocus
-                                type="text"
-                                name="name"
-                                id="last"
-                                className="input-field"
-                                placeholder="Enter Last Name"
-                                value={formFields.user_l_name}
-                                disabled={formFields.isTokenVerified}
-                                
-                              />
-                            </div>
-                          </div>
+                  <div className="col-12 col-md-5 d-flex justify-content-center">
+                    <div className="Sign-Up_Sign-In">
+                      <h3 className="Perfect-Home ps-2">Find Your Perfect Home. </h3>
+                      <div className="underline" />
+                      <div className="d-flex pt-5 ps-2">
+                        <div
+                          className="nav-link d-flex flex-column gap-2 align-items-center pb-3 Sign-Up-btn text-white"
+                          id="Sign-Up"
+                          data-bs-toggle="tab"
+                          data-bs-target="#Sign-Up-tab"
+                          style={{ backgroundColor: `${clientData?.button_color || '#293790'}` }}
+                        >
+                          Sign Up
                         </div>
-                        <div className="rowTab">
-                          <div className="labels">
-                            <label id="Organization" htmlFor="name">
-                              Organization
-                            </label>
-                            <span>*</span>
-                          </div>
-                          <div className="rightTab">
-                            <input
-                              autofocus
-                              type="text"
-                              name="name"
-                              id="Organization"
-                              className="input-field"
-                              placeholder="Enter Organisation Name"
-                              value={formFields.organisation}
-                              
-                              disabled={formFields.isUploadVerified}
-                              onChange={(e)=>{
-                                setFormFields({...formFields,organisation:e.target.value})
-                              }}  
-                            />
-                          </div>
-                        </div>
-                        <div className="rowTab">
-                          <div className="labels">
-                            <label id="number" htmlFor="number">
-                              Mobile Number
-                            </label>
-                            <span>*</span>
-                          </div>
-                          <div className="rightTab">
-                            {/* <input
+                      </div>
+                      <div className="perfect-home-form pt-1">
+                        <section className="Details_Form">
+                          <div className="container pt-3">
+                            <form
+                              id="survey-form"
+                              method="GET"
+                              action
+                              className="d-flex flex-column gap-3"
+                              onSubmit={handleSubmit}
+                            >
+                              <div className="d-flex gap-2">
+                                <div className="rowTab">
+                                  <div className="labels">
+                                    <label id="name-label" htmlFor="name">
+                                      Name
+                                    </label>
+                                    <span>*</span>
+                                  </div>
+                                  <div className="rightTab">
+                                    <input
+                                      autofocus
+                                      type="text"
+                                      name="name"
+                                      id="name"
+                                      className="input-field"
+                                      placeholder="Enter First Name"
+                                      value={formFields.name}
+
+                                      disabled={formFields.isTokenVerified}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="rowTab">
+                                  <div className="labels">
+                                    <label id="name-label" htmlFor="name">Last Name</label>
+                                    <span />
+                                  </div>
+                                  <div className="rightTab">
+                                    <input
+                                      autofocus
+                                      type="text"
+                                      name="name"
+                                      id="last"
+                                      className="input-field"
+                                      placeholder="Enter Last Name"
+                                      value={formFields.user_l_name}
+                                      disabled={formFields.isTokenVerified}
+
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="rowTab">
+                                <div className="labels">
+                                  <label id="Organization" htmlFor="name">
+                                    Organization
+                                  </label>
+                                  <span>*</span>
+                                </div>
+                                <div className="rightTab">
+                                  <input
+                                    autofocus
+                                    type="text"
+                                    name="name"
+                                    id="Organization"
+                                    className="input-field"
+                                    placeholder="Enter Organisation Name"
+                                    value={formFields.organisation}
+
+                                    disabled={formFields.isUploadVerified}
+                                    onChange={(e) => {
+                                      setFormFields({ ...formFields, organisation: e.target.value })
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="rowTab">
+                                <div className="labels">
+                                  <label id="number" htmlFor="number">
+                                    Mobile Number
+                                  </label>
+                                  <span>*</span>
+                                </div>
+                                <div className="rightTab">
+                                  {/* <input
                               type="tel"
                               name="number"
                               id="num"
@@ -496,138 +504,144 @@ const ChannelSignUpScreen = () => {
                                 setFormFields({...formFields,mobile:e.target.value})
                               }} 
                             /> */}
-                            <input
-                              type="tel"
-                              name="number"
-                              id="num"
-                              className="input-field"
-                              placeholder="Enter Mobile Number"
-                              value={formFields.mobile}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                // Filter out non-digit characters and limit length to 10
-                                const formattedValue = value.replace(/\D/g, '').slice(0, 10);
-                                setFormFields({ ...formFields, mobile: formattedValue });
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className="rowTab">
-                          <div className="labels">
-                            <label id="email-label" htmlFor="email">
-                              Email
-                            </label>
-                            <span>*</span>
-                          </div>
-                          <div className="rightTab">
-                            <input
-                              type="email"
-                              name="email"
-                              id="email"
-                              className="input-field"
-                              
-                              placeholder="Enter Email"
-                              value={formFields.email}
-                              disabled={formFields.isTokenVerified}
-                            />
-                          </div>
-                        </div>
-                        <div className="rowTab">
-                          <div className="rightTab d-flex gap-2 ">
-                            <div className="w-50" >
-                              <label id="email-label" htmlFor="email">
-                                State*
-                              </label>
-                              <Select
-                                id={formFields.state_id}
-                                defaultValue={"select state"}
-                                disabled={formFields.isUploadVerified}
-                                options={statelist?.map((data, index) => {
-                                  return {
-                                    value: data?.state_id,
-                                    label: data?.state_name,
-                                  };
-                                })}
-                                value={statelist?.map((data, index) => {
-                                  if (formFields.state_id === data.state_id) {
-                                    return {
-                                      value: data?.state_id,
-                                      label: data?.state_name,
-                                    };
-                                  }
-                                })}
-                                onChange={(e) =>
-                                  setFormFields({
-                                    ...formFields,
-                                    state_id: e.value,
-                                  })
-                                }
-                              />
-                            </div>
-                            <div className="w-50">
-                              <label id="email-label" htmlFor="email">
-                                City*
-                              </label>
-                              <Select
-                                id={formFields.city_id}
-                                defaultValue={"select city"}
-                                disabled={formFields.isUploadVerified}
-                                options={citylist?.map((data, index) => {
-                                  return {
-                                    value: data?.city_id,
-                                    label: data?.city_name,
-                                  };
-                                })}
-                                value={citylist?.map((data, index) => {
-                                  if (formFields.city_id === data.city_id) {
-                                    return {
-                                      value: data?.city_id,
-                                      label: data?.city_name,
-                                    };
-                                  }
-                                })}
-                                onChange={(e) =>
-                                  setFormFields({
-                                    ...formFields,
-                                    city_id: e.value,
-                                  })
-                                }
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="rowTab">
-                          <div className="labels">
-                            <label id="address-label" htmlFor="address">
-                              Address
-                            </label>
-                            <span>*</span>
-                          </div>
-                          <div className="rightTab">
-                            <input
-                              type="text"
-                              name="address"
-                              id="address"
-                              className="input-field"
-                              placeholder="Enter your address"
-                              value={formFields.address}
-                              onChange={(e)=>{
-                                setFormFields({...formFields,address:e.target.value})
-                              }} 
-                              
-                              disabled={formFields.isUploadVerified}
-                            />
-                          </div>
-                        </div>
-                        <div className="rowTab">
-                          <div className="labels">
-                            <label id="GST" htmlFor="name">
-                              GST Number 
-                            </label>
-                            <span />
-                          </div>
-                          <div className="rightTab">
-                            {/* <input
+                                  <input
+                                    type="tel"
+                                    name="number"
+                                    id="num"
+                                    className="input-field"
+                                    placeholder="Enter Mobile Number"
+                                    value={formFields.mobile}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      // Filter out non-digit characters and limit length to 10
+                                      const formattedValue = value.replace(/\D/g, '').slice(0, 10);
+                                      setFormFields({ ...formFields, mobile: formattedValue });
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="rowTab">
+                                <div className="labels">
+                                  <label id="email-label" htmlFor="email">
+                                    Email
+                                  </label>
+                                  <span>*</span>
+                                </div>
+                                <div className="rightTab">
+                                  <input
+                                    type="email"
+                                    name="email"
+                                    id="email"
+                                    className="input-field"
+
+                                    placeholder="Enter Email"
+                                    value={formFields.email}
+                                    disabled={formFields.isTokenVerified}
+                                  />
+                                </div>
+                              </div>
+                              <div className="rowTab">
+                                <div className="rightTab d-flex gap-2 ">
+                                  <div className="w-50" >
+                                    <label id="email-label" htmlFor="email">
+                                      State*
+                                    </label>
+                                    <Select
+                                      id={formFields.state_id}
+                                      defaultValue={"select state"}
+                                      disabled={formFields.isUploadVerified}
+                                      options={statelist?.map((data) => ({
+                                        value: data?.state_id ?? data?.id,
+                                        label: data?.state_name,
+                                      }))}
+                                      value={
+                                        statelist
+                                          ?.map((data) => ({
+                                            value: data?.state_id ?? data?.id,
+                                            label: data?.state_name,
+                                          }))
+                                          .find(
+                                            (option) =>
+                                              String(option.value) ===
+                                              String(formFields.state_id)
+                                          ) || null
+                                      }
+                                      onChange={(e) =>
+                                        setFormFields((prev) => ({
+                                          ...prev,
+                                          state_id: e?.value || "",
+                                          // reset city if state changes
+                                          city_id: "",
+                                        }))
+                                      }
+                                    />
+                                  </div>
+                                  <div className="w-50">
+                                    <label id="email-label" htmlFor="email">
+                                      City*
+                                    </label>
+                                    <Select
+                                      id={formFields.city_id}
+                                      defaultValue={"select city"}
+                                      disabled={formFields.isUploadVerified}
+                                      options={citylist?.map((data) => ({
+                                        value: data?.city_id ?? data?.id,
+                                        label: data?.city_name,
+                                      }))}
+                                      value={
+                                        citylist
+                                          ?.map((data) => ({
+                                            value: data?.city_id ?? data?.id,
+                                            label: data?.city_name,
+                                          }))
+                                          .find(
+                                            (option) =>
+                                              String(option.value) ===
+                                              String(formFields.city_id)
+                                          ) || null
+                                      }
+                                      onChange={(e) =>
+                                        setFormFields((prev) => ({
+                                          ...prev,
+                                          city_id: e?.value || "",
+                                        }))
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="rowTab">
+                                <div className="labels">
+                                  <label id="address-label" htmlFor="address">
+                                    Address
+                                  </label>
+                                  <span>*</span>
+                                </div>
+                                <div className="rightTab">
+                                  <input
+                                    type="text"
+                                    name="address"
+                                    id="address"
+                                    className="input-field"
+                                    placeholder="Enter your address"
+                                    value={formFields.address}
+                                    onChange={(e) => {
+                                      setFormFields({ ...formFields, address: e.target.value })
+                                    }}
+
+                                    disabled={formFields.isUploadVerified}
+                                  />
+                                </div>
+                              </div>
+                              <div className="rowTab">
+                                <div className="labels">
+                                  <label id="GST" htmlFor="name">
+                                    GST Number
+                                  </label>
+                                  <span />
+                                </div>
+                                <div className="rightTab">
+                                  {/* <input
                               autofocus
                               type="text"
                               name="name"
@@ -641,126 +655,124 @@ const ChannelSignUpScreen = () => {
                               
                               disabled={formFields.isUploadVerified}
                             /> */}
-                            <input
-                              autofocus
-                              type="text"
-                              name="name"
-                              id="GST"
-                              className="input-field"
-                              placeholder="Enter GST Number"
-                              value={formFields.gst}
-                              onChange={(e) => {
-                                // Get the new value from the input field
-                                const newValue = e.target.value;
-                                
-                                // Filter out non-alphanumeric characters
-                                const filteredValue = newValue.replace(/[^a-zA-Z0-9]/g, '');
-                                
-                                // Limit the length to 15 characters
-                                const limitedValue = filteredValue.slice(0, 15);
-                                
-                                // Update the form field state
-                                setFormFields({ ...formFields, gst: limitedValue });
-                              }}
-                              
-                              disabled={formFields.isUploadVerified}
-                            />
+                                  <input
+                                    autofocus
+                                    type="text"
+                                    name="name"
+                                    id="GST"
+                                    className="input-field"
+                                    placeholder="Enter GST Number"
+                                    value={formFields.gst}
+                                    onChange={(e) => {
+                                      // Get the new value from the input field
+                                      const newValue = e.target.value;
 
+                                      // Filter out non-alphanumeric characters
+                                      const filteredValue = newValue.replace(/[^a-zA-Z0-9]/g, '');
 
-                          </div>
-                        </div>
-                        <div className="d-flex justify-content-between flex-wrap  upload-files">
-                          {inputFields.map((input) => (
-                            <div className="rowTab" key={input.field}>
-                              <div className="labels">
-                                <label id="name-label" htmlFor={input.field}>
-                                  {input.label}
-                                </label>
-                              </div>
-                              <div className="rightTab">
-                                <label
-                                  htmlFor={input.field}
-                                  className="form-control d-flex justify-content-between align-items-center"
-                                  style={{ width: 160, height: 48 }}
-                                >
-                                  Upload
-                                  <img
-                                    src="/ChannelPartner/upload-file.svg"
-                                    alt="normal"
-                                    style={{ height: 24 }}
-                                  />
-                                </label>
-                                <input
-                                  autofocus
-                                  type="file"
-                                  accept="image/png, image/jpeg"
-                                  name={input.field}
-                                  id={input.field}
-                                  className="input-field"
-                                  style={{ display: "none" }}
-                                  onChange={(e) => handleFileChange(e, input.field)}
-                                  disabled={formFields.isUploadVerified}
-                                />
+                                      // Limit the length to 15 characters
+                                      const limitedValue = filteredValue.slice(0, 15);
 
-
-                                {formFields.isUploadVerified === false &&
-                                  formFields[input.field] && (
-                                    <img
-                                      src={URL.createObjectURL(
-                                        formFields[input.field]
-                                      )}
-                                      alt={`${input.label} Preview`}
-                                      style={{
-                                        maxWidth: "100px",
-                                        maxHeight: "100px",
-                                        marginTop: "5px",
-                                      }}
-                                    />
-                                  )}
-
-                                {formFields.isUploadVerified &&
-                                input.field === "aadhar" &&
-                                formFields[input.field] ? (
-                                  <img
-                                    src={`${filesUrl}/adh/images${
-                                      formFields[input.field]
-                                    }`}
-                                    alt={`${input.label} Preview`}
-                                    style={{
-                                      maxWidth: "100px",
-                                      maxHeight: "100px",
+                                      // Update the form field state
+                                      setFormFields({ ...formFields, gst: limitedValue });
                                     }}
+
+                                    disabled={formFields.isUploadVerified}
                                   />
-                                ) : (
-                                  formFields.isUploadVerified &&
-                                  input.field !== "aadhar" &&
-                                  formFields[input.field] && (
-                                    <img
-                                      src={
-                                        `${filesUrl}` +
-                                        `/${input.field}/images${
-                                          formFields[input.field]
-                                        }`
-                                      }
-                                      alt={`${input.label} Preview`}
-                                      style={{
-                                        maxWidth: "100px",
-                                        maxHeight: "100px",
-                                      }}
-                                    />
-                                  )
-                                )}
+
+
+                                </div>
                               </div>
-                            </div>
-                          ))}
-                        </div>
-                        <button
-                          id="craete-account"
-                          type="submit"
-                          className="border-0 mb-4"
-                          disabled={formFields.isUploadVerified}
-                        >
-                          {isButtonLoading ? (
+                              <div className="d-flex justify-content-between flex-wrap  upload-files">
+                                {inputFields.map((input) => (
+                                  <div className="rowTab" key={input.field}>
+                                    <div className="labels">
+                                      <label id="name-label" htmlFor={input.field}>
+                                        {input.label}
+                                      </label>
+                                    </div>
+                                    <div className="rightTab">
+                                      <label
+                                        htmlFor={input.field}
+                                        className="form-control d-flex justify-content-between align-items-center"
+                                        style={{ width: 160, height: 48 }}
+                                      >
+                                        Upload
+                                        <img
+                                          src="/ChannelPartner/upload-file.svg"
+                                          alt="normal"
+                                          style={{ height: 24 }}
+                                        />
+                                      </label>
+                                      <input
+                                        autofocus
+                                        type="file"
+                                        accept="image/png, image/jpeg"
+                                        name={input.field}
+                                        id={input.field}
+                                        className="input-field"
+                                        style={{ display: "none" }}
+                                        onChange={(e) => handleFileChange(e, input.field)}
+                                        disabled={formFields.isUploadVerified}
+                                      />
+
+
+                                      {formFields.isUploadVerified === false &&
+                                        formFields[input.field] && (
+                                          <img
+                                            src={URL.createObjectURL(
+                                              formFields[input.field]
+                                            )}
+                                            alt={`${input.label} Preview`}
+                                            style={{
+                                              maxWidth: "100px",
+                                              maxHeight: "100px",
+                                              marginTop: "5px",
+                                            }}
+                                          />
+                                        )}
+
+                                      {formFields.isUploadVerified &&
+                                        input.field === "aadhar" &&
+                                        formFields[input.field] ? (
+                                        <img
+                                          src={`${filesUrl}/adh/images${formFields[input.field]
+                                            }`}
+                                          alt={`${input.label} Preview`}
+                                          style={{
+                                            maxWidth: "100px",
+                                            maxHeight: "100px",
+                                          }}
+                                        />
+                                      ) : (
+                                        formFields.isUploadVerified &&
+                                        input.field !== "aadhar" &&
+                                        formFields[input.field] && (
+                                          <img
+                                            src={
+                                              `${filesUrl}` +
+                                              `/${input.field}/images${formFields[input.field]
+                                              }`
+                                            }
+                                            alt={`${input.label} Preview`}
+                                            style={{
+                                              maxWidth: "100px",
+                                              maxHeight: "100px",
+                                            }}
+                                          />
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                              <button
+                                id="craete-account"
+                                type="submit"
+                                className="border-0 mb-4"
+                                disabled={formFields.isUploadVerified}
+                              >
+                                {isButtonLoading ? (
                                   <>
                                     <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                     &nbsp;Create Account
@@ -768,19 +780,19 @@ const ChannelSignUpScreen = () => {
                                 ) : (
                                   'Create Account'
                                 )}
-                        </button>
-                      </form>
+                              </button>
+                            </form>
+                          </div>
+                        </section>
+                      </div>
                     </div>
-                  </section>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      )
-    }
-      
+            </section>
+          )
+      }
+
     </>
   );
 };

@@ -49,16 +49,16 @@ const AddUserScreen = () => {
     pan: null,
     rera: null,
     cheque: null,
-    aadharPreview:null,
-    panPreview:null,
-    reraPreview:null,
-    chequePreview:null,
+    aadharPreview: null,
+    panPreview: null,
+    reraPreview: null,
+    chequePreview: null,
   });
-  const allowedpermissions=hasCookie("allowedpermissions") ? JSON.parse(getCookie("allowedpermissions")) : null
+  const allowedpermissions = hasCookie("allowedpermissions") ? JSON.parse(getCookie("allowedpermissions")) : null
 
-useEffect(()=>{
-        userInfo.db_user_fields = [];
-},[])
+  useEffect(() => {
+    userInfo.db_user_fields = [];
+  }, [])
 
   const [newFields, setNewFields] = useState({
     field_lable: null,
@@ -67,6 +67,17 @@ useEffect(()=>{
     field_size: null,
     option: null,
   });
+
+  // group list
+  const [groupList, setGroupList] = useState([
+    "HOD",
+    "BST",
+    "Director",
+    "ChannelPartner",
+    "Manager",
+    "Executive"
+  ])
+
   async function getRolesList() {
     await fetchData("/db/role", setUserroles, errorToast, setErrorToast);
   }
@@ -110,7 +121,7 @@ useEffect(()=>{
       errorToast,
       setErrorToast
     );
-  };  
+  };
 
   const getState = async (id) => {
     await fetchData(
@@ -154,7 +165,7 @@ useEffect(()=>{
 
       setUpdtUId(data1?.user_id);
       setUserinfo({
-        db_user_fields:data1?.db_user_fields,
+        db_user_fields: data1?.db_user_fields,
         user: data1?.user,
         user_l_name: data1?.user_l_name,
         email: data1?.email,
@@ -185,11 +196,11 @@ useEffect(()=>{
         account_no: data2?.account_no,
         bank_ifsc_code: data2?.bank_ifsc_code,
         branch: data2?.branch,
-        isCRM:data1?.db_user_platforms[0].actions,
-        isDMS:data1?.db_user_platforms[1].actions,
-        isSALES:data1?.db_user_platforms[2].actions,
-        isCHANNEL:data1?.db_user_platforms[3].actions,
-        isMEDIA:data1?.db_user_platforms[4].actions
+        isCRM: data1?.db_user_platforms[0].actions,
+        isDMS: data1?.db_user_platforms[1].actions,
+        isSALES: data1?.db_user_platforms[2].actions,
+        isCHANNEL: data1?.db_user_platforms[3].actions,
+        isMEDIA: data1?.db_user_platforms[4].actions
       });
 
       setoldFiles({
@@ -205,30 +216,32 @@ useEffect(()=>{
   }
 
   const addUserHandler = async () => {
-    
+
     if (!hasCookie("token")) return;
-    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL && !userInfo?.isMEDIA){
-     return toast.error("No App Permission Provided")
+    if (!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL && !userInfo?.isMEDIA) {
+      return toast.error("No App Permission Provided")
     }
-    let data={...userInfo}
-    if(userInfo?.role_id=="1" || userInfo?.role_id=="2" || userInfo?.role_id=="3"){
-      data={...data,
-        isCRM:false,
-        isSALES:false,
-        isDMS:false,
-        isMEDIA:false
+    let data = { ...userInfo }
+    if (userInfo?.role_id == "1" || userInfo?.role_id == "2" || userInfo?.role_id == "3") {
+      data = {
+        ...data,
+        isCRM: false,
+        isSALES: false,
+        isDMS: false,
+        isMEDIA: false
       }
     }
-    if(userInfo?.role_id>3){
-      data={...data,
-        isCHANNEL:false,
+    if (userInfo?.role_id > 3) {
+      data = {
+        ...data,
+        isCHANNEL: false,
       }
     }
     setisLoading(true);
     const token = getCookie("token");
     const db_name = getCookie("db_name");
     const reqOptions = { ...userInfo, db_name };
-    
+
     const header = {
       headers: {
         Accept: "application/json",
@@ -246,7 +259,7 @@ useEffect(()=>{
       );
       const userId = response.data.data.userProfileData.user_id;
       if (response.status === 200 || response.status === 201) {
-        
+
         await postFieldsFunc(
           response.data.data.userProfileData.user_id,
           reqOptions.db_user_fields
@@ -256,7 +269,7 @@ useEffect(()=>{
           AddUploadPicture(userId, "adh", uploadDocs.aadhar_card[0], 0);
         if (uploadDocs.pan_card)
           AddUploadPicture(userId, "pan", uploadDocs.aadhar_card[0], 0);
-        if (uploadDocs.driving_license) 
+        if (uploadDocs.driving_license)
           AddUploadPicture(userId, "dl", uploadDocs.aadhar_card[0], 0);
         if (userImage) AddUploadPicture(userId, "lsUser", userImage[0], 0);
         setisLoading(false);
@@ -286,22 +299,24 @@ useEffect(()=>{
 
   const updateUserhandler = async () => {
     if (!hasCookie("token")) return;
-    
-    let data={...userInfo}
-    if(!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL && !userInfo?.isMEDIA){
+
+    let data = { ...userInfo }
+    if (!userInfo?.isCRM && !userInfo?.isSALES && !userInfo?.isDMS && !userInfo?.isCHANNEL && !userInfo?.isMEDIA) {
       return toast.error("No App Permission Provided")
-     }
-    if(userInfo?.role_id=="1" || userInfo?.role_id=="2" || userInfo?.role_id=="3"){
-      data={...data,
-        isCRM:false,
-        isSALES:false,
-        isDMS:false,
-        isMEDIA:false
+    }
+    if (userInfo?.role_id == "1" || userInfo?.role_id == "2" || userInfo?.role_id == "3") {
+      data = {
+        ...data,
+        isCRM: false,
+        isSALES: false,
+        isDMS: false,
+        isMEDIA: false
       }
     }
-    if(userInfo?.role_id>3){
-      data={...data,
-        isCHANNEL:false,
+    if (userInfo?.role_id > 3) {
+      data = {
+        ...data,
+        isCHANNEL: false,
       }
     }
     setisLoading(true);
@@ -359,7 +374,7 @@ useEffect(()=>{
         router.push("/ManageUsers");
       }
     } catch (error) {
-      
+
       if (error?.response?.data?.status === 422) {
         const taskObject = error.response.data.data.reduce((acc, obj) => {
           const key = Object.keys(obj)[0];
@@ -392,19 +407,19 @@ useEffect(()=>{
           Authorization: "Bearer ".concat(token),
           db: db_name,
         },
-  
+
       };
-    //   data?.map(item => {
-    //     item.opp_id = id
-    //   })
-  
-  
-    const updatedData = data.map(item => ({
+      //   data?.map(item => {
+      //     item.opp_id = id
+      //   })
+
+
+      const updatedData = data.map(item => ({
         ...item,
-        user:id
+        user: id
       }));
       try {
-        const response = await axios.post(Baseurl + `/db/users/field`,updatedData, header);
+        const response = await axios.post(Baseurl + `/db/users/field`, updatedData, header);
         if (response.status === 204 || response.status === 200) {
           setisLoading(false)
         }
@@ -433,7 +448,7 @@ useEffect(()=>{
   const createInputField = (e) => {
 
     e.preventDefault();
-    const { field_lable, input_type, field_type,field_size, option } = newFields;
+    const { field_lable, input_type, field_type, field_size, option } = newFields;
 
     const showError = (errorMessage) => {
       toast.error(errorMessage);
@@ -441,7 +456,7 @@ useEffect(()=>{
 
 
 
-    
+
 
     const validateField = () => {
       if (!field_lable) {
@@ -451,7 +466,7 @@ useEffect(()=>{
         showError('Please select the Input Type');
         return false;
       }
-      else if (input_type === 'input' && !field_type ) {
+      else if (input_type === 'input' && !field_type) {
         showError('Please select the Field Type');
         return false;
       }
@@ -506,14 +521,14 @@ useEffect(()=>{
   const updateFieldInfo = (e, ind) => {
     let newData = JSON.parse(JSON.stringify(userInfo))
 
-    if( newData?.db_user_fields[ind]?.field_type === 'checkbox'){
+    if (newData?.db_user_fields[ind]?.field_type === 'checkbox') {
       newData.db_user_fields[ind].input_value = e.target.checked
 
-    }else{
+    } else {
 
       newData.db_user_fields[ind].input_value = e.target.value
     }
-   
+
     setUserinfo(newData)
 
   };
@@ -576,7 +591,7 @@ useEffect(()=>{
       reader.onloadend = () => {
         setoldFiles({
           ...oldFiles,
-          [type]:null
+          [type]: null
         })
         setuploadDocs((prevUploadDocs) => ({
           ...prevUploadDocs,
@@ -584,13 +599,13 @@ useEffect(()=>{
           [previewType]: reader.result,
         }));
       };
-      
+
       reader.readAsDataURL(e.target.files[0]);
     }
   };
 
 
-  const checkLicense = async (e,type,perm_type) => {
+  const checkLicense = async (e, type, perm_type) => {
     if (!hasCookie("token")) return;
     const token = getCookie("token");
     const db_name = getCookie("db_name");
@@ -607,25 +622,25 @@ useEffect(()=>{
     try {
       const response = await axios.post(
         `${Baseurl}/db/users/checkplatform`,
-        {type:type},
+        { type: type },
         header
       );
 
       if (response?.status === 200 || response?.status === 201) {
-        if(response?.data?.data==false){
+        if (response?.data?.data == false) {
           setUserinfo({
             ...userInfo,
             [perm_type]: false,
-            });
+          });
           toast.error(`No  ${perm_type.slice(2)} license available`)
         }
-        else{
+        else {
           setUserinfo({
             ...userInfo,
             [perm_type]: true,
-            });
+          });
         }
-        
+
       }
     } catch (error) {
       if (error?.response?.data?.status === 422) {
@@ -645,8 +660,8 @@ useEffect(()=>{
     }
   };
 
-  
-  
+
+
 
   useEffect(() => {
     checkCurrentImg();
@@ -740,9 +755,9 @@ useEffect(()=>{
                         onChange={(e) => {
                           setUserinfo({
                             ...userInfo,
-                            role_id: e.target.value=="#"?"#": parseInt(e.target.value),
+                            role_id: e.target.value == "#" ? "#" : parseInt(e.target.value),
                           });
-                          
+
                           setErrorData({ ...errorData, role_id: "" });
                         }}
                         value={userInfo.role_id ? userInfo.role_id : ""}
@@ -764,156 +779,78 @@ useEffect(()=>{
                   </div>
 
                   {
-                  (  userInfo?.role_id==null ||  userInfo?.role_id=="#"  )? null:(
+                    (userInfo?.role_id == null || userInfo?.role_id == "#") ? null : (
                       <div className="col-xl-6 col-md-6 col-sm-12 col-12">
-                    <div className="input_box">
-                      <label htmlFor="task_name">Apps Permission *</label>
-                      <br />
-                      <div className="d-flex flex-wrap justify-content-start gap-5 py-2">
-                        {allowedpermissions?.map((p) => {
-
-                          if(userInfo.role_id !== 1 && userInfo.role_id !== 2 && userInfo.role_id !== 3 && allowedpermissions[0]==="channel"){
-                            return (
-                              <>
-                                
-                                  <input type="text"  disabled placeholder="No Permissions Allowed" />
-                                  {/* <input type="text" style={{marginTop:"-9px"}}  disabled placeholder="No Permissions Allowed" className="form-control " /> */}
-                                
-                              </>
-                            )
-                          }
-                            
-                            if (userInfo.role_id !== 1 && userInfo.role_id !== 2 && userInfo.role_id !== 3) {
-                              return (
-                                <>
-                                  {p === "crm" && (
-                                    <div className="form-check" key="crm">
-                                      <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        value="option1"
-                                        id="option1"
-                                        checked={userInfo?.isCRM || false}
-                                        onChange={(e) => {
-                                          if (userInfo.isCRM) {
-                                            setUserinfo({ ...userInfo, isCRM: e.target.checked });
-                                          } else {
-                                            checkLicense(e, "crm", "isCRM");
-                                          }
-                                          setErrorData({ ...errorData, isCRM: "" });
-                                        }}
-                                      />
-                                      <label className="form-check-label" htmlFor="option1">
-                                        CRM
-                                      </label>
-                                    </div>
-                                  )}
-                                  {p === "dms" && (
-                                    <div className="form-check" key="dms">
-                                      <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        value="option2"
-                                        id="option2"
-                                        checked={userInfo?.isDMS || false}
-                                        onChange={(e) => {
-                                          if (userInfo.isDMS) {
-                                            setUserinfo({ ...userInfo, isDMS: e.target.checked });
-                                          } else {
-                                            checkLicense(e, "dms", "isDMS");
-                                          }
-                                          setErrorData({ ...errorData, isDMS: "" });
-                                        }}
-                                      />
-                                      <label className="form-check-label" htmlFor="option2">
-                                        DMS
-                                      </label>
-                                    </div>
-                                  )}
-                                  {p === "sales" && (
-                                    <div className="form-check" key="sales">
-                                      <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        value="option3"
-                                        id="option3"
-                                        checked={userInfo?.isSALES || false}
-                                        onChange={(e) => {
-                                          if (userInfo.isSALES) {
-                                            setUserinfo({ ...userInfo, isSALES: e.target.checked });
-                                          } else {
-                                            checkLicense(e, "sales", "isSALES");
-                                          }
-                                          setErrorData({ ...errorData, isSALES: "" });
-                                        }}
-                                      />
-                                      <label className="form-check-label" htmlFor="option3">
-                                        SALES
-                                      </label>
-                                    </div>
-                                  )}
-                                  {p === "media" && (
-                                    <div className="form-check" key="media">
-                                      <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        value="option4"
-                                        id="option4"
-                                        checked={userInfo?.isMEDIA || false}
-                                        onChange={(e) => {
-                                          if (userInfo.isMEDIA) {
-                                            setUserinfo({ ...userInfo, isMEDIA: e.target.checked });
-                                          } else {
-                                            checkLicense(e, "media", "isMEDIA");
-                                          }
-                                          setErrorData({ ...errorData, isMEDIA: "" });
-                                        }}
-                                      />
-                                      <label className="form-check-label" htmlFor="option4">
-                                        MEDIA
-                                      </label>
-                                    </div>
-                                  )}
-                                  
-                                </>
-                              );
-                            } 
-                            else {
-                              return (
-                                <>
-                                  {p === "channel" && (
-                                    <div className="form-check" key="channel">
-                                      <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        value="option4"
-                                        id="option4"
-                                        checked={userInfo?.isCHANNEL || false}
-                                        onChange={(e) => {
-                                          if (userInfo.isCHANNEL) {
-                                            setUserinfo({ ...userInfo, isCHANNEL: e.target.checked });
-                                          } else {
-                                            checkLicense(e, "partner", "isCHANNEL");
-                                          }
-                                          setErrorData({ ...errorData, isCHANNEL: "" });
-                                        }}
-                                        disabled={viewMode}
-                                      />
-                                      <label className="form-check-label" htmlFor="option4">
-                                        CHANNEL PARTNER
-                                      </label>
-                                    </div>
-                                  )}
-                                </>
-                              );
-                            }
-                          })}
+                        <div className="input_box">
+                          <label htmlFor="task_name">Apps Permission *</label>
+                          <br />
+                          <div className="d-flex flex-wrap justify-content-start gap-5 py-2">
+                            {allowedpermissions?.map((p) => {
+                              if (userInfo.role_id !== 1 && userInfo.role_id !== 2 && userInfo.role_id !== 3) {
+                                return (
+                                  <>
+                                    {p === "channel" && (
+                                      <div className="form-check" key="channel">
+                                        <input
+                                          className="form-check-input"
+                                          type="checkbox"
+                                          value="optionChannel"
+                                          id="optionChannel"
+                                          checked={userInfo?.isCHANNEL || false}
+                                          onChange={(e) => {
+                                            if (userInfo.isCHANNEL) {
+                                              setUserinfo({ ...userInfo, isCHANNEL: e.target.checked });
+                                            } else {
+                                              checkLicense(e, "partner", "isCHANNEL");
+                                            }
+                                            setErrorData({ ...errorData, isCHANNEL: "" });
+                                          }}
+                                          disabled={viewMode}
+                                        />
+                                        <label className="form-check-label" htmlFor="optionChannel">
+                                          CHANNEL PARTNER
+                                        </label>
+                                      </div>
+                                    )}
+                                  </>
+                                );
+                              }
+                              else {
+                                return (
+                                  <>
+                                    {p === "channel" && (
+                                      <div className="form-check" key="channel">
+                                        <input
+                                          className="form-check-input"
+                                          type="checkbox"
+                                          value="option4"
+                                          id="option4"
+                                          checked={userInfo?.isCHANNEL || false}
+                                          onChange={(e) => {
+                                            if (userInfo.isCHANNEL) {
+                                              setUserinfo({ ...userInfo, isCHANNEL: e.target.checked });
+                                            } else {
+                                              checkLicense(e, "partner", "isCHANNEL");
+                                            }
+                                            setErrorData({ ...errorData, isCHANNEL: "" });
+                                          }}
+                                          disabled={viewMode}
+                                        />
+                                        <label className="form-check-label" htmlFor="option4">
+                                          CHANNEL PARTNER
+                                        </label>
+                                      </div>
+                                    )}
+                                  </>
+                                );
+                              }
+                            })}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
                     )
                   }
-                  
+
 
                 </div>
                 <div className="row">
@@ -964,15 +901,15 @@ useEffect(()=>{
                         className={
                           errorData?.user
                             ? "form-control is-invalid"
-                            : "form-control"  
+                            : "form-control"
                         }
                         onChange={(e) => {
-                          const value=e.target.value;
+                          const value = e.target.value;
                           if (/^[a-zA-Z\s]*$/.test(value)) {
                             setUserinfo({ ...userInfo, user_l_name: value });
-                          setErrorData({ ...errorData, user_l_name: "" });
+                            setErrorData({ ...errorData, user_l_name: "" });
                           }
-                          
+
                         }}
                         disabled={viewMode}
                         value={userInfo.user_l_name ? userInfo.user_l_name : ""}
@@ -1230,6 +1167,49 @@ useEffect(()=>{
                 </div>
               </div>
 
+              {/* added group field */}
+              <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                <div
+                  className={
+                    errorData?.group ? "input_box errorBox" : "input_box"
+                  }
+                >
+                  <label>Group *</label>
+
+                  <Select
+                    isDisabled={viewMode}
+                    options={groupList.map((data) => ({
+                      value: data,
+                      label: data,
+                    }))}
+
+                    value={
+                      userInfo?.group
+                        ? { value: userInfo.group, label: userInfo.group }
+                        : null
+                    }
+
+                    onChange={(e) => {
+                      setUserinfo({
+                        ...userInfo,
+                        group: e.value
+                      });
+
+                      setErrorData({
+                        ...errorData,
+                        group: ""
+                      });
+                    }}
+                  />
+
+                  <span className="errorText">
+                    {errorData?.group || ""}
+                  </span>
+                </div>
+              </div>
+
+
+
               {/* <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
                 <div className="d-flex flex-column gap-1">
                   <label className="form-label">Aadhar Card </label>
@@ -1300,134 +1280,134 @@ useEffect(()=>{
 
 
               {
-                userInfo?.role_id==1 && <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                <div className="d-flex flex-column gap-1">
-                  <label className="form-label">RERA License </label>
-                  <input
-                    type="file"
-                    onChange={(e) => {
-                      handleImageChange(e,'rera','reraPreview')
-                    }}
-                    className="form-control input-field"
-                    disabled={viewMode}
-                  />
-                  {oldFiles?.rera && (
-                    <img
-                      src={`${filesUrl}/rera/images${oldFiles.rera}`}
-                      alt={`RERA License Preview`}
-                      style={{
-                        maxWidth: "100px",
-                        maxHeight: "100px",
+                userInfo?.role_id == 1 && <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
+                  <div className="d-flex flex-column gap-1">
+                    <label className="form-label">RERA License </label>
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        handleImageChange(e, 'rera', 'reraPreview')
                       }}
+                      className="form-control input-field"
+                      disabled={viewMode}
                     />
-                  )}
-                   {uploadDocs?.reraPreview && (
-                    <img
-                      src={uploadDocs.reraPreview}
-                      alt={`RERA License Preview`}
-                      style={{
-                        maxWidth: "100px",
-                        maxHeight: "100px",
-                      }}
-                    />
-                  )}
+                    {oldFiles?.rera && (
+                      <img
+                        src={`${filesUrl}/rera/images${oldFiles.rera}`}
+                        alt={`RERA License Preview`}
+                        style={{
+                          maxWidth: "100px",
+                          maxHeight: "100px",
+                        }}
+                      />
+                    )}
+                    {uploadDocs?.reraPreview && (
+                      <img
+                        src={uploadDocs.reraPreview}
+                        alt={`RERA License Preview`}
+                        style={{
+                          maxWidth: "100px",
+                          maxHeight: "100px",
+                        }}
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
               }
-              
+
 
 
               {userInfo.db_user_fields?.map(({ option, field_name, field_lable, field_type, input_type, input_value }, ind) => (
-                        <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>
-                          <div className="input_box">
-                            <label htmlFor={field_name + ind}> {field_lable} </label>
-                            {input_type === 'input' ? (
-                              <input
-                                type={field_type}
-                                className={inputClass(field_type)}
-                                id={field_name + ind}
-                                name={field_name}
-                                placeholder={field_lable}
-                                disabled={viewMode}
-                                onChange={(e) => updateFieldInfo(e, ind)}
-                                //value={userInfo.field_name ? userInfo.field_name : ""}
-                                checked={input_value == "1" ? true: false}
-                                value={input_value}
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12" key={ind}>
+                  <div className="input_box">
+                    <label htmlFor={field_name + ind}> {field_lable} </label>
+                    {input_type === 'input' ? (
+                      <input
+                        type={field_type}
+                        className={inputClass(field_type)}
+                        id={field_name + ind}
+                        name={field_name}
+                        placeholder={field_lable}
+                        disabled={viewMode}
+                        onChange={(e) => updateFieldInfo(e, ind)}
+                        //value={userInfo.field_name ? userInfo.field_name : ""}
+                        checked={input_value == "1" ? true : false}
+                        value={input_value}
 
-                              />
-                            ) : null}
-                            {input_type === 'select' ? (
-                              <select
-                                onChange={(e) => updateFieldInfo(e, ind)}
-                                name={field_name}
-                                id={field_name + ind}
-                                className="form-control"
-                                value={input_value}
-                                disabled={viewMode}
-                              >
-                                <option value="">Select {field_lable}</option>
-                                {option?.split(",").map((data, i) => (
-                                  <option value={data} key={i}>{data}</option>
-                                ))}
-                              </select>
-                            ) : null}
+                      />
+                    ) : null}
+                    {input_type === 'select' ? (
+                      <select
+                        onChange={(e) => updateFieldInfo(e, ind)}
+                        name={field_name}
+                        id={field_name + ind}
+                        className="form-control"
+                        value={input_value}
+                        disabled={viewMode}
+                      >
+                        <option value="">Select {field_lable}</option>
+                        {option?.split(",").map((data, i) => (
+                          <option value={data} key={i}>{data}</option>
+                        ))}
+                      </select>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+
+
+
+              {iscollapse && (
+                <div className="addFieldsForm py-5">
+                  <div className="row">
+                    <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                      <div className="input_box">
+                        <label htmlFor='newFieldName'>Field Name</label>
+                        <input
+                          type='text'
+                          className='form-control'
+                          id='newFieldName'
+                          placeholder='Field Name'
+                          onChange={(e) => setNewFields({ ...newFields, field_lable: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                      <div className="input_box">
+                        <label htmlFor='newFieldType'>Field Type</label>
+                        <select
+                          name="newFieldType"
+                          className='form-control'
+                          id="newFieldType"
+                          onChange={(e) => setNewFields({ ...newFields, input_type: e.target.value })}
+                        >
+                          <option>Select Field Type</option>
+                          <option value='input'>Input Box</option>
+                          <option value='select'>Select Box</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {newFields.input_type === 'input' && (
+                      <>
+                        <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                          <div className="input_box">
+                            <label htmlFor='newInputType'>Input Type</label>
+                            <select
+                              name="newInputType"
+                              className='form-control'
+                              onChange={(e) => setNewFields({ ...newFields, field_type: e.target.value })}
+                              id="newInputType">
+                              <option>Select Input Type</option>
+                              <option value='text'>Text</option>
+                              <option value='email'>Email</option>
+                              <option value='checkbox'>Checkbox</option>
+                              <option value='number'>Number</option>
+                              <option value='date'>Date</option>
+                            </select>
                           </div>
                         </div>
-                      ))}
-
-
-
-                       {iscollapse && (
-                      <div className="addFieldsForm py-5">
-                        <div className="row">
-                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
-                            <div className="input_box">
-                              <label htmlFor='newFieldName'>Field Name</label>
-                              <input
-                                type='text'
-                                className='form-control'
-                                id='newFieldName'
-                                placeholder='Field Name'
-                                onChange={(e) => setNewFields({ ...newFields, field_lable: e.target.value })}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-xl-4 col-md-4 col-sm-12 col-12">
-                            <div className="input_box">
-                              <label htmlFor='newFieldType'>Field Type</label>
-                              <select
-                                name="newFieldType"
-                                className='form-control'
-                                id="newFieldType"
-                                onChange={(e) => setNewFields({ ...newFields, input_type: e.target.value })}
-                              >
-                                <option>Select Field Type</option>
-                                <option value='input'>Input Box</option>
-                                <option value='select'>Select Box</option>
-                              </select>
-                            </div>
-                          </div>
-
-                          {newFields.input_type === 'input' && (
-                            <>
-                              <div className="col-xl-4 col-md-4 col-sm-12 col-12">
-                                <div className="input_box">
-                                  <label htmlFor='newInputType'>Input Type</label>
-                                  <select
-                                    name="newInputType"
-                                    className='form-control'
-                                    onChange={(e) => setNewFields({ ...newFields, field_type: e.target.value })}
-                                    id="newInputType">
-                                    <option>Select Input Type</option>
-                                    <option value='text'>Text</option>
-                                    <option value='email'>Email</option>
-                                    <option value='checkbox'>Checkbox</option>
-                                    <option value='number'>Number</option>
-                                    <option value='date'>Date</option>
-                                  </select>
-                                </div>
-                              </div>
-                              {/* <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                        {/* <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                                 <div className="input_box">
                                   <label htmlFor='field_size'>Field Size</label>
                                   <input
@@ -1441,10 +1421,10 @@ useEffect(()=>{
                                 </div>
                               </div> */}
 
-                            </>
-                          )}
+                      </>
+                    )}
 
-                          {/* {
+                    {/* {
                             newFields.input_type === 'input' && (newFields?.field_type==="text" ||  newFields?.field_type==="email" || newFields?.field_type==="number") && (
                               <div className="col-xl-4 col-md-4 col-sm-12 col-12">
                               <div className="input_box">
@@ -1461,34 +1441,34 @@ useEffect(()=>{
                             </div>
                             )
                           } */}
-                         
-
-                          {newFields.input_type === 'select' && (
-                            <div className="col-xl-4 col-md-4 col-sm-12 col-12">
-                              <div className="input_box">
-                                <label htmlFor='newKeywords'>Select Keywords</label>
-                                <input
-                                  type='text'
-                                  name="newKeywords"
-                                  className='form-control'
-                                  placeholder='e.g. Name, age, gender'
-                                  id="newKeywords"
-                                  onChange={(e) => setNewFields({ ...newFields, option: e.target.value })}
-                                />
-                              </div>
-                            </div>
-                          )}
 
 
-
-                        </div>
-
-                        <div className="btn-row my-4">
-                          {/* <button onClick={"AddFieldsFunc"} className="btn btn-light me-3">Cancel</button> */}
-                          <button onClick={createInputField} className="btn btn-success">Create Field</button>
+                    {newFields.input_type === 'select' && (
+                      <div className="col-xl-4 col-md-4 col-sm-12 col-12">
+                        <div className="input_box">
+                          <label htmlFor='newKeywords'>Select Keywords</label>
+                          <input
+                            type='text'
+                            name="newKeywords"
+                            className='form-control'
+                            placeholder='e.g. Name, age, gender'
+                            id="newKeywords"
+                            onChange={(e) => setNewFields({ ...newFields, option: e.target.value })}
+                          />
                         </div>
                       </div>
                     )}
+
+
+
+                  </div>
+
+                  <div className="btn-row my-4">
+                    {/* <button onClick={"AddFieldsFunc"} className="btn btn-light me-3">Cancel</button> */}
+                    <button onClick={createInputField} className="btn btn-success">Create Field</button>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="other_details_info">
               <div className="other_details">
@@ -1911,52 +1891,52 @@ useEffect(()=>{
                     </div>
                   </div>
                   <div className="col-xl-3 col-md-3 col-lg-3 col-sm-12  mb-3">
-                <div className="d-flex flex-column gap-1">
-                  <label className="form-label">Bank Cancelled Cheque</label>
-                  <input
-                    type="file"
-                    onChange={(e) => {
-                      handleImageChange(e,'cheque','chequePreview')
-                    }}
-                    className="form-control input-field"
-                    disabled={viewMode}
-                  />
-                  {oldFiles?.cheque && (
-                    <img
-                      src={`${filesUrl}/cheque/images${oldFiles.cheque}`}
-                      alt={`Bank Cancelled Cheque Preview`}
-                      style={{
-                        maxWidth: "100px",
-                        maxHeight: "100px",
-                      }}
-                    />
-                  )}
-                  {uploadDocs?.chequePreview && (
-                    <img
-                      src={uploadDocs.chequePreview}
-                      alt={`Bank Cancelled Cheque Preview`}
-                      style={{
-                        maxWidth: "100px",
-                        maxHeight: "100px",
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
+                    <div className="d-flex flex-column gap-1">
+                      <label className="form-label">Bank Cancelled Cheque</label>
+                      <input
+                        type="file"
+                        onChange={(e) => {
+                          handleImageChange(e, 'cheque', 'chequePreview')
+                        }}
+                        className="form-control input-field"
+                        disabled={viewMode}
+                      />
+                      {oldFiles?.cheque && (
+                        <img
+                          src={`${filesUrl}/cheque/images${oldFiles.cheque}`}
+                          alt={`Bank Cancelled Cheque Preview`}
+                          style={{
+                            maxWidth: "100px",
+                            maxHeight: "100px",
+                          }}
+                        />
+                      )}
+                      {uploadDocs?.chequePreview && (
+                        <img
+                          src={uploadDocs.chequePreview}
+                          alt={`Bank Cancelled Cheque Preview`}
+                          style={{
+                            maxWidth: "100px",
+                            maxHeight: "100px",
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : null}
 
             <div className="text-end">
               <div className="submit_btn">
-           {viewMode ? null : (
-            <>
-                      <div className="add_screen_head">
-            <span className="text_bold"><button className='btn btn-primary ' onClick={AddFieldsFunc}> Add More Fields</button>{" "} </span>
-</div>{" "}</>)
-  
+                {viewMode ? null : (
+                  <>
+                    <div className="add_screen_head">
+                      <span className="text_bold"><button className='btn btn-primary ' onClick={AddFieldsFunc}> Add More Fields</button>{" "} </span>
+                    </div>{" "}</>)
 
-           }
+
+                }
 
                 <Link href="/ManageUsers">
                   <button className="btn btn-cancel me-2 ">Cancel</button>

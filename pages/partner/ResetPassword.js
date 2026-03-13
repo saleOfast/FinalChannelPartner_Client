@@ -10,13 +10,13 @@ import ChannelPartnerHOC from "../../HOC/ChannelPartnerHOC";
 
 const ForgotPassword = () => {
   const router = useRouter();
-  
+
   const [email] = useState(getCookie("resetPasswordEmail"));
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const[clientData,setClientData]=useState()
-  const {isButtonLoading}=useSelector((state)=>state.buttonLoader)
-  const dispatch=useDispatch();
+  const [clientData, setClientData] = useState()
+  const { isButtonLoading } = useSelector((state) => state.buttonLoader)
+  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
     if (!newPassword.trim()) {
@@ -66,15 +66,15 @@ const ForgotPassword = () => {
     }
   }, [router]);
 
-  useEffect(()=>{
-    const getSignInData=async()=>{
+  useEffect(() => {
+    const getSignInData = async () => {
       try {
         let baseUrl = window.location.origin;
-        if(baseUrl==="http://localhost:3000"){
-          baseUrl="https://crm.saleofast.com"
+        if (baseUrl === "http://localhost:3000") {
+          baseUrl = "https://crm.saleofast.com"
         }
-        const {data}=await axios.post(Baseurl+"/db/admin/url",{
-          client_url:`${baseUrl}`,
+        const { data } = await axios.post(Baseurl + "/db/admin/url", {
+          client_url: `${baseUrl}`,
         })
         setClientData(data?.data)
       } catch (error) {
@@ -82,7 +82,7 @@ const ForgotPassword = () => {
       }
     }
     getSignInData()
-  },[])
+  }, [])
 
   return (
     <>
@@ -94,13 +94,13 @@ const ForgotPassword = () => {
                 <div className="col-7 Sign-In-logo">
                   {/* <img src="/ChannelPartner/logo.png" alt="login" /> */}
                   <img
-                      src={
-                        clientData?.logo
-                          &&( `${filesUrl}` +
-                            `/logo/images${clientData?.logo}`)
-                      }
-                      alt
-                    />
+                    src={
+                      clientData?.logo
+                      && (`${filesUrl}` +
+                        `/logo/images${clientData?.logo}`)
+                    }
+                    alt
+                  />
                 </div>
                 <div className="col-5 d-flex justify-content-md-end">
                   <div className="Sign-In_Sign-Up Register">
@@ -170,17 +170,17 @@ const ForgotPassword = () => {
                         type="button"
                         disabled={isButtonLoading}
                         className="login_btn btn mt-3"
-                        style={{background:clientData?.button_color}}
+                        style={{ background: clientData?.button_color }}
                         onClick={() => handleSubmit()}
                       >
                         {isButtonLoading ? (
-                                  <>
-                                     <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                    &nbsp; Update Password
-                                  </>
-                                ) : (
-                                  'Update Password'
-                                )} 
+                          <>
+                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            &nbsp; Update Password
+                          </>
+                        ) : (
+                          'Update Password'
+                        )}
                       </button>
                     </div>
                   </div>

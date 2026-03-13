@@ -90,7 +90,7 @@ export default function SignInScreen({ setLoggedIn }) {
         let baseUrl = window.location.origin;
         // Handle local development URLs (localhost and local IP addresses)
         let payload = {};
-        if (baseUrl === "http://localhost:3001" || baseUrl === "http://192.168.1.36:3001" || baseUrl.startsWith("http://10.") || baseUrl.startsWith("http://192.168.") || baseUrl.startsWith("http://172.")) {
+        if (baseUrl === "http://localhost:3000" || baseUrl === "http://192.168.1.36:3000" || baseUrl.startsWith("http://10.") || baseUrl.startsWith("http://192.168.") || baseUrl.startsWith("http://172.")) {
           payload = {
             email: userForm.email.toLowerCase(),
             password: userForm.password,
@@ -167,6 +167,8 @@ export default function SignInScreen({ setLoggedIn }) {
         dispatch(stopLoading());
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
+        } else if (error?.code === "ERR_NETWORK" || !error?.response) {
+          toast.error("Cannot connect to server. Check if the backend is running (e.g. localhost:8050).");
         } else {
           toast.error("Something went wrong!");
         }
@@ -179,8 +181,8 @@ export default function SignInScreen({ setLoggedIn }) {
       try {
         let baseUrl = window.location.origin;
         // Handle local development URLs (localhost and local IP addresses)
-        if (baseUrl === "http://localhost:3001" || baseUrl.startsWith("http://10.") || baseUrl.startsWith("http://192.168.") || baseUrl.startsWith("http://172.")) {
-          baseUrl = "https://kissan.saleofast.com";
+        if (baseUrl === "http://localhost:3000" || baseUrl.startsWith("http://10.") || baseUrl.startsWith("http://192.168.") || baseUrl.startsWith("http://172.")) {
+          baseUrl = "https://srijanbandhan.com";
         }
         const { data } = await axios.post(Baseurl + "/db/admin/url", {
           client_url: `${baseUrl}`,

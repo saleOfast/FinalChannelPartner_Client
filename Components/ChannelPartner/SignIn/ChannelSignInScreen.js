@@ -30,9 +30,9 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
     password: "",
   });
 
-  const[clientData,setClientData]=useState();
+  const [clientData, setClientData] = useState();
 
-  
+
   const initialPermission = (permission) => {
     switch (permission) {
       case "CRM":
@@ -67,26 +67,39 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
     e.preventDefault();
     dispatch(startLoading())
     if (userForm.email === "" || userForm.email.length < 1) {
-      toast.error("Email is Empty",{autoClose:2500});
-        dispatch(stopLoading())
+      toast.error("Email is Empty", { autoClose: 2500 });
+      dispatch(stopLoading())
     } else if (!validEmail.test(userForm.email.toLowerCase().trim())) {
-      toast.error("Email is not Valid",{autoClose:2500});
+      toast.error("Email is not Valid", { autoClose: 2500 });
       dispatch(stopLoading())
     } else if (userForm.password === "" || userForm.password.length < 1) {
-      toast.error("password is Empty",{autoClose:2500});
+      toast.error("password is Empty", { autoClose: 2500 });
       dispatch(stopLoading())
     } else {
       try {
         let baseUrl = window.location.origin;
-        if(baseUrl==="http://localhost:3000"){
-          baseUrl = "https://nkrealtors.saleofast.com/"
-        }
-        const res = await axios.post(Baseurl + "/db/login", {
-          email: userForm.email.toLowerCase(),
-          password: userForm.password,
-          type:"partner",
-          client_url:baseUrl
-        });
+
+        // Treat localhost / LAN URLs as development, don't send client_url there
+        const isLocalDev =
+          baseUrl === "http://localhost:3000" ||
+          baseUrl.startsWith("http://10.") ||
+          baseUrl.startsWith("http://192.168.") ||
+          baseUrl.startsWith("http://172.");
+
+        const payload = isLocalDev
+          ? {
+              email: userForm.email.toLowerCase(),
+              password: userForm.password,
+              type: "partner",
+            }
+          : {
+              email: userForm.email.toLowerCase(),
+              password: userForm.password,
+              type: "partner",
+              client_url: baseUrl,
+            };
+
+        const res = await axios.post(Baseurl + "/db/login", payload);
 
         if (res.status === 200) {
           dispatch(userMode());
@@ -106,47 +119,49 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
           dispatch(setTopNavColor(res.data.userData.top_nav_color || '#405189'))
           initialPermission("CHANNEL")
           assignPermission(res.data.platformData);
-          toast.success("Logged in SuccessFully",{autoClose:2500});  
+          toast.success("Logged in SuccessFully", { autoClose: 2500 });
           dispatch(stopLoading())
           // router.push("/");
-          if(res?.data?.userData?.role_id===2){
-            setCookie("activeLink","/partner")
+          if (res?.data?.userData?.role_id === 2) {
+            setCookie("activeLink", "/partner")
             router.push("/partner");
           }
-          else{
-            setCookie("activeLink","/partner")
+          else {
+            setCookie("activeLink", "/partner")
             router.push("/partner");
           }
         }
       } catch (error) {
         dispatch(stopLoading())
         if (error?.response?.data?.message) {
-          toast.error(error?.response?.data?.message,{autoClose:2500});
+          toast.error(error?.response?.data?.message, { autoClose: 2500 });
+        } else if (error?.code === "ERR_NETWORK" || !error?.response) {
+          toast.error("Cannot connect to server. Check if the backend is running (e.g. localhost:8050).", { autoClose: 4000 });
         } else {
-          toast.error("Something went wrong!",{autoClose:2500});
+          toast.error("Something went wrong!", { autoClose: 2500 });
         }
       }
     }
   };
 
-  useEffect(()=>{
-    const getSignInData=async()=>{
+  useEffect(() => {
+    const getSignInData = async () => {
       try {
         let baseUrl = window.location.origin;
-        if(baseUrl==="http://localhost:3000"){
-          baseUrl="http://crm.cybermatrixsolutions.com"
+        if (baseUrl === "http://localhost:3000") {
+          baseUrl = "https://srijanbandhan.com"
         }
-        const {data}=await axios.post(Baseurl+"/db/admin/url",{
-          client_url:`${baseUrl}`,
+        const { data } = await axios.post(Baseurl + "/db/admin/url", {
+          client_url: `${baseUrl}`,
         })
         setClientData(data?.data)
-        setCookie("clientBtnColor",data?.data?.button_color)
+        setCookie("clientBtnColor", data?.data?.button_color)
       } catch (error) {
         console.log(error)
       }
     }
     getSignInData()
-  },[])
+  }, [])
 
   return (
     <>
@@ -161,8 +176,8 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                     <img
                       src={
                         clientData?.logo
-                          &&( `${filesUrl}` +
-                            `/logo/images${clientData?.logo}`)
+                        && (`${filesUrl}` +
+                          `/logo/images${clientData?.logo}`)
                       }
                       alt
                     />
@@ -172,7 +187,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                       style={{
                         height: 290,
                         width: "100%",
-                        backgroundImage: clientData?.client_image_1 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_1}`:`url(/ChannelPartner/signup-img1.png)`,
+                        backgroundImage: clientData?.client_image_1 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_1}` : `url(/ChannelPartner/signup-img1.png)`,
                         backgroundRepeat: "no-repeat",
                         backgroundSize: "cover",
                         marginBottom: 15,
@@ -183,7 +198,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                       style={{
                         height: 200,
                         width: "100%",
-                        backgroundImage: clientData?.client_image_2 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_2}`:`url(/ChannelPartner/signup-img3.png)`,
+                        backgroundImage: clientData?.client_image_2 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_2}` : `url(/ChannelPartner/signup-img3.png)`,
                         backgroundRepeat: "no-repeat",
                         backgroundSize: "cover",
                         marginBottom: 15,
@@ -197,7 +212,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                       style={{
                         height: 200,
                         width: "100%",
-                        backgroundImage: clientData?.client_image_3 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_3}`:`url(/ChannelPartner/signup-img2.png)`,
+                        backgroundImage: clientData?.client_image_3 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_3}` : `url(/ChannelPartner/signup-img2.png)`,
                         backgroundRepeat: "no-repeat",
                         backgroundSize: "cover",
                         marginBottom: 15,
@@ -208,7 +223,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                       style={{
                         height: 290,
                         width: "100%",
-                        backgroundImage: clientData?.client_image_4 ?`url(${filesUrl}/clientdoc/images${clientData?.client_image_4}`:`url(/ChannelPartner/signup-img4.png)`,
+                        backgroundImage: clientData?.client_image_4 ? `url(${filesUrl}/clientdoc/images${clientData?.client_image_4}` : `url(/ChannelPartner/signup-img4.png)`,
                         backgroundRepeat: "no-repeat",
                         backgroundSize: "cover",
                         marginBottom: 15,
@@ -227,7 +242,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                     <div
                       className="nav-link d-flex flex-column gap-2 align-items-center pb-3 Sign-In-btn"
                       id="Sign-In"
-                      style={{background:clientData?.button_color}}
+                      style={{ background: clientData?.button_color }}
                     >
                       Sign In
                     </div>
@@ -279,24 +294,24 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                               }}
                             />
                           </div>
-                          <button type="submit" style={{background:clientData?.button_color}} className="login_btn">
+                          <button type="submit" style={{ background: clientData?.button_color }} className="login_btn">
                             Login
                           </button>
                         </form>
                         {/* MOT DE PASSE OUBLIE ? */}
                         <div className=" d-flex justify-content-between">
-                        <Link
-                          href="/partner/ForgotPassword"
-                          className="fp text-decoration-none"
-                        >
-                          Forgot password?
-                        </Link>
-                        <Link
-                          href="/partner/NewRegistration"
-                          className="fp text-decoration-none"
-                        >
-                          New Registration
-                        </Link>
+                          <Link
+                            href="/partner/ForgotPassword"
+                            className="fp text-decoration-none"
+                          >
+                            Forgot password?
+                          </Link>
+                          <Link
+                            href="/partner/NewRegistration"
+                            className="fp text-decoration-none"
+                          >
+                            New Registration
+                          </Link>
                         </div>
                         {/* <Link
                           href="/partner/ForgotPassword"
@@ -304,7 +319,7 @@ export default function ChannelSignInScreen({ setLoggedIn }) {
                         >
                           Forgot password?
                         </Link> */}
-                       
+
                       </div>
                     </div>
                   </div>

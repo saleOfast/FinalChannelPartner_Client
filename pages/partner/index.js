@@ -8,26 +8,26 @@ import { UserLogIN, userLogOut } from '../../store/ClientLoginSlice';
 import partnerIndexHOC from '../../HOC/partnerIndexHOC';
 
 const Index = () => {
-const userInfo=hasCookie("userInfo") ? true:false;
-const router=useRouter()
-const dispatch=useDispatch()
-useEffect(() => {
-  if (hasCookie("Admin")) {
-    router.push("/admin");
-  }
-  if (!hasCookie("token")) {
-    dispatch(userLogOut());
-  } else {
-    dispatch(UserLogIN());
-  }
-}, []);
+  const userInfo = hasCookie("userInfo") ? true : false;
+  const router = useRouter()
+  const dispatch = useDispatch()
+  useEffect(() => {
+    if (hasCookie("Admin")) {
+      router.push("/admin");
+    }
+    if (!hasCookie("token")) {
+      dispatch(userLogOut());
+    } else {
+      dispatch(UserLogIN());
+    }
+  }, []);
   return (
     <>
       {
-        userInfo ? <DashBoardScreenCHANNEL/> : <ChannelSignInScreen/>
+        userInfo ? <DashBoardScreenCHANNEL /> : <ChannelSignInScreen />
       }
     </>
-    
+
   )
 }
 

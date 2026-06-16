@@ -180,7 +180,7 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
       }
     },
     {
-      name: 'createdAt',
+      name: 'onboarding_date',
       label: "Created Date",
       options: {
         filter: false,

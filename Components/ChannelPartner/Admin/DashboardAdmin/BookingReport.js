@@ -325,51 +325,51 @@ export const BookingReport = (startDate) => {
     // filterType:'multiselect',
     viewColumns: true,
     onDownload: (buildHead, buildBody, columns, data) => {
-              const workbook = XLSX.utils.book_new();
-              let filteredColumns = columns // Remove the last two columns
-              const filteredData = data.map(row => {
-                return filteredColumns.map((col, index) => row.data[index]);
-              });
-              
-              const customData = [
-                ["Channel Booking Report"], 
-                [], 
-                [`Filter by:`],
-                [],
-                [`Date Range: ${startDate?.startDate ? formatDate(startDate?.startDate): null} to ${startDate?.endDate ? formatDate(startDate?.endDate):null}`],
-                [], 
-                [], 
-                filteredColumns.map(col => col.label || col.name), 
-                ...filteredData,
-              ];
-            
-              const worksheet = XLSX.utils.aoa_to_sheet(customData);
-            
-              worksheet['!merges'] = [
-                { s: { r: 0, c: 0 }, e: { r: 1, c: filteredColumns.length-1} }, // Merge A1 and A2 for the title
-                { s: { r: 2, c: 0 }, e: { r: 3, c: filteredColumns.length-1 } }, // Merge A3 for the date range
-                { s: { r: 4, c: 0 }, e: { r: 4, c: filteredColumns.length-1 } }, // Merge A3 for the date range
-                { s: { r: 5, c: 0 }, e: { r: 6, c: filteredColumns.length-1} }, // Merge A3 for the date range
-                
-              ];
-              worksheet['!cols'] = [
-                { wch: 23 }, 
-                { wch: 12 },
-                { wch: 18 },
-                { wch: 30 },
-                { wch: 14 },
-                { wch: 24 },
-                { wch: 22 },
-                { wch: 22 },
-                { wch: 18 },
-                { wch: 12 },
-                { wch: 22 },
-                { wch: 20 },
-              ];
-              XLSX.utils.book_append_sheet(workbook, worksheet, "ChannelBooking");
-              XLSX.writeFile(workbook, "ChannelBooking.xlsx");
-              return false;
-            }     
+      const workbook = XLSX.utils.book_new();
+      let filteredColumns = columns // Remove the last two columns
+      const filteredData = data.map(row => {
+        return filteredColumns.map((col, index) => row.data[index]);
+      });
+
+      const customData = [
+        ["Channel Booking Report"],
+        [],
+        [`Filter by:`],
+        [],
+        [`Date Range: ${startDate?.startDate ? formatDate(startDate?.startDate) : null} to ${startDate?.endDate ? formatDate(startDate?.endDate) : null}`],
+        [],
+        [],
+        filteredColumns.map(col => col.label || col.name),
+        ...filteredData,
+      ];
+
+      const worksheet = XLSX.utils.aoa_to_sheet(customData);
+
+      worksheet['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 1, c: filteredColumns.length - 1 } }, // Merge A1 and A2 for the title
+        { s: { r: 2, c: 0 }, e: { r: 3, c: filteredColumns.length - 1 } }, // Merge A3 for the date range
+        { s: { r: 4, c: 0 }, e: { r: 4, c: filteredColumns.length - 1 } }, // Merge A3 for the date range
+        { s: { r: 5, c: 0 }, e: { r: 6, c: filteredColumns.length - 1 } }, // Merge A3 for the date range
+
+      ];
+      worksheet['!cols'] = [
+        { wch: 23 },
+        { wch: 12 },
+        { wch: 18 },
+        { wch: 30 },
+        { wch: 14 },
+        { wch: 24 },
+        { wch: 22 },
+        { wch: 22 },
+        { wch: 18 },
+        { wch: 12 },
+        { wch: 22 },
+        { wch: 20 },
+      ];
+      XLSX.utils.book_append_sheet(workbook, worksheet, "ChannelBooking");
+      XLSX.writeFile(workbook, "ChannelBooking.xlsx");
+      return false;
+    }
   };
   const mappedDataList = dataList?.map((list) => {
     return (

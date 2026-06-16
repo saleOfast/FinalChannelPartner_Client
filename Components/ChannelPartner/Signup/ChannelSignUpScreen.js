@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { fetchData } from "../../../Utils/getReq";
 import Select from "react-select";
@@ -6,15 +5,18 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Baseurl, filesUrl } from "../../../Utils/Constants";
-import { setCookie } from "cookies-next";
+import { getCookie, hasCookie, setCookie } from "cookies-next";
 import { useDispatch, useSelector } from "react-redux";
 import { startButtonLoading, stopButtonLoading } from "../../../store/buttonLoaderSlice";
 import Loader from "../../Loader/Loader";
 
 
 const ChannelSignUpScreen = () => {
+  const CP_LEAD_STATUS_URL = "https://admin.theprosperity.in/api/v1/db/channelPartnerLeads/";
   const [formFields, setFormFields] = useState({
     id: "",
+    cpl_id: "",
+    db_name: "",
     token: "",
     aadhar: "",
     pan: "",
@@ -40,8 +42,22 @@ const ChannelSignUpScreen = () => {
   const { isButtonLoading } = useSelector((state) => state.buttonLoader)
   const dispatch = useDispatch()
   const [tokenLoading, setTokenLoading] = useState(false)
+  const [agreementAccepted, setAgreementAccepted] = useState(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    // Keep acceptance state even if user opens agreement in another page
+    // and comes back.
+    try {
+      if (typeof window !== "undefined") {
+        const stored = window.localStorage.getItem("cpAgreementAccepted");
+        if (stored === "true") setAgreementAccepted(true);
+      }
+    } catch (e) {
+      // Ignore localStorage issues
+    }
+  }, []);
 
   useEffect(() => {
     const { token } = router.query;
@@ -50,9 +66,28 @@ const ChannelSignUpScreen = () => {
     }
   }, [router.query.token]);
 
+  const decodeJwtPayload = (token) => {
+    try {
+      const parts = String(token || "").split(".");
+      if (parts.length < 2) return null;
+      const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+      const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
+      const decoded = JSON.parse(atob(padded));
+      return decoded;
+    } catch (e) {
+      return null;
+    }
+  };
+
   const verifyToken = async (token) => {
     try {
       setTokenLoading(true)
+      const tokenPayload = decodeJwtPayload(token) || {};
+      const tokenCplId =
+        tokenPayload?.cpl_id || tokenPayload?.cplId || tokenPayload?.lead_id || tokenPayload?.id || "";
+      const tokenDbName =
+        tokenPayload?.db_name || tokenPayload?.dbName || "";
+
       const { data } = await axios.post(
         Baseurl + `/db/users/cp/registrationToken/verification`,
         { token }
@@ -70,6 +105,9 @@ const ChannelSignUpScreen = () => {
             mobile: preFill.contact || data?.data?.contact_number || "",
             email: preFill.email || data?.data?.email || "",
             id: data?.data?.user_id,
+            cpl_id:
+              tokenCplId || preFill?.cpl_id || preFill?.cplId || data?.data?.cpl_id || data?.data?.cplId || "",
+            db_name: tokenDbName || preFill?.db_name || data?.data?.db_name || "",
             token: token,
             isTokenVerified: true,
             // prefill location/details coming from lead registration
@@ -88,6 +126,9 @@ const ChannelSignUpScreen = () => {
             user_l_name: data?.data?.user_l_name || "",
             mobile: data?.data?.contact_number || "",
             email: data?.data?.email || "",
+            cpl_id:
+              tokenCplId || data?.data?.cpl_id || data?.data?.cplId || "",
+            db_name: tokenDbName || data?.data?.db_name || "",
             pan: data?.data?.db_user_profile?.pan_file || null,
             aadhar: data?.data?.db_user_profile?.aadhar_file || null,
             rera: data?.data?.db_user_profile?.rera_file || null,
@@ -112,6 +153,9 @@ const ChannelSignUpScreen = () => {
             user_l_name: data?.data?.user_l_name || "",
             mobile: data?.data?.contact_number || "",
             email: data?.data?.email || "",
+            cpl_id:
+              tokenCplId || data?.data?.cpl_id || data?.data?.cplId || "",
+            db_name: tokenDbName || data?.data?.db_name || "",
             pan: data?.data?.db_user_profile?.pan_file || null,
             aadhar: data?.data?.db_user_profile?.aadhar_file || null,
             rera: data?.data?.db_user_profile?.rera_file || null,
@@ -136,6 +180,9 @@ const ChannelSignUpScreen = () => {
             user_l_name: data?.data?.user_l_name || "",
             mobile: data?.data?.contact_number || "",
             email: data?.data?.email || "",
+            cpl_id:
+              tokenCplId || data?.data?.cpl_id || data?.data?.cplId || "",
+            db_name: tokenDbName || data?.data?.db_name || "",
             pan: data?.data?.db_user_profile?.pan_file || null,
             aadhar: data?.data?.db_user_profile?.aadhar_file || null,
             rera: data?.data?.db_user_profile?.rera_file || null,
@@ -163,6 +210,103 @@ const ChannelSignUpScreen = () => {
     }
   };
 
+  const updateCpLeadAgreementStatus = async (isAccepted) => {
+    try {
+      const userInfo = hasCookie("userInfo") ? getCookie("userInfo") : null;
+      const tokenPayload = decodeJwtPayload(formFields?.token) || {};
+      const tokenCplId =
+        tokenPayload?.cpl_id || tokenPayload?.cplId || tokenPayload?.lead_id || tokenPayload?.id || "";
+      const tokenDbName =
+        tokenPayload?.db_name || tokenPayload?.dbName || "";
+      const dbName =
+        tokenDbName ||
+        formFields?.db_name ||
+        clientData?.db_name ||
+        getCookie("db_name") ||
+        userInfo?.db_name ||
+        "";
+      const tokenToSend = getCookie("token") || formFields?.token;
+      if (!tokenToSend) {
+        toast.error("No token found. Please reopen the signup link.", { autoClose: 2000 });
+        return;
+      }
+      if (!dbName) {
+        toast.error("db_name not found. Please reopen the signup link.", { autoClose: 2000 });
+        return;
+      }
+
+      let leadId = tokenCplId || formFields?.cpl_id || router?.query?.cpl_id || "";
+
+      // If token verification doesn't return cpl_id, fetch it using user_id/email/mobile.
+      if (!leadId) {
+        const localBase = "https://admin.theprosperity.in/api/v1";
+        const listUrl = `${localBase}/db/channelPartnerLeads?db_name=${encodeURIComponent(dbName)}`;
+
+        const headersForList = {
+          Accept: "application/json",
+          Authorization: `Bearer ${tokenToSend}`,
+          db: dbName,
+          pass: "pass",
+        };
+
+        const listRes = await axios.get(listUrl, { headers: headersForList });
+        const leads = listRes?.data?.data || listRes?.data || [];
+
+        const userId = formFields?.id ? Number(formFields.id) : null;
+        const email = formFields?.email;
+        const mobile = formFields?.mobile;
+
+        const matchedLead =
+          leads?.find((l) => userId && Number(l?.user_id) === userId) ||
+          leads?.find((l) => email && String(l?.email || "").toLowerCase() === String(email).toLowerCase()) ||
+          leads?.find((l) => mobile && String(l?.contact || l?.contact_number || "").toString() === String(mobile).toString());
+
+        leadId = matchedLead?.cpl_id || matchedLead?.cplId || "";
+      }
+
+      if (!leadId) {
+        toast.error("cpl_id not found for this user. Please check the token/link payload.", { autoClose: 2500 });
+        return;
+      }
+
+      const cplIdToSend = parseInt(String(leadId), 10);
+      if (!cplIdToSend) {
+        toast.error("Invalid cpl_id found for status update.", { autoClose: 2500 });
+        return;
+      }
+
+      const stageToSend = isAccepted ? "Accept" : "Reject";
+
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokenToSend}`,
+        db: dbName,
+        pass: "pass",
+      };
+
+      const payload = {
+        db_name: String(dbName || ""),
+        cpl_id: cplIdToSend,
+        stage: stageToSend,
+      };
+
+      // Explicit endpoint requested for CP lead status update.
+      console.log("CP lead status payload:", payload);
+      await axios.put(CP_LEAD_STATUS_URL, payload, { headers });
+      toast.success(
+        isAccepted ? "Accepted successfully" : "Not accepted successfully",
+        { autoClose: 1500 }
+      );
+    } catch (error) {
+      console.log("Agreement status sync failed", error?.response?.data || error?.message);
+      toast.error(
+        error?.response?.data?.message || "Agreement status API failed",
+        { autoClose: 2000 }
+      );
+    }
+  };
+
   const isValidFileType = (file) => {
     const validTypes = ['image/png', 'image/jpeg'];
     return file && validTypes.includes(file.type);
@@ -170,6 +314,10 @@ const ChannelSignUpScreen = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!agreementAccepted) {
+      dispatch(stopButtonLoading())
+      return toast.warning("Please accept the agreement before submitting.", { autoClose: 2500 });
+    }
     if (formFields?.name == "" || formFields.user_l_name == "" || formFields.organisation == "" || formFields.mobile == "" || formFields.email == "" || formFields.state_id == "" || formFields.city_id == "" || formFields.address == "" || formFields.aadhar == "" || formFields.pan == "" || formFields.rera == "" || formFields.cheque == "") {
       dispatch(stopButtonLoading())
       return toast.warning("Pls Fill All Mandatory Fields", { autoClose: 2500 });
@@ -194,6 +342,9 @@ const ChannelSignUpScreen = () => {
       const formData = new FormData();
       formData.append("id", formFields.id);
       formData.append("token", formFields.token);
+      // Send agreement acceptance status to the server
+      formData.append("agreementAccepted", agreementAccepted ? "true" : "false");
+      formData.append("termsAccepted", agreementAccepted ? "true" : "false");
       formData.append("aadhar", formFields.aadhar);
       formData.append("pan", formFields.pan);
       formData.append("rera", formFields.rera);
@@ -766,11 +917,85 @@ const ChannelSignUpScreen = () => {
                                   </div>
                                 ))}
                               </div>
+                              <div className="agreement-card p-3 shadow-sm rounded bg-white">
+                                {/* Heading */}
+                                <div className="d-flex align-items-center gap-2 mb-1">
+                                  <span style={{ fontSize: "18px" }}>📄</span>
+                                  <h6 className="mb-0 fw-bold">Terms & Conditions</h6>
+                                </div>
+
+                                {/* Description */}
+                                <p className="text-muted mb-1" style={{ fontSize: "14px" }}>
+                                  Please read the agreement document carefully before proceeding.
+                                </p>
+
+                                {/* View PDF (navigate to a dedicated viewer page) */}
+                                <button
+                                  type="button"
+                                  className="btn btn-link p-0 mb-1"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    const returnTo = router.asPath || "/partner/Signup";
+                                    router.push(
+                                      `/ChannelPartnerAgreementViewer?returnTo=${encodeURIComponent(returnTo)}`
+                                    );
+                                  }}
+                                >
+                                  🔗 View Terms & Conditions
+                                </button>
+
+                                {/* Checkbox */}
+                                {/* <div className="form-check mb-4"> */}
+                                {/* <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="agreeCheck"
+                                    onChange={(e) => setAgreementAccepted(e.target.checked)}
+                                  /> */}
+                                {/* <label className="form-check-label" htmlFor="agreeCheck">
+                                    I agree and understand the terms & conditions
+                                  </label> */}
+                                {/* </div> */}
+                                <p className="form-check-label mb-0">
+                                  I agree and understand the terms & conditions
+                                </p>
+
+                                {/* Buttons */}
+                                <div className="d-flex justify-content-end gap-2">
+                                  <button
+                                    type="button"
+                                    className="btn btn-outline-secondary"
+                                    onClick={async () => {
+                                      setAgreementAccepted(false);
+                                      try {
+                                        window.localStorage.setItem("cpAgreementAccepted", "false");
+                                      } catch (e) { }
+                                      await updateCpLeadAgreementStatus(false);
+                                    }}
+                                  >
+                                    Reject
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    className={agreementAccepted ? "btn btn-success" : "btn btn-outline-success"}
+                                    onClick={async () => {
+                                      setAgreementAccepted(true);
+                                      try {
+                                        window.localStorage.setItem("cpAgreementAccepted", "true");
+                                      } catch (e) { }
+                                      await updateCpLeadAgreementStatus(true);
+                                    }}
+                                  >
+                                    {agreementAccepted ? "Accepted" : "Accept"}
+                                  </button>
+                                </div>
+                              </div>
                               <button
                                 id="craete-account"
                                 type="submit"
                                 className="border-0 mb-4"
-                                disabled={formFields.isUploadVerified}
+                                disabled={formFields.isUploadVerified || !agreementAccepted}
                               >
                                 {isButtonLoading ? (
                                   <>

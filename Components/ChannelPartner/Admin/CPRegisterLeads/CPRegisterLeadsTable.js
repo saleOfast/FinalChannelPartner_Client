@@ -40,6 +40,13 @@ const CPRegisterLeadsTable = ({
   const [showModal2, setShowModal2] = useState(false)
   const [id, setId] = useState("")
   const userInfo = hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) : null;
+  const currentRoleId =
+    userInfo?.role_id !== undefined && userInfo?.role_id !== null
+      ? Number(userInfo?.role_id)
+      : undefined;
+  const isBst = currentRoleId === 2;
+  // Admin (and DB users) can edit contact/email. BST must not.
+  const canEditContactEmail = !isBst && (userInfo?.isDB || currentRoleId === 3);
   const [formData, setFormData] = useState({
     cpl_id: '',
     first_name: '',
@@ -324,7 +331,7 @@ const CPRegisterLeadsTable = ({
         range = JSON.parse(getCookie("cpleadsFilter"));
       }
 
-      // Prepare data for Excel with Latest Remarks column
+      // Prepare data for Excel with proper column alignment
       const excelData = leadsWithHistory.map(lead => [
         lead.first_name || "",
         lead.last_name || "",
@@ -335,6 +342,7 @@ const CPRegisterLeadsTable = ({
         lead.city || "",
         lead.state || "",
         lead.group || "",
+        lead.designation || "",
         lead.stage || "",
         lead.user || "",
         lead.latest_remarks || "",
@@ -349,7 +357,7 @@ const CPRegisterLeadsTable = ({
         [`Date Range: ${range?.f_date ? formatDate(range?.f_date) : formatDate(start)} to ${range?.t_date ? formatDate(range?.t_date) : formatDate(end)}`],
         [],
         [],
-        ["First Name", "Last Name", "Email", "Contact", "Registration Date", "Follow up Date", "City", "State", "group", "Status", "Assigned To", "Latest Remarks", "Remarks (All History)"],
+        ["First Name", "Last Name", "Email", "Contact", "Registration Date", "Follow up Date", "City", "State", "group", "Designation", "Status", "Assigned To", "Latest Remarks", "Remarks (All History)"],
         ...excelData,
       ];
 
@@ -371,6 +379,7 @@ const CPRegisterLeadsTable = ({
         { wch: 15 }, // city
         { wch: 15 }, // state
         { wch: 15 }, // group
+        { wch: 15 }, // Degisnation
         { wch: 15 }, // status
         { wch: 20 }, // assigned
         { wch: 30 }, // latest remarks
@@ -1035,7 +1044,7 @@ const CPRegisterLeadsTable = ({
               <Form.Control
                 type="text"
                 name="contact"
-                // disabled={true}
+                disabled={!canEditContactEmail}
                 value={formData.contact}
                 onChange={(e) => {
                   // Allow only numeric characters and limit to 10 digits
@@ -1056,7 +1065,7 @@ const CPRegisterLeadsTable = ({
               <Form.Control
                 type="email"
                 name="email"
-                // disabled={true}
+                disabled={!canEditContactEmail}
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Enter email"
@@ -1095,7 +1104,7 @@ const CPRegisterLeadsTable = ({
               </Form.Control>
             </Form.Group>
             {
-              (formData.stage == "CALL" || formData.stage == "FOLLOW UP" || formData.stage == "VISIT") && <Form.Group controlId="followUpDate">
+              (formData.stage == "CALL" || formData.stage == "FOLLOW UP" || formData.stage == "VISIT" || formData.stage == "CONTACTED") && <Form.Group controlId="followUpDate">
                 <Form.Label>Follow Up Date*</Form.Label>
                 <Form.Control
                   type="date"
@@ -1163,7 +1172,11 @@ const CPRegisterLeadsTable = ({
                 {historyData.map((item, index) => (
                   <tr key={index} style={{ height: '45px' }}>
                     <td>{item.stage}</td>
-                    <td>{moment(item.follow_up_date).format("DD MMM YYYY")}</td>
+                    <td>
+                      {item.stage === "OPEN"
+                        ? (item.createdAt ? moment(item.createdAt).format("DD MMM YYYY") : "")
+                        : (item.follow_up_date ? moment(item.follow_up_date).format("DD MMM YYYY") : "")}
+                    </td>
                     <td>{item.remarks}</td>
                   </tr>
                 ))}

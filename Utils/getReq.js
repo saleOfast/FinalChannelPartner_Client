@@ -3,8 +3,8 @@ import { getCookie, hasCookie } from 'cookies-next';
 import { Baseurl } from './Constants';
 import { toast } from 'react-toastify';
 
-export async function fetchData(url, setData, errorToast, setErrorToast, bypass=false) {
-    if (hasCookie('token') || bypass ) {
+export async function fetchData(url, setData, errorToast, setErrorToast, bypass = false) {
+    if (hasCookie('token') || bypass) {
         const token = getCookie('token');
         const db_name = getCookie('db_name');
 
@@ -19,6 +19,7 @@ export async function fetchData(url, setData, errorToast, setErrorToast, bypass=
 
         try {
             const response = await axios.get(Baseurl + url, header);
+            console.log("vvv", response)
             setData(response?.data?.data);
         } catch (error) {
             if (!errorToast) {

@@ -96,6 +96,49 @@ const CPRegisterLeadsTable = ({
     return `${date.getDate()}/${months[date.getMonth()]}/${date.getFullYear()}`;
   };
 
+  const matchDateSearch = (dateValue, searchQuery) => {
+    if (!dateValue || !searchQuery?.trim()) return false;
+    const q = searchQuery.trim().toLowerCase();
+    const d = moment(dateValue);
+    if (!d.isValid()) return dateValue.toString().toLowerCase().includes(q);
+
+    const variants = [
+      formatDate(dateValue),
+      d.format("DD/MM/YYYY"),
+      d.format("DD-MM-YYYY"),
+      d.format("DD/MMM/YYYY"),
+      d.format("DD-MMM-YYYY"),
+      d.format("YYYY-MM-DD"),
+      d.format("DD/MM"),
+      d.format("DD-MM"),
+      d.format("DD/MMM"),
+      d.format("DD-MMM"),
+      d.format("DD"),
+      d.format("MMM"),
+      d.format("YYYY"),
+      dateValue.toString(),
+    ].map((v) => v.toLowerCase());
+
+    return variants.some((v) => v.includes(q));
+  };
+
+  const customTableSearch = (searchQuery, currentRow, columns) => {
+    if (!searchQuery?.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+
+    for (let i = 0; i < columns.length; i++) {
+      const cell = currentRow[i];
+      if (cell == null || cell === "") continue;
+
+      const colName = columns[i]?.name;
+      if (colName === "createdAt" || colName === "follow_up_date") {
+        if (matchDateSearch(cell, searchQuery)) return true;
+      } else if (cell.toString().toLowerCase().includes(q)) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   const [isUser, setIsUser] = useState(false);
   const [isUserData, setIsUserData] = useState(null);
@@ -834,6 +877,7 @@ const CPRegisterLeadsTable = ({
     downloadOptions: { filename: "CPRegistrationList" },
     filterType: 'multiselect',
     viewColumns: false,
+    customSearch: customTableSearch,
     customFilterDialogFooter: () => (
       <div style={{ minWidth: "400px" }} />
     ),

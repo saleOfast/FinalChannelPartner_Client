@@ -300,7 +300,7 @@ const CP_NavBar = () => {
                         }}
                         href="/partner/PendingRequests">Pending Requests</Link>
                     </li>
-                    <li className="nav-item" onClick={onRefCall}>
+                    {/* <li className="nav-item" onClick={onRefCall}>
                       <Link
                         className={`nav-link ${isActive(
                           "/partner/Leads"
@@ -315,6 +315,7 @@ const CP_NavBar = () => {
                         Leads
                       </Link>
                     </li>
+                    
                     <li className="nav-item" onClick={onRefCall}>
                       <Link
                         className={`nav-link ${isActive(
@@ -360,7 +361,7 @@ const CP_NavBar = () => {
                       >
                         Brokerage
                       </Link>
-                    </li>
+                    </li> */}
                     <li className="nav-item" onClick={onRefCall}>
                       <Link
                         className={`nav-link ${isActive(

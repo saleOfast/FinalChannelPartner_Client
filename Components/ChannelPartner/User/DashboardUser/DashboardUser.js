@@ -350,7 +350,7 @@ const DashboardUser = () => {
                                         </div>
                                         <div className="cards_Box">
                                             {
-                                                // userInfoCheck?.role_id == 31 && (
+                                                userInfoCheck?.role_id !== 2 && (
                                                 <div className="row leads_row addgap">
                                                     <div className="col-xl-3 col-md-3 col-12 col-sm-12">
                                                         <Link href={`/partner/Leads`} onClick={() => {
@@ -420,11 +420,10 @@ const DashboardUser = () => {
                                                             icon={TimelapseIcon} />
                                                     </div>
                                                 </div>
-                                                // )
+                                                )
                                             }
 
                                             {
-                                                // userInfoCheck?.role_id ==  && (
                                                 <>
                                                     <label className='m-3 fw-bold' style={{ fontSize: "24px", color: "#160354" }}>CP LEADS</label>
                                                     <div className="row leads_row addgap">

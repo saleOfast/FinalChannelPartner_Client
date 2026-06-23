@@ -36,6 +36,8 @@ const CampaignDetailsScreen = () => {
     unit_area: "",
     price: "",
     contact_no: "",
+    rera_number: "",
+    cp_name: "",
     file: null,
     file_preview: "",
     logo: null,
@@ -96,6 +98,8 @@ const CampaignDetailsScreen = () => {
             unit_area: campaign?.unit_area,
             price: campaign?.price,
             contact_no: campaign?.contact_no,
+            rera_number: campaign?.rera_number || "",
+            cp_name: campaign?.cp_name || userInfo?.user || "",
             file: campaign?.cover_image,
             file_preview: campaign?.cover_image ? `${filesUrl}/project/images${campaign?.cover_image}` : null,
             logo: campaign?.logo_image,
@@ -118,6 +122,17 @@ const CampaignDetailsScreen = () => {
   const downloadPdf = async () => {
     setPdfLoading(true);
     toast.info('Generating PDF...', { autoClose: 2000 });
+
+    const footerHtml = `
+      <div style="margin-top: 25px; padding: 20px 25px; border-top: 2px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; background: #fff;">
+        ${projectData?.rera_number ? `
+          <p style="margin: 0; font-size: 14px; color: #333;"><strong>RERA Number:</strong> ${projectData.rera_number}</p>
+        ` : ''}
+        ${projectData?.cp_name ? `
+          <p style="margin: 0; font-size: 14px; color: #333;"><strong>CP Name:</strong> ${projectData.cp_name}</p>
+        ` : ''}
+      </div>
+    `;
 
     try {
       // Create a temporary container with all content for PDF capture
@@ -148,6 +163,8 @@ const CampaignDetailsScreen = () => {
             ${projectData?.htmlString}
           </div>
         ` : ''}
+
+        ${footerHtml}
       `;
 
       document.body.appendChild(tempContainer);
@@ -210,11 +227,15 @@ const CampaignDetailsScreen = () => {
   };
 
   const updateProject = async () => {
-    if (projectData?.contact_no?.toString().length !== 10) {
-      return toast.warning("Contact no should be of 10 digits", { autoClose: 2500 });
+    if (!projectData?.rera_number?.toString().trim()) {
+      return toast.warning("Please enter RERA Number", { autoClose: 2500 });
     }
-    if (projectData?.contact_no === "") {
-      return toast.warning("Please fill mandatory fields", { autoClose: 2500 });
+    if (!projectData?.cp_name?.toString().trim()) {
+      return toast.warning("Please enter CP Name", { autoClose: 2500 });
+    }
+    const contactNo = projectData?.contact_no?.toString().trim();
+    if (contactNo && contactNo.length !== 10) {
+      return toast.warning("Contact no should be of 10 digits", { autoClose: 2500 });
     }
     if (!hasCookie("token")) return;
 
@@ -420,6 +441,10 @@ const CampaignDetailsScreen = () => {
                   <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>Property Name:</span>
                   <span style={{ color: clientBtnColor, fontWeight: "600" }}>{projectData?.project || "N/A"}</span>
                 </div>
+                <div style={{ display: "flex", marginBottom: "15px" }}>
+                  <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>RERA Number:</span>
+                  <span style={{ color: "#333", fontWeight: "600" }}>{projectData?.rera_number || "N/A"}</span>
+                </div>
                 {projectData?.location && (
                   <div style={{ display: "flex", marginBottom: "15px" }}>
                     <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>Location:</span>
@@ -444,9 +469,13 @@ const CampaignDetailsScreen = () => {
                     <span style={{ color: "#333", fontWeight: "600" }}>{projectData?.price}</span>
                   </div>
                 )}
-                <div style={{ display: "flex" }}>
+                <div style={{ display: "flex", marginBottom: "15px" }}>
                   <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>Contact No:</span>
                   <span style={{ color: "#28a745", fontWeight: "600" }}>+91-{projectData?.contact_no || "N/A"}</span>
+                </div>
+                <div style={{ display: "flex" }}>
+                  <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>CP Name:</span>
+                  <span style={{ color: "#333", fontWeight: "600" }}>{projectData?.cp_name || "N/A"}</span>
                 </div>
               </div>
             </div>
@@ -456,12 +485,16 @@ const CampaignDetailsScreen = () => {
               background: clientBtnColor,
               color: "white",
               padding: "25px",
-              borderRadius: "8px",
-              textAlign: "center"
+              borderRadius: "8px"
             }}>
-              <p style={{ margin: "0 0 10px 0", fontSize: "14px" }}>For More Information, Contact Us</p>
-              <p style={{ margin: "0", fontSize: "28px", fontWeight: "bold" }}>+91-{projectData?.contact_no || "N/A"}</p>
-              <p style={{ margin: "10px 0 0 0", fontSize: "14px", opacity: "0.9" }}>{projectData?.project}</p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "15px" }}>
+                {projectData?.rera_number && (
+                  <p style={{ margin: 0, fontSize: "14px" }}><strong>RERA Number:</strong> {projectData.rera_number}</p>
+                )}
+                {projectData?.cp_name && (
+                  <p style={{ margin: 0, fontSize: "14px" }}><strong>CP Name:</strong> {projectData.cp_name}</p>
+                )}
+              </div>
             </div>
             </div>
 
@@ -503,16 +536,38 @@ const CampaignDetailsScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
+                <div className="w-50 d-flex justify-content-lg-between align-items-center">
+                  <label className="w-27" style={{ color: "#9C9AA5" }}>RERA Number*</label>
+                  <input
+                    type="text"
+                    value={projectData?.rera_number}
+                    onChange={(e) => setProjectData({ ...projectData, rera_number: e.target.value })}
+                    placeholder="Enter RERA Number"
+                    style={{ outline: "none" }}
+                    className="w-73 border p-2 rounded-md text-black"
+                  />
+                </div>
               </div>
 
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>Contact No.*</label>
+                  <label className="w-27" style={{ color: "#9C9AA5" }}>Contact No</label>
                   <input
                     type="text"
                     value={projectData?.contact_no}
                     onChange={(e) => setProjectData({ ...projectData, contact_no: e.target.value })}
                     placeholder="+91-8787675466"
+                    style={{ outline: "none" }}
+                    className="w-73 border p-2 rounded-md text-black"
+                  />
+                </div>
+                <div className="w-50 d-flex justify-content-lg-between align-items-center">
+                  <label className="w-27" style={{ color: "#9C9AA5" }}>CP Name*</label>
+                  <input
+                    type="text"
+                    value={projectData?.cp_name}
+                    onChange={(e) => setProjectData({ ...projectData, cp_name: e.target.value })}
+                    placeholder="Enter CP Name"
                     style={{ outline: "none" }}
                     className="w-73 border p-2 rounded-md text-black"
                   />

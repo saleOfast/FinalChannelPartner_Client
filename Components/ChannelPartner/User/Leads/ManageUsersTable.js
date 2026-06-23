@@ -109,6 +109,57 @@ const getVisitInfo=async(visitId)=>{
     return `${day}/${month}/${year}`;
   }
 
+  const matchDateSearch = (dateValue, searchQuery) => {
+    if (!dateValue || !searchQuery?.trim()) return false;
+    const q = searchQuery.trim().toLowerCase();
+    const d = moment(dateValue);
+    if (!d.isValid()) return String(dateValue).toLowerCase().includes(q);
+
+    const variants = [
+      formatDate(dateValue),
+      d.format("DD/MM/YYYY"),
+      d.format("DD-MM-YYYY"),
+      d.format("DD/MM"),
+      d.format("DD-MM"),
+      d.format("MM/YYYY"),
+      d.format("YYYY"),
+      d.format("DD"),
+      d.format("MMM"),
+      dateValue.toString(),
+    ].map((v) => v.toLowerCase());
+
+    return variants.some((v) => v.includes(q));
+  };
+
+  const customTableSearch = (searchQuery, currentRow, columns) => {
+    if (!searchQuery?.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+
+    for (let i = 0; i < columns.length; i++) {
+      const cell = currentRow[i];
+      if (cell == null || cell === '') continue;
+
+      const colName = columns[i]?.name;
+      if (colName === 'createdAt') {
+        if (matchDateSearch(cell, searchQuery)) return true;
+        continue;
+      }
+
+      if (colName === 'visitList') {
+        if (getActionSearchText(cell).includes(q)) return true;
+        continue;
+      }
+
+      const searchText = Array.isArray(cell)
+        ? cell.filter((v) => v != null && v !== '').join(' ')
+        : String(cell);
+
+      if (searchText.toLowerCase().includes(q)) return true;
+    }
+
+    return false;
+  };
+
   function formatTime(timeString) {
     const timeParts = (timeString || '').split(':');
     const hours = parseInt(timeParts[0]);
@@ -178,6 +229,18 @@ const getVisitInfo=async(visitId)=>{
     }
 }
 
+  const getActionSearchText = (visitList) => {
+    const visit = Array.isArray(visitList) ? visitList[0] : null;
+    if (!visit) return 'request visit';
+
+    const isDisabled = permitVisit(visit?.status, visit?.createdAt);
+    const buttonLabel =
+      !isDisabled && visit?.status === 'VISIT NOT DONE'
+        ? 'visit not done'
+        : 'request visit';
+
+    return [buttonLabel, visit?.status].filter(Boolean).join(' ').toLowerCase();
+  };
 
     const columns = [
       {
@@ -593,6 +656,7 @@ const getVisitInfo=async(visitId)=>{
         },
         filterType:'multiselect',
         viewColumns: false,
+        customSearch: customTableSearch,
         onDownload: (buildHead, buildBody, columns, data) => {
               const workbook = XLSX.utils.book_new();
               let range;

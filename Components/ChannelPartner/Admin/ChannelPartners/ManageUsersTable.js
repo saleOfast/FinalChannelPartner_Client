@@ -518,6 +518,74 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
     return `${day}/${month}/${year}`;
   }
 
+  const matchDateSearch = (dateValue, searchQuery) => {
+    if (dateValue === null || dateValue === undefined || dateValue === '') return false;
+    if (!searchQuery?.trim()) return false;
+
+    const q = searchQuery.trim().toLowerCase();
+    const d = new Date(dateValue);
+    if (isNaN(d.getTime())) return String(dateValue).toLowerCase().includes(q);
+
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = String(d.getFullYear());
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+    const variants = [
+      formatDate(dateValue),
+      `${day}/${month}/${year}`,
+      `${day}-${month}-${year}`,
+      `${day}/${month}`,
+      `${day}-${month}`,
+      `${month}/${year}`,
+      year,
+      day,
+      months[d.getMonth()],
+      dateValue.toString(),
+    ].map((v) => v.toLowerCase());
+
+    return variants.some((v) => v.includes(q));
+  };
+
+  const customTableSearch = (searchQuery, currentRow, columns) => {
+    if (!searchQuery?.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+
+    for (let i = 0; i < columns.length; i++) {
+      const colName = columns[i]?.name;
+      const cell = currentRow[i];
+
+      if (cell == null || cell === '') continue;
+
+      if (colName === 'onboarding_date') {
+        if (matchDateSearch(cell, searchQuery)) return true;
+        continue;
+      }
+
+      if (colName === 'cpt_id') {
+        const partnerType = partnerTypes?.find(
+          (data) => data.cpt_id === cell || data.cpt_id === Number(cell)
+        );
+        const partnerName = partnerType?.name || '';
+        if (
+          partnerName.toLowerCase().includes(q) ||
+          String(cell).toLowerCase().includes(q)
+        ) {
+          return true;
+        }
+        continue;
+      }
+
+      const searchText = Array.isArray(cell)
+        ? cell.filter((v) => v != null && v !== '').join(' ')
+        : String(cell);
+
+      if (searchText.toLowerCase().includes(q)) return true;
+    }
+
+    return false;
+  };
+
   const options = {
     enableNestedDataAccess: ".",
     selectableRows: userInfo?.isDB ? 'multiple' : 'none',
@@ -528,6 +596,7 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
     enableNestedDataAccess: ".",
     filterType: 'multiselect',
     viewColumns: false,
+    customSearch: customTableSearch,
     onDownload: (buildHead, buildBody, columns, data) => {
       const workbook = XLSX.utils.book_new();
       let range;

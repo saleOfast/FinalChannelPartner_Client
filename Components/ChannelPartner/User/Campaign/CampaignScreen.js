@@ -26,6 +26,8 @@ const CampaignScreen = () => {
     unit_area: "",
     price: "",
     contact_no: "",
+    rera_number: "",
+    cp_name: "",
     file: null,
     file_preview:"",
     logo:null,
@@ -107,6 +109,8 @@ const CampaignScreen = () => {
             unit_area: campaign?.unit_area,
             price: campaign?.price,
             contact_no: campaign?.contact_no,
+            rera_number: campaign?.rera_number || "",
+            cp_name: campaign?.cp_name || userInfo?.user || "",
             file:campaign?.cover_image,
             file_preview: `${filesUrl}/project/images${campaign?.cover_image}`,
             logo:campaign?.logo_image,
@@ -202,13 +206,25 @@ const CampaignScreen = () => {
   //   }
   // };
   
+  const validateProjectForm = () => {
+    if (!projectData?.rera_number?.toString().trim()) {
+      toast.warning("Please enter RERA Number", { autoClose: 2500 });
+      return false;
+    }
+    if (!projectData?.cp_name?.toString().trim()) {
+      toast.warning("Please enter CP Name", { autoClose: 2500 });
+      return false;
+    }
+    const contactNo = projectData?.contact_no?.toString().trim();
+    if (contactNo && contactNo.length !== 10) {
+      toast.warning("contact no should be of 10 digit", { autoClose: 2500 });
+      return false;
+    }
+    return true;
+  };
+
   const createProject=  async() => {
-    if(projectData?.contact_no?.toString().length!==10){
-      return toast.warning("contact no should be of 10 digit",{autoClose:2500})
-     }
-     if( projectData?.contact_no==""){
-      return toast.warning("Pls Fill Mandatory Fields",{autoClose:2500})
-     }
+    if (!validateProjectForm()) return;
   //   if(!projectData.project) return toast.warning("please enter project name")
   //  if(!projectData.file) return toast.warning("please upload cover image")
       if (!hasCookie("token")) return;
@@ -266,13 +282,7 @@ const CampaignScreen = () => {
   };
 
   const updateProject=  async() => {
-    
-    if(projectData?.contact_no?.toString().length!==10){
-      return toast.warning("contact no should be of 10 digit",{autoClose:2500})
-     }
-     if( projectData?.contact_no=="" ){
-      return toast.warning("Pls Fill Mandatory Fields",{autoClose:2500})
-     }
+    if (!validateProjectForm()) return;
     if (!hasCookie("token")) return;
     const token = getCookie("token");
     const db_name = getCookie("db_name");
@@ -456,6 +466,24 @@ const CampaignScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
+                <div className="w-50 d-flex justify-content-lg-between align-items-center">
+                  <label className="w-27" style={{ color: "#9C9AA5" }}>
+                    RERA Number*
+                  </label>
+                  <input
+                    type="text"
+                    value={projectData?.rera_number}
+                    onChange={(e) => {
+                      setProjectData({
+                        ...projectData,
+                        rera_number: e.target.value,
+                      });
+                    }}
+                    placeholder="Enter RERA Number"
+                    style={{ outline: "none" }}
+                    className="w-73 border p-2 rounded-md text-black"
+                  />
+                </div>
                 {/* <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
                     Property Size*
@@ -521,7 +549,7 @@ const CampaignScreen = () => {
               <div className="d-flex justify-content-between gap-5 align-items-center">
                 <div className="w-50 d-flex justify-content-lg-between align-items-center">
                   <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Contact No.*
+                    Contact No
                   </label>
                   <input
                     type="number"
@@ -533,6 +561,24 @@ const CampaignScreen = () => {
                       });
                     }}
                     placeholder="+91-8787675466"
+                    style={{ outline: "none" }}
+                    className="w-73 border p-2 rounded-md text-black"
+                  />
+                </div>
+                <div className="w-50 d-flex justify-content-lg-between align-items-center">
+                  <label className="w-27" style={{ color: "#9C9AA5" }}>
+                    CP Name*
+                  </label>
+                  <input
+                    type="text"
+                    value={projectData?.cp_name}
+                    onChange={(e) => {
+                      setProjectData({
+                        ...projectData,
+                        cp_name: e.target.value,
+                      });
+                    }}
+                    placeholder="Enter CP Name"
                     style={{ outline: "none" }}
                     className="w-73 border p-2 rounded-md text-black"
                   />

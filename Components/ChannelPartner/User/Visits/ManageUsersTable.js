@@ -76,6 +76,87 @@ const [value, setValue] = useState(getCurrentWeekDates());
     return `${day}/${month}/${year}`;
   }
 
+  const matchDateSearch = (dateValue, searchQuery) => {
+    if (!dateValue || !searchQuery?.trim()) return false;
+    const q = searchQuery.trim().toLowerCase();
+    const d = new Date(dateValue);
+    if (isNaN(d.getTime())) return String(dateValue).toLowerCase().includes(q);
+
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = String(d.getFullYear());
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+    const variants = [
+      formatDate(dateValue),
+      `${day}/${month}/${year}`,
+      `${day}-${month}-${year}`,
+      `${day}/${month}`,
+      `${day}-${month}`,
+      `${month}/${year}`,
+      year,
+      day,
+      months[d.getMonth()],
+      dateValue.toString(),
+    ].map((v) => v.toLowerCase());
+
+    return variants.some((v) => v.includes(q));
+  };
+
+  const matchTimeSearch = (timeValue, searchQuery) => {
+    if (!timeValue || !searchQuery?.trim()) return false;
+    const q = searchQuery.trim().toLowerCase();
+    const formatted = formatTime(timeValue).toLowerCase();
+    const raw = String(timeValue).toLowerCase();
+
+    const variants = [formatted, raw];
+    const timeParts = String(timeValue).split(':');
+    if (timeParts.length >= 2) {
+      const hours = parseInt(timeParts[0], 10);
+      const minutes = parseInt(timeParts[1], 10);
+      if (!isNaN(hours) && !isNaN(minutes)) {
+        const h12 = hours % 12 || 12;
+        const ampm = hours >= 12 ? 'pm' : 'am';
+        variants.push(
+          `${h12}:${String(minutes).padStart(2, '0')}`,
+          `${h12}:${String(minutes).padStart(2, '0')} ${ampm}`,
+          `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`,
+        );
+      }
+    }
+
+    return variants.map((v) => v.toLowerCase()).some((v) => v.includes(q));
+  };
+
+  const customTableSearch = (searchQuery, currentRow, columns) => {
+    if (!searchQuery?.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+
+    for (let i = 0; i < columns.length; i++) {
+      const cell = currentRow[i];
+      if (cell == null || cell === '') continue;
+
+      const colName = columns[i]?.name;
+      if (
+        colName === 'assigning_date' ||
+        colName === 'completed_date' ||
+        colName === 'p_visit_date'
+      ) {
+        if (matchDateSearch(cell, searchQuery)) return true;
+        continue;
+      }
+
+      if (colName === 'p_visit_time') {
+        if (matchTimeSearch(cell, searchQuery)) return true;
+        continue;
+      }
+
+      if (String(cell).toLowerCase().includes(q)) return true;
+    }
+
+    return false;
+  };
+
     const columns = [
       {
         name: 'visit_id',
@@ -446,6 +527,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
         downloadOptions:{filename:"ChannelVisits"},
         filterType:'multiselect',
         viewColumns: false,
+        customSearch: customTableSearch,
         onDownload: (buildHead, buildBody, columns, data) => {
               const workbook = XLSX.utils.book_new();
               let range;

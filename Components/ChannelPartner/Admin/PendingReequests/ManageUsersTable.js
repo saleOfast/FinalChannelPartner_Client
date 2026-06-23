@@ -455,6 +455,59 @@ async function handleDelete(rowsDeleted) {
   }
 }
 
+  const matchDateSearch = (dateValue, searchQuery) => {
+    if (!dateValue || !searchQuery?.trim()) return false;
+    const q = searchQuery.trim().toLowerCase();
+    const d = new Date(dateValue);
+    if (isNaN(d.getTime())) return String(dateValue).toLowerCase().includes(q);
+
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = String(d.getFullYear());
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+    const variants = [
+      formatDate(dateValue),
+      `${day}/${month}/${year}`,
+      `${day}-${month}-${year}`,
+      `${day}/${month}`,
+      `${day}-${month}`,
+      `${month}/${year}`,
+      year,
+      day,
+      months[d.getMonth()],
+      dateValue.toString(),
+    ].map((v) => v.toLowerCase());
+
+    return variants.some((v) => v.includes(q));
+  };
+
+  const customTableSearch = (searchQuery, currentRow, columns) => {
+    if (!searchQuery?.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+
+    for (let i = 0; i < columns.length; i++) {
+      const cell = currentRow[i];
+      if (cell == null || cell === '') continue;
+
+      const colName = columns[i]?.name;
+      if (colName === 'createdAt') {
+        if (matchDateSearch(cell, searchQuery)) return true;
+        continue;
+      }
+
+      const searchText = Array.isArray(cell)
+        ? cell.filter((v) => v != null && v !== '').join(' ')
+        : typeof cell === 'object'
+          ? ''
+          : String(cell);
+
+      if (searchText.toLowerCase().includes(q)) return true;
+    }
+
+    return false;
+  };
+
   const options = {
     selectableRows: userInfoCheck?.isDB ? 'multiple' : 'none',
     responsive: "standard",
@@ -463,6 +516,7 @@ async function handleDelete(rowsDeleted) {
     downloadOptions:{filename:"PendingRequestList"},
     filterType:'multiselect',
     viewColumns: false,
+    customSearch: customTableSearch,
      onDownload: (buildHead, buildBody, columns, data) => {
                   const workbook = XLSX.utils.book_new();
                   const filteredColumns = columns.slice(0, -1); // Remove the last two columns

@@ -382,6 +382,7 @@ const CPRegisterLeadsTable = ({
         lead.contact || "",
         formatDate(lead.createdAt),
         lead.follow_up_date ? formatDate(lead.follow_up_date) : "",
+        lead.operating_location || "",
         lead.city || "",
         lead.state || "",
         lead.group || "",
@@ -400,7 +401,7 @@ const CPRegisterLeadsTable = ({
         [`Date Range: ${range?.f_date ? formatDate(range?.f_date) : formatDate(start)} to ${range?.t_date ? formatDate(range?.t_date) : formatDate(end)}`],
         [],
         [],
-        ["First Name", "Last Name", "Email", "Contact", "Registration Date", "Follow up Date", "City", "State", "group", "Designation", "Status", "Assigned To", "Latest Remarks", "Remarks (All History)"],
+        ["First Name", "Last Name", "Email", "Contact", "Registration Date", "Follow up Date", "Operating Location", "City", "State", "group", "Designation", "Status", "Assigned To", "Latest Remarks", "Remarks (All History)"],
         ...excelData,
       ];
 
@@ -419,6 +420,7 @@ const CPRegisterLeadsTable = ({
         { wch: 12 },
         { wch: 20 },
         { wch: 20 },
+        { wch: 20 }, // operating location
         { wch: 15 }, // city
         { wch: 15 }, // state
         { wch: 15 }, // group
@@ -536,6 +538,29 @@ const CPRegisterLeadsTable = ({
               style={{ color: '#293790' }}
             >
               {value}
+            </span>
+          )
+        },
+      },
+    },
+    {
+      name: "operating_location",
+      label: "Operating Location",
+      options: {
+        filter: false,
+        customHeadRender: (columnMeta, updateDirection) => (
+          <th style={headerCellStyle}>
+            {columnMeta.label}
+          </th>
+        ),
+
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <span
+              className="fw-bold"
+              style={{ color: '#293790' }}
+            >
+              {value || "-"}
             </span>
           )
         },

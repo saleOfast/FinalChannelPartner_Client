@@ -12,6 +12,7 @@ import Loader from "../Loader/Loader"
 import { useRouter } from "next/router";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton, Switch, Modal, Box, Button } from "@mui/material";
+import CityMasterModal from './CityMasterModal';
 
 const Admindashboard = () => {
     const router = useRouter();
@@ -21,6 +22,7 @@ const Admindashboard = () => {
     const [suggestions, setSuggestions] = useState([]);
     const [loader, setLoader] = useState(false);
     const [open, setOpen] = useState(false);
+    const [cityModalOpen, setCityModalOpen] = useState(false);
     const [stateList, setStateList] = useState([]);
 
     // Get all states
@@ -146,6 +148,12 @@ const Admindashboard = () => {
         getAllState();
     };
     const handleClose = () => setOpen(false);
+
+    const handleCityOpen = () => {
+        setCityModalOpen(true);
+        getAllState();
+    };
+    const handleCityClose = () => setCityModalOpen(false);
 
     // Toggle state availability - sends individual state to API immediately
     // This ensures previous states are NOT removed
@@ -334,10 +342,23 @@ const Admindashboard = () => {
                                                 <Hierarchy />
                                             </div>
                                         </div>
+                                        <div className="card_wrapper">
+                                            <div className="card_lists">
+                                                <div className="card_head">City Master</div>
+                                                <ul className="settings_list">
+                                                    <li className="list_item" style={{ cursor: 'pointer' }} onClick={handleCityOpen}>
+                                                        City Master
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div className="icons">
+                                                <Hierarchy />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/* Modal */}
+                                {/* State Modal */}
                                 <Modal open={open} onClose={handleClose}>
                                     <Box
                                         sx={{
@@ -431,6 +452,12 @@ const Admindashboard = () => {
                                         </Box>
                                     </Box>
                                 </Modal>
+
+                                <CityMasterModal
+                                    open={cityModalOpen}
+                                    onClose={handleCityClose}
+                                    stateList={stateList}
+                                />
                             </div>
                         </div>
 

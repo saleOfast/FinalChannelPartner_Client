@@ -401,7 +401,7 @@ const CPRegisterLeadsTable = ({
         [`Date Range: ${range?.f_date ? formatDate(range?.f_date) : formatDate(start)} to ${range?.t_date ? formatDate(range?.t_date) : formatDate(end)}`],
         [],
         [],
-        ["First Name", "Last Name", "Email", "Contact", "Registration Date", "Follow up Date", "Operating Location", "City", "State", "group", "Designation", "Status", "Assigned To", "Latest Remarks", "Remarks (All History)"],
+        ["First Name", "Last Name", "Email", "Contact", "Registration Date", "Date", "Operating Location", "City", "State", "group", "Designation", "Status", "Assigned To", "Latest Remarks", "Remarks (All History)"],
         ...excelData,
       ];
 
@@ -639,7 +639,7 @@ const CPRegisterLeadsTable = ({
     },
     {
       name: "follow_up_date",
-      label: "Follow up Date",
+      label: "Date",
       options: {
         filter: false,
         customHeadRender: (columnMeta, updateDirection) => (
@@ -918,7 +918,7 @@ const CPRegisterLeadsTable = ({
     if (!formData.first_name) newErrors.first_name = "First name is required";
     if (!formData.last_name) newErrors.last_name = "Last name is required";
     if (formData?.stage == "CALL" || formData?.stage == "FOLLOW UP" || formData?.stage == "VISIT") {
-      if (!formData.follow_up_date) newErrors.follow_up_date = "Follow Up Date is required";
+      if (!formData.follow_up_date) newErrors.follow_up_date = "Date is required";
     }
     if (!formData.contact || formData.contact.toString().length !== 10) newErrors.contact = "Contact must be 10 digits";
     if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Valid email is required";
@@ -1174,7 +1174,7 @@ const CPRegisterLeadsTable = ({
             </Form.Group>
             {
               (formData.stage == "CALL" || formData.stage == "FOLLOW UP" || formData.stage == "VISIT" || formData.stage == "CONTACTED") && <Form.Group controlId="followUpDate">
-                <Form.Label>Follow Up Date*</Form.Label>
+                <Form.Label>Date*</Form.Label>
                 <Form.Control
                   type="date"
                   name="follow_up_date"
@@ -1233,7 +1233,7 @@ const CPRegisterLeadsTable = ({
               <thead>
                 <tr>
                   <th>Status</th>
-                  <th>Follow Up Date</th>
+                  <th>Date</th>
                   <th>Remarks</th>
                 </tr>
               </thead>
@@ -1242,11 +1242,11 @@ const CPRegisterLeadsTable = ({
                   <tr key={index} style={{ height: '45px' }}>
                     <td>{item.stage}</td>
                     <td>
-                      {item.stage === "OPEN"
-                        ? (item.createdAt ? moment(item.createdAt).format("DD MMM YYYY") : "")
-                        : (item.follow_up_date ? moment(item.follow_up_date).format("DD MMM YYYY") : "")}
+                      {item.follow_up_date
+                        ? moment(item.follow_up_date).format("DD MMM YYYY")
+                        : ""}
                     </td>
-                    <td>{item.remarks}</td>
+                    <td>{item.remarks || ""}</td>
                   </tr>
                 ))}
               </tbody>

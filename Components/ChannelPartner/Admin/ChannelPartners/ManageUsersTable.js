@@ -115,6 +115,32 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
       },
 
     },
+    {
+      name: "operating_location",
+      label: "Operating Location",
+      options: {
+        filter: false,
+        customHeadRender: (columnMeta) => (
+          <th
+            className="text-center"
+            style={{
+              background: clientBtnColor ? clientBtnColor : "#293790",
+              color: "white",
+              paddingLeft: "15px"
+            }}
+          >
+            {columnMeta.label}
+          </th>
+        ),
+        customBodyRender: (value) => {
+          return (
+            <div className="status_box text-center" style={{ color: "#293790" }}>
+              {value || "-"}
+            </div>
+          );
+        }
+      }
+    },
     //city
     {
       name: "db_city.city_name",
@@ -204,25 +230,25 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
 
       }
     },
-    {
-      name: 'lead_count',
-      label: "Leads Count",
-      options: {
-        filter: false,
-        customHeadRender: (columnMeta, updateDirection) => (
-          <th className="text-center" style={{ background: clientBtnColor ? clientBtnColor : `#293790`, color: 'white', paddingLeft: "15px" }}   >
-            {columnMeta.label}
-          </th>
-        ),
-        customBodyRender: (value, tableMeta, updateValue) => {
-          return (
-            <div className='status_box text-center' style={{ color: "#667799" }}>
-              {value}
-            </div>
-          )
-        }
-      }
-    },
+    // {
+    //   name: 'lead_count',
+    //   label: "Leads Count",
+    //   options: {
+    //     filter: false,
+    //     customHeadRender: (columnMeta, updateDirection) => (
+    //       <th className="text-center" style={{ background: clientBtnColor ? clientBtnColor : `#293790`, color: 'white', paddingLeft: "15px" }}   >
+    //         {columnMeta.label}
+    //       </th>
+    //     ),
+    //     customBodyRender: (value, tableMeta, updateValue) => {
+    //       return (
+    //         <div className='status_box text-center' style={{ color: "#667799" }}>
+    //           {value}
+    //         </div>
+    //       )
+    //     }
+    //   }
+    // },
     {
       name: 'cp_lead_count',
       label: "C.P Leads Count",
@@ -243,25 +269,25 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
         }
       }
     },
-    {
-      name: 'booking_count',
-      label: "Bookings Count",
-      options: {
-        filter: false,
-        customHeadRender: (columnMeta, updateDirection) => (
-          <th className="text-center" style={{ background: clientBtnColor ? clientBtnColor : `#293790`, color: 'white', paddingLeft: "15px" }}   >
-            {columnMeta.label}
-          </th>
-        ),
-        customBodyRender: (value, tableMeta, updateValue) => {
-          return (
-            <div className='status_box text-center' style={{ color: "#667799" }}>
-              {value}
-            </div>
-          )
-        }
-      }
-    },
+    // {
+    //   name: 'booking_count',
+    //   label: "Bookings Count",
+    //   options: {
+    //     filter: false,
+    //     customHeadRender: (columnMeta, updateDirection) => (
+    //       <th className="text-center" style={{ background: clientBtnColor ? clientBtnColor : `#293790`, color: 'white', paddingLeft: "15px" }}   >
+    //         {columnMeta.label}
+    //       </th>
+    //     ),
+    //     customBodyRender: (value, tableMeta, updateValue) => {
+    //       return (
+    //         <div className='status_box text-center' style={{ color: "#667799" }}>
+    //           {value}
+    //         </div>
+    //       )
+    //     }
+    //   }
+    // },
     {
       name: 'reportToUser',
       label: "Assigned to",

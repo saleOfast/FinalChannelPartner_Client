@@ -18,7 +18,8 @@ const NewRegistrationScreen = () => {
     email: "",
     contact: null,
     state_id: "",
-    city_id: ""
+    city_id: "",
+    operating_location: ""
   });
   const [clientData, setClientData] = useState();
   const [stateList, setStateList] = useState([]);
@@ -443,6 +444,28 @@ const NewRegistrationScreen = () => {
                                   border: "1px solid #ced4da",
                                   borderRadius: "4px",
                                 }),
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="rowTab">
+                          <div className="labels">
+                            <label id="operating-location-label" htmlFor="operating_location">
+                              Operating Location
+                            </label>
+                          </div>
+                          <div className="rightTab">
+                            <input
+                              type="text"
+                              name="operating_location"
+                              id="operating_location"
+                              className="input-field"
+                              placeholder="Enter Operating Location"
+                              maxLength={100}
+                              value={formFields?.operating_location}
+                              onChange={(e) => {
+                                const value = e.target.value.slice(0, 100);
+                                setFormFields({ ...formFields, operating_location: value });
                               }}
                             />
                           </div>

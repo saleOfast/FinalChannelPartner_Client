@@ -790,49 +790,47 @@ const CPRegisterLeadsTable = ({
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
+          const leadData = dataList?.find((item) => item?.cpl_id == value);
+          const stage = leadData?.stage;
 
           return (
             <>
               <div className="table_btns">
-                {
-                  tableMeta?.rowData[6] !== "LINK SENT" && (
-                    <>
-                      <button
-                        className="action_btn"
-                        title="Edit"
-                        onClick={() => {
-                          const newData = dataList?.find((item) => item?.cpl_id == value)
-                          setFormData(newData)
-                          setShowModal(true)
-                        }}
-                      >
-                        <EditIcon />
-                      </button>
-                      <button
-                        className="action_btn"
-                        title="History"
-                        onClick={() => {
-                          getCplHistoryData(value)
-                        }}
-                      >
-                        <ViewIcon />
-                      </button>
-                      <button className="action_btn" onClick={() => {
-                        setcurrObj({ ...currObj, cpl_id: value })
-                        setdeleteshowConfirm(true)
-                      }} title='Remove'>
-                        <DeleteIcon />
-                      </button>
-                    </>
-                  )
-                }
-                {userInfo?.isDB && tableMeta?.rowData[6] !== "ONBOARDED" && tableMeta?.rowData[6] !== "LINK SENT" && <div className="table_btns justify-content-center align-items-center" style={{ marginRight: '5px' }}>
+                <>
+                  <button
+                    className="action_btn"
+                    title="Edit"
+                    onClick={() => {
+                      const newData = dataList?.find((item) => item?.cpl_id == value)
+                      setFormData(newData)
+                      setShowModal(true)
+                    }}
+                  >
+                    <EditIcon />
+                  </button>
+                  <button
+                    className="action_btn"
+                    title="History"
+                    onClick={() => {
+                      getCplHistoryData(value)
+                    }}
+                  >
+                    <ViewIcon />
+                  </button>
+                  <button className="action_btn" onClick={() => {
+                    setcurrObj({ ...currObj, cpl_id: value })
+                    setdeleteshowConfirm(true)
+                  }} title='Remove'>
+                    <DeleteIcon />
+                  </button>
+                </>
+                {userInfo?.isDB && <div className="table_btns justify-content-center align-items-center" style={{ marginRight: '5px' }}>
                   <button
                     onClick={() => {
                       const newData = dataList?.find((item) => item?.cpl_id == value)
                       setFormData(newData);
                       setShowAssignTo(value);
-                      setOldAssignTo(tableMeta?.rowData[9])
+                      setOldAssignTo(leadData?.user)
                     }}
                     style={{ background: clientBtnColor ? clientBtnColor : `#293790`, color: "white", padding: "6px", borderRadius: "20px", border: "white" }}
                     className='pe-3 ps-3'
@@ -841,20 +839,14 @@ const CPRegisterLeadsTable = ({
                   </button>
                 </div>}
                 {
-                  tableMeta?.rowData[8] == "CONTACTED" && (
+                  stage === "CONTACTED" && (
                     <button
                       className="btn text-white rounded-5" style={{ backgroundColor: clientBtnColor ? clientBtnColor : "#61E25E" }}
-                      //  onClick={() =>{
-                      //   let newData = dataList?.find((item) => item?.cpl_id == value);
-                      //   setFormData(newData)
-                      //       addUserHandler(value,newData?.asssigned_to)
-                      //    }} 
                       onClick={async () => {
                         const newData = dataList?.find((item) => item?.cpl_id == value);
                         if (newData) {
-                          setFormData({ ...newData, cpl_id: value }); // Update formData
-                          await addUserHandler(value, newData?.asssigned_to); // Ensure sequential execution
-                          // await updateUserhandler(true)
+                          setFormData({ ...newData, cpl_id: value });
+                          await addUserHandler(value, newData?.asssigned_to);
                         }
                       }}
                       title='Onboard For Channel Partner'>

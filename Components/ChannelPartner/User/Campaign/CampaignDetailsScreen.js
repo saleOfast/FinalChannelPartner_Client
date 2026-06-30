@@ -37,7 +37,6 @@ const CampaignDetailsScreen = () => {
     price: "",
     contact_no: "",
     rera_number: "",
-    cp_name: "",
     file: null,
     file_preview: "",
     logo: null,
@@ -99,7 +98,6 @@ const CampaignDetailsScreen = () => {
             price: campaign?.price,
             contact_no: campaign?.contact_no,
             rera_number: campaign?.rera_number || "",
-            cp_name: campaign?.cp_name || userInfo?.user || "",
             file: campaign?.cover_image,
             file_preview: campaign?.cover_image ? `${filesUrl}/project/images${campaign?.cover_image}` : null,
             logo: campaign?.logo_image,
@@ -120,27 +118,21 @@ const CampaignDetailsScreen = () => {
 
   // Download PDF function
   const downloadPdf = async () => {
+    const reraNumber = projectData?.rera_number?.toString().trim();
+    if (!reraNumber) {
+      toast.warning("Please enter and save RERA Number before downloading PDF", { autoClose: 3000 });
+      return;
+    }
+
     setPdfLoading(true);
     toast.info('Generating PDF...', { autoClose: 2000 });
-
-    const footerHtml = `
-      <div style="margin-top: 25px; padding: 20px 25px; border-top: 2px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; background: #fff;">
-        ${projectData?.rera_number ? `
-          <p style="margin: 0; font-size: 14px; color: #333;"><strong>RERA Number:</strong> ${projectData.rera_number}</p>
-        ` : ''}
-        ${projectData?.cp_name ? `
-          <p style="margin: 0; font-size: 14px; color: #333;"><strong>CP Name:</strong> ${projectData.cp_name}</p>
-        ` : ''}
-      </div>
-    `;
 
     try {
       // Create a temporary container with all content for PDF capture
       const tempContainer = document.createElement('div');
       tempContainer.style.cssText = 'position: fixed; left: 0; top: 0; width: 900px; background: #fff; padding: 30px; z-index: -9999;';
       
-      // Build the PDF content HTML - Only include header, cover image, title and HTML template
-      // The HTML template already contains Project Details and Contact info
+      // Build the PDF content HTML - footer added separately via jsPDF for reliability
       tempContainer.innerHTML = `
         ${projectData?.logo_preview ? `
           <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #eee;">
@@ -163,8 +155,6 @@ const CampaignDetailsScreen = () => {
             ${projectData?.htmlString}
           </div>
         ` : ''}
-
-        ${footerHtml}
       `;
 
       document.body.appendChild(tempContainer);
@@ -188,7 +178,8 @@ const CampaignDetailsScreen = () => {
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
-        logging: false
+        logging: false,
+        windowHeight: tempContainer.scrollHeight
       });
 
       // Remove temp container
@@ -200,6 +191,8 @@ const CampaignDetailsScreen = () => {
       
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
+      const footerHeight = 15;
+      const contentHeight = pageHeight - 20 - footerHeight;
       const imgWidth = pageWidth - 20;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
@@ -207,14 +200,25 @@ const CampaignDetailsScreen = () => {
       let position = 10;
 
       pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-      heightLeft -= (pageHeight - 20);
+      heightLeft -= contentHeight;
 
       while (heightLeft > 0) {
         position = heightLeft - imgHeight + 10;
         pdf.addPage();
         pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        heightLeft -= (pageHeight - 20);
+        heightLeft -= contentHeight;
       }
+
+      // Add RERA footer on the last page (always visible)
+      const totalPages = pdf.internal.getNumberOfPages();
+      pdf.setPage(totalPages);
+      pdf.setDrawColor(224, 224, 224);
+      pdf.line(10, pageHeight - footerHeight, pageWidth - 10, pageHeight - footerHeight);
+      pdf.setFontSize(11);
+      pdf.setTextColor(51, 51, 51);
+      const footerText = `RERA Number: ${reraNumber}`;
+      const textWidth = pdf.getTextWidth(footerText);
+      pdf.text(footerText, (pageWidth - textWidth) / 2, pageHeight - 6);
 
       pdf.save(`${projectData?.project || 'Campaign'}-Template.pdf`);
       toast.success('PDF downloaded successfully!', { autoClose: 2500 });
@@ -229,9 +233,6 @@ const CampaignDetailsScreen = () => {
   const updateProject = async () => {
     if (!projectData?.rera_number?.toString().trim()) {
       return toast.warning("Please enter RERA Number", { autoClose: 2500 });
-    }
-    if (!projectData?.cp_name?.toString().trim()) {
-      return toast.warning("Please enter CP Name", { autoClose: 2500 });
     }
     const contactNo = projectData?.contact_no?.toString().trim();
     if (contactNo && contactNo.length !== 10) {
@@ -473,10 +474,6 @@ const CampaignDetailsScreen = () => {
                   <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>Contact No:</span>
                   <span style={{ color: "#28a745", fontWeight: "600" }}>+91-{projectData?.contact_no || "N/A"}</span>
                 </div>
-                <div style={{ display: "flex" }}>
-                  <span style={{ color: "#6c757d", fontWeight: "600", width: "150px" }}>CP Name:</span>
-                  <span style={{ color: "#333", fontWeight: "600" }}>{projectData?.cp_name || "N/A"}</span>
-                </div>
               </div>
             </div>
 
@@ -487,12 +484,9 @@ const CampaignDetailsScreen = () => {
               padding: "25px",
               borderRadius: "8px"
             }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "15px" }}>
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                 {projectData?.rera_number && (
                   <p style={{ margin: 0, fontSize: "14px" }}><strong>RERA Number:</strong> {projectData.rera_number}</p>
-                )}
-                {projectData?.cp_name && (
-                  <p style={{ margin: 0, fontSize: "14px" }}><strong>CP Name:</strong> {projectData.cp_name}</p>
                 )}
               </div>
             </div>
@@ -561,17 +555,7 @@ const CampaignDetailsScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>CP Name*</label>
-                  <input
-                    type="text"
-                    value={projectData?.cp_name}
-                    onChange={(e) => setProjectData({ ...projectData, cp_name: e.target.value })}
-                    placeholder="Enter CP Name"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div>
+                {/* <div className="w-50" /> */}
               </div>
 
               <div className="d-flex justify-content-between gap-5 align-items-center">

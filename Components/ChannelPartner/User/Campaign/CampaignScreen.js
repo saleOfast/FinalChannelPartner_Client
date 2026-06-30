@@ -27,7 +27,6 @@ const CampaignScreen = () => {
     price: "",
     contact_no: "",
     rera_number: "",
-    cp_name: "",
     file: null,
     file_preview:"",
     logo:null,
@@ -110,7 +109,6 @@ const CampaignScreen = () => {
             price: campaign?.price,
             contact_no: campaign?.contact_no,
             rera_number: campaign?.rera_number || "",
-            cp_name: campaign?.cp_name || userInfo?.user || "",
             file:campaign?.cover_image,
             file_preview: `${filesUrl}/project/images${campaign?.cover_image}`,
             logo:campaign?.logo_image,
@@ -209,10 +207,6 @@ const CampaignScreen = () => {
   const validateProjectForm = () => {
     if (!projectData?.rera_number?.toString().trim()) {
       toast.warning("Please enter RERA Number", { autoClose: 2500 });
-      return false;
-    }
-    if (!projectData?.cp_name?.toString().trim()) {
-      toast.warning("Please enter CP Name", { autoClose: 2500 });
       return false;
     }
     const contactNo = projectData?.contact_no?.toString().trim();
@@ -565,43 +559,7 @@ const CampaignScreen = () => {
                     className="w-73 border p-2 rounded-md text-black"
                   />
                 </div>
-                <div className="w-50 d-flex justify-content-lg-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    CP Name*
-                  </label>
-                  <input
-                    type="text"
-                    value={projectData?.cp_name}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        cp_name: e.target.value,
-                      });
-                    }}
-                    placeholder="Enter CP Name"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div>
-                {/* <div className="w-50 d-flex justify-content-between align-items-center">
-                  <label className="w-27" style={{ color: "#9C9AA5" }}>
-                    Price*
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value={projectData?.price}
-                    onChange={(e) => {
-                      setProjectData({
-                        ...projectData,
-                        price: e.target.value,
-                      });
-                    }}
-                    placeholder="₹ 3.57 Cr onwards"
-                    style={{ outline: "none" }}
-                    className="w-73 border p-2 rounded-md text-black"
-                  />
-                </div> */}
+                <div className="w-50" />
               </div>
 
 

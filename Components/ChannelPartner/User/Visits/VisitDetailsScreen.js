@@ -7,6 +7,7 @@ import { Modal } from 'react-bootstrap'
 import { Baseurl } from '../../../../Utils/Constants'
 import { toast } from 'react-toastify'
 import VisitHistoryModel from './VisitHistoryModel'
+import FinishVisitModal from './FinishVisitModal'
 
 const VisitDetailsScreen = () => { 
   const router=useRouter()
@@ -14,6 +15,7 @@ const VisitDetailsScreen = () => {
   const[visitData,setVisitData]=useState([])
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
   const [show,setShow] = useState(false)
+  const [showFinishVisit, setShowFinishVisit] = useState(false)
   const [visitHistory,setVisitHiistory] =useState([])
 
   function formatTime(timeString) {
@@ -103,6 +105,7 @@ const VisitDetailsScreen = () => {
   },[id])
   
   return (
+    <>
     <div className='w-100 overflow-auto pb-5'>
        <section className="Channel-profile  Visit-Details pt-4 pb-2">
   <div className="container  mt-4 mb-4">
@@ -313,6 +316,10 @@ const VisitDetailsScreen = () => {
               setShow(true)
             }}
           >Visit History</button>
+          <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0"
+            style={{background:`${clientBtnColor}`}}
+            onClick={() => setShowFinishVisit(true)}
+          >Finish Visit</button>
         </div>
         
         
@@ -320,13 +327,20 @@ const VisitDetailsScreen = () => {
     </div>
   </div>
 </section>
+    </div>
+
     <VisitHistoryModel
         show={show}
         setShow={setShow}
         visitHistory={visitHistory}
     />
 
-    </div>
+    <FinishVisitModal
+      show={showFinishVisit}
+      setShow={setShowFinishVisit}
+      visitStatus={visitData?.status || "Upcoming"}
+    />
+    </>
 
   )
 }

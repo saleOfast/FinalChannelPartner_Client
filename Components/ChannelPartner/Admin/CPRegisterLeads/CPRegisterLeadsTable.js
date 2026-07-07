@@ -56,8 +56,17 @@ const CPRegisterLeadsTable = ({
     stage: 'OPEN',
     createdAt: '',
     remarks: "",
-    follow_up_date: ""
+    follow_up_date: "",
+    project_id: "",
+    project_name: "",
+    visit_type: ""
   });
+  const [projectList, setProjectList] = useState([]);
+  const visitTypeOptions = [
+    { value: "Video Visit", label: "Video Visit" },
+    { value: "Site Visit", label: "Site Visit" },
+    { value: "Out Visit", label: "Out Visit" },
+  ];
   const [errors, setErrors] = useState({})
   const [historyData, setHistoryData] = useState([])
   const clientBtnColor = hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#61E25E"
@@ -69,8 +78,35 @@ const CPRegisterLeadsTable = ({
     await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
   }
 
+  const getProjectList = async () => {
+    if (!hasCookie("token")) return;
+
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+    const header = {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        db: db_name,
+        m_id: 76,
+      },
+    };
+
+    try {
+      const projects = await axios.get(Baseurl + `/db/channel/lead/projects`, header);
+      setProjectList(projects?.data?.data?.records || []);
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message, { autoClose: 2500 });
+      } else {
+        toast.error("Something went wrong!", { autoClose: 2500 });
+      }
+    }
+  };
+
   useEffect(() => {
-    getUsersList()
+    getUsersList();
+    getProjectList();
   }, [])
 
 
@@ -802,7 +838,13 @@ const CPRegisterLeadsTable = ({
                     title="Edit"
                     onClick={() => {
                       const newData = dataList?.find((item) => item?.cpl_id == value)
-                      setFormData(newData)
+                      setFormData({
+                        ...newData,
+                        project_id: newData?.project_id || newData?.sales_project_id || "",
+                        project_name: newData?.project_name || newData?.sales_project_name || "",
+                        visit_type: newData?.visit_type || "",
+                      })
+                      setErrors({})
                       setShowModal(true)
                     }}
                   >
@@ -910,7 +952,15 @@ const CPRegisterLeadsTable = ({
     if (!formData.first_name) newErrors.first_name = "First name is required";
     if (!formData.last_name) newErrors.last_name = "Last name is required";
     if (formData?.stage == "CALL" || formData?.stage == "FOLLOW UP" || formData?.stage == "VISIT") {
-      if (!formData.follow_up_date) newErrors.follow_up_date = "Date is required";
+      if (!formData.follow_up_date) {
+        newErrors.follow_up_date = formData?.stage === "VISIT" ? "Visit date is required" : "Date is required";
+      } else if (formData?.stage === "VISIT" && moment(formData.follow_up_date).isBefore(moment(), "day")) {
+        newErrors.follow_up_date = "Visit date must be today or a future date";
+      }
+    }
+    if (formData?.stage === "VISIT") {
+      if (!formData.project_id) newErrors.project_id = "Project is required";
+      if (!formData.visit_type) newErrors.visit_type = "Visit Type is required";
     }
     if (!formData.contact || formData.contact.toString().length !== 10) newErrors.contact = "Contact must be 10 digits";
     if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Valid email is required";
@@ -920,10 +970,18 @@ const CPRegisterLeadsTable = ({
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormData({
+    const updatedFormData = {
       ...formData,
       [name]: value
-    });
+    };
+
+    if (name === "stage" && value !== "VISIT") {
+      updatedFormData.project_id = "";
+      updatedFormData.project_name = "";
+      updatedFormData.visit_type = "";
+    }
+
+    setFormData(updatedFormData);
   };
 
   let statusArray = [{ id: "", label: "All" }, { id: "OPEN", label: "OPEN" }, { id: "CONTACTED", label: "CONTACTED" }, { id: "LINK SENT", label: "LINK SENT" }, { id: "ONBOARDED", label: "ONBOARDED" }, { id: "NOT INTERESTED", label: "NOT INTERESTED" }, { id: "CALL", label: "CALL" }, , { id: "VISIT", label: "VISIT" }, { id: "FOLLOW UP", label: "FOLLOW UP" }]
@@ -1048,7 +1106,7 @@ const CPRegisterLeadsTable = ({
         className="commonModal"
         show={showModal}
         onHide={() => {
-          setErrors("")
+          setErrors({})
           setShowModal(false);
         }}
       >
@@ -1166,15 +1224,15 @@ const CPRegisterLeadsTable = ({
             </Form.Group>
             {
               (formData.stage == "CALL" || formData.stage == "FOLLOW UP" || formData.stage == "VISIT" || formData.stage == "CONTACTED") && <Form.Group controlId="followUpDate">
-                <Form.Label>Date*</Form.Label>
+                <Form.Label>{formData.stage === "VISIT" ? "Visit Date*" : "Date*"}</Form.Label>
                 <Form.Control
                   type="date"
                   name="follow_up_date"
-                  value={moment(formData.follow_up_date).format("YYYY-MM-DD")}  // Update format for "date" input
-                  min={moment().format("YYYY-MM-DD")}  // Set the minimum date to today
-                  onPaste={(e) => e.preventDefault()}  // Disable pasting into the field
+                  value={formData.follow_up_date ? moment(formData.follow_up_date).format("YYYY-MM-DD") : ""}
+                  min={formData.stage === "VISIT" ? moment().format("YYYY-MM-DD") : undefined}
+                  onPaste={(e) => e.preventDefault()}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") e.preventDefault();  // Prevent Enter key from submitting form
+                    if (e.key === "Enter") e.preventDefault();
                   }}
                   onChange={(e) => setFormData({ ...formData, follow_up_date: e.target.value })}
                 />
@@ -1182,7 +1240,54 @@ const CPRegisterLeadsTable = ({
               </Form.Group>
             }
 
+            {
+              formData.stage === "VISIT" && (
+                <>
+                  <Form.Group controlId="project">
+                    <Form.Label>Project*</Form.Label>
+                    <Form.Control
+                      as="select"
+                      name="project_id"
+                      value={formData.project_id || ""}
+                      onChange={(e) => {
+                        const p_name = projectList?.find((p) => p?.Id === e.target.value)?.Project_Name__c || "";
+                        setFormData({
+                          ...formData,
+                          project_id: e.target.value,
+                          project_name: p_name,
+                        });
+                      }}
+                    >
+                      <option value="" disabled>Select Project</option>
+                      {projectList?.map((project) => (
+                        <option key={project?.Id} value={project?.Id}>
+                          {project?.Project_Name__c}
+                        </option>
+                      ))}
+                    </Form.Control>
+                    {errors.project_id && <Form.Text className="text-danger">{errors.project_id}</Form.Text>}
+                  </Form.Group>
 
+                  <Form.Group controlId="visitType">
+                    <Form.Label>Visit Type*</Form.Label>
+                    <Form.Control
+                      as="select"
+                      name="visit_type"
+                      value={formData.visit_type || ""}
+                      onChange={handleInputChange}
+                    >
+                      <option value="" disabled>Select Visit Type</option>
+                      {visitTypeOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </Form.Control>
+                    {errors.visit_type && <Form.Text className="text-danger">{errors.visit_type}</Form.Text>}
+                  </Form.Group>
+                </>
+              )
+            }
 
             <Form.Group controlId="remarks">
               <Form.Label>Remarks</Form.Label>
@@ -1204,7 +1309,7 @@ const CPRegisterLeadsTable = ({
             </Form.Group>
 
             <Button variant="primary" type="submit" className=" float-end mt-4">
-              Update
+              {formData.stage === "VISIT" ? "Schedule Visit" : "Update"}
             </Button>
           </Form>
         </Modal.Body>

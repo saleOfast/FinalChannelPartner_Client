@@ -316,21 +316,7 @@ const CP_NavBar = () => {
                       </Link>
                     </li>
                     
-                    <li className="nav-item" onClick={onRefCall}>
-                      <Link
-                        className={`nav-link ${isActive(
-                          "/partner/Visits"
-                        )}`}
-                        href="/partner/Visits"
-                        onClick={() => {
-                          router.pathname == "/partner/Visits" || router.pathname == "/partner/VisitDetails" ? "" : deleteCookieOnRouteChange()
-                          dispatch(setActiveLink("/partner/Visits"))
-                          setCookie("activeLink", "/partner/Visits")
-                        }}
-                      >
-                        Visits
-                      </Link>
-                    </li>
+                    
                     <li className="nav-item" onClick={onRefCall}>
                       <Link
                         className={`nav-link ${isActive(
@@ -362,6 +348,21 @@ const CP_NavBar = () => {
                         Brokerage
                       </Link>
                     </li> */}
+                    <li className="nav-item" onClick={onRefCall}>
+                      <Link
+                        className={`nav-link ${isActive(
+                          "/partner/Visits"
+                        )}`}
+                        href="/partner/Visits"
+                        onClick={() => {
+                          router.pathname == "/partner/Visits" || router.pathname == "/partner/VisitDetails" ? "" : deleteCookieOnRouteChange()
+                          dispatch(setActiveLink("/partner/Visits"))
+                          setCookie("activeLink", "/partner/Visits")
+                        }}
+                      >
+                        Visits
+                      </Link>
+                    </li>
                     <li className="nav-item" onClick={onRefCall}>
                       <Link
                         className={`nav-link ${isActive(

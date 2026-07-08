@@ -18,7 +18,7 @@ import * as XLSX from "xlsx";
 
 
 
-const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,getVisitList,loader,cpId,setCpId,statusId,setStatusId }) => {
+const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList, openEdtMdl, title, setShowAssignTo, oldAssignTo,setoldAssignTo, setShowDateFilter,getVisitList,loader,cpId,setCpId,statusId,setStatusId, visitType = "client", setVisitType, showVisitTypeToggle = false }) => {
     const router = useRouter()
     const [data, setData] = useState([])
     const [userData, setUserData] =  useState([])
@@ -140,7 +140,8 @@ const [value, setValue] = useState(getCurrentWeekDates());
       if (
         colName === 'assigning_date' ||
         colName === 'completed_date' ||
-        colName === 'p_visit_date'
+        colName === 'p_visit_date' ||
+        colName === 'follow_up_date'
       ) {
         if (matchDateSearch(cell, searchQuery)) return true;
         continue;
@@ -415,12 +416,196 @@ const [value, setValue] = useState(getCurrentWeekDates());
         },
     ];
 
+    const cpVisitColumns = [
+      {
+        name: 'cpl_id',
+        label: "Lead ID",
+        options: {
+          filter: false,
+          customHeadRender: (columnMeta) => (
+            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+              {columnMeta.label}
+            </th>
+          ),
+          customBodyRender: (value) => (
+            <div className='status_box fw-bold' style={{ color: "#293790" }}>{value}</div>
+          ),
+        },
+      },
+      {
+        name: 'leadName',
+        label: "CP Lead Name",
+        options: {
+          filter: false,
+          customHeadRender: (columnMeta) => (
+            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+              {columnMeta.label}
+            </th>
+          ),
+          customBodyRender: (value, tableMeta) => (
+            <Link
+              href={`/partner/VisitDetails?id=${tableMeta?.rowData[0]}&type=cp`}
+              className='status_box fw-bold text-decoration-underline'
+              style={{ color: "#293790" }}
+            >
+              {value}
+            </Link>
+          ),
+        },
+      },
+      {
+        name: 'email',
+        label: "Email",
+        options: {
+          filter: false,
+          customHeadRender: (columnMeta) => (
+            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+              {columnMeta.label}
+            </th>
+          ),
+          customBodyRender: (value) => (
+            <div className='status_box fw-bold' style={{ color: "#293790" }}>{value}</div>
+          ),
+        },
+      },
+      {
+        name: 'contact',
+        label: "Contact No.",
+        options: {
+          filter: false,
+          customHeadRender: (columnMeta) => (
+            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+              {columnMeta.label}
+            </th>
+          ),
+          customBodyRender: (value) => (
+            <div className='status_box' style={{ color: "#667799" }}>+91-{value}</div>
+          ),
+        },
+      },
+      {
+        name: 'project_name',
+        label: "Project",
+        options: {
+          filter: false,
+          customHeadRender: (columnMeta) => (
+            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+              {columnMeta.label}
+            </th>
+          ),
+          customBodyRender: (value) => (
+            <div className='status_box' style={{ color: "#667799" }}>{value || "-"}</div>
+          ),
+        },
+      },
+      {
+        name: 'follow_up_date',
+        label: "Visit Date",
+        options: {
+          filter: false,
+          customHeadRender: (columnMeta) => (
+            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+              {columnMeta.label}
+            </th>
+          ),
+          customBodyRender: (value) => (
+            <div className='status_box' style={{ color: "#667799" }}>{value ? formatDate(value) : ""}</div>
+          ),
+        },
+      },
+      {
+        name: 'visit_type',
+        label: "Visit Type",
+        options: {
+          filter: false,
+          customHeadRender: (columnMeta) => (
+            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+              {columnMeta.label}
+            </th>
+          ),
+          customBodyRender: (value) => (
+            <div
+              style={{ background: "violet", color: "white", padding: "6px", borderRadius: "20px", border: "white", width: "fit-content" }}
+              className='pe-3 ps-3'
+              title='Visit Type'
+            >
+              {value || "-"}
+            </div>
+          ),
+        },
+      },
+      {
+        name: 'user',
+        label: "Assigned To",
+        options: {
+          filter: true,
+          customHeadRender: (columnMeta) => (
+            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+              {columnMeta.label}
+            </th>
+          ),
+          customBodyRender: (value) => (
+            <div className='status_box fw-bold' style={{ color: "#293790" }}>{value || "-"}</div>
+          ),
+        },
+      },
+      {
+        name: 'stage',
+        label: "Status",
+        options: {
+          filter: true,
+          customHeadRender: (columnMeta) => (
+            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+              {columnMeta.label}
+            </th>
+          ),
+          customBodyRender: (value) => (
+            <div
+              style={{ padding: "6px", color: "white", background: "#17B4E7", borderRadius: "20px", border: "white" }}
+              className='pe-3 ps-3 btn'
+              title='Status'
+            >
+              {value}
+            </div>
+          ),
+        },
+      },
+    ];
+
     let statusArray=[{id:"",label:"All"},{id:"Requested",label:"Requested"},{id:"Scheduled",label:"Scheduled"},{id:"Rescheduled",label:"Rescheduled"},{id:"Completed",label:"Completed"},{id:"Rejected",label:"Rejected"}]
   
     const CustomToolbar = () => {
+        const visitBtnStyle = {
+          background: "#293790",
+          color: "#fff",
+          padding: "6px",
+          borderRadius: "20px",
+          border: "1px solid #293790",
+        };
+
         return (
-            <div className=' d-flex justify-content-start gap-3 align-items-center '>
-                <p className='fw-bold ' style={{fontSize:"18px"}} >{title}</p>
+            <div className='customToolHead visit-type-btns d-flex justify-content-start gap-2 align-items-center'>
+                <p className='fw-bold' style={{fontSize:"18px"}} >{title}</p>
+                {showVisitTypeToggle && (
+                  <div className="d-flex gap-2 align-items-center">
+                    <button
+                      type="button"
+                      className="pe-3 ps-3 visit-type-btn"
+                      style={visitBtnStyle}
+                      onClick={() => setVisitType?.("client")}
+                    >
+                      Client visit
+                    </button>
+                    <button
+                      type="button"
+                      className="pe-3 ps-3 visit-type-btn"
+                      style={visitBtnStyle}
+                      onClick={() => setVisitType?.("cp")}
+                    >
+                      CP visit
+                    </button>
+                  </div>
+                )}
                 {/* <DateRange value={value} setValue={setValue} getData={getVisitList} filterType={title} /> */}
                 {/* {
                   (userInfoCheck?.isDB || userInfoCheck?.role_id=="3" ) && (
@@ -592,6 +777,22 @@ const [value, setValue] = useState(getCurrentWeekDates());
       assigning_date: list?.createdAt,
       completed_date: list?.status === "Completed" ? list?.updatedAt : ""
     }))
+
+    const mappedCpVisitList = dataList?.map((list) => ({
+      cpl_id: list?.cpl_id,
+      leadName: `${list?.first_name || ""} ${list?.last_name || ""}`.trim(),
+      email: list?.email,
+      contact: list?.contact,
+      project_name: list?.project_name || list?.sales_project_name || "",
+      follow_up_date: list?.follow_up_date,
+      visit_type: list?.visit_type,
+      user: list?.user,  
+      stage: list?.stage,
+    }));
+
+    const activeColumns = visitType === "cp" ? cpVisitColumns : columns;
+    const activeData = visitType === "cp" ? mappedCpVisitList : mappedDataList;
+    const downloadFileName = visitType === "cp" ? "CPVisits" : "ChannelVisits";
       
  
     return (
@@ -603,16 +804,15 @@ const [value, setValue] = useState(getCurrentWeekDates());
           <div className="miuiTable channelTable">
                 <MUIDataTable
                     title={<CustomToolbar/>}
-                    data={mappedDataList}
-                    // data={dataList}
-                    columns={columns}
-                    // options={options}
+                    data={activeData}
+                    columns={activeColumns}
                     options={{
                       ...options,
+                      downloadOptions: { filename: downloadFileName },
                       customFilterDialogFooter: () => (
                         <div
                           style={{
-                            minWidth: "300px", // Set consistent width
+                            minWidth: "300px",
                           }}
                         />
                       ),

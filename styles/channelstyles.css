@@ -1246,3 +1246,23 @@
 
 
 /* lead visit request hover end */
+
+.Visit .channelTable [class*="MUIDataTableToolbar-root"],
+.Visit .channelTable [class*="MUIDataTableToolbar-left"],
+.Visit .channelTable [class*="MUIDataTableToolbar-title"] {
+  overflow: visible !important;
+  max-width: none !important;
+}
+
+.Visit .channelTable .visit-type-btns {
+  flex-wrap: nowrap !important;
+  width: auto !important;
+}
+
+.Visit .channelTable .visit-type-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+  background: #293790 !important;
+  color: #fff !important;
+  border: 1px solid #293790 !important;
+}

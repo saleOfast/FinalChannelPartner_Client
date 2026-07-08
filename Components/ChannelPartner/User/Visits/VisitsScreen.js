@@ -28,6 +28,7 @@ const VisitsScreen = () => {
     const {status_id} =router.query;
     const [cpId,setCpId] =useState(hasCookie("VisitcpId") ? getCookie("VisitcpId"):'')
     const [statusId,setStatusId] =useState(hasCookie("VisitstatusId") ? getCookie("VisitstatusId"):'')
+    const [visitType, setVisitType] = useState(hasCookie("VisitTypeTab") ? getCookie("VisitTypeTab") : "client")
     const [dataList, setDataList] = useState([])
     const [show, setShow] = useState(false);
     const[loader,setLoader]=useState(false)
@@ -177,6 +178,57 @@ const VisitsScreen = () => {
         }
     }
 
+    const getCpVisitList = async (queryObjLeads) => {
+      setLoader(true);
+      const db_name = getCookie('db_name');
+      let url = `/db/channelPartnerLeads?db_name=${db_name}&status_id=VISIT`;
+
+      if (hasCookie('token')) {
+        const token = getCookie('token');
+        const header = {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            db: db_name,
+            m_id: 76,
+          }
+        };
+
+        try {
+          const response = await axios.get(Baseurl + url, {
+            ...header,
+            params: queryObjLeads,
+          });
+          if (response?.status === 200 || response?.status === 201) {
+            setLoader(false);
+            setDataList(response?.data?.data || []);
+          }
+        } catch (error) {
+          setLoader(false);
+          if (error?.response?.data?.message) {
+            toast.error(error?.response?.data?.message, { autoClose: 2500 });
+          } else {
+            toast.error("Something went wrong!", { autoClose: 2500 });
+          }
+        }
+      }
+    };
+
+    const handleVisitTypeChange = (type) => {
+      setCookie("VisitTypeTab", type);
+      setVisitType(type);
+    };
+
+    const fetchVisitData = (filterParams) => {
+      if (visitType === "cp") {
+        getCpVisitList(filterParams);
+      } else {
+        getVisitList(filterParams);
+      }
+    };
+
+    const showVisitTypeToggle = userInfoCheck?.role_id == null || userInfoCheck?.role_id == 2 || userInfoCheck?.role_id == 3 || userInfoCheck?.isDB;
+
     
 
    
@@ -219,12 +271,12 @@ const VisitsScreen = () => {
     const visitsFilter=hasCookie("VisitsFilter") ? JSON.parse(getCookie("VisitsFilter")) : null;
     useEffect(()=>{
       if(visitsFilter){
-        getVisitList(visitsFilter)
+        fetchVisitData(visitsFilter)
       }
       else{
-        getVisitList()
+        fetchVisitData()
       }
-    },[cp_id,cpId,statusId,status_id])
+    },[cp_id,cpId,statusId,status_id,visitType])
 
     return (
       <>
@@ -235,7 +287,7 @@ const VisitsScreen = () => {
             <div className="top_btn_sec mb-3 " style={{paddingRight:"0px"}}>
             <div className="col-12 d-flex flex-wrap flex-md-nowrap justify-content-center justify-content-md-end align-items-center gap-3 mt-3 mt-md-0">
             {
-                                  (userInfoCheck?.isDB || userInfoCheck?.role_id=="3" ) && (
+                                  showVisitTypeToggle && visitType === "client" && (userInfoCheck?.isDB || userInfoCheck?.role_id=="3" ) && (
                                     <div className='fix-width-1 text-start'>
                                     <label className='fw-bold' style={{ fontSize: '16px' }}>Channel Partner</label>
                                     <Select 
@@ -287,9 +339,10 @@ const VisitsScreen = () => {
                                 }
               <div className='fix-width-2 text-start'>
               <label className='fw-bold' style={{ fontSize: '16px' }}>Date</label>
-              <DateRange value={value} setValue={setValue} getData={getVisitList} filterType={"Visits"} />
+              <DateRange value={value} setValue={setValue} getData={fetchVisitData} filterType={"Visits"} />
               </div>
                
+                                {visitType === "client" && (
                                 <div className='fix-width-3 text-start'>
                                   <label className='fw-bold' style={{ fontSize: '16px' }}>Status</label>
                                   <Select 
@@ -325,6 +378,7 @@ const VisitsScreen = () => {
                                     }}
                                   />
                                 </div>
+                                )}
             </div>
             </div>
               <DynamicTable
@@ -336,11 +390,14 @@ const VisitsScreen = () => {
                 setoldAssignTo={setoldAssignTo}
                 oldAssignTo={oldAssignTo}
                 setShowDateFilter={setShowDateFilter}
-                getVisitList={getVisitList}
+                getVisitList={fetchVisitData}
                 cpId={cpId}
                 setCpId={setCpId}
                 statusId={statusId}
                 setStatusId={setStatusId}
+                visitType={visitType}
+                setVisitType={handleVisitTypeChange}
+                showVisitTypeToggle={showVisitTypeToggle}
                 start={value?.startDate}
                 end={value?.endDate}
               />

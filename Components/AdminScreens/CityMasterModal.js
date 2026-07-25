@@ -43,6 +43,18 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
         };
     };
 
+    const mapCityAvailability = (item) => ({
+        ...item,
+        is_available:
+            item.is_enabled === true ||
+            item.is_enabled === 1 ||
+            item.is_available === true ||
+            item.is_active === true ||
+            item.is_active === 1 ||
+            item.status === true ||
+            item.active === true,
+    });
+
     const fetchCities = async (stateId) => {
         if (!stateId || !hasCookie('token')) {
             setCityList([]);
@@ -52,46 +64,22 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
         try {
             setLoadingCities(true);
             const res = await axios.get(
-                `${Baseurl}/db/admin/city/by-state?state_id=${stateId}`,
+                `${Baseurl}/db/area/city?state_id=${stateId}`,
                 getHeader()
             );
 
-            if (res.data?.data && Array.isArray(res.data.data)) {
-                const citiesWithAvailability = res.data.data.map((item) => ({
-                    ...item,
-                    is_available:
-                        item.is_enabled === true ||
-                        item.is_enabled === 1 ||
-                        item.is_available === true ||
-                        item.status === true ||
-                        item.active === true,
-                }));
-                setCityList(citiesWithAvailability);
+            const responseData = res.data?.data;
+            let cities = [];
+
+            if (Array.isArray(responseData)) {
+                cities = responseData;
+            } else if (Array.isArray(responseData?.cityData)) {
+                cities = responseData.cityData;
             } else if (Array.isArray(res.data)) {
-                const citiesWithAvailability = res.data.map((item) => ({
-                    ...item,
-                    is_available:
-                        item.is_enabled === true ||
-                        item.is_enabled === 1 ||
-                        item.is_available === true ||
-                        item.status === true ||
-                        item.active === true,
-                }));
-                setCityList(citiesWithAvailability);
-            } else if (res.data?.data?.cityData && Array.isArray(res.data.data.cityData)) {
-                const citiesWithAvailability = res.data.data.cityData.map((item) => ({
-                    ...item,
-                    is_available:
-                        item.is_enabled === true ||
-                        item.is_enabled === 1 ||
-                        item.is_available === true ||
-                        item.status === true ||
-                        item.active === true,
-                }));
-                setCityList(citiesWithAvailability);
-            } else {
-                setCityList([]);
+                cities = res.data;
             }
+
+            setCityList(cities.map(mapCityAvailability));
         } catch (error) {
             console.error('Error fetching cities:', error);
             setCityList([]);
@@ -133,18 +121,43 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
 
         if (!hasCookie('token')) return;
 
-        const payload = editCityId
-            ? { city_id: editCityId, city_name: cityName.trim(), state_id: selectedStateId }
-            : { city_name: cityName.trim(), state_id: selectedStateId };
+        const stateId = Number(selectedStateId);
 
         try {
             setSaving(true);
-            const res = editCityId
-                ? await axios.put(`${Baseurl}/db/admin/city`, payload, getHeader())
-                : await axios.post(`${Baseurl}/db/admin/city`, payload, getHeader());
+            let res;
 
-            if (res.status === 200 || res.status === 201 || res.status === 204) {
-                toast.success(res.data?.message || (editCityId ? 'City updated successfully' : 'City created successfully'));
+            if (editCityId) {
+                const currentCity = cityList.find(
+                    (item) => (item.city_id ?? item.id) === editCityId
+                );
+                const payload = {
+                    city_id: editCityId,
+                    city_name: cityName.trim(),
+                    state_id: stateId,
+                    is_active: currentCity?.is_available ?? true,
+                };
+                res = await axios.put(`${Baseurl}/db/area/city`, payload, getHeader());
+            } else {
+                const payload = {
+                    city_name: cityName.trim(),
+                    state_id: stateId,
+                    is_active: true,
+                };
+                res = await axios.post(`${Baseurl}/db/area/city`, payload, getHeader());
+            }
+
+            const isSuccess =
+                res.status === 200 ||
+                res.status === 201 ||
+                res.status === 204 ||
+                res.data?.status === 200;
+
+            if (isSuccess) {
+                toast.success(
+                    res.data?.message ||
+                        (editCityId ? 'City updated successfully' : 'City created successfully')
+                );
                 resetForm();
                 fetchCities(selectedStateId);
             }
@@ -173,11 +186,17 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
         try {
             setSaving(true);
             const res = await axios.delete(
-                `${Baseurl}/db/admin/city?city_id=${cityId}`,
+                `${Baseurl}/db/area/city?ct_id=${cityId}`,
                 getHeader()
             );
 
-            if (res.status === 200 || res.status === 201 || res.status === 204) {
+            const isSuccess =
+                res.status === 200 ||
+                res.status === 201 ||
+                res.status === 204 ||
+                res.data?.status === 200;
+
+            if (isSuccess) {
                 toast.success(res.data?.message || 'City deleted successfully');
                 resetForm();
                 fetchCities(selectedStateId);
@@ -202,7 +221,7 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
         setCityList((prev) =>
             prev.map((item) =>
                 (item.city_id ?? item.id) === cityId
-                    ? { ...item, is_available: newAvailability }
+                    ? { ...item, is_available: newAvailability, is_active: newAvailability }
                     : item
             )
         );
@@ -210,11 +229,11 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
         try {
             const payload = {
                 city_id: cityId,
-                is_enabled: newAvailability,
+                is_active: newAvailability,
             };
 
             await axios.put(
-                `${Baseurl}/db/admin/city/toggle-availability`,
+                `${Baseurl}/db/admin/city/toggle-active`,
                 payload,
                 getHeader()
             );
@@ -222,7 +241,7 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
             setCityList((prev) =>
                 prev.map((item) =>
                     (item.city_id ?? item.id) === cityId
-                        ? { ...item, is_available: !newAvailability }
+                        ? { ...item, is_available: !newAvailability, is_active: !newAvailability }
                         : item
                 )
             );

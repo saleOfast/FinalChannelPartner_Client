@@ -76,8 +76,21 @@ const VisitDetailsScreen = () => {
     };
 
     try {
-      const { data } = await axios.get(`${Baseurl}/db/channelPartnerLeads?db_name=${db_name}`, header);
-      const lead = data?.data?.find((item) => String(item?.cpl_id) === String(id));
+      const { data } = await axios.get(
+        `${Baseurl}/db/channelPartnerLeads?db_name=${db_name}&cpl_id=${id}`,
+        header
+      );
+      const raw = data?.data;
+      const list = Array.isArray(raw?.leads)
+        ? raw.leads
+        : Array.isArray(raw)
+          ? raw
+          : Array.isArray(raw?.visits)
+            ? raw.visits
+            : raw
+              ? [raw]
+              : [];
+      const lead = list.find((item) => String(item?.cpl_id) === String(id)) || list[0];
       if (!lead) {
         toast.error("CP visit record not found", { autoClose: 2500 });
         return;
@@ -119,8 +132,14 @@ const VisitDetailsScreen = () => {
 
   const getCpVisitHistory = async () => {
     if (!hasCookie('token')) return;
-    const db_name = getCookie('db_name');
     const token = getCookie('token');
+    const db_name = getCookie('db_name');
+    const cplId = visitData?.cpl_id || id;
+    if (!cplId) {
+      toast.error("CP lead id missing", { autoClose: 2500 });
+      return;
+    }
+
     const header = {
       headers: {
         Accept: "application/json",
@@ -132,18 +151,21 @@ const VisitDetailsScreen = () => {
 
     try {
       const { data } = await axios.get(
-        `${Baseurl}/db/channelPartnerLeads/getLeadDetails?db_name=${db_name}&cpl_id=${id}`,
+        `${Baseurl}/db/channelPartnerLeads/getLeadDetails?cpl_id=${cplId}`,
         header
       );
-      const history = data?.data || [];
+      const history = Array.isArray(data?.data) ? data.data : [];
       setVisitHiistory(
         history.map((item) => ({
-          revisit_date: item?.follow_up_date,
-          revisit_time: "",
-          remark: [item?.stage, item?.remarks].filter(Boolean).join(" - "),
+          revisit_date: item?.follow_up_date || item?.visit_date || item?.createdAt,
+          revisit_time: item?.follow_up_time || item?.visit_time || "",
+          remark: [item?.stage || item?.current_stage, item?.remarks || item?.remark]
+            .filter(Boolean)
+            .join(" - "),
         }))
       );
     } catch (error) {
+      setVisitHiistory([]);
       if (error?.response?.data?.message) {
         toast.error(error?.response?.data?.message, { autoClose: 2500 });
       } else {
@@ -152,19 +174,38 @@ const VisitDetailsScreen = () => {
     }
   };
 
+  const handleVisitHistory = async () => {
+    if (isCpVisit) {
+      await getCpVisitHistory();
+    } else if (!visitHistory?.length) {
+      await getClientVisitHistory();
+    }
+    setShow(true);
+  };
+
   useEffect(() => {
     if (!id) return;
     if (isCpVisit) {
       getCpVisitById();
-      getCpVisitHistory();
+      setVisitHiistory([]);
     } else {
       getClientVisitById();
       getClientVisitHistory();
     }
   }, [id, type]);
 
-  const cpLeadName = `${visitData?.first_name || ""} ${visitData?.last_name || ""}`.trim();
-  const visitStatus = isCpVisit ? (visitData?.stage || "VISIT") : (visitData?.status || "Upcoming");
+  const cpLeadName =
+    visitData?.name ||
+    `${visitData?.first_name || ""} ${visitData?.last_name || ""}`.trim();
+  const visitStatus = isCpVisit
+    ? (
+        (String(visitData?.visit_status || "").toLowerCase() === "completed" ||
+          visitData?.visit_verified === 1 ||
+          visitData?.visit_verified === true)
+          ? (visitData?.visit_status || "Completed")
+          : (visitData?.visit_status || visitData?.current_stage || visitData?.stage || "VISIT")
+      )
+    : (visitData?.status || "Upcoming");
 
   const handleBackToVisits = () => {
     if (isCpVisit) {
@@ -173,6 +214,81 @@ const VisitDetailsScreen = () => {
       setCookie("VisitTypeTab", "client");
     }
     router.push("/partner/Visits");
+  };
+
+  const sendVisitCode = async () => {
+    if (!hasCookie('token')) return false;
+    const token = getCookie('token');
+    const db_name = getCookie('db_name');
+    const cplId = visitData?.cpl_id || id;
+    if (!cplId) {
+      toast.error("CP lead id missing", { autoClose: 2500 });
+      return false;
+    }
+
+    try {
+      const { data } = await axios.post(
+        `${Baseurl}/db/channelPartnerLeads/sendVisitCode`,
+        { cpl_id: cplId, db_name },
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            db: db_name,
+            m_id: 76,
+          },
+        }
+      );
+      toast.success(data?.message || "Visit code sent successfully", { autoClose: 2500 });
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message, { autoClose: 2500 });
+      } else {
+        toast.error("Failed to send visit code", { autoClose: 2500 });
+      }
+      return false;
+    }
+  };
+
+  const verifyVisitCode = async (visitCode) => {
+    if (!hasCookie('token')) return false;
+    const token = getCookie('token');
+    const db_name = getCookie('db_name');
+    const cplId = visitData?.cpl_id || id;
+    if (!cplId) {
+      toast.error("CP lead id missing", { autoClose: 2500 });
+      return false;
+    }
+    if (!visitCode) {
+      toast.error("Please enter visit code", { autoClose: 2500 });
+      return false;
+    }
+
+    try {
+      const { data } = await axios.post(
+        `${Baseurl}/db/channelPartnerLeads/verifyVisitCode`,
+        { cpl_id: cplId, visit_code: visitCode, db_name },
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            db: db_name,
+            m_id: 76,
+          },
+        }
+      );
+      toast.success(data?.message || "Visit verified successfully", { autoClose: 2500 });
+      await getCpVisitById();
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message, { autoClose: 2500 });
+      } else {
+        toast.error("Failed to verify visit code", { autoClose: 2500 });
+      }
+      return false;
+    }
   };
 
   return (
@@ -250,7 +366,7 @@ const VisitDetailsScreen = () => {
                   </div>
                   <div className="col-6 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{formatDate(visitData?.follow_up_date)}</span>
+                      <span className="list-right">{formatDate(visitData?.visit_date || visitData?.follow_up_date)}</span>
                     </div>
                   </div>
                 </div>
@@ -274,7 +390,7 @@ const VisitDetailsScreen = () => {
                   </div>
                   <div className="col-6 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{visitData?.user || "---------"}</span>
+                      <span className="list-right">{visitData?.bst_name || visitData?.assigned_to || visitData?.user || "---------"}</span>
                     </div>
                   </div>
                 </div>
@@ -286,7 +402,13 @@ const VisitDetailsScreen = () => {
                   </div>
                   <div className="col-6 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{visitData?.stage || "---------"}</span>
+                      <span className="list-right">{
+                        (String(visitData?.visit_status || "").toLowerCase() === "completed" ||
+                          visitData?.visit_verified === 1 ||
+                          visitData?.visit_verified === true)
+                          ? (visitData?.visit_status || "Completed")
+                          : (visitData?.visit_status || visitData?.current_stage || visitData?.stage || "---------")
+                      }</span>
                     </div>
                   </div>
                 </div>
@@ -511,9 +633,7 @@ const VisitDetailsScreen = () => {
           >Back to Visits</button>
           <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0"
             style={{background:`${clientBtnColor}`}}
-            onClick={()=>{
-              setShow(true)
-            }}
+            onClick={handleVisitHistory}
           >Visit History</button>
           {isCpVisit && (
             <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0"
@@ -541,6 +661,8 @@ const VisitDetailsScreen = () => {
         show={showFinishVisit}
         setShow={setShowFinishVisit}
         visitStatus={visitStatus}
+        onSendVisitCode={sendVisitCode}
+        onVerifyVisitCode={verifyVisitCode}
       />
     )}
     </>

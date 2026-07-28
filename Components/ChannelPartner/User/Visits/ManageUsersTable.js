@@ -559,15 +559,29 @@ const [value, setValue] = useState(getCurrentWeekDates());
               {columnMeta.label}
             </th>
           ),
-          customBodyRender: (value) => (
-            <div
-              style={{ padding: "6px", color: "white", background: "#17B4E7", borderRadius: "20px", border: "white" }}
-              className='pe-3 ps-3 btn'
-              title='Status'
-            >
-              {value}
-            </div>
-          ),
+          customBodyRender: (value) => {
+            const status = value || "-";
+            const statusKey = String(status).toLowerCase();
+            const background =
+              statusKey === "completed" ? "#198754" :
+              statusKey === "in progress" ? "#fd7e14" :
+              "#17B4E7";
+            return (
+              <div
+                style={{
+                  padding: "6px",
+                  color: "white",
+                  background,
+                  borderRadius: "20px",
+                  border: "white",
+                }}
+                className='pe-3 ps-3 btn'
+                title='Status'
+              >
+                {status}
+              </div>
+            );
+          },
         },
       },
     ];
@@ -764,7 +778,9 @@ const [value, setValue] = useState(getCurrentWeekDates());
           }          
     };
 
-    const mappedDataList=dataList?.map(list=>({
+    const safeDataList = Array.isArray(dataList) ? dataList : [];
+
+    const mappedDataList=safeDataList.map(list=>({
       visit_id:list?.visit_id,
       visit_code:list?.visit_code,
       leadDataName:list?.leadData?.lead_name,
@@ -778,17 +794,29 @@ const [value, setValue] = useState(getCurrentWeekDates());
       completed_date: list?.status === "Completed" ? list?.updatedAt : ""
     }))
 
-    const mappedCpVisitList = dataList?.map((list) => ({
-      cpl_id: list?.cpl_id,
-      leadName: `${list?.first_name || ""} ${list?.last_name || ""}`.trim(),
-      email: list?.email,
-      contact: list?.contact,
-      project_name: list?.project_name || list?.sales_project_name || "",
-      follow_up_date: list?.follow_up_date,
-      visit_type: list?.visit_type,
-      user: list?.user,  
-      stage: list?.stage,
-    }));
+    const mappedCpVisitList = safeDataList.map((list) => {
+      const isCompleted =
+        String(list?.visit_status || "").toLowerCase() === "completed" ||
+        list?.visit_verified === 1 ||
+        list?.visit_verified === true;
+
+      return {
+        cpl_d_id: list?.cpl_d_id,
+        cpl_id: list?.cpl_id,
+        leadName: list?.name || `${list?.first_name || ""} ${list?.last_name || ""}`.trim(),
+        email: list?.email,
+        contact: list?.contact,
+        project_name: list?.project_name || list?.sales_project_name || "",
+        follow_up_date: list?.visit_date || list?.follow_up_date,
+        visit_type: list?.visit_type,
+        user: list?.bst_name || list?.user,
+        stage: list?.visit_status
+          || (isCompleted ? "Completed" : null)
+          || list?.current_stage
+          || list?.stage
+          || "VISIT",
+      };
+    });
 
     const activeColumns = visitType === "cp" ? cpVisitColumns : columns;
     const activeData = visitType === "cp" ? mappedCpVisitList : mappedDataList;

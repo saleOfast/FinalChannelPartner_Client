@@ -63,6 +63,7 @@ const NewRegistrationScreen = () => {
       state_id: Number(state_id),
       city_id: Number(city_id),
       Operating_Location: (operating_location || "").trim(),
+      client_url: "http://18.61.246.105",
     };
 
     console.log(payload);
@@ -186,13 +187,7 @@ const NewRegistrationScreen = () => {
   useEffect(() => {
     const getSignInData = async () => {
       try {
-        let baseUrl = window.location.origin;
-        // Handle local development URLs (localhost and local IP addresses)
-        if (baseUrl === "http://localhost:3000" || baseUrl.startsWith("http://10.") || baseUrl.startsWith("http://192.168.") || baseUrl.startsWith("http://172.")) {
-          // baseUrl = "https://connect.theprosperity.in"
-          baseUrl = "http://nk.example.com"
-
-        }
+        const baseUrl = "http://18.61.246.105";
         const { data } = await axios.post(Baseurl + "/db/admin/url", {
           client_url: `${baseUrl}`,
         })

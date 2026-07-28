@@ -190,7 +190,8 @@ const CPRegisterLeadsTable = ({
       role_id: 1,
       user: object?.first_name,
       user_l_name: object?.last_name,
-      report_to: assignedToId
+      report_to: assignedToId,
+      client_url: "http://18.61.246.105",
     }
     if (!hasCookie("token")) return;
 
@@ -258,12 +259,12 @@ const CPRegisterLeadsTable = ({
       };
       let newFormData;
       if (onBoradStage && isUserData) {
-        newFormData = { ...formData, db_name: db_name, stage: isUserData?.doc_verification == 0 ? "LINK SENT" : isUserData?.doc_verification == 2 ? "ONBOARDED" : "" }
+        newFormData = { ...formData, db_name: db_name, client_url: "http://18.61.246.105", stage: isUserData?.doc_verification == 0 ? "LINK SENT" : isUserData?.doc_verification == 2 ? "ONBOARDED" : "" }
         toast.warn("User Already OnBoarded")
       } else if (onBoradStage) {
-        newFormData = { ...formData, db_name: db_name, stage: "LINK SENT" }
+        newFormData = { ...formData, db_name: db_name, client_url: "http://18.61.246.105", stage: "LINK SENT" }
       } else {
-        newFormData = { ...formData, db_name: db_name }
+        newFormData = { ...formData, db_name: db_name, client_url: "http://18.61.246.105" }
       }
       // const newFormData={...formData,db_name:db_name,}
       try {
@@ -1082,7 +1083,7 @@ const CPRegisterLeadsTable = ({
             <div className="miuiTable channelTable">
               <MUIDataTable
                 title={<CustomToolbar />}
-                data={dataList}
+                data={Array.isArray(dataList) ? dataList : []}
                 columns={columns}
                 // options={options}
                 options={{

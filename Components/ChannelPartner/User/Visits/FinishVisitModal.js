@@ -8,11 +8,15 @@ const FinishVisitModal = ({ show, setShow, visitStatus, onSendVisitCode, onVerif
   const clientBtnColor = hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790";
   const [step, setStep] = useState('send');
   const [visitCode, setVisitCode] = useState('');
+  const [sending, setSending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
     if (!show) {
       setStep('send');
       setVisitCode('');
+      setSending(false);
+      setVerifying(false);
     }
   }, [show]);
 
@@ -20,13 +24,22 @@ const FinishVisitModal = ({ show, setShow, visitStatus, onSendVisitCode, onVerif
     setShow(false);
     setStep('send');
     setVisitCode('');
+    setSending(false);
+    setVerifying(false);
   };
 
-  const handleSendVisitCode = () => {
-    if (onSendVisitCode) {
-      onSendVisitCode();
+  const handleSendVisitCode = async () => {
+    if (sending) return;
+    setSending(true);
+    try {
+      if (onSendVisitCode) {
+        const ok = await onSendVisitCode();
+        if (ok === false) return;
+      }
+      setStep('verify');
+    } finally {
+      setSending(false);
     }
-    setStep('verify');
   };
 
   const handleCodeChange = (e) => {
@@ -34,16 +47,29 @@ const FinishVisitModal = ({ show, setShow, visitStatus, onSendVisitCode, onVerif
     setVisitCode(value);
   };
 
-  const handleResendCode = () => {
-    if (onSendVisitCode) {
-      onSendVisitCode();
+  const handleResendCode = async () => {
+    if (sending) return;
+    setSending(true);
+    try {
+      if (onSendVisitCode) {
+        await onSendVisitCode();
+      }
+    } finally {
+      setSending(false);
     }
   };
 
-  const handleVerify = () => {
-    if (visitCode.length !== 4) return;
-    if (onVerifyVisitCode) {
-      onVerifyVisitCode(visitCode);
+  const handleVerify = async () => {
+    if (visitCode.length !== 4 || verifying) return;
+    setVerifying(true);
+    try {
+      if (onVerifyVisitCode) {
+        const ok = await onVerifyVisitCode(visitCode);
+        if (ok === false) return;
+      }
+      handleClose();
+    } finally {
+      setVerifying(false);
     }
   };
 
@@ -85,8 +111,9 @@ const FinishVisitModal = ({ show, setShow, visitStatus, onSendVisitCode, onVerif
               className="finish-visit-send-btn"
               style={{ backgroundColor: clientBtnColor, borderColor: clientBtnColor }}
               onClick={handleSendVisitCode}
+              disabled={sending}
             >
-              Send Visit Code
+              {sending ? "Sending..." : "Send Visit Code"}
             </Button>
           </>
         ) : (
@@ -138,15 +165,16 @@ const FinishVisitModal = ({ show, setShow, visitStatus, onSendVisitCode, onVerif
                 className="finish-visit-resend-link"
                 style={{ color: clientBtnColor }}
                 onClick={handleResendCode}
+                disabled={sending}
               >
-                Resend code
+                {sending ? "Sending..." : "Resend code"}
               </button>
             </div>
 
             <Button
               type="button"
               className="finish-visit-verify-btn"
-              disabled={!isCodeComplete}
+              disabled={!isCodeComplete || verifying}
               style={
                 isCodeComplete
                   ? { backgroundColor: clientBtnColor, borderColor: clientBtnColor }
@@ -154,7 +182,7 @@ const FinishVisitModal = ({ show, setShow, visitStatus, onSendVisitCode, onVerif
               }
               onClick={handleVerify}
             >
-              Verify &amp; Complete
+              {verifying ? "Verifying..." : "Verify & Complete"}
             </Button>
           </>
         )}

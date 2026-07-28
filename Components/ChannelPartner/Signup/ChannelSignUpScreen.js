@@ -432,7 +432,7 @@ const ChannelSignUpScreen = () => {
   useEffect(() => {
     const getSignInData = async () => {
       try {
-        const baseUrl = window.location.origin;
+        const baseUrl = "http://18.61.246.105";
         const { data } = await axios.post(Baseurl + "/db/admin/url", {
           client_url: `${baseUrl}`,
         })

@@ -164,7 +164,8 @@ const VisitsScreen = () => {
                 });
                 if(response?.status === 200 || response?.status === 201){
                   setLoader(false)
-                setDataList(response?.data?.data);
+                const visitData = response?.data?.data;
+                setDataList(Array.isArray(visitData) ? visitData : []);
                 }
             } catch (error) {
                 if (error?.response?.data?.message) {
@@ -181,7 +182,7 @@ const VisitsScreen = () => {
     const getCpVisitList = async (queryObjLeads) => {
       setLoader(true);
       const db_name = getCookie('db_name');
-      let url = `/db/channelPartnerLeads?db_name=${db_name}&status_id=VISIT`;
+      let url = `/db/channelPartnerLeads?db_name=${db_name}&visit_list=true&source=ONBOARDED_CP_VISIT`;
 
       if (hasCookie('token')) {
         const token = getCookie('token');
@@ -199,9 +200,15 @@ const VisitsScreen = () => {
             ...header,
             params: queryObjLeads,
           });
-          if (response?.status === 200 || response?.status === 201) {
+          if (response?.status === 200 || response?.status === 201 || response?.status === 304) {
             setLoader(false);
-            setDataList(response?.data?.data || []);
+            const visitData = response?.data?.data;
+            const visits = Array.isArray(visitData)
+              ? visitData
+              : Array.isArray(visitData?.visits)
+                ? visitData.visits
+                : [];
+            setDataList(visits);
           }
         } catch (error) {
           setLoader(false);

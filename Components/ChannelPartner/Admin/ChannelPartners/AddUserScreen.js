@@ -210,9 +210,9 @@ const AddUserScreen = () => {
     const db_name = getCookie("db_name");
     setisLoading(true);
     const token = getCookie("token");
-    let reqOptions = { ...userInfo, db_name };
+    let reqOptions = { ...userInfo, db_name, client_url: "http://18.61.246.105" };
     if(userInfo?.role_id=="3"){
-      reqOptions = { ...userInfo, report_to:userInfoCheck?.user_id }
+      reqOptions = { ...userInfo, report_to:userInfoCheck?.user_id, client_url: "http://18.61.246.105" }
     }
     const header = {
       headers: {

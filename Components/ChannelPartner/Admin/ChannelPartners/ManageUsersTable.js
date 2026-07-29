@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
-import { Baseurl } from '../../../../Utils/Constants';
+import { Baseurl, isRmRole } from '../../../../Utils/Constants';
 import { getCookie, hasCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import DateRange from '../../../DateRangeCustom/Daterange';
@@ -53,7 +53,7 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
   const userListFilterBasisOfRole = (selectedOption, usersList) => {
     if (selectedOption === "Channel Partner") {
       return [{ value: userInfo?.user_id, label: "N.A" }, ...usersList
-        ?.filter(user => user.role_id === 2 || user.role_id === 3)
+        ?.filter(user => user.role_id === 2 || user.role_id === 3 || isRmRole(user.role_id))
         ?.map(data => ({
           value: data?.user_id,
           label: data?.user,
@@ -206,7 +206,7 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
       }
     },
     {
-      name: 'onboarding_date',
+      name: 'createdAt',
       label: "Created Date",
       options: {
         filter: false,
@@ -216,8 +216,21 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
           </th>
         ),
         customBodyRender: (value, tableMeta, updateValue) => {
-
+          if (!value) {
+            return (
+              <div className='status_box text-center' style={{ color: "#667799" }}>
+                ---------
+              </div>
+            )
+          }
           const date = new Date(value);
+          if (isNaN(date.getTime())) {
+            return (
+              <div className='status_box text-center' style={{ color: "#667799" }}>
+                ---------
+              </div>
+            )
+          }
           const day = String(date.getDate()).padStart(2, '0');
           const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
           const year = date.getFullYear();
@@ -583,7 +596,7 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
 
       if (cell == null || cell === '') continue;
 
-      if (colName === 'onboarding_date') {
+      if (colName === 'createdAt') {
         if (matchDateSearch(cell, searchQuery)) return true;
         continue;
       }

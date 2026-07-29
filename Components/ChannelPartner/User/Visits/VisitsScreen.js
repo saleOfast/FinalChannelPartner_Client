@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { Modal, Button, Form, Row, Col, Dropdown } from 'react-bootstrap';
 import dynamic from 'next/dynamic'
 import Papa from "papaparse";
-import { Baseurl } from '../../../../Utils/Constants';
+import { Baseurl, isRmRole } from '../../../../Utils/Constants';
 import ConfirmBox from '../../../Basics/ConfirmBox';
 import { useRouter } from 'next/router';
 import Select from 'react-select';
@@ -182,7 +182,8 @@ const VisitsScreen = () => {
     const getCpVisitList = async (queryObjLeads) => {
       setLoader(true);
       const db_name = getCookie('db_name');
-      let url = `/db/channelPartnerLeads?db_name=${db_name}&visit_list=true&source=ONBOARDED_CP_VISIT`;
+      const visitSource = isRmRole(userInfoCheck?.role_id) ? "ONBOARDED_CP_VISIT" : "CP_LEAD_VISIT";
+      let url = `/db/channelPartnerLeads?db_name=${db_name}&visit_list=true&source=${visitSource}`;
 
       if (hasCookie('token')) {
         const token = getCookie('token');
@@ -234,7 +235,7 @@ const VisitsScreen = () => {
       }
     };
 
-    const showVisitTypeToggle = userInfoCheck?.role_id == null || userInfoCheck?.role_id == 2 || userInfoCheck?.role_id == 3 || userInfoCheck?.isDB;
+    const showVisitTypeToggle = userInfoCheck?.role_id == null || userInfoCheck?.role_id == 2 || userInfoCheck?.role_id == 3 || isRmRole(userInfoCheck?.role_id) || userInfoCheck?.isDB;
 
     
 

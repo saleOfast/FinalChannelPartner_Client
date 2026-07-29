@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { fetchData } from "../../../../Utils/getReq";
 import Select from "react-select";
-import { Baseurl, filesUrl } from "../../../../Utils/Constants";
+import { Baseurl, filesUrl, isRmRole } from "../../../../Utils/Constants";
 import { Delete } from "@mui/icons-material";
 
 const AddUserScreen = () => {
@@ -460,7 +460,7 @@ const AddUserScreen = () => {
   const userListFilterBasisOfRole = (selectedOption, usersList) => {
     if (selectedOption == "1") {
         return [{ value: userInfo?.user_id, label: "N.A" },...usersList
-            ?.filter(user => user.role_id === 2 || user.role_id === 3)
+            ?.filter(user => user.role_id === 2 || user.role_id === 3 || isRmRole(user.role_id))
             ?.map(data => ({
                 value: data?.user_id,
                 label: data?.user,

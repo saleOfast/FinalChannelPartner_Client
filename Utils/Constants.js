@@ -33,3 +33,12 @@ export const filesUrl = 'http://18.61.246.105/images';
 // export const Baseurl = 'http://localhost:8050/api/v1';
 // export const filesUrl = 'http://localhost:8050/images';
 
+/* RM role id — set per environment in .env (NEXT_PUBLIC_RM_ROLE_ID) */
+export const RM_ROLE_ID = Number(process.env.NEXT_PUBLIC_RM_ROLE_ID || 9);
+
+export const isRmRole = (roleId) =>
+  roleId !== null &&
+  roleId !== undefined &&
+  roleId !== "" &&
+  Number(roleId) === RM_ROLE_ID;
+

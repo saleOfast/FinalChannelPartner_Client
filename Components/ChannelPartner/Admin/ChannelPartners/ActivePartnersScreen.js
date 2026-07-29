@@ -10,7 +10,7 @@ import Modal from "react-bootstrap/Modal";
 import { Button } from 'react-bootstrap';
 import dynamic from 'next/dynamic'
 import Papa from "papaparse";
-import { Baseurl } from '../../../../Utils/Constants';
+import { Baseurl, isRmRole } from '../../../../Utils/Constants';
 import ConfirmBox from '../../../Basics/ConfirmBox';
 import { useRouter } from 'next/router';
 import Select from 'react-select';
@@ -337,7 +337,7 @@ const ActivePartnersScreen = () => {
     const userListFilterBasisOfRole = (selectedOption, usersList) => {
         if (selectedOption === "Channel Partner") {
             return [{ value: userInfo?.user_id, label: "N.A" }, ...usersList
-                ?.filter(user => user.role_id === 2 || user.role_id === 3)
+                ?.filter(user => user.role_id === 2 || user.role_id === 3 || isRmRole(user.role_id))
                 ?.map(data => ({
                     value: data?.user_id,
                     label: (

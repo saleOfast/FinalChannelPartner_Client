@@ -13,6 +13,9 @@ import Loader from '../../../Loader/Loader';
 import { Form } from 'react-bootstrap';
 import { fetchData } from '../../../../Utils/getReq';
 import * as XLSX from "xlsx";
+import DeleteIcon from "../../../Svg/DeleteIcon";
+import EditIcon from "../../../Svg/EditIcon";
+import ViewIcon from "../../../Svg/ViewIcon";
 
 
 
@@ -409,7 +412,6 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
         download: false,
         viewColumns: false,
         display: (userInfo?.role_id == null || userInfo?.role_id == 3) && (selectedOption == "Channel Partner" || (selectedOption == "BST" && userInfo?.role_id == null)) ? true : false,
-        // display:(userInfo?.role_id==null || userInfo?.role_id==3 ) && (selectedOption=="Channel Partner") ? true:false,
         customHeadRender: (columnMeta, updateDirection) => (
           <th className="text-center" style={{ background: clientBtnColor ? clientBtnColor : `#293790`, color: 'white', paddingLeft: "15px" }}   >
             {columnMeta.label}

@@ -22,6 +22,10 @@ const DynamicTable = dynamic(
     () => import('./ManageUsersTable'),
     { ssr: false }
 )
+const DynamicLeadsTable = dynamic(
+    () => import('../CPRegisterLeads/CPRegisterLeadsTable'),
+    { ssr: false }
+)
 
 const ActivePartnersScreen = () => {
     const sideView = useSelector((state) => state.sideView.value);
@@ -48,14 +52,18 @@ const ActivePartnersScreen = () => {
     })
     const clientBtnColor = hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
     const userInfo = hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) : null;
+    const isRm = isRmRole(userInfo?.role_id);
     const [loader, setLoader] = useState(false);
     const [selectedOption, setSelectedOption] = useState(hasCookie("cp_selected") ? getCookie("cp_selected") : 'Channel Partner');
+    const [bstId, setBstId] = useState(hasCookie("bstId") ? getCookie("bstId") : '')
+    const [statusId, setStatusId] = useState(hasCookie("cpLeadstatusId") ? getCookie("cpLeadstatusId") : '')
 
     const getCurrentWeekDates = () => {
         const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
         const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
-        if (hasCookie("Channel_PartnerFilter")) {
-            let data = JSON.parse(getCookie("Channel_PartnerFilter"))
+        const filterKey = isRm ? "cpleadsFilter" : "Channel_PartnerFilter";
+        if (hasCookie(filterKey)) {
+            let data = JSON.parse(getCookie(filterKey))
             return { startDate: data?.f_date, endDate: data?.t_date }
         }
         else {
@@ -146,6 +154,18 @@ const ActivePartnersScreen = () => {
             }
 
             try {
+                // RM profile: show CP leads instead of Channel Partner users list
+                if (isRm) {
+                    const response = await axios.get(
+                        Baseurl + `/db/channelPartnerLeads?db_name=${db_name}`,
+                        { ...header, params: queryObjLeads }
+                    );
+                    if (response?.status === 200 || response?.status === 201) {
+                        setLoader(false)
+                        setDataList(response?.data?.data?.leads || []);
+                    }
+                    return;
+                }
 
                 const response = selectedOption == "Channel Partner" ?
                     await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, { ...header, params: queryObjLeads })
@@ -223,6 +243,20 @@ const ActivePartnersScreen = () => {
             }
 
             try {
+                if (isRm) {
+                    const response = await axios.delete(
+                        Baseurl + `/db/channelPartnerLeads?cpl_id=${currObj.cpl_id}&db_name=${db_name}`,
+                        header
+                    );
+                    if (response.status === 204 || response.status === 200) {
+                        toast.success(response?.data?.message, { autoClose: 2500 })
+                        setdeleteshowConfirm(false)
+                        setcurrObj({ cpl_id: '', db_name: '' })
+                        getDataList();
+                    }
+                    return;
+                }
+
                 const response = await axios.delete(Baseurl + `/db/users?id=${currObj.id}`, header);
                 if (response.status === 204 || response.status === 200) {
                     toast.success(response?.data?.message, { autoClose: 2500 })
@@ -382,25 +416,40 @@ const ActivePartnersScreen = () => {
 
 
     useEffect(() => {
-        getUsersList();
-        // getDataList()
+        if (!isRm) {
+            getUsersList();
+        }
     }, [selectedOption])
 
 
     useEffect(() => {
+        if (isRm) {
+            const cpleadsFilter = hasCookie("cpleadsFilter") ? JSON.parse(getCookie("cpleadsFilter")) : null;
+            if (cpleadsFilter) {
+                getDataList(cpleadsFilter)
+            } else {
+                getDataList()
+            }
+            return;
+        }
         if (channelPartnerFilter) {
-            // if(hasCookie("cp_selected")){
-            //     setSelectedOption(getCookie("cp_selected"))
-            // }
             getDataList(channelPartnerFilter)
         }
         else {
             getDataList()
         }
-    }, [selectedOption])
+    }, [selectedOption, bstId, statusId])
 
     return (
         <>
+            {isRm && (
+                <ConfirmBox
+                    showConfirm={deleteshowConfirm}
+                    setshowConfirm={setdeleteshowConfirm}
+                    actionType={deleteHandler}
+                    title={"Are You Sure you want to Delete ?"}
+                />
+            )}
             <div className="w-100 ps-4 pe-4 overflow-scroll" >
 
                 <div className="main_content">
@@ -409,7 +458,7 @@ const ActivePartnersScreen = () => {
                             <div className="d-flex flex-wrap flex-md-nowrap align-items-center gap-2 gap-md-3" style={{ justifyContent: userInfo?.role_id ? "end" : "", width: userInfo?.role_id ? "100%" : "" }}>
                                 <div className='fix-width-1'>
                                     {
-                                        userInfo?.role_id == null && (
+                                        (userInfo?.role_id == null && !isRm) && (
                                             <button className="btn ms-0 Add_btn p-2 w-100 d-flex align-items-center justify-content-center" style={{ background: `${clientBtnColor}` }} onClick={() => goto('/partner/ChannelPartnersDetails')}>
                                                 <PlusIcon />
                                                 ADD USER
@@ -417,9 +466,9 @@ const ActivePartnersScreen = () => {
                                         )
                                     }</div>
                                 <div className='fix-width-2 mt-0 mt-md-0'>
-                                    <DateRange value={value} setValue={setValue} getData={getDataList} filterType={"Channel_Partner"} /></div>
+                                    <DateRange value={value} setValue={setValue} getData={getDataList} filterType={isRm ? "cpleads" : "Channel_Partner"} /></div>
                                 {
-                                    hasCookie("channel") && (userInfo?.role_id == null || userInfo?.role_id == 3) && (
+                                    !isRm && hasCookie("channel") && (userInfo?.role_id == null || userInfo?.role_id == 3) && (
                                         <div style={{ marginBottom: '0' }}>
                                             <select
                                                 value={selectedOption}
@@ -453,24 +502,44 @@ const ActivePartnersScreen = () => {
                             </div>
 
                         </div>
-                        <DynamicTable
-                            title={selectedOption}
-                            dataList={dataList}
-                            loader={loader}
-                            disableConfirm={disableConfirm}
-                            deleteConfirm={deleteConfirm}
-                            setShowAssignTo={setShowAssignTo}
-                            setoldAssignTo={setoldAssignTo}
-                            oldAssignTo={oldAssignTo}
-                            setShowDateFilter={setShowDateFilter}
-                            usersList={usersList}
-                            getDataList={getDataList}
-                            selectedOption={selectedOption}
-                            setSelectedOption={setSelectedOption}
-                            channelPartnerFilter={channelPartnerFilter}
-                            start={value?.startDate}
-                            end={value?.endDate}
-                        />
+                        {isRm ? (
+                            <DynamicLeadsTable
+                                title='CP Leads'
+                                dataList={dataList}
+                                loader={loader}
+                                setdeleteshowConfirm={setdeleteshowConfirm}
+                                disableConfirm={disableConfirm}
+                                deleteConfirm={deleteConfirm}
+                                getDataList={getDataList}
+                                setcurrObj={setcurrObj}
+                                currObj={currObj}
+                                bstId={bstId}
+                                setBstId={setBstId}
+                                statusId={statusId}
+                                setStatusId={setStatusId}
+                                start={value?.startDate}
+                                end={value?.endDate}
+                            />
+                        ) : (
+                            <DynamicTable
+                                title={selectedOption}
+                                dataList={dataList}
+                                loader={loader}
+                                disableConfirm={disableConfirm}
+                                deleteConfirm={deleteConfirm}
+                                setShowAssignTo={setShowAssignTo}
+                                setoldAssignTo={setoldAssignTo}
+                                oldAssignTo={oldAssignTo}
+                                setShowDateFilter={setShowDateFilter}
+                                usersList={usersList}
+                                getDataList={getDataList}
+                                selectedOption={selectedOption}
+                                setSelectedOption={setSelectedOption}
+                                channelPartnerFilter={channelPartnerFilter}
+                                start={value?.startDate}
+                                end={value?.endDate}
+                            />
+                        )}
                     </div>
                 </div>
             </div>

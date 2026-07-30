@@ -26,9 +26,13 @@ const VisitsScreen = () => {
     const router = useRouter()
     const {cp_id} =router.query;
     const {status_id} =router.query;
+    const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
     const [cpId,setCpId] =useState(hasCookie("VisitcpId") ? getCookie("VisitcpId"):'')
     const [statusId,setStatusId] =useState(hasCookie("VisitstatusId") ? getCookie("VisitstatusId"):'')
-    const [visitType, setVisitType] = useState(hasCookie("VisitTypeTab") ? getCookie("VisitTypeTab") : "client")
+    const [visitType, setVisitType] = useState(() => {
+      if (isRmRole(userInfoCheck?.role_id)) return "cp";
+      return hasCookie("VisitTypeTab") ? getCookie("VisitTypeTab") : "client";
+    })
     const [dataList, setDataList] = useState([])
     const [show, setShow] = useState(false);
     const[loader,setLoader]=useState(false)
@@ -41,7 +45,6 @@ const VisitsScreen = () => {
     let statusArray=[{id:"",label:"All"},{id:"Requested",label:"Requested"},{id:"Scheduled",label:"Scheduled"},{id:"Rescheduled",label:"Rescheduled"},{id:"Completed",label:"Completed"},{id:"Rejected",label:"Rejected"}]
 
       const [usersList, setUsersList] = useState([]);
-        const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
       
         async function getUsersList() {
           await fetchData("/db/users", setUsersList, null, null);
@@ -50,6 +53,14 @@ const VisitsScreen = () => {
         useEffect(()=>{
           getUsersList()
         },[])
+
+        // RM profile: only CP visits (no Client visit tab)
+        useEffect(() => {
+          if (isRmRole(userInfoCheck?.role_id) && visitType !== "cp") {
+            setVisitType("cp");
+            setCookie("VisitTypeTab", "cp");
+          }
+        }, [userInfoCheck?.role_id, visitType])
     const getCurrentWeekDates = () => {
         const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
           const endDate = new Date(new Date().setDate(startDate.getDate() + 6));
@@ -235,7 +246,8 @@ const VisitsScreen = () => {
       }
     };
 
-    const showVisitTypeToggle = userInfoCheck?.role_id == null || userInfoCheck?.role_id == 2 || userInfoCheck?.role_id == 3 || isRmRole(userInfoCheck?.role_id) || userInfoCheck?.isDB;
+    // Hide visit-type tabs for RM (CP visits only; no Client visit)
+    const showVisitTypeToggle = !isRmRole(userInfoCheck?.role_id) && (userInfoCheck?.role_id == null || userInfoCheck?.role_id == 2 || userInfoCheck?.role_id == 3 || userInfoCheck?.isDB);
 
     
 

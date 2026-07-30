@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import Link from "next/link";
-import { Baseurl, filesUrl } from "../../../../Utils/Constants";
+import { Baseurl, filesUrl, isRmRole } from "../../../../Utils/Constants";
 import { Button, Modal, Form, Table } from "react-bootstrap";
 import { getCookie, hasCookie, setCookie } from "cookies-next";
 import { toast } from "react-toastify";
@@ -45,8 +45,8 @@ const CPRegisterLeadsTable = ({
       ? Number(userInfo?.role_id)
       : undefined;
   const isBst = currentRoleId === 2;
-  // Admin (and DB users) can edit contact/email. BST must not.
-  const canEditContactEmail = !isBst && (userInfo?.isDB || currentRoleId === 3);
+  // Admin (and DB users) / RM can edit contact/email. BST must not.
+  const canEditContactEmail = !isBst && (userInfo?.isDB || currentRoleId === 3 || isRmRole(userInfo?.role_id));
   const [formData, setFormData] = useState({
     cpl_id: '',
     first_name: '',
@@ -1213,14 +1213,29 @@ const CPRegisterLeadsTable = ({
                 value={formData.stage}
                 onChange={handleInputChange}
               >
-                <option hidden value="OPEN">OPEN</option>
-                <option hidden value="LINK SENT">LINK SENT</option>
-                <option hidden value="ONBOARDED">ONBOARDED</option>
-                <option value="CALL">CALL</option>
-                <option value="FOLLOW UP">FOLLOW UP</option>
-                <option value="VISIT">VISIT</option>
-                <option value="CONTACTED">CONTACTED</option>
-                <option value="NOT INTERESTED">NOT INTERESTED</option>
+                {isRmRole(userInfo?.role_id) ? (
+                  <>
+                    <option hidden value="OPEN">OPEN</option>
+                    <option hidden value="LINK SENT">LINK SENT</option>
+                    <option hidden value="ONBOARDED">ONBOARDED</option>
+                    <option hidden value="CALL">CALL</option>
+                    <option hidden value="CONTACTED">CONTACTED</option>
+                    <option hidden value="NOT INTERESTED">NOT INTERESTED</option>
+                    <option value="FOLLOW UP">FOLLOW UP</option>
+                    <option value="VISIT">VISIT</option>
+                  </>
+                ) : (
+                  <>
+                    <option hidden value="OPEN">OPEN</option>
+                    <option hidden value="LINK SENT">LINK SENT</option>
+                    <option hidden value="ONBOARDED">ONBOARDED</option>
+                    <option value="CALL">CALL</option>
+                    <option value="FOLLOW UP">FOLLOW UP</option>
+                    <option value="VISIT">VISIT</option>
+                    <option value="CONTACTED">CONTACTED</option>
+                    <option value="NOT INTERESTED">NOT INTERESTED</option>
+                  </>
+                )}
               </Form.Control>
             </Form.Group>
             {

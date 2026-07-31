@@ -30,6 +30,9 @@ const VisitsScreen = () => {
     const [cpId,setCpId] =useState(hasCookie("VisitcpId") ? getCookie("VisitcpId"):'')
     const [statusId,setStatusId] =useState(hasCookie("VisitstatusId") ? getCookie("VisitstatusId"):'')
     const [visitType, setVisitType] = useState(() => {
+      // Channel Partner profile: always Client visits
+      if (Number(userInfoCheck?.role_id) === 1) return "client";
+      // RM profile: always CP visits
       if (isRmRole(userInfoCheck?.role_id)) return "cp";
       return hasCookie("VisitTypeTab") ? getCookie("VisitTypeTab") : "client";
     })
@@ -53,6 +56,14 @@ const VisitsScreen = () => {
         useEffect(()=>{
           getUsersList()
         },[])
+
+        // Channel Partner: force Client visits (ignore leftover CP visit cookie)
+        useEffect(() => {
+          if (Number(userInfoCheck?.role_id) === 1 && visitType !== "client") {
+            setVisitType("client");
+            setCookie("VisitTypeTab", "client");
+          }
+        }, [userInfoCheck?.role_id, visitType])
 
         // RM profile: only CP visits (no Client visit tab)
         useEffect(() => {

@@ -204,8 +204,18 @@ const VisitsScreen = () => {
     const getCpVisitList = async (queryObjLeads) => {
       setLoader(true);
       const db_name = getCookie('db_name');
-      const visitSource = isRmRole(userInfoCheck?.role_id) ? "ONBOARDED_CP_VISIT" : "CP_LEAD_VISIT";
-      let url = `/db/channelPartnerLeads?db_name=${db_name}&visit_list=true&source=${visitSource}`;
+      // Admin: visit_list=true only (no source)
+      // RM: ONBOARDED_CP_VISIT | BST/others: CP_LEAD_VISIT
+      const isAdmin =
+        userInfoCheck?.role_id == null ||
+        userInfoCheck?.isDB ||
+        Number(userInfoCheck?.role_id) === 3;
+      let url = `/db/channelPartnerLeads?db_name=${db_name}&visit_list=true`;
+      if (isRmRole(userInfoCheck?.role_id)) {
+        url += `&source=ONBOARDED_CP_VISIT`;
+      } else if (!isAdmin) {
+        url += `&source=CP_LEAD_VISIT`;
+      }
 
       if (hasCookie('token')) {
         const token = getCookie('token');

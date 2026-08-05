@@ -42,3 +42,70 @@ export const isRmRole = (roleId) =>
   roleId !== "" &&
   Number(roleId) === RM_ROLE_ID;
 
+export const BST_ROLE_ID = 2;
+
+export const isBstRole = (roleId) =>
+  roleId !== null &&
+  roleId !== undefined &&
+  roleId !== "" &&
+  Number(roleId) === BST_ROLE_ID;
+
+/** BST profile shows "Activation Date" instead of "Visit Date" */
+export const getVisitDateLabel = (roleId, { required = false, possible = false } = {}) => {
+  if (isBstRole(roleId)) {
+    if (possible) return "Possible Activation Date";
+    return required ? "Activation Date*" : "Activation Date";
+  }
+  if (possible) return "Possible Visit Date";
+  return required ? "Visit Date*" : "Visit Date";
+};
+
+export const getCpVisitScheduledDate = (item) =>
+  item?.follow_up_date || item?.visit_date || item?.createdAt || "";
+
+export const getCpVisitScheduledTime = (item) =>
+  item?.follow_up_time || item?.visit_time || "";
+
+export const getCpVisitActivationDate = (item) => {
+  if (item?.activation_date) return item.activation_date;
+  const verifiedAt =
+    item?.visit_verified_at ||
+    item?.code_verified_at ||
+    item?.visit_code_verified_at ||
+    item?.activation_at;
+  if (verifiedAt) return String(verifiedAt).split("T")[0];
+  if (item?.visit_verified === 1 || item?.visit_verified === true) {
+    return item?.updatedAt ? String(item.updatedAt).split("T")[0] : "";
+  }
+  return "";
+};
+
+export const getCpVisitActivationTime = (item) => {
+  if (item?.activation_time) return item.activation_time;
+  const verifiedAt =
+    item?.visit_verified_at ||
+    item?.code_verified_at ||
+    item?.visit_code_verified_at ||
+    item?.activation_at;
+  if (verifiedAt && String(verifiedAt).includes("T")) {
+    return String(verifiedAt).split("T")[1]?.slice(0, 8) || "";
+  }
+  return "";
+};
+
+export const getCpVisitProjectName = (item, fallback = "") =>
+  item?.project_name || item?.sales_project_name || fallback || "";
+
+export const mapCpVisitHistoryItem = (item, fallbackProjectName = "") => ({
+  scheduled_date: getCpVisitScheduledDate(item),
+  scheduled_time: getCpVisitScheduledTime(item),
+  activation_date: getCpVisitActivationDate(item),
+  activation_time: getCpVisitActivationTime(item),
+  project_name: getCpVisitProjectName(item, fallbackProjectName),
+  revisit_date: getCpVisitScheduledDate(item),
+  revisit_time: getCpVisitScheduledTime(item),
+  remark: [item?.stage || item?.current_stage, item?.remarks || item?.remark]
+    .filter(Boolean)
+    .join(" - "),
+});
+

@@ -28,6 +28,8 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
     const [saving, setSaving] = useState(false);
     const [deleteConfirm, setDeleteConfirm] = useState(false);
     const [cityToDelete, setCityToDelete] = useState(null);
+    const [citySearch, setCitySearch] = useState('');
+    const [bulkToggling, setBulkToggling] = useState(false);
 
     const getHeader = () => {
         const token = getCookie('token');
@@ -100,8 +102,22 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
         resetForm();
         setSelectedStateId('');
         setCityList([]);
+        setCitySearch('');
         onClose();
     };
+
+    const getCityId = (city) => city.city_id ?? city.id;
+
+    const filteredCityList = cityList.filter((city) =>
+        (city.city_name || '')
+            .toLowerCase()
+            .includes(citySearch.trim().toLowerCase())
+    );
+
+    const allCitiesEnabled =
+        cityList.length > 0 && cityList.every((city) => city.is_available);
+    const allVisibleCitiesEnabled =
+        filteredCityList.length > 0 && filteredCityList.every((city) => city.is_available);
 
     useEffect(() => {
         if (open && selectedStateId) {
@@ -210,43 +226,96 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
         }
     };
 
-    const handleToggleCity = async (cityId) => {
-        const currentCity = cityList.find(
-            (item) => (item.city_id ?? item.id) === cityId
-        );
-        if (!currentCity) return;
-
-        const newAvailability = !currentCity.is_available;
-
+    const toggleCityAvailability = async (cityId, newAvailability) => {
         setCityList((prev) =>
             prev.map((item) =>
-                (item.city_id ?? item.id) === cityId
+                getCityId(item) === cityId
                     ? { ...item, is_available: newAvailability, is_active: newAvailability }
                     : item
             )
         );
 
         try {
-            const payload = {
-                city_id: cityId,
-                is_active: newAvailability,
-            };
-
             await axios.put(
                 `${Baseurl}/db/admin/city/toggle-active`,
-                payload,
+                { city_id: cityId, is_active: newAvailability },
                 getHeader()
             );
+            return true;
         } catch (error) {
             setCityList((prev) =>
                 prev.map((item) =>
-                    (item.city_id ?? item.id) === cityId
+                    getCityId(item) === cityId
                         ? { ...item, is_available: !newAvailability, is_active: !newAvailability }
                         : item
                 )
             );
+            throw error;
+        }
+    };
+
+    const bulkUpdateCities = async (cities, isActive) => {
+        if (!cities.length) {
+            toast.info(
+                isActive
+                    ? 'All cities are already enabled'
+                    : 'All cities are already disabled'
+            );
+            return;
+        }
+
+        setBulkToggling(true);
+        let successCount = 0;
+        let failCount = 0;
+
+        for (const city of cities) {
+            try {
+                await toggleCityAvailability(getCityId(city), isActive);
+                successCount += 1;
+            } catch {
+                failCount += 1;
+            }
+        }
+
+        setBulkToggling(false);
+
+        if (successCount > 0) {
+            toast.success(
+                `${successCount} cit${successCount === 1 ? 'y' : 'ies'} ${isActive ? 'enabled' : 'disabled'} successfully`
+            );
+        }
+        if (failCount > 0) {
+            toast.error(
+                `Failed to ${isActive ? 'enable' : 'disable'} ${failCount} cit${failCount === 1 ? 'y' : 'ies'}`
+            );
+        }
+    };
+
+    const handleToggleCity = async (cityId) => {
+        const currentCity = cityList.find((item) => getCityId(item) === cityId);
+        if (!currentCity) return;
+
+        const newAvailability = !currentCity.is_available;
+
+        try {
+            await toggleCityAvailability(cityId, newAvailability);
+        } catch (error) {
             toast.error(error?.response?.data?.message || 'Failed to update city status');
         }
+    };
+
+    const handleToggleAllCities = async () => {
+        const shouldEnable = !allCitiesEnabled;
+        const citiesToUpdate = cityList.filter((city) => city.is_available !== shouldEnable);
+        await bulkUpdateCities(citiesToUpdate, shouldEnable);
+    };
+
+    const handleToggleVisibleCities = async () => {
+        const shouldEnable = !allVisibleCitiesEnabled;
+        const citiesToUpdate = filteredCityList.filter(
+            (city) => city.is_available !== shouldEnable
+        );
+        await bulkUpdateCities(citiesToUpdate, shouldEnable);
     };
 
     return (
@@ -295,6 +364,7 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
                             onChange={(e) => {
                                 setSelectedStateId(e.target.value);
                                 resetForm();
+                                setCitySearch('');
                             }}
                         >
                             <MenuItem value="">
@@ -362,9 +432,68 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
                             No cities found for this state
                         </p>
                     ) : (
+                        <>
+                            <Box sx={{ mb: 2, mt: 1 }}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Search City"
+                                    placeholder="Search city by name"
+                                    value={citySearch}
+                                    onChange={(e) => setCitySearch(e.target.value)}
+                                />
+                            </Box>
+
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    flexWrap: 'wrap',
+                                    gap: 1,
+                                    mb: 1,
+                                    pb: 1,
+                                    borderBottom: '1px solid #eee',
+                                }}
+                            >
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <Switch
+                                        color="primary"
+                                        size="small"
+                                        checked={allCitiesEnabled}
+                                        onChange={handleToggleAllCities}
+                                        disabled={bulkToggling}
+                                    />
+                                    <span style={{ fontSize: 14, fontWeight: 500 }}>
+                                        {allCitiesEnabled ? 'Disable All Cities' : 'Enable All Cities'}
+                                    </span>
+                                </Box>
+                                {citySearch.trim() && filteredCityList.length > 0 && (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Switch
+                                            color="primary"
+                                            size="small"
+                                            checked={allVisibleCitiesEnabled}
+                                            onChange={handleToggleVisibleCities}
+                                            disabled={bulkToggling}
+                                        />
+                                        <span style={{ fontSize: 13 }}>
+                                            {allVisibleCitiesEnabled
+                                                ? 'Disable Visible'
+                                                : 'Enable Visible'}
+                                        </span>
+                                    </Box>
+                                )}
+                            </Box>
+
+                            {filteredCityList.length === 0 ? (
+                                <p style={{ textAlign: 'center', color: '#888', padding: '20px 0' }}>
+                                    No cities match your search
+                                </p>
+                            ) : (
                         <ul style={{ listStyle: 'none', padding: 0, margin: '10px 0' }}>
-                            {cityList.map((city) => {
-                                const id = city.city_id ?? city.id;
+                            {filteredCityList.map((city) => {
+                                const id = getCityId(city);
                                 return (
                                     <li
                                         key={id}
@@ -406,6 +535,8 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
                                 );
                             })}
                         </ul>
+                            )}
+                        </>
                     )}
                 </Box>
 

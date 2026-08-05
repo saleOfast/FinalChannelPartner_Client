@@ -2,7 +2,7 @@ import axios from 'axios'
 import { getCookie, hasCookie, setCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { Baseurl } from '../../../../Utils/Constants'
+import { Baseurl, getVisitDateLabel, isBstRole, mapCpVisitHistoryItem } from '../../../../Utils/Constants'
 import { toast } from 'react-toastify'
 import VisitHistoryModel from './VisitHistoryModel'
 import FinishVisitModal from './FinishVisitModal'
@@ -13,6 +13,10 @@ const VisitDetailsScreen = () => {
   const isCpVisit = type === "cp";
   const [visitData, setVisitData] = useState([])
   const clientBtnColor = hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790"
+  const userInfo = hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) : null
+  const visitDateLabel = getVisitDateLabel(userInfo?.role_id)
+  const possibleVisitDateLabel = getVisitDateLabel(userInfo?.role_id, { possible: true })
+  const isBstProfile = isBstRole(userInfo?.role_id)
   const [show, setShow] = useState(false)
   const [showFinishVisit, setShowFinishVisit] = useState(false)
   const [visitHistory, setVisitHiistory] = useState([])
@@ -155,14 +159,12 @@ const VisitDetailsScreen = () => {
         header
       );
       const history = Array.isArray(data?.data) ? data.data : [];
+      const fallbackProject =
+        visitData?.project_name || visitData?.sales_project_name || "";
       setVisitHiistory(
-        history.map((item) => ({
-          revisit_date: item?.follow_up_date || item?.visit_date || item?.createdAt,
-          revisit_time: item?.follow_up_time || item?.visit_time || "",
-          remark: [item?.stage || item?.current_stage, item?.remarks || item?.remark]
-            .filter(Boolean)
-            .join(" - "),
-        }))
+        history.map((item) =>
+          mapCpVisitHistoryItem(item, fallbackProject)
+        )
       );
     } catch (error) {
       setVisitHiistory([]);
@@ -361,7 +363,7 @@ const VisitDetailsScreen = () => {
                 <div className="row">
                   <div className="col-6 col-md-5">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">Visit Date</span>
+                      <span className="list-left">{visitDateLabel}</span>
                     </div>
                   </div>
                   <div className="col-6 col-md-6">
@@ -517,7 +519,7 @@ const VisitDetailsScreen = () => {
             <div className="row">
               <div className="col-6 col-md-5">
                 <div className="list-group-item list-group-item-action p-0 border-0">
-                  <span className="list-left">Possible Visit Date</span>
+                  <span className="list-left">{possibleVisitDateLabel}</span>
                 </div>
               </div>
               <div className="col-6 col-md-6">
@@ -654,6 +656,7 @@ const VisitDetailsScreen = () => {
         show={show}
         setShow={setShow}
         visitHistory={visitHistory}
+        isBstProfile={isBstProfile}
     />
 
     {isCpVisit && (

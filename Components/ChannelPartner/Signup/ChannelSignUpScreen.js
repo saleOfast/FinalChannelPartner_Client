@@ -11,7 +11,8 @@ import Loader from "../../Loader/Loader";
 
 
 const ChannelSignUpScreen = () => {
-  const CP_LEAD_STATUS_URL = "https://admin.theprosperity.in/api/v1/db/channelPartnerLeads/";
+  // const CP_LEAD_STATUS_URL = "https://admin.theprosperity.in/api/v1/db/channelPartnerLeads/";
+  const CP_LEAD_STATUS_URL = `${Baseurl}/db/channelPartnerLeads/`;
   const [formFields, setFormFields] = useState({
     id: "",
     cpl_id: "",
@@ -237,7 +238,8 @@ const ChannelSignUpScreen = () => {
 
       // If token verification doesn't return cpl_id, fetch it using user_id/email/mobile.
       if (!leadId) {
-        const localBase = "https://admin.theprosperity.in/api/v1";
+        // const localBase = "https://admin.theprosperity.in/api/v1";
+        const localBase = Baseurl;
         const listUrl = `${localBase}/db/channelPartnerLeads?db_name=${encodeURIComponent(dbName)}`;
 
         const headersForList = {

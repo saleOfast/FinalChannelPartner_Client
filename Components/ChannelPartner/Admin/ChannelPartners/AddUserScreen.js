@@ -163,6 +163,7 @@ const AddUserScreen = () => {
         address: data1?.address,
         pincode: data1?.pincode,
         gst: data1?.gst,
+        rera_no: data2?.rera_no || data1?.rera_no || data1?.rera_number || "",
         organisation: data1?.organisation,
         user_profle_id: data1?.user_profle_id,
         div_id: data2?.div_id,
@@ -869,7 +870,7 @@ const AddUserScreen = () => {
 
                 <div className="col-xl-3 col-md-3 col-sm-12 col-12">
                   <div className="input_box">
-                    <label htmlFor="pan_card">GST Number </label>
+                    <label htmlFor="gst">GST Number </label>
                     <input
                       type="text"
                       placeholder="Enter GST No."
@@ -884,6 +885,27 @@ const AddUserScreen = () => {
                         })
                       }
                       value={userInfo.gst ? userInfo.gst : ""}
+                    />
+                  </div>
+                </div>
+
+                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                  <div className="input_box">
+                    <label htmlFor="rera_no">RERA Number </label>
+                    <input
+                      type="text"
+                      placeholder="Enter RERA No."
+                      name="rera_no"
+                      id="rera_no"
+                      disabled={viewMode}
+                      className="form-control"
+                      onChange={(e) =>
+                        setUserinfo({
+                          ...userInfo,
+                          rera_no: e.target.value,
+                        })
+                      }
+                      value={userInfo.rera_no ? userInfo.rera_no : ""}
                     />
                   </div>
                 </div>

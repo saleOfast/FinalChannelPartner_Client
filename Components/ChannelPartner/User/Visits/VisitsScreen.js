@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { Modal, Button, Form, Row, Col, Dropdown } from 'react-bootstrap';
 import dynamic from 'next/dynamic'
 import Papa from "papaparse";
-import { Baseurl, isRmRole } from '../../../../Utils/Constants';
+import { Baseurl, isRmRole, isBstRole } from '../../../../Utils/Constants';
 import ConfirmBox from '../../../Basics/ConfirmBox';
 import { useRouter } from 'next/router';
 import Select from 'react-select';
@@ -32,8 +32,8 @@ const VisitsScreen = () => {
     const [visitType, setVisitType] = useState(() => {
       // Channel Partner profile: always Client visits
       if (Number(userInfoCheck?.role_id) === 1) return "client";
-      // RM profile: always CP visits
-      if (isRmRole(userInfoCheck?.role_id)) return "cp";
+      // RM / BST profile: always CP visits
+      if (isRmRole(userInfoCheck?.role_id) || isBstRole(userInfoCheck?.role_id)) return "cp";
       return hasCookie("VisitTypeTab") ? getCookie("VisitTypeTab") : "client";
     })
     const [dataList, setDataList] = useState([])
@@ -68,6 +68,14 @@ const VisitsScreen = () => {
         // RM profile: only CP visits (no Client visit tab)
         useEffect(() => {
           if (isRmRole(userInfoCheck?.role_id) && visitType !== "cp") {
+            setVisitType("cp");
+            setCookie("VisitTypeTab", "cp");
+          }
+        }, [userInfoCheck?.role_id, visitType])
+
+        // BST profile: only CP visits (no Client visit tab)
+        useEffect(() => {
+          if (isBstRole(userInfoCheck?.role_id) && visitType !== "cp") {
             setVisitType("cp");
             setCookie("VisitTypeTab", "cp");
           }
@@ -204,16 +212,17 @@ const VisitsScreen = () => {
     const getCpVisitList = async (queryObjLeads) => {
       setLoader(true);
       const db_name = getCookie('db_name');
-      // Admin: visit_list=true only (no source)
-      // RM: ONBOARDED_CP_VISIT | BST/others: CP_LEAD_VISIT
+      // Admin & BST: visit_list=true only (no source)
+      // RM: ONBOARDED_CP_VISIT | others: CP_LEAD_VISIT
       const isAdmin =
         userInfoCheck?.role_id == null ||
         userInfoCheck?.isDB ||
         Number(userInfoCheck?.role_id) === 3;
+      const isBst = isBstRole(userInfoCheck?.role_id);
       let url = `/db/channelPartnerLeads?db_name=${db_name}&visit_list=true`;
       if (isRmRole(userInfoCheck?.role_id)) {
         url += `&source=ONBOARDED_CP_VISIT`;
-      } else if (!isAdmin) {
+      } else if (!isAdmin && !isBst) {
         url += `&source=CP_LEAD_VISIT`;
       }
 
@@ -267,8 +276,11 @@ const VisitsScreen = () => {
       }
     };
 
-    // Hide visit-type tabs for RM (CP visits only; no Client visit)
-    const showVisitTypeToggle = !isRmRole(userInfoCheck?.role_id) && (userInfoCheck?.role_id == null || userInfoCheck?.role_id == 2 || userInfoCheck?.role_id == 3 || userInfoCheck?.isDB);
+    // Hide visit-type tabs for RM & BST (CP visits only; no Client visit)
+    const showVisitTypeToggle =
+      !isRmRole(userInfoCheck?.role_id) &&
+      !isBstRole(userInfoCheck?.role_id) &&
+      (userInfoCheck?.role_id == null || userInfoCheck?.role_id == 3 || userInfoCheck?.isDB);
 
     
 

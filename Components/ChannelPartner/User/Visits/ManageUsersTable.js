@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
-import { Baseurl } from '../../../../Utils/Constants';
+import { Baseurl, getVisitDateLabel, isBstRole, getCpVisitActivationDate, getCpVisitActivationTime } from '../../../../Utils/Constants';
 import { getCookie, hasCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
@@ -31,6 +31,8 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
   const [errorToast, setErrorToast] = useState(false);
   const [usersList, setUsersList] = useState([]);
   const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
+  const visitDateLabel = getVisitDateLabel(userInfoCheck?.role_id);
+  const isBstProfile = isBstRole(userInfoCheck?.role_id);
 
   async function getUsersList() {
     await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
@@ -141,13 +143,17 @@ const [value, setValue] = useState(getCurrentWeekDates());
         colName === 'assigning_date' ||
         colName === 'completed_date' ||
         colName === 'p_visit_date' ||
-        colName === 'follow_up_date'
+        colName === 'follow_up_date' ||
+        colName === 'scheduled_date' ||
+        colName === 'activation_date' ||
+        colName === 'scheduled_time' ||
+        colName === 'activation_time'
       ) {
         if (matchDateSearch(cell, searchQuery)) return true;
         continue;
       }
 
-      if (colName === 'p_visit_time') {
+      if (colName === 'p_visit_time' || colName === 'scheduled_time' || colName === 'activation_time') {
         if (matchTimeSearch(cell, searchQuery)) return true;
         continue;
       }
@@ -325,7 +331,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
       },
         {
             name: 'p_visit_date',
-            label: "Visit Date",
+            label: visitDateLabel,
             options: {
                 filter: false,
                 customHeadRender: (columnMeta, updateDirection) => (
@@ -485,7 +491,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
       },
       {
         name: 'project_name',
-        label: "Project",
+        label: isBstProfile ? "Project Name" : "Project",
         options: {
           filter: false,
           customHeadRender: (columnMeta) => (
@@ -498,21 +504,86 @@ const [value, setValue] = useState(getCurrentWeekDates());
           ),
         },
       },
-      {
-        name: 'follow_up_date',
-        label: "Visit Date",
-        options: {
-          filter: false,
-          customHeadRender: (columnMeta) => (
-            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
-              {columnMeta.label}
-            </th>
-          ),
-          customBodyRender: (value) => (
-            <div className='status_box' style={{ color: "#667799" }}>{value ? formatDate(value) : ""}</div>
-          ),
-        },
-      },
+      ...(isBstProfile
+        ? [
+            {
+              name: 'scheduled_date',
+              label: "Scheduled Date",
+              options: {
+                filter: false,
+                customHeadRender: (columnMeta) => (
+                  <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+                    {columnMeta.label}
+                  </th>
+                ),
+                customBodyRender: (value) => (
+                  <div className='status_box' style={{ color: "#667799" }}>{value ? formatDate(value) : ""}</div>
+                ),
+              },
+            },
+            {
+              name: 'scheduled_time',
+              label: "Scheduled Time",
+              options: {
+                filter: false,
+                customHeadRender: (columnMeta) => (
+                  <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+                    {columnMeta.label}
+                  </th>
+                ),
+                customBodyRender: (value) => (
+                  <div className='status_box' style={{ color: "#667799" }}>{value ? formatTime(value) : ""}</div>
+                ),
+              },
+            },
+            {
+              name: 'activation_date',
+              label: "Activation Date",
+              options: {
+                filter: false,
+                customHeadRender: (columnMeta) => (
+                  <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+                    {columnMeta.label}
+                  </th>
+                ),
+                customBodyRender: (value) => (
+                  <div className='status_box' style={{ color: "#667799" }}>{value ? formatDate(value) : ""}</div>
+                ),
+              },
+            },
+            {
+              name: 'activation_time',
+              label: "Activation Time",
+              options: {
+                filter: false,
+                customHeadRender: (columnMeta) => (
+                  <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+                    {columnMeta.label}
+                  </th>
+                ),
+                customBodyRender: (value) => (
+                  <div className='status_box' style={{ color: "#667799" }}>{value ? formatTime(value) : ""}</div>
+                ),
+              },
+            },
+          ]
+        : [
+            {
+              name: 'follow_up_date',
+              label: visitDateLabel,
+              options: {
+                filter: false,
+                customHeadRender: (columnMeta) => (
+                  <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
+                    {columnMeta.label}
+                  </th>
+                ),
+                customBodyRender: (value) => (
+                  <div className='status_box' style={{ color: "#667799" }}>{value ? formatDate(value) : ""}</div>
+                ),
+              },
+            },
+          ]),
       {
         name: 'visit_type',
         label: "Visit Type",
@@ -807,6 +878,10 @@ const [value, setValue] = useState(getCurrentWeekDates());
         email: list?.email,
         contact: list?.contact,
         project_name: list?.project_name || list?.sales_project_name || "",
+        scheduled_date: list?.visit_date || list?.follow_up_date,
+        scheduled_time: list?.visit_time || list?.follow_up_time,
+        activation_date: getCpVisitActivationDate(list),
+        activation_time: getCpVisitActivationTime(list),
         follow_up_date: list?.visit_date || list?.follow_up_date,
         visit_type: list?.visit_type,
         user: list?.bst_name || list?.user,

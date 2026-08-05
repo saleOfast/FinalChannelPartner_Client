@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import Link from "next/link";
-import { Baseurl, filesUrl, isRmRole } from "../../../../Utils/Constants";
+import { Baseurl, filesUrl, isRmRole, isBstRole, getVisitDateLabel } from "../../../../Utils/Constants";
 import { Button, Modal, Form, Table } from "react-bootstrap";
 import { getCookie, hasCookie, setCookie } from "cookies-next";
 import { toast } from "react-toastify";
@@ -954,9 +954,13 @@ const CPRegisterLeadsTable = ({
     if (!formData.last_name) newErrors.last_name = "Last name is required";
     if (formData?.stage == "CALL" || formData?.stage == "FOLLOW UP" || formData?.stage == "VISIT") {
       if (!formData.follow_up_date) {
-        newErrors.follow_up_date = formData?.stage === "VISIT" ? "Visit date is required" : "Date is required";
+        newErrors.follow_up_date = formData?.stage === "VISIT"
+          ? (isBstRole(userInfo?.role_id) ? "Activation date is required" : "Visit date is required")
+          : "Date is required";
       } else if (formData?.stage === "VISIT" && moment(formData.follow_up_date).isBefore(moment(), "day")) {
-        newErrors.follow_up_date = "Visit date must be today or a future date";
+        newErrors.follow_up_date = isBstRole(userInfo?.role_id)
+          ? "Activation date must be today or a future date"
+          : "Visit date must be today or a future date";
       }
     }
     if (formData?.stage === "VISIT") {
@@ -1240,7 +1244,11 @@ const CPRegisterLeadsTable = ({
             </Form.Group>
             {
               (formData.stage == "CALL" || formData.stage == "FOLLOW UP" || formData.stage == "VISIT" || formData.stage == "CONTACTED") && <Form.Group controlId="followUpDate">
-                <Form.Label>{formData.stage === "VISIT" ? "Visit Date*" : "Date*"}</Form.Label>
+                <Form.Label>
+                  {formData.stage === "VISIT"
+                    ? getVisitDateLabel(userInfo?.role_id, { required: true })
+                    : "Date*"}
+                </Form.Label>
                 <Form.Control
                   type="date"
                   name="follow_up_date"

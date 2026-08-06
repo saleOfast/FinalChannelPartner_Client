@@ -10,7 +10,7 @@ import Modal from "react-bootstrap/Modal";
 import { Button } from 'react-bootstrap';
 import dynamic from 'next/dynamic'
 import Papa from "papaparse";
-import { Baseurl, isRmRole } from '../../../../Utils/Constants';
+import { Baseurl, isRmRole, isBstRole } from '../../../../Utils/Constants';
 import ConfirmBox from '../../../Basics/ConfirmBox';
 import { useRouter } from 'next/router';
 import Select from 'react-select';
@@ -37,6 +37,7 @@ const ActivePartnersScreen = () => {
     const [show, setShow] = useState(false);
     const [showAssignTo, setShowAssignTo] = useState("");
     const [oldAssignTo, setoldAssignTo] = useState("");
+    const [oldAssignToRm, setoldAssignToRm] = useState("");
     const [showDateFilter, setShowDateFilter] = useState(false);
     const [excelData, setexcelData] = useState([]);
     const [errorToast, setErrorToast] = useState(false);
@@ -311,6 +312,12 @@ const ActivePartnersScreen = () => {
 
     const channelPartnerFilter = hasCookie("Channel_PartnerFilter") ? JSON.parse(getCookie("Channel_PartnerFilter")) : null;
 
+    const getSelectedAssignTo = () => {
+        if (oldAssignTo !== "" && oldAssignTo != null) return oldAssignTo;
+        if (oldAssignToRm !== "" && oldAssignToRm != null) return oldAssignToRm;
+        return null;
+    };
+
     const updateUserhandler = async () => {
         if (!hasCookie("token")) return;
         const token = getCookie("token");
@@ -324,7 +331,8 @@ const ActivePartnersScreen = () => {
             },
         };
 
-        let payload = oldAssignTo == null ?
+        const assignTo = getSelectedAssignTo();
+        let payload = assignTo == null ?
             {
                 db_name: db_name,
                 user_code: showAssignTo,
@@ -333,7 +341,7 @@ const ActivePartnersScreen = () => {
             {
                 db_name: db_name,
                 user_code: showAssignTo,
-                report_to: oldAssignTo,
+                report_to: assignTo,
                 isAssigned: true
             }
 
@@ -342,6 +350,7 @@ const ActivePartnersScreen = () => {
             if (response.status === 200 || response.status === 201) {
                 toast.success(response?.data?.message, { autoClose: 2500 });
                 setoldAssignTo('')
+                setoldAssignToRm('')
                 setShowAssignTo('')
                 toast.success(response?.message, { autoClose: 2500 })
                 if (channelPartnerFilter) {
@@ -367,51 +376,62 @@ const ActivePartnersScreen = () => {
         }
     };
 
+    const mapUserOption = (data) => ({
+        value: data?.user_id,
+        label: (
+            <>
+                {data?.user ?? ""}{" "}
+                {data?.user_status ? (
+                    <span className="status_box  text-center">
+                        <span className="active status_btn">active</span>
+                    </span>
+                ) : (
+                    <span className="status_box  text-center">
+                        <span className="inactive status_btn">inactive</span>
+                    </span>
+                )}
+            </>
+        ),
+    });
+
+    const getBstUserOptions = () => [
+        { value: userInfo?.user_id, label: "N.A" },
+        ...(usersList?.filter(user => isBstRole(user.role_id))?.map(mapUserOption) || []),
+    ];
+
+    const getRmUserOptions = () => [
+        { value: userInfo?.user_id, label: "N.A" },
+        ...(usersList?.filter(user => isRmRole(user.role_id))?.map(mapUserOption) || []),
+    ];
 
     const userListFilterBasisOfRole = (selectedOption, usersList) => {
-        if (selectedOption === "Channel Partner") {
-            return [{ value: userInfo?.user_id, label: "N.A" }, ...usersList
-                ?.filter(user => user.role_id === 2 || user.role_id === 3 || isRmRole(user.role_id))
-                ?.map(data => ({
-                    value: data?.user_id,
-                    label: (
-                        <>
-                            {data?.user ?? ""}{" "}
-                            {data?.user_status ? (
-                                <span className="status_box  text-center">
-                                    <span className="active status_btn">active</span>
-                                </span>
-                            ) : (
-                                <span className="status_box  text-center">
-                                    <span className="inactive status_btn">inactive</span>
-                                </span>
-                            )}
-                        </>
-                    ),
-                }))];
-        }
         if (selectedOption === "BST") {
             return [{ value: userInfo?.user_id, label: "N.A" }, ...usersList
                 ?.filter(user => user.role_id === 3)
-                ?.map(data => ({
-                    value: data?.user_id,
-                    label: (
-                        <>
-                            {data?.user ?? ""}{" "}
-                            {data?.user_status ? (
-                                <span className="status_box  text-center">
-                                    <span className="active status_btn">active</span>
-                                </span>
-                            ) : (
-                                <span className="status_box  text-center">
-                                    <span className="inactive status_btn">inactive</span>
-                                </span>
-                            )}
-                        </>
-                    ),
-                }))];
+                ?.map(mapUserOption)];
         }
         return [];
+    };
+
+    const getSelectValue = (assignId) => {
+        if (assignId === "" || assignId == null) return null;
+        if (assignId === userInfo?.user_id) {
+            return { value: userInfo?.user_id, label: "N.A" };
+        }
+        const user = usersList?.find(u => u.user_id === assignId);
+        return user ? mapUserOption(user) : null;
+    };
+
+    const userSearchFilterOption = (option, inputValue) => {
+        if (!inputValue) return true;
+        const user = usersList?.find(u => u.user_id === option.value);
+        if (!user) return option.label?.toString()?.toLowerCase()?.includes(inputValue.toLowerCase());
+        const searchTerm = inputValue.toLowerCase();
+        return (
+            user.user?.toLowerCase().includes(searchTerm) ||
+            user.email?.toLowerCase().includes(searchTerm) ||
+            String(user.contact_number || "").includes(searchTerm)
+        );
     };
 
 
@@ -530,6 +550,8 @@ const ActivePartnersScreen = () => {
                                 setShowAssignTo={setShowAssignTo}
                                 setoldAssignTo={setoldAssignTo}
                                 oldAssignTo={oldAssignTo}
+                                setoldAssignToRm={setoldAssignToRm}
+                                oldAssignToRm={oldAssignToRm}
                                 setShowDateFilter={setShowDateFilter}
                                 usersList={usersList}
                                 getDataList={getDataList}
@@ -577,73 +599,110 @@ const ActivePartnersScreen = () => {
                 </Modal.Footer>
             </Modal>
 
-            <Modal className="commonModal" show={!showAssignTo ? false : true} onHide={() => setShowAssignTo("")} style={{}}>
+            <Modal className="commonModal" show={!showAssignTo ? false : true} onHide={() => { setShowAssignTo(""); setoldAssignTo(""); setoldAssignToRm(""); }} style={{}}>
                 <Modal.Header closeButton>
                     <Modal.Title>  Assign To </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="add_user_form">
                         <div className="row">
-                            <div className="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <div className="input_box">
-                                    <label className="form-label">Assign To</label>
-                                    <Select
-                                        id="select"
-                                        defaultValue={""}
-                                        isSearchable={true}
-                                        isClearable={true}
-                                        placeholder="Search and select user..."
-                                        noOptionsMessage={() => "No users found"}
-                                        filterOption={(option, inputValue) => {
-                                            if (!inputValue) return true;
-                                            const user = usersList?.find(u => u.user_id === option.value);
-                                            if (!user) return false;
-                                            const searchTerm = inputValue.toLowerCase();
-                                            return (
-                                                user.user?.toLowerCase().includes(searchTerm) ||
-                                                user.email?.toLowerCase().includes(searchTerm) ||
-                                                String(user.contact_number || "").includes(searchTerm)
-                                            );
-                                        }}
-                                        // options={[{ value: null, label: "N.A" },...usersList?.filter(user => (user.role_id === 2||user.role_id === 3)).map((data) => {
-                                        //     return {
-                                        //         value: data?.user_id,
-                                        //         label: data?.user,
-                                        //     };
-                                        // })]}
-                                        value={usersList?.map((data, index) => {
-                                            if (oldAssignTo === data.user_id) {
-                                                return {
-                                                    value: data?.user_id,
-                                                    label: data?.user,
-                                                };
-                                            }
-                                        })}
-                                        options={userListFilterBasisOfRole(selectedOption, usersList)}
-                                        onChange={(e) => {
-                                            setoldAssignTo(e?.value || "")
-
-                                        }}
-                                        styles={{
-                                            control: (base) => ({
-                                                ...base,
-                                                minHeight: '38px',
-                                            }),
-                                            menu: (base) => ({
-                                                ...base,
-                                                zIndex: 9999,
-                                            }),
-                                        }}
-                                    />
-
-
+                            {selectedOption === "Channel Partner" ? (
+                                <>
+                                    <div className="col-xl-12 col-md-12 col-sm-12 col-12">
+                                        <div className="input_box">
+                                            <label className="form-label">Assign To (BST)</label>
+                                            <Select
+                                                id="select-bst"
+                                                isSearchable={true}
+                                                isClearable={true}
+                                                placeholder="Search and select BST user..."
+                                                noOptionsMessage={() => "No BST users found"}
+                                                filterOption={userSearchFilterOption}
+                                                value={getSelectValue(oldAssignTo)}
+                                                options={getBstUserOptions()}
+                                                onChange={(e) => {
+                                                    setoldAssignTo(e?.value || "")
+                                                    if (e?.value) setoldAssignToRm("")
+                                                }}
+                                                styles={{
+                                                    control: (base) => ({
+                                                        ...base,
+                                                        minHeight: '38px',
+                                                    }),
+                                                    menu: (base) => ({
+                                                        ...base,
+                                                        zIndex: 9999,
+                                                    }),
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-12 col-md-12 col-sm-12 col-12 mt-3">
+                                        <div className="input_box">
+                                            <label className="form-label">Assign To (RM)</label>
+                                            <Select
+                                                id="select-rm"
+                                                isSearchable={true}
+                                                isClearable={true}
+                                                placeholder="Search and select RM user..."
+                                                noOptionsMessage={() => "No RM users found"}
+                                                filterOption={userSearchFilterOption}
+                                                value={getSelectValue(oldAssignToRm)}
+                                                options={getRmUserOptions()}
+                                                onChange={(e) => {
+                                                    setoldAssignToRm(e?.value || "")
+                                                    if (e?.value) setoldAssignTo("")
+                                                }}
+                                                styles={{
+                                                    control: (base) => ({
+                                                        ...base,
+                                                        minHeight: '38px',
+                                                    }),
+                                                    menu: (base) => ({
+                                                        ...base,
+                                                        zIndex: 9999,
+                                                    }),
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="col-xl-12 col-md-12 col-sm-12 col-12">
+                                    <div className="input_box">
+                                        <label className="form-label">Assign To</label>
+                                        <Select
+                                            id="select"
+                                            defaultValue={""}
+                                            isSearchable={true}
+                                            isClearable={true}
+                                            placeholder="Search and select user..."
+                                            noOptionsMessage={() => "No users found"}
+                                            filterOption={userSearchFilterOption}
+                                            value={getSelectValue(oldAssignTo)}
+                                            options={userListFilterBasisOfRole(selectedOption, usersList)}
+                                            onChange={(e) => {
+                                                setoldAssignTo(e?.value || "")
+                                            }}
+                                            styles={{
+                                                control: (base) => ({
+                                                    ...base,
+                                                    minHeight: '38px',
+                                                }),
+                                                menu: (base) => ({
+                                                    ...base,
+                                                    zIndex: 9999,
+                                                }),
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button className=" btn btn-danger rounded-5" onClick={() => setShowAssignTo("")}>Cancel</button>
+                    <button className=" btn btn-danger rounded-5" onClick={() => { setShowAssignTo(""); setoldAssignTo(""); setoldAssignToRm(""); }}>Cancel</button>
                     <div style={{ background: clientBtnColor }} className='btn rounded-5 text-white' onClick={updateUserhandler} >
                         SUBMIT
                     </div>

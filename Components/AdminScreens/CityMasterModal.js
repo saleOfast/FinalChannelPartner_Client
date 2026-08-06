@@ -236,8 +236,9 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
         );
 
         try {
-            await axios.put(
-                `${Baseurl}/db/admin/city/toggle-active`,
+            // Enable / disable via PATCH /db/area/city
+            await axios.patch(
+                `${Baseurl}/db/area/city`,
                 { city_id: cityId, is_active: newAvailability },
                 getHeader()
             );
@@ -254,6 +255,7 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
         }
     };
 
+    // Enable / Disable All (or visible) cities — single PATCH call (no per-city loop)
     const bulkUpdateCities = async (cities, isActive) => {
         if (!cities.length) {
             toast.info(
@@ -264,30 +266,47 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
             return;
         }
 
+        if (!hasCookie('token') || !selectedStateId) return;
+
+        const idsToUpdate = cities.map(getCityId);
+        const idSet = new Set(idsToUpdate);
+
+        setCityList((prev) =>
+            prev.map((item) =>
+                idSet.has(getCityId(item))
+                    ? { ...item, is_available: isActive, is_active: isActive }
+                    : item
+            )
+        );
+
         setBulkToggling(true);
-        let successCount = 0;
-        let failCount = 0;
-
-        for (const city of cities) {
-            try {
-                await toggleCityAvailability(getCityId(city), isActive);
-                successCount += 1;
-            } catch {
-                failCount += 1;
-            }
-        }
-
-        setBulkToggling(false);
-
-        if (successCount > 0) {
+        try {
+            await axios.patch(
+                `${Baseurl}/db/area/city`,
+                {
+                    state_id: Number(selectedStateId),
+                    city_id: idsToUpdate,
+                    is_active: isActive,
+                },
+                getHeader()
+            );
             toast.success(
-                `${successCount} cit${successCount === 1 ? 'y' : 'ies'} ${isActive ? 'enabled' : 'disabled'} successfully`
+                `Cit${cities.length === 1 ? 'y' : 'ies'} ${isActive ? 'enabled' : 'disabled'} successfully`
             );
-        }
-        if (failCount > 0) {
+        } catch (error) {
+            setCityList((prev) =>
+                prev.map((item) =>
+                    idSet.has(getCityId(item))
+                        ? { ...item, is_available: !isActive, is_active: !isActive }
+                        : item
+                )
+            );
             toast.error(
-                `Failed to ${isActive ? 'enable' : 'disable'} ${failCount} cit${failCount === 1 ? 'y' : 'ies'}`
+                error?.response?.data?.message ||
+                    `Failed to ${isActive ? 'enable' : 'disable'} cities`
             );
+        } finally {
+            setBulkToggling(false);
         }
     };
 
@@ -306,8 +325,7 @@ const CityMasterModal = ({ open, onClose, stateList }) => {
 
     const handleToggleAllCities = async () => {
         const shouldEnable = !allCitiesEnabled;
-        const citiesToUpdate = cityList.filter((city) => city.is_available !== shouldEnable);
-        await bulkUpdateCities(citiesToUpdate, shouldEnable);
+        await bulkUpdateCities(cityList, shouldEnable);
     };
 
     const handleToggleVisibleCities = async () => {

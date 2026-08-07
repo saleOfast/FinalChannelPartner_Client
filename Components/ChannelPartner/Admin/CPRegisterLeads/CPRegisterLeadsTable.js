@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import Link from "next/link";
-import { Baseurl, filesUrl, isRmRole, isBstRole, getVisitDateLabel } from "../../../../Utils/Constants";
+import { Baseurl, filesUrl, isRmRole, isBstRole, getVisitDateLabel, showCpVisitScheduleColumns } from "../../../../Utils/Constants";
 import { Button, Modal, Form, Table } from "react-bootstrap";
 import { getCookie, hasCookie, setCookie } from "cookies-next";
 import { toast } from "react-toastify";
@@ -47,6 +47,7 @@ const CPRegisterLeadsTable = ({
   const isBst = currentRoleId === 2;
   // Admin (and DB users) / RM can edit contact/email. BST must not.
   const canEditContactEmail = !isBst && (userInfo?.isDB || currentRoleId === 3 || isRmRole(userInfo?.role_id));
+  const showScheduleTimeField = showCpVisitScheduleColumns(userInfo);
   const [formData, setFormData] = useState({
     cpl_id: '',
     first_name: '',
@@ -57,6 +58,8 @@ const CPRegisterLeadsTable = ({
     createdAt: '',
     remarks: "",
     follow_up_date: "",
+    schedule_visit_date: "",
+    schedule_visit_time: "",
     project_id: "",
     project_name: "",
     visit_type: ""
@@ -265,6 +268,22 @@ const CPRegisterLeadsTable = ({
         newFormData = { ...formData, db_name: db_name, client_url: "http://18.61.246.105", stage: "LINK SENT" }
       } else {
         newFormData = { ...formData, db_name: db_name, client_url: "http://18.61.246.105" }
+      }
+
+      // Backend expects schedule_visit_date / schedule_visit_time for VISIT
+      if (newFormData?.stage === "VISIT") {
+        const visitDate = newFormData.follow_up_date || newFormData.schedule_visit_date || "";
+        newFormData.schedule_visit_date = visitDate;
+        if (visitDate) newFormData.follow_up_date = visitDate;
+        if (showScheduleTimeField) {
+          const timeValue = newFormData.schedule_visit_time || "";
+          newFormData.schedule_visit_time = timeValue.length === 5 ? `${timeValue}:00` : timeValue;
+        } else {
+          delete newFormData.schedule_visit_time;
+        }
+      } else {
+        delete newFormData.schedule_visit_date;
+        delete newFormData.schedule_visit_time;
       }
       // const newFormData={...formData,db_name:db_name,}
       try {
@@ -844,6 +863,10 @@ const CPRegisterLeadsTable = ({
                         project_id: newData?.project_id || newData?.sales_project_id || "",
                         project_name: newData?.project_name || newData?.sales_project_name || "",
                         visit_type: newData?.visit_type || "",
+                        schedule_visit_date: newData?.schedule_visit_date || newData?.follow_up_date || "",
+                        schedule_visit_time: newData?.schedule_visit_time
+                          ? String(newData.schedule_visit_time).slice(0, 5)
+                          : "",
                       })
                       setErrors({})
                       setShowModal(true)
@@ -955,17 +978,24 @@ const CPRegisterLeadsTable = ({
     if (formData?.stage == "CALL" || formData?.stage == "FOLLOW UP" || formData?.stage == "VISIT") {
       if (!formData.follow_up_date) {
         newErrors.follow_up_date = formData?.stage === "VISIT"
-          ? (isBstRole(userInfo?.role_id) ? "Activation date is required" : "Visit date is required")
+          ? (showScheduleTimeField
+              ? "Scheduled date is required"
+              : (isBstRole(userInfo?.role_id) ? "Activation date is required" : "Visit date is required"))
           : "Date is required";
       } else if (formData?.stage === "VISIT" && moment(formData.follow_up_date).isBefore(moment(), "day")) {
-        newErrors.follow_up_date = isBstRole(userInfo?.role_id)
-          ? "Activation date must be today or a future date"
-          : "Visit date must be today or a future date";
+        newErrors.follow_up_date = showScheduleTimeField
+          ? "Scheduled date must be today or a future date"
+          : (isBstRole(userInfo?.role_id)
+            ? "Activation date must be today or a future date"
+            : "Visit date must be today or a future date");
       }
     }
     if (formData?.stage === "VISIT") {
       if (!formData.project_id) newErrors.project_id = "Project is required";
       if (!formData.visit_type) newErrors.visit_type = "Visit Type is required";
+      if (showScheduleTimeField && !formData.schedule_visit_time) {
+        newErrors.schedule_visit_time = "Scheduled time is required";
+      }
     }
     if (!formData.contact || formData.contact.toString().length !== 10) newErrors.contact = "Contact must be 10 digits";
     if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Valid email is required";
@@ -984,6 +1014,8 @@ const CPRegisterLeadsTable = ({
       updatedFormData.project_id = "";
       updatedFormData.project_name = "";
       updatedFormData.visit_type = "";
+      updatedFormData.schedule_visit_date = "";
+      updatedFormData.schedule_visit_time = "";
     }
 
     setFormData(updatedFormData);
@@ -1246,7 +1278,9 @@ const CPRegisterLeadsTable = ({
               (formData.stage == "CALL" || formData.stage == "FOLLOW UP" || formData.stage == "VISIT" || formData.stage == "CONTACTED") && <Form.Group controlId="followUpDate">
                 <Form.Label>
                   {formData.stage === "VISIT"
-                    ? getVisitDateLabel(userInfo?.role_id, { required: true })
+                    ? (showScheduleTimeField
+                        ? "Scheduled Date*"
+                        : getVisitDateLabel(userInfo?.role_id, { required: true }))
                     : "Date*"}
                 </Form.Label>
                 <Form.Control
@@ -1258,7 +1292,11 @@ const CPRegisterLeadsTable = ({
                   onKeyDown={(e) => {
                     if (e.key === "Enter") e.preventDefault();
                   }}
-                  onChange={(e) => setFormData({ ...formData, follow_up_date: e.target.value })}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    follow_up_date: e.target.value,
+                    ...(formData.stage === "VISIT" ? { schedule_visit_date: e.target.value } : {}),
+                  })}
                 />
                 {errors.follow_up_date && <Form.Text className="text-danger">{errors.follow_up_date}</Form.Text>}
               </Form.Group>
@@ -1267,6 +1305,31 @@ const CPRegisterLeadsTable = ({
             {
               formData.stage === "VISIT" && (
                 <>
+                  {showScheduleTimeField && (
+                    <Form.Group controlId="scheduleVisitTime">
+                      <Form.Label>Scheduled Time*</Form.Label>
+                      <Form.Control
+                        type="time"
+                        name="schedule_visit_time"
+                        value={formData.schedule_visit_time || ""}
+                        min={
+                          formData.follow_up_date &&
+                          moment(formData.follow_up_date).isSame(moment(), "day")
+                            ? moment().format("HH:mm")
+                            : undefined
+                        }
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          schedule_visit_time: e.target.value,
+                          schedule_visit_date: formData.follow_up_date || formData.schedule_visit_date || "",
+                        })}
+                      />
+                      {errors.schedule_visit_time && (
+                        <Form.Text className="text-danger">{errors.schedule_visit_time}</Form.Text>
+                      )}
+                    </Form.Group>
+                  )}
+
                   <Form.Group controlId="project">
                     <Form.Label>Project*</Form.Label>
                     <Form.Control

@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
-import { Baseurl, getVisitDateLabel, isBstRole, getCpVisitActivationDate, getCpVisitActivationTime } from '../../../../Utils/Constants';
+import { Baseurl, getVisitDateLabel, getCpVisitActivationDate, getCpVisitActivationTime, showCpVisitScheduleColumns } from '../../../../Utils/Constants';
 import { getCookie, hasCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
@@ -32,7 +32,7 @@ const ManageUsersTable = ({ start, end, deleteConfirm, disableConfirm, dataList,
   const [usersList, setUsersList] = useState([]);
   const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
   const visitDateLabel = getVisitDateLabel(userInfoCheck?.role_id);
-  const isBstProfile = isBstRole(userInfoCheck?.role_id);
+  const showScheduleColumns = showCpVisitScheduleColumns(userInfoCheck);
 
   async function getUsersList() {
     await fetchData("/db/users", setUsersList, errorToast, setErrorToast);
@@ -491,7 +491,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
       },
       {
         name: 'project_name',
-        label: isBstProfile ? "Project Name" : "Project",
+        label: showScheduleColumns ? "Project Name" : "Project",
         options: {
           filter: false,
           customHeadRender: (columnMeta) => (
@@ -504,7 +504,7 @@ const [value, setValue] = useState(getCurrentWeekDates());
           ),
         },
       },
-      ...(isBstProfile
+      ...(showScheduleColumns
         ? [
             {
               name: 'scheduled_date',
@@ -878,11 +878,11 @@ const [value, setValue] = useState(getCurrentWeekDates());
         email: list?.email,
         contact: list?.contact,
         project_name: list?.project_name || list?.sales_project_name || "",
-        scheduled_date: list?.visit_date || list?.follow_up_date,
-        scheduled_time: list?.visit_time || list?.follow_up_time,
+        scheduled_date: list?.schedule_visit_date || list?.visit_date || list?.follow_up_date,
+        scheduled_time: list?.schedule_visit_time || list?.visit_time || list?.follow_up_time,
         activation_date: getCpVisitActivationDate(list),
         activation_time: getCpVisitActivationTime(list),
-        follow_up_date: list?.visit_date || list?.follow_up_date,
+        follow_up_date: list?.schedule_visit_date || list?.visit_date || list?.follow_up_date,
         visit_type: list?.visit_type,
         user: list?.bst_name || list?.user,
         stage: list?.visit_status

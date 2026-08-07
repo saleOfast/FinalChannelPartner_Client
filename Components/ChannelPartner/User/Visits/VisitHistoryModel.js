@@ -1,7 +1,16 @@
 import React from 'react';
 import { Modal, Table } from 'react-bootstrap';
 
-const VisitHistoryModel = ({ show, setShow, visitHistory, isBstProfile = false }) => {
+const VisitHistoryModel = ({
+  show,
+  setShow,
+  visitHistory,
+  showScheduleActivationColumns = false,
+  // legacy alias (BST-only callers)
+  isBstProfile = false,
+}) => {
+    const showScheduleColumns = showScheduleActivationColumns || isBstProfile;
+
     function formatTime(timeString) {
         if (!timeString) return '';
         const timeParts = String(timeString).split(':');
@@ -23,19 +32,19 @@ const VisitHistoryModel = ({ show, setShow, visitHistory, isBstProfile = false }
         return `${day}/${month}/${year}`;
     }
 
-    const emptyColSpan = isBstProfile ? 7 : 4;
+    const emptyColSpan = showScheduleColumns ? 7 : 4;
 
     return (
         <Modal show={show} onHide={() => setShow(false)} size="xl" top>
             <Modal.Header closeButton>
-                <Modal.Title>{isBstProfile ? 'Visit History' : 'Revisits History'}</Modal.Title>
+                <Modal.Title>{showScheduleColumns ? 'Visit History' : 'Revisits History'}</Modal.Title>
             </Modal.Header>
             <Modal.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
                 <Table striped bordered hover responsive>
                     <thead>
                         <tr>
                             <th>SN</th>
-                            {isBstProfile ? (
+                            {showScheduleColumns ? (
                                 <>
                                     <th>Scheduled Date</th>
                                     <th>Scheduled Time</th>
@@ -57,7 +66,7 @@ const VisitHistoryModel = ({ show, setShow, visitHistory, isBstProfile = false }
                             visitHistory.map((visit, index) => (
                                 <tr key={index}>
                                     <td>{index + 1}</td>
-                                    {isBstProfile ? (
+                                    {showScheduleColumns ? (
                                         <>
                                             <td>
                                                 {formatDate(

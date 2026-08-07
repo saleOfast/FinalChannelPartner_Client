@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { Modal, Button, Form, Row, Col, Dropdown } from 'react-bootstrap';
 import dynamic from 'next/dynamic'
 import Papa from "papaparse";
-import { Baseurl, isRmRole, isBstRole } from '../../../../Utils/Constants';
+import { Baseurl, isRmRole, isBstRole, isAdminUser } from '../../../../Utils/Constants';
 import ConfirmBox from '../../../Basics/ConfirmBox';
 import { useRouter } from 'next/router';
 import Select from 'react-select';
@@ -214,10 +214,7 @@ const VisitsScreen = () => {
       const db_name = getCookie('db_name');
       // Admin & BST: visit_list=true only (no source)
       // RM: ONBOARDED_CP_VISIT | others: CP_LEAD_VISIT
-      const isAdmin =
-        userInfoCheck?.role_id == null ||
-        userInfoCheck?.isDB ||
-        Number(userInfoCheck?.role_id) === 3;
+      const isAdmin = isAdminUser(userInfoCheck);
       const isBst = isBstRole(userInfoCheck?.role_id);
       let url = `/db/channelPartnerLeads?db_name=${db_name}&visit_list=true`;
       if (isRmRole(userInfoCheck?.role_id)) {

@@ -50,6 +50,21 @@ export const isBstRole = (roleId) =>
   roleId !== "" &&
   Number(roleId) === BST_ROLE_ID;
 
+/** Admin / DB owner (same checks used on VisitsScreen) */
+export const isAdminUser = (userInfo) =>
+  userInfo?.role_id == null ||
+  !!userInfo?.isDB ||
+  Number(userInfo?.role_id) === 3;
+
+/**
+ * CP Visits UI: Scheduled Date/Time + Activation Date/Time
+ * shown for Admin, RM, and BST (same columns as BST profile).
+ */
+export const showCpVisitScheduleColumns = (userInfo) =>
+  isAdminUser(userInfo) ||
+  isRmRole(userInfo?.role_id) ||
+  isBstRole(userInfo?.role_id);
+
 /** BST profile shows "Activation Date" instead of "Visit Date" */
 export const getVisitDateLabel = (roleId, { required = false, possible = false } = {}) => {
   if (isBstRole(roleId)) {
@@ -61,10 +76,17 @@ export const getVisitDateLabel = (roleId, { required = false, possible = false }
 };
 
 export const getCpVisitScheduledDate = (item) =>
-  item?.follow_up_date || item?.visit_date || item?.createdAt || "";
+  item?.schedule_visit_date ||
+  item?.follow_up_date ||
+  item?.visit_date ||
+  item?.createdAt ||
+  "";
 
 export const getCpVisitScheduledTime = (item) =>
-  item?.follow_up_time || item?.visit_time || "";
+  item?.schedule_visit_time ||
+  item?.follow_up_time ||
+  item?.visit_time ||
+  "";
 
 export const getCpVisitActivationDate = (item) => {
   if (item?.activation_date) return item.activation_date;

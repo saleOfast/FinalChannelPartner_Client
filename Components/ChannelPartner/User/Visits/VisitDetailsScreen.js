@@ -2,7 +2,7 @@ import axios from 'axios'
 import { getCookie, hasCookie, setCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { Baseurl, getVisitDateLabel, isBstRole, mapCpVisitHistoryItem } from '../../../../Utils/Constants'
+import { Baseurl, getVisitDateLabel, mapCpVisitHistoryItem, showCpVisitScheduleColumns } from '../../../../Utils/Constants'
 import { toast } from 'react-toastify'
 import VisitHistoryModel from './VisitHistoryModel'
 import FinishVisitModal from './FinishVisitModal'
@@ -16,7 +16,7 @@ const VisitDetailsScreen = () => {
   const userInfo = hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) : null
   const visitDateLabel = getVisitDateLabel(userInfo?.role_id)
   const possibleVisitDateLabel = getVisitDateLabel(userInfo?.role_id, { possible: true })
-  const isBstProfile = isBstRole(userInfo?.role_id)
+  const showScheduleActivationColumns = showCpVisitScheduleColumns(userInfo)
   const [show, setShow] = useState(false)
   const [showFinishVisit, setShowFinishVisit] = useState(false)
   const [visitHistory, setVisitHiistory] = useState([])
@@ -155,12 +155,19 @@ const VisitDetailsScreen = () => {
 
     try {
       const { data } = await axios.get(
-        `${Baseurl}/db/channelPartnerLeads/getLeadDetails?cpl_id=${cplId}`,
+        `${Baseurl}/db/channelPartnerLeads/getVisitHistory?cpl_id=${cplId}`,
         header
       );
-      const history = Array.isArray(data?.data) ? data.data : [];
+      const history = Array.isArray(data?.data?.visit_history)
+        ? data.data.visit_history
+        : Array.isArray(data?.data)
+          ? data.data
+          : [];
       const fallbackProject =
-        visitData?.project_name || visitData?.sales_project_name || "";
+        visitData?.project_name ||
+        visitData?.sales_project_name ||
+        data?.data?.lead?.project_name ||
+        "";
       setVisitHiistory(
         history.map((item) =>
           mapCpVisitHistoryItem(item, fallbackProject)
@@ -363,12 +370,30 @@ const VisitDetailsScreen = () => {
                 <div className="row">
                   <div className="col-6 col-md-5">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-left">{visitDateLabel}</span>
+                      <span className="list-left">
+                        {showScheduleActivationColumns ? "Scheduled Date" : visitDateLabel}
+                      </span>
                     </div>
                   </div>
                   <div className="col-6 col-md-6">
                     <div className="list-group-item list-group-item-action p-0 border-0">
-                      <span className="list-right">{formatDate(visitData?.visit_date || visitData?.follow_up_date)}</span>
+                      <span className="list-right">{formatDate(visitData?.schedule_visit_date || visitData?.visit_date || visitData?.follow_up_date)}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-6 col-md-5">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-left">Scheduled Time</span>
+                    </div>
+                  </div>
+                  <div className="col-6 col-md-6">
+                    <div className="list-group-item list-group-item-action p-0 border-0">
+                      <span className="list-right">
+                        {visitData?.schedule_visit_time
+                          ? formatTime(visitData.schedule_visit_time)
+                          : "---------"}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -656,7 +681,7 @@ const VisitDetailsScreen = () => {
         show={show}
         setShow={setShow}
         visitHistory={visitHistory}
-        isBstProfile={isBstProfile}
+        showScheduleActivationColumns={isCpVisit && showScheduleActivationColumns}
     />
 
     {isCpVisit && (

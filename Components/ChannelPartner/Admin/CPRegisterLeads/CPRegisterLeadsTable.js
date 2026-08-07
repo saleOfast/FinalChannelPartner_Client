@@ -270,17 +270,22 @@ const CPRegisterLeadsTable = ({
         newFormData = { ...formData, db_name: db_name, client_url: "http://18.61.246.105" }
       }
 
-      // Backend expects schedule_visit_date / schedule_visit_time for VISIT
+      // Backend expects schedule_visit_date / schedule_visit_time for VISIT.
+      // Keep follow_up_date independent — do not send/overwrite it on schedule updates.
       if (newFormData?.stage === "VISIT") {
-        const visitDate = newFormData.follow_up_date || newFormData.schedule_visit_date || "";
+        const visitDate = String(newFormData.schedule_visit_date || "").slice(0, 10);
         newFormData.schedule_visit_date = visitDate;
-        if (visitDate) newFormData.follow_up_date = visitDate;
         if (showScheduleTimeField) {
           const timeValue = newFormData.schedule_visit_time || "";
           newFormData.schedule_visit_time = timeValue.length === 5 ? `${timeValue}:00` : timeValue;
         } else {
           delete newFormData.schedule_visit_time;
         }
+        // Prevent backend from syncing/overwriting scheduled visit from these fields
+        delete newFormData.follow_up_date;
+        delete newFormData.visit_date;
+        delete newFormData.schedule_visit_at;
+        delete newFormData.scheduled_at;
       } else {
         delete newFormData.schedule_visit_date;
         delete newFormData.schedule_visit_time;
@@ -858,12 +863,16 @@ const CPRegisterLeadsTable = ({
                     title="Edit"
                     onClick={() => {
                       const newData = dataList?.find((item) => item?.cpl_id == value)
+                      const scheduleDate = String(
+                        newData?.schedule_visit_date || ""
+                      ).slice(0, 10);
                       setFormData({
                         ...newData,
                         project_id: newData?.project_id || newData?.sales_project_id || "",
                         project_name: newData?.project_name || newData?.sales_project_name || "",
                         visit_type: newData?.visit_type || "",
-                        schedule_visit_date: newData?.schedule_visit_date || newData?.follow_up_date || "",
+                        follow_up_date: newData?.follow_up_date || "",
+                        schedule_visit_date: scheduleDate,
                         schedule_visit_time: newData?.schedule_visit_time
                           ? String(newData.schedule_visit_time).slice(0, 5)
                           : "",
@@ -976,18 +985,16 @@ const CPRegisterLeadsTable = ({
     if (!formData.first_name) newErrors.first_name = "First name is required";
     if (!formData.last_name) newErrors.last_name = "Last name is required";
     if (formData?.stage == "CALL" || formData?.stage == "FOLLOW UP" || formData?.stage == "VISIT") {
-      if (!formData.follow_up_date) {
+      const dateValue =
+        formData?.stage === "VISIT"
+          ? String(formData.schedule_visit_date || "").slice(0, 10)
+          : formData.follow_up_date;
+      if (!dateValue) {
         newErrors.follow_up_date = formData?.stage === "VISIT"
           ? (showScheduleTimeField
               ? "Scheduled date is required"
               : (isBstRole(userInfo?.role_id) ? "Activation date is required" : "Visit date is required"))
           : "Date is required";
-      } else if (formData?.stage === "VISIT" && moment(formData.follow_up_date).isBefore(moment(), "day")) {
-        newErrors.follow_up_date = showScheduleTimeField
-          ? "Scheduled date must be today or a future date"
-          : (isBstRole(userInfo?.role_id)
-            ? "Activation date must be today or a future date"
-            : "Visit date must be today or a future date");
       }
     }
     if (formData?.stage === "VISIT") {
@@ -1284,19 +1291,42 @@ const CPRegisterLeadsTable = ({
                     : "Date*"}
                 </Form.Label>
                 <Form.Control
+                  key={`${formData.cpl_id}-${formData.stage}-date`}
                   type="date"
-                  name="follow_up_date"
-                  value={formData.follow_up_date ? moment(formData.follow_up_date).format("YYYY-MM-DD") : ""}
-                  min={formData.stage === "VISIT" ? moment().format("YYYY-MM-DD") : undefined}
+                  name={formData.stage === "VISIT" ? "schedule_visit_date" : "follow_up_date"}
+                  value={
+                    formData.stage === "VISIT"
+                      ? String(formData.schedule_visit_date || "").slice(0, 10)
+                      : String(formData.follow_up_date || "").slice(0, 10)
+                  }
+                  min={
+                    formData.stage === "VISIT"
+                      ? (() => {
+                          const today = moment().format("YYYY-MM-DD");
+                          const existing = String(formData.schedule_visit_date || "").slice(0, 10);
+                          // Allow existing past schedule dates to display/edit
+                          if (existing && existing < today) return existing;
+                          return today;
+                        })()
+                      : undefined
+                  }
                   onPaste={(e) => e.preventDefault()}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") e.preventDefault();
                   }}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    follow_up_date: e.target.value,
-                    ...(formData.stage === "VISIT" ? { schedule_visit_date: e.target.value } : {}),
-                  })}
+                  onChange={(e) => {
+                    if (formData.stage === "VISIT") {
+                      setFormData({
+                        ...formData,
+                        schedule_visit_date: e.target.value,
+                      });
+                    } else {
+                      setFormData({
+                        ...formData,
+                        follow_up_date: e.target.value,
+                      });
+                    }
+                  }}
                 />
                 {errors.follow_up_date && <Form.Text className="text-danger">{errors.follow_up_date}</Form.Text>}
               </Form.Group>
@@ -1313,15 +1343,14 @@ const CPRegisterLeadsTable = ({
                         name="schedule_visit_time"
                         value={formData.schedule_visit_time || ""}
                         min={
-                          formData.follow_up_date &&
-                          moment(formData.follow_up_date).isSame(moment(), "day")
+                          formData.schedule_visit_date &&
+                          String(formData.schedule_visit_date).slice(0, 10) === moment().format("YYYY-MM-DD")
                             ? moment().format("HH:mm")
                             : undefined
                         }
                         onChange={(e) => setFormData({
                           ...formData,
                           schedule_visit_time: e.target.value,
-                          schedule_visit_date: formData.follow_up_date || formData.schedule_visit_date || "",
                         })}
                       />
                       {errors.schedule_visit_time && (

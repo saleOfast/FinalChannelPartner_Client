@@ -107,27 +107,37 @@ const [value, setValue] = useState(getCurrentWeekDates());
 
   const matchTimeSearch = (timeValue, searchQuery) => {
     if (!timeValue || !searchQuery?.trim()) return false;
-    const q = searchQuery.trim().toLowerCase();
-    const formatted = formatTime(timeValue).toLowerCase();
-    const raw = String(timeValue).toLowerCase();
+    // Normalize spaces (locale may use NBSP before AM/PM)
+    const normalize = (s) =>
+      String(s)
+        .toLowerCase()
+        .replace(/[\u00a0\u202f]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    const q = normalize(searchQuery);
+    const formatted = normalize(formatTime(timeValue));
+    const raw = normalize(timeValue);
 
-    const variants = [formatted, raw];
-    const timeParts = String(timeValue).split(':');
+    const variants = [formatted, raw, formatted.replace(/^0/, "")];
+    const timeParts = String(timeValue).split(":");
     if (timeParts.length >= 2) {
       const hours = parseInt(timeParts[0], 10);
       const minutes = parseInt(timeParts[1], 10);
       if (!isNaN(hours) && !isNaN(minutes)) {
         const h12 = hours % 12 || 12;
-        const ampm = hours >= 12 ? 'pm' : 'am';
+        const ampm = hours >= 12 ? "pm" : "am";
+        const mm = String(minutes).padStart(2, "0");
         variants.push(
-          `${h12}:${String(minutes).padStart(2, '0')}`,
-          `${h12}:${String(minutes).padStart(2, '0')} ${ampm}`,
-          `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`,
+          `${h12}:${mm}`,
+          `${h12}:${mm} ${ampm}`,
+          `${h12}:${mm}${ampm}`,
+          `${String(hours).padStart(2, "0")}:${mm}`,
+          `${String(hours).padStart(2, "0")}:${mm}:00`,
         );
       }
     }
 
-    return variants.map((v) => v.toLowerCase()).some((v) => v.includes(q));
+    return variants.map(normalize).some((v) => v.includes(q));
   };
 
   const customTableSearch = (searchQuery, currentRow, columns) => {
@@ -139,15 +149,14 @@ const [value, setValue] = useState(getCurrentWeekDates());
       if (cell == null || cell === '') continue;
 
       const colName = columns[i]?.name;
+      // Date columns only — do NOT put time fields here (they would skip matchTimeSearch)
       if (
         colName === 'assigning_date' ||
         colName === 'completed_date' ||
         colName === 'p_visit_date' ||
         colName === 'follow_up_date' ||
         colName === 'scheduled_date' ||
-        colName === 'activation_date' ||
-        colName === 'scheduled_time' ||
-        colName === 'activation_time'
+        colName === 'activation_date'
       ) {
         if (matchDateSearch(cell, searchQuery)) return true;
         continue;

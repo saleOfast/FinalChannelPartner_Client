@@ -178,23 +178,54 @@ const ActivePartnersScreen = () => {
                 };
                 const selectedRoleId = roleIdByOption[selectedOption] ?? 1;
 
-                // Prefer rolewise (works for Admin + BST assigned CPs).
-                // Do NOT send week date filter — it hides partners created outside the range.
+                // Date range filter (cookie / picker) — same as previous flow
+                const dateParams =
+                    queryObjLeads?.f_date && queryObjLeads?.t_date
+                        ? { f_date: queryObjLeads.f_date, t_date: queryObjLeads.t_date }
+                        : value?.startDate && value?.endDate
+                            ? { f_date: value.startDate, t_date: value.endDate }
+                            : undefined;
+
+                const filterByCreatedDate = (users) => {
+                    if (!dateParams?.f_date || !dateParams?.t_date || !Array.isArray(users)) {
+                        return users || [];
+                    }
+                    const start = new Date(dateParams.f_date);
+                    start.setHours(0, 0, 0, 0);
+                    const end = new Date(dateParams.t_date);
+                    end.setHours(23, 59, 59, 999);
+                    if (isNaN(start.getTime()) || isNaN(end.getTime())) return users;
+                    return users.filter((u) => {
+                        const raw = u?.createdAt || u?.created_at || u?.created_date;
+                        if (!raw) return false;
+                        const d = new Date(raw);
+                        if (isNaN(d.getTime())) return false;
+                        return d >= start && d <= end;
+                    });
+                };
+
+                // Prefer rolewise (Admin + BST assigned CPs) with date filter.
+                // Empty array from rolewise is a valid result — do NOT fall back to full /db/users list.
                 let list = [];
+                let rolewiseOk = false;
                 try {
                     const rolewiseRes = await axios.get(
                         `${Baseurl}/db/users/rolewise?role_id=${selectedRoleId}`,
-                        header
+                        { ...header, params: dateParams }
                     );
                     if (Array.isArray(rolewiseRes?.data?.data)) {
                         list = rolewiseRes.data.data;
+                        rolewiseOk = true;
                     }
                 } catch (_) {
-                    // fall through to /db/users
+                    rolewiseOk = false;
                 }
 
-                if (!list.length) {
-                    const allRes = await axios.get(`${Baseurl}/db/users`, header);
+                if (!rolewiseOk) {
+                    const allRes = await axios.get(`${Baseurl}/db/users`, {
+                        ...header,
+                        params: dateParams,
+                    });
                     const allUsers = Array.isArray(allRes?.data?.data)
                         ? allRes.data.data
                         : [];
@@ -202,6 +233,8 @@ const ActivePartnersScreen = () => {
                         (u) => Number(u?.role_id) === Number(selectedRoleId)
                     );
                 }
+
+                list = filterByCreatedDate(list);
 
                 setLoader(false);
                 setDataList(list);

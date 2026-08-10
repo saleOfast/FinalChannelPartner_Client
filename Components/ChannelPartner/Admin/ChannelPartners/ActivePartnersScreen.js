@@ -150,7 +150,7 @@ const ActivePartnersScreen = () => {
                     Accept: "application/json",
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
-                    m_id: 76,
+                    pass: "pass",
                 }
             }
 
@@ -159,7 +159,10 @@ const ActivePartnersScreen = () => {
                 if (isRm) {
                     const response = await axios.get(
                         Baseurl + `/db/channelPartnerLeads?db_name=${db_name}`,
-                        { ...header, params: queryObjLeads }
+                        {
+                            headers: { ...header.headers, m_id: 76 },
+                            params: queryObjLeads,
+                        }
                     );
                     if (response?.status === 200 || response?.status === 201) {
                         setLoader(false)
@@ -168,19 +171,40 @@ const ActivePartnersScreen = () => {
                     return;
                 }
 
-                const response = selectedOption == "Channel Partner" ?
-                    await axios.get(Baseurl + `/db/users/rolewise?role_id=1`, { ...header, params: queryObjLeads })
-                    : selectedOption == "BST" ?
-                        await axios.get(Baseurl + `/db/users/rolewise?role_id=2`, { ...header, params: queryObjLeads })
-                        :
-                        await axios.get(Baseurl + `/db/users/rolewise?role_id=3`, { ...header, params: queryObjLeads })
+                const roleIdByOption = {
+                    "Channel Partner": 1,
+                    "BST": 2,
+                    "Director": 3,
+                };
+                const selectedRoleId = roleIdByOption[selectedOption] ?? 1;
 
-
-
-                if (response?.status === 200 || response?.status === 201) {
-                    setLoader(false)
-                    setDataList(response?.data?.data);
+                // Prefer rolewise (works for Admin + BST assigned CPs).
+                // Do NOT send week date filter — it hides partners created outside the range.
+                let list = [];
+                try {
+                    const rolewiseRes = await axios.get(
+                        `${Baseurl}/db/users/rolewise?role_id=${selectedRoleId}`,
+                        header
+                    );
+                    if (Array.isArray(rolewiseRes?.data?.data)) {
+                        list = rolewiseRes.data.data;
+                    }
+                } catch (_) {
+                    // fall through to /db/users
                 }
+
+                if (!list.length) {
+                    const allRes = await axios.get(`${Baseurl}/db/users`, header);
+                    const allUsers = Array.isArray(allRes?.data?.data)
+                        ? allRes.data.data
+                        : [];
+                    list = allUsers.filter(
+                        (u) => Number(u?.role_id) === Number(selectedRoleId)
+                    );
+                }
+
+                setLoader(false);
+                setDataList(list);
             } catch (error) {
                 if (error?.response?.data?.message) {
                     setLoader(false)

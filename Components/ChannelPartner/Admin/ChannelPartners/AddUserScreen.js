@@ -60,6 +60,14 @@ const AddUserScreen = () => {
   const clientBtnColor=hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#405189"
   const userInfoCheck=hasCookie("userInfo")?JSON.parse(getCookie("userInfo")):null;
 
+  // Auto-tick when CP is onboarded (doc_verification=2) or already in Channel Partner list
+  const isRegisteredCp =
+    Number(userInfo?.role_id) === 1 &&
+    Boolean(updtUId) &&
+    (Number(userInfo?.doc_verification) === 2 ||
+      userInfo?.doc_verification == null ||
+      userInfo?.doc_verification === "");
+
 
 
   async function getRolesList() {
@@ -157,6 +165,7 @@ const AddUserScreen = () => {
         user_status: data1?.user_status,
         user_code: data1?.user_code,
         role_id: data1?.role_id,
+        doc_verification: data1?.doc_verification,
         country_id: data1?.country_id,
         state_id: data1?.state_id,
         city_id: data1?.city_id,
@@ -620,7 +629,31 @@ const AddUserScreen = () => {
                   </div>
                     )
                   }
-                  
+
+                  {Number(userInfo?.role_id) === 1 && (
+                    <div className="col-xl-2 col-md-2 col-sm-12 col-12 d-flex align-items-end">
+                      <div className="input_box mb-2">
+                        <div className="form-check mt-2">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="registeredCp"
+                            checked={isRegisteredCp}
+                            readOnly
+                            onClick={(e) => e.preventDefault()}
+                            style={{ cursor: "default", accentColor: "#293790" }}
+                          />
+                          <label
+                            className="form-check-label fw-semibold"
+                            htmlFor="registeredCp"
+                            style={{ color: "#212529", cursor: "default" }}
+                          >
+                            Registered CP
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                 </div>
                 <div className="row">

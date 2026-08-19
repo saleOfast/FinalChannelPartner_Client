@@ -7,7 +7,7 @@ import { setCookie } from "cookies-next";
 import { useSelector, useDispatch } from "react-redux";
 import { userMode } from "../../store/dbModeSlice";
 import { UserLogIN } from "../../store/ClientLoginSlice";
-import { Baseurl, filesUrl } from "../../Utils/Constants";
+import { Baseurl, filesUrl, ClientUrl } from "../../Utils/Constants";
 import axios from "axios";
 import { validEmail } from "../../Utils/regex";
 import {
@@ -101,7 +101,7 @@ export default function SignInScreen({ setLoggedIn }) {
             email: userForm.email.toLowerCase(),
             password: userForm.password,
             type: type,
-            client_url: baseUrl
+            client_url: ClientUrl,
           }
         }
         const res = await axios.post(Baseurl + "/db/login", payload);
@@ -179,13 +179,8 @@ export default function SignInScreen({ setLoggedIn }) {
   useEffect(() => {
     const getSignInData = async () => {
       try {
-        let baseUrl = window.location.origin;
-        // Handle local development URLs (localhost and local IP addresses)
-        if (baseUrl === "http://localhost:3000" || baseUrl.startsWith("http://10.") || baseUrl.startsWith("http://192.168.") || baseUrl.startsWith("http://172.")) {
-          baseUrl = "https://srijanbandhan.com";
-        }
         const { data } = await axios.post(Baseurl + "/db/admin/url", {
-          client_url: `${baseUrl}`,
+          client_url: ClientUrl,
         });
         setCookie("clientBtnColor", data?.data?.button_color)
         setClientData(data?.data);

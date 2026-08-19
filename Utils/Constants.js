@@ -28,6 +28,7 @@
 
 export const Baseurl = 'http://18.61.246.105/api/v1';
 export const filesUrl = 'http://18.61.246.105/images';
+export const ClientUrl = 'http://18.61.246.105';
 
 // Local
 // export const Baseurl = 'http://localhost:8050/api/v1';

@@ -15,6 +15,7 @@ const DynamicTable = dynamic(() => import("./ClosedWonOpportunitiesByOwnerTable"
 });
 import Select from "react-select";
 import { fetchData } from "../../Utils/getReq";
+import { isWonOpp, loadOpportunityReport } from "../../Utils/reportApi";
 
 const ClosedWonOpportunitiesByOwnerScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
@@ -81,53 +82,31 @@ const ClosedWonOpportunitiesByOwnerScreen = () => {
 
   const getDataList = async () => {
     setLoader(true);
-    if (hasCookie("token")) {
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
-
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          m_id: 35,
-        },
+    try {
+      const query = {
+        type: "opp_by_owner",
+        opp_owner: accountName || "",
       };
-
-      // Calculate the current financial year
-      const today = new Date();
-      const currentMonth = today.getMonth() + 1; // Months are 0-indexed in JS
-      const currentYear = today.getFullYear();
-      const financialYear =
-        currentMonth >= 4
-          ? `${currentYear}-${currentYear + 1}`
-          : `${currentYear - 1}-${currentYear}`;
-
-      // Build the query with only financial year
-      let query = {
-        type:"opp_by_owner",
-        opp_owner:accountName ? accountName: ""
-      };
-
-      const queryString = new URLSearchParams(query).toString();
-
-      try {
-        const response = await axios.get(
-          Baseurl + `/db/opportunity/opportunityReport?${queryString} `,
-          header
-        );
-        if (response?.status == 200 || response?.status == 201) {
-          setLoader(false);
-          setDataList(response.data.data);
+      const list = await loadOpportunityReport(
+        `/db/opportunity/opportunityReport?${new URLSearchParams(query)}`,
+        {
+          filter: (item) => {
+            if (!isWonOpp(item)) return false;
+            if (!accountName) return true;
+            const ownerId =
+              item?.assignedOpp?.user_id ||
+              item?.assigned_to?.user_id ||
+              item?.assign_to;
+            return String(ownerId) === String(accountName);
+          },
         }
-      } catch (error) {
-        setLoader(false);
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-      }
+      );
+      setDataList(list);
+    } catch (error) {
+      setDataList([]);
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -288,13 +267,13 @@ const ClosedWonOpportunitiesByOwnerScreen = () => {
               <label>Opp Owner</label>
                 <Select
                   defaultValue={""}
-                  options={accountsList?.map((data, index) => {
+                  options={(Array.isArray(accountsList) ? accountsList : []).map((data) => {
                     return {
                       value: data?.user_id,
                       label: data?.user,
                     };
                   })}
-                  value={accountsList?.map((data, index) => {
+                  value={(Array.isArray(accountsList) ? accountsList : []).map((data) => {
                     if (accountName === data.user_id) {
                       return {
                         value: data?.user_id,

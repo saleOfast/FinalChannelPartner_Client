@@ -296,7 +296,7 @@ const PolicyTypesScreen = () => {
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
                             <li className="breadcrumb-item"> <Link href='/crm'>Home</Link></li>
-                            <li className="breadcrumb-item"> <Link href='/ManagePolicyHeadScreen'>Policy Head</Link></li>
+                            <li className="breadcrumb-item"> <Link href='/crm/ManagePolicyHeadScreen'>Policy Head</Link></li>
                             <li className="breadcrumb-item active" aria-current="page">Policy List</li>
                         </ol>
                     </nav>

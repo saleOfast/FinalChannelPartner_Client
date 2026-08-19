@@ -158,7 +158,7 @@ const ExpenseMuiTable = ({ leaveLists, viewRemark, openConfirmBox, title }) => {
             <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={leaveLists}
+                    data={Array.isArray(leaveLists) ? leaveLists : []}
                     columns={columns}
                     options={options}
                 />

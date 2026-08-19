@@ -22,36 +22,102 @@ export default function EventScreens() {
   const [currObj, setcurrObj] = useState("");
   const[loader,setLoader]=useState(false)
 
+  const getAuthHeaders = (extra = {}) => ({
+    headers: {
+      Accept: "application/json",
+      Authorization: "Bearer ".concat(getCookie("token")),
+      db: getCookie("db_name"),
+      ...extra,
+    },
+  });
+
+  const extractList = (response) => {
+    const payload = response?.data?.data ?? response?.data;
+    if (Array.isArray(payload)) return payload;
+    if (!payload || typeof payload !== "object") return [];
+    const nested =
+      payload.rows ||
+      payload.calls ||
+      payload.events ||
+      payload.list ||
+      payload.data;
+    return Array.isArray(nested) ? nested : [];
+  };
+
+  const fetchLookupList = async (url) => {
+    try {
+      const response = await axios.get(Baseurl + url, getAuthHeaders({ pass: "pass" }));
+      return extractList(response);
+    } catch (error) {
+      return [];
+    }
+  };
+
+  const getLeadId = (item = {}) =>
+    item?.db_lead?.lead_id ||
+    item?.lead?.lead_id ||
+    item?.lead_id ||
+    null;
+
+  const getOppId = (item = {}) =>
+    item?.db_opportunity?.opp_id ||
+    item?.linkWithOpportunity?.opp_id ||
+    item?.opportunity?.opp_id ||
+    item?.link_with_opportunity ||
+    item?.opp_id ||
+    null;
+
   const getDataList = async () => {
     setLoader(true)
     if (hasCookie("token")) {
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
-
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          m_id: 237,
-
-        },
-      };
-
       try {
-        const response = await axios.get(Baseurl + `/db/leads/calls`, header);
-        if(response?.status==200|| response?.status==201){
-          setLoader(false)
-          setDataList(response?.data?.data);
+        let response;
+        try {
+          response = await axios.get(Baseurl + `/db/leads/calls`, getAuthHeaders({ m_id: 237 }));
+        } catch (error) {
+          response = await axios.get(Baseurl + `/db/leads/calls`, getAuthHeaders({ pass: "pass" }));
         }
+
+        const [leads, opportunities] = await Promise.all([
+          fetchLookupList("/db/leads"),
+          fetchLookupList("/db/opportunity"),
+        ]);
+        const leadNames = Object.fromEntries(
+          (leads || []).map((lead) => [lead?.lead_id, lead?.lead_name]).filter(([id]) => id)
+        );
+        const oppNames = Object.fromEntries(
+          (opportunities || []).map((opp) => [opp?.opp_id, opp?.opp_name]).filter(([id]) => id)
+        );
+
+        const events = extractList(response).map((item) => {
+          const leadId = getLeadId(item);
+          const oppId = getOppId(item);
+          return {
+            ...item,
+            db_lead: item?.db_lead || item?.lead || (leadId ? {
+              lead_id: leadId,
+              lead_name: item?.lead_name || leadNames[leadId] || `Lead #${leadId}`,
+            } : null),
+            db_opportunity: item?.db_opportunity || item?.linkWithOpportunity || item?.opportunity || (oppId ? {
+              opp_id: oppId,
+              opp_name: item?.opp_name || oppNames[oppId] || `Opportunity #${oppId}`,
+            } : null),
+          };
+        });
+
+        setDataList(events);
       } catch (error) {
-        setLoader(false)
+        setDataList([]);
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
           toast.error("Something went wrong!");
         }
+      } finally {
+        setLoader(false)
       }
+    } else {
+      setLoader(false)
     }
   };
   

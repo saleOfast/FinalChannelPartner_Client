@@ -13,7 +13,7 @@ const NewOpportunitiesLeaderboardTable = ({ dataList, title, openConfirmBox, loa
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.user? value.user : ''}</>
+                        <>{typeof value === "object" ? (value?.user || value?.user_name || "") : (value || "")}</>
                     )
                 }
             }
@@ -46,7 +46,7 @@ const NewOpportunitiesLeaderboardTable = ({ dataList, title, openConfirmBox, loa
                 <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={dataList}
+                    data={Array.isArray(dataList) ? dataList : []}
                     columns={columns}
                     options={options}
                 />

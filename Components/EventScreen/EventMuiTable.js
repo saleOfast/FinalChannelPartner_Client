@@ -72,16 +72,17 @@ const EventMuiTable = ({
         //     return "---";
         //   }
         // },
-        customBodyRender: (value, tableMeta, updateValue) => {
-          if (tableMeta?.rowData[9]) {
-            return (
-              <Link href={`/crm/LeadsView?id=${tableMeta?.rowData[9]}`}>                
-                <>{value}</>
-              </Link>
-            );
-          } else {
-            return "---";
-          }
+        customBodyRender: (value, tableMeta) => {
+          const row = mappedDataList?.[tableMeta?.dataIndex] || {};
+          const leadId = row?.lead_id;
+          const label = value || (leadId ? `Lead #${leadId}` : "");
+          if (!leadId && !label) return "---";
+          if (!leadId) return label;
+          return (
+            <Link href={`/crm/LeadsView?id=${leadId}`}>
+              {label}
+            </Link>
+          );
         },
       },
     },
@@ -102,16 +103,17 @@ const EventMuiTable = ({
         //     return "---"; // Do not render anything if opp_id is null
         //   }
         // },
-        customBodyRender: (value, tableMeta, updateValue) => {
-          if (tableMeta?.rowData[10]) {
-            return (
-              <Link href={`/OpportunityView?id=${tableMeta?.rowData[10]}`}>
-                <>{value}</>
-              </Link>
-            );
-          } else {
-            return "---"; // Do not render anything if opp_id is null
-          }
+        customBodyRender: (value, tableMeta) => {
+          const row = mappedDataList?.[tableMeta?.dataIndex] || {};
+          const oppId = row?.opp_id;
+          const label = value || (oppId ? `Opportunity #${oppId}` : "");
+          if (!oppId && !label) return "---";
+          if (!oppId) return label;
+          return (
+            <Link href={`/crm/OpportunityView?id=${oppId}`}>
+              {label}
+            </Link>
+          );
         },
       },
     },
@@ -218,19 +220,45 @@ const EventMuiTable = ({
     filterType:'multiselect'
   };
 
-  const mappedDataList=dataList.map(list=>({
-    call_subject:list?.call_subject,
-    event_date:list?.event_date,
-    due_date:list?.due_date,
-    contact_person_name:list?.contact_person_name,
-    db_lead:list?.db_lead?.lead_name,
-    db_opportunity:list?.opp_name,
-    cts_no:list?.cts_no,
-    db_task_status:list?.db_task_status?.task_status_name,
-    call_lead_id:list?.call_lead_id,
-    lead_id:list?.db_lead?.lead_id,
-    opp_id:list?.db_opportunity?.opp_id,
-  }))
+  const mappedDataList = (Array.isArray(dataList) ? dataList : []).map((list) => {
+    const leadId =
+      list?.db_lead?.lead_id ||
+      list?.lead?.lead_id ||
+      list?.lead_id ||
+      null;
+    const oppId =
+      list?.db_opportunity?.opp_id ||
+      list?.linkWithOpportunity?.opp_id ||
+      list?.opportunity?.opp_id ||
+      list?.link_with_opportunity ||
+      list?.opp_id ||
+      null;
+    const leadName =
+      list?.db_lead?.lead_name ||
+      list?.lead?.lead_name ||
+      list?.lead_name ||
+      null;
+    const oppName =
+      list?.db_opportunity?.opp_name ||
+      list?.linkWithOpportunity?.opp_name ||
+      list?.opportunity?.opp_name ||
+      list?.opp_name ||
+      null;
+
+    return {
+      call_subject: list?.call_subject,
+      event_date: list?.event_date,
+      due_date: list?.due_date,
+      contact_person_name: list?.contact_person_name,
+      db_lead: leadName || (leadId ? `Lead #${leadId}` : ""),
+      db_opportunity: oppName || (oppId ? `Opportunity #${oppId}` : ""),
+      cts_no: list?.cts_no,
+      db_task_status: list?.db_task_status?.task_status_name,
+      call_lead_id: list?.call_lead_id,
+      lead_id: leadId,
+      opp_id: oppId,
+    };
+  });
 
   return (
     <>

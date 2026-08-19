@@ -38,6 +38,7 @@ const OpportunityScreen = () => {
                     Authorization: "Bearer ".concat(token),
                     db: db_name,
                     m_id:35,
+                    pass: "pass",
                 },
             };
 
@@ -45,7 +46,8 @@ const OpportunityScreen = () => {
                 const response = await axios.get(Baseurl + `/db/opportunity`, header);
                 if(response?.status==200|| response?.status==201){
                     setLoader(false)
-                    setDataList(response.data.data);
+                    const payload = response.data.data;
+                    setDataList(Array.isArray(payload) ? payload : (payload?.rows || payload?.opportunityData || payload?.opportunities || []));
                 }
             } catch (error) {
                 setLoader(false)

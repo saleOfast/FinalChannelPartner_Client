@@ -101,10 +101,21 @@ const LeaveHeadScreen = () => {
             }
 
             try {
-                const response = await axios.get(Baseurl + `/db/leavehead`, header);
+                let response;
+                try {
+                    response = await axios.get(Baseurl + `/db/leavehead`, header);
+                } catch (error) {
+                    response = await axios.get(Baseurl + `/db/leavehead`, {
+                        headers: { ...header.headers, pass: "pass" }
+                    });
+                }
                 if(response?.status==200 || response?.status==201 ){
                     setLoader(false)
-                    setDataList(response?.data?.data);
+                    const payload = response?.data?.data ?? response?.data;
+                    const list = Array.isArray(payload)
+                        ? payload
+                        : (payload?.rows || payload?.list || payload?.data || []);
+                    setDataList(Array.isArray(list) ? list : []);
                 }
             } catch (error) {
                 setLoader(false)

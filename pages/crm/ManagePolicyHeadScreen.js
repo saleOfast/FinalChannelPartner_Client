@@ -1,9 +1,9 @@
-import PolicyHeadScreen from '../Components/PolicyHead/PolicyHeadScreen'
+import PolicyHeadScreen from '../../Components/PolicyHead/PolicyHeadScreen'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setCookie } from 'cookies-next'
-import withUser from '../HOC/WithUserhoc'
-import { setIsActive } from '../store/isActiveSidebarSlice'
+import withUser from '../../HOC/WithUserhoc'
+import { setIsActive } from '../../store/isActiveSidebarSlice'
 
 export default withUser(function ManagePolicyHeadScreen() {
   const dispatch = useDispatch()

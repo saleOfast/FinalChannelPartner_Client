@@ -13,7 +13,7 @@ const AvgDealSizeTable = ({ dataList, title, openConfirmBox, loader }) => {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.user? value.user : ''}</>
+                        <>{typeof value === "object" ? (value?.user || value?.user_name || "") : (value || "")}</>
                     )
                 }
             }
@@ -25,7 +25,7 @@ const AvgDealSizeTable = ({ dataList, title, openConfirmBox, loader }) => {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{Number(value).toFixed(2)}</>
+                        <>{Number(value || 0).toFixed(2)}</>
                     )
                 }
             }
@@ -52,7 +52,7 @@ const AvgDealSizeTable = ({ dataList, title, openConfirmBox, loader }) => {
                 <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={dataList}
+                    data={Array.isArray(dataList) ? dataList : []}
                     columns={columns}
                     options={options}
                 />

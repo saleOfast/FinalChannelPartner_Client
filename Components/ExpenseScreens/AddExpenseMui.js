@@ -148,7 +148,7 @@ const AddExpenseMui = ({ policyAppList, viewRemark, title , isTravel  }) => {
             <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={policyAppList}
+                    data={Array.isArray(policyAppList) ? policyAppList : []}
                     columns={columns}
                     options={options}
                 />

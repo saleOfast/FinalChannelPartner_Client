@@ -30,7 +30,7 @@ const AddQuotationScreen = () => {
   const [quatStatusList, setQuatStatusList] = useState([])
   const [countrylist, setcountrylist] = useState([]);
   const [shipStates, setShipStates] = useState([]);
-  const [singleAccount, setSingleAccount] = useState([]);
+  const [singleAccount, setSingleAccount] = useState({});
   const [billStates, setBillStates] = useState([])
   const [billingCities, setBillingCities] = useState([]);
   const [shipCities, setShipCities] = useState([])
@@ -65,15 +65,20 @@ const AddQuotationScreen = () => {
   })
   const [relatedOpportunityId, setRelatedOpportunityId] = useState("");
   const [relatedAccountId, setRelatedAccountId] = useState("");
-  const [taxPerSum, setTaxPerSum] = useState()
+  const [taxPerSum, setTaxPerSum] = useState(0)
   useEffect(() => {
-
-    const taxSum = taxListView?.reduce((sum, tax) => {
-      const taxAmount = (userInfo?.sub_total * tax.tax_percentage) / 100
+    const subTotal = Number(userInfo?.sub_total) || 0;
+    const taxSum = (taxListView || []).reduce((sum, tax) => {
+      const taxAmount = (subTotal * (Number(tax.tax_percentage) || 0)) / 100
       return sum + taxAmount
     }, 0)
     setTaxPerSum(taxSum)
-  }, [userInfo?.sub_total])
+    setUserInfo((prev) => {
+      const grandTotal = subTotal + taxSum
+      if (prev.grand_total === grandTotal && prev.sub_total === subTotal) return prev
+      return { ...prev, grand_total: grandTotal }
+    })
+  }, [userInfo?.sub_total, taxListView])
 
   const DateNow = moment(new Date().toISOString()).format("YYYY-MM-DD")
 
@@ -245,22 +250,29 @@ const AddQuotationScreen = () => {
 
       try {
         const response = await axios.get(Baseurl + `/db/opportunity?o_id=${opp_id}`, header);
-        setSingleAccount(response.data.data.accName
-        )
-        setUserInfo({
-          ...userInfo,
-          bill_cont: response.data.data.accName.bill_cont,
-          bill_state: response.data.data.accName.bill_state,
-          bill_city: response.data.data.accName.bill_city,
-          bill_address: response.data.data.accName.bill_address,
-          bill_pincode: response.data.data.accName.bill_pincode,
-          ship_cont: response.data.data.accName.ship_cont,
-          ship_state: response.data.data.accName.ship_state,
-          ship_city: response.data.data.accName.ship_city,
-          ship_address: response.data.data.accName.ship_address,
-          ship_pincode: response.data.data.accName.ship_pincode,
-
-        })
+        const oppData = response.data.data;
+        const accId = oppData?.accName?.acc_id || oppData?.account_name;
+        let accountData = oppData?.accName || {};
+        if (!accountData?.acc_name && accId) {
+          const fromList = accountList?.find((acc) => String(acc?.acc_id) === String(accId));
+          if (fromList) {
+            accountData = { ...fromList, ...accountData };
+          }
+        }
+        setSingleAccount(accountData)
+        setUserInfo((prev) => ({
+          ...prev,
+          bill_cont: accountData?.bill_cont ?? prev.bill_cont,
+          bill_state: accountData?.bill_state ?? prev.bill_state,
+          bill_city: accountData?.bill_city ?? prev.bill_city,
+          bill_address: accountData?.bill_address ?? prev.bill_address,
+          bill_pincode: accountData?.bill_pincode ?? prev.bill_pincode,
+          ship_cont: accountData?.ship_cont ?? prev.ship_cont,
+          ship_state: accountData?.ship_state ?? prev.ship_state,
+          ship_city: accountData?.ship_city ?? prev.ship_city,
+          ship_address: accountData?.ship_address ?? prev.ship_address,
+          ship_pincode: accountData?.ship_pincode ?? prev.ship_pincode,
+        }))
         setErrorData({ ...errorData, bill_cont: '', bill_state: '', bill_city: '', bill_address: '', bill_pincode: '', ship_cont: '', ship_state: '', ship_city: '', ship_address: '', ship_pincode: '', })
 
       } catch (error) {
@@ -448,16 +460,14 @@ const AddQuotationScreen = () => {
       newFormValues[index][e.target.name] = e.target.value;
     }
 
-    if (v == 2) {
-      const totalAmt = e.target.value * formValues[index].price - ((e.target.value * formValues[index].price * formValues[index].product_discount) / 100);
-      newFormValues[index].product_amount = totalAmt;
-      addAmountToTaxData(taxData, formValues)
-    }
+    const qty = Number(newFormValues[index].qty) || 0;
+    const price = Number(newFormValues[index].price) || 0;
+    const discount = Number(newFormValues[index].product_discount) || 0;
 
-    if (v == 4) {
-      const totalAmt = formValues[index].qty * formValues[index].price - ((formValues[index].qty * formValues[index].price * e.target.value) / 100);
+    if (v == 2 || v == 3 || v == 4) {
+      const totalAmt = qty * price - ((qty * price * discount) / 100);
       newFormValues[index].product_amount = totalAmt;
-      addAmountToTaxData(taxData, formValues)
+      addAmountToTaxData(taxData, newFormValues)
     }
 
     setFormValues(newFormValues);
@@ -495,24 +505,33 @@ const AddQuotationScreen = () => {
   function sumPrices(array) {
     let sum = 0;
     for (let i = 0; i < array.length; i++) {
-      sum += array[i].product_amount;
+      sum += Number(array[i].product_amount) || 0;
     }
     return sum;
   }
 
   function grndTtlFunc(array) {
     let sum = 0;
-    for (let i = 0; i < array.length; i++) {
-      sum += array[i].total_amt;
+    for (let i = 0; i < (array || []).length; i++) {
+      sum += Number(array[i].total_amt) || 0;
     }
     return sum;
   }
 
   async function getSingleProduct(e, index) {
     setTaxData([])
-    let newFormValues = [...formValues];
-    if (userInfo?.bill_state == '') {
+    const selectedProductPrice = productList?.find((item) => String(item.p_id) === String(e.target.value))?.p_price;
+    if (!userInfo?.bill_state) {
       toast.error("Please Select Billing Address First")
+      if (selectedProductPrice != null) {
+        setFormValues((prev) => {
+          const updated = [...prev];
+          if (updated[index]) {
+            updated[index] = { ...updated[index], price: selectedProductPrice };
+          }
+          return updated;
+        });
+      }
     } else {
       if (hasCookie("token") && e.target.value !== '') {
         let token = getCookie("token");
@@ -533,7 +552,14 @@ const AddQuotationScreen = () => {
             toast.warning("Pls Map The Product With Taxes",{autoClose:2500})
           }
           const taxResp = response.data.data;
-          newFormValues[index].price = taxResp[0]?.db_product?.p_price;
+          const productPrice = taxResp[0]?.db_product?.p_price ?? selectedProductPrice ?? 0;
+          setFormValues((prev) => {
+            const updated = [...prev];
+            if (updated[index]) {
+              updated[index] = { ...updated[index], price: productPrice };
+            }
+            return updated;
+          });
           const taxArr = taxResp?.map((data) => { return { tax_name: data?.db_tax?.tax_name, tax_id: data?.db_tax?.tax_id, tax_percentage: data?.db_tax?.tax_percentage, p_id: data?.p_id } })
           let mergedArr = [...taxData, ...taxArr].filter((item, index, self) =>
             index === self.findIndex((t) => (
@@ -612,11 +638,29 @@ const AddQuotationScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, id])
 
-  useEffect(() => {
+  const getRelatedAccountName = () => {
+    if (singleAccount?.acc_name) return singleAccount.acc_name;
 
-    if (userInfo.opp_id !== null && !editMode) {
-      // call the api with this acoount name 
+    const selectedOpp = Array.isArray(opprtunityList)
+      ? opprtunityList.find((opp) => String(opp?.opp_id) === String(userInfo?.opp_id))
+      : null;
+
+    if (selectedOpp?.accName?.acc_name) return selectedOpp.accName.acc_name;
+    if (typeof selectedOpp?.accName === "string") return selectedOpp.accName;
+
+    const accId = selectedOpp?.account_name || selectedOpp?.acc_id || singleAccount?.acc_id;
+    const fromAccounts = Array.isArray(accountList)
+      ? accountList.find((acc) => String(acc?.acc_id) === String(accId))
+      : null;
+
+    return fromAccounts?.acc_name || "";
+  }
+
+  useEffect(() => {
+    if (userInfo.opp_id) {
       getSingleOpportunityList(userInfo.opp_id);
+    } else {
+      setSingleAccount({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo.opp_id]);
@@ -691,9 +735,7 @@ const AddQuotationScreen = () => {
                     id="related_acc"
                     placeholder="Related Account"
                     className={'form-control'}
-                    value={opprtunityList?.find(account => {
-                      return account?.opp_id === userInfo?.opp_id
-                    })?.accName?.acc_name}
+                    value={getRelatedAccountName()}
                   />
                 </div>
               </div>
@@ -1260,12 +1302,12 @@ const AddQuotationScreen = () => {
                       <label htmlFor="price">Price *</label>
                       <input
                         type="number"
-                        disabled
                         placeholder="Enter price"
                         name="price"
                         id="price"
+                        min="0"
                         className="form-control"
-                        onChange={e => handleChange(e, index)}
+                        onChange={e => handleChange(e, index, 3)}
                         value={data?.price ? data.price : ''}
                       />
                     </div>
@@ -1328,7 +1370,7 @@ const AddQuotationScreen = () => {
                           name="product_amount"
                           id="product_amount"
                           className="form-control"
-                          value={userInfo?.sub_total ? userInfo?.sub_total : ''}
+                          value={(Number(userInfo?.sub_total) || 0).toFixed(2)}
                         />
                       </div>
                     </div>
@@ -1347,7 +1389,7 @@ const AddQuotationScreen = () => {
                             id="product_amount"
                             className="form-control"
                             // value={data?.total_amt}
-                            value={((userInfo?.sub_total * data?.tax_percentage) / 100).toFixed(2)}
+                            value={(((Number(userInfo?.sub_total) || 0) * (Number(data?.tax_percentage) || 0)) / 100).toFixed(2)}
 
                           />
                         </div>
@@ -1365,8 +1407,7 @@ const AddQuotationScreen = () => {
                           name="product_amount"
                           id="product_amount"
                           className="form-control"
-                          // value={userInfo?.grand_total ? (userInfo?.grand_total).toFixed(2) : ''}
-                          value={(userInfo?.sub_total + taxPerSum).toFixed(2)}
+                          value={((Number(userInfo?.sub_total) || 0) + (Number(taxPerSum) || 0)).toFixed(2)}
                         />
 
                       </div>

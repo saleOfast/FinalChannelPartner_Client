@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getCookie, hasCookie } from 'cookies-next';
 import { Baseurl } from './Constants';
-import { toast } from 'react-toastify';
+import { extractList } from './reportApi';
 
 export async function fetchData(url, setData, errorToast, setErrorToast, bypass = false) {
     if (hasCookie('token') || bypass) {
@@ -19,9 +19,8 @@ export async function fetchData(url, setData, errorToast, setErrorToast, bypass 
 
         try {
             const response = await axios.get(Baseurl + url, header);
-            console.log("vvv", response)
             if (typeof setData === 'function') {
-                setData(response?.data?.data);
+                setData(extractList(response));
             }
         } catch (error) {
             if (!errorToast) {

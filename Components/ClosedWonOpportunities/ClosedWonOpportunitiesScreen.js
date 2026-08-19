@@ -5,6 +5,7 @@ import { hasCookie, getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Baseurl } from "../../Utils/Constants";
+import { fetchReport, isWonOpp, loadOpportunityReport } from "../../Utils/reportApi";
 import ConfirmBox from "../Basics/ConfirmBox";
 import { useSelector } from "react-redux";
 import dynamic from "next/dynamic";
@@ -67,54 +68,20 @@ const ClosedWonOpportunities = () => {
 
   const getDataList = async () => {
     setLoader(true);
-    if (hasCookie("token")) {
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
-
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          m_id: 35,
-        },
-      };
-
-      let query = {};
-      if (financialYear)
-        {
-        query.financialYear = financialYear.slice(0,4)
-        }
-        else{
-          query.financialYear = getCurrentFinancialYear().slice(0,4)
+    try {
+      let list = await loadOpportunityReport(
+        `/db/opportunity/opportunityReport?opportunity_stg_id=3`,
+        { filter: isWonOpp, allowUnfilteredFallback: true }
+      );
+      if (!list.length) {
+        list = await fetchReport("/db/opportunity");
       }
-      if (quarter)
-         {query.quarter = quarter;}
-      else{
-        query.quarter = getCurrentQuarter()
-      }
-      if (month) query.month = month;
-      query.opportunity_stg_id = 3;
-
-      const queryString = new URLSearchParams(query).toString();
-
-      try {
-        const response = await axios.get(
-          Baseurl + `/db/opportunity/opportunityReport?${queryString} `,
-          header
-        );
-        if (response?.status == 200 || response?.status == 201) {
-          setLoader(false);
-          setDataList(response.data.data);
-        }
-      } catch (error) {
-        setLoader(false);
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-      }
+      setDataList(Array.isArray(list) ? list : []);
+    } catch (error) {
+      setDataList([]);
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      setLoader(false);
     }
   };
 

@@ -15,6 +15,7 @@ const DynamicTable = dynamic(() => import("./OpenOpportunitiesInPipelineTable"),
 });
 import Select from "react-select";
 import { fetchData } from "../../Utils/getReq";
+import { isOpenOpp, loadOpportunityReport } from "../../Utils/reportApi";
 
 const OpenOpportunitiesInPipelineScreen = () => {
   const sideView = useSelector((state) => state.sideView.value);
@@ -81,42 +82,18 @@ const OpenOpportunitiesInPipelineScreen = () => {
 
   const getDataList = async () => {
     setLoader(true);
-    if (hasCookie("token")) {
-      let token = getCookie("token");
-      let db_name = getCookie("db_name");
-
-      let header = {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer ".concat(token),
-          db: db_name,
-          m_id: 35,
-        },
-      };
-
-      let query = {
-        opportunity_stg_id: 1,
-      };
-
-      const queryString = new URLSearchParams(query).toString();
-
-      try {
-        const response = await axios.get(
-          Baseurl + `/db/opportunity/opportunityReport?${queryString} `,
-          header
-        );
-        if (response?.status == 200 || response?.status == 201) {
-          setLoader(false);
-          setDataList(response.data.data);
-        }
-      } catch (error) {
-        setLoader(false);
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
-      }
+    try {
+      const query = { opportunity_stg_id: 1 };
+      const list = await loadOpportunityReport(
+        `/db/opportunity/opportunityReport?${new URLSearchParams(query)}`,
+        { filter: isOpenOpp }
+      );
+      setDataList(list);
+    } catch (error) {
+      setDataList([]);
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      setLoader(false);
     }
   };
 

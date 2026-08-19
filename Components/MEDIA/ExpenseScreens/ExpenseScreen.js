@@ -54,29 +54,69 @@ const ExpenseScreen = () => {
 
     const handleShow = () => setShow(true);
 
-    const getLeavelist = async () => {
-        if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
+    const extractExpenseList = (response) => {
+        const payload = response?.data?.data ?? response?.data;
+        if (Array.isArray(payload)) return payload;
+        if (!payload || typeof payload !== "object") return [];
+        const nested =
+            payload.rows ||
+            payload.expenceData ||
+            payload.expenseData ||
+            payload.expences ||
+            payload.expenses ||
+            payload.list ||
+            payload.data;
+        return Array.isArray(nested) ? nested : [];
+    }
 
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    m_id: 198,
-                }
+    const getAuthHeaders = (extra = {}) => ({
+        headers: {
+            Accept: "application/json",
+            Authorization: "Bearer ".concat(getCookie("token")),
+            db: getCookie("db_name"),
+            ...extra,
+        }
+    })
+
+    const buildExpenseQuery = (fields = {}, mode) => {
+        const parts = [];
+        if (mode) parts.push(`mode=${mode}`);
+        if (fields.f_date) parts.push(`f_date=${fields.f_date}`);
+        if (fields.t_date) parts.push(`t_date=${fields.t_date}`);
+        if (fields.status) parts.push(`status=${fields.status}`);
+        if (fields.claim_type) parts.push(`claim_type=${fields.claim_type}`);
+        if (fields.u_id) parts.push(`u_id=${fields.u_id}`);
+        return parts.length ? `?${parts.join("&")}` : "";
+    }
+
+    const requestExpenses = async (query, extraHeaders) => {
+        const response = await axios.get(Baseurl + `/db/expence${query}`, getAuthHeaders(extraHeaders));
+        return extractExpenseList(response);
+    }
+
+    const getLeavelist = async (fields = {}) => {
+        if (!hasCookie("token")) return;
+        try {
+            let list = await requestExpenses(buildExpenseQuery(fields, "rpt"), { m_id: 198 });
+            if (!list.length) {
+                list = await requestExpenses(buildExpenseQuery(fields), { m_id: 76, pass: "pass" });
             }
+            if (!list.length) {
+                list = await requestExpenses(buildExpenseQuery(fields, "rpt"), { pass: "pass" });
+            }
+            setLeaveLists(list);
+        } catch (error) {
             try {
-                const response = await axios.get(Baseurl + `/db/expence?mode=rpt`, header);
-                setLeaveLists(response.data.data);
-            } catch (error) {
-                if (error?.response?.data?.message) {
-                    toast.error(error.response.data.message);
+                const list = await requestExpenses(buildExpenseQuery(fields), { pass: "pass" });
+                setLeaveLists(list);
+            } catch (fallbackError) {
+                const err = fallbackError?.response ? fallbackError : error;
+                if (err?.response?.data?.message) {
+                    toast.error(err.response.data.message);
+                } else {
+                    toast.error("Something went wrong!");
                 }
-                else {
-                    toast.error('Something went wrong!')
-                }
+                setLeaveLists([]);
             }
         }
     }
@@ -144,14 +184,15 @@ const ExpenseScreen = () => {
     }
 
     const clearFilter = () => {
-        setSearchFields({
+        const emptyFields = {
             "u_id": null,
             "f_date": null,
             "t_date": null,
             "claim_type": null,
             "status": null
-        })
-        getLeavelist();
+        }
+        setSearchFields(emptyFields)
+        getLeavelist(emptyFields);
     }
 
     async function filterSubmit() {
@@ -161,31 +202,7 @@ const ExpenseScreen = () => {
         } else if (searchFields.f_date && !searchFields.t_date) {
             toast.error('Please enter To Date')
         } else {
-            if (hasCookie('token')) {
-                let token = (getCookie('token'));
-                let db_name = (getCookie('db_name'));
-
-                let header = {
-                    headers: {
-                        Accept: "application/json",
-                        Authorization: "Bearer ".concat(token),
-                        db: db_name,
-                        m_id: 198,
-                    }
-                }
-                try {
-                    const response = await
-                        axios.get(Baseurl + `/db/expence?mode=rpt${searchFields.f_date ? `&f_date=${searchFields.f_date}` : ''}${searchFields.t_date ? `&t_date=${searchFields.t_date}` : ''}${searchFields.status ? `&status=${searchFields.status}` : ''}${searchFields.claim_type ? `&claim_type=${searchFields.claim_type}` : ''}${searchFields.u_id ? `&u_id=${searchFields.u_id}` : ''}`, header);
-                    setLeaveLists(response.data.data);
-                } catch (error) {
-                    if (error?.response?.data?.message) {
-                        toast.error(error.response.data.message);
-                    }
-                    else {
-                        toast.error('Something went wrong!')
-                    }
-                }
-            }
+            await getLeavelist(searchFields);
         }
 
     }

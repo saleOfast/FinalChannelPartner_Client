@@ -21,7 +21,7 @@ const PolicyHeadMui = ({ deleteConfirm, disableConfirm, dataList, openEdtMdl, ti
                 customBodyRender: (value, tableMeta, updateValue) => {
                     if (tableMeta.rowData[4]) {
                         return (
-                            <Link className='text-decoration-underline' href={`/PolicyTypes?id=${tableMeta.rowData[3]}`}>
+                            <Link className='text-decoration-underline' href={`/crm/PolicyTypes?id=${tableMeta.rowData[3]}`}>
                               {value}
                             </Link>
                         );

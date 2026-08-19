@@ -20,6 +20,26 @@ import { hasCookie, getCookie, setCookie, deleteCookie } from "cookies-next";
 import { Baseurl, filesUrl } from "../../Utils/Constants";
 import { store } from "../../store/store";
 
+const resolveSidebarHref = (item, dbMode) => {
+  const link = String(item?.link || "").trim();
+  const label = String(item?.allais_menu || "").toLowerCase();
+  const key = link.toLowerCase().replace(/[\s_-]/g, "");
+  const isTargetReport =
+    (label.includes("target") && (label.includes("achiev") || label.includes("achiv"))) ||
+    key.includes("targetvsachiev") ||
+    key.includes("targetvsachiv") ||
+    key.includes("targetachievement");
+  const isDailyActivity =
+    (label.includes("daily") && label.includes("activ")) ||
+    key === "dar" ||
+    key.includes("dailyactivity") ||
+    key.includes("dailyreport");
+  const prefix = dbMode !== "user" ? "" : "/crm";
+  if (isTargetReport) return `${prefix}/TargetVsAchievement`;
+  if (isDailyActivity) return `${prefix}/DailyActivity`;
+  return `${prefix}/${link}`.replace(/\/{2,}/g, "/");
+};
+
 const SideBar = ({}) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -222,10 +242,36 @@ const SideBar = ({}) => {
                 <div className="sidebar-sublist">
                   <ul className="sublists">
                     {children?.map((item) => (
-                      <Link  href={`${dbMode !== 'user' ?  `/${item.link}` : `/crm/${item.link}`} `} key={item.menu_id}>
+                      <Link href={resolveSidebarHref(item, dbMode)} key={item.menu_id}>
                         <li  onClick={sideViewFunc} className="sub-list-item"> {item.allais_menu} </li>
                       </Link>
                     ))}
+                    {String(allais_menu || "").toLowerCase().includes("report") &&
+                      !(children || []).some((item) =>
+                        String(item?.allais_menu || "").toLowerCase().includes("target")
+                      ) && (
+                      <Link href={dbMode !== "user" ? "/TargetVsAchievement" : "/crm/TargetVsAchievement"}>
+                        <li onClick={sideViewFunc} className="sub-list-item"> Target Vs Achievement </li>
+                      </Link>
+                    )}
+                    {String(allais_menu || "").toLowerCase().includes("report") &&
+                      !(children || []).some((item) =>
+                        String(item?.allais_menu || "").toLowerCase().includes("daily")
+                      ) && (
+                      <Link href={dbMode !== "user" ? "/DailyActivity" : "/crm/DailyActivity"}>
+                        <li onClick={sideViewFunc} className="sub-list-item"> Daily Activity </li>
+                      </Link>
+                    )}
+                    {(String(allais_menu || "").toLowerCase().includes("hr") || String(allais_menu || "").toLowerCase().includes("expense")) && (
+                      <>
+                        <Link href="/crm/ManagePolicyHeadScreen">
+                          <li onClick={sideViewFunc} className="sub-list-item"> Policy Head Master </li>
+                        </Link>
+                        <Link href="/crm/ManageLeaveHeadScreen">
+                          <li onClick={sideViewFunc} className="sub-list-item"> Leave Head Master </li>
+                        </Link>
+                      </>
+                    )}
                   </ul>
                 </div>
               </div>

@@ -2876,6 +2876,7 @@ select.form-control {
       line-height: 14px;
       margin-bottom: 7px;
       margin-left: 3px;
+      display: block;
     }
   }
 
@@ -2883,7 +2884,23 @@ select.form-control {
     display: flex;
     height: 100%;
     align-items: flex-end;
+    gap: 8px;
+    padding-bottom: 0;
   }
+}
+
+.expense_management {
+  .filterRow {
+    margin: 0;
+  }
+}
+
+.expense-select__control {
+  min-height: 38px !important;
+}
+
+.Add_user_screen .add_user_form .input_box label {
+  display: block;
 }
 
 .loaderStyles {

@@ -2375,11 +2375,21 @@ select.form-control::after {
   line-height: 14px;
   margin-bottom: 7px;
   margin-left: 3px;
+  display: block;
 }
 .filterRow .submitBtn {
   display: flex;
   height: 100%;
   align-items: flex-end;
+  gap: 8px;
+}
+
+.expense_management .filterRow {
+  margin: 0;
+}
+
+.expense-select__control {
+  min-height: 38px !important;
 }
 
 .loaderStyles {

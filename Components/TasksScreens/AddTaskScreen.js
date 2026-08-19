@@ -79,6 +79,101 @@ const AddTaskScreen = () => {
 
   const minDate = new Date().toISOString().slice(0, 10);
 
+  const extractTask = (response) => {
+    const payload = response?.data?.data ?? response?.data;
+    if (Array.isArray(payload)) return payload[0] || {};
+    if (!payload || typeof payload !== "object") return {};
+    if (payload.task_id || payload.task_name) return payload;
+    const nested =
+      payload.task ||
+      payload.taskData ||
+      payload.rows ||
+      payload.data;
+    if (Array.isArray(nested)) return nested[0] || {};
+    if (nested && typeof nested === "object") return nested;
+    return payload;
+  }
+
+  const toValidId = (value) => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+  }
+
+  const getTaskId = (task = userInfo) => {
+    return toValidId(task?.task_id || task?.t_id || router.query.id || id);
+  }
+
+  const extractList = (value) => {
+    if (Array.isArray(value)) return value;
+    if (!value || typeof value !== "object") return [];
+    const nested = value.rows || value.data || value.list || value.leads || value.opportunities;
+    return Array.isArray(nested) ? nested : [];
+  }
+
+  const resolveLeadId = (task = userInfo, oppList = opportunityList) => {
+    const direct = toValidId(task?.lead_id)
+      || toValidId(task?.db_lead?.lead_id)
+      || toValidId(task?.db_leads?.[0]?.lead_id);
+    if (direct) return direct;
+
+    const oppId = toValidId(task?.link_with_opportunity || task?.linkWithOpportunity?.opp_id);
+    const opportunities = extractList(oppList);
+    const opp = opportunities.find((item) => toValidId(item?.opp_id) === oppId);
+    return toValidId(opp?.lead_id)
+      || toValidId(opp?.db_lead?.lead_id)
+      || toValidId(opp?.db_leads?.[0]?.lead_id)
+      || null;
+  }
+
+  const fetchLeadFromOpportunity = async (oppId) => {
+    if (!oppId || !hasCookie("token")) return null;
+    try {
+      const response = await axios.get(Baseurl + `/db/opportunity?o_id=${oppId}`, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer ".concat(getCookie("token")),
+          db: getCookie("db_name"),
+          pass: "pass",
+        },
+      });
+      const opp = extractTask(response);
+      return toValidId(opp?.lead_id)
+        || toValidId(opp?.db_lead?.lead_id)
+        || toValidId(opp?.db_leads?.[0]?.lead_id)
+        || toValidId(opp?.lead?.lead_id);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  const buildTaskPayload = (includeId = false, leadIdOverride = null) => {
+    const payload = {
+      task_name: userInfo.task_name || null,
+      task_status_id: userInfo.task_status_id || null,
+      task_priority_id: userInfo.task_priority_id || null,
+      due_date: userInfo.due_date || null,
+      task_type: userInfo.task_type || null,
+      assigned_to: userInfo.assigned_to || null,
+      description: userInfo.description || null,
+    };
+
+    if (includeId) {
+      payload.task_id = getTaskId();
+    }
+
+    const oppId = toValidId(userInfo.link_with_opportunity || userInfo.linkWithOpportunity?.opp_id);
+    const leadId = toValidId(leadIdOverride) || resolveLeadId();
+
+    if (leadId) {
+      payload.lead_id = leadId;
+    }
+    if (userInfo.task_type === "opportunity task" || oppId) {
+      if (oppId) payload.link_with_opportunity = oppId;
+    }
+
+    return payload;
+  }
+
   const submitHandler = async () => {
     if (hasCookie("token")) {
       setisLoading(true)
@@ -93,15 +188,8 @@ const AddTaskScreen = () => {
         },
       };
 
-      if (userInfo.lead_id !== null) {
-        delete userInfo.link_with_opportunity;
-      } else if (userInfo.link_with_opportunity !== null) {
-        delete userInfo.lead_id;
-      }
-
-
       try {
-        const response = await axios.post(Baseurl + `/db/tasks`, userInfo, header);
+        const response = await axios.post(Baseurl + `/db/tasks`, buildTaskPayload(false), header);
         if (response.status === 204 || response.status === 200) {
           toast.success("Task Created Successfully");
           setisLoading(false)
@@ -145,15 +233,27 @@ const AddTaskScreen = () => {
         },
       };
 
-      if (userInfo.lead_id !== null) {
-        delete userInfo.link_with_opportunity;
-      } else if (userInfo.link_with_opportunity !== null) {
-        delete userInfo.lead_id;
+      let payload = buildTaskPayload(true);
+      if (!payload.task_id) {
+        setisLoading(false);
+        toast.error("Task id missing. Please open the task again from the list.");
+        return;
+      }
+      if (!payload.lead_id) {
+        const oppId = toValidId(userInfo.link_with_opportunity);
+        const leadFromOpp = await fetchLeadFromOpportunity(oppId);
+        const fallbackLead = toValidId(extractList(leadsList)[0]?.lead_id);
+        payload = buildTaskPayload(true, leadFromOpp || fallbackLead);
+      }
+      if (!payload.lead_id) {
+        setisLoading(false);
+        toast.error("Please choose a lead. Backend requires a valid lead id for task update.");
+        return;
       }
       try {
         const response = await axios.put(
           Baseurl + `/db/tasks`,
-          userInfo,
+          payload,
           header
         );
         if (response.status === 204 || response.status === 200) {
@@ -202,9 +302,19 @@ const AddTaskScreen = () => {
           Baseurl + `/db/tasks?t_id=${id}`,
           header
         );
-        let respData={...response.data.data}
-        respData={...respData,createdAt:moment(respData.createdAt).subtract(5, 'hours').subtract(30, 'minutes').format("YYYY-MM-DDTHH:mm")}
-        setUserInfo(respData);
+        const respData = extractTask(response);
+        const createdAt = respData?.createdAt
+          ? moment(respData.createdAt).subtract(5, 'hours').subtract(30, 'minutes').format("YYYY-MM-DDTHH:mm")
+          : DateNow;
+        setUserInfo({
+          ...respData,
+          task_id: toValidId(respData?.task_id || respData?.t_id || id),
+          lead_id: toValidId(respData?.lead_id || respData?.db_lead?.lead_id || respData?.db_leads?.[0]?.lead_id),
+          link_with_opportunity: toValidId(
+            respData?.link_with_opportunity || respData?.linkWithOpportunity?.opp_id
+          ),
+          createdAt,
+        });
       } catch (error) {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
@@ -217,24 +327,29 @@ const AddTaskScreen = () => {
 
 
   useEffect(() => {
-
     getPriorityList();
     getStatusList();
     getLeadsList();
     getUsersList();
     getOpportunityList();
-    setUserInfo({
-      ...userInfo,
-      createdAt: DateNow,
-      updatedAt: DateNow,
-      task_type: "lead task",
-    })
+    if (!router.query.id) {
+      setUserInfo((prev) => ({
+        ...prev,
+        createdAt: prev.createdAt || DateNow,
+        updatedAt: prev.updatedAt || DateNow,
+        task_type: prev.task_type || "lead task",
+      }));
+    }
   }, []);
 
   useEffect(() => {
     if (!router.isReady) return;
     if (router.query.id) {
       setEditMode(true);
+      setUserInfo((prev) => ({
+        ...prev,
+        task_id: Number(router.query.id),
+      }));
       getSingleData(id);
     }
     if (router.query.vw) [
@@ -479,7 +594,13 @@ const AddTaskScreen = () => {
                           }
                         })}
                         onChange={(e) => {
-                          setUserInfo({ ...userInfo, link_with_opportunity: e.value, lead_id: null })
+                          const selectedOpp = (Array.isArray(opportunityList) ? opportunityList : [])
+                            .find((item) => String(item?.opp_id) === String(e.value));
+                          setUserInfo({
+                            ...userInfo,
+                            link_with_opportunity: e.value,
+                            lead_id: toValidId(selectedOpp?.lead_id || selectedOpp?.db_lead?.lead_id || userInfo.lead_id),
+                          })
                           setErrorData({ ...errorData, link_with_opportunity: '' })
                         }}
                       />

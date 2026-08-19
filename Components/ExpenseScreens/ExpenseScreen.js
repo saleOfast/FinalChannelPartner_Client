@@ -54,29 +54,69 @@ const ExpenseScreen = () => {
 
     const handleShow = () => setShow(true);
 
-    const getLeavelist = async () => {
-        if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
+    const extractExpenseList = (response) => {
+        const payload = response?.data?.data ?? response?.data;
+        if (Array.isArray(payload)) return payload;
+        if (!payload || typeof payload !== "object") return [];
+        const nested =
+            payload.rows ||
+            payload.expenceData ||
+            payload.expenseData ||
+            payload.expences ||
+            payload.expenses ||
+            payload.list ||
+            payload.data;
+        return Array.isArray(nested) ? nested : [];
+    }
 
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    m_id: 198,
-                }
+    const getAuthHeaders = (extra = {}) => ({
+        headers: {
+            Accept: "application/json",
+            Authorization: "Bearer ".concat(getCookie("token")),
+            db: getCookie("db_name"),
+            ...extra,
+        }
+    })
+
+    const buildExpenseQuery = (fields = {}, mode) => {
+        const parts = [];
+        if (mode) parts.push(`mode=${mode}`);
+        if (fields.f_date) parts.push(`f_date=${fields.f_date}`);
+        if (fields.t_date) parts.push(`t_date=${fields.t_date}`);
+        if (fields.status) parts.push(`status=${fields.status}`);
+        if (fields.claim_type) parts.push(`claim_type=${fields.claim_type}`);
+        if (fields.u_id) parts.push(`u_id=${fields.u_id}`);
+        return parts.length ? `?${parts.join("&")}` : "";
+    }
+
+    const requestExpenses = async (query, extraHeaders) => {
+        const response = await axios.get(Baseurl + `/db/expence${query}`, getAuthHeaders(extraHeaders));
+        return extractExpenseList(response);
+    }
+
+    const getLeavelist = async (fields = {}) => {
+        if (!hasCookie("token")) return;
+        try {
+            let list = await requestExpenses(buildExpenseQuery(fields, "rpt"), { m_id: 198 });
+            if (!list.length) {
+                list = await requestExpenses(buildExpenseQuery(fields), { m_id: 76, pass: "pass" });
             }
+            if (!list.length) {
+                list = await requestExpenses(buildExpenseQuery(fields, "rpt"), { pass: "pass" });
+            }
+            setLeaveLists(list);
+        } catch (error) {
             try {
-                const response = await axios.get(Baseurl + `/db/expence?mode=rpt`, header);
-                setLeaveLists(response.data.data);
-            } catch (error) {
-                if (error?.response?.data?.message) {
-                    toast.error(error.response.data.message);
+                const list = await requestExpenses(buildExpenseQuery(fields), { pass: "pass" });
+                setLeaveLists(list);
+            } catch (fallbackError) {
+                const err = fallbackError?.response ? fallbackError : error;
+                if (err?.response?.data?.message) {
+                    toast.error(err.response.data.message);
+                } else {
+                    toast.error("Something went wrong!");
                 }
-                else {
-                    toast.error('Something went wrong!')
-                }
+                setLeaveLists([]);
             }
         }
     }
@@ -104,7 +144,7 @@ const ExpenseScreen = () => {
 
             try {
                 const response = await axios.get(Baseurl + `/db/users?mode=ul`, header);
-                setUsersList(response.data.data);
+                setUsersList(extractExpenseList(response));
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -144,14 +184,15 @@ const ExpenseScreen = () => {
     }
 
     const clearFilter = () => {
-        setSearchFields({
+        const emptyFields = {
             "u_id": null,
             "f_date": null,
             "t_date": null,
             "claim_type": null,
             "status": null
-        })
-        getLeavelist();
+        }
+        setSearchFields(emptyFields)
+        getLeavelist(emptyFields);
     }
 
     async function filterSubmit() {
@@ -161,31 +202,7 @@ const ExpenseScreen = () => {
         } else if (searchFields.f_date && !searchFields.t_date) {
             toast.error('Please enter To Date')
         } else {
-            if (hasCookie('token')) {
-                let token = (getCookie('token'));
-                let db_name = (getCookie('db_name'));
-
-                let header = {
-                    headers: {
-                        Accept: "application/json",
-                        Authorization: "Bearer ".concat(token),
-                        db: db_name,
-                        m_id: 198,
-                    }
-                }
-                try {
-                    const response = await
-                        axios.get(Baseurl + `/db/expence?mode=rpt${searchFields.f_date ? `&f_date=${searchFields.f_date}` : ''}${searchFields.t_date ? `&t_date=${searchFields.t_date}` : ''}${searchFields.status ? `&status=${searchFields.status}` : ''}${searchFields.claim_type ? `&claim_type=${searchFields.claim_type}` : ''}${searchFields.u_id ? `&u_id=${searchFields.u_id}` : ''}`, header);
-                    setLeaveLists(response.data.data);
-                } catch (error) {
-                    if (error?.response?.data?.message) {
-                        toast.error(error.response.data.message);
-                    }
-                    else {
-                        toast.error('Something went wrong!')
-                    }
-                }
-            }
+            await getLeavelist(searchFields);
         }
 
     }
@@ -347,27 +364,41 @@ const ExpenseScreen = () => {
                     </nav>
                 </div>
                 <div className="main_content">
-                    <div className="table_screen">
-                        <div className="row filterRow">
-                            <div className="col-xl-2 col-md-2 col-sm-6 col-6 ">
+                    <div className="table_screen expense_management">
+                        <div className="top_btn_sec">
+                            <div className="d-flex">
+                                <Link href="/crm/ApplyExpense">
+                                    <button className="btn btn-primary Add_btn me-3">
+                                        <PlusIcon />
+                                        APPLY EXPENSE
+                                    </button>
+                                </Link>
+                                <button className="btn btn-primary Add_btn" onClick={handleDownload}>
+                                    <DownloadIcon />
+                                    EXPORT
+                                </button>
+                            </div>
+                        </div>
+                        <div className="row filterRow align-items-end g-2 mb-3">
+                            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
                                 <div className="filterBox">
-                                    <label className="label " htmlFor="users">Select User </label>
+                                    <label className="label" htmlFor="expenseUser">Select User</label>
                                     <select
                                         name="users"
-                                        id="users"
+                                        id="expenseUser"
                                         className="form-control"
                                         onChange={(e) => setSearchFields({ ...searchFields, u_id: e.target.value })}
                                         value={searchFields?.u_id ? searchFields.u_id : ''} >
                                         <option value="">Select User</option>
-                                        {usersList?.map(({ user_id, user }) => {
-                                            return <option key={user_id} value={user_id}>{user}</option>
+                                        {(Array.isArray(usersList) ? usersList : []).map(({ user_id, user, user_name }) => {
+                                            return <option key={user_id} value={user_id}>{user || user_name}</option>
                                         })}
                                     </select>
                                 </div>
                             </div>
-                            <div className="col-xl-2 col-md-2 col-sm-6 col-6 pe-sm-0">
+                            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
                                 <div className="filterBox">
-                                    <label className="label" htmlFor="fromDate">From </label>
+                                    <label className="label" htmlFor="fromDate">From</label>
                                     <input
                                         type="date"
                                         className="form-control"
@@ -378,9 +409,9 @@ const ExpenseScreen = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="col-xl-2 col-md-2 col-sm-6 col-6">
+                            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
                                 <div className="filterBox">
-                                    <label className="label" htmlFor="toDate">To </label>
+                                    <label className="label" htmlFor="toDate">To</label>
                                     <input type="date"
                                         className="form-control"
                                         name="toDate"
@@ -390,50 +421,28 @@ const ExpenseScreen = () => {
                                     />
                                 </div>
                             </div>
-                            {/* <div className="col-xl-2 col-md-2 col-sm-6 col-6 pe-sm-0">
+                            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
                                 <div className="filterBox">
-                                    <label className="label" htmlFor="claimType">Select Claim Type</label>
+                                    <label className="label" htmlFor="expenseStatus">Select Status</label>
                                     <select
-                                        name="claimType"
-                                        id="claimType"
-                                        className="form-control"
-                                        onChange={(e) => setSearchFields({ ...searchFields, claim_type: e.target.value })}
-                                        value={searchFields?.claim_type ? searchFields.claim_type : ''}>
-                                        <option value="">Select Claim Type </option>
-                                        <option value="TA">TA</option>
-                                        <option value="DA">DA</option>
-                                    </select>
-                                </div>
-                            </div> */}
-                            <div className="col-xl-2 col-md-2 col-sm-6 col-6">
-                                <div className="filterBox">
-                                    <label className="label " htmlFor="users">Select Status </label>
-                                    <select
-                                        name="users"
-                                        id="users"
+                                        name="status"
+                                        id="expenseStatus"
                                         className="form-control"
                                         onChange={(e) => setSearchFields({ ...searchFields, status: e.target.value })}
                                         value={searchFields?.status ? searchFields.status : ''} >
-                                        <option value={null}>Select Status</option>
+                                        <option value="">Select Status</option>
                                         <option value="pending">Pending</option>
                                         <option value="approved">Approved</option>
                                         <option value="rejected">Rejected</option>
                                     </select>
                                 </div>
                             </div>
-                            <div className="col-xl-2 col-md-2 col-sm-6 col-6 ">
+                            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
                                 <div className="submitBtn">
                                     <button className="btn btn-primary" onClick={filterSubmit}>Search</button>
-                                    <button className="btn btn-cancel ms-3" onClick={clearFilter}>Clear</button>
+                                    <button className="btn btn-cancel ms-2" onClick={clearFilter}>Clear</button>
                                 </div>
                             </div>
-                            <div className="col-xl-12 col-md-12 col-sm-12 col-12 me-2 p-3">
-                                <button className="btn ms-auto btn-primary Add_btn" onClick={handleDownload}>
-                                    <DownloadIcon />
-                                    Export
-                                </button>
-                            </div>
-
                         </div>
                         <DynamicTable title='Application List '
                             leaveLists={leaveLists}

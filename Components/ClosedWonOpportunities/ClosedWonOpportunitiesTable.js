@@ -2,8 +2,11 @@ import React from 'react'
 import MUIDataTable from "mui-datatables";
 import Loader from '../Loader/Loader';
 import moment from 'moment/moment';
+import { mapOpportunityRow } from "../../Utils/reportApi";
 
 const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }) => {
+    const mappedDataList = (Array.isArray(dataList) ? dataList : []).map(mapOpportunityRow);
+
 
     const columns = [
         {
@@ -20,7 +23,7 @@ const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.acc_name? value.acc_name : ''}</>
+                        <>{value || ""}</>
                     )
                 }
             }
@@ -40,7 +43,7 @@ const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.user? value.user : ''}</>
+                        <>{value || ""}</>
                     )
                 }
             }
@@ -64,7 +67,7 @@ const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.opportunity_stg_name? value.opportunity_stg_name : ''}</>
+                        <>{value || ""}</>
                     )
                 }
             }
@@ -76,7 +79,7 @@ const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.opportunity_type_name? value.opportunity_type_name : ''}</>
+                        <>{value || ""}</>
                     )
                 }
             }
@@ -88,7 +91,7 @@ const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.source? value.source : ''}</>
+                        <>{value || ""}</>
                     )
                 }
             }
@@ -146,7 +149,7 @@ const ClosedWonOpportunitiesTable = ({ dataList, title, openConfirmBox, loader }
                 <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={dataList}
+                    data={mappedDataList}
                     columns={columns}
                     options={options}
                 />

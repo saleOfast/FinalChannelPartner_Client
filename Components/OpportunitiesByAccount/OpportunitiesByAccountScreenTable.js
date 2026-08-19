@@ -2,8 +2,10 @@ import React from 'react'
 import MUIDataTable from "mui-datatables";
 import Loader from '../Loader/Loader';
 import moment from 'moment/moment';
+import { mapOpportunityRow } from "../../Utils/reportApi";
 
 const OpportunitiesByAccountScreenTable = ({ dataList, title, openConfirmBox, loader }) => {
+    const mappedDataList = (Array.isArray(dataList) ? dataList : []).map(mapOpportunityRow);
 
     const columns = [
         {
@@ -20,7 +22,7 @@ const OpportunitiesByAccountScreenTable = ({ dataList, title, openConfirmBox, lo
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.acc_name? value.acc_name : ''}</>
+                        <>{typeof value === "object" ? (value?.acc_name || "") : (value || "")}</>
                     )
                 }
             }
@@ -40,7 +42,7 @@ const OpportunitiesByAccountScreenTable = ({ dataList, title, openConfirmBox, lo
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.user? value.user : ''}</>
+                        <>{typeof value === "object" ? (value?.user || value?.user_name || "") : (value || "")}</>
                     )
                 }
             }
@@ -64,7 +66,7 @@ const OpportunitiesByAccountScreenTable = ({ dataList, title, openConfirmBox, lo
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.opportunity_stg_name? value.opportunity_stg_name : ''}</>
+                        <>{typeof value === "object" ? (value?.opportunity_stg_name || "") : (value || "")}</>
                     )
                 }
             }
@@ -76,7 +78,7 @@ const OpportunitiesByAccountScreenTable = ({ dataList, title, openConfirmBox, lo
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <>{value?.opportunity_type_name? value.opportunity_type_name : ''}</>
+                        <>{typeof value === "object" ? (value?.opportunity_type_name || "") : (value || "")}</>
                     )
                 }
             }
@@ -148,7 +150,7 @@ const OpportunitiesByAccountScreenTable = ({ dataList, title, openConfirmBox, lo
                 <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={dataList}
+                    data={mappedDataList}
                     columns={columns}
                     options={options}
                 />

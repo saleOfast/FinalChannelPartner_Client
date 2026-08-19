@@ -9,6 +9,22 @@ import DeleteIcon from "../Svg/DeleteIcon";
 
 
 const ExpenseMuiTable = ({ leaveLists, viewRemark, openConfirmBox, title }) => {
+    const displayUser = (value) => {
+        if (!value) return "---";
+        if (typeof value === "string") return value;
+        return value.user || value.user_name || value.name || "---";
+    };
+
+    const displayPolicy = (value, row) => {
+        if (typeof value === "string" && value) return value;
+        return value?.policy_name || value?.policy_type_name || row?.policy_name || "---";
+    };
+
+    const displayDate = (value) => {
+        if (!value) return "---";
+        const parsed = moment(value);
+        return parsed.isValid() ? parsed.format("DD-MM-YYYY") : "---";
+    };
 
     const columns = [
         {
@@ -16,23 +32,15 @@ const ExpenseMuiTable = ({ leaveLists, viewRemark, openConfirmBox, title }) => {
             label: "Submit By",
             options: {
                 filter: true,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    return (
-                        <>{value?.user ? value.user : ''}</>
-                    )
-                }
+                customBodyRender: (value) => displayUser(value),
             }
         },
         {
             name: 'ExpenceSubmittedTo',
-            label: "Application Submit To",
+            label: "Submit To",
             options: {
                 filter: true,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    return (
-                        <>{value?.user ? value.user : ''}</>
-                    )
-                }
+                customBodyRender: (value) => displayUser(value),
             }
         },
         {
@@ -40,11 +48,7 @@ const ExpenseMuiTable = ({ leaveLists, viewRemark, openConfirmBox, title }) => {
             label: "Policy Name",
             options: {
                 filter: true,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    return (
-                        <>{value?.policy_name ? value.policy_name : ''}</>
-                    )
-                }
+                customBodyRender: (value, tableMeta) => displayPolicy(value, tableMeta?.rowData),
             }
         },
         {
@@ -52,6 +56,7 @@ const ExpenseMuiTable = ({ leaveLists, viewRemark, openConfirmBox, title }) => {
             label: "Claim Type",
             options: {
                 filter: true,
+                customBodyRender: (value) => value || "---",
             }
         },
         {
@@ -59,32 +64,23 @@ const ExpenseMuiTable = ({ leaveLists, viewRemark, openConfirmBox, title }) => {
             label: "From Date",
             options: {
                 filter: true,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    return (
-                        <>{moment(value).format("DD-MM-YYYY LTS")}</>
-                    )
-                }
+                customBodyRender: (value) => displayDate(value),
             }
         },
-
         {
             name: 'to_date',
             label: "To Date",
             options: {
                 filter: true,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    return (
-                        <>{moment(value).format("DD-MM-YYYY LTS")}</>
-                    )
-                }
+                customBodyRender: (value) => displayDate(value),
             }
         },
-
         {
             name: 'from_location',
             label: "From Location",
             options: {
                 filter: true,
+                customBodyRender: (value) => value || "---",
             }
         },
         {
@@ -92,6 +88,7 @@ const ExpenseMuiTable = ({ leaveLists, viewRemark, openConfirmBox, title }) => {
             label: "To Location",
             options: {
                 filter: true,
+                customBodyRender: (value) => value || "---",
             }
         },
         {
@@ -99,23 +96,34 @@ const ExpenseMuiTable = ({ leaveLists, viewRemark, openConfirmBox, title }) => {
             label: "Total Expense",
             options: {
                 filter: true,
+                customBodyRender: (value) => (value || value === 0 ? value : "---"),
             }
-        },{
+        },
+        {
             name: 'status',
             label: "Status",
             options: {
                 filter: true,
+                customBodyRender: (value) => (
+                    <span className={`status_btn ${String(value).toLowerCase() === "approved" ? "active" : String(value).toLowerCase() === "rejected" ? "inactive" : ""}`}>
+                        {value || "---"}
+                    </span>
+                ),
             }
         },
         {
             name: 'expence_id',
             label: "Action",
             options: {
-                filter: true,
-                customBodyRender: (value, tableMeta, updateValue) => {
+                filter: false,
+                sort: false,
+                download: false,
+                viewColumns: false,
+                setCellProps: () => ({ style: { whiteSpace: "nowrap", minWidth: 160 } }),
+                customBodyRender: (value, tableMeta) => {
                     return (
                         <>
-                            {tableMeta.rowData[9] == 'pending' ?
+                            {String(tableMeta.rowData[9]).toLowerCase() == 'pending' ?
                                 <div className="table_btns">
                                     <button className="btn btn-primary me-2" title='Accept' onClick={() => openConfirmBox(tableMeta.rowData, 1)}>
                                         Accept
@@ -150,7 +158,8 @@ const ExpenseMuiTable = ({ leaveLists, viewRemark, openConfirmBox, title }) => {
     const options = {
         selectableRows: 'none',
         responsive: "standard",
-        filterType:'multiselect'
+        filterType:'multiselect',
+        downloadOptions: { filename: "ExpensesList.csv" },
     };
 
     return (
@@ -158,7 +167,7 @@ const ExpenseMuiTable = ({ leaveLists, viewRemark, openConfirmBox, title }) => {
             <div className="miuiTable">
                 <MUIDataTable
                     title={title}
-                    data={leaveLists}
+                    data={Array.isArray(leaveLists) ? leaveLists : []}
                     columns={columns}
                     options={options}
                 />

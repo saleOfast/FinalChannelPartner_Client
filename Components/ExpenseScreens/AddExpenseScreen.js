@@ -33,7 +33,8 @@ const AddLeave = () => {
         to_location: null,
         total_expence: null,
         kms: "",
-        detail:""
+        detail:"",
+        report_to: null,
     });
 
     const { id } = router.query;
@@ -48,25 +49,159 @@ const AddLeave = () => {
     const [activeData, setActiveData] = useState(false)
     const [isTravel, setIsTravel] = useState(false)
     const [uploadDocs, setuploadDocs] = useState([])
+    const [usersList, setUsersList] = useState([])
+    const [loginUser, setLoginUser] = useState({})
 
     const minDate = new Date().toISOString().slice(0, 10);
 
+    const extractList = (response) => {
+        const payload = response?.data?.data ?? response?.data;
+        if (Array.isArray(payload)) return payload;
+        if (!payload || typeof payload !== "object") return [];
+        const nested =
+            payload.rows ||
+            payload.policyData ||
+            payload.policyHeadData ||
+            payload.policyTypes ||
+            payload.policy_types ||
+            payload.types ||
+            payload.policyTypeData ||
+            payload.expenceData ||
+            payload.list ||
+            payload.data;
+        return Array.isArray(nested) ? nested : [];
+    }
+
+    const getAuthHeaders = (extra = {}) => ({
+        headers: {
+            Accept: "application/json",
+            Authorization: "Bearer ".concat(getCookie("token")),
+            db: getCookie("db_name"),
+            ...extra,
+        }
+    })
+
+    const userOptions = (Array.isArray(usersList) ? usersList : []).map((data) => ({
+        value: data?.user_id,
+        label: data?.user || data?.user_name || `User ${data?.user_id}`,
+    }))
+
+    const policyOptions = (Array.isArray(policyHeadList) ? policyHeadList : [])
+        .filter((data) => data?.status !== false && data?.status !== 0)
+        .map((data) => ({
+            value: data?.policy_id,
+            label: data?.policy_name || data?.policy_code || `Policy ${data?.policy_id}`,
+            is_travel: data?.is_travel,
+        }))
+
+    const policyTypeOptions = (Array.isArray(policyTypeList) ? policyTypeList : []).map((item) => {
+        const typeId = item?.policy_type_id || item?.id || item?.pt_id || null;
+        return {
+            value: typeId,
+            label: item?.policy_type_name || item?.name || item?.claim_type || `Type ${typeId}`,
+            claim_type: item?.claim_type,
+        };
+    })
+
+    const selectStyles = {
+        control: (base, state) => ({
+            ...base,
+            minHeight: 38,
+            height: 38,
+            borderColor: state.isFocused ? "#86b7fe" : "#ced4da",
+            boxShadow: "none",
+        }),
+        valueContainer: (base) => ({ ...base, height: 36, padding: "0 8px" }),
+        indicatorsContainer: (base) => ({ ...base, height: 36 }),
+        input: (base) => ({ ...base, margin: 0, padding: 0 }),
+        menu: (base) => ({ ...base, zIndex: 20 }),
+    }
+
+    const getLoginDetails = () => {
+        try {
+            return hasCookie("userInfo") ? JSON.parse(getCookie("userInfo")) : {};
+        } catch (error) {
+            return {};
+        }
+    }
+
+    const getUsersList = async () => {
+        if (!hasCookie("token")) return;
+        try {
+            let response;
+            try {
+                response = await axios.get(Baseurl + `/db/users?mode=ul`, getAuthHeaders({ pass: "pass" }));
+            } catch (error) {
+                response = await axios.get(Baseurl + `/db/users`, getAuthHeaders({ pass: "pass" }));
+            }
+            const list = extractList(response);
+            setUsersList(list);
+        } catch (error) {
+            setUsersList([]);
+        }
+    }
+
+    const getCurrentUser = async () => {
+        const cookieUser = getLoginDetails();
+        setLoginUser(cookieUser);
+        const userId = cookieUser?.user_id;
+        if (!userId || !hasCookie("token")) {
+            if (cookieUser?.user_id) {
+                setUserInfo((prev) => ({
+                    ...prev,
+                    report_to: cookieUser?.report_to || cookieUser?.user_id,
+                }));
+            }
+            return;
+        }
+        try {
+            const response = await axios.get(Baseurl + `/db/users?id=${userId}`, getAuthHeaders({ pass: "pass" }));
+            const current = response?.data?.data || cookieUser;
+            setLoginUser({ ...cookieUser, ...current });
+            setUserInfo((prev) => ({
+                ...prev,
+                report_to: current?.report_to || cookieUser?.report_to || current?.user_id || cookieUser?.user_id,
+            }));
+        } catch (error) {
+            setUserInfo((prev) => ({
+                ...prev,
+                report_to: cookieUser?.report_to || cookieUser?.user_id,
+            }));
+        }
+    }
+
+    const ensureUserReportTo = async (reportToId) => {
+        const current = loginUser || getLoginDetails();
+        if (!current?.user_id || !reportToId) return reportToId;
+        if (current?.report_to) return reportToId;
+        const payload = {
+            user_id: current.user_id,
+            user_code: current.user_code,
+            report_to: reportToId,
+        };
+        try {
+            await axios.put(
+                Baseurl + `/db/users`,
+                payload,
+                getAuthHeaders({ pass: "pass" })
+            );
+            setLoginUser({ ...current, report_to: reportToId });
+        } catch (error) {
+            console.log(error);
+        }
+        return reportToId;
+    }
+
     async function getPolicyHead() {
         if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
-
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    m_id: 202
-                }
-            }
             try {
-                const response = await axios.get(Baseurl + `/db/expence`, header);
-                setPolicyAppList(response.data.data);
+                let response;
+                try {
+                    response = await axios.get(Baseurl + `/db/expence`, getAuthHeaders({ m_id: 202 }));
+                } catch (error) {
+                    response = await axios.get(Baseurl + `/db/expence`, getAuthHeaders({ pass: "pass" }));
+                }
+                setPolicyAppList(extractList(response));
             } catch (error) {
                 if (error?.response?.data?.message) {
                     toast.error(error.response.data.message);
@@ -81,62 +216,134 @@ const AddLeave = () => {
 
 
     function getpolExpFunc(e) {
-        let obj = { ...userInfo }
-        const currId = e.value
-        obj['policy_id'] = currId;
-        setUserInfo(obj);
-        const filteredObjects = policyHeadList.filter(obj => obj.policy_id == currId);
-        const currObj = filteredObjects[0];
-        if (currObj.is_travel) {
-            setIsTravel(true)
-            getOnePolicy(obj.policy_id)
-        } else {
-            setIsTravel(false)
-
+        const currId = e?.value;
+        const currObj = (Array.isArray(policyHeadList) ? policyHeadList : [])
+            .find((item) => String(item?.policy_id) === String(currId));
+        const isTravelPolicy = !!(currObj?.is_travel);
+        setUserInfo({
+            ...userInfo,
+            policy_id: currId,
+            policy_type_id: null,
+            claim_type: null,
+        });
+        setpolicyTypeList([]);
+        setIsTravel(isTravelPolicy);
+        setActiveData(isTravelPolicy);
+        if (currId) {
+            getOnePolicy(currId);
         }
-       // let obj = { ...userInfo }
-        // obj[e.target.name] = e.target.value;
-        // setUserInfo(obj);
-        // if (obj.policy_id && obj.from_date && obj.claim_type) {
-        //     getOnePolicy(obj.policy_id, moment(obj.from_date).format("YYYY-MM-DD LT"), obj.claim_type)
-        // }
+    }
+
+    const getPolicyTypeId = (item) => item?.policy_type_id || item?.id || item?.pt_id || null;
+
+    const fetchPolicyTypes = async (policyId) => {
+        const urls = [
+            `/db/policy/type?ph_id=${policyId}`,
+            `/db/policy/type?policy_id=${policyId}`,
+        ];
+        for (const url of urls) {
+            try {
+                const response = await axios.get(Baseurl + url, getAuthHeaders({ pass: "pass" }));
+                const list = extractList(response);
+                if (list.length) return list;
+            } catch (error) {
+                continue;
+            }
+        }
+        try {
+            const response = await axios.get(
+                Baseurl + `/db/policy/type?ph_id=${policyId}`,
+                getAuthHeaders({ m_id: 217 })
+            );
+            return extractList(response);
+        } catch (error) {
+            return [];
+        }
+    }
+
+    const applyPolicyType = (list) => {
+        setpolicyTypeList(list);
+        if (!list.length) return;
+        const firstType = list[0];
+        const typeId = getPolicyTypeId(firstType);
+        setUserInfo((prev) => ({
+            ...prev,
+            policy_type_id: typeId,
+            claim_type: firstType?.claim_type || prev.claim_type || "DA",
+        }));
+        setErrorData((prev) => ({ ...prev, policy_type_id: "" }));
+    }
+
+    const createDefaultPolicyType = async (policyId, policyName = "General") => {
+        const payload = {
+            policy_id: policyId,
+            policy_type_name: policyName || "General",
+            claim_type: "DA",
+            cost_per_km: 0,
+            from_date: moment(new Date().toISOString()).format("YYYY-MM-DD LTS"),
+        };
+        const headersToTry = [{ m_id: 218, pass: "pass" }, { pass: "pass" }, { m_id: 218 }];
+        for (const extra of headersToTry) {
+            try {
+                const response = await axios.post(Baseurl + `/db/policy/type`, payload, getAuthHeaders(extra));
+                const created = response?.data?.data;
+                if (Array.isArray(created) && created.length) return created;
+                if (created && typeof created === "object") return [created];
+                return fetchPolicyTypes(policyId);
+            } catch (error) {
+                continue;
+            }
+        }
+        return [];
+    }
+
+    const createDefaultPolicyHead = async () => {
+        const payload = { policy_name: "General Expense", is_travel: false };
+        const headersToTry = [{ m_id: 213, pass: "pass" }, { pass: "pass" }, { m_id: 213 }];
+        for (const extra of headersToTry) {
+            try {
+                const response = await axios.post(Baseurl + `/db/policy`, payload, getAuthHeaders(extra));
+                const created = response?.data?.data;
+                if (created?.policy_id) return created;
+                const list = extractList(response);
+                if (list[0]?.policy_id) return list[0];
+                break;
+            } catch (error) {
+                continue;
+            }
+        }
+        try {
+            const response = await axios.get(Baseurl + `/db/policy`, getAuthHeaders({ pass: "pass" }));
+            const list = extractList(response);
+            return list.find((item) => item?.policy_name === "General Expense") || list[0] || null;
+        } catch (error) {
+            return null;
+        }
     }
 
     const getOnePolicy = async (id) => {
-
-        if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
-
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    pass: 'pass'
+        if (!hasCookie("token") || !id) return;
+        try {
+            let list = await fetchPolicyTypes(id);
+            if (!list.length) {
+                const selectedPolicy = (Array.isArray(policyHeadList) ? policyHeadList : [])
+                    .find((item) => String(item?.policy_id) === String(id));
+                list = await createDefaultPolicyType(id, selectedPolicy?.policy_name || "General");
+                if (!list.length) {
+                    list = await fetchPolicyTypes(id);
                 }
             }
-
-            try {
-                const response = await axios.get(Baseurl + `/db/policy/type?ph_id=${id}`, header);
-                setpolicyTypeList(response.data.data);
-                // if (response.data.status === 200) {
-                //     if (response?.data?.data[0]?.fixed) {
-                //         setPolicyViewMode('fixed')
-                //     } else if (response?.data?.data[0]?.max_allowance) {
-                //         setPolicyViewMode('allowance')
-                //     } else {
-                //         setPolicyViewMode('')
-                //         toast.error('No Policies Found')
-                //     }
-                // }
-            } catch (error) {
-                if (error?.response?.data?.message) {
-                    toast.error(error.response.data.message);
-                }
-                else {
-                    toast.error('Something went wrong!')
-                }
+            applyPolicyType(list);
+            if (!list.length) {
+                toast.warning("Could not create policy type. Please try again.");
+            }
+        } catch (error) {
+            setpolicyTypeList([]);
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            }
+            else {
+                toast.error('Something went wrong!')
             }
         }
     }
@@ -173,29 +380,36 @@ const AddLeave = () => {
 
 
     const getLeaveHead = async () => {
-
-        if (hasCookie('token')) {
-            let token = (getCookie('token'));
-            let db_name = (getCookie('db_name'));
-
-            let header = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: "Bearer ".concat(token),
-                    db: db_name,
-                    pass: 'pass'
+        if (!hasCookie('token')) return;
+        try {
+            let list = [];
+            try {
+                const response = await axios.get(Baseurl + `/db/policy`, getAuthHeaders({ pass: "pass" }));
+                list = extractList(response);
+            } catch (error) {
+                const response = await axios.get(Baseurl + `/db/policy`, getAuthHeaders({ m_id: 212 }));
+                list = extractList(response);
+            }
+            if (!list.length) {
+                const createdHead = await createDefaultPolicyHead();
+                try {
+                    const response = await axios.get(Baseurl + `/db/policy`, getAuthHeaders({ pass: "pass" }));
+                    list = extractList(response);
+                } catch (reloadError) {
+                    if (createdHead?.policy_id) list = [createdHead];
+                }
+                if (list[0]?.policy_id) {
+                    await createDefaultPolicyType(list[0].policy_id, list[0].policy_name || "General Expense");
                 }
             }
-            try {
-                const response = await axios.get(Baseurl + `/db/policy`, header);
-                setPolicyHeadList(response.data.data);
-            } catch (error) {
-                if (error?.response?.data?.message) {
-                    toast.error(error.response.data.message);
-                }
-                else {
-                    toast.error('Something went wrong!')
-                }
+            setPolicyHeadList(list);
+        } catch (error) {
+            setPolicyHeadList([]);
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            }
+            else {
+                toast.error('Something went wrong!')
             }
         }
     }
@@ -220,6 +434,18 @@ const AddLeave = () => {
 
     const submitHandler = async () => {
         if (hasCookie("token")) {
+            const policyTypeId = userInfo.policy_type_id ? Number(userInfo.policy_type_id) : null;
+            if (!policyTypeId) {
+                toast.error("Please choose policy type");
+                setErrorData({ ...errorData, policy_type_id: "Please choose policy" });
+                return;
+            }
+            const reportToId = userInfo.report_to || loginUser?.report_to || loginUser?.user_id || getLoginDetails()?.user_id;
+            if (!reportToId) {
+                toast.error("Please select Submit To");
+                setErrorData({ ...errorData, report_to: "Please select Submit To" });
+                return;
+            }
             setisLoading(true)
             let token = getCookie("token");
             let db_name = getCookie("db_name");
@@ -233,8 +459,11 @@ const AddLeave = () => {
                 },
             };
 
+            await ensureUserReportTo(reportToId);
+
+            const loginDetails = getLoginDetails();
             let reqOptions = {
-                // policy_type_id: policyObj.policy_type_id ? policyObj.policy_type_id : null,
+                policy_type_id: policyTypeId,
                 policy_id: userInfo.policy_id ? userInfo.policy_id : null,
                 claim_type: userInfo.claim_type ? userInfo.claim_type : null,
                 from_date: userInfo.from_date ? moment(userInfo.from_date).format("YYYY-MM-DD LTS") : null,
@@ -244,7 +473,10 @@ const AddLeave = () => {
                 kms: userInfo.kms ? userInfo.kms : null,
                 total_expence: userInfo.total_expence,
                 detail : userInfo.detail,
-
+                report_to: reportToId,
+                submitted_to: reportToId,
+                user_code: loginUser?.user_code || loginDetails?.user_code || null,
+                user_id: loginUser?.user_id || loginDetails?.user_id || null,
             }
 
             if (reqOptions.kms === null) {
@@ -269,7 +501,8 @@ const AddLeave = () => {
                         to_location: null,
                         kms: null,
                         total_expence: null,
-                        detail:null
+                        detail:null,
+                        report_to: loginUser?.report_to || loginUser?.user_id || null,
                     })
                     setPolicyObj({})
                     console.log('ok');
@@ -308,6 +541,8 @@ const AddLeave = () => {
     useEffect(() => {
         getLeaveHead();
         getPolicyHead();
+        getUsersList();
+        getCurrentUser();
     }, [])
 
     return (
@@ -319,6 +554,9 @@ const AddLeave = () => {
                         <li className="breadcrumb-item">
                             {" "}
                             <Link href="/crm">Home</Link>
+                        </li>
+                        <li className="breadcrumb-item">
+                            <Link href="/crm/ManagePolicyHeadScreen">Policy Head Master</Link>
                         </li>
                         <li className="breadcrumb-item active" aria-current="page">
                             Apply Expense
@@ -333,27 +571,42 @@ const AddLeave = () => {
                         mandatory)
                     </div>
                     <div className="add_user_form">
-                        <div className="row">
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                        <div className="row g-3 align-items-start">
+                            <div className="col-xl-3 col-lg-4 col-md-6 col-12">
                                 <div className={errorData?.policy_id ? 'input_box errorBox' : 'input_box'}>
-                                    <label htmlFor="task_name">Select Policy *</label>
+                                    <label htmlFor="task_name">Expense Type *</label>
                                     <Select
                                         name="policy_id"
-                                        defaultValue={''}
-                                        options={policyHeadList?.map((data, i) => {
-                                            return {
-                                                value: data?.policy_id,
-                                                label: data?.policy_name,
-                                                
-                                            }
-                                        })}
+                                        classNamePrefix="expense-select"
+                                        placeholder="Select Expense Type"
+                                        styles={selectStyles}
+                                        options={policyOptions}
+                                        value={policyOptions.find((option) => String(option.value) === String(userInfo.policy_id)) || null}
                                         onChange={(e) => {
                                             getpolExpFunc(e)
                                             setErrorData({ ...errorData, policy_id: '' })
-                                             setActiveData(e.value.is_travel)
                                         }}
                                     />
                                     <span className="errorText"> {errorData?.policy_id ? errorData.policy_id : ''}</span>
+                                </div>
+                            </div>
+
+                            <div className="col-xl-3 col-lg-4 col-md-6 col-12">
+                                <div className={errorData?.report_to ? 'input_box errorBox' : 'input_box'}>
+                                    <label htmlFor="report_to">Submit To *</label>
+                                    <Select
+                                        name="report_to"
+                                        classNamePrefix="expense-select"
+                                        placeholder="Select Manager"
+                                        styles={selectStyles}
+                                        options={userOptions}
+                                        value={userOptions.find((option) => String(option.value) === String(userInfo.report_to)) || null}
+                                        onChange={(e) => {
+                                            setUserInfo({ ...userInfo, report_to: e.value })
+                                            setErrorData({ ...errorData, report_to: '' })
+                                        }}
+                                    />
+                                    <span className="errorText"> {errorData?.report_to ? errorData.report_to : ''}</span>
                                 </div>
                             </div>
                                     
@@ -382,28 +635,33 @@ const AddLeave = () => {
                                 </div>
                             </div> */}
 
-                            {isTravel ?
-                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
-                                    <div className={errorData?.claim_type ? 'input_box errorBox' : 'input_box'}>
-                                        <label htmlFor="claim_type">Expense Type *</label>
-                                        <select
-                                            name="exp_id"
-                                            id="exp_id"
-                                            className='form-control'
-                                            onChange={(e) => setUserInfo({ ...userInfo, policy_type_id: e.target.value })}
-                                            value={userInfo.policy_type_id ? userInfo.policy_type_id : ''} >
-                                            <option value="">Select Policy</option>
-                                            {policyTypeList?.map(({ policy_type_id, policy_type_name }) => {
-                                                return <option key={policy_type_id} value={policy_type_id}>{policy_type_name}</option>
-                                            })}
-                                        </select>
-                                        <span className="errorText"> {errorData?.claim_type ? errorData.claim_type : ''}</span>
+                            {userInfo.policy_id ?
+                                <div className="col-xl-3 col-lg-4 col-md-6 col-12">
+                                    <div className={(errorData?.policy_type_id || errorData?.claim_type) ? 'input_box errorBox' : 'input_box'}>
+                                        <label htmlFor="claim_type">Policy Type *</label>
+                                        <Select
+                                            name="policy_type_id"
+                                            classNamePrefix="expense-select"
+                                            placeholder="Select Policy Type"
+                                            styles={selectStyles}
+                                            options={policyTypeOptions}
+                                            value={policyTypeOptions.find((option) => String(option.value) === String(userInfo.policy_type_id)) || null}
+                                            onChange={(e) => {
+                                                setUserInfo({
+                                                    ...userInfo,
+                                                    policy_type_id: e?.value ? Number(e.value) : null,
+                                                    claim_type: e?.claim_type || null,
+                                                })
+                                                setErrorData({ ...errorData, policy_type_id: '', claim_type: '' })
+                                            }}
+                                        />
+                                        <span className="errorText"> {errorData?.policy_type_id || errorData?.claim_type || ''}</span>
                                     </div>
                                 </div> : null}
 
 
 
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div className="col-xl-3 col-lg-4 col-md-6 col-12">
                                 <div className={errorData?.from_date ? 'input_box errorBox' : 'input_box'}>
                                     <label htmlFor="from_date">{isTravel ? "From date" : "Date"}</label>
                                     <input
@@ -423,7 +681,7 @@ const AddLeave = () => {
                                 </div>
                             </div>
                             {isTravel ?
-                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className="col-xl-3 col-lg-4 col-md-6 col-12">
                                     <div className={errorData?.to_date ? 'input_box errorBox' : 'input_box'}>
                                         <label htmlFor="to_date">To date </label>
                                         <input
@@ -443,7 +701,7 @@ const AddLeave = () => {
                                 </div> : null}
 
 
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div className="col-xl-3 col-lg-4 col-md-6 col-12">
                                 <div className={errorData?.from_location ? 'input_box errorBox' : 'input_box'}>
                                     <label htmlFor="from_location">{isTravel ? "Start Location" : "Location"} </label>
                                     <input
@@ -469,7 +727,7 @@ const AddLeave = () => {
                                 </div>
                             </div>
                             {isTravel ?
-                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className="col-xl-3 col-lg-4 col-md-6 col-12">
                                     <div className={errorData?.to_location ? 'input_box errorBox' : 'input_box'}>
                                         <label htmlFor="to_location">End Location </label>
                                             <input
@@ -495,7 +753,7 @@ const AddLeave = () => {
                                     </div>
                                 </div> : ""}
                             {isTravel ?
-                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className="col-xl-3 col-lg-4 col-md-6 col-12">
                                     <div className={errorData?.kms ? 'input_box errorBox' : 'input_box'}>
                                         <label htmlFor="kms">Enter Distance (in Km.) </label>
                                         <input
@@ -514,7 +772,7 @@ const AddLeave = () => {
                                     </div>
                                 </div> : ""}
 
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div className="col-xl-3 col-lg-4 col-md-6 col-12">
                                 <div className={errorData?.total_expence ? 'input_box errorBox' : 'input_box'}>
                                     <label htmlFor="total_expence">Total Expense (&#8377;) * </label>
                                     <input
@@ -532,7 +790,7 @@ const AddLeave = () => {
                                 </div>
                             </div>
 
-                            <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                            <div className="col-xl-3 col-lg-4 col-md-6 col-12">
                                 <div className='input_box'>
                                     <label htmlFor="uplDocument">Upload Document</label>
                                     <input
@@ -545,9 +803,9 @@ const AddLeave = () => {
                                         onChange= {UploadMultiFile} />
                                 </div>
                             </div>
-                            <div className="col-xl-6 col-md-6 col-sm-12 col-12">
+                            <div className="col-12">
                                 <div className="input_box">
-                                    <label htmlFor="profilelevel">Details </label>
+                                    <label htmlFor="profilelevel">Details</label>
                                     <textarea
                                         name="Exsdetail"
                                         id="Exsdetail"
@@ -571,7 +829,7 @@ const AddLeave = () => {
                         {/* <div className="row">
 
                             {policyViewMode == 'fixed' ? <>
-                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className="col-xl-3 col-lg-4 col-md-6 col-12">
                                     <div className="input_box">
                                         <label htmlFor="due_date">Fixed Cost</label>
                                         <input
@@ -588,7 +846,7 @@ const AddLeave = () => {
                             </> : ''}
 
                             {policyViewMode == 'allowance' ? <>
-                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className="col-xl-3 col-lg-4 col-md-6 col-12">
                                     <div className="input_box">
                                         <label htmlFor="due_date">Cost Per Km</label>
                                         <input
@@ -602,7 +860,7 @@ const AddLeave = () => {
                                         />
                                     </div>
                                 </div>
-                                <div className="col-xl-3 col-md-3 col-sm-12 col-12">
+                                <div className="col-xl-3 col-lg-4 col-md-6 col-12">
                                     <div className="input_box">
                                         <label htmlFor="due_date">Maximum Allowance</label>
                                         <input
@@ -637,11 +895,11 @@ const AddLeave = () => {
                         </div>
                     </div>
 
-                    <div className="row">
+                    <div className="table_screen pt-0">
                         <DynamicTable title='Expenses Applications'
-                            policyAppList={policyAppList}
+                            policyAppList={Array.isArray(policyAppList) ? policyAppList : []}
                             viewRemark={viewRemark}
-                            isTravel= {isTravel}
+                            isTravel={isTravel}
                         />
                     </div>
                 </div>

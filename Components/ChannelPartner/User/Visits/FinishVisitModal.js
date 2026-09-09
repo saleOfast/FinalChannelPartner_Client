@@ -172,7 +172,7 @@ const FinishVisitModal = ({ show, setShow, visitStatus, onSendVisitCode, onVerif
             </div>
 
             <Button
-              type="button"
+              type="button" 
               className="finish-visit-verify-btn"
               disabled={!isCodeComplete || verifying}
               style={

@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
-import { Baseurl, getVisitDateLabel, getCpVisitActivationDate, getCpVisitActivationTime, showCpVisitScheduleColumns } from '../../../../Utils/Constants';
+import { Baseurl, getVisitDateLabel, showCpVisitScheduleColumns } from '../../../../Utils/Constants';
 import { getCookie, hasCookie, setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
 import PlusIcon from '../../../Svg/PlusIcon';
@@ -457,14 +457,8 @@ const [value, setValue] = useState(getCurrentWeekDates());
               {columnMeta.label}
             </th>
           ),
-          customBodyRender: (value, tableMeta) => (
-            <Link
-              href={`/partner/VisitDetails?id=${tableMeta?.rowData[0]}&type=cp`}
-              className='status_box fw-bold text-decoration-underline'
-              style={{ color: "#293790" }}
-            >
-              {value}
-            </Link>
+          customBodyRender: (value) => (
+            <div className='status_box fw-bold' style={{ color: "#293790" }}>{value}</div>
           ),
         },
       },
@@ -499,169 +493,27 @@ const [value, setValue] = useState(getCurrentWeekDates());
         },
       },
       {
-        name: 'project_name',
-        label: showScheduleColumns ? "Project Name" : "Project",
+        name: 'cpl_id',
+        label: "Action",
         options: {
           filter: false,
+          sort: false,
+          download: false,
+          print: false,
           customHeadRender: (columnMeta) => (
             <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
               {columnMeta.label}
             </th>
           ),
           customBodyRender: (value) => (
-            <div className='status_box' style={{ color: "#667799" }}>{value || "-"}</div>
-          ),
-        },
-      },
-      ...(showScheduleColumns
-        ? [
-            {
-              name: 'scheduled_date',
-              label: "Scheduled Date",
-              options: {
-                filter: false,
-                customHeadRender: (columnMeta) => (
-                  <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
-                    {columnMeta.label}
-                  </th>
-                ),
-                customBodyRender: (value) => (
-                  <div className='status_box' style={{ color: "#667799" }}>{value ? formatDate(value) : ""}</div>
-                ),
-              },
-            },
-            {
-              name: 'scheduled_time',
-              label: "Scheduled Time",
-              options: {
-                filter: false,
-                customHeadRender: (columnMeta) => (
-                  <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
-                    {columnMeta.label}
-                  </th>
-                ),
-                customBodyRender: (value) => (
-                  <div className='status_box' style={{ color: "#667799" }}>{value ? formatTime(value) : ""}</div>
-                ),
-              },
-            },
-            {
-              name: 'activation_date',
-              label: "Activation Date",
-              options: {
-                filter: false,
-                customHeadRender: (columnMeta) => (
-                  <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
-                    {columnMeta.label}
-                  </th>
-                ),
-                customBodyRender: (value) => (
-                  <div className='status_box' style={{ color: "#667799" }}>{value ? formatDate(value) : ""}</div>
-                ),
-              },
-            },
-            {
-              name: 'activation_time',
-              label: "Activation Time",
-              options: {
-                filter: false,
-                customHeadRender: (columnMeta) => (
-                  <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
-                    {columnMeta.label}
-                  </th>
-                ),
-                customBodyRender: (value) => (
-                  <div className='status_box' style={{ color: "#667799" }}>{value ? formatTime(value) : ""}</div>
-                ),
-              },
-            },
-          ]
-        : [
-            {
-              name: 'follow_up_date',
-              label: visitDateLabel,
-              options: {
-                filter: false,
-                customHeadRender: (columnMeta) => (
-                  <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
-                    {columnMeta.label}
-                  </th>
-                ),
-                customBodyRender: (value) => (
-                  <div className='status_box' style={{ color: "#667799" }}>{value ? formatDate(value) : ""}</div>
-                ),
-              },
-            },
-          ]),
-      {
-        name: 'visit_type',
-        label: "Visit Type",
-        options: {
-          filter: false,
-          customHeadRender: (columnMeta) => (
-            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
-              {columnMeta.label}
-            </th>
-          ),
-          customBodyRender: (value) => (
-            <div
-              style={{ background: "violet", color: "white", padding: "6px", borderRadius: "20px", border: "white", width: "fit-content" }}
-              className='pe-3 ps-3'
-              title='Visit Type'
+            <Link
+              href={`/partner/VisitDetails?id=${value}&type=cp`}
+              className="btn btn-sm text-white"
+              style={{ background: clientBtnColor, borderRadius: "20px", padding: "6px 16px" }}
             >
-              {value || "-"}
-            </div>
+              View All
+            </Link>
           ),
-        },
-      },
-      {
-        name: 'user',
-        label: "Assigned To",
-        options: {
-          filter: true,
-          customHeadRender: (columnMeta) => (
-            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
-              {columnMeta.label}
-            </th>
-          ),
-          customBodyRender: (value) => (
-            <div className='status_box fw-bold' style={{ color: "#293790" }}>{value || "-"}</div>
-          ),
-        },
-      },
-      {
-        name: 'stage',
-        label: "Status",
-        options: {
-          filter: true,
-          customHeadRender: (columnMeta) => (
-            <th style={{ background: `${clientBtnColor}`, color: 'white', paddingLeft: "15px", padding: "8px" }}>
-              {columnMeta.label}
-            </th>
-          ),
-          customBodyRender: (value) => {
-            const status = value || "-";
-            const statusKey = String(status).toLowerCase();
-            const background =
-              statusKey === "completed" ? "#198754" :
-              statusKey === "in progress" ? "#fd7e14" :
-              "#17B4E7";
-            return (
-              <div
-                style={{
-                  padding: "6px",
-                  color: "white",
-                  background,
-                  borderRadius: "20px",
-                  border: "white",
-                }}
-                className='pe-3 ps-3 btn'
-                title='Status'
-              >
-                {status}
-              </div>
-            );
-          },
         },
       },
     ];
@@ -874,33 +726,22 @@ const [value, setValue] = useState(getCurrentWeekDates());
       completed_date: list?.status === "Completed" ? list?.updatedAt : ""
     }))
 
-    const mappedCpVisitList = safeDataList.map((list) => {
-      const isCompleted =
-        String(list?.visit_status || "").toLowerCase() === "completed" ||
-        list?.visit_verified === 1 ||
-        list?.visit_verified === true;
-
-      return {
-        cpl_d_id: list?.cpl_d_id,
-        cpl_id: list?.cpl_id,
-        leadName: list?.name || `${list?.first_name || ""} ${list?.last_name || ""}`.trim(),
-        email: list?.email,
-        contact: list?.contact,
-        project_name: list?.project_name || list?.sales_project_name || "",
-        scheduled_date: list?.schedule_visit_date || list?.visit_date || list?.follow_up_date,
-        scheduled_time: list?.schedule_visit_time || list?.visit_time || list?.follow_up_time,
-        activation_date: getCpVisitActivationDate(list),
-        activation_time: getCpVisitActivationTime(list),
-        follow_up_date: list?.schedule_visit_date || list?.visit_date || list?.follow_up_date,
-        visit_type: list?.visit_type,
-        user: list?.bst_name || list?.user,
-        stage: list?.visit_status
-          || (isCompleted ? "Completed" : null)
-          || list?.current_stage
-          || list?.stage
-          || "VISIT",
-      };
-    });
+    const mappedCpVisitList = (() => {
+      const byLead = {};
+      safeDataList.forEach((list) => {
+        const cplId = list?.cpl_id;
+        if (cplId == null) return;
+        if (!byLead[cplId]) {
+          byLead[cplId] = {
+            cpl_id: cplId,
+            leadName: list?.name || `${list?.first_name || ""} ${list?.last_name || ""}`.trim(),
+            email: list?.email,
+            contact: list?.contact,
+          };
+        }
+      });
+      return Object.values(byLead);
+    })();
 
     const activeColumns = visitType === "cp" ? cpVisitColumns : columns;
     const activeData = visitType === "cp" ? mappedCpVisitList : mappedDataList;

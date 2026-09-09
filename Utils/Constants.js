@@ -96,9 +96,7 @@ export const getCpVisitActivationDate = (item) => {
     item?.visit_code_verified_at ||
     item?.activation_at;
   if (verifiedAt) return String(verifiedAt).split("T")[0];
-  if (item?.visit_verified === 1 || item?.visit_verified === true) {
-    return item?.updatedAt ? String(item.updatedAt).split("T")[0] : "";
-  }
+  // Do not fall back to updatedAt — that marks rescheduled VISIT rows as completed.
   return "";
 };
 
@@ -115,19 +113,63 @@ export const getCpVisitActivationTime = (item) => {
   return "";
 };
 
+const normalizeCpDateValue = (value = "") => {
+  if (!value) return "";
+  const str = String(value);
+  if (str.includes("T")) return str.split("T")[0];
+  return str.slice(0, 10);
+};
+
+const normalizeCpTimeValue = (value = "") => {
+  if (!value) return "";
+  const str = String(value).trim();
+  if (str.includes("T")) return str.split("T")[1]?.slice(0, 8) || "";
+  if (str.length === 5) return `${str}:00`;
+  return str.slice(0, 8);
+};
+
+/**
+ * Per-history-row activation for display.
+ * Hides activation when it clearly belongs to an older finish
+ * (activation date before this row's scheduled date).
+ */
+export const getCpVisitDisplayActivation = (item = {}) => {
+  const scheduledDate = normalizeCpDateValue(getCpVisitScheduledDate(item));
+  const activationDateRaw = getCpVisitActivationDate(item);
+  const activationTimeRaw = getCpVisitActivationTime(item);
+  const activationDate = normalizeCpDateValue(activationDateRaw);
+  const activationTime = normalizeCpTimeValue(activationTimeRaw);
+
+  if (!activationDate && !activationTime) {
+    return { activation_date: "", activation_time: "" };
+  }
+
+  // Stale shared activation from another finish / previous visit
+  if (scheduledDate && activationDate && activationDate < scheduledDate) {
+    return { activation_date: "", activation_time: "" };
+  }
+
+  return {
+    activation_date: activationDateRaw || activationDate,
+    activation_time: activationTimeRaw || activationTime,
+  };
+};
+
 export const getCpVisitProjectName = (item, fallback = "") =>
   item?.project_name || item?.sales_project_name || fallback || "";
 
-export const mapCpVisitHistoryItem = (item, fallbackProjectName = "") => ({
-  scheduled_date: getCpVisitScheduledDate(item),
-  scheduled_time: getCpVisitScheduledTime(item),
-  activation_date: getCpVisitActivationDate(item),
-  activation_time: getCpVisitActivationTime(item),
-  project_name: getCpVisitProjectName(item, fallbackProjectName),
-  revisit_date: getCpVisitScheduledDate(item),
-  revisit_time: getCpVisitScheduledTime(item),
-  remark: [item?.stage || item?.current_stage, item?.remarks || item?.remark]
-    .filter(Boolean)
-    .join(" - "),
-});
-
+export const mapCpVisitHistoryItem = (item, fallbackProjectName = "") => {
+  const displayActivation = getCpVisitDisplayActivation(item);
+  return {
+    scheduled_date: getCpVisitScheduledDate(item),
+    scheduled_time: getCpVisitScheduledTime(item),
+    activation_date: displayActivation.activation_date,
+    activation_time: displayActivation.activation_time,
+    project_name: getCpVisitProjectName(item, fallbackProjectName),
+    revisit_date: getCpVisitScheduledDate(item),
+    revisit_time: getCpVisitScheduledTime(item),
+    remark: [item?.stage || item?.current_stage, item?.remarks || item?.remark]
+      .filter(Boolean)
+      .join(" - "),
+  };
+};

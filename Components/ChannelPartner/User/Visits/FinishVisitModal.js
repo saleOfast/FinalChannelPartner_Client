@@ -4,7 +4,14 @@ import { getCookie, hasCookie } from 'cookies-next';
 
 const DEMO_VISIT_CODE = '2882';
 
-const FinishVisitModal = ({ show, setShow, visitStatus, onSendVisitCode, onVerifyVisitCode }) => {
+const FinishVisitModal = ({
+  show,
+  setShow,
+  visitStatus,
+  onSendVisitCode,
+  onVerifyVisitCode,
+  startAtVerify = false,
+}) => {
   const clientBtnColor = hasCookie("clientBtnColor") ? getCookie("clientBtnColor") : "#293790";
   const [step, setStep] = useState('send');
   const [visitCode, setVisitCode] = useState('');
@@ -17,8 +24,13 @@ const FinishVisitModal = ({ show, setShow, visitStatus, onSendVisitCode, onVerif
       setVisitCode('');
       setSending(false);
       setVerifying(false);
+    } else {
+      setStep(startAtVerify ? 'verify' : 'send');
+      setVisitCode('');
+      setSending(false);
+      setVerifying(false);
     }
-  }, [show]);
+  }, [show, startAtVerify]);
 
   const handleClose = () => {
     setShow(false);

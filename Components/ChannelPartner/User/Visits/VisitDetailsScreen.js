@@ -393,7 +393,20 @@ const VisitDetailsScreen = () => {
       activation_date: activationDate,
       activation_time: activationTime,
       visit_type: item?.visit_type || "---------",
-      assigned_to: item?.bst_name || item?.assigned_to || item?.user || lead?.bst_name || lead?.user || "---------",
+      assigned_to:
+        item?.assigned_to_name ||
+        item?.bst_name ||
+        item?.user ||
+        lead?.assigned_to_name ||
+        lead?.bst_name ||
+        lead?.user ||
+        (typeof item?.assigned_to === "string" && Number.isNaN(Number(item.assigned_to))
+          ? item.assigned_to
+          : null) ||
+        (typeof lead?.assigned_to === "string" && Number.isNaN(Number(lead.assigned_to))
+          ? lead.assigned_to
+          : null) ||
+        "---------",
       status,
       isCompleted,
       otpSent,

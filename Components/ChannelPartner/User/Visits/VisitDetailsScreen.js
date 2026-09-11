@@ -1358,10 +1358,12 @@ const VisitDetailsScreen = () => {
             style={{background:`${clientBtnColor}`}}
             onClick={handleBackToVisits}
           >Back to Visits</button>
-          <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0"
-            style={{background:`${clientBtnColor}`}}
-            onClick={handleVisitHistory}
-          >Visit History</button>
+          {!isCpVisit && (
+            <button className="back-to-lead d-flex align-items-center justify-content-center text-white border-0"
+              style={{background:`${clientBtnColor}`}}
+              onClick={handleVisitHistory}
+            >Visit History</button>
+          )}
         </div>
         
         

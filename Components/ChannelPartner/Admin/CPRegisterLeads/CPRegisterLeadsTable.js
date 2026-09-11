@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import Link from "next/link";
 import { Baseurl, filesUrl, isRmRole, isBstRole, getVisitDateLabel, showCpVisitScheduleColumns } from "../../../../Utils/Constants";
@@ -11,11 +11,42 @@ import DeleteIcon from "../../../Svg/DeleteIcon";
 import EditIcon from "../../../Svg/EditIcon";
 import moment from "moment";
 import DateRange from "../../../DateRangeCustom/Daterange";
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { fetchData } from '../../../../Utils/getReq';
 import ViewIcon from "../../../Svg/ViewIcon";
 import { useRouter } from "next/router";
 import * as XLSX from "xlsx";
+
+const CheckboxSelectOption = (props) => {
+  const { isFocused, isSelected, children, innerProps, getStyles, isDisabled, ...rest } =
+    props;
+  let bg = "transparent";
+  if (isFocused) bg = "#eee";
+  if (isSelected) bg = "#B2D4FF";
+
+  return (
+    <components.Option
+      {...rest}
+      isDisabled={isDisabled}
+      isFocused={isFocused}
+      isSelected={isSelected}
+      getStyles={getStyles}
+      innerProps={{
+        ...innerProps,
+        style: {
+          alignItems: "center",
+          backgroundColor: bg,
+          color: "inherit",
+          display: "flex",
+          gap: 8,
+        },
+      }}
+    >
+      <input type="checkbox" checked={!!isSelected} readOnly style={{ marginRight: 8 }} />
+      {children}
+    </components.Option>
+  );
+};
 
 const CPRegisterLeadsTable = ({
   deleteConfirm,
@@ -65,6 +96,12 @@ const CPRegisterLeadsTable = ({
     visit_type: ""
   });
   const [projectList, setProjectList] = useState([]);
+  const [pmProjectList, setPmProjectList] = useState([]);
+  const [showAssignRm, setShowAssignRm] = useState(false);
+  const [assignRmLead, setAssignRmLead] = useState(null);
+  const [selectedAssignProjects, setSelectedAssignProjects] = useState([]);
+  const [selectedAssignRms, setSelectedAssignRms] = useState([]);
+  const [assignRmSaving, setAssignRmSaving] = useState(false);
   const visitTypeOptions = [
     { value: "Video Visit", label: "Video Visit" },
     { value: "Site Visit", label: "Site Visit" },
@@ -107,11 +144,176 @@ const CPRegisterLeadsTable = ({
     }
   };
 
+  const extractPmList = (payload) => {
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.records)) return payload.records;
+    if (Array.isArray(payload?.data)) return payload.data;
+    if (Array.isArray(payload?.projects)) return payload.projects;
+    return [];
+  };
+
+  const getPmProjectList = async () => {
+    if (!hasCookie("token")) return;
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+    try {
+      const { data } = await axios.get(`${Baseurl}/db/channel/project-master`, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          db: db_name,
+          pass: "pass",
+        },
+      });
+      const list = extractPmList(data?.data ?? data).map((item) => {
+        const rmUsers = Array.isArray(item?.bst_users)
+          ? item.bst_users
+          : Array.isArray(item?.rm_users)
+            ? item.rm_users
+            : [];
+        const rmIds = Array.isArray(item?.rm_ids)
+          ? item.rm_ids.map(String)
+          : Array.isArray(item?.bst_ids)
+            ? item.bst_ids.map(String)
+            : rmUsers
+                .map((u) => u?.user_id || u?.id)
+                .filter(Boolean)
+                .map(String);
+        return {
+          project_id: item?.project_id || item?.id || "",
+          project_name: item?.project_name || item?.project || item?.name || "",
+          rm_ids: rmIds,
+          rm_users: rmUsers,
+        };
+      });
+      setPmProjectList(list.filter((p) => p.project_id));
+    } catch (error) {
+      setPmProjectList([]);
+    }
+  };
+
   useEffect(() => {
     getUsersList();
     getProjectList();
+    getPmProjectList();
   }, [])
 
+  const pmProjectOptions = useMemo(
+    () =>
+      pmProjectList.map((p) => ({
+        value: String(p.project_id),
+        label: p.project_name || `Project ${p.project_id}`,
+      })),
+    [pmProjectList]
+  );
+
+  const assignRmOptions = useMemo(() => {
+    if (!selectedAssignProjects.length) return [];
+    const selectedIds = selectedAssignProjects.map((p) => String(p.value));
+    const selectedProjects = pmProjectList.filter((p) =>
+      selectedIds.includes(String(p.project_id))
+    );
+
+    const rmMap = new Map();
+    selectedProjects.forEach((project) => {
+      (project.rm_users || []).forEach((u) => {
+        const id = String(u?.user_id || u?.id || "");
+        if (!id) return;
+        rmMap.set(id, {
+          value: id,
+          label: u?.user || u?.name || u?.email || `User ${id}`,
+        });
+      });
+      (project.rm_ids || []).forEach((id) => {
+        const key = String(id);
+        if (rmMap.has(key)) return;
+        const user = usersList?.find((u) => String(u.user_id) === key);
+        rmMap.set(key, {
+          value: key,
+          label: user?.user || user?.name || user?.email || `User ${key}`,
+        });
+      });
+    });
+
+    return Array.from(rmMap.values());
+  }, [selectedAssignProjects, pmProjectList, usersList]);
+
+  const openAssignRmModal = (lead) => {
+    setAssignRmLead(lead || null);
+    setSelectedAssignProjects([]);
+    setSelectedAssignRms([]);
+    setShowAssignRm(true);
+    if (!pmProjectList.length) getPmProjectList();
+  };
+
+  const closeAssignRmModal = () => {
+    setShowAssignRm(false);
+    setAssignRmLead(null);
+    setSelectedAssignProjects([]);
+    setSelectedAssignRms([]);
+  };
+
+  const submitAssignRm = async () => {
+    if (!assignRmLead?.cpl_id) {
+      toast.error("Lead not found", { autoClose: 2500 });
+      return;
+    }
+    if (!selectedAssignProjects.length) {
+      toast.error("Please select at least one project", { autoClose: 2500 });
+      return;
+    }
+    if (!selectedAssignRms.length) {
+      toast.error("Please select at least one RM", { autoClose: 2500 });
+      return;
+    }
+    if (!hasCookie("token")) return;
+
+    const token = getCookie("token");
+    const db_name = getCookie("db_name");
+    const primaryRm = selectedAssignRms[0];
+    const primaryProject = selectedAssignProjects[0];
+
+    const payload = {
+      ...assignRmLead,
+      db_name,
+      client_url: "http://18.61.246.105",
+      asssigned_to: Number(primaryRm.value) || primaryRm.value,
+      project_id: Number(primaryProject.value) || primaryProject.value,
+      project_name: primaryProject.label,
+      project_ids: selectedAssignProjects.map((p) => Number(p.value) || p.value),
+      rm_ids: selectedAssignRms.map((r) => Number(r.value) || r.value),
+      bst_ids: selectedAssignRms.map((r) => Number(r.value) || r.value),
+    };
+
+    setAssignRmSaving(true);
+    try {
+      const response = await axios.put(
+        `${Baseurl}/db/channelPartnerLeads`,
+        payload,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            pass: "pass",
+          },
+        }
+      );
+      if (response.status === 200 || response.status === 201) {
+        toast.success(response?.data?.message || "Assigned to RM successfully", {
+          autoClose: 2500,
+        });
+        closeAssignRmModal();
+        await getDataList();
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Failed to assign RM",
+        { autoClose: 2500 }
+      );
+    } finally {
+      setAssignRmSaving(false);
+    }
+  };
 
   const getCurrentWeekDates = () => {
     const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1));
@@ -856,7 +1058,16 @@ const CPRegisterLeadsTable = ({
 
           return (
             <>
-              <div className="table_btns">
+              <div
+                className="table_btns"
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "nowrap",
+                  alignItems: "center",
+                  minWidth: 320,
+                }}
+              >
                 <>
                   <button
                     className="action_btn"
@@ -899,20 +1110,53 @@ const CPRegisterLeadsTable = ({
                     <DeleteIcon />
                   </button>
                 </>
-                {userInfo?.isDB && <div className="table_btns justify-content-center align-items-center" style={{ marginRight: '5px' }}>
-                  <button
-                    onClick={() => {
-                      const newData = dataList?.find((item) => item?.cpl_id == value)
-                      setFormData(newData);
-                      setShowAssignTo(value);
-                      setOldAssignTo(leadData?.user)
+                {userInfo?.isDB && (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      flexWrap: "nowrap",
+                      alignItems: "center",
+                      gap: "8px",
+                      marginLeft: "6px",
+                      whiteSpace: "nowrap",
                     }}
-                    style={{ background: clientBtnColor ? clientBtnColor : `#293790`, color: "white", padding: "6px", borderRadius: "20px", border: "white" }}
-                    className='pe-3 ps-3'
-                    title='Assign - To'>
-                    Assign to
-                  </button>
-                </div>}
+                  >
+                    <button
+                      onClick={() => {
+                        const newData = dataList?.find((item) => item?.cpl_id == value)
+                        setFormData(newData);
+                        setShowAssignTo(value);
+                        setOldAssignTo(leadData?.user)
+                      }}
+                      style={{
+                        background: clientBtnColor ? clientBtnColor : `#293790`,
+                        color: "white",
+                        padding: "6px 12px",
+                        borderRadius: "20px",
+                        border: "white",
+                        whiteSpace: "nowrap",
+                        flexShrink: 0,
+                      }}
+                      title='Assign - To'>
+                      Assign to
+                    </button>
+                    <button
+                      onClick={() => openAssignRmModal(leadData)}
+                      style={{
+                        background: clientBtnColor ? clientBtnColor : `#293790`,
+                        color: "white",
+                        padding: "6px 12px",
+                        borderRadius: "20px",
+                        border: "white",
+                        whiteSpace: "nowrap",
+                        flexShrink: 0,
+                      }}
+                      title='Assign TO RM'>
+                      Assign TO RM
+                    </button>
+                  </div>
+                )}
                 {
                   stage === "CONTACTED" && (
                     <button
@@ -1562,6 +1806,111 @@ const CPRegisterLeadsTable = ({
           >
             SUBMIT
           </div>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        className="commonModal"
+        show={showAssignRm}
+        onHide={closeAssignRmModal}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Assign Projects</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="add_user_form">
+            <div className="row g-3">
+              <div className="col-12">
+                <div className="input_box">
+                  <label className="form-label">Projects</label>
+                  <Select
+                    isMulti
+                    isSearchable
+                    closeMenuOnSelect={false}
+                    hideSelectedOptions={false}
+                    placeholder="Select projects"
+                    options={pmProjectOptions}
+                    value={selectedAssignProjects}
+                    onChange={(options) => {
+                      setSelectedAssignProjects(options || []);
+                      setSelectedAssignRms([]);
+                    }}
+                    components={{ Option: CheckboxSelectOption }}
+                    noOptionsMessage={() => "No projects found"}
+                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    styles={{
+                      control: (base) => ({ ...base, minHeight: 38 }),
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                      option: (base) => ({
+                        ...base,
+                        paddingTop: 8,
+                        paddingBottom: 8,
+                      }),
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="input_box">
+                  <label className="form-label">RM(s)</label>
+                  <Select
+                    isMulti
+                    isSearchable
+                    closeMenuOnSelect={false}
+                    hideSelectedOptions={false}
+                    isDisabled={!selectedAssignProjects.length}
+                    placeholder={
+                      selectedAssignProjects.length
+                        ? "Select RM(s) from selected projects"
+                        : "Select project first"
+                    }
+                    options={assignRmOptions}
+                    value={selectedAssignRms}
+                    onChange={(options) => setSelectedAssignRms(options || [])}
+                    components={{ Option: CheckboxSelectOption }}
+                    noOptionsMessage={() =>
+                      selectedAssignProjects.length
+                        ? "No RM found for selected project"
+                        : "Select project first"
+                    }
+                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        minHeight: 38,
+                        backgroundColor: selectedAssignProjects.length ? "#fff" : "#f1f3f5",
+                      }),
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                      option: (base) => ({
+                        ...base,
+                        paddingTop: 8,
+                        paddingBottom: 8,
+                      }),
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <button
+            className="btn btn-danger rounded-5"
+            onClick={closeAssignRmModal}
+            disabled={assignRmSaving}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="btn rounded-5 text-white"
+            style={{ background: clientBtnColor || "#000" }}
+            onClick={submitAssignRm}
+            disabled={assignRmSaving}
+          >
+            {assignRmSaving ? "Saving..." : "SUBMIT"}
+          </button>
         </Modal.Footer>
       </Modal>
     </>

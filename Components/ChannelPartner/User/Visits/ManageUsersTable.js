@@ -651,6 +651,196 @@ const [value, setValue] = useState(getCurrentWeekDates());
         setUserData([...data]); 
     };
 
+    const downloadCpVisitReport = async () => {
+      if (!hasCookie("token")) {
+        toast.error("Please login again", { autoClose: 2500 });
+        return;
+      }
+
+      const token = getCookie("token");
+      const db_name = getCookie("db_name");
+      const header = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          db: db_name,
+          pass: "pass",
+        },
+      };
+
+      const leadMap = {};
+      (Array.isArray(dataList) ? dataList : []).forEach((list) => {
+        const cplId = list?.cpl_id;
+        if (cplId == null || leadMap[cplId]) return;
+        leadMap[cplId] = {
+          cpl_id: cplId,
+          leadName:
+            list?.name ||
+            `${list?.first_name || ""} ${list?.last_name || ""}`.trim() ||
+            "",
+          email: list?.email || "",
+          contact: list?.contact || "",
+          registration_date: list?.createdAt || list?.registration_date || "",
+        };
+      });
+
+      const leads = Object.values(leadMap);
+      if (!leads.length) {
+        toast.error("No CP visit records found", { autoClose: 2500 });
+        return;
+      }
+
+      toast.info("Generating CP Visits report...", { autoClose: 1500 });
+
+      const reportRows = [];
+      for (const lead of leads) {
+        let history = [];
+        let leadInfo = lead;
+        try {
+          const { data } = await axios.get(
+            `${Baseurl}/db/channelPartnerLeads/getVisitHistory?cpl_id=${lead.cpl_id}`,
+            header
+          );
+          history = Array.isArray(data?.data?.visit_history)
+            ? data.data.visit_history
+            : Array.isArray(data?.data)
+              ? data.data
+              : [];
+          if (data?.data?.lead) {
+            leadInfo = {
+              ...lead,
+              leadName:
+                data.data.lead.name ||
+                lead.leadName,
+              email: data.data.lead.email || lead.email,
+              contact: data.data.lead.contact || lead.contact,
+              registration_date:
+                data.data.lead.registration_date ||
+                data.data.lead.createdAt ||
+                lead.registration_date,
+            };
+          }
+        } catch (error) {
+          history = [];
+        }
+
+        const leadName = leadInfo.leadName || "";
+        const email = leadInfo.email || "";
+        const contact = leadInfo.contact ? `+91-${leadInfo.contact}` : "";
+        const registrationDate = leadInfo.registration_date
+          ? formatDate(leadInfo.registration_date)
+          : "";
+
+        if (!history.length) {
+          reportRows.push([
+            lead.cpl_id,
+            leadName,
+            email,
+            contact,
+            registrationDate,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+          ]);
+          continue;
+        }
+
+        history.forEach((item, index) => {
+          const isFirst = index === 0;
+          const assignedTo =
+            item?.assigned_to_name ||
+            item?.bst_name ||
+            item?.user ||
+            (typeof item?.assigned_to === "string" &&
+            Number.isNaN(Number(item.assigned_to))
+              ? item.assigned_to
+              : "") ||
+            "";
+          const status =
+            item?.visit_status ||
+            item?.status ||
+            item?.stage ||
+            "";
+          reportRows.push([
+            isFirst ? lead.cpl_id : "",
+            isFirst ? leadName : "",
+            isFirst ? email : "",
+            isFirst ? contact : "",
+            isFirst ? registrationDate : "",
+            item?.project_name || item?.sales_project_name || "",
+            item?.schedule_visit_date || item?.follow_up_date
+              ? formatDate(item?.schedule_visit_date || item?.follow_up_date)
+              : "",
+            item?.schedule_visit_time || item?.follow_up_time
+              ? formatTime(item?.schedule_visit_time || item?.follow_up_time)
+              : "",
+            item?.activation_date ? formatDate(item.activation_date) : "",
+            item?.activation_time ? formatTime(item.activation_time) : "",
+            item?.visit_type || "",
+            assignedTo,
+            status,
+          ]);
+        });
+      }
+
+      let range;
+      if (hasCookie("VisitsFilter")) {
+        range = JSON.parse(getCookie("VisitsFilter"));
+      }
+
+      const headers = [
+        "Lead ID",
+        "CP Lead Name",
+        "Email",
+        "Contact No.",
+        "Registration Date",
+        "Project Name",
+        "Scheduled Date",
+        "Scheduled Time",
+        "Activation Date",
+        "Activation Time",
+        "Visit Type",
+        "Assigned To",
+        "Status",
+      ];
+
+      const customData = [
+        ["CP Visits Report"],
+        [],
+        ["Filter by:"],
+        [],
+        [
+          `Date Range: ${
+            range?.f_date ? formatDate(range?.f_date) : formatDate(start)
+          } to ${
+            range?.t_date ? formatDate(range?.t_date) : formatDate(end)
+          }`,
+        ],
+        [],
+        [],
+        headers,
+        ...reportRows,
+      ];
+
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.aoa_to_sheet(customData);
+      worksheet["!merges"] = [
+        { s: { r: 0, c: 0 }, e: { r: 1, c: headers.length - 1 } },
+        { s: { r: 2, c: 0 }, e: { r: 3, c: headers.length - 1 } },
+        { s: { r: 4, c: 0 }, e: { r: 4, c: headers.length - 1 } },
+        { s: { r: 5, c: 0 }, e: { r: 6, c: headers.length - 1 } },
+      ];
+      worksheet["!cols"] = headers.map(() => ({ wch: 18 }));
+      XLSX.utils.book_append_sheet(workbook, worksheet, "CPVisits");
+      XLSX.writeFile(workbook, "CPVisits.xlsx");
+      toast.success("CP Visits report downloaded", { autoClose: 2000 });
+    };
+
     const options = {
         selectableRows: 'none',
         responsive: "standard",
@@ -660,6 +850,10 @@ const [value, setValue] = useState(getCurrentWeekDates());
         viewColumns: false,
         customSearch: customTableSearch,
         onDownload: (buildHead, buildBody, columns, data) => {
+              if (visitType === "cp") {
+                downloadCpVisitReport();
+                return false;
+              }
               const workbook = XLSX.utils.book_new();
               let range;
               if(hasCookie("VisitsFilter")){
